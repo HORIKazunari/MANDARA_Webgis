@@ -1,0 +1,323 @@
+﻿/**
+ * メインエントリーポイント
+ * ESモジュール完全対応版
+ */
+
+import { TKY2JGDInfo } from './clsGeneric';
+import { appState } from './core/AppState';
+import { Generic } from './clsGeneric';
+
+// グローバル変数は完全に削除し、AppState経由でアクセス
+// 以前の実装：
+// let clsSettingData!: Setting_Info;
+// let attrData!: IAttrData;
+// let Frm_Print!: IFrmPrint;
+// などは AppState に集約済み
+
+/**
+ * ログ出力関数
+ * AppState経由でログウィンドウにアクセス
+ */
+function logX(data: unknown): void {
+    const state = appState();
+    
+    if (state.logWindow === undefined) {
+        state.logWindow = Generic.createNewTextarea(
+            document.body, "", "", 10, 700, 10, 10, 
+            "font-size:15px;width:400px;height:200px"
+        );
+    }
+    
+    let tx: string = "";
+    if (Array.isArray(data)) {
+        for (const i in data) {
+            tx += data[i] + " / ";
+        }
+    } else {
+        tx = String(data);
+    }
+    console.log(tx);
+    
+    if (state.logWindow) {
+        state.logWindow.value += tx + "\n";
+    }
+}
+
+/**
+ * アプリケーション初期化関数
+ */
+function init(): void {
+    const state = appState();
+    
+    // コンテキストメニュー無効化
+    document.body.addEventListener("contextmenu", contextMenuPrevent);
+    
+    // 状態の初期化
+    state.settingData = new Setting_Info();
+    state.tky2jgd = new TKY2JGDInfo();
+    state.tileMapClass = new clsTileMap();
+    
+    // フォント設定
+    const testFont: string[] = [
+        "Yu Gothic UI", 
+        "Meiryo UI", 
+        "ヒラギノ角ゴ ProN", 
+        "Noto Sans CJK", 
+        "sans-serif"
+    ];
+    for (const font of testFont) {
+        if (Generic.checkFontExist(font)) {
+            state.settingData.SetFont = font;
+            break;
+        }
+    }
+    
+    // スクロールバー幅の取得
+    const divscr: HTMLDivElement = Generic.createNewDiv(
+        document.body, "", "", "", 0, 0, 50, 50, 
+        "visibility:hidden;overflow-y:scroll", 
+        undefined
+    );
+    state.scrMargin.scrollWidth = 50 - divscr.clientWidth;
+    document.body.removeChild(divscr);
+    
+    // 出力画面生成
+    state.frmPrint = Generic.createWindow(
+        "frmPrint", "", "", 250, 50, 300, 250, 
+        false, true, FrmprintMenuClick, true, 
+        frmPrint.windowClose, true, "printFoot", true, 
+        frmPrint.resizeMapWindow
+    ) as IFrmPrint;
+    
+    state.frmPrint.picMap = Generic.createNewCanvas(
+        state.frmPrint, "mapArea", "", 0, 0, 0, 0, "", 
+        "background-color: white"
+    );
+
+    state.frmPrint.picMap.oncontextmenu = (): boolean => false;
+    state.frmPrint.addEventListener('mousedown', frmPrintFront);
+    state.frmPrint.addEventListener('touchstart', frmPrintFront);
+    state.frmPrint.dragBorder?.(undefined, frmPrint.resizeMapWindow);
+    
+    const footer: HTMLElement = document.getElementById("printFoot")!;
+    state.frmPrint.label1 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", "");
+    state.frmPrint.label2 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", "");
+    state.frmPrint.label3 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", "");
+    
+    // プロパティウィンドウ生成
+    state.propertyWindow = Generic.createWindow(
+        "", "", "プロパティ", 350, 50, 200, 250, 
+        false, false, "", true, 
+        frmPrint.propertyWindowClose, false, "", false, 
+        undefined
+    ) as IPropertyWindow;
+    
+    state.propertyWindow.dragBorder?.(undefined, undefined);
+    state.propertyWindow.setTitle?.("プロパティ");
+    state.propertyWindow.pnlProperty = Generic.createNewDiv(
+        state.propertyWindow, "", "", "", 0, state.scrMargin.top, 
+        '100%', 240, "background-color:#eeeeee;overflow:hidden", ""
+    );
+    state.propertyWindow.pnlProperty.sizeFixed = true;
+    state.propertyWindow.pnlProperty.relativeSize = new size(0, 70);
+    state.propertyWindow.pnlProperty.objInfo = Generic.createNewDiv(
+        state.propertyWindow.pnlProperty, "", "", "", 0, 0, 
+        '100%', 90, "padding:5px;background-color:white", ""
+    );
+    state.propertyWindow.pnlProperty.oObject = -1;
+    state.propertyWindow.pnlProperty.oLayer = -1;
+    state.propertyWindow.pnlProperty.oData = -1;
+    state.propertyWindow.copyButton = Generic.createNewButton(
+        state.propertyWindow, "コピー", "", 30, 0, 
+        frmPrint.copyProperty, ""
+    );
+    (state.propertyWindow.copyButton as any).bottomPositionFixed = true;
+    (state.propertyWindow.copyButton as any).relativePosition = new point(0, 30);
+    state.propertyWindow.fixed = false;
+    state.propertyWindow.nextVisible = true;
+
+    const rightDIV: HTMLDivElement = Generic.createNewDiv(
+        footer, "", "FTRight", "", 350, 0, 295, 18, 
+        "text-align:center", undefined
+    );
+    (rightDIV as any).rightPositionFixed = true;
+    (rightDIV as any).relativePosition = new point(325, 0);
+    
+    Generic.createNewButton(rightDIV, "データ値表示", "", 0, 0, dataValueShow, "width:90px");
+    Generic.createNewButton(rightDIV, "全体表示", "", 90, 0, frmPrint.wholeMapShow, "text-aligh:center;width:75px");
+    state.frmPrint.backImageButton = Generic.createNewButton(rightDIV, "背景画像", "", 165, 0, backImageButton, "text-aligh:center;width:75px");
+    state.frmPrint.seriesNextButton = Generic.createNewButton(rightDIV, "◀", "", 240, 0, frmPrint.seriesBefore, "font-weight: 900;width:30px");
+    state.frmPrint.seriesBeforeButton = Generic.createNewButton(rightDIV, "▶", "", 270, 0, frmPrint.seriesNext, "font-weight: 900;width:30px");
+    
+    mapMouse(state.frmPrint.picMap, clsPrint.printMapScreen);
+    clsDrawMarkFan?.init?.();
+
+    setting(location.search); // 設定画面の作成
+
+
+    function FrmprintMenuClick(pos: any): void {
+        const state = appState();
+        const pwchwck: boolean = (state.propertyWindow.getVisibility?.() === true);
+        const popmenu = [
+            {caption: "画像", enabled: true, child: [
+                { caption: "画像ファイルに保存", event: frmPrint.savePNG },
+                { caption: "コピー用画像表示", event: frmPrint.copyImageWindow }
+            ]
+        },
+            {caption: "表示", enabled: true, child: [
+                { caption: "ダミーオブジェクト・グループ変更",  event: mnuDummyObjChange },
+                { caption: "局地変動モード", checked: state.attrData.TotalData.ViewStyle.MapLegend.Base.ModeValueInScreenFlag, event: mdvf },
+                { caption: "プロパティウインドウ", checked: pwchwck, event: pwreverse },
+            ]
+        },
+        { caption: "線種ラインパターン設定", event: frmPrint.linePattern },
+        { caption: "投影法変換", event: frmPrintProjection},
+        { caption: "オプション", event: frmPrintOptionMenu }
+        ];
+        Generic.ceatePopupMenu(popmenu, pos);
+        
+        function mdvf(): void {
+            const state = appState();
+            const v: boolean = !state.attrData.TotalData.ViewStyle.MapLegend.Base.ModeValueInScreenFlag;
+            if (v === true) {
+                Generic.alert(undefined, "局地変動モードは、階級区分モード（分割方法が自由設定の場合を除く）、記号の大きさモード、棒の高さモードで反映され、他の表示モードでは変化しません。", undefined);
+            }
+            state.attrData.TotalData.ViewStyle.MapLegend.Base.ModeValueInScreenFlag = v;
+            clsPrint.printMapScreen(state.frmPrint.picMap);
+        }
+        
+        function pwreverse(): void {
+            const state = appState();
+            if (state.propertyWindow.getVisibility?.() === true) {
+                state.propertyWindow.setVisibility?.(false);
+            } else {
+                state.propertyWindow.setVisibility?.(true);
+            }
+            frmPrint.propertyWindowClose();
+        }
+        
+        function mnuDummyObjChange(): void {
+            frmPrint_DummyObjectGroup();
+        }
+    }
+}
+
+/**
+ * コンテキストメニュー無効化
+ */
+function contextMenuPrevent(e: Event): void {
+    e.preventDefault();
+}
+
+/**
+ * 投影法変換
+ */
+function frmPrintProjection(): void {
+    const state = appState();
+    
+    if (state.attrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
+        alert("緯度経度座標系ではありません。");
+        return;
+    }
+    
+    const av = state.attrData.TotalData.ViewStyle;
+    frmProjectionConvert(av.Zahyo, av.ScrData.MapRectanglem, okButton);
+    
+    function okButton(newZahyo: any): void {
+        const state = appState();
+        const centerLon: number = newZahyo.CenterXY.x;
+        
+        if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
+            (centerLon !== state.attrData.TotalData.ViewStyle.Zahyo.CenterXY.x)) {
+            
+            state.attrData?.Convert_Zahyo?.(newZahyo);
+            const MapFileList: string[] = state.attrData?.GetMapFileName?.() ?? [];
+            
+            for (let i = 0; i < MapFileList.length; i++) {
+                state.attrData?.SetMapFile?.(MapFileList[i])?.Convert_ZahyoMode?.(newZahyo);
+            }
+            
+            if (state.attrData?.TotalData?.ViewStyle?.ScrData?.MapRectangle) {
+                state.attrData.TotalData.ViewStyle.Zahyo = newZahyo;
+                state.attrData.TotalData.ViewStyle.ScrData.ScrView = 
+                    state.attrData.TotalData.ViewStyle.ScrData.MapRectangle.Clone();
+            }
+            
+            state.attrData?.Check_Vector_Object?.();
+            state.attrData?.PrtObjectSpatialIndex?.();
+            clsPrint.printMapScreen(state.frmPrint.picMap);
+            Generic.alert(
+                undefined, 
+                "投影法を" + Generic.getStringProjectionEnum(newZahyo.Projection) + "に変換しました。", 
+                undefined
+            );
+        }
+    }
+}
+
+/**
+ * オプションメニュー
+ */
+function frmPrintOptionMenu(): void {
+    frmPrintOption(0);
+}
+
+/**
+ * データ値表示ボタン
+ */
+function dataValueShow(e?: Event): void {
+    const state = appState();
+    frmPrint_ObjectValue(state.attrData, function(): void { 
+        clsPrint.printMapScreen(state.frmPrint.picMap); 
+    });
+}
+
+/**
+ * 背景画像ボタン
+ */
+function backImageButton(): void {
+    const state = appState();
+    const avt = state.attrData.TotalData.ViewStyle.TileMapView;
+    
+    if (avt.Visible === true) {
+        avt.Visible = false;
+        clsPrint.printMapScreen(state.frmPrint.picMap);
+    } else {
+        avt.Visible = true;
+        frmPrint_backImageSet(state.attrData, function (): void { 
+            clsPrint.printMapScreen(state.frmPrint.picMap); 
+        });
+    }
+}
+
+/**
+ * 設定画面を前面に
+ */
+function settingFront(): void {
+    const state = appState();
+    
+    state.divMain?.style && (state.divMain.style.zIndex = "2");
+    state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "2");
+    state.frmPrint?.style && (state.frmPrint.style.zIndex = "1");
+    state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "1");
+}
+
+/**
+ * 印刷画面を前面に
+ */
+function frmPrintFront(): void {
+    const state = appState();
+    
+    state.divMain?.style && (state.divMain.style.zIndex = "1");
+    state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "1");
+    state.frmPrint?.style && (state.frmPrint.style.zIndex = "2");
+    state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "3");
+}
+
+
+
+
+
+
+
+

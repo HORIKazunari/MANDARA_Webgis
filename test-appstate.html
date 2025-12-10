@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppState動作確認</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        h2 { color: #666; font-size: 18px; margin-top: 0; }
+        .result { 
+            padding: 10px; 
+            margin-top: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 AppState動作確認テスト</h1>
+    
+    <div class="test-card">
+        <h2>Test 1: AppStateモジュールのインポート</h2>
+        <button onclick="testImport()">テスト実行</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>Test 2: AppStateシングルトンの動作</h2>
+        <button onclick="testSingleton()">テスト実行</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>Test 3: AppState状態の読み書き</h2>
+        <button onclick="testStateAccess()">テスト実行</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>Test 4: main.ts のグローバル変数削除確認</h2>
+        <button onclick="testGlobalVariables()">テスト実行</button>
+        <div id="test4-result"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>コンソールログ</h2>
+        <pre id="console-log"></pre>
+    </div>
+
+    <script type="module">
+        import { appState } from './src/core/AppState.ts';
+
+        let logs = [];
+        
+        // コンソールログをキャプチャ
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            logs.push(['LOG', ...args]);
+            updateConsoleLog();
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            logs.push(['ERROR', ...args]);
+            updateConsoleLog();
+            originalError.apply(console, args);
+        };
+
+        function updateConsoleLog() {
+            const logEl = document.getElementById('console-log');
+            logEl.textContent = logs.map(log => 
+                `[${log[0]}] ${log.slice(1).map(String).join(' ')}`
+            ).join('\n');
+        }
+
+        window.testImport = function() {
+            const resultEl = document.getElementById('test1-result');
+            try {
+                if (typeof appState === 'function') {
+                    resultEl.innerHTML = '<div class="result success">✅ AppStateモジュールのインポート成功</div>';
+                    console.log('Test 1: PASSED - AppState imported successfully');
+                } else {
+                    throw new Error('appState is not a function');
+                }
+            } catch (error) {
+                resultEl.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+                console.error('Test 1: FAILED -', error);
+            }
+        };
+
+        window.testSingleton = function() {
+            const resultEl = document.getElementById('test2-result');
+            try {
+                const state1 = appState();
+                const state2 = appState();
+                
+                if (state1 === state2) {
+                    resultEl.innerHTML = '<div class="result success">✅ シングルトンパターン正常動作（同一インスタンスを返す）</div>';
+                    console.log('Test 2: PASSED - Singleton pattern working correctly');
+                } else {
+                    throw new Error('Multiple instances created');
+                }
+            } catch (error) {
+                resultEl.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+                console.error('Test 2: FAILED -', error);
+            }
+        };
+
+        window.testStateAccess = function() {
+            const resultEl = document.getElementById('test3-result');
+            try {
+                const state = appState();
+                
+                // 初期状態の確認
+                const hasProperties = [
+                    'settingData', 'attrData', 'frmPrint', 'propertyWindow',
+                    'divMain', 'tky2jgd', 'tileMapClass', 'preReadMapFile',
+                    'scrMargin', 'logWindow', 'settingModeWindow'
+                ].every(prop => prop in state);
+                
+                if (hasProperties) {
+                    // テスト用の値を設定
+                    state.preReadMapFile = [{fileName: 'test.map', data: 'test'}];
+                    
+                    // 値が正しく設定されたか確認
+                    if (state.preReadMapFile[0].fileName === 'test.map') {
+                        resultEl.innerHTML = `
+                            <div class="result success">
+                                ✅ AppState全プロパティ存在確認: OK<br>
+                                ✅ 読み書きテスト: OK<br>
+                                <small>設定値: preReadMapFile[0].fileName = "test.map"</small>
+                            </div>
+                        `;
+                        console.log('Test 3: PASSED - State access working correctly');
+                    } else {
+                        throw new Error('State write/read failed');
+                    }
+                } else {
+                    throw new Error('Some properties are missing');
+                }
+            } catch (error) {
+                resultEl.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+                console.error('Test 3: FAILED -', error);
+            }
+        };
+
+        window.testGlobalVariables = function() {
+            const resultEl = document.getElementById('test4-result');
+            try {
+                const globalVars = [
+                    'clsSettingData', 'attrData', 'Frm_Print', 'propertyWindow',
+                    'divmain', 'TKY2JGD', 'tileMapClass', 'preReadMapFile'
+                ];
+                
+                const existingGlobals = globalVars.filter(varName => 
+                    typeof window[varName] !== 'undefined'
+                );
+                
+                if (existingGlobals.length === 0) {
+                    resultEl.innerHTML = '<div class="result success">✅ グローバル変数が正しく削除されています</div>';
+                    console.log('Test 4: PASSED - No global variables found');
+                } else {
+                    resultEl.innerHTML = `
+                        <div class="result error">
+                            ⚠️ 以下のグローバル変数がまだ存在します:<br>
+                            ${existingGlobals.join(', ')}
+                        </div>
+                    `;
+                    console.log('Test 4: WARNING - Some global variables still exist:', existingGlobals);
+                }
+            } catch (error) {
+                resultEl.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+                console.error('Test 4: FAILED -', error);
+            }
+        };
+
+        // ページロード時に自動実行
+        console.log('AppState Test Page Loaded');
+        console.log('Click buttons to run tests');
+    </script>
+</body>
+</html>

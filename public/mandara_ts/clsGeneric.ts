@@ -1,0 +1,7529 @@
+// @ts-expect-error TS(6504): File '/Users/horikazunari/TypeScript/mandara_ts/ma... Remove this comment to see the full error message
+/// <reference path="main.js" />
+// @ts-expect-error TS(6504): File '/Users/horikazunari/TypeScript/mandara_ts/cl... Remove this comment to see the full error message
+/// <reference path="clsAttrData.js" />
+// @ts-expect-error TS(6504): File '/Users/horikazunari/TypeScript/mandara_ts/cl... Remove this comment to see the full error message
+/// <reference path="clsTime.js" />
+// @ts-expect-error TS(6504): File '/Users/horikazunari/TypeScript/mandara_ts/So... Remove this comment to see the full error message
+/// <reference path="SortingSearch.js" />
+// @ts-expect-error TS(6504): File '/Users/horikazunari/TypeScript/mandara_ts/cl... Remove this comment to see the full error message
+/// <reference path="clsMapdata.js" />
+// @ts-expect-error TS(6504): File '/Users/horikazunari/TypeScript/mandara_ts/cl... Remove this comment to see the full error message
+/// <reference path="clsDraw.js" />
+
+
+/**
+ * Description placeholder
+ *
+ * @type {6370}
+ */
+const EarthR  = 6370;
+/**
+ * Description placeholder
+ *
+ * @type {*}
+ */
+const chrLF = String.fromCharCode(10);
+
+/**
+ * Description placeholder
+ *
+ * @type {{ SinglePoint: number; SPILine: number; SPIRect: number; }}
+ */
+var SpatialPointType = {
+    SinglePoint : 1,
+    SPILine : 2,
+    SPIRect : 3
+}
+
+
+/**
+ * Description placeholder
+ *
+ * @type {{ PerfectMatching: number; PartialtMatching: number; }}
+ */
+var enmMatchingMode = {
+    PerfectMatching: 0,
+    PartialtMatching: 1
+}
+
+/**
+ * Description placeholder
+ *
+ * @type {{ cstOuter: number; cstCross: number; cstInner: number; cstInclusion: number; cstEqual: number; }}
+ */
+var cstRectangle_Cross = {
+    //長方形間の関係を示す定数
+cstOuter : -1,
+cstCross : 0,
+cstInner : 1,
+cstInclusion : 2,
+cstEqual : 3
+}
+
+/** Description placeholder */
+var EllipPar = function(this: any) {
+    this.a;
+    this.f1;
+    this.f;
+    this.E;
+    this.namec;
+}
+/**
+ * Description placeholder
+ *
+ * @returns 
+ */
+var TKY2JGDInfo=function(this: any) {
+    var EP = new Array(3);
+    var XY_Genten = new Array(20);
+    var rad2deg = 57.2957795130823;
+    var deg2rad = 0.0174532925199433;
+    var HAF_PI = 1.5707963267949;
+    var PID = 3.14159265358979;
+    var TWO_PI = 6.28318530717959;
+    var HAF_PI = 1.5707963267949;
+    var ROBYO = 206264.806247;
+    Set_EP_Parameter();
+
+    //国土地理院技術資料 Ｈ・１－Ｎｏ．２「測地成果2000のための座標変換ソフトウェアTKY2JGD」によるTKY2JGDソース・コードを利用
+     this.Tokyo97toITRF94=function(latlonP: any) {
+        // Ver.1.1  1999/1/28  (C) Mikio TOBITA 飛田幹男，国土地理院
+        // 「3ﾊﾟﾗﾒｰﾀによる」Tokyo97系からITRF94系への座標変換を行う。
+        //  この変換では楕円体高Hはゼロとする。
+        // by 飛田幹男
+        // 入力　B1    : 緯度(度)
+        // 　　　L1    : 経度(度)
+        // 出力　B2    : 緯度(度)
+        // 　　　L2    : 経度(度)
+        let B1 = latlonP.lat;
+        let L1 = latlonP.lon;
+
+        let Brad = B1 * deg2rad;
+        let ALrad = L1 * deg2rad;
+
+        //緯度，経度から三次元直交座標系(X,Y,Z)への換算
+        let xyz1= BLHXYZcalc(Brad, ALrad, 0, EP[1]) //EP(1):Bessel楕円体
+        //三次元直交座標系(X,Y,Z)から三次元直交座標系(X,Y,Z)への座標変換
+         let xyz2 = xyz2xyz(xyz1)
+        //三次元直交座標系(X,Y,Z)から緯度，経度への換算
+         let retV = XYZBLHcalc(xyz2, EP[2]); //EP(2):GRS-80楕円体
+
+         // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+         let B2 = retV.Brad * rad2deg;
+         // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+         let L2 = retV.ALrad * rad2deg;
+         // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+         return new latlon(B2, L2);
+    }
+
+    this.ITRF94toTokyo97 = function (latlonP: any) {
+        let B1 = latlonP.lat;
+        let L1 = latlonP.lon;
+        let Brad = B1 * deg2rad;
+        let ALrad = L1 * deg2rad;
+        let xyz1 = BLHXYZcalc(Brad, ALrad, 0, EP[2]);
+        let xyz2 = xyz2xyzR(xyz1);
+        let retV = XYZBLHcalc(xyz2, EP[1])
+
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        xyz1 = BLHXYZcalc(retV.Brad, retV.ALrad, -retV.H, EP[2]);
+        xyz2 = xyz2xyzR(xyz1);
+        retV = XYZBLHcalc(xyz2, EP[1]);
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        let B2 = retV.Brad * rad2deg;
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        let L2 = retV.ALrad * rad2deg;
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new latlon(B2, L2);
+    }
+
+    this.doCalcXy2bl = function (Ellip12: any, Kei: any, X: any, Y: any) {
+        let M0  //Kei    //系番号，基準子午線の縮尺係数
+        let cB1 , cL1    //原点の緯度，経度。c = combo box
+        let B1 , L1      //原点の緯度，経度。基本的にradian
+        let b , L        //求める緯度，経度。基本的にradian
+        let Bdeg , Ldeg  //求める緯度，経度。基本的にdeg
+        let Gamma                 //=γ 子午線収差角。radian
+        let Gammadeg              //真北方向角。deg
+        let MMM                   //縮尺係数
+        let D , AM , s , SN , SNS 
+        let AEE , CEE , Ep2 
+        let AJ , BJ , CJ , DJ , EJ 
+        let FJ , GJ , HJ , IJ 
+        let S0                    //赤道から座標原点までの子午線弧長
+        let M 
+        let Eta2 , M1 , N1          //phi1の関数
+        let Eta2phi , Mphi , Nphi   //phi(=B)の関数
+        let T , T2 , T4 , T6 
+        let e2 , e4 , e6 , e8 , e10 
+        let e12 , e14 , e16 
+        let S1 , phi1 , oldphi1 , icount 
+        let Bunsi , Bunbo 
+        let YM0 , N1CosPhi1 
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let EPs = new EllipPar();
+
+        M0 = 0.9999;
+        EPs.a = EP[Ellip12].a
+        EPs.f1 = EP[Ellip12].f1
+        EPs.f = EP[Ellip12].f
+        EPs.E = EP[Ellip12].E
+        EPs.namec = EP[Ellip12].namec
+        e2 = EPs.E
+        e4 = e2 * e2
+        e6 = e4 * e2
+        e8 = e4 * e4
+        e10 = e8 * e2
+        e12 = e8 * e4
+        e14 = e8 * e6
+        e16 = e8 * e8
+
+        //定数項 the same as bl2xy
+        AEE = EPs.a * (1.0 - EPs.E) //a(1-e2)
+        // @ts-expect-error TS(2551): Property 'Sqrt' does not exist on type 'Math'. Did... Remove this comment to see the full error message
+        CEE = EPs.a / Math.Sqrt(1.0 - EPs.E)   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
+        Ep2 = EPs.E / (1.0 - EPs.E) //e'2(e prime 2) Eta2を計算するため
+
+        AJ = 4927697775.0 / 7516192768.0 * e16
+        AJ = AJ + 19324305.0 / 29360128.0 * e14
+        AJ = AJ + 693693.0 / 1048576.0 * e12
+        AJ = AJ + 43659.0 / 65536.0 * e10
+        AJ = AJ + 11025.0 / 16384.0 * e8
+        AJ = AJ + 175.0 / 256.0 * e6
+        AJ = AJ + 45.0 / 64.0 * e4
+        AJ = AJ + 3.0 / 4.0 * e2
+        AJ = AJ + 1.0
+        BJ = 547521975.0 / 469762048.0 * e16
+        BJ = BJ + 135270135.0 / 117440512.0 * e14
+        BJ = BJ + 297297.0 / 262144.0 * e12
+        BJ = BJ + 72765.0 / 65536.0 * e10
+        BJ = BJ + 2205.0 / 2048.0 * e8
+        BJ = BJ + 525.0 / 512.0 * e6
+        BJ = BJ + 15.0 / 16.0 * e4
+        BJ = BJ + 3.0 / 4.0 * e2
+        CJ = 766530765.0 / 939524096.0 * e16
+        // CJ = CJ + 45090045 / 5870256 * e14 精密測地網一次基準点測量作業規定の誤りによるバグ
+        CJ = CJ + 45090045.0 / 58720256.0 * e14
+        CJ = CJ + 1486485.0 / 2097152.0 * e12
+        CJ = CJ + 10395.0 / 16384.0 * e10
+        CJ = CJ + 2205.0 / 4096.0 * e8
+        CJ = CJ + 105.0 / 256.0 * e6
+        CJ = CJ + 15.0 / 64.0 * e4
+        DJ = 209053845.0 / 469762048.0 * e16
+        DJ = DJ + 45090045.0 / 117440512.0 * e14
+        DJ = DJ + 165165.0 / 524288.0 * e12
+        DJ = DJ + 31185.0 / 131072.0 * e10
+        DJ = DJ + 315.0 / 2048.0 * e8
+        DJ = DJ + 35.0 / 512.0 * e6
+        EJ = 348423075.0 / 1879048192.0 * e16
+        EJ = EJ + 4099095.0 / 29360128.0 * e14
+        EJ = EJ + 99099.0 / 1048576.0 * e12
+        EJ = EJ + 3465.0 / 65536.0 * e10
+        EJ = EJ + 315.0 / 16384.0 * e8
+        FJ = 26801775.0 / 469762048.0 * e16
+        FJ = FJ + 4099095.0 / 117440512.0 * e14
+        FJ = FJ + 9009.0 / 524288.0 * e12
+        FJ = FJ + 693.0 / 131072.0 * e10
+        GJ = 11486475.0 / 939524096.0 * e16
+        GJ = GJ + 315315.0 / 58720256.0 * e14
+        GJ = GJ + 3003.0 / 2097152.0 * e12
+        HJ = 765765.0 / 469762048.0 * e16
+        HJ = HJ + 45045.0 / 117440512.0 * e14
+        IJ = 765765.0 / 7516192768.0 * e16
+
+
+        // @ts-expect-error TS(2349): This expression is not callable.
+        B1 = XY_Genten(Kei).CenterB * deg2rad
+        // @ts-expect-error TS(2349): This expression is not callable.
+        L1 = XY_Genten(Kei).CenterL * deg2rad
+
+  
+
+        //赤道からの子午線長の計算
+        S0= MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ ) //赤道から座標原点までの子午線弧長
+        M = S0 + X / M0
+
+        //Baileyの式による異性緯度（isometric latitude）phi1の計算。
+        //「精密測地網一次基準点測量計算式」P57の11.(1)の式から。
+        //この式と「現代測量学１ 測量の数学的基礎」P102の式とは，Cos(phi1)だけ異なる。
+        //この式を導入したためベッセル楕円体以外で往復計算OKとなった。
+        icount = 0
+        phi1 = B1
+        do {
+            icount++;
+            oldphi1 = phi1
+            S1 = MeridS(phi1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ) //赤道から点までの子午線弧長
+            Bunsi = 2.0 * (S1 - M) * (1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) ** 1.5
+            Bunbo = 3.0 * EPs.E * (S1 - M) * Math.sin(phi1) * Math.cos(phi1) * Math.sqrt(1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) - 2.0 * EPs.a * (1.0 - EPs.E)
+            phi1 = phi1 + Bunsi / Bunbo
+        } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)) //本では1e-12で十分　iterationの回数は４回
+
+        //何度も使う式を変数に代入
+        YM0 = Y / M0
+        T = Math.tan(phi1)  //「精密測地網一次基準点測量計算式」P51のt1に等しい
+        T2 = T * T
+        T4 = T2 * T2
+        T6 = T4 * T2
+        Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1)     //=η1*η1
+        M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0)
+        N1 = CEE / Math.sqrt(1.0 + Eta2)
+        N1CosPhi1 = N1 * Math.cos(phi1)
+
+        //緯度Bの計算 「精密測地網一次基準点測量計算式」P51のphiを求める式より
+        b = ((1385.0 + 3633.0 * T2 + 4095 * T4 + 1575.0 * T6) / (40320.0 * N1 ** 8.0)) * YM0 ** 8.0
+        b = b - ((61.0 + 90.0 * T2 + 45 * T4 + 107.0 * Eta2 - 162.0 * T2 * Eta2 - 45.0 * T4 * Eta2) / (720.0 * N1 ** 6.0)) * YM0 ** 6.0
+        b = b + ((5.0 + 3.0 * T2 + 6.0 * Eta2 - 6.0 * T2 * Eta2 - 3.0 * Eta2 ** 2 - 9.0 * T2 * Eta2 ** 2) / (24.0 * N1 ** 4.0)) * YM0 ** 4.0
+        b = b - ((1.0 + Eta2) / (2.0 * N1 ** 2.0)) * YM0 ** 2.0
+        b = b * T
+        b = b + phi1
+
+        //経度Lの計算 「精密測地網一次基準点測量計算式」P51のΔλを求める式より
+        L = -((61.0 + 662.0 * T2 + 1320.0 * T4 + 720.0 * T6) / (5040.0 * N1 ** 6.0 * N1CosPhi1)) * YM0 ** 7.0
+        L = L + ((5.0 + 28.0 * T2 + 24.0 * T4 + 6.0 * Eta2 + 8.0 * T2 * Eta2) / (120.0 * N1 ** 4.0 * N1CosPhi1)) * YM0 ** 5.0
+        L = L - ((1.0 + 2.0 * T2 + Eta2) / (6.0 * N1 ** 2.0 * N1CosPhi1)) * YM0 ** 3.0
+        L = L + (1.0 / N1CosPhi1) * YM0
+        L = L + L1
+
+        //子午線収差角の計算 「精密測地網一次基準点測量計算式」P51のγを求める式より
+        Gamma = ((1.0 + T2) * (2.0 + 3.0 * T2) / (15.0 * N1 ** 5.0)) * (Y / M0) ** 5.0
+        Gamma = Gamma - ((1.0 + T2 - Eta2) / (3.0 * N1 ** 3.0)) * (Y / M0) ** 3.0
+        Gamma = Gamma + (1.0 / N1) * Y / M0
+        Gamma = Gamma * T
+
+        //縮尺係数の計算 「精密測地網一次基準点測量計算式」P51のmを求める式より
+        Eta2phi = Ep2 * Math.cos(b) * Math.cos(b)     //=η*η。Bはphiと同じ。
+        Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0)
+        Nphi = CEE / Math.sqrt(1.0 + Eta2phi)
+        MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0)
+        MMM = MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0)
+        MMM = MMM + 1.0
+        MMM = MMM * M0
+
+        //出力
+        Bdeg = b * rad2deg
+        Ldeg = L * rad2deg
+
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new latlon(Bdeg, Ldeg);
+    }
+
+    function MeridS(Phi: any, AEE: any, AJ: any, BJ: any, CJ: any, DJ: any, EJ: any, FJ: any, GJ: any, HJ: any, IJ: any) {
+        let SS;
+        SS = IJ / 16.0 * Math.sin(16.0 * Phi);
+        SS = SS - HJ / 14.0 * Math.sin(14.0 * Phi);
+        SS = SS + GJ / 12.0 * Math.sin(12.0 * Phi);
+        SS = SS - FJ / 10.0 * Math.sin(10.0 * Phi);
+        SS = SS + EJ / 8.0 * Math.sin(8.0 * Phi);
+        SS = SS - DJ / 6.0 * Math.sin(6.0 * Phi);
+        SS = SS + CJ / 4.0 * Math.sin(4.0 * Phi);
+        SS = SS - BJ / 2.0 * Math.sin(2.0 * Phi);
+        SS = SS + AJ * Phi
+        return SS;
+    }
+    function xyz2xyzR(xyz: any) {
+        // @ts-expect-error TS(2304): Cannot find name 'T1'.
+        T1 = 14641.4
+        // @ts-expect-error TS(2304): Cannot find name 'T2'.
+        T2 = -50733.7
+        // @ts-expect-error TS(2304): Cannot find name 'T3'.
+        T3 = -68050.7
+        // @ts-expect-error TS(2304): Cannot find name 'T1'.
+        let T1real = T1 * 0.01
+        // @ts-expect-error TS(2304): Cannot find name 'T2'.
+        let T2real = T2 * 0.01
+        // @ts-expect-error TS(2304): Cannot find name 'T3'.
+        let T3real = T3 * 0.01 
+        let x2 = xyz.x + T1real
+        let y2 = xyz.y + T2real
+        let z2 = xyz.z + T3real
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new point3(x2, y2, z2);
+    }
+
+    function XYZBLHcalc(xyz: any,  EP: any) {
+        let x = xyz.x;
+        let y = xyz.y;
+        let z = xyz.z;
+
+        let a = EP.a;
+        let fi = EP.f1;
+        let E = EP.E;
+
+        let P2 = x * x + y * y;
+        let p = Math.sqrt(P2);
+        if (p == 0) {
+            return;
+        }
+        let ALradV;
+        if (x == 0) {
+            ALradV = HAF_PI;
+        } else {
+            ALradV = Math.atan(y / x)
+        }
+        if (x < 0) {
+            ALradV += PID;
+        }
+        if (ALradV > PID) {
+            ALradV -= TWO_PI;
+        }
+
+        let r = Math.sqrt(P2 + z * z);
+        let myu = Math.atan((z / p) * (1.0 - (1.0 / fi) + E * a / r));
+        let myus3 = Math.sin(myu);
+        myus3 = myus3 * myus3 * myus3;
+        // @ts-expect-error TS(2304): Cannot find name 'myuc3'.
+        myuc3 = Math.cos(myu);
+        // @ts-expect-error TS(2304): Cannot find name 'myuc3'.
+        myuc3 = myuc3 * myuc3 * myuc3;
+        // @ts-expect-error TS(2304): Cannot find name 'myuc3'.
+        let BradV = Math.atan((z * (1.0 - 1.0 / fi) + E * a * myus3) / ((1.0 - 1.0 / fi) * (p - E * a * myuc3)));
+        let Hv = p * Math.cos(BradV) + z * Math.sin(BradV) - a * Math.sqrt(1.0 - E * Math.sin(BradV) * Math.sin(BradV));    //楕円体高
+
+        return { Brad: BradV, ALrad: ALradV,H:Hv};
+    }
+
+    function xyz2xyz(xyz: any) {
+        let T1 = -14641.4
+       let T2 = 50733.7
+        // @ts-expect-error TS(2304): Cannot find name 'letT3'.
+        letT3 = 68050.7
+        let T1real = T1 * 0.01  
+        let T2real = T2 * 0.01
+        // @ts-expect-error TS(2304): Cannot find name 'T3'.
+        let T3real = T3 * 0.01 
+        let x2 = xyz.x + T1real
+        let y2 = xyz.y + T2real
+        let z2 = xyz.z + T3real
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new point3(x2, y2, z2);
+    }
+
+    function BLHXYZcalc(Brad: any, ALrad: any, H: any, EP: any) {
+
+        let a = EP.a
+        let fi = EP.f1
+        let E = EP.E
+        let CB = Math.cos(Brad);
+        let SB = Math.sin(Brad);
+        let CL = Math.cos(ALrad);
+        let SL = Math.sin(ALrad)
+        let w = Math.sqrt(1.0 - E * SB * SB);
+        let an = a / w;
+        // @ts-expect-error TS(2304): Cannot find name 'x'.
+        x = (an + H) * CB * CL;
+        // @ts-expect-error TS(2304): Cannot find name 'y'.
+        y = (an + H) * CB * SL;
+        // @ts-expect-error TS(2304): Cannot find name 'z'.
+        z = (an * (1.0 - E) + H) * SB;
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new point3(x, y, z);
+    }
+
+    function Set_EP_Parameter() {
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        EP[1]=new EllipPar();
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        EP[2] = new EllipPar();
+        
+        EP[1].a = 6377397.155;
+        EP[1].f1 = 299.152813;
+        EP[1].namec = "Bessel";
+        EP[1].f = 1.0/ EP[1].f1;
+        EP[1].E = (2.0 * EP[1].f1 - 1.0) / EP[1].f1 / EP[1].f1; //=e*e [squared e]
+        EP[2].a = 6378137.0;
+        EP[2].f1 = 298.257222101;
+        EP[2].namec = "GRS-80";
+        EP[2].f = 1.0 / EP[2].f1;
+        EP[2].E = (2.0 * EP[2].f1 - 1.0) / EP[2].f1 / EP[2].f1; //=e*e [squared e]
+
+        for (let i = 1; i < 20; i++) {
+            // @ts-expect-error TS(2554): Expected 2 arguments, but got 0.
+            XY_Genten[i] = new latlon();
+        }
+        XY_Genten[1].lat = 33;
+        XY_Genten[1].lon = 129.5;
+        XY_Genten[2].lat = 33;
+        XY_Genten[2].lon = 131;
+        XY_Genten[3].lat = 36;
+        XY_Genten[3].lon = 132 + 10 / 60;
+        XY_Genten[4].lat = 33;
+        XY_Genten[4].lon = 133.5;
+        XY_Genten[5].lat = 36;
+        XY_Genten[5].lon = 134 + 20 / 60;
+        XY_Genten[6].lat = 36;
+        XY_Genten[6].lon = 136;
+        XY_Genten[7].lat = 36;
+        XY_Genten[7].lon = 137 + 10 / 60;
+        XY_Genten[8].lat = 36;;
+        XY_Genten[8].lon = 138.5;
+        XY_Genten[9].lat = 36;
+        XY_Genten[9].lon = 139 + 50 / 60;
+        XY_Genten[10].lat = 40;
+        XY_Genten[10].lon = 140 + 50 / 60;
+        XY_Genten[11].lat = 44;
+        XY_Genten[11].lon = 140 + 15 / 60;
+        XY_Genten[12].lat = 44;
+        XY_Genten[12].lon = 142 + 15 / 60;
+        XY_Genten[13].lat = 44;
+        XY_Genten[13].lon = 144 + 15 / 60;
+        XY_Genten[14].lat = 26;
+        XY_Genten[14].lon = 142;
+        XY_Genten[15].lat = 26;
+        XY_Genten[15].lon = 127.5;
+        XY_Genten[16].lat = 26;
+        XY_Genten[16].lon = 124;
+        XY_Genten[17].lat = 26;
+        XY_Genten[17].lon = 131;
+        XY_Genten[18].lat = 20;
+        XY_Genten[18].lon = 136;
+        XY_Genten[19].lat = 26;
+        XY_Genten[19].lon = 154;
+    }
+}
+
+class spatial {
+
+    /**メッシュコードから投影変換した四角形を返す */
+    static Get_MeshCode_Rectangle(Meshcode: any ,  MeshType: any ,  refOrigin: any,refDestZahyo: any){
+        let RectLatLon  = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode, MeshType);
+        RectLatLon.NorthWest = spatial.ConvertRefSystemLatLon(RectLatLon.NorthWest, refOrigin, refDestZahyo.System);
+        RectLatLon.SouthEast = spatial.ConvertRefSystemLatLon(RectLatLon.SouthEast, refOrigin, refDestZahyo.System);
+        let P=[];
+        P[0] = spatial.Get_Converted_XY(RectLatLon.NorthWest.toPoint(), refDestZahyo);
+        P[1] = spatial.Get_Converted_XY(RectLatLon.NorthEast().toPoint(), refDestZahyo);
+        P[2] = spatial.Get_Converted_XY(RectLatLon.SouthEast.toPoint(), refDestZahyo);
+        P[3] = spatial.Get_Converted_XY(RectLatLon.SouthWest().toPoint(), refDestZahyo);
+        // @ts-expect-error TS(2554): Expected 2 arguments, but got 1.
+        return { convRect: spatial.getCircumscribedRectangle(P), latlonBox: RectLatLon, RPoint: P };
+    }
+
+    /**地図座標のXYから緯度経度にして距離測定 */
+    static Distance_Ido_Kedo_XY_Point(P1: any, P2: any, MapDTMapZahyo: any) {
+        let D1 = this.Get_Reverse_XY(P1, MapDTMapZahyo);
+        let D2 = this.Get_Reverse_XY(P2, MapDTMapZahyo);
+        return this.Distance_Ido_Kedo_LatLon(D1.toLatlon(), D2.toLatlon());
+    }
+
+    /**緯度経度で地点間の距離を求める */
+    static Distance_Ido_Kedo_LatLon(D1: any, D2: any) {
+        if (D1.Equals(D2)) {
+            return 0;
+        } else {
+            let DV = Math.sqrt((Math.cos((D1.lat + D2.lat) * Math.PI / 180 / 2) * Math.sin((D1.lon - D2.lon) * Math.PI / 180 / 2)) ** 2 + 
+                (Math.sin((D1.lat - D2.lat) * Math.PI / 180 / 2) * Math.cos((D1.lon - D2.lon) * Math.PI / 180 / 2)) ** 2)
+
+            return 2 * EarthR * Math.atan(DV / Math.sqrt(-DV * DV + 1));
+        }
+    }
+
+    /**二つの線分の交点を求める関数。交点がある場合座標、ない場合undefined */
+    static Line_Cross_Point(LAP1: any, LAP2: any, LBP1: any, LBP2: any) {
+        let ax1 = LAP1.x
+        let ay1 = LAP1.y
+        let ax2 = LAP2.x
+        let ay2 = LAP2.y
+        let bx1 = LBP1.x
+        let by1 = LBP1.y
+        let bx2 = LBP2.x
+        let by2 = LBP2.y
+        //２点が同一、または２線が平行の場合は戻る
+        if (((ax2 == ax1) && (bx2 == bx1)) || ((ay2 == ay1) && (by2 == by1)) || (
+            (ax1 == bx1) && (ay1 == by1)) || ((ax2 == bx1) && (ay2 == by1)) || ((ax1 == bx2) && (ay1 == by2)) || ((ax2 == bx2) && (ay2 == by2))) {
+            return undefined;
+        }
+
+        if ((ax2 == ax1) || (bx2 == bx1)) {
+            //どちらかがY軸に平行の場合
+            if (bx2 == bx1) {
+                //B線の場合はAB入れ替えてA線を平行に
+                [bx1, ax1] = [ax1, bx1];
+                [bx2, ax2] = [ax2, bx2];
+                [by1, ay1] = [ay1, by1];
+                [by2, ay2] = [ay2, by2];
+            }
+            if (Generic.Check_Two_Value_In(ax1, bx1, bx2) == chvValue_on_twoValue.chvIN) {
+                //交点のY座標を求める
+                let BL = (by2 - by1) / (bx2 - bx1);
+                let bm = by1 - BL * bx1;
+                let px = ax1;
+                let py = BL * px + bm;
+                if ((Generic.Check_Two_Value_In(py, ay1, ay2) != chvValue_on_twoValue.chvOuter) && (
+                    Generic.Check_Two_Value_In(py, by1, by2) != chvValue_on_twoValue.chvOuter)) {
+                    //Y座標がAB線の内部だったら交差
+                    // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                    return new point(px, py);;
+                }
+            }
+            return undefined;
+        } else if ((ay2 == ay1) || (by2 == by1)) {
+            //どちらかがX軸に平行の場合
+            if (by2 == by1) {
+                //B線の場合はAB入れ替えてA線を平行に
+                [bx1, ax1] = [ax1, bx1];
+                [bx2, ax2] = [ax2, bx2];
+                [by1, ay1] = [ay1, by1];
+                [by2, ay2] = [ay2, by2];
+            }
+            if (Generic.Check_Two_Value_In(ay1, by1, by2) != chvValue_on_twoValue.chvOuter) {
+                //交点のX座標を求める
+                let BL = (by2 - by1) / (bx2 - bx1);
+                let bm = by1 - BL * bx1;
+                let py = ay1;
+                let px = (py - bm) / BL;
+                if ((Generic.Check_Two_Value_In(px, ax1, ax2) != chvValue_on_twoValue.chvOuter) && (
+                    Generic.Check_Two_Value_In(px, bx1, bx2) != chvValue_on_twoValue.chvOuter)) {
+                    //X座標がAB線の内部だったら交差
+                    // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                    return new point(px, py);
+                }
+            }
+            return undefined;
+        } else {
+            let AL = (ay2 - ay1) / (ax2 - ax1);
+            let BL = (by2 - by1) / (bx2 - bx1);
+            if (AL == BL) {
+                //傾きが等しいと交差しない
+                return undefined;
+            }
+            let AM = ay1 - AL * ax1;
+            let bm = by1 - BL * bx1;
+            let px = (bm - AM) / (AL - BL);
+            let py = AL * px + AM;
+            if (((ax1 == px) && (ay1 == py)) || ((ax2 == px) && (ay2 == py)) || ((bx1 == px) && (by1 == py)) || ((bx2 == px) && (by2 == py))) {
+            } else {
+                if ((Generic.Check_Two_Value_In(px, ax1, ax2) != chvValue_on_twoValue.chvOuter) && (Generic.Check_Two_Value_In(py, ay1, ay2) != chvValue_on_twoValue.chvOuter)) {
+                    if ((Generic.Check_Two_Value_In(px, bx1, bx2) != chvValue_on_twoValue.chvOuter) && (
+                        Generic.Check_Two_Value_In(py, by1, by2) != chvValue_on_twoValue.chvOuter)) {
+                        //交点が２線の内部だったら交差
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(px, py);
+                    }
+                }
+            }
+            return undefined;
+        }
+    }
+
+    /** 指定したベクトルと垂直のベクトルを取得*/
+    static Get_Suisen_Vec(Vx: any, Vy: any) {
+        return { rVx: -Vy, rVy: Vx };
+    }
+
+    /**ベクトルVecX,VecY方向に距離D離れた地点の座標を取得 */
+    static Get_Vec_Point(VecX: any , VecY: any ,Dis: any , CenterFlag: any){
+            let D ;
+            if(CenterFlag ==true ){
+                D = Dis / 2;
+            }else{
+                D = Dis;
+            }
+    
+            let x2 , y2 ;
+            if(VecX == 0 ){
+                x2 = 0;
+                y2 = D * Math.sign(VecY);
+            }else if(VecY == 0 ){
+                x2 = D * Math.sign(VecX);
+                y2 = 0;
+            }else{
+                x2 = (D * VecX) / Math.sqrt(VecY ** 2 + VecX ** 2);
+                y2 = x2 * VecY / VecX;
+            }
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            return new point(x2, y2);
+    }
+
+    //四角形に点が入らない場合，入るように座標を修正して返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} p 
+ * @param {*} rect 
+ * @returns {*} 
+ */
+static checkAndModifyPointInRect(p: any,rect: any){
+        let np =p.Clone();
+        if(np.x < rect.left ){
+            np.x = rect.left;
+        }
+        if(np.x > rect.right ){
+            np.x = rect.right;
+        }
+        if(np.y < rect.top ){
+            np.y = rect.top;
+        }
+        if(np.y > rect.bottom ){
+            np.y = rect.bottom;
+        }
+        return np;
+    }
+    /**  ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/
+    static check_Point_in_Polygon(checkPoint: any ,  PolyLine: any ){
+
+        let CrossPoint_X = [];
+        let f = false;
+        for (let p = 0; p < PolyLine.length; p++) {
+            let LinePoints = PolyLine[p];
+            for (let i = 0; i < LinePoints.length-1; i++) {
+                let cret = Get_CrossXPoint(checkPoint, LinePoints[i], LinePoints[i + 1]);
+                if (cret.ok == true) {
+                    CrossPoint_X.push(cret.CrossX);
+                }
+            }
+        }
+        //調査地点のX座標が交点の偶数番目の後に来る場合はtrue
+        CrossPoint_X.sort(function(a,b){return (a-b)}); //小大に並べ替え
+        for(let j  = 0 ;j< CrossPoint_X.length - 1 ;j+=2){
+            if(( CrossPoint_X[j] <= checkPoint.x)&&(checkPoint.x <= CrossPoint_X[j + 1]) ){
+                f=true;
+                break;
+            }
+        }
+        let retV ={ok:f,
+            CrossPoint_X:CrossPoint_X
+        }
+        return retV;
+        //水平線アルゴリズムで、線分と調査地点の座標との水平線上のX座標を求める。Y範囲がずれていた場合はfalse
+        function Get_CrossXPoint(checkPoint: any ,  LinePoint1: any ,  LinePoint2: any  ){
+            let x  = checkPoint.x;
+            let y  = checkPoint.y;
+            let ay  = LinePoint1.y;
+            let by  = LinePoint2.y;
+            let f;
+            let CrossX;
+            if(( (ay <= y)&&(y < by))||( (by <= y)&&(y < ay) )){
+                let BX  = LinePoint2.x;
+                let ax  = LinePoint1.x;
+                if( ay == by ){
+                    CrossX = ax;
+                }else{
+                    CrossX = (ax - BX) / (ay - by) * (y - ay) + ax;
+                }
+                f=true;
+            }else{
+                f=false;
+            }
+            let retV ={ok:f,
+                CrossX:CrossX
+            }
+            return retV;
+        }
+    }
+
+    //地図座標が緯度経度に変換可能かチェックする
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Position 
+ * @param {*} MPDataMapZahyo 
+ * @returns {boolean} 
+ */
+static Check_PsitionReverse_Enable(Position: any, MPDataMapZahyo: any) {
+        let f;
+        switch (MPDataMapZahyo.Mode) {
+            case enmZahyo_mode_info.Zahyo_No_Mode:
+            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+                f = true;
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_Ido_Keido: {
+                let oy = Position.y;
+                f = true;
+                switch (MPDataMapZahyo.Projection) {
+                    case enmProjection_Info.prjSanson:
+                    case enmProjection_Info.prjSeikyoEntou: {
+                        if (Math.abs(oy / EarthR * 180 / Math.PI) > 90) {
+                            f = false;
+                        }
+                        break;
+                    }
+                    case enmProjection_Info.prjMercator: {
+                        //メルカトル図法ではyは無限大でtrue
+                        break;
+                    }
+                    case enmProjection_Info.prjLambertSeisekiEntou: {
+                        let tx = -oy / EarthR;
+                        if (Math.abs(Math.atan(tx / Math.sqrt(-tx * tx + 1)) * 180 / Math.PI) > 90) {
+                            f = false;
+                        }
+                        break;
+                    }
+                    case enmProjection_Info.prjMollweide: {
+                        if (Math.abs(Position.y) > (Math.sqrt(2) * EarthR - 0.001)) {
+                            f = false;
+                        }
+                        break;
+                    }
+                    case enmProjection_Info.prjEckert4: {
+                        if (Math.abs(Position.y) > (1.3265004 * EarthR - 0.001)) {
+                            f = false;
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        return f;
+    }
+
+
+    //メッシュコードからメッシュの四角形緯度経度を求める
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} MeshCode 
+ * @param {*} Mesh_Size 
+ * @returns {*} 
+ */
+static Get_Ido_Kedo_from_MeshCode(MeshCode: any, Mesh_Size: any) {
+        // @ts-expect-error TS(2339): Property 'left' does not exist on type 'string'.
+        MeshCode = (MeshCode + "0000000000").left(11);
+        let id1 = Number(MeshCode.substr(0, 2));
+        let id2 = Number(MeshCode.substr(4, 1));
+        let id3 = Number(MeshCode.substr(6, 1));
+        let kd1 = Number(MeshCode.substr(2, 2));
+        let kd2 = Number(MeshCode.substr(5, 1));
+        let kd3 = Number(MeshCode.substr(7, 1));
+        let V2 = Number(MeshCode.substr(8, 1));
+        let V4 = Number(MeshCode.substr(9, 1));
+        let v8 = Number(MeshCode.substr(10, 1));
+        let Ido = id1 / 1.5 + (id2 / 8) * (40 / 60) + (id3 / 10) * (5 / 60);
+        let kdo = kd1 + 100 + (kd2 / 8) + (kd3 / 10) * (7.5 / 60);
+        if (Mesh_Size == enmMesh_Number.mhOne_Tenth) {
+            Ido = Ido + V2 * (30 / 3600) / 10;
+            kdo = kdo + V4 * (45 / 3600) / 10;
+        } else {
+            if ((V2 == 3) || (V2 == 4)) {
+                //1/2メッシュの北側
+                Ido = Ido + (15 / 3600);
+            }
+            if ((V2 == 2) || (V2 == 4)) {
+                //1/2メッシュの東側
+                kdo = kdo + (22.5 / 3600);
+            }
+            if ((V4 == 3) || (V4 == 4)) {
+                //1/4メッシュの北側
+                Ido = Ido + (7.5 / 3600);
+            }
+            if ((V4 == 2) || (V4 == 4)) {
+                //1/4メッシュの東側
+                kdo = kdo + (11.25 / 3600);
+            }
+            if ((v8 == 3) || (v8 == 4)) {
+                Ido = Ido + (3.75 / 3600);
+            }
+            if ((v8 == 2) || (v8 == 4)) {
+                kdo = kdo + (5.625 / 3600);
+            }
+        }
+
+        let meshWH = this.Get_MeshCode_Size_IdoKedo(Mesh_Size);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new latlonbox(new latlon(Ido + meshWH.height, kdo), new latlon(Ido, (kdo + meshWH.width)));
+    }
+
+    //メッシュの東西南北の幅を取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Mesh_Size 
+ * @returns {*} 
+ */
+static Get_MeshCode_Size_IdoKedo(Mesh_Size: any) {
+        let Xplus;
+        let YPlus;
+
+        switch (Mesh_Size) {
+            case enmMesh_Number.mhFirst: {
+                Xplus = 450 * 8 / 3600;
+                YPlus = 300 * 8 / 3600;
+                break;
+            }
+            case enmMesh_Number.mhSecond: {
+                Xplus = 450 / 3600;
+                YPlus = 300 / 3600;
+                break;
+            }
+            case enmMesh_Number.mhThird:
+            case enmMesh_Number.mhHalf:
+            case enmMesh_Number.mhQuarter:
+            case enmMesh_Number.mhOne_Eighth:
+            case enmMesh_Number.mhOne_Tenth: {
+                Xplus = 45 / 3600;
+                YPlus = 30 / 3600;
+                switch (Mesh_Size) {
+                    case enmMesh_Number.mhHalf: {
+                        Xplus = Xplus / 2;
+                        YPlus = YPlus / 2;
+                        break;
+                    }
+                    case enmMesh_Number.mhQuarter: {
+                        Xplus = Xplus / 4;
+                        YPlus = YPlus / 4;
+                        break;
+                    }
+                    case enmMesh_Number.mhOne_Eighth: {
+                        Xplus = Xplus / 8;
+                        YPlus = YPlus / 8;
+                        break;
+                    } case enmMesh_Number.mhOne_Tenth:
+                        Xplus = Xplus / 10;
+                        YPlus = YPlus / 10;
+                        break;
+                }
+            }
+        }
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new size(Xplus, YPlus);
+    }
+
+    //投影法の緯度に応じたスケール値の倍率を取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} p 
+ * @param {*} MPDataMapZahyo 
+ * @returns {number} 
+ */
+static Get_Scale_Baititu_IdoKedo(p: any, MPDataMapZahyo: any) {
+        let v;
+        switch (MPDataMapZahyo.Mode){
+            case enmZahyo_mode_info.Zahyo_Ido_Keido: {
+                switch (MPDataMapZahyo.Projection) {
+                    case enmProjection_Info.prjSanson: {
+                        v = 1;
+                        break;
+                    }
+                    case enmProjection_Info.prjMollweide:
+                    case enmProjection_Info.prjEckert4: {
+                        let newP = this.Get_Reverse_XY(p, MPDataMapZahyo);
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        let PA1 = this.Get_Converted_XY(new point(0, 0), MPDataMapZahyo);
+                            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                            let PA2 = this.Get_Converted_XY(new point(180, 0), MPDataMapZahyo);
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        let PB1 = this.Get_Converted_XY(new point(0, newP.y), MPDataMapZahyo);
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        let PB2 = this.Get_Converted_XY(new point(180, newP.y), MPDataMapZahyo);
+                        let chk  = (Math.PI * EarthR) / (PA2.x - PA1.x)
+                        let v2 = (PA2.x - PA1.x) / (PB2.x - PB1.x);
+                        v = v2 / chk;
+                        break;
+                    }
+                    case enmProjection_Info.prjSeikyoEntou:
+                    case enmProjection_Info.prjMercator:
+                    case enmProjection_Info.prjMiller:
+                    case enmProjection_Info.prjLambertSeisekiEntou: {
+                        let newP = this.Get_Reverse_XY(p, MPDataMapZahyo);
+                        let Ido = Generic.m_min_max(newP.y, -89.9, 89.9);
+                        v = 1 / Math.cos(Ido * Math.PI / 180);
+                    }
+                }
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+                v = 1;
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_No_Mode: {
+                v = 1;
+                break;
+            }
+        }
+        return v;
+    }
+
+    //測地系をチェックして、違っていたら変換して返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} P1 
+ * @param {*} OriginRefSystem 
+ * @param {*} DestRefSystem 
+ * @returns {*} 
+ */
+static ConvertRefSystemLatLon(P1: any, OriginRefSystem: any, DestRefSystem: any) {
+        if (OriginRefSystem == DestRefSystem) {
+            return P1;
+        } else {
+        //測地系が違う場合は、データ中の緯度経度を地図の測地系に合わせて変換して代表点に
+            let P2;
+            switch (OriginRefSystem) {
+                case (enmZahyo_System_Info.Zahyo_System_tokyo): {
+                    // @ts-expect-error TS(2339): Property 'Tokyo97toITRF94' does not exist on type ... Remove this comment to see the full error message
+                    P2 = this.Tokyo97toITRF94(P1);
+                    break;
+                }
+                case (enmZahyo_System_Info.Zahyo_System_World): {
+                    // @ts-expect-error TS(2339): Property 'ITRF94toTokyo97' does not exist on type ... Remove this comment to see the full error message
+                    P2 = this.ITRF94toTokyo97(P1);
+                    break;
+                }
+            }
+            return P2;
+        }
+    }
+
+    //扇形の座標を求める
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} CP 
+ * @param {*} r 
+ * @param {*} start_p 
+ * @param {*} end_p 
+ * @param {*} CenterLineF 
+ * @returns {{}} 
+ */
+static Get_Fan_Coordinates(CP: any, r: any, start_p: any, end_p: any, CenterLineF: any) {
+        let ST = 1 / (r * 2 / 5);
+        let pxy = [];
+
+        if (((start_p == 0) && (end_p == Math.PI * 2)) || (CenterLineF == false)) {
+        } else {
+            pxy[0] = CP;
+        }
+
+        if (end_p - start_p < ST) {
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            pxy.push(new point(r * Math.sin(start_p) + CP.x, -r * Math.cos(start_p) + CP.y));
+        } else {
+            for (let i = start_p; i < end_p - ST; i += ST) {
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                pxy.push(new point(r * Math.sin(i) + CP.x, -r * Math.cos(i) + CP.y))
+            }
+        }
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        pxy.push(new point(r * Math.sin(end_p) + CP.x, -r * Math.cos(end_p) + CP.y));
+        if ((start_p == 0) && (end_p == Math.PI * 2) || (CenterLineF == false)) {
+        } else {
+            pxy.push(CP.Clone());
+        }
+        return pxy;
+    }
+
+    //世界測地系の緯度経度の座標に変換して返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} oxy 
+ * @param {*} MapZahyo_Info 
+ * @returns {*} 
+ */
+static Get_World_IdoKedo(oxy: any, MapZahyo_Info: any) {
+        let x2, y2;
+        // @ts-expect-error TS(2554): Expected 2 arguments, but got 0.
+        let LatLon = new latlon();
+
+        if (MapZahyo_Info.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) {
+            let Ellip12;
+            //平面直角座標系の場合は緯度経度に変換
+            if (MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_tokyo) {
+                Ellip12 = 1;
+            } else {
+                if (MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_World) {
+                    Ellip12 = 2;
+                }
+            }
+            let Kei = MapZahyo_Info.HeimenTyokkaku_KEI_Number;
+            // @ts-expect-error TS(2339): Property 'doCalcXy2bl' does not exist on type '(th... Remove this comment to see the full error message
+            TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, oxy.y, oxy.x, y2, x2);
+            LatLon.lon = x2;
+            LatLon.lat = y2;
+        } else {
+            LatLon.lat = oxy.y;
+            LatLon.lon = oxy.x;
+        }
+
+        if(MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_tokyo ){
+        //日本測地系の場合は世界測地系に変換
+            // @ts-expect-error TS(2339): Property 'Tokyo97toITRF94' does not exist on type ... Remove this comment to see the full error message
+            TKY2JGDInfo.Tokyo97toITRF94(LatLon.lat, LatLon.lon, y2, x2);
+            LatLon.lon = x2;
+            LatLon.lat = y2;
+        }
+        return LatLon;
+    }
+    //地図座標を新しい設定の地図座標に変換する
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} OldP 
+ * @param {*} oldMapZahyo 
+ * @param {*} newMapZahyo 
+ * @returns {*} 
+ */
+static Get_Reverse_and_Convert_XY(OldP: any, oldMapZahyo: any, newMapZahyo: any) {
+        if (oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_No_Mode) {
+            return OldP;
+        } else {
+            let XY2;
+            let XY3;
+            let P2 = spatial.Get_Reverse_XY(OldP, oldMapZahyo);
+            if ((newMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) && (oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+                if (newMapZahyo.System != oldMapZahyo.System) {
+                    //二つとも緯度経度座標で、測地系が違う場合
+                    switch (oldMapZahyo.System) {
+                        case enmZahyo_System_Info.Zahyo_System_tokyo:
+                            // @ts-expect-error TS(2304): Cannot find name 'TKY2JGD'.
+                            XY2 = TKY2JGD.Tokyo97toITRF94(P2.toLatlon());
+                            break;
+                        case enmZahyo_System_Info.Zahyo_System_World:
+                            // @ts-expect-error TS(2304): Cannot find name 'TKY2JGD'.
+                            XY2 = TKY2JGD.ITRF94toTokyo97(P2.toLatlon());
+                            break;
+                    }
+                    P2 = XY2.toPoint();
+                }
+            } else if ((oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (newMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+                //元が平面直角、新規が緯度経度の場合、
+
+                let Ellip12;
+                let Kei = oldMapZahyo.HeimenTyokkaku_KEI_Number;
+                if (oldMapZahyo.System == enmZahyo_System_Info.Zahyo_System_tokyo) {
+                    Ellip12 = 1;
+                } else {
+                    if (oldMapZahyo.System == enmZahyo_System_Info.Zahyo_System_World) {
+                        Ellip12 = 2;
+                    }
+                    // @ts-expect-error TS(2304): Cannot find name 'TKY2JGD'.
+                    XY2 = TKY2JGD.doCalcXy2bl(Ellip12, Kei, P2.y, P2.x);
+                    if (newMapZahyo.System != oldMapZahyo.System) {
+                        //さらに測地系が違う場合
+                        switch (oldMapZahyo.System) {
+                            case enmZahyo_System_Info.Zahyo_System_tokyo:
+                                // @ts-expect-error TS(2304): Cannot find name 'TKY2JGD'.
+                                XY3 = TKY2JGD.Tokyo97toITRF94(XY2.toLatlon())
+                                break;
+                            case enmZahyo_System_Info.Zahyo_System_World:
+                                // @ts-expect-error TS(2304): Cannot find name 'TKY2JGD'.
+                                XY3 = TKY2JGD.ITRF94toTokyo97(XY2.toLatlon())
+                                break;
+                        }
+                        XY2 = XY3.Clone();
+                    }
+                    P2 = XY2.toPoint();
+                }
+            }
+            let P3 = spatial.Get_Converted_XY(P2, newMapZahyo);
+            return P3;
+        }
+    }
+
+    /** 世界測地系の緯度経度の座標を、地図ファイルの測地系が日本測地系だった場合、日本測地系の緯度経度に変換、平面直角座標系の場合は変換不可*/
+    static Get_ReverseWorld_IdoKedo(oLatLon: any, MapZahyo: any) {
+        if (MapZahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            alert("平面直角は不可")
+        }
+
+        if (MapZahyo.System == enmZahyo_System_Info.Zahyo_System_tokyo) {
+            //日本測地系の場合は変換
+            // @ts-expect-error TS(2304): Cannot find name 'TKY2JGD'.
+            let xy2 = TKY2JGD.ITRF94toTokyo97(oLatLon);
+            return xy2;
+        } else {
+            return oLatLon;
+        }
+    }
+
+    /** 起終点座標だけを指定した境界線を面領域を描くように並べ替える、返す値は並び順とオブジェクトのポリゴン数*/
+    static BoundaryArrangeGeneral(LieneNum: any, spxy: any, epxy: any) {
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let boundArrange = new boundArrangeData();
+        switch (LieneNum) {
+            case 0:
+                boundArrange.Pon = 0;
+                return boundArrange;
+                break;
+            case 1:
+                boundArrange.Pon = 1;
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                let fr = new Fringe_Line_Info();
+                fr.code = 0;
+                fr.Direction = 1;
+                boundArrange.Fringe[0] = fr;
+                boundArrange.Arrange_LineCode[0] = [0, 1]
+                return boundArrange;
+                break;
+        }
+        // @ts-expect-error TS(2554): Expected 4 arguments, but got 1.
+        let PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint);
+        let fnl = 0
+        let Pon = 0
+        let Eline2_n = 0
+        let Eline2 = [];
+        for (let i = 0; i < LieneNum; i++) {
+            if (spxy[i].Equals(epxy[i]) == true) {
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                let fr = new Fringe_Line_Info();
+                fr.code = i;
+                fr.Direction = 1;
+                boundArrange.Fringe[fnl] = fr;
+                boundArrange.Arrange_LineCode[Pon] = [fnl, 1];
+                Pon++;
+                fnl++;
+            } else {
+                PointIndex.AddDoublePoint(spxy[i], epxy[i], i);
+                Eline2.push(i);
+                Eline2_n++;
+            }
+        }
+        PointIndex.AddEnd();
+
+        let Contf = false;
+        let f = true;
+        let Eline2_i = 0;
+        let stxy;
+        let exy;
+        while (Eline2_i < Eline2_n) {
+            f = false;
+            if (Contf == false) {
+                for (let i = 0; i < Eline2_n; i++) {
+                    if (Eline2[i] != -1) {
+                        boundArrange.Arrange_LineCode[Pon]=[fnl,1]
+                        let LineNO = Eline2[i];
+                        Eline2[i] = -1;
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        let fr = new Fringe_Line_Info();
+                        fr.code = LineNO;
+                        fr.Direction = 1;
+                        boundArrange.Fringe[fnl] = fr;
+                        fnl++;
+                        Eline2_i++;
+                        stxy = spxy[LineNO];
+                        exy = epxy[LineNO];
+                        PointIndex.RemoveObject_byTag(LineNO);
+                        break;
+                    }
+                }
+            }
+            Contf = false;
+
+            // @ts-expect-error TS(7022): 'k2' implicitly has type 'any' because it does not... Remove this comment to see the full error message
+            let k2 = PointIndex.GetSamePointNumber(exy.x, exy.y);
+            // @ts-expect-error TS(7022): 'LINENO2' implicitly has type 'any' because it doe... Remove this comment to see the full error message
+            let LINENO2 = k2.Tag;
+            let PointNumber = k2.PointNumber;
+            if (k2.ObjectNumber != -1) {
+                Contf = true;
+                Eline2[k2.ObjectNumber] = -1;
+                boundArrange.Arrange_LineCode[Pon][1]++;
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                let fr = new Fringe_Line_Info();
+                fr.code = LINENO2;
+                if (PointNumber == 0) {
+                    exy = epxy[LINENO2];
+                    fr.Direction = 1 //順方向
+                } else {
+                    exy = spxy[LINENO2];
+                    fr.Direction = -1 //逆方向
+                }
+                boundArrange.Fringe[fnl] = fr;
+                PointIndex.RemoveObject_byTag(LINENO2);
+                Eline2_i++;
+                fnl++;
+            }
+            if (exy.Equals(stxy) == true) {
+                Contf = false;
+                Pon++;
+                f = true;
+            } else {
+                if (Contf == false) {
+                    f = false;
+                    break;
+                }
+            }
+        }
+        if (f == false) {
+            boundArrange.Pon = 0;
+        } else {
+            boundArrange.Pon = Pon;
+        }
+        return boundArrange;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} XY 
+ * @param {*} MapDataMap 
+ * @returns {number} 
+ */
+static Get_Hairetu_Menseki(XY: any, MapDataMap: any) {
+        let n = XY.length ;
+        let xy2 =Generic.ArrayClone(XY);
+        if (MapDataMap.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            //投影法が正積図法でない場合は座標を正積図法のものに変換
+            switch (MapDataMap.Zahyo.Projection) {
+                case enmProjection_Info.prjSeikyoEntou:
+                case enmProjection_Info.prjMercator:
+                case enmProjection_Info.prjMiller:
+                    // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                    let RemapZahyo = new Zahyo_info();
+                    RemapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
+                    RemapZahyo.Projection = enmProjection_Info.prjLambertSeisekiEntou;
+                    RemapZahyo.CenterXY = MapDataMap.Zahyo.CenterXY.Clone();
+                    for (let j = 0; j < n; j++) {
+                        let oxy = this.Get_Reverse_XY(XY[j], MapDataMap.Zahyo);
+                        xy2[j] = this.Get_Converted_XY(oxy, RemapZahyo);
+                    }
+                    break;
+            }
+        }
+
+        let men = 0;
+        for (let j = 1; j < n-1; j++) {
+            men += xy2[j].x * (xy2[j + 1].y - xy2[j - 1].y);
+        }
+        switch (MapDataMap.Zahyo.Mode) {
+            case enmZahyo_mode_info.Zahyo_No_Mode:
+                if (MapDataMap.SCL != 0) {
+                    men = Math.abs(men / (MapDataMap.SCL * MapDataMap.SCL) / 2);
+                } else {
+                    men = Math.abs(men / 2);
+                }
+                break;
+            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+                men = Math.abs(men / (MapDataMap.SCL * MapDataMap.SCL) / 2);
+                break;
+             default:
+                men = Math.abs(men / 2);
+                break;
+
+        }
+        return men;
+    }
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} xy1 
+ * @param {*} xy2 
+ * @returns {boolean} 
+ */
+static CheckTwoPoint (xy1: any, xy2: any) { //2つの座標が同じか調べる
+        if ((xy1.x == xy2.x) && (xy1.y == xy2.y)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //四角形を回転させた外接四角形を求める
+    static getCircumscribedRectangle_turned(Rect1: any, Angle: any) {
+        let p = this.Get_TurnedRectangle(Rect1, Angle);
+        // @ts-expect-error TS(2554): Expected 2 arguments, but got 1.
+        return this.getCircumscribedRectangle(p);
+    }
+
+    /**Circumscribed_Rectangleの上下左右とpointまたはrectangleを比較し、XYがより外側の場合は置き換える。point_rectangleがpointの配列の場合は、pointからrectangle作成 */
+    static getCircumscribedRectangle  (point_rectangle: any, Circumscribed_Rectangle: any) {
+
+        let newRec;
+        if ((point_rectangle instanceof Array) == true) {
+            //地点配列の外接四角形
+            // @ts-expect-error TS(2554): Expected 4 arguments, but got 1.
+            newRec = new rectangle(point_rectangle[0]);
+            for (let i = 1; i < point_rectangle.length; i++) {
+                let xy = point_rectangle[i];
+                if (newRec.left > xy.x) newRec.left = xy.x;
+                if (newRec.top > xy.y) newRec.top = xy.y;
+                if (newRec.right < xy.x) newRec.right = xy.x;
+                if (newRec.bottom < xy.y) newRec.bottom = xy.y;
+            }
+
+        } else {
+            newRec = Circumscribed_Rectangle.Clone();
+            if ((point_rectangle instanceof point) == true) {
+                let xy = point_rectangle;
+                if (Circumscribed_Rectangle.left > xy.x) newRec.left = xy.x;
+                if (Circumscribed_Rectangle.top > xy.y) newRec.top = xy.y;
+                if (Circumscribed_Rectangle.right < xy.x) newRec.right = xy.x;
+                if (Circumscribed_Rectangle.bottom < xy.y) newRec.bottom = xy.y;
+            } else {
+                let Rect = point_rectangle;
+                if (Circumscribed_Rectangle.left > Rect.left) newRec.left = Rect.left;
+                if (Circumscribed_Rectangle.top > Rect.top) newRec.top = Rect.top;
+                if (Circumscribed_Rectangle.right < Rect.right) newRec.right = Rect.right;
+                if (Circumscribed_Rectangle.bottom < Rect.bottom) newRec.bottom = Rect.bottom;
+            }
+        }
+        return newRec;
+    }
+
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Rect1 
+ * @param {*} Rect2 
+ * @returns {*} 
+ */
+static Get_Inner_Rectangle (Rect1: any, Rect2: any) {
+        //二つの四角形が交わっている場合に、重複領域の四角形を取得する 。交わっているかどうかの判定は行わない 
+        // @ts-expect-error TS(2554): Expected 4 arguments, but got 0.
+        var inR = new rectangle();
+        inR.left = Math.max(Rect1.left, Rect2.left);
+        inR.right = Math.min(Rect1.right, Rect2.right);
+        inR.top = Math.max(Rect1.top, Rect2.top);
+        inR.bottom = Math.min(Rect1.bottom, Rect2.bottom);
+        return inR;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} checkXY 
+ * @param {*} Kakudo 
+ * @param {*} Rect 
+ * @returns {boolean} 
+ */
+static Check_PointInBox(checkXY: any, Kakudo: any, Rect: any) {//ポイントが四角形の中に入るかどうかチェック
+        let ckP = checkXY.Clone();
+        if (Kakudo != 0) {
+            let rcp = Rect.centerP;
+            ckP.offset(-rcp.x, -rcp.y);
+            // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
+            ckP=this.Trans2D(ckP, Kakudo);
+            ckP.offset(rcp);
+        }
+        if ((Rect.left <= ckP.x) && (ckP.x <= Rect.right) && (Rect.top <= ckP.y) && (ckP.y <= Rect.bottom)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} P1 
+ * @param {*} P2 
+ * @returns {*} 
+ */
+static Get_TwoPoint_Rect_SingleGet_TwoPoint_Rect_Single (P1: any, P2: any) {
+        //二つのポイントの外接四角形を求める
+        // @ts-expect-error TS(2554): Expected 4 arguments, but got 0.
+        var Rec = new rectangle();
+        if (P1.x < P2.x) {
+            Rec.left = P1.x;
+            Rec.right = P2.x;
+        } else {
+            Rec.left = P2.x;
+            Rec.right = P1.x;
+        }
+        if (P1.y < P2.y) {
+            Rec.top = P1.y;
+            Rec.bottom = P2.y;
+        } else {
+            Rec.top = P2.y;
+            Rec.bottom = P1.y;
+        }
+        return Rec;
+    }
+    //二つの四角形の外接四角形を求める
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} rec1 
+ * @param {*} rec2 
+ * @returns {*} 
+ */
+static Get_Rectangle_Union(rec1: any,rec2: any){
+        // @ts-expect-error TS(2554): Expected 4 arguments, but got 0.
+        let r = new rectangle();
+        if (rec1.left < rec2.left) { r.left = rec1.left } else { r.left = rec2.left };
+        if (rec1.right < rec2.right) { r.right = rec2.right } else { r.right = rec1.right };
+        if (rec1.top < rec2.top) { r.top = rec1.top } else { r.top = rec2.top };
+        if (rec1.bottom < rec2.bottom) { r.bottom = rec2.bottom } else { r.bottom = rec1.bottom };
+        return r;
+    }
+
+    //二つのポイントの外接四角形を求める
+    //１つのポイントと半径rの円の外接四角形を求める
+    //１つのポイントを中心としたsizeの外接四角形を求める
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} P1 
+ * @param {*} P2 
+ * @returns {*} 
+ */
+static Get_Rectangle(P1: any, P2: any) {
+        if ((typeof P2) == 'number') {
+            let r = P2;
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            return new rectangle(P1.x - r, P1.x + r, P1.y - r, P1.y + r);
+        } else if ((P2 instanceof size) == true) {
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            return new rectangle(P1.x - P2.width, P1.x + P2.width, P1.y - P2.height, P1.y + P2.height);
+        } else {
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            return new rectangle(Math.min(P1.x, P2.x), Math.max(P1.x, P2.x), Math.min(P1.y, P2.y), Math.max(P1.y, P2.y));
+        }
+
+    }
+
+    //2つの四角形の上下左右端1つでも一致する場合true
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Rec1 
+ * @param {*} Rec2 
+ * @returns {boolean} 
+ */
+static Check_TwoRectangele_Inner_Contact(Rec1: any, Rec2: any) {
+        if ((Rec1.left == Rec2.left) || (Math.abs(Rec1.right - Rec2.right) < 0.000001) || (Rec1.top == Rec2.top) || (Math.abs(Rec1.bottom - Rec2.bottom) < 0.000001)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static Compare_Two_Rectangle_Position (Rec1: any, Rec2: any) {
+        //二つの長方形の内外判定
+        if ((Rec1.left > Rec2.right) || (Rec1.top > Rec2.bottom) || (Rec1.right < Rec2.left) || (Rec1.bottom < Rec2.top)) {
+            return cstRectangle_Cross.cstOuter;    //ずれている
+        } else if ((Rec1.left <= Rec2.right) && (Rec1.top <= Rec2.bottom) && (Rec1.right >= Rec2.left) && (Rec1.bottom >= Rec2.top)) {
+            if ((Rec1.left >= Rec2.left) && (Rec1.top >= Rec2.top) && (Rec1.right <= Rec2.right) && (Rec1.bottom <= Rec2.bottom)) {
+                return cstRectangle_Cross.cstInner;  //Rec2の中にRec1が含まれる
+            } else {
+                return cstRectangle_Cross.cstCross;  //交差している
+            }
+        } else if ((Rec1.left < Rec2.left) && (Rec1.top < Rec2.top) && (Rec1.right > Rec2.right) && (Rec1.bottom > Rec2.bottom)) {
+            return cstRectangle_Cross.cstInclusion; //Rec1の中にRec2が含まれる
+        }
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Rec1 
+ * @param {*} Rec2 
+ * @param {*} inflate 
+ * @returns {number} 
+ */
+static Compare_Two_Rectangle_Position_Inflated(Rec1: any, Rec2: any, inflate: any) {
+        let rect12 = Rec1.Clone();
+        let rect22 = Rec2.Clone();
+        rect12.inflate(inflate,inflate);
+        rect22.inflate(inflate,inflate);
+        return this.Compare_Two_Rectangle_Position(rect12, rect22);
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Rect1 
+ * @param {*} Rect1Angle 
+ * @param {*} Rect2 
+ * @returns {number} 
+ */
+static Compare_Two_Rectangle_Position_turned(Rect1: any, Rect1Angle: any, Rect2: any) {
+        let trect = this.getCircumscribedRectangle_turned(Rect1, Rect1Angle);
+        return this.Compare_Two_Rectangle_Position(trect, Rect2);
+    }
+
+    static Distance (x1: any, y1: any, x2: any, y2: any) {
+        var d = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        return d;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} P1 
+ * @param {*} P2 
+ * @returns {*} 
+ */
+static Distance_Point (P1: any,P2: any) {
+        return this.Distance(P1.x,P1.y,P2.x,P2.y);
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} z 
+ * @param {*} TurnCenter 
+ * @param {*} Expantion 
+ * @param {*} Pitch 
+ * @param {*} Head 
+ * @param {*} Bank 
+ * @param {*} XYPara 
+ * @returns {*} 
+ */
+static trans3D (x: any, y: any, z: any, TurnCenter: any, Expantion: any, Pitch: any, Head: any, Bank: any, XYPara: any) {
+        let ESPara = Expantion / 100;
+        let COSP = Math.cos(Pitch * Math.PI / 180);
+        let SINP = Math.sin(Pitch * Math.PI / 180);
+        let COSH = Math.cos(Head * Math.PI / 180);
+        let SINH = Math.sin(Head * Math.PI / 180);
+        let COSB = Math.cos(Bank * Math.PI / 180);
+        let SINB = Math.sin(Bank * Math.PI / 180);
+
+        // @ts-expect-error TS(2552): Cannot find name 'X'. Did you mean 'x'?
+        let xx = X - TurnCenter.x;
+        // @ts-expect-error TS(2552): Cannot find name 'Y'. Did you mean 'y'?
+        let yy = Y - TurnCenter.y;
+        let ZZ = z;
+        let yy1 = yy * COSP - ZZ * SINP;
+        let ZZ1 = yy * SINP + ZZ * COSP;
+        let xx2 = xx * COSH + ZZ1 * SINH;
+        let ZZ2 = -xx * SINH + ZZ1 * COSH;
+        let XX3 = xx2 * COSB - yy1 * SINB;
+        let YY3 = xx2 * SINB + yy1 * COSB;
+        let Z3D = ZZ2 * ESPara;
+        XX3 = XX3 * ESPara;
+        YY3 = YY3 * ESPara;
+        let ww = XYPara / (XYPara - Z3D);
+        // @ts-expect-error TS(2552): Cannot find name 'Point'. Did you mean 'point'?
+        let newP = new Point(XX3 * ww + TurnCenter.x, YY3 * ww + TurnCenter.y);
+        return newP;
+    }
+
+    //回転中心を指定して二次元座標回転角度指定
+    static Trans2D(CP: any, Kakudo_P: any, Kakudo: any) {
+        // @ts-expect-error TS(2554): Expected 2 arguments, but got 0.
+        let OutP = new point();
+        if (typeof Kakudo_P == "number") {
+            let k = Kakudo_P * Math.PI / 180
+            OutP.x = CP.x * Math.cos(k) - CP.y* Math.sin(k);
+            OutP.y = CP.x * Math.sin(k) + CP.y  * Math.cos(k);
+        } else {
+            let k = Kakudo * Math.PI / 180;
+            let P = Kakudo_P;
+            OutP.x = (P.x - CP.x) * Math.cos(k) - (P.y - CP.y) * Math.sin(k);
+            OutP.y = (P.x - CP.x) * Math.sin(k) + (P.y - CP.y) * Math.cos(k);
+            OutP.offset(CP);
+        }
+        return OutP;
+    }
+
+
+    //指定した高さ、幅のボックスの、回転後の外接四角形の高さ、幅を取得する
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} oSize 
+ * @param {*} Angle 
+ * @returns {*} 
+ */
+static Get_TurnedBox(oSize: any, Angle: any) {
+        // @ts-expect-error TS(2554): Expected 4 arguments, but got 2.
+        let rect = new rectangle(new point(-oSize.width / 2,- oSize.height / 2), oSize);
+        let trect = this.getCircumscribedRectangle_turned(rect, Angle);
+        return trect.size();
+    }
+
+    //回転させた四角形の座標配列を取得。戻り値は5つの座標
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Rect 
+ * @param {*} Kakudo 
+ * @returns {{}} 
+ */
+static Get_TurnedRectangle(Rect: any, Kakudo: any) {
+        let x1 = Rect.left;
+        let y1 = Rect.top;
+        let x2 = Rect.right;
+        let y2 = Rect.bottom;
+
+        let pxy = [];
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        pxy.push(new point(x1, y1));
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        pxy.push(new point(x2, y1));
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        pxy.push(new point(x2, y2));
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        pxy.push(new point(x1, y2));
+        if (Kakudo != 0) {
+            let cp = Rect.centerP();
+            for (let i = 0; i < 3; i++) {
+                pxy[i] = spatial.Trans2D(cp, pxy[i], -Kakudo);
+            }
+        }
+        pxy.push(pxy[0].Clone());
+        return pxy;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} P 
+ * @param {*} LineP1 
+ * @param {*} LineP2 
+ * @returns {{ distance: any; nearP: any; }} 
+ */
+static Distance_PointLine2(P: any,LineP1: any,LineP2: any){
+        return this.Distance_PointLine(P.x,P.y,LineP1.x,LineP1.y,LineP2.x,LineP2.y);
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} X 
+ * @param {*} Y 
+ * @param {*} ax 
+ * @param {*} ay 
+ * @param {*} BX 
+ * @param {*} BY 
+ * @returns {{ distance: any; nearP: any; }} 
+ */
+static Distance_PointLine (X: any, Y: any, ax: any, ay: any, BX: any, BY: any ) {
+        //AXAY,BXBYで定義される線分と、XYポイントの間の距離
+        //Nearest_point:最も近い位置の線分上の点を取得（オプション）
+
+        let Nearest_pointX, Nearest_pointY;
+        var po = 0;
+        var xs = BX - ax;
+        var Ys = BY - ay;
+        var d1 = this.Distance(X, Y, ax, ay);
+        var d2 = this.Distance(X, Y, BX, BY);
+        var D;
+        if (xs == 0) {
+            if ((Math.min(ay, BY) <= Y) && (Y <= Math.max(ay, BY))) {
+                D = Math.abs(X - ax);
+                Nearest_pointX = ax;
+                Nearest_pointY = Y;
+            } else {
+                po = 1;
+            }
+        } else if (Ys == 0) {
+            if ((Math.min(ax, BX) <= X) && (Y <= Math.max(ax, BX))) {
+                D = Math.abs(Y - ay);
+                Nearest_pointX = X;
+                Nearest_pointY = ay;
+            } else {
+                po = 1;
+            }
+        } else {
+            var a = Ys / xs;
+            var b = -a * ax + ay;
+
+            var Va = -1 / a;
+            var Va2 = -Va * X + Y;
+            var crossX = (Va2 - b) / (a - Va);
+            if ((Math.min(ax, BX) <= crossX) && (crossX <= Math.max(ax, BX))) {
+                D = Math.abs(-Ys * X + xs * Y - xs * ay + Ys * ax) / Math.sqrt(xs * xs + Ys * Ys);
+                Nearest_pointX = crossX;
+                Nearest_pointY = crossX * a + b;
+            } else {
+                po = 1;
+            }
+        }
+
+        if (po == 1) {
+            if (d1 < d2) {
+                D = d1;
+                Nearest_pointX = ax;
+                Nearest_pointY = ay;
+            } else {
+                D = d2;
+                Nearest_pointX = BX;
+                Nearest_pointY = BY;
+            }
+        }
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return {distance:D,nearP:new point(Nearest_pointX,Nearest_pointY)};
+
+    }
+
+    //緯度経度等もともとの座標から、投影変換した座標を返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Position 
+ * @param {*} MPDataMapZahyo 
+ * @returns {*} 
+ */
+static Get_Converted_XY (Position: any, MPDataMapZahyo: any) {
+        let ox = Position.x;
+        let oy = Position.y;
+        switch (MPDataMapZahyo.Mode) {
+            case enmZahyo_mode_info.Zahyo_No_Mode: {
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                return new point(ox, oy);
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                return new point(ox, -oy);
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_Ido_Keido: {
+                switch (MPDataMapZahyo.Projection) {
+                    case enmProjection_Info.prjSeikyoEntou: {
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(EarthR * (ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180,
+                            - EarthR * oy * Math.PI / 180);
+                        break;
+                    }
+                    case enmProjection_Info.prjMercator: {
+                        // @ts-expect-error TS(2554): Expected 2 arguments, but got 0.
+                        let newP = new point();
+                        newP.x = EarthR * ((ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180);
+                        if (oy >= 89.9999) {
+                            oy = 89.9999;
+                        } else if (oy <= -89.9999) {
+                            oy = -89.9999;
+                        }
+                        newP.y = -EarthR * Math.log(Math.tan((45 + oy / 2) * Math.PI / 180));
+                        return newP;
+                        break;
+                    }
+                    case enmProjection_Info.prjMiller: {
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(EarthR * ((ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180),
+                            - EarthR * Math.log(Math.tan((45 + oy * 2 / 5) * Math.PI / 180)) * 1.25);
+                        break;
+                    }
+                    case enmProjection_Info.prjLambertSeisekiEntou: {
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(EarthR * ((ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180),
+                            - EarthR * Math.sin(oy * Math.PI / 180));
+                        break;
+                    }
+                    case enmProjection_Info.prjSanson: {
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(EarthR * ((ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180) * Math.cos(oy * Math.PI / 180),
+                            - EarthR * oy * Math.PI / 180);
+                        break;
+                    }
+                    case enmProjection_Info.prjMollweide: {
+                        let theata = this.newtonMollweide(oy);
+                        if (theata != undefined) {
+                            let x = EarthR * Math.sqrt(2) / 90 * (ox - MPDataMapZahyo.CenterXY.x) * Math.cos(theata);
+                            let y = -EarthR * Math.sqrt(2) * Math.sin(theata);
+                            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                            return new point(x, y);
+                        } else {
+                            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                            return new point(0, 0);
+                        }
+                        break;
+                    }
+                    case enmProjection_Info.prjEckert4: {
+                        let theata = this.newtonEckert4(oy);
+                        if (theata != undefined) {
+                            let x = EarthR * 0.4222382 * ((ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180) * (1 + Math.cos(theata));
+                            let y = -EarthR * 1.3265044 * Math.sin(theata);
+                            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                            return new point(x, y);
+                        } else {
+                            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                            return new point(0, 0);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} lat 
+ * @returns {number} 
+ */
+static newtonMollweide (lat: any) {
+        let x = 0;
+        let lat2 = lat * Math.PI / 180;
+        let n = 0;
+        let dx;
+        do {
+             dx = -(x + Math.sin(x) - Math.PI * Math.sin(lat2)) / (Math.cos(x) + 1);
+            x += dx;
+            n++;
+            if (n > 50) {
+                return undefined;
+            }
+        } while (Math.abs(dx) >= 0.00001)
+        return x / 2;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} lat 
+ * @returns {number} 
+ */
+static newtonEckert4 (lat: any) {
+        let x = 0;
+        let lat2 = lat * Math.PI / 180;
+        let n = 0;
+        let dx;
+        do {
+             dx = -(x + Math.sin(x) * Math.cos(x) + 2 * Math.sin(x) - (2 + Math.PI / 2) * Math.sin(lat2)) / (1 + Math.cos(2 * x) + 2 * Math.cos(x));
+            x += dx;
+            n++;
+            if (n > 50) {
+                return undefined;
+            }
+        } while (Math.abs(dx) >= 0.00001)
+        return x;
+    }
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} OriginMap 
+ * @param {*} ConvertMap 
+ * @returns {{ ok: boolean; emes: string; }} 
+ */
+static Check_Zahyo_Projection_Convert_Enabled (OriginMap: any, ConvertMap: any) {
+        /// <signature>
+        /// <summary>座標系・測地系が変換可能か調べる</summary>
+        /// <param name="OriginMap">もともとの座標系</param>  
+        /// <param name="ConvertMap">変換予定の座標系</param>  
+        /// </signature>
+        if (((OriginMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode)) ||
+            ((OriginMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode))) {
+            let mes = "座標系の設定していないデータと、設定してあるデータを重ねることはできません。";
+            return { ok: false, emes: mes };
+        }
+        if (((OriginMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode)) ||
+            ((OriginMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode))) {
+            let mes = "座標系の設定していないデータと、設定してあるデータを重ねることはできません。";
+            return { ok: false, emes: mes };
+        }
+        if ((OriginMap.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (ConvertMap.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+            let mes =  "平面直角座標系のデータ上に緯度経度座標系のデータは追加できません。";
+            return { ok: false, emes: mes };
+        }
+        if ((OriginMap.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (OriginMap.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku)) {
+            if (ConvertMap.HeimenTyokkaku_KEI_Number != OriginMap.HeimenTyokkaku_KEI_Number) {
+                let mes =  "平面直角座標系の系番号が違います。";
+                return { ok: false, emes: mes };
+            }
+            if (ConvertMap.System != OriginMap.System) {
+                let mes =  "平面直角座標系の測地系が違います。";
+                return { ok: false, emes: mes };
+            }
+        }
+        return { ok: true, emes: "" };
+    }
+    //緯度経度・平面直角座標系を変換した四角形の四隅座標から、元の緯度経度・平面直角座標系座標に戻す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} In_Rect 
+ * @param {*} MPDataMapZahyo 
+ * @returns {*} 
+ */
+static Get_Reverse_Rect (In_Rect: any, MPDataMapZahyo: any) {
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let leftP1 = this.Get_Reverse_XY(new point(In_Rect.left, In_Rect.top), MPDataMapZahyo);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let leftP2 = this.Get_Reverse_XY(new point(In_Rect.left, (In_Rect.top + In_Rect.bottom) / 2), MPDataMapZahyo);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let leftP3 = this.Get_Reverse_XY(new point(In_Rect.left, In_Rect.bottom), MPDataMapZahyo);
+
+        let left = Math.min(Math.min(leftP1.x, leftP2.x), leftP3.x);
+
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let rightP4 = this.Get_Reverse_XY(new point(In_Rect.right, In_Rect.top), MPDataMapZahyo);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let rightP5 = this.Get_Reverse_XY(new point(In_Rect.right, (In_Rect.top + In_Rect.bottom) / 2), MPDataMapZahyo);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let rightP6 = this.Get_Reverse_XY(new point(In_Rect.right, In_Rect.bottom), MPDataMapZahyo);
+
+        let right = Math.max(Math.max(rightP4.x, rightP5.x), rightP6.x);
+
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new rectangle(left, right, leftP3.y, leftP1.y);
+    }
+
+    //緯度経度・平面直角座標系を変換した座標(地図ファイル中の座標)から、元の緯度経度・平面直角座標系座標に戻す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Position 
+ * @param {*} MPDataMapZahyo 
+ * @returns {*} 
+ */
+static Get_Reverse_XY (Position: any, MPDataMapZahyo: any) {
+        let ox = Position.x;
+        let oy = Position.y;
+        let mz = MPDataMapZahyo;
+        // @ts-expect-error TS(2554): Expected 2 arguments, but got 0.
+        let newP = new point();
+        let theata;
+        switch (mz.Mode) {
+            case enmZahyo_mode_info.Zahyo_No_Mode:
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                return new point(ox, oy);
+                break;
+            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                return new point(ox, -oy);
+                break;
+            case enmZahyo_mode_info.Zahyo_Ido_Keido:
+                switch (mz.Projection) {
+                    case enmProjection_Info.prjSanson:
+                        let y = -oy / EarthR * 180 / Math.PI;
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI * Math.cos(y * Math.PI / 180)), y);
+                        break;
+                    case enmProjection_Info.prjSeikyoEntou:
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI), - oy / EarthR * 180 / Math.PI);
+                        break;
+                    case enmProjection_Info.prjMercator:
+                        let tx = Math.exp(-oy / EarthR);
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI), 2 * Math.atan(tx) * 180 / Math.PI - 90);
+                        break;
+                    case enmProjection_Info.prjMiller:
+                        let tx2 = Math.exp(-oy / (EarthR * 1.25));
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI), Math.atan(tx2) * 5 / 2 * 180 / Math.PI - 45 * 5 / 2);
+                        break;
+                    case enmProjection_Info.prjLambertSeisekiEntou:
+                        newP.x = mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI);
+                        let tx3 = -oy / EarthR;
+                        if (tx3 >= 1) {
+                            newP.y = 90;
+                        } else if (tx3 <= -1) {
+                            newP.y = -90;
+                        } else {
+                            newP.y = Math.atan(tx3 / Math.sqrt(-tx3 * tx3 + 1)) * 180 / Math.PI;
+                        }
+                        return newP
+                        break;
+                    case enmProjection_Info.prjMollweide:
+                        if (Math.abs(Position.y) > (Math.sqrt(2) * EarthR - 0.001)) {
+                            Position.y = (Math.sqrt(2) * EarthR - 0.001) * Math.sign(Position.y);
+                        }
+                        theata = Math.asin(Position.y / (Math.sqrt(2) * EarthR));
+                        newP.y = -Math.asin((2 * theata + Math.sin(2 * theata)) / Math.PI) * 180 / Math.PI;
+                        newP.x = MPDataMapZahyo.CenterXY.x + Math.PI * Position.x / (2 * EarthR * Math.sqrt(2) * Math.cos(theata)) * 180 / Math.PI;
+                        return newP
+                        break;
+                    case enmProjection_Info.prjEckert4:
+                        if (Math.abs(Position.y) > (1.3265004 * EarthR - 0.001)) {
+                            Position.y = (1.3265004 * EarthR - 0.001) * Math.sign(Position.y);
+                        }
+                        theata = Math.asin(Position.y / (1.3265004 * EarthR));
+                        newP.y = -Math.asin((theata + Math.sin(theata) * Math.cos(theata) + 2 * Math.sin(theata)) / (2 + Math.PI / 2)) * 180 / Math.PI;
+                        newP.x = MPDataMapZahyo.CenterXY.x + Position.x / (0.4223382 * EarthR * (1 + Math.cos(theata))) * 180 / Math.PI;
+                        return newP
+                        break;
+                }
+                break;
+        }
+    }
+}
+
+class Generic {
+
+    /**読み込み中マーク 処理終了後に Generic.clear_backDiv();で消す*/
+    static readingIcon(title: any){
+        let boxReading = Generic.set_backDiv("", title, 300, 150, false, false, undefined, 0.2, false);     
+        Generic.createNewDiv(boxReading,  " 読み込み中", "", "grayFrame", 30, 50, 230, 40, "padding:5px", undefined);   
+        Generic.createNewImage(boxReading, "image/icon_loader.gif", "", "", "", 140, 110, "", undefined);
+    }
+    /**外部クリップボードから貼り付け */
+    static outerPaste(okCall: any,cancelCall: any){
+        const backDiv = Generic.set_backDiv("", "外部から貼り付け", 200, 240, true, true, buttonOK, 0.2, true,true,cancelCall);
+        Generic.createNewSpan(backDiv,"下に貼り付けて下さい(Ctrl+V)","","",15,40,"",undefined);
+        let tx=Generic.createNewTextarea(backDiv,"","",15,65,10,10,"width:170px;height:120px;resize: none;");
+        tx.focus();
+        function buttonOK(){
+            Generic.clear_backDiv();
+            okCall( tx.value);
+        }
+    }
+
+    /**オブジェクト名と設定期間の組み合わせ文字列を返す */
+    static getTimeList(OnameStac: any, separator = "") {
+        let tx = "【" + OnameStac.connectNames() + "】" + separator + clsTime.StartEndtoString(OnameStac.SETime);
+        return tx;
+    }
+    /**メッシュコードの名称を取得 */
+    static ConvertMeshTypeFromEnum(MeshNumber: any) {
+        switch (MeshNumber) {
+            case enmMesh_Number.mhNonMesh:
+                return "";
+            case enmMesh_Number.mhFirst:
+                return "1次メッシュ";
+            case enmMesh_Number.mhSecond:
+                return "2次メッシュ";
+            case enmMesh_Number.mhThird:
+                return "3次メッシュ";
+            case enmMesh_Number.mhHalf:
+                return "1/2メッシュ";
+            case enmMesh_Number.mhQuarter:
+                return "1/4メッシュ";
+            case enmMesh_Number.mhOne_Eighth:
+                return "1/8メッシュ";
+            case enmMesh_Number.mhOne_Tenth:
+                return "1/10メッシュ";
+        }
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} MeshType 
+ * @returns {*} 
+ */
+static ConvertMeshTypeFromString(MeshType: any) {
+        switch (MeshType) {
+            case "":
+                return enmMesh_Number.mhNonMesh;
+            case "1次メッシュ":
+                return enmMesh_Number.mhFirst;
+            case "2次メッシュ":
+                return enmMesh_Number.mhSecond;
+            case "3次メッシュ":
+                return enmMesh_Number.mhThird;
+            case "1/2メッシュ":
+                return enmMesh_Number.mhHalf;
+            case "1/4メッシュ":
+                return enmMesh_Number.mhQuarter;
+            case "1/8メッシュ":
+                return enmMesh_Number.mhOne_Eighth;
+            case "1/10メッシュ":
+                return enmMesh_Number.mhOne_Tenth;
+        }
+    }
+    /** レイヤタイプの文字列を返す*/
+    static ConvertStringFromLayerType(Type: any) {
+        switch (Type) {
+            case enmLayerType.Normal:
+                return "通常のレイヤ";
+                break;
+            case enmLayerType.Mesh:
+                return "メッシュレイヤ";
+                break;
+            case enmLayerType.DefPoint:
+                return "地点定義レイヤ";
+                break;
+        }
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} TypeStr 
+ * @returns {*} 
+ */
+static ConvertStringLayerFromString(TypeStr: any) {
+        switch (TypeStr) {
+            case "通常のレイヤ":
+                return enmLayerType.Normal;
+                break;
+            case "メッシュレイヤ":
+                return enmLayerType.Mesh;
+                break;
+            case "地点定義レイヤ":
+                return enmLayerType.DefPoint;
+                break;
+        }
+    }
+
+    /** 属性データ編集で欠損値扱い欄に表示する文字を返す*/
+    static ConvertMissingValueFromBool(MissingValueF: any) {
+        switch (MissingValueF) {
+            case true:
+                return "欠損値";
+                break;
+            default:
+                return "0または空白";
+                break;
+        }
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} MissingStr 
+ * @returns {boolean} 
+ */
+static ConvertMissingValueFromString(MissingStr: any) {
+        switch (MissingStr) {
+            case "欠損値":
+                return true;
+                break;
+            case "0または空白":
+                return false;
+                break;
+        }
+    }
+
+
+    /**条件検索の文字を返す */
+    static getConditionString(con: any){
+        switch (con) {
+            case enmCondition.Less:
+                return "未満";
+                break;
+            case enmCondition.LessEqual:
+                return "以下";
+                break;
+            case enmCondition.Equal:
+                return "等しい";
+                break;
+            case enmCondition.GreaterEqual:
+                return "以上";
+                break;
+            case enmCondition.Greater:
+                return "より大きい";
+                break;
+            case enmCondition.NotEqual:
+                return "以外";
+                break;
+            case enmCondition.Include:
+                return "文字を含む";
+                break;
+            case enmCondition.Exclude:
+                return "文字を含まない";
+                break;
+            case enmCondition.Head:
+                return "先頭の文字";
+                break;
+            case enmCondition.Foot:
+                return "末尾の文字";
+                break;
+        }
+    }
+
+    /**文字列配列Wordsをチェックして「新規1」「新規2」など連番を付ける */
+    static Get_New_Numbering_Strings(CheckWords: any, Words: any) {
+        let L = CheckWords.length;
+        let V = 0;
+        for (let i = 0; i < Words.length; i++) {
+            if (Words[i].left(L) == CheckWords) {
+                V = Math.max(Math.floor(Words[i].mid(L, undefined)), V);
+            }
+        }
+        return CheckWords + String(V + 1);
+    }
+
+    /**オブジェクト名の漢字を統一する。比較する漢字が含まれていた場合にtrue */
+    static ObjName_Kanji_Compatible(objName: any){
+        // @ts-expect-error TS(2304): Cannot find name 'clsSettingData'.
+        let Word_Compatible  = clsSettingData.ObjectName_Word_Compatible.split("|");
+        let f = false;
+
+        let oldCharacter  = "亞圍壹飮榮艷應毆穩壞覺樂寬罐陷戲據峽鄕驅徑溪莖鷄缺圈獻險嚴恆國濟劑慘贊絲兒實釋獸肅緖敍稱剩條疊囑愼盡醉數聲攝專潛錢壯插裝續對臺澤擔彈遲鑄敕遞點黨當獨屆貳霸發濱福變辨舖寶餠藥餘搖來龍獵禮齡戀爐朗惡爲隱衞圓鹽橫假畫繪擴學勸歡觀顏歸龜犧擧挾勳惠經螢藝儉檢顯效鑛碎櫻雜棧殘辭舍壽從縱處奬燒證壤淨讓觸眞圖隨樞靜竊戰纖禪總騷臟墮帶瀧單膽斷晝鎭鐵傳盜讀繩惱廢賣髮甁拂邊瓣襃沒萬譯與樣賴覽綠隸勞樓灣壓醫稻營驛奧歐價會懷殼嶽卷關氣僞舊狹曉區薰繼輕劍權縣驗廣號黑齋册參蠶齒濕寫收澁諸將祥乘孃釀寢神粹髓瀨齊淺踐曾雙搜爭莊增藏屬體滯擇團癡蟲廳聽塚轉都燈德腦拜麥拔蠻祕佛竝辯穗豐飜滿默彌豫譽謠亂隆兩壘勵靈";
+        let newCharacter  = "亜囲壱飲栄艶応殴穏壊覚楽寛缶陥戯拠峡郷駆径渓茎鶏欠圏献険厳恒国済剤惨賛糸児実釈獣粛緒叙称剰条畳嘱慎尽酔数声摂専潜銭壮挿装続対台沢担弾遅鋳勅逓点党当独届弐覇発浜福変弁舗宝餅薬余揺来竜猟礼齢恋炉朗悪為隠衛円塩横仮画絵拡学勧歓観顔帰亀犠挙挟勲恵経蛍芸倹検顕効鉱砕桜雑桟残辞舎寿従縦処奨焼証壌浄譲触真図随枢静窃戦繊禅総騒臓堕帯滝単胆断昼鎮鉄伝盗読縄悩廃売髪瓶払辺弁褒没万訳与様頼覧緑隷労楼湾圧医稲営駅奥欧価会懐殻岳巻関気偽旧狭暁区薫継軽剣権県験広号黒斎冊参蚕歯湿写収渋諸将祥乗嬢醸寝神粋髄瀬斉浅践曽双捜争荘増蔵属体滞択団痴虫庁聴塚転都灯徳脳拝麦抜蛮秘仏並弁穂豊翻満黙弥予誉謡乱隆両塁励霊";
+
+        for(let i  = 0 ;i< Word_Compatible.length;i++){
+            for(let j  = 1 ;j< Word_Compatible[i].length;j++){
+                let k  =objName.indexOf(Word_Compatible[i].mid( j, 1));
+                if(k != -1 ){
+                    objName=objName.midReplace( k, Word_Compatible[i].left(1));
+                    f = true;
+                }
+            }
+        }
+
+        // @ts-expect-error TS(2304): Cannot find name 'clsSettingData'.
+        if(clsSettingData.KatakanaCheck == true ){
+            // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
+            let katakana=Generic.Array2Dimension(3,2); 
+            katakana[0][ 0] = "ヴァ"
+            katakana[0][ 1] = "バ"
+            katakana[1][ 0] = "ティ"
+            katakana[1][ 1] = "チ"
+            katakana[2][ 0] = "ヴェ"
+            katakana[2][ 1] = "ベ"
+            for(let i  = 0 ;i<= 2;i++){
+                let k  = objName.indexOf(katakana[i][ 0]);
+                if(k != -1 ){
+                    objName = objName.midReplace(katakana[i][0], katakana[i][1]);
+                    f = true;
+                }
+            }
+        }
+
+        //新字体旧字体比較
+        // @ts-expect-error TS(2304): Cannot find name 'clsSettingData'.
+        if(clsSettingData.SinKyuCharacter == true ){
+            for(let j  = 1 ;j<  objName.length;j++){
+                let k  = oldCharacter.indexOf( objName.mid( j, 1));
+                if(k != -1 ){
+                    // @ts-expect-error TS(2339): Property 'mid' does not exist on type 'string'.
+                    objName =objName.midReplace(j,  newCharacter.mid( k, 1));
+                    f = true;
+                }
+            }
+        }
+        return {newObjname:objName,changeF:f};
+    }
+
+    /**レイヤの種類の名称 */
+    static getLayerTypeName(layType: any){
+        let tx = "";
+        var enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 };
+        switch (layType) {
+            case enmLayerType.Normal:
+                tx = "通常のレイヤ";
+                break;
+            case enmLayerType.Mesh:
+                tx = "メッシュレイヤ";
+                break;
+            case enmLayerType.DefPoint:
+                tx = "地点定義レイヤ";
+                break;
+        }
+        return tx;
+    }
+
+    /**スペース、カンマ、タブで区切る */
+    static String_Cut(Wo: any,Spliter: any){
+        let CUT = [];
+        const vbQuate = String.fromCharCode(34);
+        if (Wo.length == 0) {
+            return [""];
+        }
+        switch (Spliter) {
+            case " ": { //スペース区切り
+                if (Wo == " ".repeat(Wo.length)) {
+                    return [""];
+                }
+                while (Wo.left( 1) == " ") {
+                    Wo = Wo.mid(1, undefined);
+                }
+                Wo += " ";
+                let qua_f = false;
+                let ST = 0;
+                for (let i = 0; i < Wo.length; i++) {
+                    let w = Wo.mid(i, 1);
+                    if (w == vbQuate) {
+                        qua_f = !qua_f;
+                    }
+                    switch (w) {
+                        case " ": {
+                            if (qua_f == false) {
+                                // @ts-expect-error TS(2304): Cannot find name 'wo'.
+                                let Cutw = wo.mid( ST, i - ST);
+                                if (Cutw.left(1) == vbQuate) {
+                                    Cutw = Cutw.mid(1, undefined);
+                                }
+                                if (Cutw.right(1) == vbQuate) {
+                                    Cutw = Cutw.left(Cutw.length - 1);
+                                }
+                                CUT.push(Cutw);
+                                // @ts-expect-error TS(2304): Cannot find name 'wo'.
+                                while (wo.mid(Wo, i, 1) == " ") {
+                                    i++;
+                                }
+                                ST = i;
+                                i -= 1;
+                            }
+                            break;
+                        }
+                    }
+                }
+                return CUT;
+                break;
+            }
+            case ",": { //カンマ区切り
+                Wo += ",";
+                let qua_f = false;
+                let wf = false;
+
+                let ST = 0;
+                for (let i = 0; i < Wo.length; i++) {
+                    let w = Wo.mid(i, 1);
+                    switch (w) {
+                        case vbQuate: {
+                            qua_f = !qua_f;
+                            wf = true;
+                            if (qua_f == true) {
+                                ST = i;
+                            }
+                            break;
+                        }
+                        case ",": {
+                            if (qua_f == false) {
+                                let Cutw;
+                                if (wf == false) {
+                                    Cutw = Wo.mid(ST, i - ST).trim();
+                                    ST = i + 1
+                                } else {
+                                    Cutw = Wo.mid(ST + 1, i - ST - 2);
+                                    ST = i + 1;
+                                    wf = false;
+                                }
+                                CUT.push(Cutw);
+                            }
+                            break;
+                        }
+                    }
+                }
+                return CUT;
+                break;
+            }
+            case '\t': { //タブ区切り
+                let RetCut = Wo.split(('\t'));
+                for (let i = 0; i < RetCut.length; i++) {
+                    RetCut[i] = RetCut[i].trim();
+                }
+                return RetCut;
+                break;
+            }
+        }
+
+    }
+
+    /**地図ファイルをgetMapfileByHttpRequestで開き、JSONで返す */
+    static getMapfileByHttpRequest(url: any,readCall: any){
+        
+        Generic.readingIcon("地図ファイル読み込み");
+        let ext=Generic.getExtension(url).toLowerCase();
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let file = new Blob([xhr.response]);
+                Generic.unzipFile(file, unzipOk, unzipError);
+                function unzipOk(data: any) {
+                    let key = Object.keys(data)[0];
+                    if(ext=="mpfj"){
+                        readCall(JSON.parse(Generic.utf8ArrayToStr(data[key]))) ;
+                    }else{
+                        readCall(Generic.utf8ArrayToStr(data[key])) ;
+                    }
+                    Generic.clear_backDiv();
+                }
+                function unzipError(err: any) {
+                    Generic.clear_backDiv();
+                    alert(url+"の展開に失敗しました");
+                }
+            }
+        };
+        xhr.onerror=function(){
+            Generic.clear_backDiv();
+            alert(url+"のダウンロードに失敗しました");
+        }
+        xhr.send(null);
+    }
+
+    /**画像ウインドウ表示 */
+    static windowCenterOpen(img: any, Xv: any, Yv: any, title: any) {
+    let Xw = Xv + 10;
+    let Yw = Yv + 80;
+    let  new1 = window.open("", "_blank", "titlebar=No,directories=no,resizable=Yes,width=" + Xw + ",height=" + Yw + "");
+
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
+    new1.document.write("<html><head><meta http-equiv=Content-Type content=\"text/html charset=utf-8\"><title>" + title + "</title></head><body bgcolor=#FFFFFF>");
+    let  imgs = "<img src=" + img + ">"
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
+    new1.document.write(imgs);
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
+    new1.document.write("</br>画像を右クリックして保存またはコピーして下さい。</br></br>");
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
+    new1.document.write("<center><input type=button value='このウインドウを閉じる' onClick='window.close()'></center>");
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
+    new1.document.write("</body></html>");
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
+    new1.document.close();
+}
+
+/** ウィンドウでutl表示 */
+static windowCenterPage(help_url: any, Xv: any, Yv: any) {
+
+    let Xw = Xv + 50;
+    let Yw = Yv + 80;
+    let  new2 = window.open(help_url, "_blank", "titlebar=No,status=0,scrollbars=1,resizable=0,width=" + Xw + ",height=" + Yw + "");
+    // @ts-expect-error TS(2365): Operator '>=' cannot be applied to types 'string' ... Remove this comment to see the full error message
+    if (navigator.appVersion.charAt(0) >= 3) { new2.focus() };
+}
+
+/**prompt入力 event_pointがundefinedの場合は画面中央表示*/
+    static prompt(event_point: any, promptText: any, defoText: any, okCall: any,textAlign='left',cancelCall=undefined) {
+        let gsize = Generic.getDivSize(promptText, 270, "");
+        let fheight = (gsize.height) + 130;
+        let alertObj = Generic.set_backDiv("", "MANDARA JS", 300, fheight, true, true, buttonOK, 0.2, false,true,cancelCall);
+        if (event_point != undefined) {
+            Generic.Set_Box_Position_in_Browser(event_point, alertObj);
+        }
+        this.createNewDiv(alertObj, promptText, "", "", 15, 40, 270, undefined, "", undefined);
+        let inbox = Generic.createNewInput(alertObj, 'text', defoText, "", 15, gsize.height + 50, undefined, "width:270px;text-align:"+textAlign);
+         inbox.select();
+        inbox.onkeydown = function (e) {
+            if (e.keyCode == 13) {
+                let children = alertObj.childNodes;
+                for (let i in children) {
+                    // @ts-expect-error TS(2339): Property 'name' does not exist on type 'ChildNode'... Remove this comment to see the full error message
+                    if (children[i].name == "ok") {
+                        // @ts-expect-error TS(2339): Property 'focus' does not exist on type 'ChildNode... Remove this comment to see the full error message
+                        children[i].focus();
+                        break;
+                    }
+                }
+            }else if(e.keyCode == 27){
+                let children = alertObj.childNodes;
+                for (let i in children) {
+                    // @ts-expect-error TS(2339): Property 'name' does not exist on type 'ChildNode'... Remove this comment to see the full error message
+                    if (children[i].name == "cancel") {
+                        // @ts-expect-error TS(2339): Property 'click' does not exist on type 'ChildNode... Remove this comment to see the full error message
+                        children[i].click();
+                        break;
+                    }
+                }
+            }
+        }
+        function buttonOK() {
+            Generic.clear_backDiv();
+            okCall(inbox.value);
+        }
+    }
+
+    /**yes　noの確認 event_point:表示座標*/
+    static confirm(event_point: any, text: any, yesFunc: any, noFunc: any) {
+        let gsize=Generic.getDivSize(text,220,"");
+        let fheight=(gsize.height)+100;
+        let fw=250;
+        let confirmObj = Generic.set_backDiv("", "MANDARA JS",fw, fheight, false, false, undefined, 0.2,false);
+        if(event_point!=undefined){
+            Generic.Set_Box_Position_in_Browser(event_point, confirmObj);
+        }
+        this.createNewDiv(confirmObj,text,"","",15,40,220,undefined,"",undefined);
+        Generic.createNewButton(confirmObj, "いいえ", "", fw - 80, fheight - 35, btnNo,"width:60px;height:23px");
+        Generic.createNewButton(confirmObj, "はい", "", fw - 150, fheight - 35, btnYes, "width:60px;height:23px");
+
+        function btnYes() {
+            Generic.clear_backDiv();
+            if(typeof yesFunc == 'function'){
+                yesFunc();
+            }
+        }
+        function btnNo() {
+            Generic.clear_backDiv();
+            if(typeof noFunc == 'function'){
+                noFunc();
+            }
+        }
+    }
+
+    /**alertメッセージ event_pointがundefinedの場合は画面中央表示*/
+    static alert(event_point: any, text: any, returnFunction: any) {
+        let gsize=Generic.getDivSize(text,220,"");
+        let fheight=(gsize.height)+100;
+        let alertObj = Generic.set_backDiv("", "MANDARA JS",250, fheight, true, false, buttonOK, 0.2,false,true,returnFunction);
+        if(event_point!=undefined){
+            Generic.Set_Box_Position_in_Browser(event_point, alertObj);
+        }
+        this.createNewDiv(alertObj,text,"","",15,40,220,undefined,"",undefined);
+        function buttonOK() {
+            Generic.clear_backDiv();
+            if (typeof returnFunction == 'function') {
+                returnFunction();
+            }
+        }
+    }
+
+    /**圧縮ファイルを展開 展開後のファイル名の連想配列のバイナリデータを返す*/
+    static unzipFile(file: any,onOK: any,onError: any) {
+        let zipReader = new FileReader();
+        zipReader.readAsArrayBuffer(file);
+        let unZipData: any=[];
+        zipReader.onload = function () {
+            try {
+                // @ts-expect-error TS(2769): No overload matches this call.
+                let zipArr = new Uint8Array(zipReader.result);
+                // @ts-expect-error TS(2304): Cannot find name 'Zlib'.
+                let unzip = new Zlib.Unzip(zipArr);
+                let importFileList = unzip.getFilenames();
+                for (let i in importFileList) {
+                    let importFile = importFileList[i];
+                    //let jsonBuffer = utf8ArrayToStr(unzip.decompress(importFile));
+                    unZipData[importFile] = unzip.decompress(importFile);
+                }
+               onOK(unZipData);
+            } catch (e) {
+                console.log(e);
+                 onError(e);
+             }
+        }
+    }
+
+    /**データ（バイナリ）と対応するファイル名をtotalFileNameにZIP圧縮 */
+    static zipFile(totalFileName: any,data: any,fileName: any) {
+        // @ts-expect-error TS(2304): Cannot find name 'Zlib'.
+        let zip = new Zlib.Zip();
+        for(let i in data){
+            zip.addFile(data[i], {filename: Generic.strToUtf8Array(fileName[i])
+        });
+        }
+        let compressData = zip.compress();
+
+        let blob = new Blob([compressData], { 'type': 'application/octet-stream' });
+
+        // @ts-expect-error TS(2339): Property 'msSaveBlob' does not exist on type 'Navi... Remove this comment to see the full error message
+        if (window.navigator.msSaveBlob) {
+            // @ts-expect-error TS(2339): Property 'msSaveBlob' does not exist on type 'Navi... Remove this comment to see the full error message
+            window.navigator.msSaveBlob(blob, totalFileName);
+            // @ts-expect-error TS(2339): Property 'msSaveOrOpenBlob' does not exist on type... Remove this comment to see the full error message
+            window.navigator.msSaveOrOpenBlob(blob, totalFileName);
+        } else {
+            let a= document.createElement("a");
+            a.href = window.URL.createObjectURL(blob);
+            a.download = totalFileName;
+            a.click();
+        }
+    }
+
+    /**バイト配列をUTF8文字列に変換 */
+    static utf8ArrayToStr(array: any) {
+        var len = array.length;
+        var out = "";
+        var i = 0;
+        var char1, char2, char3;
+        if(array[0]==239){
+            i=3;
+        }
+        while (i < len) {
+            char1 = array[i++];
+            switch (char1 >> 4) {
+                case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+                    out += String.fromCharCode(char1);
+                    break;
+                case 12: case 13:
+                    char2 = array[i++];
+                    out += String.fromCharCode(((char1 & 0x1F) << 6) | (char2 & 0x3F));
+                    break;
+                case 14:
+                    char2 = array[i++];
+                    char3 = array[i++];
+                    out += String.fromCharCode(((char1 & 0x0F) << 12) |
+                        ((char2 & 0x3F) << 6) |
+                        ((char3 & 0x3F) << 0));
+                    break;
+            }
+        }
+        return out;
+    }
+
+    /**UTF8文字列をバイト配列に変換 */
+     static strToUtf8Array(str: any) {
+        var n = str.length,
+            idx = -1,
+            bytes = [],
+            i, j, c;
+
+        for (i = 0; i < n; ++i) {
+            c = str.charCodeAt(i);
+            if (c <= 0x7F) {
+                bytes[++idx] = c;
+            } else if (c <= 0x7FF) {
+                bytes[++idx] = 0xC0 | (c >>> 6);
+                bytes[++idx] = 0x80 | (c & 0x3F);
+            } else if (c <= 0xFFFF) {
+                bytes[++idx] = 0xE0 | (c >>> 12);
+                bytes[++idx] = 0x80 | ((c >>> 6) & 0x3F);
+                bytes[++idx] = 0x80 | (c & 0x3F);
+            } else {
+                bytes[++idx] = 0xF0 | (c >>> 18);
+                bytes[++idx] = 0x80 | ((c >>> 12) & 0x3F);
+                bytes[++idx] = 0x80 | ((c >>> 6) & 0x3F);
+                bytes[++idx] = 0x80 | (c & 0x3F);
+            }
+        }
+        return bytes;
+    }/** Description placeholder */
+;
+
+    /**投影法に対応した文字列を返す */
+    static getStringProjectionEnum (prj: any){
+        switch (prj) {
+            case enmProjection_Info.prjNo:
+                return "設定なし";
+            case enmProjection_Info.prjSanson:
+                return "サンソン図法";
+            case enmProjection_Info.prjSeikyoEntou:
+                return "正距円筒図法";
+            case enmProjection_Info.prjMercator:
+                return "メルカトル図法";
+            case enmProjection_Info.prjMiller:
+                return "ミラー図法";
+            case enmProjection_Info.prjLambertSeisekiEntou:
+                return "ランベルト正積円筒図法";
+            case enmProjection_Info.prjMollweide:
+                return "モルワイデ図法";
+            case enmProjection_Info.prjEckert4:
+                return "エッケルト第４図法";
+        }
+    }
+    /**指定の文字数より長い場合、以降を...で省略して返す。短い場合はそのまま返す */
+    static Check_StringLength_And_Cut(Str: any,MaxLen: any){
+        let rstr  = Str;
+        if(rstr.length>MaxLen){
+            rstr = rstr.left(MaxLen) + "..."
+        }
+        return rstr;
+} 
+
+/**単独表示モードの文字列を返す */
+    static getSolomodeStrings (solomode: any){
+        switch (solomode) {
+            case enmSoloMode_Number.ClassPaintMode:
+                return "ペイント";
+            case enmSoloMode_Number.MarkSizeMode:
+                return "記号の大きさ";
+            case enmSoloMode_Number.MarkBlockMode:
+                return "記号の数";
+            case enmSoloMode_Number.ContourMode:
+                return "等値線";
+            case enmSoloMode_Number.ClassHatchMode:
+                return "ハッチ";
+            case enmSoloMode_Number.ClassMarkMode:
+                return "階級記号";
+            case enmSoloMode_Number.ClassODMode:
+                return "線";
+            case enmSoloMode_Number.MarkTurnMode:
+                return "記号の回転";
+            case enmSoloMode_Number.MarkBarMode:
+                return "棒の高さ";
+            case enmSoloMode_Number.StringMode:
+                return "文字";
+        }
+    }
+
+    /**spanの文字のサイズをbodyに設定して求める（改行しない） */
+    static getSpanSize(text: any,fontSize: any){
+        let t = this.createNewSpan(document.body, text, "", "", 0, 0, "", "visibility:hidden");
+        // @ts-expect-error TS(2339): Property 'whiteSpace' does not exist on type 'HTML... Remove this comment to see the full error message
+        t.whiteSpace = 'nowrap';
+        t.style.top = '600px';
+        t.style.fontSize = fontSize.px();
+        let w = t.offsetWidth;
+        let h = t.offsetHeight;
+        document.body.removeChild(t);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new size(w, h);
+    }
+
+    /**divの文字のサイズをbodyに設定して求める（指定幅より広いと改行） */
+    static getDivSize(text: any, width: any, styleinfo: any) {
+        // @ts-expect-error TS(2554): Expected 10 arguments, but got 8.
+        let t = this.createNewDiv(document.body, text, "", "", 0, 0, "", styleinfo + ";visibility:hidden");
+        if (width != undefined) {
+            t.style.width = width.px();
+        }
+        let w = t.offsetWidth;
+        let h = t.offsetHeight;
+        document.body.removeChild(t);
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new size(w, h);
+    }
+    /** 線モードの曲線の座標列を求めるための4つのコントロールポイント取得*/
+    static Get_OD_Spline_Point(ControlP: any, OriginP: any, DestP: any) {
+        let poxy = [];
+        let retV = spatial.Distance_PointLine2(ControlP, OriginP, DestP);
+        let D = retV.distance;
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        let dd1 = Math.abs((OriginP.x - ControlP.x) ** 2 + (OriginP.y - ControlP.y) ** 2 - D ** 2);
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        let dd2 = Math.abs((DestP.x - ControlP.x) ** 2 + (DestP.y - ControlP.y) ** 2 - D ** 2);
+        if (dd2 < dd1) {
+            dd1 = dd2;
+        }
+        poxy.push(DestP.Clone());
+        if (OriginP.y == DestP.y) {
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            poxy.push(new point(ControlP.x - Math.sqrt(dd1) * 0.75, ControlP.y));
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            poxy.push(new point(ControlP.x + Math.sqrt(dd1) * 0.75, ControlP.y));
+        } else if (OriginP.x == DestP.x) {
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            poxy.push(new point(ControlP.x, ControlP.y - Math.sqrt(dd1) * 0.75));
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            poxy.push(new point(ControlP.x, ControlP.y + Math.sqrt(dd1) * 0.75));
+        } else {
+            let a = (DestP.y - OriginP.y) / (DestP.x - OriginP.x);
+            let xa = Math.sqrt(dd1 / (a * a + 1)) * 0.75;
+            if (OriginP.x < DestP.x) { xa = -xa }
+            let ya = xa * a;
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            poxy.push(new point(ControlP.x - xa, ControlP.y - ya));
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            poxy.push(new point(ControlP.x + xa, ControlP.y + ya));
+        }
+        poxy.push(OriginP.Clone());
+        return poxy;
+    }
+
+    /**前後文字付き数字入力テキストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用 */
+    static createNewWordNumberInput(ParentObj: any, headWord: any, footWord: any, defoValue: any, ID: any, x: any, y: any,headWordWidth: any, width: any, onChange: any, styleinfo: any) {
+        let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
+        let tx = this.createNewNumberInput(ParentObj, defoValue, ID, x + hsw, y, width, onChange, styleinfo);
+        if (footWord != "") {
+            Generic.createNewSpan(ParentObj, footWord, "", "", x + width + hsw + 5, y + 3, "", "");
+        }
+        return tx;
+    }
+
+    /**数値に変換する */
+    static convValue(value: any){
+        let v=value;
+        v = v.replace(/\s+/g, "");//スペース削除
+        v = v.replace(/\s+/g, "　");//スペース削除
+        v = v.replaceAll("．", ".");
+        v = v.replaceAll("－", "-");
+        v = v.replaceAll("＋", "+");
+        v = v.replace(/[０-９]/g, function (s: any) {
+            return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+        });
+        return v;
+    }
+
+    /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
+    static createNewNumberInput(ParentObj: any, defoValue: any, ID: any, x: any, y: any, width: any, onChange: any, styleinfo: any) {
+        let box = this.createNewInput(ParentObj, "text", defoValue, ID, x, y, undefined, "width:" + width.px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
+        // @ts-expect-error TS(2339): Property 'preValue' does not exist on type 'HTMLIn... Remove this comment to see the full error message
+        box.preValue = defoValue;
+        // @ts-expect-error TS(2339): Property 'numberCheck' does not exist on type 'HTM... Remove this comment to see the full error message
+        box.numberCheck = true;//数字のチェックをしない場合はfalseにする
+        box.onchange = function () {
+            let v = box.value;         
+            // @ts-expect-error TS(2339): Property 'numberCheck' does not exist on type 'HTM... Remove this comment to see the full error message
+            if (box.numberCheck == false) {
+                if(typeof onChange=='function'){
+                    onChange(box, v);
+                }
+            } else {
+                // @ts-expect-error TS(2345): Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                if (isNaN(v) == false) {
+                    let nv = Number(v);
+                    // @ts-expect-error TS(2339): Property 'preValue' does not exist on type 'HTMLIn... Remove this comment to see the full error message
+                    box.preValue = nv;
+                    if(typeof onChange=='function'){
+                        onChange(box, nv);
+                    }
+                } else {
+                    v=Generic.convValue(v);
+                    // @ts-expect-error TS(2345): Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                    if (isNaN(v) == false) {
+                        let nv = Number(v);
+                        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+                        box.value = nv;
+                        // @ts-expect-error TS(2339): Property 'preValue' does not exist on type 'HTMLIn... Remove this comment to see the full error message
+                        box.preValue = nv;
+                        if(typeof onChange=='function'){
+                            onChange(box, nv);
+                        }
+                    } else {
+                        //一秒間メッセージを表示
+                        let bpos = box.getBoundingClientRect();
+                        let divele = Generic.createNewDiv(document.body, "数値を入力して下さい", "", "", bpos.left + width / 2, bpos.top + 20, 110, undefined,
+                            "z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffdd;text-align:center", "");
+                        let timerId = setTimeout(
+                            function () {
+                                document.body.removeChild(divele);
+                                clearTimeout(timerId);
+                            }, 1000);
+                        // @ts-expect-error TS(2339): Property 'preValue' does not exist on type 'HTMLIn... Remove this comment to see the full error message
+                        box.value = box.preValue;//退避値にもどす
+                    }
+                }
+            }
+        }
+        return box;
+    }
+
+    /**数字入力＋リストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用**/
+    static createNewNumberComboBox(ParentObj: any,defoValue: any,ID: any,list: any,x: any,y: any,width: any,maxNumber: any,onChange: any){
+        let dropinwidth=18;
+        let ipsize=this.createNewNumberInput(document.body,defoValue,"",0,0,width-dropinwidth+1,onChange,"visibility:hidden");
+        let boxh=ipsize.offsetHeight-2;
+        let base=this.createNewDiv(ParentObj,"","","numberCbox",x,y,ipsize.offsetWidth+dropinwidth,boxh,"","");
+        // @ts-expect-error TS(2345): Argument of type 'ChildNode | null' is not assigna... Remove this comment to see the full error message
+        document.body.removeChild(document.body.lastChild);
+        let ip=this.createNewNumberInput(base,defoValue,ID,0,0,width-dropinwidth,onChange,"border:none");
+        this.createNewDiv(base, "▼", "", "", width - dropinwidth, 0, dropinwidth, boxh, "background-Color:white;border:none;cursor:default;text-align:center", dropList);
+        return ip;
+        function dropList(){
+            let e = document.getElementsByName("backDiv");
+            let maxZindex = 1000 + e.length*10;
+            let d = Generic.createNewDiv(document.body, "", "frontDIV", "setting", 0, 0, '100%', '100%',"",function () {
+                //固定ウインドウを消す
+                // @ts-expect-error TS(2345): Argument of type 'ChildNode | null' is not assigna... Remove this comment to see the full error message
+                document.body.removeChild(document.body.lastChild);
+            });
+            d.setAttribute("name", "backDiv");
+            // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+            d.style.zIndex = maxZindex;
+            let rrect=ip.getBoundingClientRect();
+            let dropArea=Generic.createNewDiv(d,"","","",rrect.left,rrect.bottom-1,rrect.width+18,100,"background-Color:#ffffff;border:solid 1px;overflow-x:hidden;overflow-y:scroll",undefined);
+            let selectList = document.createElement("div");
+            dropArea.appendChild(selectList)
+            let mainw = 0;
+            let lineh;
+            for (let i in list) {
+                let msp = document.createElement('span');
+                document.body.appendChild(msp)
+                msp.innerHTML = list[i].caption;
+                mainw = Math.max(mainw, msp.offsetWidth);
+                lineh = msp.offsetHeight;
+                document.body.removeChild(msp);
+                y += lineh;
+            }
+            // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+            dropArea.style.height=(Math.min(maxNumber,list.length)*lineh).px();
+            for (let i in list) {
+                // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                let md = Generic.createNewDiv(selectList, list[i], "", "", 0, lineh * i, mainw + 20, lineh, "padding-left:5px", "");
+                md.onmouseover = function () {
+                    md.style.backgroundColor = '#dddddd';
+                }
+                md.onmouseleave = function () {
+                    md.style.backgroundColor = 'white';
+                }
+                md.onclick = function () {
+                    // @ts-expect-error TS(2339): Property 'innerText' does not exist on type 'Globa... Remove this comment to see the full error message
+                    ip.value=this.innerText;
+                    // @ts-expect-error TS(2339): Property 'preValue' does not exist on type 'HTMLIn... Remove this comment to see the full error message
+                    ip.preValue=ip.value;
+                    if(typeof onChange=='function'){
+                        onChange(ip,Number(ip.value));
+                    }
+                }
+            }
+        }
+    }
+
+    /**チェックリストボックス */
+    static createNewCheckListBox(ParentObj: any, ID: any, list: any, x: any, y: any, width: any, height: any, onChange: any, styleinfo: any) {
+        let lineH = this.getDivSize("A", undefined, "").height + 3;
+        let allh = lineH * list.length;
+        let ovy = (allh < height - 2) ? "" : "overflow-y: scroll";
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        let w = (allh < height - 2) ? width - 2 : width - scrMargin.scrollWidth - 1;
+        // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+        const frame = this.createNewDiv(ParentObj, "", ID, "grayFrame", x, y, width, height, ovy + "overflow-x:hidden");
+        // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+        const inFrame = this.createNewDiv(frame, "", ID, "", 0, 0, w, allh, "");
+        for (let i in list) {
+            // @ts-expect-error TS(2362): The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
+            let cbox = this.createNewCheckBox(inFrame, list[i].text, "", list[i].checked, 3, i * lineH,undefined, 
+                function (obj: any) {
+                    if (typeof onChange == 'function') {
+                        onChange(Number(obj.tag), obj.checked);
+                    }
+                }, styleinfo + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+            // @ts-expect-error TS(2339): Property 'tag' does not exist on type 'HTMLInputEl... Remove this comment to see the full error message
+            cbox.tag = i;
+        }
+        return frame;
+    }
+
+
+    //**色を指定分明るくまたは暗くする（0を下回った場合は0、255を上回った場合は255） */
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Col 
+ * @param {*} ChangeValue 
+ * @returns {*} 
+ */
+static GetColorArrange(Col: any,ChangeValue: any){
+        let newcol=Col.Clone();
+        let r  = Generic.m_min_max(Col.r + ChangeValue, 0, 255)
+        let g  = Generic.m_min_max(Col.g + ChangeValue, 0, 255)
+        let b  = Generic.m_min_max(Col.b + ChangeValue, 0, 255)
+        newcol.r = r;
+        newcol.g = g;
+        newcol.b = b;
+        return newcol;
+    }
+
+
+    //2次元配列aData()の内容から、データ項目ごとに通常、文字列、カテゴリーと分類する
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} DataNum 
+ * @param {*} ObjNum 
+ * @param {*} aData 
+ * @returns {{}} 
+ */
+static Check_DataType(DataNum: any, ObjNum: any, aData: any) {
+        let UNT = [];
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let SS = new clsSortingSearch();
+        for (let i = 0; i < DataNum; i++) {
+            let f = true;
+            for (let j = 0; j < ObjNum; j++) {
+                let v = aData[j][i];
+                let L = v.length;
+                if (L > 20) {
+                    f = false;
+                    break;
+                } else {
+                    if (v != "") {
+                        if (isNaN(v) == true) {
+                                f = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (f == false) {
+                //文字列のデータ項目の場合
+                for (let j = 0; j < ObjNum; j++) {
+                    SS.Add(aData[j][i]);
+                }
+                SS.AddEnd()
+                let ctn = SS.EachValue_Array();
+                //カテゴリー数が256未満の場合はカテゴリーデータ
+                if (ctn.length < 256) {
+                    UNT[i] = "CAT";
+                } else {
+                    UNT[i] = "STR";
+                }
+            } else {
+                UNT[i] = "";
+            }
+        }
+        return UNT;
+    }
+
+    //セレクトボックス用投影法リスト
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @returns {{}} 
+ */
+static getProjectionList() {
+        let list = [
+            { value: enmProjection_Info.prjMercator, text: 'メルカトル図法' },
+            { value: enmProjection_Info.prjMiller, text: 'ミラー図法' },
+            { value: enmProjection_Info.prjSeikyoEntou, text: '正距円筒図法' },
+            { value: enmProjection_Info.prjLambertSeisekiEntou, text: 'ランベルト正積円筒図法' },
+            { value: enmProjection_Info.prjEckert4, text: 'エッケルト第4図法' },
+            { value: enmProjection_Info.prjMollweide, text: 'モルワイデ図法' },
+            { value: enmProjection_Info.prjSanson, text: 'サンソン図法' }
+        ];
+        return list;
+    }
+
+    /**拡張子取得 */ 
+    static getExtension(filename: any){
+        let n=filename.lastIndexOf(".");
+        if(n==-1){
+            return "";
+        }else{
+            return filename.mid(n+1,filename.length);
+        }
+    }
+
+       /**フォルダを除いたファイル名を取得 */
+       static getFilename(filename: any) {
+        let hn = filename.lastIndexOf("/");//スラッシュ
+        let tx = "";
+        if ((hn == -1)) {
+            tx = filename;
+        } else {
+            tx = filename.mid(hn + 1,undefined);
+        }
+        return tx;
+    }
+
+    /**拡張子を除いたファイル名を取得 */
+    static getFilenameWithoutExtension(filename: any) {
+        let n = filename.lastIndexOf(".");
+        let hn = filename.lastIndexOf("/");//スラッシュ
+        let tx = "";
+        if ((n == -1) && (hn == -1)) {
+            tx = filename;
+        } else if (n == -1) {
+            tx = filename.right(filename.length - (hn + 1), n);
+        } else if (hn == -1) {
+            tx = filename.left(n);
+        } else {
+            tx = filename.mid(hn + 1, n - hn);
+        }
+        return tx;
+    }
+
+    //テキストファイル保存
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} text 
+ * @param {*} fileName 
+ */
+static saveText(text: any, fileName: any) {
+        /// <signature>
+        /// <summary>ファイル保存</summary>
+        /// </signature> 
+        if (fileName == null) {
+            fileName = "textfile.txt";
+        }
+        let blob = new Blob([text], {
+            type: "text/plain"
+        });
+        // @ts-expect-error TS(2339): Property 'msSaveBlob' does not exist on type 'Navi... Remove this comment to see the full error message
+        if (window.navigator.msSaveBlob != null) {
+            // @ts-expect-error TS(2339): Property 'msSaveBlob' does not exist on type 'Navi... Remove this comment to see the full error message
+            window.navigator.msSaveBlob(blob, fileName);
+        } else {
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+            a.click();
+        }
+    }/** Description placeholder */
+;
+
+    //座標の文字列取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} P 
+ * @param {*} MPDataMapZahyo 
+ * @param {boolean} [Header_Flag=true] 
+ * @returns {{ x: string; y: string; }} 
+ */
+static Get_PositionCoordinate_Strings(P: any, MPDataMapZahyo: any, Header_Flag = true) {
+        let retPS={};
+        switch (MPDataMapZahyo.Mode) {
+            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+                if (Header_Flag == true) {
+                    // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+                    retPS.x = "Y:";
+                    // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+                    retPS.y = "X:";
+                }
+                // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+                retPS.x += P.x.toFixed(1);
+                // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+                retPS.y += P.y.toFixed(1);
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_No_Mode: {
+                if (Header_Flag == true) {
+                    // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+                    retPS.x = "X:";
+                    // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+                    retPS.y = "Y:";
+                }
+                // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+                retPS.x += P.x.toFixed(3);
+                // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+                retPS.y += P.y.toFixed(3);
+                break;
+            }
+            case enmZahyo_mode_info.Zahyo_Ido_Keido: {
+                retPS = this.Get_LatLon_PointStrings(P, Header_Flag);
+                break;
+            }
+        }
+        return retPS;
+    }
+
+    /**緯度経度(latlon)の文字列取得 (.x,.y)*/
+    static Get_LatLon_Strings(LatLon: any, Header_Flag = true) {
+        let p = LatLon.toPoint();
+        return this.Get_LatLon_PointStrings(p, Header_Flag);
+    }
+
+    /**緯度経度(point)の文字列取得*/
+    static Get_LatLon_PointStrings(Pos: any, Header_Flag=true){
+        let P = Pos.Clone();
+        let retPS ={};
+
+        if( Header_Flag == true ){
+            if( P.y < 0 ){
+                // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+                retPS.y = "南緯";
+            }else{
+                // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+                retPS.y = "北緯";
+            }
+            let V2  = Math.abs(P.x);
+            let V3  = V2 % 360;
+            if( 180 < V3 ){
+                if( P.x < 0 ){
+                    P.x = (P.x - Math.floor(P.x /360) * 360) + 360;
+                }else{
+                    P.x = (P.x - Math.floor(P.x /360)  * 360) - 360;
+                }
+            }else{
+                P.x = P.x - Math.floor(P.x /360)  * 360;
+            }
+            if( P.x < 0 ){
+                // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+                retPS.x = "西経";
+            }else{
+                // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+                retPS.x = "東経";
+            }
+            P.x = Math.abs(P.x);
+            P.y= Math.abs(P.y);
+        }else{
+            // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+            retPS.x = "";
+            // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+            retPS.y = "";
+        }
+        // @ts-expect-error TS(2304): Cannot find name 'clsSettingData'.
+        if (clsSettingData.Ido_Kedo_Print_Pattern == enmLatLonPrintPattern.DegreeMinuteSecond) {
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            let LatLonDMS = new latlon(P.y,p.x).toDegreeMinuteSecond();
+            let o = LatLonDMS.LongitudeDMS;
+            // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+            retPS.x += String(o.Degree) + "度" + String(o.Minute) + "分" + o.Second.toFixed(4) + "秒"
+            let a = LatLonDMS.LatitudeDMS;
+            // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+            retPS.y += String(a.Degree) + "度" + String(a.Minute) + "分" + a.Second.toFixed(4) + "秒"
+        } else {
+            // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+            retPS.x += P.x.toFixed(6) + "度";
+            // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+            retPS.y += P.y.toFixed(6)  + "度";
+        }
+        return retPS;
+    }
+
+    //メッシュコードの文字の長さを取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} MeshNumber 
+ * @returns {number} 
+ */
+static getMeshCodeLength(MeshNumber: any) {
+        let CodeLen;
+        switch (MeshNumber) {
+            case enmMesh_Number.mhFirst: {
+                CodeLen = 4;
+                break;
+            }
+            case enmMesh_Number.mhSecond: {
+                CodeLen = 6;
+                break;
+            }
+            case enmMesh_Number.mhThird: {
+                CodeLen = 8;
+                break;
+            }
+            case enmMesh_Number.mhHalf: {
+                CodeLen = 9;
+                break;
+            }
+            case enmMesh_Number.mhQuarter: {
+                CodeLen = 10;
+                break;
+            }
+            case enmMesh_Number.mhOne_Eighth: {
+                CodeLen = 11;
+                break;
+            }
+            case enmMesh_Number.mhOne_Tenth: {
+                CodeLen = 10;
+                break;
+            }
+        }
+        return CodeLen;
+    }
+
+    /**距離単位をvalueとtextの配列で返す */
+    static getScaleUnit_for_select(){
+        let list=[];
+        let scl=[enmScaleUnit.centimeter,enmScaleUnit.meter,enmScaleUnit.kilometer,enmScaleUnit.inch,enmScaleUnit.feet,enmScaleUnit.yard,enmScaleUnit.mile,
+            enmScaleUnit.syaku,enmScaleUnit.ken,enmScaleUnit.ri,enmScaleUnit.kairi];
+            for (let i in scl){
+                list.push({ value: scl[i], text: this.getScaleUnitStrings(undefined, scl[i]) });
+            }
+            return list;
+    }
+
+    
+    /**距離単位列挙型から面積文字列を返す */
+    static getScaleUnitAreaStrings(scl: any) {
+        switch (scl) {
+            case enmScaleUnit.meter:
+                return "㎡";
+            case enmScaleUnit.kilometer:
+                return "㎢";
+            case enmScaleUnit.centimeter:
+                return "㎠";
+            case enmScaleUnit.inch:
+                return "sq in";
+            case enmScaleUnit.feet:
+                return "sq ft";
+            case enmScaleUnit.yard:
+                return "sq yd";
+            case enmScaleUnit.mile:
+                return "sq mi";
+            case enmScaleUnit.syaku:
+                return "平方尺";
+            case enmScaleUnit.ken:
+                return "坪";
+            case enmScaleUnit.ri:
+                return "平方里";
+            case enmScaleUnit.kairi:
+                return "平方海里";
+            default:
+                return "km";
+        }
+    }
+
+    ///*距離単位列挙型と値から距離文字列を返す 距離単位だけの場合はValue=undefined*/
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Value 
+ * @param {*} scl 
+ * @returns {string} 
+ */
+static getScaleUnitStrings(Value: any, scl: any) {
+        let vs;
+        if(Value==undefined){
+            vs="";
+        }else{
+            vs = Value.toString();
+        }
+        switch( scl){
+            case enmScaleUnit.meter:
+                return vs + "m";
+                break;
+            case enmScaleUnit.kilometer:
+                return vs + "km";
+                break;
+            case enmScaleUnit.centimeter:
+                return vs + "cm";
+                break;
+            case enmScaleUnit.inch:
+                return vs + "inch";
+                break;
+            case enmScaleUnit.feet:
+                if (Value == 1) {
+                    return "1 foot";
+                } else {
+                    return vs + "feet";
+                }
+                break;
+            case enmScaleUnit.yard:
+                if (Value == 1) {
+                    return "1 yard";
+                } else {
+                    return vs + " yards";
+                }
+            case enmScaleUnit.mile:
+                if (Value == 1) {
+                    return "1 mile";
+                } else {
+                    return vs + " miles";
+                }
+                break;
+            case enmScaleUnit.syaku:
+                return vs + "尺";
+                break;
+            case enmScaleUnit.ken:
+                return vs + "間";
+                break;
+            case enmScaleUnit.ri:
+                return vs + "里";
+                break;
+            case enmScaleUnit.kairi:
+                return vs + "海里";
+                break;
+            default:
+                return vs + "km"
+                break;
+        }
+    }
+
+    //距離単位の変換係数を求める
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} from_Unit 
+ * @param {*} to_Unit 
+ * @returns {number} 
+ */
+static Convert_ScaleUnit(from_Unit: any, to_Unit: any){
+        let kmco = [];
+        kmco[enmScaleUnit.meter] = 1000;
+        kmco[enmScaleUnit.kilometer] = 1;
+        kmco[enmScaleUnit.centimeter] = 100000;
+        kmco[enmScaleUnit.inch] = 39370.078740157;
+        kmco[enmScaleUnit.feet] = 3280.8398950131;
+        kmco[enmScaleUnit.yard] = 1093.6132983377;
+        kmco[enmScaleUnit.mile] = 0.62137119223733;
+        kmco[enmScaleUnit.syaku] = 3300;
+        kmco[enmScaleUnit.ken] = 550;
+        kmco[enmScaleUnit.ri] = 0.25462962962963;
+        kmco[enmScaleUnit.kairi] = 0.53995680345572;
+
+        let fromdis = kmco[from_Unit];
+        let todis = kmco[to_Unit];
+        return (todis / fromdis);
+}
+
+    //レイヤの形状ごとの数を入れた配列から、可能な形状を返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Shape 
+ * @returns {*} 
+ */
+static checkShape(Shape: any) {
+        if (Shape[enmShape.PointShape] > 0) {
+            return enmShape.PointShape;
+        } else if (Shape[enmShape.LineShape] > 0) {
+            return enmShape.LineShape;
+        } else {
+        return enmShape.PolygonShape;
+        }
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ele 
+ * @returns {*} 
+ */
+static RGBAfromElement(ele: any) {
+        //要素の背景色をcolorRGBAに変換して返す
+        let opa=1 ;
+        let bcol = ele.style.backgroundColor;
+        let k1 = bcol.indexOf("(");
+        let k2 = bcol.indexOf(")");
+        let cola = bcol.slice(k1 + 1, k2);
+        let RGB = cola.split(",");
+        if (RGB.length == 4) {
+            opa = parseFloat(RGB[3]);
+        }
+        opa *= 256;
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let col = new colorRGBA([parseInt(RGB[0]), parseInt(RGB[1]), parseInt(RGB[2]), opa]);
+        return col;
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} e_point 
+ * @param {*} box 
+ */
+static Set_Box_Position_in_Browser(e_point: any, box: any) {	//
+        /// <signature>
+        /// <summary>ブラウザからはみださないようにボックスの位置を決める</summary>
+        /// <param name="e" >イベントの引数</param>
+        /// <param name="box" >div等の要素</param>
+        /// </signature> 
+        box.style.left = "0px"; //いったん左上に移す（高さ、幅の自動調整をなくすため）
+        box.style.top = "0px";
+
+        let x;
+        let y;
+        if(e_point instanceof point){
+            // @ts-expect-error TS(2339): Property 'x' does not exist on type '{}'.
+            x=e_point.x;
+            // @ts-expect-error TS(2339): Property 'y' does not exist on type '{}'.
+            y=e_point.y;
+        }else{
+            x = e_point.clientX; //ページ内でのマウスカーソル位置を取得
+            y = e_point.clientY;
+        }
+        if (x == 'undefined') {
+            x = e_point.pageX;
+            y = e_point.pageY;
+        } else {
+            x += document.body.scrollLeft;
+            y += document.body.scrollTop;
+        }
+        y += 5;
+        x += 5;
+        var clientWidth =this.getBrowserWidth();     //ウインドウの高さと幅
+        var clientHeight = this.getBrowserHeight();
+        var boxWidth = box.scrollWidth;		//作成したボックスの高さと幅
+        var boxHeight = box.scrollHeight;
+        if ((y + boxHeight - document.body.scrollTop) > clientHeight) {	//縦にはみ出る場合
+            y = document.body.scrollTop + clientHeight - boxHeight - 10;
+        }
+        if ((x + boxWidth - document.body.scrollLeft) > clientWidth) {  //横にはみ出る場合
+            x = clientWidth - boxWidth - 20;
+        }
+        box.style.left = x.px();
+        box.style.top = y.px();
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} p 
+ * @param {*} ScrData 
+ * @param {*} Mode 
+ * @returns {*} 
+ */
+static Check_Point_in_screen(p: any, ScrData: any, Mode: any) {
+        //定義
+        //Mode=0/SRX:SRY  Mode=1/SR:SY
+        //ScrData.ScrRectangle.Left = SRX(0): ScrData.ScrRectangle.Top = SRY(0)
+        //ScrData.ScrRectangle.Right = SRX(MapScreen.ScaleWidth): ScrData.ScrRectangle.bottom = SRY(MapScreen.ScaleHeight)
+
+        switch (Mode) {
+            case 0:
+                return ScrData.ScrRectangle.contains(p);
+                break;
+            case 1:
+                return ScrData.MapScreen_Scale.contains(p);
+                break;
+        }
+    }
+
+    //属性データタイプ列挙型から文字を返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} dataType 
+ * @returns {("通常のデータ" | "ｶﾃｺﾞﾘｰﾃﾞｰﾀ" | "文字データ" | "URLのアドレス" | "URLの名称" | "経度" | "緯度" | "場所" | "到着時刻" | "出発時刻" | "その他")} 
+ */
+static ConvertAttDataTypeString(dataType: any) {
+        switch (dataType) {
+            case enmAttDataType.Normal:
+                return "通常のデータ";
+                break;
+            case enmAttDataType.Category:
+                return "ｶﾃｺﾞﾘｰﾃﾞｰﾀ";
+                break;
+            case enmAttDataType.Strings:
+                return "文字データ";
+                break;
+            case enmAttDataType.URL:
+                return "URLのアドレス";
+                break;
+            case enmAttDataType.URL_Name:
+                return "URLの名称";
+                break;
+            case enmAttDataType.Lon:
+                return "経度";
+                break;
+            case enmAttDataType.Lat:
+                return "緯度";
+                break;
+            case enmAttDataType.Place:
+                return "場所";
+                break;
+            case enmAttDataType.Arrival:
+                return "到着時刻";
+                break;
+            case enmAttDataType.Departure:
+                return "出発時刻";
+                break;
+            default:
+                return "その他" //本当はこれは出現しない
+                break;
+        }
+    }
+
+    //selectのアイテム削除後に、次のインデックスを指定する
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} select 
+ * @param {*} Old_n 
+ */
+static ListIndex_Reset(select: any, Old_n: any) {
+        if (select.options.length == 0) {
+            return;
+        }
+        if (Old_n == select.options.length) {
+            select.selectedIndex = Old_n - 1;
+        } else {
+            select.selectedIndex = Old_n;
+        }
+    }
+
+
+    //形状列挙型からその文字を返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} shape 
+ * @returns {("線" | "点" | "面" | "未指定")} 
+ */
+static ConvertShapeEnumString(shape: any) {
+        switch (shape) {
+            case enmShape.LineShape:
+                return "線";
+                break;
+            case enmShape.PointShape:
+                return "点";
+                break;
+            case enmShape.PolygonShape:
+                return "面";
+                break;
+            case enmShape.NotDeffinition:
+                return "未指定" //本当はこれは出現しない
+                break;
+        }
+    }
+
+    //イベント情報からcanvas上の座標位置を求める
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} e 
+ * @returns {*} 
+ */
+static getCanvasXY(e: any) {
+        let cx = e.clientX;
+        let cy = e.clientY;
+        let rx = cx - (e.target.parentNode.style.left.removePx() + e.target.style.left.removePx());
+        let ry = cy - (e.target.parentNode.style.top.removePx() + e.target.style.top.removePx());
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        return new point(rx, ry);
+    }
+
+        //イベント情報からcanvas上の座標位置を求める
+        /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} e 
+ * @returns {*} 
+ */
+static getCanvasXY2(e: any) {
+            let cx = e.clientX;
+            let cy = e.clientY;
+            if(typeof e.target.getBoundingClientRect !='function'){
+                return undefined;//ブラウザ外に移動した場合
+            }
+            let rx = cx - (e.target.getBoundingClientRect().x);
+            let ry = cy - (e.target.getBoundingClientRect().y);
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            return new point(rx, ry);
+        }
+
+    //画面表示領域変更の可否のチェック
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} MapRect 
+ * @param {*} new_Rect 
+ * @returns {boolean} 
+ */
+static Check_New_ScrView(MapRect: any, new_Rect: any) {
+        if (new_Rect.width() > MapRect.width() / 5000) {
+            //拡大しすぎでない場合
+            if (new_Rect.width() < MapRect.width() * 10) {
+                //縮小しすぎでない場合
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} LCode 
+ * @param {*} Shape 
+ * @returns {{}} 
+ */
+static Get_Outer_Mpline_AggregatedObj(LCode: any, Shape: any) { //LCode:EnableMPLine_Data
+        let lc = this.ArrayClone(LCode);
+
+        let ncode = [];
+        for (let i = 0; i < lc.length; i++) {
+            let k = lc[i].LineCode;
+            if (k != -1) {
+                for (let j = i+1; j < lc.length; j++) {
+                    if (k == lc[j].LineCode) {
+                        lc[j].LineCode = -1;
+                        //面形状の場合は重複するラインは使用しない
+                        //線形上の場合は、最初の1回だけ使用する
+                        if (Shape == enmShape.PolygonShape) {
+                            lc[i].LineCode = -1;
+                        }
+                    }
+                }
+            }
+            if (lc[i].LineCode != -1) {
+                ncode.push(lc[i]);
+            }
+        }
+        return ncode;
+    }
+
+    //タイトル、単位から属性データタイプ列挙型を返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Title 
+ * @param {*} Unit 
+ * @returns {*} 
+ */
+static getAttDataType_From_TitleUnit(Title: any, Unit: any) {
+        let dtype;
+        let UTitle = Title.toUpperCase();
+        if (UTitle == "URL") {
+            dtype = enmAttDataType.URL;
+        } else if (UTitle == "URL_NAME") {
+            dtype = enmAttDataType.URL_Name;
+        } else if (UTitle == "LON") {
+            dtype = enmAttDataType.Lon;
+        } else if (UTitle == "LAT") {
+            dtype = enmAttDataType.Lat;
+        } else if (UTitle == "PLACE") {
+            dtype = enmAttDataType.Place;
+        } else if (UTitle == "ARRIVAL") {
+            dtype = enmAttDataType.Arrival;
+        } else if (UTitle == "DEPARTURE") {
+            dtype = enmAttDataType.Departure;
+        } else if (Unit.toUpperCase() == "CAT") {
+            dtype = enmAttDataType.Category;
+        } else if (Unit.toUpperCase() == "STR") {
+            dtype = enmAttDataType.Strings;
+        } else {
+            dtype = enmAttDataType.Normal;
+        }
+        return dtype;
+    }
+
+    //属性データタイプ列挙型からTITLE、単位文字列を設定
+
+    /** @returns {MyType} */
+    static SetTitleUnit_from_AttDataType(dtype: any, defoTitle: any, defoUnit: any, ) {
+        let Title=defoTitle;
+        let Unit=defoUnit;
+        switch (dtype) {
+            case enmAttDataType.Normal:
+                if ((defoTitle.toUpperCase() == "URL") || (defoTitle.toUpperCase() == "URL_NAME")) {
+                    Title = "データ" + Title
+                }
+                if ((defoUnit.toUpperCase() == "CAT") || (defoUnit.toUpperCase() == "STR")) {
+                    Unit = ""
+                }
+                break;
+            case enmAttDataType.Lon:
+                Title = "LON";
+                Unit = "";
+                break;
+            case enmAttDataType.Lat:
+                Title = "LAT";
+                Unit = "";
+                break;
+            case enmAttDataType.Category:
+                Unit = "CAT";
+                break;
+            case enmAttDataType.Strings:
+                Unit = "STR";
+                break;
+            case enmAttDataType.URL:
+                Title = "URL";
+                break;
+            case enmAttDataType.URL_Name:
+                Title = "URL_NAME";
+                break;
+            case enmAttDataType.Arrival:
+                Title = "ARRIVAL";
+                break;
+            case enmAttDataType.Departure:
+                Title = "DEPARTURE";
+                break;
+            case enmAttDataType.Place:
+                Title = "PLACE";
+        }
+        return { title: Title, unit: Unit }
+    }
+
+
+    //オブジェクトが同じかどうか調べる
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} objecta 
+ * @param {*} objectb 
+ * @returns {boolean} 
+ */
+static equal(objecta: any, objectb: any) {
+        return (JSON.stringify(objecta) == JSON.stringify(objectb))
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} odata 
+ * @returns {*} 
+ */
+static Clone(odata: any) {
+        return JSON.parse(JSON.stringify(odata));
+    }
+
+    //配列のシャローコピー
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Arr 
+ * @returns {*} 
+ */
+static ArrayShallowCopy(Arr: any){
+        return Arr.concat();
+    }
+    /**Cloneメソッドを持つオブジェクトの配列をコピーする */ 
+    static ArrayClone(array: any) {
+        if (array.length==0){
+            return [];
+        }
+        if (typeof array[0].Clone != 'function') {
+            //Clone関数を持たない場合
+            return undefined;
+        }
+        let rea = array.map((x: any) => x.Clone());
+        return rea;
+    }
+    /**Cloneメソッドを持つオブジェクトの2次元配列をコピーする */
+    static Array2Clone(array: any){
+        let ca = [];
+        for (let i = 0; i < array.length; i++) {
+            ca.push(this.ArrayClone(array[i]));
+        }
+        return ca;
+    }
+
+    
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} V 
+ * @param {*} Min 
+ * @param {*} Max 
+ * @returns {*} 
+ */
+static m_min_max(V: any, Min: any, Max: any) {
+        //検査値がMinより小さければMinを返し、Maxより大きければMaxを返す
+
+        if (V < Min) {
+            return Min;
+        }
+
+        if (V > Max) {
+            return Max;
+        }
+        return V;
+
+    }
+
+    //画面の幅取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @returns {*} 
+ */
+static getBrowserWidth() {
+        if (window.innerWidth) {
+            return window.innerWidth;
+        }
+        else if (document.documentElement && document.documentElement.clientWidth != 0) {
+            return document.documentElement.clientWidth;
+        }
+        else if (document.body) {
+            return document.body.clientWidth;
+        }
+        return 0;
+    }
+
+    //画面の高さ取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @returns {*} 
+ */
+static getBrowserHeight() {
+        if (window.innerHeight) {
+            return window.innerHeight;
+        }
+        else if (document.documentElement && document.documentElement.clientHeight != 0) {
+            return document.documentElement.clientHeight;
+        }
+        else if (document.body) {
+            return document.body.clientHeight;
+        }
+        return 0;
+    }
+
+    //ドキュメントの高さ取得
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @returns {*} 
+ */
+static getDocumentHeight() {
+        var h = Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+        return h;
+    }
+
+    //ウィンドウで表示  
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} help_url 
+ * @param {*} Xv 
+ * @param {*} Yv 
+ */
+static CenterPage(help_url: any, Xv: any, Yv: any) {
+        // @ts-expect-error TS(2304): Cannot find name 'win2p'.
+        if (win2p == "on") {
+            // @ts-expect-error TS(2304): Cannot find name 'new2'.
+            if (new2.closed) { } else { new2.close(); }
+        }
+        // @ts-expect-error TS(2304): Cannot find name 'win1p'.
+        win1p = "on";
+        // @ts-expect-error TS(2304): Cannot find name 'Xw'.
+        Xw = Xv + 50;
+        // @ts-expect-error TS(2304): Cannot find name 'Yw'.
+        Yw = Yv + 80;
+        // @ts-expect-error TS(2304): Cannot find name 'new2'.
+        new2 = window.open(help_url, "_blank", "titlebar=No,status=0,scrollbars=1,resizable=0,width=" + Xw + ",height=" + Yw + "");
+        // @ts-expect-error TS(2365): Operator '>=' cannot be applied to types 'string' ... Remove this comment to see the full error message
+        if (navigator.appVersion.charAt(0) >= 3) { new2.focus() };
+    }
+
+    //ボタン作成
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} text 
+ * @param {*} ID 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} onClick 
+ * @param {*} styleinfo 
+ * @returns {*} 
+ */
+static createNewButton(ParentObj: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any) {
+        var ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
+        ok.addEventListener('click', onClick);
+        ParentObj.appendChild(ok);
+        return ok;
+    }
+
+
+    //img要素作成
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} src 
+ * @param {*} alt 
+ * @param {*} ID 
+ * @param {*} Class 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} styleinfo 
+ * @param {*} onclick 
+ * @returns {*} 
+ */
+static createNewImage(ParentObj: any, src: any,alt: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any) {
+        var obj = document.createElement("img");
+        obj.src = src;
+        obj.alt = alt;
+        obj.setAttribute("id", ID);
+        obj.setAttribute("class", Class);
+        obj.setAttribute("onclick", onclick);
+        obj.setAttribute("style", "position:absolute;" + styleinfo)
+        obj.style.top = y.px();
+        obj.style.left = x.px();
+        ParentObj.appendChild(obj);
+        return obj;
+    }
+
+    //span要素作成
+    static createNewSpan(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any) {
+        var obj = document.createElement("span");
+        obj.setAttribute("id", ID);
+        obj.setAttribute("class", Class);
+        obj.onclick= onclick;
+        obj.innerHTML = innerHtml;
+        obj.setAttribute("style", "position:absolute;" + styleinfo)
+        obj.style.top = y.px();
+        obj.style.left = x.px();
+        ParentObj.appendChild(obj);
+        return obj;
+    }
+
+    //文字配列中の同じ文字を削除した配列を返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ST 
+ * @returns {{}} 
+ */
+static Remove_Same_String(ST: any) {
+        let ST2 = [];
+        let sdv = [];
+        let n = ST.length;
+        for (let i = 0; i < n - 1; i++) {
+            if (sdv[i] == undefined) {
+                for (let j = i + 1; j < n; j++) {
+                    if ((ST[i] == ST[j]) && (sdv[j] == undefined)) {
+                        sdv[j] = true;
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < n; i++) {
+            if (sdv[i] == undefined) {
+                ST2.push(ST[i]);
+            }
+        }
+        return ST2;
+    }
+
+    //二色の間で指定の数だけグラデーションをかける
+    static TwoColorGradation(StartCol: any, EndCol: any, n: any) {
+        let ColData = [];
+        let a1 = StartCol.a;
+        let AL = EndCol.a - a1;
+        let r1 = StartCol.r;
+        let RL = EndCol.r - r1;
+        let g1 = StartCol.g;
+        let GL = EndCol.g - g1;
+        let B1 = StartCol.b;
+        let BL = EndCol.b - B1;
+        let cf = 0;
+        if (n >= 3) {
+            if (EndCol.toHex() == '#ffffff') {
+                cf = 1;
+            }
+            if (StartCol.toHex() == '#ffffff') {
+                cf = -1
+            }
+        }
+        for (let i = 0; i < n; i++) {
+            let v = i / (n - 1);
+            if ((i >= 1) && (i <= n - 2) && (cf != 0)) {
+                v = v + 1 / (2 * (n - 1)) * cf;
+            }
+            let a = a1 + AL * v;
+            let b = B1 + BL * v;
+            let r = r1 + RL * v;
+            let g = g1 + GL * v;
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            ColData[i] = new colorRGBA([ r, g, b,a]);
+        }
+        return ColData;
+    }
+
+    //3色の間で指定の数だけグラデーションをかける
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} StartCol 
+ * @param {*} CenterCol 
+ * @param {*} EndCol 
+ * @param {*} n 
+ * @param {*} Color_cng_n 
+ * @returns {{}} 
+ */
+static ThreeColorGradation(StartCol: any, CenterCol: any, EndCol: any, n: any, Color_cng_n: any) {
+        let ColData = [];
+        let coldata1 = this.TwoColorGradation(StartCol, CenterCol, Color_cng_n + 1);
+        for (let i = 0; i <= Color_cng_n; i++) {
+            ColData[i] = coldata1[i];
+        }
+        coldata1 = this.TwoColorGradation(CenterCol, EndCol, n - Color_cng_n);
+        for (let i = Color_cng_n; i < n; i++) {
+            ColData[i] = coldata1[i - Color_cng_n];
+        }
+        return ColData;
+    }
+
+    //最大値と最小値を指定の区分数で切りのよい数字で区切る
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} CUTN 
+ * @param {*} Max 
+ * @param {*} Min 
+ * @returns {{ max: any; min: number; step: number; }} 
+ */
+static WIC(CUTN: any, Max: any, Min: any) {
+        if (Max == Min) {
+            return { max: Max + 1, min: Min - 1, step: 1 }
+        }
+        let ret = {};
+
+        let H = Max - Min;
+        let f = 1;
+        let deci = this.Figure_Arrange(Max);
+        let deci2 = this.Figure_Arrange(Min);
+        if (deci.BeforeDecimal + deci2.BeforeDecimal == 0) {
+            let f = 10 ** deci2.AfterDecimal;
+            Max = Max * f;
+            Min = Min * f;
+            H = H * f;
+        } else {
+            let deci3 = this.Figure_Arrange(H);
+            if (deci3.BeforeDecimal == 0) {
+                f = 10 ** deci3.AfterDecimal;
+                Max = Max * f;
+                Min = Min * f;
+                H = H * f;
+            }
+        }
+        let deci4 = this.Figure_Arrange(H);
+        let b = 10 ** (deci4.BeforeDecimal - 1);
+        let w = (1 + Math.floor(H / b)) * b / CUTN;
+        let deci5 = this.Figure_Arrange(w)
+        b = 10 ** (deci5.BeforeDecimal - 1);
+        let w2 = w;
+        w = Math.floor(w / b) * b
+        if (w == 0) {
+            w = w2 / b;
+        }
+        b = 10 ** (deci4.BeforeDecimal - 1);
+        H = Math.floor(Min / b) * b;
+        if ((H >= 0) || (Max <= 0)) {
+        } else {
+            let H2 = H;
+            while (H2 < 0) {
+                H2 += w;
+            }
+            H -= H2;
+        }
+        // @ts-expect-error TS(2339): Property 'step' does not exist on type '{}'.
+        ret.step = w / f;
+        let a = H / f;
+        // @ts-expect-error TS(2339): Property 'min' does not exist on type '{}'.
+        ret.min = a;
+        let n = 0;
+        while (a < Max / f) {
+            // @ts-expect-error TS(2339): Property 'step' does not exist on type '{}'.
+            a += ret.step;
+            n++;
+        }
+        // @ts-expect-error TS(2339): Property 'max' does not exist on type '{}'.
+        ret.max = ret.min + ret.step * n;
+        return ret;
+    }
+
+    static Figure_Arrange(Value: any) {
+        let Left, Right;
+
+        if (Value == 0) {
+            Left = 1;
+        } else {
+            Left = Math.floor(Math.log10(Math.abs(Value))) + 1;
+        }
+        let b = String(Value);
+        let c = b.indexOf(".");
+        if ((c == -1) || (b.indexOf("E+") != -1)) {
+            Right = 0;
+        } else if (b.indexOf("E-") != -1) {
+            // @ts-expect-error TS(2345): Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+            Right = b.length - b.indexOf("E") + Math.floor(b.slice(b.indexOf("-") + 1));
+        } else {
+            Right = b.slice(c + 1).length;
+        }
+        if (Left < 0) {
+            Left = 0;
+        }
+        return { BeforeDecimal: Left, AfterDecimal: Right };
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} val 
+ * @param {*} commma_f 
+ * @returns {*} 
+ */
+static Figure_Using_Solo(val: any, commma_f: any) {
+
+        let retv = this.Figure_Arrange(val);
+        let L = retv.BeforeDecimal;
+        let r = retv.AfterDecimal;
+        if (L == 0) {
+            L = 1;
+        }
+        if (val < 0) {
+            L++;
+        }
+        return this.Figure_Using3(val, L, r, commma_f);
+    }
+
+    //指定した数値を、指定した小数点以下桁数の文字列に変換して返す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Value 
+ * @param {*} RightOfDecimaplPoint 
+ * @returns {*} 
+ */
+static Figure_Using(Value: any, RightOfDecimaplPoint: any) {
+        return Value.toFixed(RightOfDecimaplPoint);
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Value 
+ * @param {*} LeftOfDecimalPoint 
+ * @param {*} RightOfDecimaplPoint 
+ * @param {*} Comma_f 
+ * @returns {*} 
+ */
+static Figure_Using3(Value: any, LeftOfDecimalPoint: any, RightOfDecimaplPoint: any, Comma_f: any) {
+        
+        let Comma_Num;
+        if (Comma_f == true) {
+            Comma_Num = Math.floor((LeftOfDecimalPoint - 1) / 3);
+        } else {
+            Comma_Num = 0;
+        }
+        let Num = Comma_Num + LeftOfDecimalPoint + RightOfDecimaplPoint;
+        if (RightOfDecimaplPoint > 0) {
+            Num++;
+        }
+        let FL = " ".repeat(LeftOfDecimalPoint);
+        if (Comma_f == true) {
+            FL += Math.floor(Value).toLocaleString();
+        } else {
+            FL += String(Math.floor(Value));
+        }
+        if (RightOfDecimaplPoint != 0) {
+            FL += "." + Number(Value).toFixed(RightOfDecimaplPoint).split(".")[1];
+        }
+        // @ts-expect-error TS(2339): Property 'right' does not exist on type 'string'.
+        FL = FL.right(Num);
+        return FL;
+    }
+
+    //配列から特定の値の位置を取り出す
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Original_Array 
+ * @param {*} Specified_Value 
+ * @returns {{}} 
+ */
+static Get_Specified_Value_Array(Original_Array: any, Specified_Value: any) {
+        let retArray = [];
+        for (let key in Original_Array) {
+            if (Original_Array[key] == Specified_Value) {
+                retArray.push(key);
+            }
+        }
+        return retArray;
+    }
+    //配列中の指定した値の数をカウントする
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} Original_Array 
+ * @param {*} Specified_Value 
+ * @returns {number} 
+ */
+static Count_Specified_Value_Array(Original_Array: any, Specified_Value: any) {
+        let n = 0;
+        for (let key in Original_Array) {
+            if (Original_Array[key] == Specified_Value) {
+                n++;
+            }
+        }
+        return n;
+    }
+    /**配列中から含まれる要素とその数の一覧の配列[{value: num:}]を返す */
+    static getArrayContentsList(originArray: any){
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        let s=new clsSortingSearch();
+        s.AddRange(originArray);
+        return s.EachValue_Array();
+    }
+
+    /**タブ作成(base.panel[]に内部要素を追加する) */
+    static createNewTab(ParentObj: any, tabList: any, firstSel: any, x: any, y: any, width: any, height: any) {
+        let tabh = 20;
+        let base = this.createNewDiv(ParentObj, "", "", "", x, y, width, height, "", "");
+        // @ts-expect-error TS(2339): Property 'tab' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+        base.tab = [];
+        // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+        base.selectedIndex = firstSel;
+        // @ts-expect-error TS(2339): Property 'panel' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+        base.panel = [];
+        let n = tabList.length;
+        let tabw = Math.floor(width - 20) / n;
+        for (let i = 0; i < n; i++) {
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            let tab = this.createNewDiv(base, tabList[i], "", "", i * tabw, 0, tabw, tabh, "border:solid 1px;border-color:#666666;line-height:"+(tabh-2).px(), tabclick);
+            tab.style.backgroundColor = "#e1e1e1";
+            tab.align = 'center';
+            // @ts-expect-error TS(2339): Property 'tag' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+            tab.tag = i;
+            // @ts-expect-error TS(2339): Property 'tab' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+            base.tab.push(tab);
+            let panel = this.createNewDiv(base, "", "", "", 0, tabh + 1, width, height - tabh - 1, "border:solid 1px;border-color:#666666;border-bottom-right-radius:3px;border-bottom-left-radius:3px;border-top-right-radius:3px", "");
+            // @ts-expect-error TS(2339): Property 'tag' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+            panel.tag = i;
+            // @ts-expect-error TS(2339): Property 'setVisibility' does not exist on type 'H... Remove this comment to see the full error message
+            panel.setVisibility(false);
+            panel.style.backgroundColor = "#ffffff";
+            // @ts-expect-error TS(2339): Property 'panel' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+            base.panel.push(panel);
+        }
+        // @ts-expect-error TS(2339): Property 'tab' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+        base.tab[firstSel].style.backgroundColor = "#ffffff";
+        // @ts-expect-error TS(2339): Property 'panel' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+        base.panel[firstSel].style.visibility = "visible";
+        // @ts-expect-error TS(2339): Property 'panel' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+        base.panel[firstSel].setVisibility(true);
+        // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+        let mask = this.createNewDiv(base, "", "", "", 0, tabh - 1, tabw - 1, 3, "");
+        mask.style.backgroundColor = "#ffffff";
+        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+        mask.style.left = (firstSel * tabw + 1).px();
+        return base;
+        function tabclick(this: any, e: any) {
+            for (let i = 0; i < n; i++) {
+                // @ts-expect-error TS(2339): Property 'tab' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+                base.tab[i].style.backgroundColor = "#e1e1e1";
+                // @ts-expect-error TS(2339): Property 'panel' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+                base.panel[i].setVisibility(false);
+            }
+            this.style.backgroundColor = "#ffffff";
+            // @ts-expect-error TS(2339): Property 'panel' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+            base.panel[this.tag].setVisibility(true);
+            // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+            base.selectedIndex = Number(this.tag);
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            mask.style.left = (this.tag * tabw + 1).px();
+        }
+    }
+
+    static createNewDiv(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, width: any, height: any, styleinfo: any, onclick: any) {
+        /// <signature>
+        /// <summary>div要素を作成</summary>
+        /// <param name="ParentObj">親要素</param>  
+        /// <param name="innerHtml">innerHtml</param>  
+        /// <param name="ID">ID</param>  
+        /// <param name="Class">クラス名</param>  
+        /// <param name="x">座標</param>  
+        /// <param name="y">y座標</param>  
+        /// <param name="width">幅</param>  
+        /// <param name="height">高さ</param>  
+        /// <param name="styleinfo">スタイルシート文字列</param>  
+        /// <param name="onclick">onclickイベント</param>  
+        /// <returns >div要素</returns>  
+        /// </signature>
+        var obj = document.createElement("div");
+        obj.setAttribute("id", ID);
+        obj.setAttribute("class", Class);
+        obj.setAttribute("onclick", onclick);
+        obj.setAttribute("style", "position:absolute;" + styleinfo);
+        obj.onclick = onclick;
+        obj.innerHTML = innerHtml;
+        obj.style.top = y.px();
+        obj.style.left = x.px();
+        if (width != undefined) {
+            if ((typeof width) == 'string') {
+                obj.style.width = width;
+            } else {
+                obj.style.width = width.px();
+            }
+        }
+        if (height != undefined) {
+            if ((typeof height) == 'string') {
+                obj.style.height = height;
+            } else {
+                obj.style.height = height.px();
+            }
+        }
+        ParentObj.appendChild(obj);
+        return obj;
+    }
+
+
+    /**
+     *ラジオボタン要素をリスト(value,text,checked)で作成onClickで選択されたValueを返す
+     * @static
+     * @param {*} yplus 配列の場合は個別にプラス
+     * @param {*} defoCheckValue
+     * @param {*} onClick
+     * @param {*} styleinfo
+     * @memberof Generic
+     */
+    static createNewRadioButtonList(ParentObj: any, name: any, list: any, x: any, y: any,wordWidth: any, yplus: any,defoCheckValue: any, onClick: any, styleinfo: any) {
+        let sy = y;
+        for (let i = 0; i < list.length; i++) {
+            this.createNewRadioButton(ParentObj, list[i].text, "radio" + name + i, name, (list[i].value == defoCheckValue), list[i].value, x, sy, wordWidth, onClick, styleinfo);
+            if (Array.isArray(yplus)) {
+                sy += yplus[i];
+            } else {
+                sy += yplus;
+            }
+        }
+    }
+    /**ラジオボタン要素作成 onClickで選択されたValueを返す */
+    static createNewRadioButton(ParentObj: any, text: any, ID: any, name: any, checked: any,value: any, x: any, y: any,wordWidth: any, onClick: any, styleinfo: any) {
+        let ok = this.createNewInput(ParentObj, "radio", "", ID, x, y, "", styleinfo);
+        ok.addEventListener('change', change);
+        ok.value = value;
+        ok.setAttribute("name", name);
+        if (checked == true) {
+            ok.setAttribute("checked", "")
+        }
+        let asize = Generic.getDivSize(text, wordWidth, "");
+        let sp=Generic.createNewDiv(ParentObj, text, "div"+ID, "", x+10, y + 16 / 2 - asize.height / 2, wordWidth, undefined, styleinfo+";padding-left:15px", undefined);
+        ok.setAttribute("name", name);
+        // @ts-expect-error TS(2339): Property 'tag' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+        sp.tag = ID;
+        sp.addEventListener('click', function gg(e) {
+            // @ts-expect-error TS(2531): Object is possibly 'null'.
+            let obj = document.getElementById(e.target.tag);
+            // @ts-expect-error TS(2531): Object is possibly 'null'.
+            if (obj.disabled == false) {
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
+                obj.checked = true;
+                change();
+            }
+        }, false);
+//        sp.addEventListener('click', onClick, false);
+        function change(){
+            if (typeof (onClick) == "function") {
+                let v=ok.value;
+                // @ts-expect-error TS(2345): Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                if (isNaN(v)==false){
+                    // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+                    v=Number(v);
+                }
+                onClick(v);
+            }
+        }
+    }
+
+    //ラジオボタンの指定valueの要素をenabled/disableする
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} name 
+ * @param {*} value 
+ * @param {*} enabled 
+ */
+static enableRadioByValue(name: any, value: any, enabled: any) {
+        let rd = document.getElementsByName(name);
+        for (let i = 0; i < rd.length; i++) {
+            // @ts-expect-error TS(2339): Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
+            let v = rd[i].value;
+            if ((isNaN(v) == false) && (isNaN(value) == false)) {
+                v = Number(v);
+            }
+            if (v == value) {
+                // @ts-expect-error TS(2339): Property 'disabled' does not exist on type 'HTMLEl... Remove this comment to see the full error message
+                rd[i].disabled = !enabled;
+                break;
+            }
+        }
+    }
+    //ラジオボタンの指定valueの要素をチェックする
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} name 
+ * @param {*} value 
+ */
+static checkRadioByValue(name: any, value: any) {
+        let rd = document.getElementsByName(name);
+        for (let i = 0; i < rd.length; i++) {
+            // @ts-expect-error TS(2339): Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
+            let v = rd[i].value;
+            if ((isNaN(v) == false) && (isNaN(value) == false)) {
+                v = Number(v);
+            }
+            if (v == value) {
+                // @ts-expect-error TS(2339): Property 'checked' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+                rd[i].checked = true;
+                break;
+            }
+        }
+    }
+
+    //ラジオボタンのチェック要素のvalueを取得する
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} name 
+ * @returns {*} 
+ */
+static getRadioCheckByValue(name: any) {
+        let rd = document.getElementsByName(name);
+        for (let i = 0; i < rd.length; i++) {
+            // @ts-expect-error TS(2339): Property 'checked' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+            if (rd[i].checked==true) {
+                // @ts-expect-error TS(2339): Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
+                let v=rd[i].value;
+                if (isNaN(v)==false){
+                    v=Number(v);
+                }
+                return v;
+                break;
+            }
+        }
+        return undefined;
+    }
+
+    /**チェックボックス要素作成 onClickでは要素を返す */
+    static createNewCheckBox(ParentObj: any, text: any, ID: any, checked: any, x: any, y: any,wordWidth: any, onClick: any, styleinfo: any) {
+        let ok = this.createNewInput(ParentObj, "checkbox", "", ID, x, y, undefined, styleinfo);
+        if (checked == true) {
+            ok.setAttribute("checked", "")
+        }
+        ok.onchange = change;
+        this.createNewWordWidthDiv(ParentObj, "", text, x + 20, y, 18, wordWidth, spnClick);
+        function spnClick() {
+            if(ok.disabled==false){
+                ok.checked = !ok.checked;
+                change();
+                }
+        }
+        function change(){
+            if (typeof (onClick) == "function") {
+                onClick(ok);
+            }
+        }
+        return ok;
+    }
+
+    /**inputText要素作成*/
+    static createNewWordTextInput(ParentObj: any, headWord: any, footWord: any, defoText: any, ID: any, x: any, y: any,headWordWidth: any, boxWidth: any, onChange: any, styleinfo: any) {
+        let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
+        styleinfo = "width:" + String(boxWidth) + "px;" + styleinfo;
+        let tx = this.createNewInput(ParentObj, "text", defoText, ID, x + hsw, y, undefined, styleinfo);
+        tx.onchange = onChange;
+        if (footWord != "") {
+            Generic.createNewSpan(ParentObj, footWord, "", "", x + boxWidth + hsw + 5, y + 3, "", "");
+        }
+        return tx;
+    }
+
+    /**イメージボタン */
+    static createNewImageButton(ParentObj: any,ID: any,src: any,x: any,y: any,width: any,height: any,onClick: any,styleinfo: any){
+        let ok=document.createElement("img");
+        ok.setAttribute("style", "position:absolute;width:"+width.px()+";height:" +height.px() +";"+ styleinfo);
+        ok.style.top = y.px();
+        ok.style.left = x.px();
+        ok.setAttribute("id", ID);
+        ok.setAttribute("class", "imgButton");
+        ok.setAttribute("src", src);
+        ok.onclick = onClick;
+        ParentObj.appendChild(ok);
+        return ok;
+
+    }
+
+
+    //** input要素作成*/
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} type 
+ * @param {*} text 
+ * @param {*} ID 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} onClick 
+ * @param {*} styleinfo 
+ * @returns {*} 
+ */
+static createNewInput(ParentObj: any, type: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any) {
+        let ok = document.createElement("input");
+        ok.setAttribute("type", type);
+        ok.setAttribute("id", ID);
+        ok.setAttribute("value", text);
+        ok.setAttribute("onclick", onClick);
+        ok.setAttribute("style", "position:absolute;" + styleinfo);
+        ok.style.top = y.px();
+        ok.style.left = x.px();
+        ParentObj.appendChild(ok);
+        return ok;
+    }
+
+    /** 改行つきDIV作成*/
+    static createNewWordWidthDiv(ParentObj: any, ID: any, word: any,  x: any, y: any,lineHeight: any,wordWidth: any, onclick: any,styleinfo=""){
+        if (word == "") {
+            return 0;
+        } else {
+            let asize = Generic.getDivSize(word, wordWidth,styleinfo);
+            Generic.createNewDiv(ParentObj, word, "", "", x, y + lineHeight / 2 - asize.height / 2, wordWidth, undefined, styleinfo, onclick);
+            return asize.width + 5;
+        }
+    }
+
+    //タイルdivボックス
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} ID 
+ * @param {*} word 
+ * @param {*} defoTile 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} wordWidth 
+ * @param {*} onclick 
+ * @param {number} [tileWidth=45] 
+ * @returns {*} 
+ */
+static createNewTileBox(ParentObj: any, ID: any, word: any, defoTile: any, x: any, y: any,wordWidth: any, onclick: any, tileWidth = 45) {
+        let lineH = 23;
+        let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
+        const tilebox = Generic.createNewDiv(ParentObj, "", ID, "imgButton", x + hsw, y, tileWidth, lineH, "", onclick);
+        Generic.createNewDiv(tilebox, "透明", "", "", 0, 3, tileWidth, lineH, "pointer-events: none;text-align:center", "");
+        Generic.setTileDiv(tilebox, defoTile);
+        return tilebox;
+            }
+
+    //タイルDIVに設定
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} tileDiv 
+ * @param {*} Tile 
+ */
+static setTileDiv(tileDiv: any, Tile: any) {
+        const trans = tileDiv.children;
+        if(trans.length==0){
+            return;
+        }
+        if (Tile.BlankF == true) {
+           trans[0].style.display = "inline";
+            tileDiv.style.backgroundColor = 'white';
+        } else {
+           trans[0].style.display = "none";
+            tileDiv.style.backgroundColor = Tile.Color.toRGBA();
+        }
+    }
+
+    //** 背景Canvasボックス */
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} ID 
+ * @param {*} word 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} wordWidth 
+ * @param {*} onclick 
+ * @returns {*} 
+ */
+static createNewWordDivCanvas(ParentObj: any, ID: any, word: any, x: any, y: any,wordWidth: any, onclick: any) {
+        let lineH = 23;
+        let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
+        const canv = Generic.createNewCanvas(ParentObj, ID, "imgButton", x + hsw, y, 45, lineH, onclick,"");
+        return canv;
+    }
+
+
+
+    //** 色divボックス */
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} ID 
+ * @param {*} word 
+ * @param {*} color 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} onclick 
+ * @returns {*} 
+ */
+static createNewColorBox(ParentObj: any,ID: any, word: any,color: any, x: any, y: any, onclick: any) {
+        let sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", "");
+        let sw = sp.offsetWidth;
+        if (sw < 35) {
+            sw = 35;
+        } else {
+            sw += 10;
+        }
+        const colbox = Generic.createNewDiv(ParentObj, "", ID, "imgButton", x + sw, y, 45, 23, "", colSelect);
+        if(color instanceof colorRGBA){
+            // @ts-expect-error TS(2339): Property 'toRGBA' does not exist on type '{}'.
+            colbox.style.backgroundColor = color.toRGBA();
+        }
+        return colbox;
+        function colSelect(e: any) {
+            clsColorPicker(e, onclick);
+        }
+    }
+
+    /**サイズ選択用select valueType:配列はそのまま入れる、1（0.1間隔）,2(0.5),3(5),4(10))、onChangeでは要素,オブジェクトと値を返す*/ 
+    static createNewSizeSelect(ParentObj: any, defoValue: any, ID: any,preWord: any, x: any, y: any,preWordWidth: any,valueType: any, onChange: any,percentShowF=true) {
+        let cboCodeList=[];
+        if( valueType instanceof Array==true){
+            for (let i　in valueType) {
+                cboCodeList.push(valueType[i]);
+            }
+        }else{
+            switch (valueType) {
+                case 1: {
+                    cboCodeList = [0];
+                    for (let i = 1; i < 10; i++) {
+                        let n = i / 10;
+                        cboCodeList.push(n);
+                    }
+                    for (let i = 1; i < 5; i++) {
+                        cboCodeList.push(i);
+                    }
+                    break;
+                }
+                case 2: {
+                    cboCodeList = [0.2];
+                    for (let i = 0.5; i < 5; i += 0.5) {
+                        cboCodeList.push(i);
+                    }
+                    for (let i = 5; i < 20; i++) {
+                        cboCodeList.push(i);
+                    }
+                    break;
+                }
+                case 3:
+                    for (let i = 5; i < 55; i += 5) {
+                        cboCodeList.push(i);
+                    }
+                    break;
+                case 4: {
+                    for (let i = 10; i < 110; i += 10) {
+                        cboCodeList.push(i);
+                    }
+                    break;
+                }
+            }
+    
+        }
+        let lineH =21;
+        let sw =this.createNewWordWidthDiv(ParentObj,"",preWord,x,y,lineH,preWordWidth,undefined);
+        let sInput=this.createNewNumberComboBox(ParentObj,defoValue,ID, cboCodeList,x+sw,y,60,10,onChange );
+        if(percentShowF==true){
+            Generic.createNewSpan(ParentObj, "%", "", "", x+sw+65, y+3, "", "");
+        }
+        return sInput;
+    }
+
+
+    /**最初からドロップダウンされているリストを表示 戻り値はselectedIndex番号 */
+    static createNewDropdownSelect(title: any,textList: any,x: any,y: any,width: any,onChange: any){
+        let pele=this.set_backDiv("",title,width,100,false,false,undefined,0,true);
+        let oneHeight=this.getSpanSize(textList[0],15).height+2;
+        let totalHeight=Math.min(8,textList.length)*oneHeight;
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        pele.style.height=(scrMargin.top+totalHeight+2).px();
+        // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+        let frame=this.createNewDiv(pele,"","","grayFrame",0,scrMargin.top,width-1,totalHeight,"overflow-y:scroll;overflow-x:hidden");
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        Generic.Set_Box_Position_in_Browser(new point(x,y), pele);
+        for (let i in textList) {
+            // @ts-expect-error TS(2363): The right-hand side of an arithmetic operation mus... Remove this comment to see the full error message
+            let md = this.createNewDiv(frame, textList[i], "", "", 0, oneHeight * i, width-2, oneHeight - 2, "padding-top:2px;padding-left:10px;font-size:14px", "");
+            // @ts-expect-error TS(2339): Property 'tag' does not exist on type 'HTMLDivElem... Remove this comment to see the full error message
+            md.tag = i;
+            md.onmouseover = function () {
+                md.style.backgroundColor = '#dddddd';
+            }
+            md.onmouseleave = function () {
+                md.style.backgroundColor = 'white';
+            }
+            md.onclick = function (e) {
+                // @ts-expect-error TS(2339): Property 'tag' does not exist on type 'GlobalEvent... Remove this comment to see the full error message
+                change(Number(this.tag))
+            }
+        }
+
+        function change(selectedIndex: any){
+            Generic.clear_backDiv();
+            onChange(selectedIndex);
+        }
+    }
+    /**文つきselect要素作成 selectPosition:0は右、1は下*/
+    static createNewWordSelect(ParentObj: any,headWord: any,  list: any, firstSelectIndex: any, ID: any, x: any, y: any,headWordWidth: any,selectWidth: any, selectPosition: any, onChange: any,divStyle: any, selectStyleinfo: any, astariskNonF=true) {
+        let lineH = this.getDivSize("A", undefined, divStyle).height ;
+        let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, lineH, headWordWidth, undefined,divStyle);
+        let xx=x;
+        let yy=y;
+        if(selectPosition==0){
+            xx= x + hsw;
+        }else{
+            xx+=15;
+            yy+=lineH+2;
+        }
+        let sbox=this.createNewSelect(ParentObj, list, firstSelectIndex, ID, xx, yy, false, onChange, selectStyleinfo, 0 ,astariskNonF) ;
+        sbox.style.width=selectWidth.px();
+        return sbox;
+    }
+    /**select要素作成 list.value,.text *は非選択が標準、onChangeでは要素,selectedIndex,valueを返す*/
+    static createNewSelect(ParentObj: any, list: any, firstSelectIndex: any, ID: any, x: any, y: any, multipleFlag: any, onChange: any, styleinfo: any, size = 1,astariskNonF=true) {
+        var sbox = document.createElement("select")
+        sbox.setAttribute("id", ID)
+        sbox.multiple = multipleFlag;
+        sbox.onchange =function(){
+            let nochange=false;
+            if((typeof onChange=='function')&&(nochange==false)){
+                let sel;
+                let v;
+                if(multipleFlag==false){
+                    sel=sbox.selectedIndex;
+                    // @ts-expect-error TS(2339): Property 'getValue' does not exist on type 'HTMLSe... Remove this comment to see the full error message
+                    v=sbox.getValue();
+                }else{
+                    sel=Generic.getMultipleSelectIndex(sbox,0);
+                }
+                onChange(sbox,sel,v);
+            }
+        }
+        sbox.setAttribute("style", "position:absolute;" + styleinfo)
+        sbox.style.top = y.px();
+        sbox.style.left = x.px();
+        // @ts-expect-error TS(2345): Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
+        sbox.setAttribute("size", size);
+        sbox.addEventListener("mouseenter", mouseEnter, false);
+        sbox.addEventListener("mouseleave", mouseLeave, false);
+        if (list != undefined) {
+            // @ts-expect-error TS(2339): Property 'addSelectList' does not exist on type 'H... Remove this comment to see the full error message
+            sbox.addSelectList( list, firstSelectIndex,true,astariskNonF);
+            sbox.selectedIndex = firstSelectIndex;
+        }
+        // @ts-expect-error TS(2339): Property 'oldSel' does not exist on type 'HTMLSele... Remove this comment to see the full error message
+        sbox.oldSel = firstSelectIndex;
+        ParentObj.appendChild(sbox);
+        return sbox;
+        function mouseEnter(this: any, e: any) {
+            // @ts-expect-error TS(2339): Property 'getText' does not exist on type 'HTMLSel... Remove this comment to see the full error message
+            let w = Generic.getSpanSize(sbox.getText(), sbox.style.fontSize.removePx()).width + 20;
+            if (w > sbox.offsetWidth) {
+                // @ts-expect-error TS(2339): Property 'getText' does not exist on type 'HTMLSel... Remove this comment to see the full error message
+                Generic.createNewDiv(this.parentNode, sbox.getText(), "", "", x + 50, y + sbox.offsetHeight, 150, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#fffff0;text-align:center", "");
+                // @ts-expect-error TS(2339): Property 'tooltip' does not exist on type 'HTMLSel... Remove this comment to see the full error message
+                sbox.tooltip = 'true';
+            }
+        }
+        function mouseLeave(this: any, e: any) {
+            // @ts-expect-error TS(2339): Property 'tooltip' does not exist on type 'HTMLSel... Remove this comment to see the full error message
+            if (sbox.tooltip == 'true') {
+                this.parentNode.removeChild(this.parentNode.lastChild);
+                // @ts-expect-error TS(2339): Property 'tooltip' does not exist on type 'HTMLSel... Remove this comment to see the full error message
+                sbox.tooltip = '';
+            }
+        }
+    }
+
+
+
+    //
+    /**複数選択select要素の選択状態を取得 mode0は選択された番号の配列、mode1は選択をtruefalseを配列で返す */
+    static getMultipleSelectIndex(obj: any, mode: any) {
+        let opts = obj.options;
+        let selectedIndex = [];
+        let selected = []
+        for (let i = 0; i < opts.length; i++) {
+            if (opts[i].selected) {
+                selectedIndex.push(i);
+                selected[i] = true;
+            } else {
+                selected[i] = false;
+            }
+        }
+        switch (mode) {
+            case 0:
+                return selectedIndex;
+                break;
+            case 1:
+                return selected;
+                break;
+        }
+    }
+
+    //子要素までdisabledを設定
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} element 
+ * @param {*} value 
+ */
+static setDisabled(element: any, value: any) {
+        let children = element.children;
+        for (let i = 0; i < children.length; i++) {
+            children[i].disabled = value;
+            if (children[i].children.length > 0) {
+               this.setDisabled(children[i], value);
+            }
+        }
+
+    }
+
+    //Canvas要素を作成
+    static createNewCanvas(ParentObj: any, ID: any, Class: any, x: any, y: any, width: any, height: any, onClick: any, styleinfo: any) {
+        var canvas = document.createElement("canvas");
+        canvas.setAttribute("style", "position:absolute;" + styleinfo);
+        canvas.setAttribute("id", ID);
+        canvas.setAttribute("class", Class);
+        canvas.width = width;
+        canvas.height = height;
+        canvas.style.top = y.px();
+        canvas.style.left = x.px();
+        canvas.onclick = onClick;
+        ParentObj.appendChild(canvas);
+        return canvas;
+    }
+
+    static createMenuMark(ParentObj: any, onClick: any, markSize: any){
+        var size = 20;
+        if (markSize != undefined) {
+            size = markSize;
+        }
+        var canvas = this.createNewCanvas(ParentObj, "","", 10, 4, size, size, click, "");
+        //canvas.addEventListener("touchend",click);
+        canvas.addEventListener("mouseenter",click);
+        // @ts-expect-error TS(2339): Property 'name' does not exist on type 'HTMLCanvas... Remove this comment to see the full error message
+        canvas.name = "menuMark";
+        let ctx = canvas.getContext("2d");
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.strokeStyle = "#ffffff";
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineWidth = 2;
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.beginPath();
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.moveTo(1, 5);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineTo(size - 2, 5);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.moveTo(1, 10);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineTo(size - 2, 10);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.moveTo(1, 15);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineTo(size - 2, 15);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.stroke();
+        return canvas;
+        function click(e: any){
+            e.preventDefault();
+            let rect=canvas.getBoundingClientRect();
+            // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+            onClick(new point(rect.right,rect.bottom))
+        }
+    }
+
+    //ParentObjの右上にXマーク表示
+    static createXmark(ParentObj: any, onClick: any, markSize: any) {
+        var size = 20;
+        if (markSize != undefined) {
+            size = markSize;
+        }
+        var canvas = this.createNewCanvas(ParentObj, "","", ParentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
+        // @ts-expect-error TS(2339): Property 'name' does not exist on type 'HTMLCanvas... Remove this comment to see the full error message
+        canvas.name = "xMark";
+        // @ts-expect-error TS(2339): Property 'rightPositionFixed' does not exist on ty... Remove this comment to see the full error message
+        canvas.rightPositionFixed=true;
+        // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+        canvas.relativePosition=new point(size+14,0);
+        var ctx = canvas.getContext("2d");
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.strokeStyle = "#ffffff";
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineWidth = 2;
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.beginPath();
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.moveTo(1, 1);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineTo(size - 2, size - 2);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.moveTo(size - 2, 1);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.lineTo(1, size - 2);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ctx.stroke();
+        return canvas;
+    }
+
+        //windowの右上に最大化マーク表示
+        /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} onClick 
+ * @param {*} markSize 
+ * @returns {*} 
+ */
+static createMaxButton(ParentObj: any, onClick: any, markSize: any) {
+            var size = 20;
+            if (markSize != undefined) {
+                size = markSize;
+            }
+            var canvas = this.createNewCanvas(ParentObj, "","", ParentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
+            // @ts-expect-error TS(2339): Property 'name' does not exist on type 'HTMLCanvas... Remove this comment to see the full error message
+            canvas.name = "maxButton";
+            return canvas;
+        }
+
+        //移動要素の内部の要素で右下に固定のものを動かす
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} parentObj 
+ */
+static moveInnerElement(parentObj: any) {
+        let cnode = parentObj.children;
+        let w = parentObj.style.width.removePx();　//親要素で幅100%と指定すると機能しないので注意
+        let h = parentObj.style.height.removePx();
+        for (let i = 0; i < cnode.length; i++) {
+            let node = cnode[i];
+            if (node.hasOwnProperty('rightPositionFixed')) {//右固定
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                node.style.left = (w - node.relativePosition.x).px();
+            }
+            if (node.hasOwnProperty('bottomRightPositionFixed')) {//右下固定
+                if(node.relativePosition.x==-1){ //-1に設定した場合は、親要素左端から全幅
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type '0'.
+                    node.style.left = (0).px();
+                    node.style.width= w.px();
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    node.style.top = (h - node.relativePosition.y).px();    
+                }else{
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    node.style.left = (w - node.relativePosition.x).px();
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    node.style.top = (h - node.relativePosition.y).px();
+                    }
+            }
+            if (node.hasOwnProperty('bottomPositionFixed')) {//下固定
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                node.style.top = (h - node.relativePosition.y).px();
+            }
+            if (node.hasOwnProperty('sizeFixed')) {//サイズ固定
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                node.style.width = (w - node.relativeSize.width).px();
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                node.style.height = (h - node.relativeSize.height).px();
+            }
+            if (node.nodeType == 1) {
+                if (node.childElementCount > 0) {//子要素も調べる
+                    this.moveInnerElement(node);
+                }
+            }
+        }
+    }
+ 
+    //指定したオブジェクトの子要素に、指定したIDの子要素が含まれるかどうかチェックする
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} parentObj 
+ * @param {*} childObjID 
+ * @returns {boolean} 
+ */
+static checkHasChildNode(parentObj: any,childObjID: any) {
+        let cnode = parentObj.childNodes;
+        for (let i = 0; i < cnode.length; i++) {
+            if (cnode[i].id == childObjID) {
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+
+
+    //テキストエリアを作成
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} text 
+ * @param {*} ID 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} row 
+ * @param {*} col 
+ * @param {*} styleinfo 
+ * @returns {*} 
+ */
+static createNewTextarea(ParentObj: any, text: any, ID: any, x: any, y: any, row: any, col: any, styleinfo: any) {
+        var obj = document.createElement("textarea")
+        obj.setAttribute("id", ID);
+        obj.innerHTML = text;
+        obj.setAttribute("style", "position:absolute;" + styleinfo)
+        obj.setAttribute("rows", row)
+        obj.setAttribute("cols", col)
+        obj.style.top = y.px();
+        obj.style.left = x.px();
+        ParentObj.appendChild(obj);
+        return obj;
+    }
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} ID 
+ * @param {*} tableClass 
+ * @param {*} data 
+ * @param {*} width 
+ * @param {*} styleinfo 
+ * @param {*} headNum 
+ * @param {*} headStyleinfo 
+ * @param {*} normalStyleinfo 
+ * @param {*} headXStyleinfo 
+ * @param {*} normalXStyleinfo 
+ * @returns {*} 
+ */
+static createNewTable(ParentObj: any, ID: any, tableClass: any, data: any, width: any, styleinfo: any, headNum: any, headStyleinfo: any, normalStyleinfo: any, headXStyleinfo: any, normalXStyleinfo: any) {
+        /// <signature>
+        /// <summary>グリッドを作成</summary>
+        /// <param name="ParentObj">親のDOM</param>  
+        /// <param name="ID">表のID</param>  
+        /// <param name="tableClass">表のclassパラメータ</param>  
+        /// <param name="data">グリッドに表示するデータの二次元配列</param>  
+        /// <param name="width">表の幅</param>  
+        /// <param name="styleinfo">表のスタイルCSS</param>  
+        /// <param name="headNum">表のヘッダ行の数</param>  
+        /// <param name="headStyleinfo">表のヘッダのスタイルCSS</param>  
+        /// <param name="normalStyleinfo">表の通常セルのスタイルCSS</param>  
+        /// <param name="headXStyleinfo">表のヘッダの列ごとのスタイルCSS配列</param>  
+        /// <param name="normalXStyleinfo">表の通常セルの列ごとのスタイルCSS配列</param>  
+        /// </signature>
+
+        var xcell = data.length;
+        var ycell = data[1].length;
+
+        var tb = document.createElement("table");
+        tb.setAttribute("style", "position:absolute;" + styleinfo)
+        tb.setAttribute("id", ID);
+        tb.setAttribute("class", tableClass);
+        tb.style.top = "0px"
+        tb.style.left = "0px"
+        if ((typeof width) == 'string') {
+            tb.style.width = width;
+        } else {
+            tb.style.width = width.px();
+        }
+        for (var i = 0; i < ycell; i++) {
+            var row = tb.insertRow(-1)
+            if (i < headNum) {
+                row.setAttribute("style", headStyleinfo)
+            } else {
+                row.setAttribute("style", normalStyleinfo)
+            }
+            for (var j = 0; j < xcell; j++) {
+                var newtd = row.insertCell(-1);
+                newtd.setAttribute("class", tableClass);
+                if (i < headNum) {
+                    if (headXStyleinfo != "") {
+                        newtd.setAttribute("style", headXStyleinfo[j]);
+                    }
+                } else {
+                    if (normalXStyleinfo != "") {
+                        newtd.setAttribute("style", normalXStyleinfo[j]);
+                    }
+                }
+                newtd.innerHTML = data[j][i];
+            }
+        }
+        ParentObj.appendChild(tb);
+        return tb;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} gridID 
+ * @param {*} TableID 
+ * @param {*} gridClass 
+ * @param {*} tableClass 
+ * @param {*} data 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} width 
+ * @param {*} height 
+ * @param {*} tableWidth 
+ * @param {*} styleinfo 
+ * @param {*} tableStyleinfo 
+ * @param {*} tableHeadNum 
+ * @param {*} tableHeadStyleinfo 
+ * @param {*} tableNormalStyleinfo 
+ * @param {*} tableHeadXStyleinfo 
+ * @param {*} tableNormalXStyleinfo 
+ * @returns {*} 
+ */
+static createNewGrid(ParentObj: any, gridID: any, TableID: any, gridClass: any, tableClass: any, data: any, x: any, y: any, width: any, height: any, tableWidth: any, styleinfo: any, tableStyleinfo: any, tableHeadNum: any,
+        tableHeadStyleinfo: any, tableNormalStyleinfo: any, tableHeadXStyleinfo: any, tableNormalXStyleinfo: any) {
+        /// <signature>
+        /// <summary>グリッドを作成</summary>
+        /// <param name="ParentObj">親のDOM</param>  
+        /// <param name="gridID">グリッドのID</param>  
+        /// <param name="TableID">グリッド内の表のID</param>  
+        /// <param name="gridClass">グリッドのclassパラメータ</param>  
+        /// <param name="tableClass">グリッド内の表のclassパラメータ</param>  
+        /// <param name="data" >グリッドに表示するデータの二次元配列</param>  
+        /// <param name="x">グリッドのX座標</param>  
+        /// <param name="y">グリッドのY座標</param>  
+        /// <param name="width">グリッドの幅</param>  
+        /// <param name="height">グリッドの高さ</param>  
+        /// <param name="tableWidth">表の幅（文字指定）</param>  
+        /// <param name="styleinfo">グリッドのスタイルCSS</param>  
+        /// <param name="tableStyleinfo">グリッド内の表のスタイルCSS</param>  
+        /// <param name="tableHeadNum">グリッド内の表のヘッダ行の数</param>  
+        /// <param name="tableHeadStyleinfo">グリッド内の表のヘッダのスタイルCSS</param>  
+        /// <param name="tableNormalStyleinfo">グリッド内の表の通常セルのスタイルCSS</param>  
+        /// <param name="tableHeadXStyleinfo">グリッド内の表のヘッダの列ごとのスタイルCSS配列</param>  
+        /// <param name="tableNormalXStyleinfo">グリッド内の通常セルの列ごとのスタイルCSS配列</param>  
+        /// </signature>
+        var obj = document.createElement("div")
+        obj.setAttribute("style", "position:absolute;overflow: auto;" + styleinfo)
+        obj.setAttribute("id", gridID);
+        obj.setAttribute("class", gridClass);
+        obj.style.top = y.px();
+        obj.style.left = x.px();
+        if ((typeof width) == 'string') {
+            obj.style.width = width;
+        } else {
+            obj.style.width = width.px();
+        }
+        if ((typeof height) == 'string') {
+            obj.style.height = height;
+        } else {
+            obj.style.height = height.px();
+        }
+        // @ts-expect-error TS(2339): Property 'table' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+        obj.table=this.createNewTable(obj, TableID, tableClass, data, tableWidth, tableStyleinfo, tableHeadNum,
+            tableHeadStyleinfo, tableNormalStyleinfo, tableHeadXStyleinfo, tableNormalXStyleinfo);
+        ParentObj.appendChild(obj);
+        return obj;
+    }
+
+    //表の中身を取得する
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} table 
+ * @returns {string} 
+ */
+static getTableValue(table: any){
+        let tx="";
+        for(let i=0;i<table.rows.length;i++){
+            for(let j=0;j<table.rows[i].cells.length;j++){
+                tx+=table.rows[i].cells[j].innerText;
+                if(j!=table.rows[i].cells.length-1){
+                    tx+='\t';
+                }else{
+                    tx+='\n';
+                }
+            }
+        }
+        return tx;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} dim1num 
+ * @param {*} dim2num 
+ * @param {*} defoValue 
+ * @returns {*} 
+ */
+static Array2Dimension(dim1num: any, dim2num: any,defoValue: any) {
+        //二次元配列を作成
+        var ArrayData = new Array(dim1num);
+        for (let i = 0; i < dim1num; i++) {
+            ArrayData[i] = new Array(dim2num);
+            if(defoValue!=undefined){
+                ArrayData[i].fill(defoValue);
+            }
+        }
+        return ArrayData;
+    }
+
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} id 
+ * @param {*} Class 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} width 
+ * @param {*} height 
+ * @param {string} [text=""] 
+ * @returns {*} 
+ */
+static createNewFrame(ParentObj: any, id: any, Class: any, x: any, y: any, width: any, height: any, text = "") {
+        var div;
+        var yy = y;
+        if (text != "") {
+            yy += 10;
+        }
+        div = this.createNewDiv(ParentObj, "", id, Class, x, yy, width, height, "border:solid 1px;border-color:#666666;border-radius:3px;", "");
+        if (text != "") {
+            let bg = ParentObj.style.backgroundColor;
+            if (bg == ""){
+                bg = ParentObj.parentNode.style.backgroundColor;
+            }
+            let lb = this.createNewSpan(div, text,  "label", Class,  8, -8, "padding-left:3px;padding-right:3px;background-color:" + bg, "");
+        }
+        return div;
+    }
+
+    /**メッセージ表示 borderFlag:枠を動かせるかどうか*/
+    static createMsgBox(title: any,text: any,borderFlag: any,width=350,height=400) {
+        let msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        let ta=this.createNewTextarea(msgbox, text, "", 10, scrMargin.top+10, 20, 50, "resize:none;width:480px;height:420px;font-size:13px");
+        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+        ta.style.width=(width-20).px();
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        ta.style.height=(height-50-scrMargin.top-10).px();
+        if(borderFlag==true){
+            // @ts-expect-error TS(2339): Property 'dragBorder' does not exist on type 'HTML... Remove this comment to see the full error message
+            msgbox.dragBorder(undefined,undefined);
+            // @ts-expect-error TS(2339): Property 'sizeFixed' does not exist on type 'HTMLT... Remove this comment to see the full error message
+            ta.sizeFixed=true;
+            // @ts-expect-error TS(2339): Property 'relativeSize' does not exist on type 'HT... Remove this comment to see the full error message
+            ta.relativeSize=new size(20,80);
+        }
+        let copy=Generic.createNewButton(msgbox, "コピー", "", 30, height - 35, copyValue, "width:60px;height:23px");
+        // @ts-expect-error TS(2339): Property 'bottomPositionFixed' does not exist on t... Remove this comment to see the full error message
+        copy.bottomPositionFixed=true;
+        // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+        copy.relativePosition = new point(0, 30);
+        copy.setAttribute("name",'copy');
+        function copyValue(){
+            Generic.copyText(ta.value);
+        }
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} title 
+ * @param {*} data 
+ * @param {*} width 
+ * @param {*} height 
+ * @param {*} borderFlag 
+ */
+static createMsgTableBox(title: any, data: any, width: any, height: any,borderFlag: any) {
+        /// <signature>
+        /// <summary>グリッドを作成</summary>
+        /// <param name="title">タイトル</param>
+        /// <param name="data" >グリッドに表示するデータの二次元配列</param>  
+        /// <param name="width">幅</param>  
+        /// <param name="height">高さ</param>  
+        /// <param name="tableHeadNum">グリッド内の表のヘッダ行の数</param>  
+        /// </signature>
+        let msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
+        let gd=Generic.createNewGrid(msgbox, "", "", "", "", data, 5, 35, width - 10, height - 80,'100%', "", "font-size:13px", 1, "background-color:#aaffaa;",  "", "", "");
+        if(borderFlag==true){
+            // @ts-expect-error TS(2339): Property 'dragBorder' does not exist on type 'HTML... Remove this comment to see the full error message
+            msgbox.dragBorder(undefined,undefined);
+            // @ts-expect-error TS(2339): Property 'sizeFixed' does not exist on type 'HTMLD... Remove this comment to see the full error message
+            gd.sizeFixed=true;
+            // @ts-expect-error TS(2339): Property 'relativeSize' does not exist on type 'HT... Remove this comment to see the full error message
+            gd.relativeSize=new size(30,70);
+
+        }
+        let copy=Generic.createNewButton(msgbox, "コピー", "", 30, height - 35, copyValue, "width:60px;height:23px");
+        // @ts-expect-error TS(2339): Property 'bottomPositionFixed' does not exist on t... Remove this comment to see the full error message
+        copy.bottomPositionFixed=true;
+        // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+        copy.relativePosition=new point(0,30);
+        copy.setAttribute("name",'copy');
+        function copyValue(){
+            // @ts-expect-error TS(2339): Property 'table' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+            let tx=Generic.getTableValue(gd.table);
+            Generic.copyText(tx);
+        }
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ID 
+ * @param {*} Class 
+ * @param {*} title 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} width 
+ * @param {*} height 
+ * @param {*} visibilieF 
+ * @param {*} menuMarkF 
+ * @param {*} menuCall 
+ * @param {*} XmarkF 
+ * @param {*} XmarkCall 
+ * @param {*} footer_Flag 
+ * @param {*} footerID 
+ * @param {*} maxButtonF 
+ * @param {*} maxButtonCall 
+ * @returns {*} 
+ */
+static createWindow(ID: any, Class: any, title: any, x: any, y: any, width: any, height: any, visibilieF: any,menuMarkF: any,menuCall: any,XmarkF: any,XmarkCall: any,footer_Flag: any,footerID: any,maxButtonF: any,maxButtonCall: any) {
+        var hiddenWindow = function () {
+            // @ts-expect-error TS(2339): Property 'setVisibility' does not exist on type 'H... Remove this comment to see the full error message
+            window.setVisibility(false) ;
+            if(XmarkCall !=undefined){
+                XmarkCall();
+            }
+        }
+        let window = Generic.createNewDiv(document.body, "", ID, Class, x, y, width, height, "border: solid 1px; border-radius:5px; background-color:white; overflow:hidden; ", "");
+        let pl="padding-left:40px;"
+        if(menuMarkF==false){
+            pl="padding-left:15px;"
+        }
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        let hd = Generic.createNewDiv(window, "", "", title, 0, 0, '100%', scrMargin.top-3, "padding-top:3px;background-color: gray;color:#ffffff;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"+pl, "");
+        // @ts-expect-error TS(2339): Property 'name' does not exist on type 'HTMLDivEle... Remove this comment to see the full error message
+        hd.name = "header";
+        // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'HTM... Remove this comment to see the full error message
+        window.maxSizeFlag=false;
+        if (footer_Flag == true) {
+            // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+            let ft = Generic.createNewDiv(window, "", footerID, "", 0, 0, 100, scrMargin.bottom, "background-color: #dddddd;color:#000000;font-size:13px;padding-left:10px;padding-top:5px", "");
+            // @ts-expect-error TS(2339): Property 'bottomRightPositionFixed' does not exist... Remove this comment to see the full error message
+            ft.bottomRightPositionFixed=true;
+            // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+            ft.relativePosition=new point(-1,scrMargin.bottom);
+            // @ts-expect-error TS(2339): Property 'name' does not exist on type 'HTMLDivEle... Remove this comment to see the full error message
+            ft.name = "footer";
+        }
+        if (XmarkF == true) {
+            // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
+            this.createXmark(window, hiddenWindow);
+        }
+        if (menuMarkF == true) {
+            // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
+            this.createMenuMark(window,menuCall);
+        }
+        if (maxButtonF == true) {
+            // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
+            const cs=this.createMaxButton(window, resizeWindow);
+            // @ts-expect-error TS(2339): Property 'rightPositionFixed' does not exist on ty... Remove this comment to see the full error message
+            cs.rightPositionFixed=true;
+            if(XmarkF==true){
+                // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+                cs.relativePosition=new point(cs.width*2+38,0);
+            }else{
+                // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+                cs.relativePosition=new point(cs.width+14,0);
+            }
+            
+            const w=cs.width;
+            const ctx = cs.getContext("2d");
+            function resizeWindow(){
+                //最大化ボタン
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
+                ctx.clearRect(0, 0,cs.width,cs.height);
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
+                ctx.strokeStyle = "#ffffff";
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
+                ctx.lineWidth = 2;
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
+                ctx.strokeRect(2, 2,w-4,w-4);
+                // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'HTM... Remove this comment to see the full error message
+                if (window.maxSizeFlag == false) {
+                    // @ts-expect-error TS(2531): Object is possibly 'null'.
+                    ctx.strokeRect(2, 7,Math.floor(w/2),Math.floor(w/2));//小さい四角を追加
+                    // @ts-expect-error TS(2339): Property 'oldpos' does not exist on type 'HTMLDivE... Remove this comment to see the full error message
+                    window.oldpos=new rectangle(new point(window.style.left.removePx(),window.style.top.removePx()),
+                        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                        new size(window.style.width.removePx(),window.style.height.removePx()));
+                    let ScreenH = Generic.getBrowserHeight();
+                    let ScreenW = Generic.getBrowserWidth();
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    window.style.width = (ScreenW * 0.9).px();
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    window.style.height = (ScreenH * 0.9).px();
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    window.style.left = (ScreenW * 0.05).px();
+                    // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                    window.style.top = (ScreenH * 0.05).px();
+                    // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'HTM... Remove this comment to see the full error message
+                    window.maxSizeFlag=true;
+                } else {
+                    // @ts-expect-error TS(2339): Property 'oldpos' does not exist on type 'HTMLDivE... Remove this comment to see the full error message
+                    window.style.width = window.oldpos.width().px();
+                    // @ts-expect-error TS(2339): Property 'oldpos' does not exist on type 'HTMLDivE... Remove this comment to see the full error message
+                    window.style.height = window.oldpos.height().px();
+                    // @ts-expect-error TS(2339): Property 'oldpos' does not exist on type 'HTMLDivE... Remove this comment to see the full error message
+                    window.style.left = window.oldpos.left.px();
+                    // @ts-expect-error TS(2339): Property 'oldpos' does not exist on type 'HTMLDivE... Remove this comment to see the full error message
+                    window.style.top = window.oldpos.top.px();
+                    // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'HTM... Remove this comment to see the full error message
+                    window.maxSizeFlag=false;
+                }
+                maxButtonCall();
+            }
+        }
+        // @ts-expect-error TS(2339): Property 'setVisibility' does not exist on type 'H... Remove this comment to see the full error message
+        window.setVisibility(visibilieF);
+        // @ts-expect-error TS(2339): Property 'setTitle' does not exist on type 'HTMLDi... Remove this comment to see the full error message
+        window.setTitle = function (title: any) {
+            let cnode = this.childNodes;
+            for (let i = 0; i < cnode.length; i++) {
+                // @ts-expect-error TS(2339): Property 'name' does not exist on type 'ChildNode'... Remove this comment to see the full error message
+                if (cnode[i].name == 'header') {
+                    // @ts-expect-error TS(2339): Property 'innerHTML' does not exist on type 'Child... Remove this comment to see the full error message
+                    cnode[i].innerHTML = title;
+                    break;
+                }
+            }
+        }
+        return window;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ */
+static clear_backDiv() {
+        //固定ウインドウを消す
+        // @ts-expect-error TS(2345): Argument of type 'ChildNode | null' is not assigna... Remove this comment to see the full error message
+        document.body.removeChild(document.body.lastChild);
+        // @ts-expect-error TS(2345): Argument of type 'ChildNode | null' is not assigna... Remove this comment to see the full error message
+        document.body.removeChild(document.body.lastChild);
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} idname 
+ * @param {*} title 
+ * @param {*} innerWidth 
+ * @param {*} innerHeight 
+ * @param {*} okButtonF 
+ * @param {*} cancelButtonF 
+ * @param {*} okCall 
+ * @param {*} opacity 
+ * @param {*} outerClickF 
+ * @param {boolean} [createXmark=true] 
+ * @param {*} [cancelCall=undefined] 
+ * @returns {*} 
+ */
+static set_backDiv(idname: any, title: any, innerWidth: any, innerHeight: any,okButtonF: any,cancelButtonF: any,okCall: any, opacity: any,outerClickF: any,createXmark=true,cancelCall=undefined) {
+        /// <signature>
+        /// <summary>固定ウインドウを作る</summary>
+        /// <param name="idname">DIV要素のid</param>  
+        /// <param name="innerWidth">内部div幅（ピクセル、省略可）</param>  
+        /// <param name="innerHeight">内部div高さ（ピクセル、省略可）</param>  
+        /// <param name="opacity">背景透過度（省略可）</param>  
+        /// <returns >div要素</returns>  
+        /// </signature>
+
+        var e = document.getElementsByName("backDiv");
+        let maxZindex = 1000 + e.length*10;
+        var browserWidth = this.getBrowserWidth();
+        var browserHeight = this.getBrowserHeight();
+        var d = document.createElement("div");
+        var deletediv = function (e: any) {
+        //固定ウインドウを消す
+            e.preventDefault();
+            // @ts-expect-error TS(2345): Argument of type 'ChildNode | null' is not assigna... Remove this comment to see the full error message
+            document.body.removeChild(document.body.lastChild);
+            // @ts-expect-error TS(2345): Argument of type 'ChildNode | null' is not assigna... Remove this comment to see the full error message
+            document.body.removeChild(document.body.lastChild);
+        };
+
+        if (outerClickF == true) {
+            d.onclick = deletediv;
+            d.ontouchstart=deletediv;
+        }
+        d.setAttribute("id", "backDiv");
+        d.setAttribute("name", "backDiv");
+        d.setAttribute("style", "position:absolute;background-color:#000000;font-size:13px")
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+        d.style.zIndex = maxZindex;
+        d.style.top = "0px";
+        d.style.left = "0px";
+        d.style.width = '100%';
+        d.style.height = '100%';
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+        d.style.opacity = 0.5;
+        if (opacity != undefined) {
+            d.style.opacity =opacity;
+        }
+        document.body.appendChild(d)
+
+        var w = browserWidth * 0.9;
+        if (innerWidth != undefined) {
+            w = innerWidth;
+        }
+        var h = browserHeight * 0.8// / 2
+        if (innerHeight != undefined) {
+            h = innerHeight;
+        }
+        var y = this.getScrollY() + (browserHeight - h) / 2;
+        var x = (browserWidth - w) / 2;
+        // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+        var dup = this.createNewDiv(document.body, idname, "frontDIV", "setting", x, y, w, h, "background-color:#ffffff; border:solid 1px; border-radius: 4px;border-color:#666666;opacity:1");
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+        dup.style.zIndex = maxZindex+1;
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        let head = Generic.createNewDiv(dup, "", "", "", 0, 0, '100%', scrMargin.top, "background-color: gray;color:#ffffff;font-size:15px", "");
+        Generic.createNewSpan(head, title, "", "", 10, 0, "margin-top:4px", "");
+        if(createXmark){
+            // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
+            var cv = this.createXmark(dup, cancelButton);
+        }
+
+        let bux = innerWidth;
+        if (cancelButtonF == true) {
+            let ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, innerHeight - 35, cancelButton, "width:70px;height:23px");
+            // @ts-expect-error TS(2339): Property 'bottomRightPositionFixed' does not exist... Remove this comment to see the full error message
+            ele.bottomRightPositionFixed=true;
+            // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+            ele.relativePosition=new point(80,30);
+            ele.name="cancel";
+            bux -= 60;
+        }
+        if (okButtonF == true) {
+            if (okCall == undefined) {
+                okCall = deletediv;
+            }
+            let ele=Generic.createNewButton(dup, "OK", "", bux - 90, innerHeight - 35, okButton, "width:60px;height:23px");
+            // @ts-expect-error TS(2339): Property 'bottomRightPositionFixed' does not exist... Remove this comment to see the full error message
+            ele.bottomRightPositionFixed=true;
+            if (cancelButtonF == true) {
+                // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+                ele.relativePosition=new point(150,30);
+            }else{
+                // @ts-expect-error TS(2339): Property 'relativePosition' does not exist on type... Remove this comment to see the full error message
+                ele.relativePosition=new point(90,30);
+            }
+            ele.name="ok";
+        }
+        function cancelButton(e: any){
+            deletediv(e);
+            if(cancelCall!=undefined){
+                // @ts-expect-error TS(2349): This expression is not callable.
+                cancelCall();
+            }
+        }
+        function okButton(e: any) {
+            okCall(e);
+        }
+        return dup;
+    }
+
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @returns {*} 
+ */
+static getScrollX() {
+        var supportPageOffset = window.pageXOffset !== undefined;
+        var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+        var x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft;
+        return x;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @returns {*} 
+ */
+static getScrollY() {
+        var supportPageOffset = window.pageXOffset !== undefined;
+        var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+        var y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
+        return y;
+    }
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} data 
+ * @returns {*} 
+ */
+static decodePolyline(data: any) {
+        //Google Mapのエンコード化ポリラインをデコードする
+        var cood = [];
+        var n = 0;
+        var selpos = 0;
+        var cflag = 0;
+        // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+        var sc = new latlon(0, 0);
+        var newlat;
+        var newlon;
+
+        do {
+            var strcode = [];
+            var i = 0;
+            while (true) {
+                var w1 = data.substr(i + selpos, 1);
+                var cd = w1.charCodeAt(0);
+                strcode[i] = cd - 63;
+                if (strcode[i] >= 32) {
+                    strcode[i] -= 32;
+                } else {
+                    i++
+                    break;
+                }
+                i++;
+            }
+            selpos += i;
+            var binary = "";
+            for (var j = 0; j < i; j++) {
+                var x = ("00000" + strcode[i - j - 1].toString(2)).slice(-5)
+                binary += x;
+            }
+            var binary10;
+            if (binary.slice(-1) == "1") {
+                binary10 = ~(parseInt(binary, 2));
+            } else {
+                binary10 = parseInt(binary, 2);
+            }
+            binary10 /= 2;
+            var val = binary10 / 100000;
+
+            if (cflag == 0) {
+                sc.lat = val;
+            } else {
+                sc.lon = val;
+                if (n == 0) {
+                    cood[n] = [];
+                    // @ts-expect-error TS(2345): Argument of type 'any' is not assignable to parame... Remove this comment to see the full error message
+                    cood[n].push(sc.lat);
+                    // @ts-expect-error TS(2345): Argument of type 'any' is not assignable to parame... Remove this comment to see the full error message
+                    cood[n].push(sc.lon);
+                    newlat = sc.lat;
+                    newlon = sc.lon;
+                } else {
+                    cood[n] = [];
+                    newlat = sc.lat + newlat;
+                    newlon = sc.lon + newlon;
+                    // @ts-expect-error TS(2345): Argument of type 'any' is not assignable to parame... Remove this comment to see the full error message
+                    cood[n].push(newlat);
+                    // @ts-expect-error TS(2345): Argument of type 'any' is not assignable to parame... Remove this comment to see the full error message
+                    cood[n].push(newlon);
+                }
+                n++;
+            }
+            cflag = 1 - cflag;
+        } while (selpos < data.length)
+        return cood;
+    }
+
+
+
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} CheckV 
+ * @param {*} V1 
+ * @param {*} V2 
+ * @returns {*} 
+ */
+static Check_Two_Value_In(CheckV: any, V1: any, V2: any) {
+        //チェックする値が二つの数字の中間であればtrue
+
+        if ((CheckV == V1) || (CheckV == V2)) {
+            return chvValue_on_twoValue.chvJust;
+        } else if (V1 < V2) {
+            if ((V1 < CheckV) && (CheckV < V2)) {
+                return chvValue_on_twoValue.chvIN;
+            }
+        } else {
+            if ((V2 < CheckV) && (CheckV < V1)) {
+                return chvValue_on_twoValue.chvIN;
+            }
+        }
+        return chvValue_on_twoValue.chvOuter;
+    }
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} si 
+ * @param {*} co 
+ * @returns {number} 
+ */
+static Angle(si: any, co: any) {//角度を求める
+        var AngleV;
+        if (co == 0) {
+            AngleV = 90;
+        } else {
+            AngleV = Math.atan(Math.abs(si / co)) * 180 / Math.PI;
+        }
+        if ((0 <= si) && (0 <= co)) {
+        } else if ((0 <= si) && (co < 0)) {
+            AngleV = 180 - AngleV;
+        } else if ((si < 0) && (0 <= co)) {
+            AngleV = 360 - AngleV;
+        } else if ((si < 0) && (co < 0)) {
+            AngleV = 180 + AngleV;
+        }
+        return AngleV;
+    }
+
+    //クリップボードにテキスト出力
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} text 
+ */
+static copyText(text: any) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        ta.parentElement.removeChild(ta);
+    }
+
+    //フォントがシステムに入っているかチェック
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} checkFont 
+ * @returns {boolean} 
+ */
+static checkFontExist(checkFont: any) {
+        const baseFonts = ['monospace', 'sans-serif', 'serif'];
+        const testString = "mmmmmmmmmmlli";
+        const testSize = '72px';
+        const h = document.getElementsByTagName("body")[0];
+        const s = document.createElement("span");
+        s.style.fontSize = testSize;
+        s.innerHTML = testString;
+        let  defaultWidth = {};
+        let defaultHeight = {};
+        for (let index in baseFonts) {
+            //get the default width for the three base fonts
+            s.style.fontFamily = baseFonts[index];
+            h.appendChild(s);
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+            defaultWidth[baseFonts[index]] = s.offsetWidth; //width for the default font
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+            defaultHeight[baseFonts[index]] = s.offsetHeight; //height for the defualt font
+            h.removeChild(s);
+        }
+        let detected = false;
+        for (let index in baseFonts) {
+            s.style.fontFamily = checkFont + ',' + baseFonts[index];
+            h.appendChild(s);
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+            let matched = (s.offsetWidth != defaultWidth[baseFonts[index]] || s.offsetHeight != defaultHeight[baseFonts[index]]);
+            h.removeChild(s);
+            detected = detected || matched;
+        }
+        return detected;
+    }
+//トップメニュー(ポップアップと上下の調整が取れないため未使用)
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} ParentObj 
+ * @param {*} list 
+ * @param {*} pos 
+ * @param {*} width 
+ */
+static ceateTopMenu(ParentObj: any,list: any, pos: any,width: any) {
+        for(let i in list){
+            let data=list[i];
+            // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+            let div=this.createNewDiv(ParentObj,data.caption,"","",pos.x+i*width,pos.y,width,20,"position:absolute;background-color:#cccccc;");
+            // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+            div.style.zIndex = 1000;
+            div.setAttribute("name","topmenu");
+            div.onmouseover =function(){
+                let rect=div.getBoundingClientRect();
+                let oldm=document.getElementById("popmenu");
+                if(oldm!=undefined){
+                    document.body.removeChild(oldm);
+                }
+                // @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+                Generic.ceatePopupMenu(data.child,new point(rect.left,rect.bottom));
+                let tm=document.getElementsByName("topmenu");
+                for(let j=0;j< tm.length;j++){
+                    tm[j].style.backgroundColor="#cccccc";
+                }
+                div.style.backgroundColor="#eeeeee";
+            }
+            div.onmouseleave=function(){
+            }
+    
+        }
+    }
+    //ポップアップメニュー
+    /**
+ * Description placeholder
+ *
+ * @static
+ * @param {*} list 
+ * @param {*} pos 
+ */
+static ceatePopupMenu(list: any, pos: any) {
+        
+        let e = document.getElementsByName("backDiv");
+        let maxZindex = 1000 + e.length * 10;
+        let touchf=false;
+        var mnudiv = document.createElement("div");
+        
+        var deletediv = function () {
+            //メニューを消す
+            let nd=document.getElementById("popmenu");
+            if(nd!=undefined){
+                document.body.removeChild(nd);
+            }
+            //トップメニューがある場合は色をそろえる
+            let tm=document.getElementsByName("topmenu");
+            for(let j=0;j< tm.length;j++){
+                tm[j].style.backgroundColor="#cccccc";
+            }
+        };
+        mnudiv.onclick = mnudicclivk;
+        mnudiv.addEventListener('touchstart',mnudicclivk,false)
+        function mnudicclivk(e: any){
+            e.stopPropagation();
+            e.preventDefault();
+            if(touchf==true){//タッチした直後はクリックスルー
+                touchf=false;
+            }else{
+                deletediv();
+            }
+        }
+        mnudiv.setAttribute("id", "popmenu");
+        mnudiv.setAttribute("name", "backDiv");
+        mnudiv.setAttribute("style", "position:absolute;back-ground");
+        mnudiv.setAttribute("class", "popMenu");
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+        mnudiv.style.zIndex = maxZindex;
+        mnudiv.style.backgroundColor="#55555555"
+        mnudiv.style.top = "0px";
+        mnudiv.style.left = "0px";
+        mnudiv.style.width = '100%';
+        mnudiv.style.height = '100%';
+        document.body.appendChild(mnudiv)
+
+        var mainMenu = document.createElement("div");
+        mnudiv.appendChild(mainMenu)
+        let mainw = 0;
+        let lineh;
+        for (let i in list) {
+            let msp = document.createElement('span');
+            mnudiv.appendChild(msp)
+            msp.innerHTML = list[i].caption;
+            mainw = Math.max(mainw, msp.offsetWidth);
+            lineh = msp.offsetHeight;
+            mnudiv.removeChild(msp);
+        }
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        lineh+=6;
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+        let y=list.length*lineh;
+        let subn = 0;
+        for (let i in list) {
+            let data = list[i];
+            if (data.caption == "-") {
+                // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                let md = this.createNewDiv(mainMenu, "", "", "popMenu", 10, lineh * i + lineh / 2, mainw + 20, 2, "", "");
+                md.style.backgroundColor = '#dddddd';
+            } else {
+                // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                let md = this.createNewDiv(mainMenu, data.caption, "", "", 0, lineh * i, mainw + 20, lineh-2, "padding-top:2px;padding-left:20px", "");
+                md.onmouseover = function () {
+                    md.style.backgroundColor = '#dddddd';
+                    for (let j in subMenu) {
+                        subMenu[j].style.visibility = 'hidden';
+                    }
+                    // @ts-expect-error TS(2339): Property 'enabled' does not exist on type 'HTMLDiv... Remove this comment to see the full error message
+                    if ((data.hasOwnProperty('child'))&&(md.enabled==true)) {
+                        // @ts-expect-error TS(2339): Property 'submenunum' does not exist on type 'HTML... Remove this comment to see the full error message
+                        subMenu[md.submenunum].style.visibility = 'visible';
+                    }
+                }
+                md.addEventListener("touchstart", touch, false);
+                function touch() {
+                    touchf=true;
+                    md.style.backgroundColor = '#dddddd';
+                    for (let j in subMenu) {
+                        subMenu[j].style.visibility = 'hidden';
+                    }
+                    // @ts-expect-error TS(2339): Property 'enabled' does not exist on type 'HTMLDiv... Remove this comment to see the full error message
+                    if ((data.hasOwnProperty('child'))&&(md.enabled==true)) {
+                        // @ts-expect-error TS(2339): Property 'submenunum' does not exist on type 'HTML... Remove this comment to see the full error message
+                        subMenu[md.submenunum].style.visibility = 'visible';
+                    }
+                }
+                md.onmouseleave = function () {
+                    md.style.backgroundColor = 'white';
+                }
+                let enabled=true;
+                if (data.hasOwnProperty('enabled')) {
+                    if(data.enabled==false){
+                        md.style.color="#888888";
+                        enabled=false;
+                    }
+                }
+                // @ts-expect-error TS(2339): Property 'enabled' does not exist on type 'HTMLDiv... Remove this comment to see the full error message
+                md.enabled=enabled;
+                if (data.hasOwnProperty('event')) {
+                    if (enabled==true) {
+                        md.onclick = function (e) {
+                            deletediv();
+                            data.event(data,e);
+                        }
+                        md.ontouchend = function (e) {
+                            deletediv();
+                            data.event(data,e);
+                        }
+                    }
+                }
+                if (data.hasOwnProperty('checked')) {
+                    let tx = "";
+                    if (data.checked == true) {
+                        tx = "✓";
+                    }
+                    this.createNewDiv(md, tx, "", "", 0, 0, 20, lineh, "", "");
+                }
+                if (data.hasOwnProperty('child')) {
+                        this.createNewDiv(md, "‣", "", "", mainw + 20, 0, 10, lineh, "", "");
+                        // @ts-expect-error TS(2339): Property 'submenunum' does not exist on type 'HTML... Remove this comment to see the full error message
+                        md.submenunum = subn;
+                        subn++;
+                }
+            }
+        }
+
+        mainMenu.setAttribute("style", "position:absolute;border:solid 1px; border-radius: 1px;border-color:#666666;background-color:#ffffff");
+        mainMenu.style.left = pos.x.px();
+        mainMenu.style.top = pos.y.px();
+        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+        mainMenu.style.width = (mainw + 40).px();
+        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+        mainMenu.style.height = y.px();
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+        mainMenu.style.zIndex = maxZindex + 1;
+        let subMenu: any = [];
+        for (let i in list) {
+            if (list[i].hasOwnProperty('child')) {
+                let smenu = document.createElement("div");
+                mnudiv.appendChild(smenu);
+                let cdata = list[i].child;
+                let w = 0;
+                for (let j in cdata) {
+                    let msp = document.createElement('span');
+                    mnudiv.appendChild(msp)
+                    msp.innerHTML = cdata[j].caption;
+                    w = Math.max(w, msp.offsetWidth);
+                    mnudiv.removeChild(msp);
+                }
+                for (let j in cdata) {
+                    let data = cdata[j];
+                    if (data.caption == "-") {
+                        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                        let md = this.createNewDiv(smenu, "", "", "popMenu1", 10, lineh * j + lineh / 2, w  + 30, 2, "", "");
+                        md.style.backgroundColor = '#dddddd';
+                    } else {
+                        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                        let md = this.createNewDiv(smenu, data.caption, "", "", 0, lineh * j, w + 10, lineh-2, "padding-top:2px;padding-left:20px", "");
+                        md.setAttribute("name", "popmenu1");
+                        md.onmouseover = function () {
+                            md.style.backgroundColor = '#dddddd';
+                        }
+                        md.onmouseleave = function () {
+                            md.style.backgroundColor = 'white';
+                        }
+                        let enabled=true;
+                        if (data.hasOwnProperty('enabled')) {
+                            if(data.enabled==false){
+                                md.style.color="#888888";
+                                enabled=false;
+                            }
+                        }
+                        if ((data.hasOwnProperty('event'))&&(enabled==true)) {
+                            md.onclick = function () {
+                                deletediv();
+                                data.event(data);
+                            }
+                            md.ontouchend = function (e) {
+                                deletediv();
+                                data.event(data,e);
+                            }
+                        }
+                        if (data.hasOwnProperty('checked')) {
+                            let tx = "";
+                            if (data.checked == true) {
+                                tx = "✓";
+                            }
+                            this.createNewDiv(md, tx, "", "", 0, 0, 20, lineh, "", "");
+                        }
+    
+                    }
+
+                }
+                smenu.setAttribute("style", "position:absolute;border:solid 1px; border-radius: 1px;border-color:#666666;background-color:#ffffff")
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                smenu.style.left = (mainw + 40 + pos.x - 5).px();
+                // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                smenu.style.top = (lineh * i + pos.y).px();
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                smenu.style.width = (w + 30).px();
+                // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                smenu.style.height = (lineh * cdata.length).px();
+                smenu.style.visibility = 'hidden';
+                // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'string'.
+                smenu.style.zIndex = maxZindex + 1;
+                subMenu.push(smenu);
+            }
+        }
+        // @ts-expect-error TS(2554): Expected 4 arguments, but got 2.
+        let menuRect=new rectangle(new point(mainMenu.style.left.removePx(),mainMenu.style.top.removePx()),new size(mainMenu.clientWidth,mainMenu.clientHeight));
+        if(subMenu.length>0){
+            for (let i in subMenu){
+                // @ts-expect-error TS(2554): Expected 4 arguments, but got 2.
+                let menuRectSub=new rectangle(new point(subMenu[i].style.left.removePx(),subMenu[i].style.top.removePx()),new size(subMenu[i].clientWidth,subMenu[i].clientHeight));
+                menuRect=spatial.getCircumscribedRectangle(menuRect,menuRectSub);
+            }
+        }
+
+        let gScreenWidth = (Generic.getBrowserWidth());
+        let gScreenHeight = (Generic.getBrowserHeight());
+        if (menuRect.bottom > gScreenHeight) {
+            let sa=menuRect.bottom - gScreenHeight;
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            mainMenu.style.top = (menuRect.top -sa ).px();
+            for (let i in subMenu){
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                subMenu[i].style.top=(subMenu[i].style.top.removePx()-sa).px()
+            }
+        }
+        if (menuRect.right > gScreenWidth) {
+            let sa=menuRect.right - gScreenWidth;
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            mainMenu.style.left = (menuRect.left - sa).px();
+            for (let i in subMenu){
+                // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                subMenu[i].style.left=(subMenu[i].style.left.removePx()-sa).px()
+            }
+        }
+    }
+
+    /**メニューオブジェクトのプロパティからオブジェクトを取得する */
+    // @ts-expect-error TS(7023): 'getPopMenuObj' implicitly has return type 'any' b... Remove this comment to see the full error message
+    static getPopMenuObj(menuObj: any,property: any,pname: any) {
+        for (let i in menuObj) {
+            if (menuObj[i].hasOwnProperty(property)) {
+                if (menuObj[i][property] == pname) {
+                    return menuObj[i];
+                }
+                if (menuObj[i].hasOwnProperty('child')) {
+                    // @ts-expect-error TS(7022): 'v' implicitly has type 'any' because it does not ... Remove this comment to see the full error message
+                    let v = this.getPopMenuObj(menuObj[i].child, property, pname);
+                    if (v != undefined) {
+                        return v;
+                    }
+                }
+            }
+        }
+    }
+};
+
+
+/**チェックリストボックス twoStepCheckF:二回目のクリックでチェックを変更*/
+var CheckedListBox=function(
+    this: any,
+    ParentObj: any,
+    Class: any,
+    list: any,
+    x: any,
+    y: any,
+    width: any,
+    height: any,
+    twoStepCheckF: any,
+    onChange: any,
+    styleinfo: any
+) {
+    let _this = this;
+    let lineH = Generic.getDivSize("A", undefined, "").height + 3;
+    let allh = lineH * list.length;
+    let ovy = (allh < height - 2) ? "" : "overflow-y: scroll;";
+    // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+    let w = (allh < height - 2) ? width - 2 : width - scrMargin.scrollWidth - 1;
+    let lBox: any = [];
+    // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+    const frame = Generic.createNewDiv(ParentObj, "", Class, "grayFrame", x, y, width, height - 24, ovy + "overflow-x:hidden;background-color:white;user-Select:none");
+    // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+    const allSelFrame = Generic.createNewDiv(ParentObj, "", "", "", x, y + (height - 22), w, 22, "");
+    Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, function () { allChange(true);if(onChange!=undefined){onChange()}  }, "width:55px;height:22px;padding:0");
+    Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, function () { allChange(false);if(onChange!=undefined){onChange()} }, "width:55px;height:22px;padding:0");
+    // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+    const inFrame = Generic.createNewDiv(frame, "", "", "", 0, 0, w, allh, "");
+    _addList(list, 0);
+
+    /**リ1つ追加 */
+    this.add = function (soloData: any, pos=undefined) {
+        if(pos==undefined){
+            pos=this.length;
+        }
+        _addList([soloData],pos);
+    }
+    
+    /**リストを追加 */
+    this.addList = function (list: any, pos: any) {
+        _addList(list, pos);
+    }
+    /**指定範囲のリストを削除 */
+    this.removeList = function (pos: any, delNum: any) {
+        _removeList(pos, delNum);
+    }
+    /**全リストを削除 */
+    this.removeAll = function () {
+        _removeList(0, lBox.length);
+    }
+
+    /**チェック状態を取得 */
+    this.getCheckedStatus = function (n: any) {
+        return lBox[n].checked;
+    }
+
+    /**チェック状態を設定 */
+    this.setCheckStatus= function(n: any,checked: any){
+        lBox[n].checked=checked;
+    }
+
+    /**テキストを設定 */
+    this.setText= function(n: any,text: any){
+        lBox[n].word.innerHTML=text;
+    }
+
+
+    this.length = 0;
+    this.selectedIndex=-1;
+    /**チェックの状態を返す checkedStatus:全項目のtrue|false,checkedArray:trueの番号一覧*/
+    this.getChecked=function(){
+        return _getChecked();
+    }
+    function _removeList(pos: any, delNum: any) {
+        if (lBox.length == 0) {
+            return;
+        }
+        for (let i = 0; i < delNum; i++) {
+            if(_this.selectedIndex == (i+pos)){
+                setIndexColor(-1);
+            }
+            inFrame.removeChild(lBox[i + pos].word);
+            inFrame.removeChild(lBox[i + pos]);
+        }
+        lBox.splice(pos, delNum);
+        reNumbering();
+    }
+
+    function _addList(lst: any, pos: any) {
+        let osel=_this.selectedIndex;
+        let newsel = (osel == -1) ? -1 : osel + lst.length;
+        if(osel >=pos){
+            setIndexColor(-1);
+        }
+        for (let i = 0; i < lst.length; i++) {
+            let ypos = (i + pos) * lineH;
+            let asfdisabled = (lst[i].text.left(1) == "*");
+            let cbox = Generic.createNewInput(inFrame, "checkbox", "", "", 3, ypos, undefined, "");
+            cbox.checked = lst[i].checked;
+            cbox.disabled = asfdisabled;
+            cbox.onchange = change;
+            // @ts-expect-error TS(2339): Property 'word' does not exist on type 'HTMLInputE... Remove this comment to see the full error message
+            cbox.word = Generic.createNewDiv(inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
+                function (e: any) {
+                    if (asfdisabled == false) {
+                        cbox.checked = !cbox.checked;
+                        change(e);
+                    }
+                });
+            lBox.splice(pos + i, 0, cbox);
+        }
+        reNumbering();
+        if(osel >=pos){
+            setIndexColor(newsel);
+        }
+        function change(e: any) {
+            let obj = e.target;
+            let newSel=Number(obj.tag);
+            if(_this.selectedIndex != newSel){
+                setIndexColor(newSel);
+                if(twoStepCheckF==true){
+                    lBox[newSel].checked=!lBox[newSel].checked;
+                    return;
+                }
+            }
+            if (typeof onChange == 'function') {
+                let retV=_getChecked();
+                onChange(newSel, retV.checkedStatus, retV.checkedArray);
+            }
+        }
+    }
+
+    function setIndexColor(newSel: any){
+        if (_this.selectedIndex != -1) {
+            lBox[_this.selectedIndex].word.style.backgroundColor = "#ffffff";
+        }
+        _this.selectedIndex = newSel;
+        if (newSel != -1) {
+            lBox[newSel].word.style.backgroundColor = "#e1e1ff";
+        }
+    }
+
+    function _getChecked(){
+        let checkedList = [];
+        let checkedArray = [];
+        for (let i = 0; i < lBox.length; i++) {
+            checkedList.push(lBox[i].checked);
+            if (lBox[i].checked) {
+                checkedArray.push(i);
+            }
+        }
+        return {checkedStatus:checkedList,checkedArray:checkedArray};
+    }
+
+    function allChange(checked: any) {
+        for (let i = 0; i < lBox.length; i++) {
+            if(lBox[i].disabled==false){
+                lBox[i].checked = checked;
+            }
+        }
+    }
+    function reNumbering() {
+        allh = lineH * lBox.length;
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        w = (allh < height - 2) ? width - 2 : width - scrMargin.scrollWidth - 1;
+        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+        inFrame.style.height = allh.px();
+        for (let i = 0; i < lBox.length; i++) {
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            lBox[i].style.top = (i * lineH).px();
+            lBox[i].tag = i;
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            lBox[i].word.style.top = (i * lineH + 3).px();
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            lBox[i].word.style.width = (w - 20).px();
+            lBox[i].word.tag = i;
+        }
+        _this.length = lBox.length;
+    }
+}
+
+/**リストボックスコントロール addEventListenerを付ける場合は.frameに*/
+var ListBox=function(
+    this: any,
+    ParentObj: any,
+    Class: any,
+    list: any,
+    x: any,
+    y: any,
+    width: any,
+    height: any,
+    onChange: any,
+    styleinfo: any
+) {
+    let _this=this;
+    this.selectedIndex= -1;
+    this.length=0;
+    this.value=undefined;
+    let lBox: any=[];
+    let lineH = Generic.getDivSize("A", undefined, "").height + 3;
+    let allh = lineH * list.length;
+    let ovy = (allh < height - 2) ? "" : "overflow-y: scroll";
+    // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+    let w = (allh < height - 2) ? width - 2 : width - scrMargin.scrollWidth - 1;
+    // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+    this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", x, y, width, height, ovy + "overflow-x:hidden;background-color:white");//addEventListenerを付ける場合はframeに
+    // @ts-expect-error TS(2554): Expected 10 arguments, but got 9.
+    const inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, w, allh, "");
+    _addList(list, 0);
+
+    /**1つ追加 */
+    this.add=function(soloData: any,pos=undefined){
+        if(pos==undefined){
+            pos=this.length;
+        }
+        _addList([soloData],pos);
+    }
+    /**リストを配列で追加 */
+    this.addList = function (list: any, pos=undefined) {
+        if(pos==undefined){
+            pos=this.length;
+        }
+        _addList(list, pos);
+    }
+    /**指定範囲のリストを削除 */
+    this.removeList = function (pos: any, delNum: any) {
+        _removeList(pos, delNum);
+    }
+    /**全リストを削除 */
+    this.removeAll = function () {
+        _removeList(0, lBox.length);
+    }
+    /**選択要素を指定 */
+    this.setSelectedIndex = function (newIndex: any){
+        if(this.selectedIndex!=-1){
+            lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
+        }
+        this.selectedIndex=newIndex;
+        lBox[newIndex].style.backgroundColor = "#e1e1e1";
+        this.value=lBox[newIndex].value;
+    }
+
+    this.getText=function(){
+        if (this.selectedIndex != -1) {
+            return lBox[this.selectedIndex].innerText;
+        }else{
+            return undefined;
+        }
+    }
+    this.getAllText = function () {
+        let v = [];
+        for (let i = 0; i < this.length; i++) {
+            v.push(lBox[i].innerText)
+        }
+        return v;
+    }
+
+    this.getValue=function(){
+        if(this.selectedIndex!=-1){
+            return lBox[this.selectedIndex].value;
+        }else{
+            return undefined;
+        }
+    }
+    this.getAllValue = function () {
+        let v = [];
+        for (let i = 0; i < this.length; i++) {
+            v.push(lBox[i].value)
+        }
+        return v;
+    }
+
+    this.setText=function(row: any,text: any){
+        lBox[row].innerText=text;
+    }
+
+    this.setValue=function(row: any,value: any){
+        lBox[row].innerText=value;
+    }
+
+    this.rowUp = function (row: any) {
+        if (lBox.length < 2) {
+            return;
+        }
+        let dest = row - 1;
+        dest = (dest == -1) ? lBox.length - 1 : dest;
+        [lBox[row].innerText, lBox[dest].innerHTML] = [lBox[dest].innerText, lBox[row].innerHTML];
+        [lBox[row].value, lBox[dest].value] = [lBox[dest].value, lBox[row].value];
+        if (row == this.selectedIndex) {
+            lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
+            this.selectedIndex = dest;
+            lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
+        }
+    }
+
+    this.rowDown = function (row: any) {
+        if (lBox.length < 2) {
+            return;
+        }
+        let dest = row + 1;
+        dest = (dest == lBox.length) ? 0 : dest;
+        [lBox[row].innerText, lBox[dest].innerHTML] = [lBox[dest].innerText, lBox[row].innerHTML];
+        [lBox[row].value, lBox[dest].value] = [lBox[dest].value, lBox[row].value];
+        if (row == this.selectedIndex) {
+            lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
+            this.selectedIndex = dest;
+            lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
+        }
+    }
+
+    function _addList(lst: any, pos: any) {
+        if (lst.length == 0) {
+            return;
+        }
+        if (_this.selectedIndex != -1) {
+            lBox[_this.selectedIndex].style.backgroundColor = "#ffffff";
+        }
+        _this.selectedIndex = pos;
+        for (let i in lst) {
+            // @ts-expect-error TS(2362): The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
+            let div = Generic.createNewDiv(inFrame, lst[i].text, "", Class, 3, i * lineH, w, lineH, styleinfo+";overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background-color:white",
+                function (e: any) {
+                    if (_this.selectedIndex != -1) {
+                        lBox[_this.selectedIndex].style.backgroundColor = "#ffffff";
+                    }
+                    let obj = e.target;
+                    obj.style.backgroundColor = "#e1e1e1";
+                    _this.selectedIndex = Number(obj.tag);
+                    _this.value = lBox[_this.selectedIndex].value;
+                    if (typeof onChange == 'function') {
+                        onChange(Number(obj.tag), obj.value);
+                    }
+                });
+            // @ts-expect-error TS(2339): Property 'value' does not exist on type 'HTMLDivEl... Remove this comment to see the full error message
+            div.value = lst[i].value;
+            lBox.splice(pos + i, 0, div);
+        }
+        reNumbering();
+    }
+    function _removeList(pos: any, delNum: any) {
+        if (lBox.length == 0) {
+            return;
+        }
+        if(_this.selectedIndex!=-1){
+            lBox[_this.selectedIndex].style.backgroundColor = "#ffffff";
+        }
+        for (let i = 0; i < delNum; i++) {
+            inFrame.removeChild(lBox[i + pos]);
+        }
+        lBox.splice(pos,delNum);
+        if (_this.selectedIndex >= pos) {
+            _this.selectedIndex -= delNum;
+            _this.selectedIndex = (_this.selectedIndex < 0) ? 0 : _this.selectedIndex;
+        }
+        reNumbering();
+    }
+    function reNumbering() {
+         allh = lineH * lBox.length;
+         // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+         w = (allh < height - 2) ? width - 2 : width - scrMargin.scrollWidth - 1;
+        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+        inFrame.style.height =allh.px();
+        for (let i = 0; i < lBox.length; i++) {
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            lBox[i].style.top = (i * lineH).px();
+            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+            lBox[i].style.width=w.px();
+            lBox[i].tag = i;
+        }
+        if(lBox.length>0){
+            lBox[_this.selectedIndex].style.backgroundColor = "#e1e1e1";
+            _this.value=lBox[_this.selectedIndex].value;
+        }else{
+            _this.selectedIndex=-1;
+            _this.value=undefined;
+        }
+        _this.length=lBox.length;
+    }
+}
+
+/**リストビューコントロール_rowselFlag=trueでクリックした行を返す,selectedRowで選択中の行 */
+var ListViewTable=function(
+    this: any,
+    ParentObj: any,
+    gridID: any,
+    gridClass: any,
+    tableClass: any,
+    hdata: any,
+    data: any,
+    x: any,
+    y: any,
+    width: any,
+    height: any,
+    frameStyleinfo: any,
+    styleinfo: any,
+    headStyleinfo: any,
+    normalStyleinfo: any,
+    headXStyleinfo: any,
+    normalXStyleinfo: any,
+    _rowselFlag: any,
+    onclick: any
+) {
+
+    this.frameStyleinfo=frameStyleinfo;
+    this.styleinfo=styleinfo;
+    this.normalStyleinfo=normalStyleinfo;
+    this.headStyleinfo=headStyleinfo;
+    this.headXStyleinfo=headXStyleinfo;
+    this.normalXStyleinfo=normalXStyleinfo;
+    this.rowselFlag=_rowselFlag;
+    let _this=this;
+    let topDIV=Generic.createNewDiv(ParentObj,gridID,"",gridClass,x,y,width,height,this.frameStyleinfo,undefined);
+
+    let headNum=hdata[0].length;
+    let bpos: any;
+    this.selectedRow= -1;
+    this.oldBG=[];
+    let mousePointingSituation=mousePointingSituations.up;
+    let tbhdiv = document.createElement("div");
+    let tbh: any;
+    this.thead;
+    let tbhHeight;
+
+    if (headNum > 0) {
+        tbh = document.createElement("table");
+        tbh.setAttribute("style", "user-select: none;" + this.styleinfo)
+        //tbh.setAttribute("id", ID);
+        tbh.setAttribute("class", tableClass);
+        tbh.style.tableLayout = 'fixed';
+        tbh.style.width = '100%';
+        // @ts-expect-error TS(7006): Parameter 'e' implicitly has an 'any' type.
+        tbh.onmousemove = function (e) {
+            switch (mousePointingSituation) {
+                case mousePointingSituations.up: {
+                    let x = e.target.offsetLeft + e.offsetX;
+                    let n = tbh.rows[0].cells.length;
+                    bpos = -1;
+                    for (let i = 0; i < n - 1; i++) {
+                        let cellBorderx0 = tbh.rows[0].cells[i].offsetLeft + tbh.rows[0].cells[i].offsetWidth;
+                        if ((Math.abs(x - cellBorderx0) < 10)) {
+                            tbh.style.cursor = 'w-resize';
+                            bpos = i;
+                            break;
+                        }
+                    }
+                    if (bpos == -1) {
+                        tbh.style.cursor = 'default';
+                    }
+                    break;
+                }
+                case mousePointingSituations.down: {
+                    if (bpos != -1) {
+                        let x = e.target.offsetLeft + e.offsetX;
+                        let w = x - tbh.rows[0].cells[bpos].offsetLeft;
+                        // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                        tbh.rows[0].cells[bpos].style.width = w.px();
+                        if(_this.tb.rows[0] !=undefined){
+                            // @ts-expect-error TS(2339): Property 'px' does not exist on type 'number'.
+                            _this.tb.rows[0].cells[bpos].style.width = w.px();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        // @ts-expect-error TS(7006): Parameter 'e' implicitly has an 'any' type.
+        tbh.onmousedown = function (e) {
+            mousePointingSituation = mousePointingSituations.down;
+        }
+        // @ts-expect-error TS(7006): Parameter 'e' implicitly has an 'any' type.
+        tbh.onmouseup = function (e) {
+            bpos = -1;
+            mousePointingSituation = mousePointingSituations.up;
+        }
+        this.thead = tbh.createTHead();
+        this.thead.setAttribute("style", this.headStyleinfo);
+        
+        for (let i = 0; i < headNum; i++) {
+            let row = this.thead.insertRow(-1);
+            
+            for (let j = 0; j < hdata.length; j++) {
+                let newCell = row.insertCell(-1);
+                newCell.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+                if ((this.headXStyleinfo[j] != undefined)) {
+                    newCell.setAttribute("style", this.headXStyleinfo[j]);
+                }
+                newCell.innerHTML = hdata[j][i] ;
+            }
+        }
+        
+        tbhdiv.appendChild(tbh);
+        document.body.appendChild(tbhdiv);//displayがnoneだと高さが取得できないため一時的にbodyに入れる
+        tbhHeight=tbhdiv.clientHeight;
+        document.body.removeChild(tbhdiv);
+        topDIV.appendChild(tbhdiv);
+    }
+
+    let xcell = data.length;
+
+    this.tbdiv = document.createElement("div");
+    if (headNum > 0) {
+        // @ts-expect-error TS(2304): Cannot find name 'tbheight'.
+        tbheight = height - tbhHeight;
+    }
+    // @ts-expect-error TS(2304): Cannot find name 'tbheight'.
+    this.tbdiv.setAttribute("style", "height:" + tbheight.px() + ";overflow-y: scroll;overflow-x:hidden")
+    this.tb = document.createElement("table");
+    this.tb.setAttribute("style", "user-select: none;" + this.styleinfo);
+    this.tb.setAttribute("class", tableClass);
+    this.tb.style.tableLayout = 'fixed';
+    this.tb.style.width = '100%';
+    this.tbody = this.tb.createTBody();
+    if (xcell>0){//データがある場合
+        let ycell = data[0].length;
+        for (let i = 0; i < ycell; i++) {
+            let row = this.tbody.insertRow(-1)
+            row.setAttribute("style", this.normalStyleinfo);
+            for (let j = 0; j < xcell; j++) {
+                let newtd = row.insertCell(-1);
+                newtd.innerHTML = data[j][i];
+                newtd.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+                if (this.normalXStyleinfo[j] != undefined) {
+                    newtd.setAttribute("style", this.normalXStyleinfo[j]);
+                }
+                newtd.onclick = function (e: any) { clickTBody(e) };
+            }
+        } 
+        this.selectRow(0);
+    }
+
+    this.tb.appendChild(this.tbody);
+    this.tbdiv.appendChild(this.tb);
+    topDIV.appendChild(this.tbdiv);
+    if (headNum > 0) {
+        //ヘッダの幅をスクロールバーに合わせる
+        // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+        tbhdiv.style.width = (width-scrMargin.scrollWidth).px();
+    }
+
+    function clickTBody(e: any) {
+        _this.selectRow(e.target.parentNode.rowIndex);
+        if (typeof onclick == 'function') {
+            onclick(e.target.parentNode.rowIndex);
+        }
+    }
+    this.selectRow = function (newSelRow: any) {
+        if (_this.rowselFlag == true) {
+            if (_this.rowselFlag == true) {
+                if ((_this.selectedRow >= 0) && (_this.selectedRow < _this.tb.rows.length)) {
+                    for (let i = 0; i < _this.tb.rows[_this.selectedRow].cells.length; i++) {
+                        _this.tb.rows[_this.selectedRow].cells[i].style.backgroundColor = _this.oldBG[i];
+                    }
+                }
+            }
+            _this.oldBG = [];
+            if (newSelRow != -1) {
+                for (let i = 0; i < _this.tb.rows[newSelRow].cells.length; i++) {
+                    _this.oldBG.push(_this.tb.rows[newSelRow].cells[i].style.backgroundColor)
+                    _this.tb.rows[newSelRow].cells[i].style.backgroundColor = "#e1e1e1";
+                }
+        }
+        }
+        _this.selectedRow = newSelRow;
+    }
+
+    /**行にデータ挿入prototypeでは作りにくい rowInsertPos=0の場合はselectedRowの前に、1の場合は後ろに追加*/
+    this.insertRow = function (rowInsertPos: any, plusData: any) {
+        let rn=this.tb.rows.length;
+        let rowpos = this.selectedRow + rowInsertPos;
+        let row = this.tbody.insertRow(rowpos);
+        row.setAttribute("style", this.normalStyleinfo);
+        for (let j = 0; j < plusData.length; j++) {
+            let newtd = row.insertCell(-1);
+            newtd.innerHTML = plusData[j];
+            newtd.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+            if (this.normalXStyleinfo[j] != undefined) {
+                newtd.setAttribute("style", this.normalXStyleinfo[j]);
+            }
+            newtd.onclick = function (e: any) { clickTBody(e) };
+            if((headNum>0)&&(rn==0)){//行がない状態で追加する場合、幅をヘッダに合わせる
+                newtd.style.width=tbh.rows[0].cells[j].style.width;
+            }
+        }
+        if(rowInsertPos==0){
+            this.selectedRow++;
+        }
+        this.selectRow(rowpos);
+    }
+}
+/**ListViewの行数取得 */
+ListViewTable.prototype.getRowNumber = function () {
+    return this.tb.rows.length;
+}
+
+/**selectedRowの行削除 */
+ListViewTable.prototype.deleteRow = function () {
+    let rowPos = this.selectedRow;
+    if (rowPos == -1) { return; }
+    this.tbody.deleteRow(rowPos);
+    if (this.tb.rows.length == 0) {
+        this.selectedRow = -1;
+    } else {
+        let newsel = Math.min(this.selectedRow, this.tb.rows.length - 1);
+        this.selectRow(newsel);
+    }
+}
+
+/**セルに値を設定 */
+ListViewTable.prototype.setValue=function(x: any,y: any,value: any){
+    this.tb.rows[y].cells[x].innerHTML=value;;
+}
+
+/**行の上下を反転 */
+ListViewTable.prototype.reverse=function(){
+    let n=this.tb.rows.length;
+    let celln = this.tb.rows[0].cells.length;
+    for (let i = 0; i < Math.floor(n/2); i++) {
+        let r1=this.tb.rows[i];
+        let r2=this.tb.rows[n-1-i];
+        for (let j = 0; j < celln; j++) {
+            [r1.cells[j].innerHTML, r2.cells[j].innerHTML] = [r2.cells[j].innerHTML, r1.cells[j].innerHTML]
+        }
+    }
+    let newsel=this.tb.rows.length-1-this.selectedRow;
+    this.selectRow(newsel);
+}
+
+/**selectedRowの行上移動 */
+ListViewTable.prototype.rowUp = function () {
+    if(this.tb.rows.length<2){return;}
+    let rowPos=this.selectedRow;
+
+    let celln = this.tb.rows[rowPos].cells.length;
+    let dest = rowPos - 1;
+    if (dest == -1) {
+        let stac = [];
+        for (let i = 0; i < celln; i++) {
+            stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+        }
+        this.deleteRow();
+        this.selectRow(this.tb.rows.length-1);
+        this.insertRow(1, stac);
+        this.tbdiv.scrollTop = this.tbdiv.scrollTopMax;
+    } else {
+        for (let i = 0; i < celln; i++) {
+            [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML]
+        }
+        this.selectRow(dest);
+    }
+    
+}
+/**selectedRowの行下移動 */
+ListViewTable.prototype.rowDown = function () {
+    let maxrow = this.tb.rows.length;
+    if(maxrow<2){return;}
+    let rowPos=this.selectedRow;
+    let celln = this.tb.rows[rowPos].cells.length;
+    let dest = rowPos + 1;
+    if (dest == maxrow) {
+        let stac = [];
+        for (let i = 0; i < celln; i++) {
+            stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+        }
+        this.deleteRow();
+        this.selectRow(0);
+        this.insertRow(0, stac);
+        this.tbdiv.scrollTop = 0;
+    } else {
+        for (let i = 0; i < celln; i++) {
+            [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML]
+        }
+        this.selectRow(dest);
+    }
+}
+/**表クリア */
+ListViewTable.prototype.clear = function () {
+    let maxrow = this.tb.rows.length;
+    for (let i = maxrow - 1; i >= 0; i--) {
+        this.selectRow(i);
+        this.deleteRow();
+    }
+    this.selectRow(-1);
+}
+
+//ウインドウの最大化ボタンをリセットする
+// @ts-expect-error TS(2339): Property 'resetMaxButton' does not exist on type '... Remove this comment to see the full error message
+Element.prototype.resetMaxButton=function(MaxFlag: any){
+    let cnode = this.childNodes;
+    for (let i = 0; i < cnode.length; i++) {
+        // @ts-expect-error TS(2339): Property 'name' does not exist on type 'ChildNode'... Remove this comment to see the full error message
+        if (cnode[i].name == 'maxButton') {
+            // @ts-expect-error TS(2339): Property 'getContext' does not exist on type 'Chil... Remove this comment to see the full error message
+            const ctx = cnode[i].getContext("2d");
+            // @ts-expect-error TS(2339): Property 'width' does not exist on type 'ChildNode... Remove this comment to see the full error message
+            let w=cnode[i].width;
+            // @ts-expect-error TS(2339): Property 'width' does not exist on type 'ChildNode... Remove this comment to see the full error message
+            ctx.clearRect(0, 0,cnode[i].width,cnode[i].height);
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(2, 2,w-4,w-4);
+            if (MaxFlag == false) {
+                ctx.strokeRect(2, 7,Math.floor(w/2),Math.floor(w/2));//小さい四角を追加
+            }
+            break;
+        }
+    }
+    if(MaxFlag==true){
+        // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'Ele... Remove this comment to see the full error message
+        this.maxSizeFlag=false;
+    }else{
+        // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'Ele... Remove this comment to see the full error message
+        this.maxSizeFlag=true;
+    }
+}
+//DIV要素の移動，拡大縮小
+// @ts-expect-error TS(2339): Property 'dragBorder' does not exist on type 'Elem... Remove this comment to see the full error message
+Element.prototype.dragBorder=function(movingCall: any,moveEndCall: any){
+    let x: any;
+    let y: any;
+    let fx: any;
+    let fy: any;
+    let fW: any;
+    let fH: any;
+    let fLeft: any;
+    let fTop: any;
+    let mode: any;
+    let mdownF=false;
+    const targetEle=this;
+    const SR=10;
+    // @ts-expect-error TS(2304): Cannot find name 'scrMargin'.
+    const TR=scrMargin.top;
+
+    this.addEventListener("mousedown", mdown, false);
+    this.addEventListener("touchstart", mdown, false);
+    this.addEventListener("mousemove", mmovef, false);
+    function mmovef(this: any, event: any) {
+        //要素内の相対座標を取得
+        fx = event.pageX- this.parentElement.offsetLeft;
+        fy = event.pageY- this.parentElement.offsetTop;
+        x = fx - this.offsetLeft;
+        y = fy - this.offsetTop;
+        fW = this.style.width.removePx();
+        fH = this.style.height.removePx()
+        const posX = fW - x;
+        const posY = fH - y;
+        const top = this.offsetTop;
+        //拡大縮小エリアのカーソル
+        if ((posX < SR) && (posY < SR)) {
+            this.style.cursor = 'se-resize';
+        } else if ((posX < SR) && (y < TR)) {
+            this.style.cursor = 'ne-resize';
+        } else if ((x < SR) && (y < TR)) {
+            this.style.cursor = 'nw-resize';
+        } else if ((x < SR) && (posY < SR)) {
+            this.style.cursor = 'sw-resize';
+        } else if ((posX < SR) && (y > TR)) {
+            this.style.cursor = 'e-resize';
+        } else if ((x < SR)) {
+            this.style.cursor = 'w-resize';
+        } else if ((posY < SR) && (top > 0)) {
+            this.style.cursor = 's-resize';
+        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (70<posX )&&(40<x)) {
+            if (y < 3) {
+                this.style.cursor = 'n-resize';
+            } else {
+                this.style.cursor = 'move';
+            }
+        } else {
+            this.style.cursor = 'default';
+        }
+    }
+
+    //マウスが押された際の関数
+    function mdown(this: any, e: any) {
+        e.stopPropagation();
+        let checkF = true;
+         mdownF=true;
+        //タッチデイベントとマウスのイベントの差異を吸収
+        let event;
+        if (e.type === "mousedown") {
+             event = e;
+        } else {
+             event = e.changedTouches[0];
+        }
+
+        //要素内の相対座標を取得
+        fx = event.pageX- this.parentElement.offsetLeft;
+        fy = event.pageY- this.parentElement.offsetTop;
+        fW = this.style.width.removePx();
+        fH = this.style.height.removePx();
+        fLeft = this.style.left.removePx();
+        fTop = this.style.top.removePx();
+        x = fx - this.offsetLeft;
+        y = fy - this.offsetTop;
+        const posX = fW - x;
+        const posY = fH - y;
+        const top = this.offsetTop;
+        //拡大縮小エリアのカーソルとモード設定
+        if ((posX < SR) && (posY < SR)) {
+            this.style.cursor = 'se-resize';
+            mode = 'se-resize';
+        } else if ((posX < SR) && (y < TR)) {
+            this.style.cursor = 'ne-resize';
+            mode = 'ne-resize';
+        } else if ((x < SR) && (y < TR)) {
+            this.style.cursor = 'nw-resize';
+            mode = 'nw-resize';
+        } else if ((x < SR) && (posY < SR)) {
+            this.style.cursor = 'sw-resize';
+            mode = 'sw-resize';
+        } else if ((posX < SR) && (y > TR)) {
+            this.style.cursor = 'e-resize';
+            mode = 'e-resize';
+        } else if ((x < SR) && (y > TR)) {
+            this.style.cursor = 'w-resize';
+            mode = 'w-resize';
+        } else if ((posY < SR) && (top > 0)) {
+            this.style.cursor = 's-resize';
+            mode = 's-resize';
+        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (posX > 60)) {
+            if (x > 40) {
+                if (y < 3) {
+                    this.style.cursor = 'n-resize';
+                    mode = 'n-resize';
+                } else {
+                    this.style.cursor = 'move';
+                    mode = 'move';
+                }
+            }
+        } else {
+            checkF = false;
+        }
+        //ムーブイベントにコールバック
+        if (checkF == true) {
+            this.removeEventListener("mousemove", mmovef, false);
+            this.parentElement.addEventListener("mousemove", mmove, false);
+            this.parentElement.addEventListener("touchmove", mmove, false);
+            this.addEventListener("mouseup", mdup, false);
+        }
+    }
+
+    //マウスカーソルが動いたときに発火
+    function mmove(e: any) {
+        if(mdownF==false){
+            return;
+        }
+        //同様にマウスとタッチの差異を吸収
+        let event;
+        if (e.type === "mousemove") {
+             event = e;
+        } else {
+             event = e.changedTouches[0];
+        }
+
+        //フリックしたときに画面を動かさないようにデフォルト動作を抑制
+        e.preventDefault();
+        //マウスが動いた場所に要素を動かす
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        const epx = event.pageX- targetEle.parentElement.offsetLeft;
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        const epy = event.pageY- targetEle.parentElement.offsetTop;
+        const newW = fW + epx - fx;
+        const newH = fH + epy - fy;
+        const newW2 = fW + fx - epx;
+        const newH2 = fH + fy - epy;
+        const minSize = 50;
+        switch (mode) {
+            case 'move':
+                // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                targetEle.style.top = (epy - y).px();
+                // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                targetEle.style.left = (epx - x).px();           
+                break;
+            case 'e-resize':
+                if (newW > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.width = newW.px();
+                }
+                break;
+            case 'w-resize':
+                if (newW2 > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.left = (fLeft - (fx - epx)).px();
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.width = newW2.px();
+                }
+                break;
+            case 's-resize':
+                if (newH > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.height = newH.px();
+                }
+                break;
+            case 'n-resize':
+                if (newH2 > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.top = (fTop - (fy - epy)).px();
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.height = newH2.px();
+                }
+                break;
+            case 'se-resize':
+                if (newW > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.width = newW.px();
+                }
+                if (newH > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.height = newH.px();
+                }
+                break;
+            case 'ne-resize':
+                if (newW > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.width = newW.px();
+                }
+                if (newH2 > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.top = (fTop - (fy - epy)).px();
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.height = newH2.px();
+                }
+                break;
+            case 'sw-resize':
+                if (newW2 > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.left = (fLeft - (+fx - epx)).px();
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.width = newW2.px();
+                }
+                if (newH > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.height = newH.px();
+                }
+                break;
+            case 'nw-resize':
+                if (newW2 > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.left = (fLeft - (+fx - epx)).px();
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.width = newW2.px();
+                }
+                if (newH2 > minSize) {
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.top = (fTop - (fy - epy)).px();
+                    // @ts-expect-error TS(2339): Property 'style' does not exist on type 'Element'.
+                    targetEle.style.height = newH2.px();
+                }
+                break;
+        }
+        if(mode!='move'){
+            Generic.moveInnerElement(targetEle);
+        }
+        if (mode != 'move') {
+            // @ts-expect-error TS(2339): Property 'maxSizeFlag' does not exist on type 'Ele... Remove this comment to see the full error message
+            targetEle.maxSizeFlag = false;
+            //リサイズ中に発生するコールバック
+            if(typeof movingCall  == 'function'){
+                movingCall(targetEle);
+            }
+        }
+        targetEle.removeEventListener("mouseup", mdup, false);//移動した場合は同じ地点でマウスボタンが上がった場合の処理は行わない
+        //マウスボタンが離されたとき、またはカーソルが外れたとき発火
+        targetEle.addEventListener("mouseup", mup, false);
+        targetEle.addEventListener("touchend", mup, false);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        targetEle.parentElement.addEventListener("touchleave", mup, false);
+    }
+
+    //同じ地点でマウスボタンが上がった場合の処理
+    function mdup(this: any, e: any) {
+        this.style.cursor = 'default';
+        this.addEventListener("mousemove", mmovef, false);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        targetEle.parentElement.removeEventListener("mousemove", mmove, false);
+        // @ts-expect-error TS(2531): Object is possibly 'null'.
+        targetEle.parentElement.removeEventListener("touchmove", mmove, false);
+        mdownF=false;
+    }
+
+    //マウスボタンが上がったら発火
+    function mup(this: any, e: any) {
+        if(mdownF==false){
+            return;
+        }
+
+        this.style.cursor = 'default';
+        this.addEventListener("mousemove", mmovef, false);
+        //ムーブベントハンドラの消去
+        this.parentElement.removeEventListener("mousemove", mmove, false);
+        this.parentElement.removeEventListener("touchmove", mmove, false);
+        targetEle.removeEventListener("mouseup", mup, false);
+        targetEle.removeEventListener("touchend", mup, false);
+        if (mode != 'move') {            
+            if(typeof moveEndCall == 'function'){
+                moveEndCall(targetEle);
+            }
+        }
+        mdownF=false;
+    }
+}
+
+
+
+//数値にpxをつける
+// @ts-expect-error TS(2339): Property 'px' does not exist on type 'Number'.
+Number.prototype.px = function (num: any) {
+    var v = this.toString();
+    return v + "px";
+};
+
+/**NumberInputに値を設定する */
+// @ts-expect-error TS(2339): Property 'setNumberValue' does not exist on type '... Remove this comment to see the full error message
+HTMLElement.prototype.setNumberValue= function (v: any){
+    // @ts-expect-error TS(2339): Property 'preValue' does not exist on type 'HTMLEl... Remove this comment to see the full error message
+    this.preValue=v;
+    // @ts-expect-error TS(2339): Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
+    this.value=v;
+}
+//select要素の子要素を削除
+// @ts-expect-error TS(2339): Property 'removeAll' does not exist on type 'HTMLE... Remove this comment to see the full error message
+HTMLElement.prototype.removeAll = function () {
+    while (this.lastChild) {
+        this.removeChild(this.lastChild);
+    }
+}
+
+/**select要素のoptionを入れ替える */
+// @ts-expect-error TS(2339): Property 'optionSwap' does not exist on type 'HTML... Remove this comment to see the full error message
+HTMLElement.prototype.optionSwap= function(n1: any,n2: any){
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let d = this.options[n1].text;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n1].text = this.options[n2].text;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n2].text = d;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let v = this.options[n1].text;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n1].value = this.options[n2].value;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n2].value = v;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let a = this.options[n1].disabled;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n1].disabled = this.options[n2].disabled;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n2].disabled = a;
+}
+
+//select要素の選択要素を一つ削除、選択位置を移動、削除したvalueを返す
+// @ts-expect-error TS(2339): Property 'removeOne' does not exist on type 'HTMLE... Remove this comment to see the full error message
+HTMLElement.prototype.removeOne = function () {
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let mx=this.options.length;
+    // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+    let fSel=parseInt(this.selectedIndex);
+    if(fSel==-1){
+        return undefined;
+    }
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let v=this.options[fSel].value;
+    let newSel=fSel;
+    // @ts-expect-error TS(2554): Expected 0 arguments, but got 1.
+    this.remove(fSel);
+    if(mx==1){
+        newSel=-1;
+    }else{
+        if(fSel==(mx-1)){
+            newSel=fSel-1;
+        }
+    }
+    // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+    this.selectedIndex=newSel;
+    return v;
+}
+
+//select要素にリスト追加
+// @ts-expect-error TS(2339): Property 'addSelectList' does not exist on type 'H... Remove this comment to see the full error message
+HTMLElement.prototype.addSelectList = function (list: any, firstSelectIndex: any, resetF: any, astariskNonF: any,insertPoint=undefined) {
+    if (resetF == true) {
+        // @ts-expect-error TS(2339): Property 'removeAll' does not exist on type 'HTMLE... Remove this comment to see the full error message
+        this.removeAll();
+    }
+    for (var j = 0; j < list.length; j++) {
+        var opt = document.createElement("option");
+        opt.value = list[j].value;
+        opt.appendChild(document.createTextNode(list[j].text));
+        if ((list[j].text.left(1) == "*") && (astariskNonF == true)) {
+            opt.disabled = true;
+        }
+        if(insertPoint==undefined){
+            this.appendChild(opt);
+        }else{
+            // @ts-expect-error TS(2339): Property 'add' does not exist on type 'HTMLElement... Remove this comment to see the full error message
+            this.add(opt,insertPoint+j);
+        }
+    }
+    if (firstSelectIndex != undefined) {
+        // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+        this.selectedIndex = firstSelectIndex;
+        // @ts-expect-error TS(2339): Property 'oldSel' does not exist on type 'HTMLElem... Remove this comment to see the full error message
+        this.oldSel=firstSelectIndex;
+    }
+}
+
+//select要素の選択テキストを取得
+// @ts-expect-error TS(2339): Property 'getText' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+HTMLElement.prototype.getText = function () {
+    // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+    let n = this.selectedIndex;
+    if (n == -1) {
+        return undefined;
+    }
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    return this.options[n].text;
+}
+
+//select要素の選択valueを取得
+// @ts-expect-error TS(2339): Property 'getValue' does not exist on type 'HTMLEl... Remove this comment to see the full error message
+HTMLElement.prototype.getValue = function () {
+    // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+    let n = this.selectedIndex;
+    if (n == -1) {
+        return undefined;
+    }
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let v=this.options[n].value;
+    if (isNaN(v)==false){
+        v=Number(v);
+    }
+    return v;
+}
+
+//select要素で指定した文字のテキストを選択
+// @ts-expect-error TS(2339): Property 'setSelectText' does not exist on type 'H... Remove this comment to see the full error message
+HTMLElement.prototype.setSelectText = function (txt: any) {
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let n = this.options.length;
+    for (let i = 0; i < n; i++) {
+        // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+        if (this.options[i].text == txt) {
+            // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+            this.selectedIndex = i;
+            return true;
+            break;
+        }
+    }
+    return false;
+}
+
+/**select要素の指定の位置のvalueとテキストを変更 */
+// @ts-expect-error TS(2339): Property 'setSelectData' does not exist on type 'H... Remove this comment to see the full error message
+HTMLElement.prototype.setSelectData=function(n: any,value: any,text: any){
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n].text=text;
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    this.options[n].value=value;
+}
+
+//select要素で指定したvalueのテキストの先頭にアスタリスクを付ける、外す
+// @ts-expect-error TS(2339): Property 'setAstarisk' does not exist on type 'HTM... Remove this comment to see the full error message
+HTMLElement.prototype.setAstarisk = function (value: any,astariskAddF: any) {
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let n = this.options.length;
+    for (let i = 0; i < n; i++) {
+        // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+        let v=this.options[i].value;
+        if ((isNaN(v)==false)&&(isNaN(value)==false)){
+            v=Number(v);
+        }
+        if (v == value) {
+            // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+            let tx=this.options[i].text;
+            if(astariskAddF==true){
+                if(tx.left(1)!="*"){
+                    tx="*"+tx;
+                }
+                // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+                this.options[i].disabled = true;
+            }else{
+                if(tx.left(1)=="*"){
+                    tx=tx.mid(1,tx.length-1);
+                }
+                // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+                this.options[i].disabled = false;
+            }
+            // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+            this.options[i].text=tx;
+            return;
+        }
+    }
+}
+
+//select要素で指定したvalueを選択
+// @ts-expect-error TS(2339): Property 'setSelectValue' does not exist on type '... Remove this comment to see the full error message
+HTMLElement.prototype.setSelectValue= function (value: any) {
+    // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+    let n = this.options.length;
+    for (let i = 0; i < n; i++) {
+        // @ts-expect-error TS(2339): Property 'options' does not exist on type 'HTMLEle... Remove this comment to see the full error message
+        let v=this.options[i].value;
+        if ((isNaN(v)==false)&&(isNaN(value)==false)){
+            v=Number(v);
+        }
+        if (v == value) {
+            // @ts-expect-error TS(2339): Property 'selectedIndex' does not exist on type 'H... Remove this comment to see the full error message
+            this.selectedIndex = i;
+            return true;
+            break;
+        }
+    }
+    return false;
+}
+//要素の表示状態を指定のものに設定
+// @ts-expect-error TS(2339): Property 'setVisibility' does not exist on type 'H... Remove this comment to see the full error message
+HTMLElement.prototype.setVisibility = function (visiflag: any) {
+    if (visiflag == true) {
+        this.style.display = "inline";
+    } else {
+        this.style.display = 'none';
+    }
+}
+/**要素の表示状態を取得 */
+// @ts-expect-error TS(2339): Property 'getVisibility' does not exist on type 'H... Remove this comment to see the full error message
+HTMLElement.prototype.getVisibility = function () {
+    if (this.style.display == "inline"){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**ボタンの使用可／不可の切り替え */
+// @ts-expect-error TS(2339): Property 'btnDisabled' does not exist on type 'HTM... Remove this comment to see the full error message
+HTMLElement.prototype.btnDisabled = function (f: any) {
+    // @ts-expect-error TS(2339): Property 'disabled' does not exist on type 'HTMLEl... Remove this comment to see the full error message
+    this.disabled = f;
+    if (f == true) {
+        this.className = "btnDisable";
+    } else {
+        this.className = "";
+    }
+}
+
+//文字からpxをとる
+// @ts-expect-error TS(2339): Property 'removePx' does not exist on type 'String... Remove this comment to see the full error message
+String.prototype.removePx = function () {
+    return parseInt(this.substr(0, this.length - 2))
+}
+
+//文字列繰り返し
+String.prototype.repeat = function (num) {
+    for (var str = ""; (this.length * num) > str.length; str += this);
+    return str;
+};
+
+//文字列左から抜き出し
+// @ts-expect-error TS(2339): Property 'left' does not exist on type 'String'.
+String.prototype.left = function (num: any) {
+    return this.substr(0, num);
+};
+
+//文字列右から抜き出し
+// @ts-expect-error TS(2339): Property 'right' does not exist on type 'String'.
+String.prototype.right = function (num: any) {
+    return this.substr(this.length - num);
+};
+/**文字を途中から抜き出し lengthがundefinedの場合最後まで*/
+// @ts-expect-error TS(2339): Property 'mid' does not exist on type 'String'.
+String.prototype.mid = function (start: any, length: any){
+    if(length==undefined){
+        return this.slice(start);
+
+    }else{
+        return this.slice(start, start + length);
+    }
+}
+/**文字列の指定位置に文字列を差し替え */
+// @ts-expect-error TS(2339): Property 'midReplace' does not exist on type 'Stri... Remove this comment to see the full error message
+String.prototype.midReplace = function (start: any, replaceString: any){
+    let tx = this.substring(0, start ) + replaceString + this.substring(start + replaceString.length);
+   return tx;
+}
+
+//文字列全置換
+// @ts-expect-error TS(2550): Property 'replaceAll' does not exist on type 'Stri... Remove this comment to see the full error message
+String.prototype.replaceAll = function (org: any, dest: any) {
+    return this.split(org).join(dest);
+}
+
