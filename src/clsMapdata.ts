@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsTime } from './clsTime';
 import { clsSortingSearch } from './SortingSearch';

@@ -1,6 +1,7 @@
 // NOTE: Strict type checks enabled; legacy grid control still uses many any-typed members.
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /**　グリッドコントロール用の内部クラス（外部に移動） */
+import { appState } from './core/AppState';
 
 export {};
 
