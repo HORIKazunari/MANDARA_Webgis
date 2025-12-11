@@ -1,4 +1,5 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
+import { appState } from './core/AppState';
 import { EARTH_R } from './constants/geometry';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
@@ -401,6 +402,7 @@ class spatial {
 
     /**メッシュコードから投影変換した四角形を返す */
     static Get_MeshCode_Rectangle(Meshcode: string, MeshType: number, refOrigin: number, refDestZahyo: Zahyo_info) {
+        const state = appState();
         let RectLatLon  = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode, MeshType);
         RectLatLon.NorthWest = spatial.ConvertRefSystemLatLon(RectLatLon.NorthWest, refOrigin, refDestZahyo.System);
         RectLatLon.SouthEast = spatial.ConvertRefSystemLatLon(RectLatLon.SouthEast, refOrigin, refDestZahyo.System);
@@ -415,6 +417,7 @@ class spatial {
 
     /**地図座標のXYから緯度経度にして距離測定 */
     static Distance_Ido_Kedo_XY_Point(P1: point, P2: point, MapDTMapZahyo: Zahyo_info) {
+        const state = appState();
         let D1 = this.Get_Reverse_XY(P1, MapDTMapZahyo);
         let D2 = this.Get_Reverse_XY(P2, MapDTMapZahyo);
         if (!D1 || !D2 || typeof D1.toLatlon !== "function" || typeof D2.toLatlon !== "function") {
@@ -425,6 +428,7 @@ class spatial {
 
     /**緯度経度で地点間の距離を求める */
     static Distance_Ido_Kedo_LatLon(D1: latlon, D2: latlon): number {
+        const state = appState();
         if (D1.Equals(D2)) {
             return 0;
         } else {
@@ -437,6 +441,7 @@ class spatial {
 
     /**二つの線分の交点を求める関数。交点がある場合座標、ない場合undefined */
     static Line_Cross_Point(LAP1: point, LAP2: point, LBP1: point, LBP2: point): point | undefined {
+        const state = appState();
         let ax1 = LAP1.x
         let ay1 = LAP1.y
         let ax2 = LAP2.x
@@ -522,11 +527,13 @@ class spatial {
 
     /** 指定したベクトルと垂直のベクトルを取得*/
     static Get_Suisen_Vec(Vx: number, Vy: number) {
+        const state = appState();
         return { rVx: -Vy, rVy: Vx };
     }
 
     /**ベクトルVecX,VecY方向に距離D離れた地点の座標を取得 */
     static Get_Vec_Point(VecX: number, VecY: number, Dis: number, CenterFlag: boolean) {
+        const state = appState();
             let D ;
             if(CenterFlag ==true ){
                 D = Dis / 2;
@@ -550,6 +557,7 @@ class spatial {
 
     //四角形に点が入らない場合，入るように座標を修正して返す
     static checkAndModifyPointInRect(p: point, rect: rectangle) {
+        const state = appState();
         let np =p.Clone();
         if(np.x < rect.left ){
             np.x = rect.left;
@@ -567,6 +575,7 @@ class spatial {
     }
     /**  ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/
     static check_Point_in_Polygon(checkPoint: point, PolyLine: point[][]): {ok: boolean, CrossPoint_X: number[]} {
+        const state = appState();
 
         let CrossPoint_X = [];
         let f = false;
@@ -625,6 +634,7 @@ class spatial {
 
     //地図座標が緯度経度に変換可能かチェックする
     static Check_PsitionReverse_Enable(Position: point, MPDataMapZahyo: Zahyo_info) {
+        const state = appState();
         let f;
         switch (MPDataMapZahyo.Mode) {
             case enmZahyo_mode_info.Zahyo_No_Mode:
@@ -676,6 +686,7 @@ class spatial {
 
     //メッシュコードからメッシュの四角形緯度経度を求める
     static Get_Ido_Kedo_from_MeshCode(MeshCode: string, Mesh_Size: number) {
+        const state = appState();
         MeshCode = (MeshCode + "0000000000").left(11);
         let id1 = Number(MeshCode.substr(0, 2));
         let id2 = Number(MeshCode.substr(4, 1));
@@ -722,6 +733,7 @@ class spatial {
 
     //メッシュの東西南北の幅を取得
     static Get_MeshCode_Size_IdoKedo(Mesh_Size: number) {
+        const state = appState();
         let Xplus;
         let YPlus;
 
@@ -770,6 +782,7 @@ class spatial {
 
     //投影法の緯度に応じたスケール値の倍率を取得
     static Get_Scale_Baititu_IdoKedo(p: point, MPDataMapZahyo: Zahyo_info) {
+        const state = appState();
         let v;
         switch (MPDataMapZahyo.Mode){
             case enmZahyo_mode_info.Zahyo_Ido_Keido: {
@@ -827,6 +840,7 @@ class spatial {
 
     //測地系をチェックして、違っていたら変換して返す
     static ConvertRefSystemLatLon(P1: latlon, OriginRefSystem: number, DestRefSystem: number) {
+        const state = appState();
         if (OriginRefSystem == DestRefSystem) {
             return P1;
         } else {
@@ -848,16 +862,19 @@ class spatial {
 
     //測地系変換 Tokyo97 to ITRF94
     static Tokyo97toITRF94(latlonP: latlon) {
+        const state = appState();
         return TKY2JGD.Tokyo97toITRF94(latlonP);
     }
 
     //測地系変換 ITRF94 to Tokyo97
     static ITRF94toTokyo97(latlonP: latlon) {
+        const state = appState();
         return TKY2JGD.ITRF94toTokyo97(latlonP);
     }
 
     //扇形の座標を求める
     static Get_Fan_Coordinates(CP: point, r: number, start_p: number, end_p: number, CenterLineF: boolean) {
+        const state = appState();
         let ST = 1 / (r * 2 / 5);
         let pxy = [];
 
@@ -883,6 +900,7 @@ class spatial {
 
     //世界測地系の緯度経度の座標に変換して返す
     static Get_World_IdoKedo(oxy: point, MapZahyo_Info: Zahyo_info) {
+        const state = appState();
         let x2, y2;
         let LatLon = new latlon();
 
@@ -915,6 +933,7 @@ class spatial {
     }
     //地図座標を新しい設定の地図座標に変換する
     static Get_Reverse_and_Convert_XY(OldP: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info) {
+        const state = appState();
         if (oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_No_Mode) {
             return OldP;
         } else {
@@ -977,6 +996,7 @@ class spatial {
 
     /** 世界測地系の緯度経度の座標を、地図ファイルの測地系が日本測地系だった場合、日本測地系の緯度経度に変換、平面直角座標系の場合は変換不可*/
     static Get_ReverseWorld_IdoKedo(oLatLon: latlon, MapZahyo: Zahyo_info) {
+        const state = appState();
         if (MapZahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido) {
             alert("平面直角は不可")
         }
@@ -992,6 +1012,7 @@ class spatial {
 
     /** 起終点座標だけを指定した境界線を面領域を描くように並べ替える、返す値は並び順とオブジェクトのポリゴン数*/
     static BoundaryArrangeGeneral(LieneNum: number, spxy: point[], epxy: point[]) {
+        const state = appState();
         let boundArrange = new boundArrangeData();
         boundArrange.Fringe = boundArrange.Fringe ?? [];
         boundArrange.Arrange_LineCode = boundArrange.Arrange_LineCode ?? [];
@@ -1123,6 +1144,7 @@ class spatial {
     }
 
     static Get_Hairetu_Menseki(XY: point[], MapDataMap: { Zahyo: Zahyo_info; SCL: number }) {
+        const state = appState();
         let n = XY.length ;
         let xy2 =Generic.ArrayClone(XY);
         if (MapDataMap.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
@@ -1168,6 +1190,7 @@ class spatial {
 
 
     static CheckTwoPoint(xy1: point, xy2: point): boolean { //2つの座標が同じか調べる
+        const state = appState();
         if ((xy1.x == xy2.x) && (xy1.y == xy2.y)) {
             return true;
         } else {
@@ -1176,12 +1199,14 @@ class spatial {
     }
     //四角形を回転させた外接四角形を求める
     static getCircumscribedRectangle_turned(Rect1: rectangle, Angle: number) {
+        const state = appState();
         let p = this.Get_TurnedRectangle(Rect1, Angle);
         return this.getCircumscribedRectangle(p, undefined);
     }
 
     /**Circumscribed_Rectangleの上下左右とpointまたはrectangleを比較し、XYがより外側の場合は置き換える。point_rectangleがpointの配列の場合は、pointからrectangle作成 */
     static getCircumscribedRectangle(point_rectangle: point[] | point | rectangle, Circumscribed_Rectangle: rectangle | undefined) {
+        const state = appState();
 
         let newRec;
         if ((point_rectangle instanceof Array) == true) {
@@ -1220,6 +1245,7 @@ class spatial {
 
 
     static Get_Inner_Rectangle(Rect1: rectangle, Rect2: rectangle) {
+        const state = appState();
         //二つの四角形が交わっている場合に、重複領域の四角形を取得する 。交わっているかどうかの判定は行わない 
         const inR = new rectangle(0, undefined, 0, 0);
         inR.left = Math.max(Rect1.left, Rect2.left);
@@ -1230,6 +1256,7 @@ class spatial {
     }
 
     static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle) {//ポイントが四角形の中に入るかどうかチェック
+        const state = appState();
         let ckP = checkXY.Clone();
         if (Kakudo != 0) {
             let rcp = Rect.centerP();
@@ -1247,6 +1274,7 @@ class spatial {
 
 
     static Get_TwoPoint_Rect_SingleGet_TwoPoint_Rect_Single(P1: point, P2: point) {
+        const state = appState();
         //二つのポイントの外接四角形を求める
         const Rec = new rectangle(0, undefined, 0, 0);
         if (P1.x < P2.x) {
@@ -1267,6 +1295,7 @@ class spatial {
     }
     //二つの四角形の外接四角形を求める
     static Get_Rectangle_Union(rec1: rectangle, rec2: rectangle) {
+        const state = appState();
         let r = new rectangle(0, undefined, 0, 0);
         if (rec1.left < rec2.left) { r.left = rec1.left } else { r.left = rec2.left };
         if (rec1.right < rec2.right) { r.right = rec2.right } else { r.right = rec1.right };
@@ -1279,6 +1308,7 @@ class spatial {
     //１つのポイントと半径rの円の外接四角形を求める
     //１つのポイントを中心としたsizeの外接四角形を求める
     static Get_Rectangle(P1: point, P2: number | size | point): rectangle {
+        const state = appState();
         if ((typeof P2) == 'number') {
             let r = P2;
             return new rectangle(P1.x - r, P1.x + r, P1.y - r, P1.y + r);
@@ -1292,6 +1322,7 @@ class spatial {
 
     //2つの四角形の上下左右端1つでも一致する場合true
     static Check_TwoRectangele_Inner_Contact(Rec1: rectangle, Rec2: rectangle): boolean {
+        const state = appState();
         if ((Rec1.left == Rec2.left) || (Math.abs(Rec1.right - Rec2.right) < 0.000001) || (Rec1.top == Rec2.top) || (Math.abs(Rec1.bottom - Rec2.bottom) < 0.000001)) {
             return true;
         } else {
@@ -1300,6 +1331,7 @@ class spatial {
     }
 
     static Compare_Two_Rectangle_Position(Rec1: rectangle, Rec2: rectangle) {
+        const state = appState();
         //二つの長方形の内外判定
         if ((Rec1.left > Rec2.right) || (Rec1.top > Rec2.bottom) || (Rec1.right < Rec2.left) || (Rec1.bottom < Rec2.top)) {
             return cstRectangle_Cross.cstOuter;    //ずれている
@@ -1315,6 +1347,7 @@ class spatial {
     }
 
     static Compare_Two_Rectangle_Position_Inflated(Rec1: rectangle, Rec2: rectangle, inflate: number) {
+        const state = appState();
         let rect12 = Rec1.Clone();
         let rect22 = Rec2.Clone();
         rect12.inflate(inflate,inflate);
@@ -1323,11 +1356,13 @@ class spatial {
     }
 
     static Compare_Two_Rectangle_Position_turned(Rect1: rectangle, Rect1Angle: number, Rect2: rectangle) {
+        const state = appState();
         let trect = this.getCircumscribedRectangle_turned(Rect1, Rect1Angle);
         return this.Compare_Two_Rectangle_Position(trect, Rect2);
     }
 
     static Distance(x1: number, y1: number, x2: number, y2: number) {
+        const state = appState();
         var d = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         return d;
     }
@@ -1363,6 +1398,7 @@ class spatial {
 
     //回転中心を指定して二次元座標回転角度指定
     static Trans2D(CP: point, Kakudo_P: number | point, Kakudo?: number): point {
+        const state = appState();
         let OutP = new point();
         if (typeof Kakudo_P == "number") {
             let k = Kakudo_P * Math.PI / 180
@@ -1381,6 +1417,7 @@ class spatial {
 
     //指定した高さ、幅のボックスの、回転後の外接四角形の高さ、幅を取得する
     static Get_TurnedBox(oSize: size, Angle: number): size {
+        const state = appState();
         let rect = new rectangle(new point(-oSize.width / 2,- oSize.height / 2), oSize, undefined, undefined);
         let trect = this.getCircumscribedRectangle_turned(rect, Angle);
         return trect.size();
@@ -1388,6 +1425,7 @@ class spatial {
 
     //回転させた四角形の座標配列を取得。戻り値は5つの座標
     static Get_TurnedRectangle(Rect: rectangle, Kakudo: number): point[] {
+        const state = appState();
         let x1 = Rect.left;
         let y1 = Rect.top;
         let x2 = Rect.right;
@@ -1409,6 +1447,7 @@ class spatial {
     }
 
     static Distance_PointLine2(P: point, LineP1: point, LineP2: point): number{
+        const state = appState();
         return this.Distance_PointLine(P.x,P.y,LineP1.x,LineP1.y,LineP2.x,LineP2.y);
     }
     static Distance_PointLine (X: number, Y: number, ax: number, ay: number, BX: number, BY: number): number {
@@ -1695,12 +1734,14 @@ export class Generic {
 
     /**読み込み中マーク 処理終了後に Generic.clear_backDiv();で消す*/
     static readingIcon(title: any){
+        const state = appState();
         let boxReading = Generic.set_backDiv("", title, 300, 150, false, false, undefined, 0.2, false);     
         Generic.createNewDiv(boxReading,  " 読み込み中", "", "grayFrame", 30, 50, 230, 40, "padding:5px", undefined);   
         Generic.createNewImage(boxReading, "image/icon_loader.gif", "", "", "", 140, 110, "", undefined);
     }
     /**外部クリップボードから貼り付け */
     static outerPaste(okCall: any, cancelCall: any){
+        const state = appState();
         const backDiv = Generic.set_backDiv("", "外部から貼り付け", 200, 240, true, true, buttonOK, 0.2, true,true,cancelCall);
         Generic.createNewSpan(backDiv,"下に貼り付けて下さい(Ctrl+V)","","",15,40,"",undefined);
         let tx=Generic.createNewTextarea(backDiv,"","",15,65,10,10,"width:170px;height:120px;resize: none;");
@@ -1713,11 +1754,13 @@ export class Generic {
 
     /**オブジェクト名と設定期間の組み合わせ文字列を返す */
     static getTimeList(OnameStac: any, separator = "") {
+        const state = appState();
         let tx = "【" + OnameStac.connectNames() + "】" + separator + clsTime.StartEndtoString(OnameStac.SETime);
         return tx;
     }
     /**メッシュコードの名称を取得 */
     static ConvertMeshTypeFromEnum(MeshNumber: any) {
+        const state = appState();
         switch (MeshNumber) {
             case enmMesh_Number.mhNonMesh:
                 return "";
@@ -1738,6 +1781,7 @@ export class Generic {
         }
     }
     static ConvertMeshTypeFromString(MeshType: any) {
+        const state = appState();
         switch (MeshType) {
             case "":
                 return enmMesh_Number.mhNonMesh;
@@ -1759,6 +1803,7 @@ export class Generic {
     }
     /** レイヤタイプの文字列を返す*/
     static ConvertStringFromLayerType(Type: any) {
+        const state = appState();
         switch (Type) {
             case enmLayerType.Normal:
                 return "通常のレイヤ";
@@ -1772,6 +1817,7 @@ export class Generic {
         }
     }
     static ConvertStringLayerFromString(TypeStr: any) {
+        const state = appState();
         switch (TypeStr) {
             case "通常のレイヤ":
                 return enmLayerType.Normal;
@@ -1787,6 +1833,7 @@ export class Generic {
 
     /** 属性データ編集で欠損値扱い欄に表示する文字を返す*/
     static ConvertMissingValueFromBool(MissingValueF: any) {
+        const state = appState();
         switch (MissingValueF) {
             case true:
                 return "欠損値";
@@ -1797,6 +1844,7 @@ export class Generic {
         }
     }
     static ConvertMissingValueFromString(MissingStr: any) {
+        const state = appState();
         switch (MissingStr) {
             case "欠損値":
                 return true;
@@ -1810,6 +1858,7 @@ export class Generic {
 
     /**条件検索の文字を返す */
     static getConditionString(con: any){
+        const state = appState();
         switch (con) {
             case enmCondition.Less:
                 return "未満";
@@ -1846,6 +1895,7 @@ export class Generic {
 
     /**文字列配列Wordsをチェックして「新規1」「新規2」など連番を付ける */
     static Get_New_Numbering_Strings(CheckWords: any, Words: any) {
+        const state = appState();
         let L = CheckWords.length;
         let V = 0;
         for (let i = 0; i < Words.length; i++) {
@@ -1858,6 +1908,7 @@ export class Generic {
 
     /**オブジェクト名の漢字を統一する。比較する漢字が含まれていた場合にtrue */
     static ObjName_Kanji_Compatible(objName: any){
+        const state = appState();
         let Word_Compatible  = clsSettingData.ObjectName_Word_Compatible.split("|");
         let f = false;
 
@@ -1906,6 +1957,7 @@ export class Generic {
 
     /**レイヤの種類の名称 */
     static getLayerTypeName(layType: any){
+        const state = appState();
         let tx = "";
         var enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 };
         switch (layType) {
@@ -1924,6 +1976,7 @@ export class Generic {
 
     /**スペース、カンマ、タブで区切る */
     static String_Cut(Wo: any, Spliter: any){
+        const state = appState();
         let CUT = [];
         const vbQuate = String.fromCharCode(34);
         if (Wo.length == 0) {
@@ -2020,6 +2073,7 @@ export class Generic {
 
     /**地図ファイルをgetMapfileByHttpRequestで開き、JSONで返す */
     static getMapfileByHttpRequest(url: any, readCall: any){
+        const state = appState();
         
         Generic.readingIcon("地図ファイル読み込み");
         let ext=Generic.getExtension(url).toLowerCase();
@@ -2054,6 +2108,7 @@ export class Generic {
 
     /**画像ウインドウ表示 */
     static windowCenterOpen(img: any, Xv: any, Yv: any, title: any) {
+        const state = appState();
     let Xw = Xv + 10;
     let Yw = Yv + 80;
     let  new1 = window.open("", "_blank", "titlebar=No,directories=no,resizable=Yes,width=" + Xw + ",height=" + Yw + "");
@@ -2072,6 +2127,7 @@ export class Generic {
 
 /** ウィンドウでutl表示 */
 static windowCenterPage(help_url: any, Xv: any, Yv: any) {
+        const state = appState();
 
     let Xw = Xv + 50;
     let Yw = Yv + 80;
@@ -2081,6 +2137,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
 /**prompt入力 event_pointがundefinedの場合は画面中央表示*/
     static prompt(event_point: any, promptText: any, defoText: any, okCall: any, textAlign='left', cancelCall: any = undefined) {
+        const state = appState();
         let gsize = Generic.getDivSize(promptText, 270, "");
         let fheight = (gsize.height) + 130;
         let alertObj = Generic.set_backDiv("", "MANDARA JS", 300, fheight, true, true, buttonOK, 0.2, false,true,cancelCall);
@@ -2117,6 +2174,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**yes　noの確認 event_point:表示座標*/
     static confirm(event_point: any, text: any, yesFunc: any, noFunc: any) {
+        const state = appState();
         let gsize=Generic.getDivSize(text,220,"");
         let fheight=(gsize.height)+100;
         let fw=250;
@@ -2144,6 +2202,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**alertメッセージ event_pointがundefinedの場合は画面中央表示*/
     static alert(event_point: any, text: any, returnFunction: any = undefined) {
+        const state = appState();
         let gsize=Generic.getDivSize(text,220,"");
         let fheight=(gsize.height)+100;
         let alertObj = Generic.set_backDiv("", "MANDARA JS",250, fheight, true, false, buttonOK, 0.2,false,true,returnFunction);
@@ -2161,6 +2220,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**圧縮ファイルを展開 展開後のファイル名の連想配列のバイナリデータを返す*/
     static unzipFile(file: any, onOK: any, onError: any) {
+        const state = appState();
         let zipReader = new FileReader();
         zipReader.readAsArrayBuffer(file);
         let unZipData=[];
@@ -2184,6 +2244,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**データ（バイナリ）と対応するファイル名をtotalFileNameにZIP圧縬 */
     static zipFile(totalFileName: any, data: any, fileName: any) {
+        const state = appState();
         let zip = new Zlib.Zip();
         for(let i in data){
             zip.addFile(data[i], {filename: Generic.strToUtf8Array(fileName[i])
@@ -2207,6 +2268,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**バイト配列をUTF8文字列に変換 */
     static utf8ArrayToStr(array: any) {
+        const state = appState();
         var len = array.length;
         var out = "";
         var i = 0;
@@ -2238,6 +2300,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**UTF8文字列をバイト配列に変換 */
      static strToUtf8Array(str: any) {
+        const state = appState();
         var n = str.length,
             idx = -1,
             bytes = [],
@@ -2287,6 +2350,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /**指定の文字数より長い場合、以降を...で省略して返す。短い場合はそのまま返す */
     static Check_StringLength_And_Cut(Str: any, MaxLen: any){
+        const state = appState();
         let rstr  = Str;
         if(rstr.length>MaxLen){
             rstr = rstr.left(MaxLen) + "..."
@@ -2322,6 +2386,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**spanの文字のサイズをbodyに設定して求める（改行しない） */
     static getSpanSize(text: any, fontSize: any){
+        const state = appState();
         let t = this.createNewSpan(document.body, text, "", "", 0, 0, "", "visibility:hidden");
         t.whiteSpace = 'nowrap';
         t.style.top = '600px';
@@ -2334,6 +2399,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**divの文字のサイズをbodyに設定して求める（指定幅より広いと改行） */
     static getDivSize(text: any, width: any, styleinfo: any) {
+        const state = appState();
         let t = this.createNewDiv(document.body, text, "", "", 0, 0, "", "", styleinfo + ";visibility:hidden", undefined);
         if (width != undefined) {
             t.style.width = (width as any).px();
@@ -2345,6 +2411,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /** 線モードの曲線の座標列を求めるための4つのコントロールポイント取得*/
     static Get_OD_Spline_Point(ControlP: any, OriginP: any, DestP: any) {
+        const state = appState();
         let poxy = [];
         let retV = spatial.Distance_PointLine2(ControlP, OriginP, DestP);
         let D = retV.distance ?? 0;
@@ -2374,6 +2441,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**前後文字付き数字入力テキストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用 */
     static createNewWordNumberInput(ParentObj: any, headWord: any, footWord: any, defoValue: any, ID: any, x: any, y: any, headWordWidth: any, width: any, onChange: any, styleinfo: any) {
+        const state = appState();
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         let tx = this.createNewNumberInput(ParentObj, defoValue, ID, x + hsw, y, width, onChange, styleinfo);
         if (footWord != "") {
@@ -2384,6 +2452,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**数値に変換する */
     static convValue(value: any){
+        const state = appState();
         let v=value;
         v = v.replace(/\s+/g, "");//スペース削除
         v = v.replace(/\s+/g, "　");//スペース削除
@@ -2398,6 +2467,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
     static createNewNumberInput(ParentObj: any, defoValue: any, ID: any, x: any, y: any, width: any, onChange: any, styleinfo: any) {
+        const state = appState();
         let box = this.createNewInput(ParentObj, "text", defoValue, ID, x, y, undefined, "width:" + (width as any).px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
         box.preValue = defoValue;
         box.numberCheck = true;//数字のチェックをしない場合はfalseにする
@@ -2443,6 +2513,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**数字入力＋リストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用**/
     static createNewNumberComboBox(ParentObj: any, defoValue: any, ID: any, list: any, x: any, y: any, width: any, maxNumber: any, onChange: any){
+        const state = appState();
         let dropinwidth=18;
         let ipsize=this.createNewNumberInput(document.body,defoValue,"",0,0,width-dropinwidth+1,onChange,"visibility:hidden");
         let boxh=ipsize.offsetHeight-2;
@@ -2503,10 +2574,11 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**チェックリストボックス */
     static createNewCheckListBox(ParentObj: any, ID: any, list: any, x: any, y: any, width: any, height: any, onChange: any, styleinfo: any) {
+        const state = appState();
         let lineH = this.getDivSize("A", undefined, "").height + 3;
         let allh = lineH * list.length;
         let ovy = (allh < height - 2) ? "" : "overflow-y: scroll";
-        let w = (allh < height - 2) ? width - 2 : width - (scrMargin.scrollWidth ?? 0) - 1;
+        let w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
         const frame = this.createNewDiv(ParentObj, "", ID, "grayFrame", x, y, width, height, ovy + "overflow-x:hidden", undefined);
         const inFrame = this.createNewDiv(frame, "", ID, "", 0, 0, w, allh, "", undefined);
         for (let i in list) {
@@ -2524,6 +2596,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //**色を指定分明るくまたは暗くする（0を下回った場合は0、255を上回った場合は255） */
     static GetColorArrange(Col: any, ChangeValue: any){
+        const state = appState();
         let newcol=Col.Clone();
         let r  = Generic.m_min_max(Col.r + ChangeValue, 0, 255)
         let g  = Generic.m_min_max(Col.g + ChangeValue, 0, 255)
@@ -2537,6 +2610,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //2次元配列aData()の内容から、データ項目ごとに通常、文字列、カテゴリーと分類する
     static Check_DataType(DataNum: any, ObjNum: any, aData: any) {
+        const state = appState();
         let UNT = [];
         let SS = new clsSortingSearch();
         for (let i = 0; i < DataNum; i++) {
@@ -2578,6 +2652,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //セレクトボックス用投影法リスト
     static getProjectionList() {
+        const state = appState();
         let list = [
             { value: enmProjection_Info.prjMercator, text: 'メルカトル図法' },
             { value: enmProjection_Info.prjMiller, text: 'ミラー図法' },
@@ -2592,6 +2667,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**拡張子取得 */ 
     static getExtension(filename: any){
+        const state = appState();
         let n=filename.lastIndexOf(".");
         if(n==-1){
             return "";
@@ -2602,6 +2678,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
        /**フォルダを除いたファイル名を取得 */
        static getFilename(filename: any) {
+        const state = appState();
         let hn = filename.lastIndexOf("/");//スラッシュ
         let tx = "";
         if ((hn == -1)) {
@@ -2614,6 +2691,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**拡張子を除いたファイル名を取得 */
     static getFilenameWithoutExtension(filename: any) {
+        const state = appState();
         let n = filename.lastIndexOf(".");
         let hn = filename.lastIndexOf("/");//スラッシュ
         let tx = "";
@@ -2631,6 +2709,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //テキストファイル保存
     static saveText(text: any, fileName: any) {
+        const state = appState();
         /// <signature>
         /// <summary>ファイル保存</summary>
         /// </signature> 
@@ -2652,6 +2731,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //座標の文字列取得
     static Get_PositionCoordinate_Strings(P: any, MPDataMapZahyo: any, Header_Flag = true) {
+        const state = appState();
         let retPS: {x: string, y: string} = {x: "", y: ""};
         switch (MPDataMapZahyo.Mode) {
             case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
@@ -2682,12 +2762,14 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**緯度経度(latlon)の文字列取得 (.x,.y)*/
     static Get_LatLon_Strings(LatLon: any, Header_Flag = true) {
+        const state = appState();
         let p = LatLon.toPoint();
         return this.Get_LatLon_PointStrings(p, Header_Flag);
     }
 
     /**緯度経度(point)の文字列取得*/
     static Get_LatLon_PointStrings(Pos: any, Header_Flag=true){
+        const state = appState();
         let P = Pos.Clone();
         let retPS = {x: "", y: ""};
 
@@ -2734,6 +2816,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //メッシュコードの文字の長さを取得
     static getMeshCodeLength(MeshNumber: any) {
+        const state = appState();
         let CodeLen;
         switch (MeshNumber) {
             case enmMesh_Number.mhFirst: {
@@ -2770,6 +2853,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**距離単位をvalueとtextの配列で返す */
     static getScaleUnit_for_select(){
+        const state = appState();
         let list=[];
         let scl=[enmScaleUnit.centimeter,enmScaleUnit.meter,enmScaleUnit.kilometer,enmScaleUnit.inch,enmScaleUnit.feet,enmScaleUnit.yard,enmScaleUnit.mile,
             enmScaleUnit.syaku,enmScaleUnit.ken,enmScaleUnit.ri,enmScaleUnit.kairi];
@@ -2782,6 +2866,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     
     /**距離単位列挙型から面積文字列を返す */
     static getScaleUnitAreaStrings(scl: any) {
+        const state = appState();
         switch (scl) {
             case enmScaleUnit.meter:
                 return "㎡";
@@ -2812,6 +2897,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     ///*距離単位列挙型と値から距離文字列を返す 距離単位だけの場合はValue=undefined*/
     static getScaleUnitStrings(Value: any, scl: any) {
+        const state = appState();
         let vs;
         if(Value==undefined){
             vs="";
@@ -2871,6 +2957,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //距離単位の変換係数を求める
     static Convert_ScaleUnit(from_Unit: any, to_Unit: any){
+        const state = appState();
         let kmco = [];
         kmco[enmScaleUnit.meter] = 1000;
         kmco[enmScaleUnit.kilometer] = 1;
@@ -2891,6 +2978,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //レイヤの形状ごとの数を入れた配列から、可能な形状を返す
     static checkShape(Shape: any) {
+        const state = appState();
         if (Shape[enmShape.PointShape] > 0) {
             return enmShape.PointShape;
         } else if (Shape[enmShape.LineShape] > 0) {
@@ -2901,6 +2989,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static RGBAfromElement(ele: any) {
+        const state = appState();
         //要素の背景色をcolorRGBAに変換して返す
         let opa=1 ;
         let bcol = ele.style.backgroundColor;
@@ -2916,6 +3005,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         return col;
     }
     static Set_Box_Position_in_Browser(e_point: any, box: any) {	//
+        const state = appState();
         /// <signature>
         /// <summary>ブラウザからはみださないようにボックスの位置を決める</summary>
         /// <param name="e" >イベントの引数</param>
@@ -2957,6 +3047,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static Check_Point_in_screen(p: any, ScrData: any, Mode: any) {
+        const state = appState();
         //定義
         //Mode=0/SRX:SRY  Mode=1/SR:SY
         //ScrData.ScrRectangle.Left = SRX(0): ScrData.ScrRectangle.Top = SRY(0)
@@ -2974,6 +3065,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //属性データタイプ列挙型から文字を返す
     static ConvertAttDataTypeString(dataType: any) {
+        const state = appState();
         switch (dataType) {
             case enmAttDataType.Normal:
                 return "通常のデータ";
@@ -3013,6 +3105,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //selectのアイテム削除後に、次のインデックスを指定する
     static ListIndex_Reset(select: any, Old_n: any) {
+        const state = appState();
         if (select.options.length == 0) {
             return;
         }
@@ -3026,6 +3119,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //形状列挙型からその文字を返す
     static ConvertShapeEnumString(shape: any) {
+        const state = appState();
         switch (shape) {
             case enmShape.LineShape:
                 return "線";
@@ -3044,6 +3138,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //イベント情報からcanvas上の座標位置を求める
     static getCanvasXY(e: any) {
+        const state = appState();
         let cx = e.clientX;
         let cy = e.clientY;
         let rx = cx - (e.target.parentNode.style.left.removePx() + e.target.style.left.removePx());
@@ -3053,6 +3148,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
         //イベント情報からcanvas上の座標位置を求める
         static getCanvasXY2(e: any) {
+        const state = appState();
             let cx = e.clientX;
             let cy = e.clientY;
             if(typeof e.target.getBoundingClientRect !='function'){
@@ -3065,6 +3161,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //画面表示領域変更の可否のチェック
     static Check_New_ScrView(MapRect: any, new_Rect: any) {
+        const state = appState();
         if (new_Rect.width() > MapRect.width() / 5000) {
             //拡大しすぎでない場合
             if (new_Rect.width() < MapRect.width() * 10) {
@@ -3077,6 +3174,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
     static Get_Outer_Mpline_AggregatedObj(LCode: any, Shape: any) { //LCode:EnableMPLine_Data
+        const state = appState();
         let lc = this.ArrayClone(LCode);
 
         let ncode = [];
@@ -3103,6 +3201,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //タイトル、単位から属性データタイプ列挙型を返す
     static getAttDataType_From_TitleUnit(Title: any, Unit: any) {
+        const state = appState();
         let dtype;
         let UTitle = Title.toUpperCase();
         if (UTitle == "URL") {
@@ -3133,6 +3232,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /** @returns {MyType} */
     static SetTitleUnit_from_AttDataType(dtype: any, defoTitle: any, defoUnit: any, ) {
+        const state = appState();
         let Title=defoTitle;
         let Unit=defoUnit;
         switch (dtype) {
@@ -3179,18 +3279,22 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //オブジェクトが同じかどうか調べる
     static equal(objecta: any, objectb: any) {
+        const state = appState();
         return (JSON.stringify(objecta) == JSON.stringify(objectb))
     }
     static Clone(odata: any) {
+        const state = appState();
         return JSON.parse(JSON.stringify(odata));
     }
 
     //配列のシャローコピー
     static ArrayShallowCopy(Arr: any){
+        const state = appState();
         return Arr.concat();
     }
     /**Cloneメソッドを持つオブジェクトの配列をコピーする */ 
     static ArrayClone(array: any) {
+        const state = appState();
         if (array.length==0){
             return [];
         }
@@ -3203,6 +3307,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /**Cloneメソッドを持つオブジェクトの2次元配列をコピーする */
     static Array2Clone(array: any){
+        const state = appState();
         let ca = [];
         for (let i = 0; i < array.length; i++) {
             ca.push(this.ArrayClone(array[i]));
@@ -3212,6 +3317,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     
     static m_min_max(V: any, Min: any, Max: any) {
+        const state = appState();
         //検査値がMinより小さければMinを返し、Maxより大きければMaxを返す
 
         if (V < Min) {
@@ -3227,6 +3333,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //画面の幅取得
     static getBrowserWidth() {
+        const state = appState();
         if (window.innerWidth) {
             return window.innerWidth;
         }
@@ -3241,6 +3348,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //画面の高さ取得
     static getBrowserHeight() {
+        const state = appState();
         if (window.innerHeight) {
             return window.innerHeight;
         }
@@ -3255,12 +3363,14 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //ドキュメントの高さ取得
     static getDocumentHeight() {
+        const state = appState();
         var h = Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
         return h;
     }
 
     //ウィンドウで表示  
     static CenterPage(help_url: any, Xv: any, Yv: any) {
+        const state = appState();
         let win2p: string = "";
         let win1p: string = "";
         let new2: any = null;
@@ -3281,6 +3391,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //ボタン作成
     static createNewButton(ParentObj: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any = "") {
+        const state = appState();
         var ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
         ok.addEventListener('click', onClick);
         ParentObj.appendChild(ok);
@@ -3290,6 +3401,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //img要素作成
     static createNewImage(ParentObj: any, src: any, alt: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any) {
+        const state = appState();
         var obj = document.createElement("img");
         obj.src = src;
         obj.alt = alt;
@@ -3305,6 +3417,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //span要素作成
     static createNewSpan(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any = undefined, ...rest: any[]) {
+        const state = appState();
         var obj = document.createElement("span");
         obj.setAttribute("id", ID);
         obj.setAttribute("class", Class);
@@ -3319,6 +3432,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //文字配列中の同じ文字を削除した配列を返す
     static Remove_Same_String(ST: any) {
+        const state = appState();
         let ST2 = [];
         let sdv = [];
         let n = ST.length;
@@ -3341,6 +3455,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //二色の間で指定の数だけグラデーションをかける
     static TwoColorGradation(StartCol: any, EndCol: any, n: any) {
+        const state = appState();
         let ColData = [];
         let a1 = StartCol.a;
         let AL = EndCol.a - a1;
@@ -3375,6 +3490,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //3色の間で指定の数だけグラデーションをかける
     static ThreeColorGradation(StartCol: any, CenterCol: any, EndCol: any, n: any, Color_cng_n: any) {
+        const state = appState();
         let ColData = [];
         let coldata1 = this.TwoColorGradation(StartCol, CenterCol, Color_cng_n + 1);
         for (let i = 0; i <= Color_cng_n; i++) {
@@ -3389,6 +3505,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //最大値と最小値を指定の区分数で切りのよい数字で区切る
     static WIC(CUTN: any, Max: any, Min: any) {
+        const state = appState();
         if (Max == Min) {
             return { max: Max + 1, min: Min - 1, step: 1 }
         }
@@ -3445,6 +3562,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static Figure_Arrange(Value: any) {
+        const state = appState();
         let Left, Right;
 
         if (Value == 0) {
@@ -3468,6 +3586,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static Figure_Using_Solo(val: any, commma_f: any) {
+        const state = appState();
 
         let retv = this.Figure_Arrange(val);
         let L = retv.BeforeDecimal;
@@ -3483,10 +3602,12 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //指定した数値を、指定した小数点以下桁数の文字列に変換して返す
     static Figure_Using(Value: any, RightOfDecimaplPoint: any) {
+        const state = appState();
         return Value.toFixed(RightOfDecimaplPoint);
     }
 
     static Figure_Using3(Value: any, LeftOfDecimalPoint: any, RightOfDecimaplPoint: any, Comma_f: any) {
+        const state = appState();
         
         let Comma_Num;
         if (Comma_f == true) {
@@ -3513,6 +3634,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //配列から特定の値の位置を取り出す
     static Get_Specified_Value_Array(Original_Array: any, Specified_Value: any) {
+        const state = appState();
         let retArray = [];
         for (let key in Original_Array) {
             if (Original_Array[key] == Specified_Value) {
@@ -3523,6 +3645,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     //配列中の指定した値の数をカウントする
     static Count_Specified_Value_Array(Original_Array: any, Specified_Value: any) {
+        const state = appState();
         let n = 0;
         for (let key in Original_Array) {
             if (Original_Array[key] == Specified_Value) {
@@ -3533,6 +3656,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /**配列中から含まれる要素とその数の一覧の配列[{value: num:}]を返す */
     static getArrayContentsList(originArray: any){
+        const state = appState();
         let s=new clsSortingSearch();
         s.AddRange(originArray);
         return s.EachValue_Array();
@@ -3540,6 +3664,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**タブ作成(base.panel[]に内部要素を追加する) */
     static createNewTab(ParentObj: any, tabList: any, firstSel: any, x: any, y: any, width: any, height: any) {
+        const state = appState();
         let tabh = 20;
         let base = this.createNewDiv(ParentObj, "", "", "", x, y, width, height, "", "");
         base.tab = [];
@@ -3581,6 +3706,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static createNewDiv(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, width: any, height: any, styleinfo: any, onclick?: any) {
+        const state = appState();
         /// <signature>
         /// <summary>div要素を作成</summary>
         /// <param name="ParentObj">親要素</param>  
@@ -3633,6 +3759,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
      * @memberof Generic
      */
     static createNewRadioButtonList(ParentObj: any, name: any, list: any, x: any, y: any, wordWidth: any, yplus: any, defoCheckValue: any, onClick: any, styleinfo: any) {
+        const state = appState();
         let sy = y;
         for (let i = 0; i < list.length; i++) {
             this.createNewRadioButton(ParentObj, list[i].text, "radio" + name + i, name, (list[i].value == defoCheckValue), list[i].value, x, sy, wordWidth, onClick, styleinfo);
@@ -3645,6 +3772,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /**ラジオボタン要素作成 onClickで選択されたValueを返す */
     static createNewRadioButton(ParentObj: any, text: any, ID: any, name: any, checked: any, value: any, x: any, y: any, wordWidth: any, onClick: any, styleinfo: any) {
+        const state = appState();
         let ok = this.createNewInput(ParentObj, "radio", "", ID, x, y, "", styleinfo);
         ok.addEventListener('change', change);
         ok.value = value;
@@ -3679,6 +3807,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //ラジオボタンの指定valueの要素をenabled/disableする
     static enableRadioByValue(name: any, value: any, enabled: any) {
+        const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
             let v = rd[i].value;
@@ -3693,6 +3822,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     //ラジオボタンの指定valueの要素をチェックする
     static checkRadioByValue(name: any, value: any) {
+        const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
             let v = rd[i].value;
@@ -3708,6 +3838,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //ラジオボタンのチェック要素のvalueを取得する
     static getRadioCheckByValue(name: any) {
+        const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
             if (rd[i].checked==true) {
@@ -3724,6 +3855,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**チェックボックス要素作成 onClickでは要素を返す */
     static createNewCheckBox(ParentObj: any, text: any, ID: any, checked: any, x: any, y: any, wordWidth: any, onClick: any, styleinfo: any = "") {
+        const state = appState();
         let ok = this.createNewInput(ParentObj, "checkbox", "", ID, x, y, undefined, styleinfo);
         if (checked == true) {
             ok.setAttribute("checked", "")
@@ -3746,6 +3878,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**inputText要素作成*/
     static createNewWordTextInput(ParentObj: any, headWord: any, footWord: any, defoText: any, ID: any, x: any, y: any, headWordWidth: any, boxWidth: any, onChange: any, styleinfo: any) {
+        const state = appState();
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         styleinfo = "width:" + String(boxWidth) + "px;" + styleinfo;
         let tx = this.createNewInput(ParentObj, "text", defoText, ID, x + hsw, y, undefined, styleinfo);
@@ -3758,6 +3891,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**イメージボタン */
     static createNewImageButton(ParentObj: any,ID: any,src: any,x: any,y: any,width: any,height: any,onClick: any,styleinfo: any){
+        const state = appState();
         let ok=document.createElement("img");
         ok.setAttribute("style", "position:absolute;width:"+width.px()+";height:" +height.px() +";"+ styleinfo);
         ok.style.top = y.px();
@@ -3774,6 +3908,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //** input要素作成*/
     static createNewInput(ParentObj: any, type: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any) {
+        const state = appState();
         let ok = document.createElement("input");
         ok.setAttribute("type", type);
         ok.setAttribute("id", ID);
@@ -3788,6 +3923,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /** 改行つきDIV作成*/
     static createNewWordWidthDiv(ParentObj: any, ID: any, word: any,  x: any, y: any,lineHeight: any,wordWidth: any, onclick: any,styleinfo: any=""){
+        const state = appState();
         if (word == "") {
             return 0;
         } else {
@@ -3799,6 +3935,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //タイルdivボックス
     static createNewTileBox(ParentObj: any, ID: any, word: any, defoTile: any, x: any, y: any,wordWidth: any, onclick: any, tileWidth: any = 45) {
+        const state = appState();
         let lineH = 23;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
         const tilebox = Generic.createNewDiv(ParentObj, "", ID, "imgButton", x + hsw, y, tileWidth, lineH, "", onclick);
@@ -3809,6 +3946,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //タイルDIVに設定
     static setTileDiv(tileDiv: any, Tile: any) {
+        const state = appState();
         const trans = tileDiv.children;
         if(trans.length==0){
             return;
@@ -3824,6 +3962,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //** 背景Canvasボックス */
     static createNewWordDivCanvas(ParentObj: any, ID: any, word: any, x: any, y: any,wordWidth: any, onclick: any) {
+        const state = appState();
         let lineH = 23;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
         const canv = Generic.createNewCanvas(ParentObj, ID, "imgButton", x + hsw, y, 45, lineH, onclick,"");
@@ -3834,6 +3973,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //** 色divボックス */
     static createNewColorBox(ParentObj: any,ID: any, word: any,color: any, x: any, y: any, onclick: any) {
+        const state = appState();
         let sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", "");
         let sw = sp.offsetWidth;
         if (sw < 35) {
@@ -3853,6 +3993,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**サイズ選択用select valueType:配列はそのまま入れる、1（0.1間隔）,2(0.5),3(5),4(10))、onChangeでは要素,オブジェクトと値を返す*/ 
     static createNewSizeSelect(ParentObj: any, defoValue: any, ID: any,preWord: any, x: any, y: any,preWordWidth: any,valueType: any, onChange: any,percentShowF: any=true) {
+        const state = appState();
         let cboCodeList=[];
         if( valueType instanceof Array==true){
             for (let i　in valueType) {
@@ -3907,11 +4048,12 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**最初からドロップダウンされているリストを表示 戻り値はselectedIndex番号 */
     static createNewDropdownSelect(title: any,textList: any,x: any,y: any,width: any,onChange: any){
+        const state = appState();
         let pele=this.set_backDiv("",title,width,100,false,false,undefined,0,true);
         let oneHeight=this.getSpanSize(textList[0],15).height+2;
         let totalHeight=Math.min(8,textList.length)*oneHeight;
-        pele.style.height=(scrMargin.top+totalHeight+2 as any).px();
-        let frame=this.createNewDiv(pele,"","","grayFrame",0,scrMargin.top,width-1,totalHeight,"overflow-y:scroll;overflow-x:hidden", undefined);
+        pele.style.height=(state.scrMargin.top+totalHeight+2 as any).px();
+        let frame=this.createNewDiv(pele,"","","grayFrame",0,state.scrMargin.top,width-1,totalHeight,"overflow-y:scroll;overflow-x:hidden", undefined);
         Generic.Set_Box_Position_in_Browser(new point(x,y), pele);
         for (let i in textList) {
             let md = this.createNewDiv(frame, textList[i], "", "", 0, oneHeight * Number(i), Number(width)-2, oneHeight - 2, "padding-top:2px;padding-left:10px;font-size:14px", "");
@@ -3934,6 +4076,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /**文つきselect要素作成 selectPosition:0は右、1は下*/
     static createNewWordSelect(ParentObj: any,headWord: any,  list: any, firstSelectIndex: any, ID: any, x: any, y: any,headWordWidth: any,selectWidth: any, selectPosition: any, onChange: any,divStyle: any, selectStyleinfo: any, astariskNonF: any=true) {
+        const state = appState();
         let lineH = this.getDivSize("A", undefined, divStyle).height ;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, lineH, headWordWidth, undefined,divStyle);
         let xx=x;
@@ -3950,6 +4093,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     /**select要素作成 list.value,.text *は非選択が標準、onChangeでは要素,selectedIndex,valueを返す*/
     static createNewSelect(ParentObj: any, list: any, firstSelectIndex: any, ID: any, x: any, y: any, multipleFlag: any, onChange: any, styleinfo: any, size: any = 1,astariskNonF: any=true) {
+        const state = appState();
         var sbox = document.createElement("select")
         sbox.setAttribute("id", ID)
         sbox.multiple = multipleFlag;
@@ -4000,6 +4144,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //
     /**複数選択select要素の選択状態を取得 mode0は選択された番号の配列、mode1は選択をtruefalseを配列で返す */
     static getMultipleSelectIndex(obj: any, mode: any) {
+        const state = appState();
         let opts = obj.options;
         let selectedIndex = [];
         let selected = []
@@ -4023,6 +4168,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //子要素までdisabledを設定
     static setDisabled(element: any, value: any) {
+        const state = appState();
         let children = element.children;
         for (let i = 0; i < children.length; i++) {
             children[i].disabled = value;
@@ -4035,6 +4181,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //Canvas要素を作成
     static createNewCanvas(ParentObj: any, ID: any, Class: any, x: any, y: any, width: any, height: any, onClick: any, styleinfo: any) {
+        const state = appState();
         var canvas = document.createElement("canvas");
         canvas.setAttribute("style", "position:absolute;" + styleinfo);
         canvas.setAttribute("id", ID);
@@ -4049,6 +4196,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static createMenuMark(parentObj: any, onClick: any, markSize: any) {
+        const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", 10, 4, size, size, handleClick, "");
         canvas.addEventListener("mouseenter", handleClick);
@@ -4077,6 +4225,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     // ParentObjの右上にXマーク表示
     static createXmark(parentObj: any, onClick: any, markSize: any) {
+        const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", parentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
         canvas.name = "xMark";
@@ -4098,6 +4247,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     // windowの右上に最大化マーク表示
     static createMaxButton(parentObj: any, onClick: any, markSize: any) {
+        const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", parentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
         canvas.name = "maxButton";
@@ -4106,6 +4256,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     // 移動要素の内部の要素で右下に固定のものを動かす
     static moveInnerElement(parentObj: any) {
+        const state = appState();
         const cnode = parentObj.children;
         const w = parentObj.style.width.removePx(); // 親要素で幅100%指定だと効かないので注意
         const h = parentObj.style.height.removePx();
@@ -4139,6 +4290,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     // 指定したオブジェクトの子要素に、指定したIDの子要素が含まれるかどうかチェックする
     static checkHasChildNode(parentObj: any, childObjID: any) {
+        const state = appState();
         const cnode = parentObj.childNodes;
         for (let i = 0; i < cnode.length; i++) {
             if ((cnode[i] as any).id === childObjID) {
@@ -4150,6 +4302,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     // テキストエリアを作成
     static createNewTextarea(parentObj: any, text: any, id: any, x: any, y: any, row: any, col: any, styleinfo: any) {
+        const state = appState();
         const obj = document.createElement("textarea");
         obj.setAttribute("id", id);
         obj.innerHTML = text;
@@ -4163,6 +4316,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static createNewTable(parentObj: any, id: any, tableClass: any, data: any, width: any, styleinfo: any, headNum: any, headStyleinfo: any, normalStyleinfo: any, headXStyleinfo: any, normalXStyleinfo: any) {
+        const state = appState();
         const xcell = data.length;
         const ycell = data[1].length;
 
@@ -4194,6 +4348,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     static createNewGrid(parentObj: any, gridID: any, tableID: any, gridClass: any, tableClass: any, data: any, x: any, y: any, width: any, height: any, tableWidth: any, styleinfo: any, tableStyleinfo: any, tableHeadNum: any,
         tableHeadStyleinfo: any, tableNormalStyleinfo: any, tableHeadXStyleinfo: any, tableNormalXStyleinfo: any) {
+        const state = appState();
         const obj = document.createElement("div");
         obj.setAttribute("style", "position:absolute;overflow: auto;" + styleinfo);
         obj.setAttribute("id", gridID);
@@ -4210,6 +4365,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     // 表の中身を取得する
     static getTableValue(table: any) {
+        const state = appState();
         let tx = "";
         for (let i = 0; i < table.rows.length; i++) {
             for (let j = 0; j < table.rows[i].cells.length; j++) {
@@ -4221,6 +4377,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static Array2Dimension(dim1num: any, dim2num: any, defoValue: any = undefined) {
+        const state = appState();
         const arrayData = new Array(dim1num);
         for (let i = 0; i < dim1num; i++) {
             arrayData[i] = new Array(dim2num);
@@ -4232,6 +4389,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static createNewFrame(parentObj: any, id: any, Class: any, x: any, y: any, width: any, height: any, text: any = "") {
+        const state = appState();
         let yy = y;
         if (text !== "") {
             yy += 10;
@@ -4249,10 +4407,11 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**メッセージ表示 borderFlag:枠を動かせるかどうか*/
     static createMsgBox(title: any, text: any, borderFlag: any, width: any = 350, height: any = 400) {
+        const state = appState();
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
-        const ta = this.createNewTextarea(msgbox, text, "", 10, scrMargin.top + 10, 20, 50, "resize:none;width:480px;height:420px;font-size:13px");
+        const ta = this.createNewTextarea(msgbox, text, "", 10, state.scrMargin.top + 10, 20, 50, "resize:none;width:480px;height:420px;font-size:13px");
         ta.style.width = (width - 20).px();
-        ta.style.height = (height - 50 - scrMargin.top - 10).px();
+        ta.style.height = (height - 50 - state.scrMargin.top - 10).px();
         if (borderFlag === true) {
             msgbox.dragBorder(undefined, undefined);
             ta.sizeFixed = true;
@@ -4268,6 +4427,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static createMsgTableBox(title: any, data: any, width: any, height: any, borderFlag: any) {
+        const state = appState();
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
         const gd = Generic.createNewGrid(msgbox, "", "", "", "", data, 5, 35, width - 10, height - 80, '100%', "", "font-size:13px", 1, "background-color:#aaffaa;", "", "", "");
         if (borderFlag === true) {
@@ -4286,6 +4446,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static createWindow(ID: any, Class: any, title: any, x: any, y: any, width: any, height: any, visibilieF: any,menuMarkF: any,menuCall: any,XmarkF: any,XmarkCall: any,footer_Flag: any,footerID: any,maxButtonF: any,maxButtonCall: any = undefined) {
+        const state = appState();
         var hiddenWindow = function () {
             const winAny = window as any;
             winAny.setVisibility?.(false) ;
@@ -4298,13 +4459,13 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         if(menuMarkF==false){
             pl="padding-left:15px;"
         }
-        let hd = Generic.createNewDiv(window, "", "", title, 0, 0, '100%', scrMargin.top-3, "padding-top:3px;background-color: gray;color:#ffffff;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"+pl, "");
+        let hd = Generic.createNewDiv(window, "", "", title, 0, 0, '100%', state.scrMargin.top-3, "padding-top:3px;background-color: gray;color:#ffffff;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"+pl, "");
         hd.name = "header";
         window.maxSizeFlag=false;
         if (footer_Flag == true) {
-            let ft = Generic.createNewDiv(window, "", footerID, "", 0, 0, 100, scrMargin.bottom, "background-color: #dddddd;color:#000000;font-size:13px;padding-left:10px;padding-top:5px", "");
+            let ft = Generic.createNewDiv(window, "", footerID, "", 0, 0, 100, state.scrMargin.bottom, "background-color: #dddddd;color:#000000;font-size:13px;padding-left:10px;padding-top:5px", "");
             ft.bottomRightPositionFixed=true;
-            ft.relativePosition=new point(-1,scrMargin.bottom);
+            ft.relativePosition=new point(-1,state.scrMargin.bottom);
             ft.name = "footer";
         }
         if (XmarkF == true) {
@@ -4370,6 +4531,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static clear_backDiv() {
+        const state = appState();
         //固定ウインドウを消す
         const last1 = document.body.lastChild;
         if (last1) {
@@ -4382,6 +4544,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static set_backDiv(idname: any, title: any, innerWidth: any, innerHeight: any,okButtonF: any,cancelButtonF: any,okCall: any, opacity: any,outerClickF: any,createXmark: any=true,cancelCall: any=undefined) {
+        const state = appState();
         /// <signature>
         /// <summary>固定ウインドウを作る</summary>
         /// <param name="idname">DIV要素のid</param>  
@@ -4439,7 +4602,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         var x = (browserWidth - w) / 2;
         var dup = this.createNewDiv(document.body, idname, "frontDIV", "setting", x, y, w, h, "background-color:#ffffff; border:solid 1px; border-radius: 4px;border-color:#666666;opacity:1", undefined);
         dup.style.zIndex = (maxZindex+1).toString();
-        let head = Generic.createNewDiv(dup, "", "", "", 0, 0, '100%', scrMargin.top, "background-color: gray;color:#ffffff;font-size:15px", "");
+        let head = Generic.createNewDiv(dup, "", "", "", 0, 0, '100%', state.scrMargin.top, "background-color: gray;color:#ffffff;font-size:15px", "");
         Generic.createNewSpan(head, title, "", "", 10, 0, "margin-top:4px", "");
         if(createXmark){
             var cv = this.createXmark(dup, cancelButton, 14);
@@ -4481,6 +4644,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
 
     static getScrollX() {
+        const state = appState();
         var supportPageOffset = window.pageXOffset !== undefined;
         var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
         var x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft;
@@ -4488,6 +4652,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static getScrollY() {
+        const state = appState();
         var supportPageOffset = window.pageXOffset !== undefined;
         var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
         var y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
@@ -4495,6 +4660,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     static decodePolyline(data: any) {
+        const state = appState();
         //Google Mapのエンコード化ポリラインをデコードする
         var cood = new Array();
         var n = 0;
@@ -4561,6 +4727,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
 
     static Check_Two_Value_In(CheckV: any, V1: any, V2: any) {
+        const state = appState();
         //チェックする値が二つの数字の中間であればtrue
 
         if ((CheckV == V1) || (CheckV == V2)) {
@@ -4577,6 +4744,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         return chvValue_on_twoValue.chvOuter;
     }
     static Angle(si: any, co: any) {//角度を求める
+        const state = appState();
         var AngleV;
         if (co == 0) {
             AngleV = 90;
@@ -4596,6 +4764,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //クリップボードにテキスト出力
     static copyText(text: any) {
+        const state = appState();
         var ta = document.createElement("textarea") as HTMLTextAreaElement;
         ta.value = text;
         document.body.appendChild(ta);
@@ -4608,6 +4777,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     //フォントがシステムに入っているかチェック
     static checkFontExist(checkFont: any) {
+        const state = appState();
         const baseFonts = ['monospace', 'sans-serif', 'serif'];
         const testString = "mmmmmmmmmmlli";
         const testSize = '72px';
@@ -4637,6 +4807,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 //トップメニュー(ポップアップと上下の調整が取れないため未使用)
     static ceateTopMenu(ParentObj: any,list: any, pos: any,width: any) {
+        const state = appState();
         for(let i in list){
             let data=list[i];
             let div=this.createNewDiv(ParentObj,data.caption,"","",pos.x+Number(i)*width,pos.y,width,20,"position:absolute;background-color:#cccccc;", undefined);
@@ -4662,6 +4833,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     //ポップアップメニュー
     static ceatePopupMenu(list: any, pos: any) {
+        const state = appState();
         
         let e = document.getElementsByName("backDiv");
         let maxZindex = 1000 + e.length * 10;
@@ -4883,6 +5055,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     /**メニューオブジェクトのプロパティからオブジェクトを取得する */
     static getPopMenuObj(menuObj: any, property: any, pname: any): any {
+        const state = appState();
         for (let i in menuObj) {
             if (menuObj[i].hasOwnProperty(property)) {
                 if (menuObj[i][property] == pname) {
@@ -4914,7 +5087,7 @@ export const CheckedListBox: any = function(ParentObj: any, Class: any, list: an
     let lineH = Generic.getDivSize("A", undefined, "").height + 3;
     let allh = lineH * list.length;
     let ovy = (allh < height - 2) ? "" : "overflow-y: scroll;";
-    let w = (allh < height - 2) ? width - 2 : width - (scrMargin.scrollWidth ?? 0) - 1;
+    let w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
     let lBox: any[] = [];
     const frame = Generic.createNewDiv(ParentObj, "", Class, "grayFrame", x, y, width, height - 24, ovy + "overflow-x:hidden;background-color:white;user-Select:none");
     const allSelFrame = Generic.createNewDiv(ParentObj, "", "", "", x, y + (height - 22), w, 22, "");
@@ -5055,7 +5228,7 @@ export const CheckedListBox: any = function(ParentObj: any, Class: any, list: an
     }
     function reNumbering() {
         allh = lineH * lBox.length;
-        w = (allh < height - 2) ? width - 2 : width - (scrMargin.scrollWidth ?? 0) - 1;
+        w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
         inFrame.style.height = allh.px();
         for (let i = 0; i < lBox.length; i++) {
             lBox[i].style.top = (i * lineH).px();
@@ -5078,7 +5251,7 @@ export const ListBox: any = function(ParentObj: any, Class: any, list: any,x: an
     let lineH = Generic.getDivSize("A", undefined, "").height + 3;
     let allh = lineH * list.length;
     let ovy = (allh < height - 2) ? "" : "overflow-y: scroll";
-    let w = (allh < height - 2) ? width - 2 : width - (scrMargin.scrollWidth ?? 0) - 1;
+    let w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
     this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", x, y, width, height, ovy + "overflow-x:hidden;background-color:white");//addEventListenerを付ける場合はframeに
     const inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, w, allh, "");
     _addList(list, 0);
@@ -5229,7 +5402,7 @@ export const ListBox: any = function(ParentObj: any, Class: any, list: any,x: an
     }
     function reNumbering() {
          allh = lineH * lBox.length;
-         w = (allh < height - 2) ? width - 2 : width - (scrMargin.scrollWidth ?? 0) - 1;
+         w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
         inFrame.style.height =allh.px();
         for (let i = 0; i < lBox.length; i++) {
             lBox[i].style.top = (i * lineH).px();
@@ -5381,7 +5554,7 @@ export const ListViewTable: any = function(ParentObj: any, gridID: any,gridClass
     topDIV.appendChild(this.tbdiv);
     if (headNum > 0) {
         //ヘッダの幅をスクロールバーに合わせる
-        tbhdiv.style.width = (width-(scrMargin.scrollWidth ?? 0)).px();
+        tbhdiv.style.width = (width-(state.scrMargin.scrollWidth ?? 0)).px();
     }
 
     function clickTBody(e: any) {
@@ -5571,7 +5744,7 @@ var resetMaxButtonFunc: any = function(this: any, MaxFlag?: boolean): void {
     let mdownF=false;
     const targetEle=this;
     const SR=10;
-    const TR=scrMargin.top;
+    const TR=state.scrMargin.top;
 
     this.addEventListener("mousedown", mdown, false);
     this.addEventListener("touchstart", mdown, false);

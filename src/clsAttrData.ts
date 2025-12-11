@@ -1,5 +1,6 @@
 ﻿/// <reference path="globals.d.ts" />
 
+import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
@@ -2316,7 +2317,7 @@ strViewStyle_Info.prototype.initViewStyle = function () {
 
     let tb = this.TileMapView;
     tb.Visible = false;
-    tb.TileMapDataSet = tileMapClass.getTileMapData('k_cj4');
+    tb.TileMapDataSet = state.tileMapClass.getTileMapData('k_cj4');
     tb.AlphaValue = 0.8;
     tb.DrawTiming = enmDrawTiming.BeforeDataDraw;
 
@@ -2672,7 +2673,7 @@ var Screen_info: any = function (this: Screen_info) {
     this.PrinterMG = new Magnification(); //旧Prtmul,xp,yp
     // 画面上下左右端のマージン
     this.Screen_Margin = new ScreenMargin() //画面のマージン
-    this.frmPrint_FormSize = new rectangle();  //frmPrintのウィンドウ自体の位置とサイズ
+    this.frmPrint_FormSize = new rectangle();  //state.frmPrintのウィンドウ自体の位置とサイズ
     this.Accessory_Base; //enmBasePosition '飾り等のサイズを地図領域でなくpictureboxの大きさに比例させる場合true
     this.SampleBoxFlag; //Boolean 'サンプルのライン、記号等に表示する際にtrueにする
     this.ThreeDMode = new strThreeDMode_Set();
@@ -3274,7 +3275,7 @@ var clsAttrData: any = function (this: clsAttrData) {
 
     /**ダミーオブジェクトグループの設定をDummyOBGArray[true,false]の配列で返す、trueNumはtrueの数 */
     this.getDummyObjGroupArray = function (Layernum: any, shape: any = undefined) {
-        let al = attrData.LayerData[Layernum];
+        let al = state.attrData.LayerData[Layernum];
         let alm = al.MapFileData;
         let DummyObjG = new Array(alm.Map.OBKNum);
         DummyObjG.fill(false);
@@ -3769,7 +3770,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     this.Check_Missing_Value = function (Layernum: any, DataNumber: any, objNumber: any) {
-        let ad = attrData.LayerData[Layernum].atrData.Data[DataNumber];
+        let ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber];
         if ((ad.MissingValueNum == 0) || (ad.MissingF == false)) {
             return false;
         } else {
@@ -3784,7 +3785,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     /**レイヤ内のURLリンクの最大数を求める */
     this.Get_MaxURLNum = function (Layernum: any) {
         let mx=0;
-        let al = attrData.LayerData[Layernum];
+        let al = state.attrData.LayerData[Layernum];
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             mx = Math.max(mx, al.atrObject.atrObjectData[i].HyperLinkNum);
         }
@@ -4855,43 +4856,43 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     /**現在のレイヤのグラフモードを返す */
     this.layerGraph= function () {
         const Layernum = this.TotalData.LV1.SelectedLayer;
-        return attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
+        return state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
     }
 
     /**現在のレイヤのグラフモードの選択データセットを返す */
     this.nowGraph= function () {
         const Layernum = this.TotalData.LV1.SelectedLayer;
-        const gv=attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
+        const gv=state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         return gv.DataSet[gv.SelectedIndex];
     }
 
     /**現在のレイヤのラベルモードを返す */
     this.layerLabel= function () {
         const Layernum = this.TotalData.LV1.SelectedLayer;
-        return lv=attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
+        return lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
     }
     /**現在のレイヤのラベルモードの選択データセットを返す */
     this.nowLabel= function () {
         const Layernum = this.TotalData.LV1.SelectedLayer;
-        const lv=attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
+        const lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         return lv.DataSet[lv.SelectedIndex];;
     }
     /**現在の重ね合わせモードのデータセットを返す */
     this.nowSeries = function () {
-        let series = attrData.TotalData.TotalMode.Series;
+        let series = state.attrData.TotalData.TotalMode.Series;
         return series.DataSet[series.SelectedIndex];
     }
 
     /**現在の重ね合わせモードのデータセットを返す */
     this.nowOverlay=function(){
-        let over = attrData.TotalData.TotalMode.OverLay;
+        let over = state.attrData.TotalData.TotalMode.OverLay;
         return over.DataSet[over.SelectedIndex];
     }
 
     /**現在のレイヤの位置を返す */
     this.nowLayer= function(){
         const Layernum = this.TotalData.LV1.SelectedLayer;
-        return attrData.LayerData[Layernum];
+        return state.attrData.LayerData[Layernum];
     }
 
     /**
@@ -4899,14 +4900,14 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     this.nowData= function(){
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
-        return attrData.LayerData[Layernum].atrData.Data[DataNum];
+        return state.attrData.LayerData[Layernum].atrData.Data[DataNum];
     }
 
     /**現在のレイヤ・データ項目のSoloModeViewSettings位置を返す */
     this.nowDataSolo= function(){
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
-        return attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+        return state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
     }
 
     //単独表示モードのモードを取得
@@ -5176,7 +5177,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
                     case "JAPAN.MPFJ":
                     case "日本緯度経度.MPFJ":
                     case "WORLD.MPFJ":
-                        tx = preReadMapFile[fname];
+                        tx = state.preReadMapFile[fname];
                         break;
                 } 
                 if (tx != "") {
@@ -5227,9 +5228,9 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         
         //投影法の設定
         if (this.TotalData.ViewStyle.Zahyo.Projection != this.MapData.SetMapFile("").Map.Zahyo.Projection) {
-            let MapFileList = attrData.GetMapFileName();
+            let MapFileList = state.attrData.GetMapFileName();
             for (let i = 0; i < MapFileList.length; i++) {
-                attrData.SetMapFile(MapFileList[i]).Convert_ZahyoMode(this.TotalData.ViewStyle.Zahyo);
+                state.attrData.SetMapFile(MapFileList[i]).Convert_ZahyoMode(this.TotalData.ViewStyle.Zahyo);
             }
         }
         return { ok: true, emes: ObjectErrorMessage };
@@ -5827,9 +5828,9 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
                                     case "日本緯度経度.MPFJ":
                                     case "WORLD.MPFJ": {
                                         if (this.MapData.CheckMapfileExists(fu) == false) {
-                                            if (preReadMapFile[fu]) {
+                                            if (state.preReadMapFile[fu]) {
                                                 let mapdata = new clsMapdata();
-                                                mapdata.openJsonMapData(preReadMapFile[fu]);
+                                                mapdata.openJsonMapData(state.preReadMapFile[fu]);
                                                 this.MapData.AddExistingMapData(mapdata, fu);
                                                 Map_readed = true;
                                             } else {
@@ -8272,7 +8273,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
   
     /**連続表示モードのデータセット一覧を取得 */
     this.getSeriesDataSetName=function(){
-        let series = attrData.TotalData.TotalMode.Series;
+        let series = state.attrData.TotalData.TotalMode.Series;
         let seriesDataSetList = [];
         for (let i = 0; i < series.DataSet.length; i++) {
             let tx = series.DataSet[i].title;
@@ -8389,7 +8390,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
                     break;
             }
             if (f == false) { fall = true }
-            let d = { value: i, text:f ?  attrData.LayerData[i].Name: "*"+attrData.LayerData[i].Name}
+            let d = { value: i, text:f ?  state.attrData.LayerData[i].Name: "*"+state.attrData.LayerData[i].Name}
             lst.push(d);
         }
         selbox.addSelectList(lst, SelectedIndex, true,fall);
