@@ -1,4 +1,5 @@
 ﻿// JavaScript source code
+import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsTime } from './clsTime';
 import { clsMapdata } from './clsMapdata';
@@ -7,6 +8,7 @@ import { clsPrint } from './clsPrint';
 class clsDraw {
 
     static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: any) {
+        const state = appState();
 
 
         let Word_a = Word;
@@ -86,6 +88,7 @@ class clsDraw {
     }
 
     static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: any) {
+        const state = appState();
         let TH;
         if (ScrData.SampleBoxFlag == false) {
             TH = ScrData.Get_Length_On_Screen(P_Font.Size);
@@ -136,6 +139,7 @@ class clsDraw {
 
     //指定した幅で文字列を分割して返す
     static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: any) {
+        const state = appState();
 
         let Out_Text=[];
         let thdata = P_Font.toContextFont!(ScrData);
@@ -181,6 +185,7 @@ class clsDraw {
 
  
     static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string) {
+        const state = appState();
         let Pon = Polydata.Pon;
         let pxy = Polydata.pxy;
         let nPolyP = Polydata.nPolyP;
@@ -200,6 +205,7 @@ class clsDraw {
     }
 
     static ClipPolyPolygon(g: CanvasRenderingContext2D, pxy: point[], AllnPolyP: number[]) {
+        const state = appState();
         let Pon = AllnPolyP.length;
         let n = 0;
         g.beginPath();
@@ -216,6 +222,7 @@ class clsDraw {
     }
 
     static Ellipse(g: CanvasRenderingContext2D, Point: point, r: number, InnerColor: string | undefined, BorderColor: string | undefined, width: number) {
+        const state = appState();
         g.beginPath();
         g.arc(Point.x, Point.y, r, 0, 2 * Math.PI, false);
         if (InnerColor != undefined) {
@@ -229,6 +236,7 @@ class clsDraw {
         }
     }
     static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: any, LinePat: any, ScrData: any) {
+        const state = appState();
         if (LinePat != undefined) {
             let lc: CanvasLineCap[] = ['butt', 'square', 'round'];
             let lj: CanvasLineJoin[] = ['miter', 'bevel', 'round'];
@@ -270,6 +278,7 @@ class clsDraw {
 
 class clsDrawLine {
     static Line(g: any, LinePat: any, d1: any, d2?: any, d3?: any) {
+        const state = appState();
         if (LinePat.BlankF == true) {
             return;
         }
@@ -286,6 +295,7 @@ class clsDrawLine {
     }
 
     static Draw_SolidPolyLine(g: any, pxy: any, LinePat: any, ScrData: any) {
+        const state = appState();
         g.lineCap = LinePat.Edge_Connect_Pattern.lineCap;
         g.lineJoin = LinePat.Edge_Connect_Pattern.lineJoin;
         g.miterLimit = LinePat.Edge_Connect_Pattern.miterLimit;
@@ -301,6 +311,7 @@ class clsDrawLine {
 
     /**矢印描画 */
     static Arrow(g: any, P: any, BeforPoint: any, LPat: any, DArrow: any, ScrData: any) {
+        const state = appState();
         let e2=new point() ;
         let e3 =new point() ;
         let e4 =new point() ;
@@ -331,6 +342,7 @@ class clsDrawLine {
     }
 
     static Check_Draw_Arrow_Line(OP: any, BeforPoint: any, LineP1: any, LineP2: any, LPat: any, DArrow: any, ScrData: any) {
+        const state = appState();
         let e2=new point() ;
         let e3=new point() ;
         let e4=new point() ;
@@ -339,6 +351,7 @@ class clsDrawLine {
     }
 
     static Draw_Arrow_Keisan(a1: any, ac: any, a2: any, OP: any, BeforPoint: any, LPat: any, DArrow: any, Check_F: any, ScrData: any) {
+        const state = appState();
 
         let VecX = OP.x - BeforPoint.x;
         let VecY = OP.y - BeforPoint.y;
@@ -384,6 +397,7 @@ class clsDrawLine {
     }
 
     static Draw_Sample_LineBox(picBox: any, Lpat: any, ScrData: any) {
+        const state = appState();
         let w = picBox.width;
         let h = picBox.height;
         let g = picBox.getContext('2d');
@@ -405,6 +419,7 @@ class clsDrawLine {
 class clsDrawTile {
 
     static Draw_Poly_Inner(g: any, pxy: any, numPolyP: any, T: any) {
+        const state = appState();
         if(T.BlankF==false){
             let Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
             clsDraw.DrawPolyPolygon(g, Polydata, T.Color.toRGBA())
@@ -414,6 +429,7 @@ class clsDrawTile {
 
     //角丸四角形
     static Draw_Tile_RoundBox(g: any, _BoundaryRect: any, Back: any, Kakudo: any, ScrData: any) {
+        const state = appState();
 
         if ((Back.Tile.BlankF == true) && (Back.Line.BlankF == true)) {
             return;
@@ -456,6 +472,7 @@ class clsDrawTile {
 
     //タイル四角形描画
     static Draw_Tile_Box(g: any, BoundaryRect: any, L: any, T: any, Kakudo: any, ScrData: any) {
+        const state = appState();
         let pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
         if (T.BlankF == false) {
             let Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
@@ -468,6 +485,7 @@ class clsDrawTile {
 
     //サンプル背景フレーム表示
     static Darw_Sample_BackGroundBox(picBox: any, BG: any, ScrData: any) {
+        const state = appState();
         let w = picBox.width;
         let h = picBox.height;
         let rect = new rectangle(new point(2, 2),new size( w - 4, h - 4));
@@ -493,6 +511,7 @@ class clsDrawMarkFan {
     static mShape: any[] = [];
     
     static init() {
+        const state = appState();
         let mark_info: any = function (this: any) {
             this.name;
             this.stac;
@@ -584,11 +603,13 @@ class clsDrawMarkFan {
     }
 
     static getMarkShameNum() {
+        const state = appState();
         let n = this.mShape.length;
         return n;
     }
 
     static Mark_Print(g: any, Position: any, r: any, Mark: any, ScrData: any) {
+        const state = appState();
         switch (Mark.PrintMark) {
             case enmMarkPrintType.Mark: {
                 clsDrawTile.Draw_Tile_RoundBox(g, spatial.Get_Rectangle(Position, r), Mark.WordFont.Back, Mark.WordFont.Kakudo, ScrData);
@@ -691,6 +712,7 @@ class clsDrawMarkFan {
 
 
     static Draw_DAEN(g: any, Position: any, XR: any, YR: any, Kakudo: any, L: any, T: any, Real_Circle_F: any, ScrData: any) {
+        const state = appState();
         if ((XR == 0) || (YR == 0)) { return }
 
         let inf;
@@ -729,6 +751,7 @@ class clsDrawMarkFan {
     }
 
     static Get_DAEN_Peri_XY(Position: any ,  XR: any ,  YR: any , Kakudo: any ,  ScrData: any) {
+        const state = appState();
         let ST = 1 / ((XR + YR) / 5);
         let pxy = [];
         let n = 0;
@@ -762,6 +785,7 @@ class clsDrawMarkFan {
     }
 
     static Draw_Mark_Sample_Box(picMarkBox: any, MK: any, ScrData: any) {
+        const state = appState();
         let w = picMarkBox.width;
         let h = picMarkBox.height;
         let g = picMarkBox.getContext('2d');
@@ -771,6 +795,7 @@ class clsDrawMarkFan {
     }
 
     static Draw_Fan(g: any, centerP: any, r: any, start_p: any, end_p: any, Lpat: any, Tile: any, ScrData: any) {
+        const state = appState();
 
         let w = ScrData.Get_Line_Width(Lpat.Width);
         let InnerColor = Tile.Color.toRGBA();
@@ -801,6 +826,7 @@ class clsDrawMarkFan {
 
 class clsSpline {
     static Spline_Get(Ls: any, ln: any, Line_XY: any, stp: any, ScrData: any) {
+        const state = appState();
 
         if (ln == 2) {
             let p = [];
@@ -865,6 +891,7 @@ class clsSpline {
     }
 
     static Spline_Get_Fill(Ls: any, ln: any, Line_XY: any, stp: any, ScrData: any) {
+        const state = appState();
 
         let lpf;
         if (Line_XY[Ls].Equals(Line_XY(Ls + ln - 1)) == true) {
@@ -919,6 +946,7 @@ class clsSpline {
     }
 
     static Spline_xy(T: any, Kvalue: any, Maxpt: any, pt: any) {
+        const state = appState();
         let P = new point();
 
         let z = Maxpt - 1;
@@ -943,6 +971,7 @@ class clsSpline {
     }
 
     static Blend(i: any, k: any, T: any, Kvalue: any, Maxpt: any): number {
+        const state = appState();
 
         if (k == 1) {
             if ((this.Knot(i, Kvalue, Maxpt) <= T) && (T < this.Knot(i + 1, Kvalue, Maxpt))) {
@@ -976,6 +1005,7 @@ class clsSpline {
     }
 
     static Knot(i: any, Kvalue: any, Maxpt: any) {
+        const state = appState();
         if (i < Kvalue) {
             return 0
         } else if (i <= Maxpt) {
