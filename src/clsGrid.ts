@@ -1,3 +1,4 @@
+import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
 import { gridControl } from './clsGridControl';
 
@@ -46,7 +47,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     let newAttrData=new clsAttrData();
     let SearchSTR=""; // String
     let D_CheckDataValue: number[][] = []; // List(Of Double())
-    let oldAttr=attrData; // clsAttrData
+    let oldAttr=state.attrData; // clsAttrData
     let gridTopY=150;
     let layerDataWidth=200;
     let gScreenWidth =( Generic.getBrowserWidth()-50*2);
@@ -200,7 +201,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         //  ktGrid.Visible = false
         gbSearch.disabled = true
     } else {
-        let Mapfiles = attrData.GetMapFileName();
+        let Mapfiles = state.attrData.GetMapFileName();
         if (Mapfiles.length > 0) {
             let adLst = [];
             for (let i = 0; i < Mapfiles.length; i++) {
@@ -208,23 +209,23 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             }
             lstMapFile.addList(adLst, 0);
             for (let i = 0; i < Mapfiles.length; i++) {
-                newAttrData.AddExistingMapData(attrData.SetMapFile(Mapfiles[i]), Mapfiles[i]);
+                newAttrData.AddExistingMapData(state.attrData.SetMapFile(Mapfiles[i]), Mapfiles[i]);
             }
             lstMapFile.setSelectedIndex(0);
         }
         D_CheckDataValue = [];
 
-        for (let i = 0; i < attrData.TotalData.LV1.Lay_Maxn; i++) {
-            let al = attrData.LayerData[i];
+        for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
+            let al = state.attrData.LayerData[i];
             let Datan = al.atrData.Count;
-            let URLMax = attrData.Get_MaxURLNum(i);
+            let URLMax = state.attrData.Get_MaxURLNum(i);
             let DefPointPlus = 0;
             if (al.Type == enmLayerType.DefPoint) {
                 DefPointPlus = 2;
             }
             let d = [];
             for (let j = 0; j < al.atrData.length; j++) {
-                d[j] = Get_Data_Property_Value(attrData, i, j);
+                d[j] = Get_Data_Property_Value(state.attrData, i, j);
             }
             D_CheckDataValue.push(d);
             let SideE = true;
@@ -257,7 +258,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 ktGrid.setFixedYSData(i, DefPointPlus + j, 5, ald.Note);
             }
             for (let k = 0; k < al.atrObject.ObjectNum; k++) {
-                ktGrid.setFixedXSData(i, 1, k, attrData.Get_KenObjName(i, k));
+                ktGrid.setFixedXSData(i, 1, k, state.attrData.Get_KenObjName(i, k));
                 let alo = al.atrObject.atrObjectData[k];
                 if (al.Type == enmLayerType.DefPoint) {
                     ktGrid.setGridData(i, 0, k,String( alo.defPoint.lon));
@@ -286,7 +287,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             ktGrid.setLayerData(i, GridLayerData.ReferenceSystem, al.ReferenceSystem);
             ktGrid.setLayerData(i, GridLayerData.Comment, al.Comment);
             set_First_GridCellWidthHeight(i);
-            let atl = attrData.TotalData.LV1;
+            let atl = state.attrData.TotalData.LV1;
             newAttrData.TotalData.LV1.DataSourceType = atl.DataSourceType;
             newAttrData.TotalData.LV1.FileName = atl.FileName;
             newAttrData.TotalData.LV1.FullPath = atl.FullPath;
