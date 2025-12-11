@@ -389,21 +389,21 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
 }
 
 // 強化されたグローバル変数宣言
-declare var attrData: any;
+// attrData: AppStateで管理（削除済み）
 declare var Generic: any; // kept temporarily; being migrated to ESM import
 declare var clsSettingData: any;
 declare var clsTime: any;
 declare var clsDraw: any;
 declare var clsPrint: any;
-declare var frmPrint: any;
+// frmPrint: AppStateで管理（削除済み）
 declare var Frm_Print: IFrmPrint;
-declare var propertyWindow: IPropertyWindow;
-declare var divmain: HTMLDivElement;
+// propertyWindow: AppStateで管理（削除済み）
+// divmain: AppStateで管理（削除済み）
 declare var TKY2JGD: any; // kept temporarily; being migrated to ESM import
-declare var tileMapClass: any;
-declare var preReadMapFile: any;
-declare var scrMargin: IScrMargin;
-declare var logWindow: HTMLTextAreaElement;
+// tileMapClass: AppStateで管理（削除済み）
+// preReadMapFile: AppStateで管理（削除済み）
+// scrMargin: AppStateで管理（削除済み）
+// logWindow: AppStateで管理（削除済み）
 
 declare var tx: string;
 declare var mnuPropertyWindow: any;
@@ -411,7 +411,7 @@ declare var fname: string;
 declare var i: number;
 declare var j: number;
 declare var k: number;
-declare var settingModeWindow: HTMLDivElement;
+// settingModeWindow: AppStateで管理（削除済み）
 
 // 列挙型の追加
 declare enum enmZahyo_mode_info {

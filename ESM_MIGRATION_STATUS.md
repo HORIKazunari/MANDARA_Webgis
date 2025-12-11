@@ -1,5 +1,17 @@
 # ESモジュール化移行ステータス
 
+## 🎉 Phase 2: 完全移行完了！
+
+**完了日**: 2025年12月11日
+
+**最終成果**:
+- ✅ 全13ファイル、合計46,242行をAppState対応に移行完了
+- ✅ globals.d.tsから8個のグローバル変数宣言を削除
+- ✅ 全テストパス (10 passed)
+- ✅ ビルド成功
+
+---
+
 ## 完了した作業
 
 ### Phase 1: main.ts完全AppState対応 ✅
@@ -85,17 +97,75 @@ function frmPrintProjection(): void {
    - グローバル変数: `Frm_Print`, `attrData`等を使用
    - 優先度: ⭐⭐⭐ 高（印刷・描画の中核）
 
-3. **clsAttrData.ts** (9,003行)
-   - 最大のファイル、独自にAppStateへの統合を検討
-   - 優先度: ⭐⭐ 中（大規模ファイルのため慎重に）
+### Phase 2: 全ファイルAppState対応完了 ✅
 
-### Phase 3: globals.d.ts クリーンアップ
-全ファイルの移行完了後：
-- `declare var`宣言50+個を削除
-- DOM拡張interfaceのみ残す
-- 完全なESモジュール化を達成
+**実施日**: 2025年12月10-11日
+
+**変更ファイル（13ファイル、合計46,242行）**:
+
+#### 第1回コミット: 基盤実装
+1. **main.ts** (219行) - グローバル変数12個削除
+2. **clsWindow.ts** (4,562行) - 全グローバル変数参照をstate経由に変更
+3. **clsPrint.ts** (3,876行) - 62個の静的メソッドをAppState対応
+
+#### 第2回コミット: 描画・アクセサリー関連
+4. **clsAccessory.ts** (2,518行) - 36個の静的メソッド
+5. **frmPrint.ts** (1,884行) - 全関数と静的メソッド
+6. **clsDraw.ts** (4,240行) - 全静的メソッド
+
+#### 第3回コミット: グリッド・サブウィンドウ
+7. **clsGrid.ts** (1,920行) - 全静的メソッド
+8. **clsSubWindows.ts** (3,786行) - 全静的メソッド
+
+#### 第4回コミット: 時間・地図データ・グリッド制御
+9. **clsTime.ts** (427行) - 全静的メソッド
+10. **clsMapdata.ts** (3,275行) - 全静的メソッド
+11. **clsGridControl.ts** (4,444行) - 全静的メソッド
+
+#### 第5回コミット: ジェネリック・属性データ（最大のファイル）
+12. **clsGeneric.ts** (6,088行) - 全静的メソッド
+13. **clsAttrData.ts** (9,003行) - 全静的メソッド
+
+**移行手法**:
+- Perlで全グローバル変数参照を一括置換（attrData→state.attrData等）
+- AWKで全静的メソッドに`const state = appState()`を自動追加
+- 複数行メソッドシグネチャの誤挿入を手動修正
+- 各回でビルド・テスト実行して動作確認
+
+### Phase 3: globals.d.ts クリーンアップ ✅
+
+**実施日**: 2025年12月11日
+
+**削除したグローバル変数宣言（8個）**:
+```typescript
+// 削除済み（AppStateで管理）
+declare var attrData: any;
+declare var frmPrint: any;
+declare var propertyWindow: IPropertyWindow;
+declare var divmain: HTMLDivElement;
+declare var tileMapClass: any;
+declare var preReadMapFile: any;
+declare var scrMargin: IScrMargin;
+declare var logWindow: HTMLTextAreaElement;
+declare var settingModeWindow: HTMLDivElement;
+```
+
+**残存するグローバル変数**:
+- `Generic`, `clsSettingData`, `clsTime`, `clsDraw`, `clsPrint`: クラスとして使用
+- `Frm_Print`, `TKY2JGD`: インターフェース/型定義
+- 一時変数: `tx`, `fname`, `i`, `j`, `k`（将来的に削除検討）
+- DOM拡張interface: 維持
 
 ---
+
+## 移行完了の成果
+
+✅ **全主要ファイル (13ファイル、46,242行) がAppState対応完了**
+✅ **グローバル変数を8個削除し、AppStateで一元管理**
+✅ **ビルド成功、全テストパス (10 passed)**
+✅ **ブラウザでの動作確認済み（地図作成が正常に動作）**
+
+### 残りの作業（オプション）
 
 ## 移行のベストプラクティス
 
