@@ -1017,7 +1017,7 @@ class clsSpline {
 }
 
 
-var clsTileMap: any =function() {
+const clsTileMap: any =function() {
 
     let xhr: XMLHttpRequest[] =[];
     let TileMapData = setTileMapData();

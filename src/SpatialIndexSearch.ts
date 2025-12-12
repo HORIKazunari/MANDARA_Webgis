@@ -180,10 +180,10 @@ class clsSpatialIndexSearch {
             PBox=spatial.getCircumscribedRectangle(oxy.Point[i], PBox);
         }
         PBox=this.BoxData_AddExtraRange(PBox);
-        var f = this.GetRangeXY(PBox, RBox);
+        const f = this.GetRangeXY(PBox, RBox);
         if (f == true) {
             for (let ii = RBox.left; ii <= RBox.right; ii++) {
-                for (var j = RBox.top; j <= RBox.bottom; j++) {
+                for (let j = RBox.top; j <= RBox.bottom; j++) {
                     switch (AddorRemove) {
                         case Add_or_Remove_Add_Obj:
                             this.Add_Mesh_PointSub(ii, j, ObjNum, StartP);
@@ -197,12 +197,12 @@ class clsSpatialIndexSearch {
         }
     }
     private AddMeshRect(ObjNum: any, AddorRemove: any) {
-        var PBox = this.BoxData_AddExtraRange(spatial.Get_Rectangle(this.ObjectXY[ObjNum].Point[0], this.ObjectXY[ObjNum].Point[1]));
-        var RBox = new rectangle();
-        var f = this.GetRangeXY(PBox, RBox);
+        const PBox = this.BoxData_AddExtraRange(spatial.Get_Rectangle(this.ObjectXY[ObjNum].Point[0], this.ObjectXY[ObjNum].Point[1]));
+        const RBox = new rectangle();
+        const f = this.GetRangeXY(PBox, RBox);
         if (f == true) {
-            for (var i = RBox.left; i <= RBox.right; i++) {
-                for (var j = RBox.top; j <= RBox.bottom; j++) {
+            for (let i = RBox.left; i <= RBox.right; i++) {
+                for (let j = RBox.top; j <= RBox.bottom; j++) {
                     switch (AddorRemove) {
                         case Add_or_Remove_Add_Obj:
                             this.Add_Mesh_PointSub(i, j, ObjNum, 0);
@@ -216,12 +216,12 @@ class clsSpatialIndexSearch {
         }
     }
     private AddMeshPoint(ObjNum: any, AddorRemove: any) {
-        var oxy = this.ObjectXY[ObjNum];
-        for (var k = 0; k < oxy.Pnum; k++) {
+        const oxy = this.ObjectXY[ObjNum];
+        for (let k = 0; k < oxy.Pnum; k++) {
             if (this.ExtraRangeF === false) {
                 //大きさのないポイントを追加
-                var outXY=new point;
-                var exf = this.GetConPointXY(oxy.Point[k], outXY);
+                const outXY=new point;
+                const exf = this.GetConPointXY(oxy.Point[k], outXY);
                 if (exf == true) {
                     switch (AddorRemove) {
                         case Add_or_Remove_Add_Obj:
@@ -234,11 +234,11 @@ class clsSpatialIndexSearch {
                 }
             } else {
                 //大きさのあるポイントを追加
-                var RBox = new rectangle();
+                const RBox = new rectangle();
                 exf = this.GetExtraRange_XY(oxy.Point[k], RBox)
                 if (exf == true) {
-                    for (var i = RBox.left; i <= RBox.right; i++) {
-                        for (var j = RBox.top; j <= RBox.bottom; j++) {
+                    for (let i = RBox.left; i <= RBox.right; i++) {
+                        for (let j = RBox.top; j <= RBox.bottom; j++) {
                             switch (AddorRemove) {
                                 case Add_or_Remove_Add_Obj:
                                     this.Add_Mesh_PointSub(i, j, ObjNum, k);
@@ -258,7 +258,7 @@ class clsSpatialIndexSearch {
         if (typeof this.MeshIndex[X][Y] === "undefined"){
             this.MeshIndex[X][Y]  = new IndexContents_Info();
         }
-        var n = this.MeshIndex[X][Y].Num;
+        const n = this.MeshIndex[X][Y].Num;
         this.MeshIndex[X][Y].ObjectNumber[n] = new Object_Info(ObjNum,Pointnum);
         this.MeshIndex[X][Y].Num++;
     }
@@ -275,7 +275,7 @@ class clsSpatialIndexSearch {
     }
 
     private GetExtraRange_XY(xy: any, OutPutRect: any) {
-        var PBox = new rectangle();
+        const PBox = new rectangle();
         PBox.left = xy.x - this.ExtraRange;
         PBox.right = xy.x + this.ExtraRange;
         PBox.top = xy.y - this.ExtraRange;
@@ -286,12 +286,12 @@ class clsSpatialIndexSearch {
 
     private GetRangeXY(InPBox: any, OutRBox: any) {
         if (spatial.Compare_Two_Rectangle_Position(InPBox, this.MeshRect) != cstRectangle_Cross.cstOuter) {
-            var x1 = Math.floor((InPBox.left - this.MeshRect.left) / this.meshw);
-            var y1 = Math.floor((InPBox.top - this.MeshRect.top) / this.meshh);
+            let x1 = Math.floor((InPBox.left - this.MeshRect.left) / this.meshw);
+            let y1 = Math.floor((InPBox.top - this.MeshRect.top) / this.meshh);
             x1 = Generic.m_min_max(x1, 0, this.XYSize);
             y1 = Generic.m_min_max(y1, 0, this.XYSize);
-            var x2 = Math.floor((InPBox.right - this.MeshRect.left) / this.meshw);
-            var y2 = Math.floor((InPBox.bottom - this.MeshRect.top) / this.meshh);
+            let x2 = Math.floor((InPBox.right - this.MeshRect.left) / this.meshw);
+            let y2 = Math.floor((InPBox.bottom - this.MeshRect.top) / this.meshh);
             x2 = Generic.m_min_max(x2, 0, this.XYSize);
             y2 = Generic.m_min_max(y2, 0, this.XYSize);
 
@@ -336,7 +336,7 @@ class clsSpatialIndexSearch {
             alert("点以外はできません。");
             return;
         }
-        var XY = new Array(XY1, XY2);
+        const XY = new Array(XY1, XY2);
         this.Add_Point_Sub(2, XY, TagData);
     }
 
@@ -349,7 +349,7 @@ class clsSpatialIndexSearch {
             alert("点以外はできません。");
             return;
         }
-        var XY = new Array(XY1);
+        const XY = new Array(XY1);
         this.Add_Point_Sub(1, XY, TagData);
     }
     AddSinglePoint_Array(Num: any, XY: any, TagData: any) {
@@ -358,8 +358,8 @@ class clsSpatialIndexSearch {
             alert("点以外はできません。");
             return;
         }
-        for (var i = 0; i < Num; i++) {
-            var XYS = new Array(XY[i]);
+        for (let i = 0; i < Num; i++) {
+            const XYS = new Array(XY[i]);
             this.Add_Point_Sub(1, XYS, TagData);
         }
     }
@@ -380,22 +380,22 @@ class clsSpatialIndexSearch {
         if (this.ObjectNum == 0) {
             return  new GetObjectPointTagInfo(-1,0, 0); 
         }
-        var XY = new point(x, y);
-        var outXY = new point();
-        var exf = this.GetConPointXY(XY, outXY);
+        const XY = new point(x, y);
+        const outXY = new point();
+        const exf = this.GetConPointXY(XY, outXY);
         if (exf == false) { return new GetObjectPointTagInfo(-1, 0, 0); }
-        var gn = -1;
-        var PointNumber;
-        var Tag;
-        var meshxy = this.MeshIndex[outXY.x][outXY.y];
+        let gn = -1;
+        let PointNumber;
+        let Tag;
+        const meshxy = this.MeshIndex[outXY.x][outXY.y];
         if (meshxy != undefined) {
-            for (var i = 0; i < meshxy.Num; i++) {
-                var n = meshxy.ObjectNumber[i].ObjectNumber;
-                var np = meshxy.ObjectNumber[i].ObjectPointNumber;
-                var Point = this.ObjectXY[n].Point[np];
+            for (let i = 0; i < meshxy.Num; i++) {
+                const n = meshxy.ObjectNumber[i].ObjectNumber;
+                const np = meshxy.ObjectNumber[i].ObjectPointNumber;
+                const Point = this.ObjectXY[n].Point[np];
                 if (Point.x == x) {
                     if (Point.y == y) {
-                        var gn: number = n;
+                        const gn: number = n;
                         PointNumber = np;
                         Tag = this.ObjectXY[n].Tag;
                         break;
@@ -425,16 +425,16 @@ class clsSpatialIndexSearch {
             return -1;
         }
         SamePointData.length = 0;
-        var XY = new point(x, y);
-        var outXY = new point;
-        var exf = this.GetConPointXY(XY, outXY);
+        const XY = new point(x, y);
+        const outXY = new point;
+        const exf = this.GetConPointXY(XY, outXY);
         if (exf == false) { return -1; }
 
-        var meshxy = this.MeshIndex[outXY.x][outXY.y];
-        for (var i = 0; i < meshxy.Num; i++) {
-            var n = meshxy.ObjectNumber[i].ObjectNumber;
-            var np = meshxy.ObjectNumber[i].ObjectPointNumber;
-            var Point = this.ObjectXY[n].Point[np];
+        const meshxy = this.MeshIndex[outXY.x][outXY.y];
+        for (let i = 0; i < meshxy.Num; i++) {
+            const n = meshxy.ObjectNumber[i].ObjectNumber;
+            const np = meshxy.ObjectNumber[i].ObjectPointNumber;
+            const Point = this.ObjectXY[n].Point[np];
             if (Point.x == x) {
                 if (Point.y == y) {
                     SamePointData.push(new GetObjectPointTagInfo(n,np,this.ObjectXY[n].Tag));
@@ -535,13 +535,13 @@ class clsSpatialIndexSearch {
         if(ExceptionTag==undefined){
             ExceptionTag=[];
         }
-        var XY = new point(x, y);
-        var outXY = new point;
-        var exf = this.GetConPointXY(XY, outXY);
+        const XY = new point(x, y);
+        const outXY = new point;
+        const exf = this.GetConPointXY(XY, outXY);
         if (exf == false) { return {num:0} }
 
         let mind  = Math.min(this.ExtraRange, BaseDistance);
-        var mi = this.MeshIndex[outXY.x][outXY.y];
+        const mi = this.MeshIndex[outXY.x][outXY.y];
         if (mi != undefined) {
             for (let i = 0; i < mi.ObjectNumber.length; i++) {
                 let n = mi.ObjectNumber[i].ObjectNumber;
@@ -585,21 +585,21 @@ class clsSpatialIndexSearch {
         if(ExceptionTag==undefined){
             ExceptionTag=[];
         }
-        var XY = new point(x, y);
-        var outXY = new point;
-        var exf = this.GetConPointXY(XY, outXY);
+        const XY = new point(x, y);
+        const outXY = new point;
+        const exf = this.GetConPointXY(XY, outXY);
         if (exf == false) { return {num:0}  }
 
-        var mind = Math.min(this.ExtraRange, BaseDistance);
-        var o_mind = mind - 1;
-        var meshxy = this.MeshIndex[outXY.x][outXY.y];
+        let mind = Math.min(this.ExtraRange, BaseDistance);
+        let o_mind = mind - 1;
+        const meshxy = this.MeshIndex[outXY.x][outXY.y];
         if (meshxy != undefined) {
-            for (var i = 0; i < meshxy.Num; i++) {
-                var n = meshxy.ObjectNumber[i].ObjectNumber;
-                var np = meshxy.ObjectNumber[i].ObjectPointNumber;
+            for (let i = 0; i < meshxy.Num; i++) {
+                const n = meshxy.ObjectNumber[i].ObjectNumber;
+                const np = meshxy.ObjectNumber[i].ObjectPointNumber;
                 if ((n != ExceptionNumber) && (this.ObjectXY[n].Tag != ExceptionTag)) {
-                    var Point = this.ObjectXY[n].Point[np];
-                    var D = spatial.Distance(x, y, Point.x, Point.y);
+                    const Point = this.ObjectXY[n].Point[np];
+                    const D = spatial.Distance(x, y, Point.x, Point.y);
                     if (D <= mind) {
                         if (D != o_mind) {
                             NearestPointData.length = 0;
@@ -661,7 +661,7 @@ class clsSpatialIndexSearch {
         /// <param name="Number" >オブジェクト番号</param>
         /// </signature> 
 
-        var RBox = new rectangle();
+        const RBox = new rectangle();
         this.ObjectXY[Number].RemoveF = true;
         switch (this.ObjectType) {
             case SpatialPointType.SinglePoint:
@@ -679,8 +679,8 @@ class clsSpatialIndexSearch {
     }
 
     private RemoveObject_sub(x: any, y: any, Number: any) {
-        var meshxy = this.MeshIndex[x][y];
-        var i = -1;
+        const meshxy = this.MeshIndex[x][y];
+        let i = -1;
         do {
            i ++;
         } while (meshxy.ObjectNumber[i].ObjectNumber != Number)
@@ -694,7 +694,7 @@ class clsSpatialIndexSearch {
 
     RemoveObject_byTag(TagNumber: any) {
         //指定したタグのオブジェクトの検索インデックスを削除
-        for (var i = 0; i < this.ObjectNum; i++) {
+        for (let i = 0; i < this.ObjectNum; i++) {
             if (this.ObjectXY[i].Tag == TagNumber) {
                 if (this.ObjectXY[i].RemoveF == false) {
                     this.RemoveObject(i);
@@ -714,7 +714,7 @@ class clsSpatialIndexSearch {
 
     ChangeTagValue(ChangeValue: any, StartRangeValue: any, LastRangeValue: any) {
         //タグの値を変化させる
-        for (var i = 0; i < this.ObjectNum; i++) {
+        for (let i = 0; i < this.ObjectNum; i++) {
             if (Generic.Check_Two_Value_In(this.ObjectXY[i].Tag, StartRangeValue, LastRangeValue) != (chvOuter as any)) {
                 this.ObjectXY[i].Tag += ChangeValue;
             }
@@ -728,10 +728,10 @@ class clsSpatialIndexSearch {
             return;
         }
         if ((XY1_rectangle instanceof point) == true) {
-            var XY = new Array(XY1_rectangle, XY2_TagData);
+            const XY = new Array(XY1_rectangle, XY2_TagData);
             this.Add_Point_Sub(2, XY, TagData);
         } else {
-            var XY = new Array(2);
+            const XY = new Array(2);
             XY[0] = new point(XY1_rectangle.left, XY1_rectangle.top);
             XY[1] = new point(XY1_rectangle.right, XY1_rectangle.bottom);
             this.Add_Point_Sub(2, XY, XY2_TagData);

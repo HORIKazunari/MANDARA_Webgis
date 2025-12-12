@@ -7,7 +7,7 @@ import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 
 /** Description placeholder */
-var Hennyu_Data: any = function(this: any) {
+const Hennyu_Data: any = function(this: any) {
     this.code; //Integer
     this.Name; //String
     this.Time; //strYMD
@@ -21,7 +21,7 @@ var Hennyu_Data: any = function(this: any) {
  *
  * @returns 
  */
-var Object_Succession_Data: any = function(this: any) {
+const Object_Succession_Data: any = function(this: any) {
     this.ObjectCode; //Integer
     this.Time = new strYMD;
 }
@@ -37,7 +37,7 @@ Object_Succession_Data.prototype.Clone = function () {
  *
  * @returns 
  */
-var Object_NameTimeStac_Data: any = function(this: any) {
+const Object_NameTimeStac_Data: any = function(this: any) {
     this.NamesList = []; //String
     this.SETime = new Start_End_Time_data();
 }
@@ -57,7 +57,7 @@ Object_NameTimeStac_Data.prototype.Clone = function () {
  *
  * @returns 
  */
-var Object_CenterPoint_Data: any = function(this: any) {
+const Object_CenterPoint_Data: any = function(this: any) {
     this.Position = new point();
     this.SETime = new Start_End_Time_data();
 }
@@ -72,7 +72,7 @@ Object_CenterPoint_Data.prototype.Clone=function(){
  *
  * @returns 
  */
-var LineCodeStac_Data: any = function(this: any) {
+const LineCodeStac_Data: any = function(this: any) {
     this.LineCode; //Integer
     this.NumOfTime; //Integer
     this.Times = []; //Start_End_Time_data
@@ -138,7 +138,7 @@ set AttDataType(value) {
  *
  * @type {{ MissingValue: number; NearestValue: number; interpolation_MissingValue: number; interpolation_NearestValue: number; }}
  */
-var enmDefPointAttDataExtraValue = {
+const enmDefPointAttDataExtraValue = {
     MissingValue: 0,
     NearestValue: 1,
     interpolation_MissingValue: 2,
@@ -151,7 +151,7 @@ var enmDefPointAttDataExtraValue = {
  *
  * @type {{ PointData: number; SpanData: number; interpolation_MissingValue: number; interpolation_NearestValue: number; }}
  */
-var enmDefTimeAttDataType = {
+const enmDefTimeAttDataType = {
     PointData: 0,
     SpanData: 1,
     interpolation_MissingValue: 2,
@@ -164,7 +164,7 @@ var enmDefTimeAttDataType = {
  *
  * @returns 
  */
-var strMPObjDefTimeAttData_Info: any = function(this: any) {
+const strMPObjDefTimeAttData_Info: any = function(this: any) {
     this.Type; //enmDefTimeAttDataType
     this.attData = new strMPObjDefAttData_Info();
     this.ExtraValue; // enmDefPointAttDataExtraValue
@@ -182,7 +182,7 @@ strMPObjDefTimeAttData_Info.prototype.Clone = function () {
  *
  * @returns 
  */
-var strObjectGroup_Data: any = function(this: any) {
+const strObjectGroup_Data: any = function(this: any) {
     this.ObjectType; //enmObjectGoupType_Data 'ObjectGoupType_Dataの内容
     this.Name; //String
     this.Shape; //enmShape
@@ -217,7 +217,7 @@ strObjectGroup_Data.prototype.Clone = function () {
  *
  * @returns 
  */
-var strDefTimeAttDataEach_Info: any = function(this: any) {
+const strDefTimeAttDataEach_Info: any = function(this: any) {
     this.Span = new Start_End_Time_data();
     this.Value; //String
 }
@@ -233,7 +233,7 @@ strDefTimeAttDataEach_Info.prototype.Clone= function () {
  *
  * @returns 
  */
-var strDefTimeAttData_Info: any = function(this: any) {
+const strDefTimeAttData_Info: any = function(this: any) {
     this.Data = []; //strDefTimeAttDataEach_Info
 }
 strDefTimeAttData_Info.prototype.Clone= function () {
@@ -248,7 +248,7 @@ strDefTimeAttData_Info.prototype.Clone= function () {
  *
  * @returns 
  */
-var strObj_Data: any = function(this: any) {
+const strObj_Data: any = function(this: any) {
     this.Number; //Integer 'オブジェクト番号
     this.Kind; //Integer
     this.Shape; //enmShape
@@ -282,7 +282,7 @@ strObj_Data.prototype.Clone = function () {
  *
  * @returns 
  */
-var dirWord_Data: any = function(this: any) {
+const dirWord_Data: any = function(this: any) {
     this.East = ""; //String
     this.West = ""; //String
     this.North = ""; //String
@@ -303,7 +303,7 @@ dirWord_Data.prototype.Clone = function () {
  *
  * @returns 
  */
-var strCompass_Attri: any = function(this: any) {
+const strCompass_Attri: any = function(this: any) {
     this.Visible; //Boolean
     this.Position = new point();
     this.Mark = new Mark_Property();
@@ -326,7 +326,7 @@ strCompass_Attri.prototype.Clone = function () {
  *
  * @returns 
  */
-var Line_Time_Data: any = function(this: any) {
+const Line_Time_Data: any = function(this: any) {
     this.Kind; //Integer
     this.SETime = new Start_End_Time_data();
 }
@@ -351,7 +351,7 @@ Line_Time_Data.prototype.Equals = function (LT: any) {
  *
  * @returns 
  */
-var strLine_Data: any = function(this: any) {
+const strLine_Data: any = function(this: any) {
     this.Number; //Integer 'ライン番号
     this.NumOfPoint; //Integer
     this.Connect; //enmLineConnect
@@ -379,7 +379,7 @@ strLine_Data.prototype.Clone = function () {
  * @param {*} Kind 
  * @returns 
  */
-var EnableMPLine_Data: any = function(this: any, lcode?: any, Kind?: any) {
+const EnableMPLine_Data: any = function(this: any, lcode?: any, Kind?: any) {
     this.LineCode = lcode; //Integer
     this.Kind = Kind; //Integer
 }
@@ -403,7 +403,7 @@ interface Zahyo_info {
  *
  * @returns 
  */
-var Zahyo_info: any = function(this: Zahyo_info) {
+const Zahyo_info: any = function(this: Zahyo_info) {
     this.Mode; //enmZahyo_mode_info '緯度経度か、平面直角か
     this.System; //enmZahyo_System_Info '世界測地系か、日本測地系か
     this.HeimenTyokkaku_KEI_Number; //Short  '1-19の値
@@ -440,7 +440,7 @@ interface strMap_data {
  *
  * @returns 
  */
-var strMap_data: any = function(this: strMap_data) {
+const strMap_data: any = function(this: strMap_data) {
     this.MPVersion; //Single
     this.FileName; //String
     this.FullPath; //String
@@ -463,7 +463,7 @@ var strMap_data: any = function(this: strMap_data) {
  *
  * @returns 
  */
-var strLKOjectGroup_Info: any = function(this: any) {
+const strLKOjectGroup_Info: any = function(this: any) {
     this.GroupNumber; //Integer
     this.UseOnly; //Boolean
     this.Pattern = new Line_Property();
@@ -481,7 +481,7 @@ strLKOjectGroup_Info.prototype.Clone = function () {
  *
  * @returns 
  */
-var LineKind_Data: any = function(this: any) {
+const LineKind_Data: any = function(this: any) {
     this.Name; //String
     this.NumofObjectGroup; //Integer '1の場合は通常の線種、2以上の場合はオブジェクトグループ連動
     this.ObjGroup = []; //strLKOjectGroup_Info '(0)は通常の線種のパターン
@@ -501,7 +501,7 @@ LineKind_Data.prototype.Clone = function () {
  *
  * @returns 
  */
-var LPatSek_Info: any = function(this: any) {
+const LPatSek_Info: any = function(this: any) {
     this.LKind; //Integer
     this.LkindPatNum; //Integer
     this.Name; //String
@@ -509,7 +509,7 @@ var LPatSek_Info: any = function(this: any) {
 }
 
 /** Description placeholder */
-var Map_Detail_Data: any = function(this: any) {
+const Map_Detail_Data: any = function(this: any) {
     this.DistanceMeasurable; //Boolean
     this.ScaleVisible; //Boolean
 
@@ -518,7 +518,7 @@ var Map_Detail_Data: any = function(this: any) {
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
 /** Description placeholder */
-var Hennyu_Data: any = function(this: any) {
+const Hennyu_Data: any = function(this: any) {
     this.code; //Integer
     this.Direction; //Integer '1 or -1
 }

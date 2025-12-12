@@ -6,7 +6,7 @@ import { appState } from './core/AppState';
 
 class clsTime  {
     static GetNullYMD  () {
-        var ymd = new strYMD(0, 0, 0)
+        const ymd = new strYMD(0, 0, 0)
         return ymd;
     }
 
@@ -251,7 +251,7 @@ class Mark_Property {
     }
 }
 
-var enmArrowHeadType={
+const enmArrowHeadType={
     Line : 0,
     Fill : 1
 }
@@ -271,7 +271,7 @@ class Arrow_Data {
     }
 }
 
-var enmLatLonPrintPattern = {
+const enmLatLonPrintPattern = {
     DegreeMinuteSecond: 0,
     DecimalDegree: 1
 }

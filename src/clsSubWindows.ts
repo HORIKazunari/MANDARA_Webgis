@@ -94,7 +94,7 @@ function clsColorChart(event: any, ClassN: any, buttonOK: any){
                 break;
         }
 
-        var ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d");
         for (let j = 0; j < ClassN; j++) {
             let left = picw * (j / ClassN);
             let right = picw * ((j + 1) / ClassN);
@@ -166,7 +166,7 @@ function clsColorPicker(event_point: any, okEvent: any) {
 
     //既定色Div
     for (var i = 0; i <= 55; i++) {
-        var colorDivObj = document.createElement('div');
+        const colorDivObj = document.createElement('div');
         const style = colorDivObj.style;
         style.position = 'absolute';
         style.width = colPSize.picW + "px";
@@ -183,7 +183,7 @@ function clsColorPicker(event_point: any, okEvent: any) {
     }
 
     //透過度指定
-    var rangeNameObj = document.createElement('span');
+    const rangeNameObj = document.createElement('span');
     rangeNameObj.innerHTML = "不透明度"
     const rangeStyle = rangeNameObj.style;
     rangeStyle.position = 'absolute';
@@ -216,7 +216,7 @@ function clsColorPicker(event_point: any, okEvent: any) {
     colorPickerObj.appendChild(rangeObj);
 
     //カラー表示用Box
-    var colorPickerBox = document.createElement('input');
+    const colorPickerBox = document.createElement('input');
     colorPickerBox.type = 'text';
     colorPickerBox.id = 'ColorPickerColorPic';
     colorPickerBox.disabled = true;
@@ -232,13 +232,13 @@ function clsColorPicker(event_point: any, okEvent: any) {
     colorPickerObj.appendChild(colorPickerBox);
 
     function setCol(e: any) {
-        var col = Generic.RGBAfromElement(e.target);
+        const col = Generic.RGBAfromElement(e.target);
         col.a = parseInt(String(Number(rangeObj.value) * 2.55));
         colorPickerBox.style.backgroundColor = col.toRGBA();
     }
 
     function setColBar() {
-        var col = Generic.RGBAfromElement(colorPickerBox);
+        const col = Generic.RGBAfromElement(colorPickerBox);
         col.a = parseInt(String(Number(rangeObj.value) * 2.55));
         colorPickerBox.style.backgroundColor = col.toRGBA();
     }
@@ -2852,21 +2852,21 @@ function frmTitleSettingsAddingData(TTL: any, UNT: any, Note: any, CancefFlag: a
 
 /**空間検索 */
 function frmMain_Buffer(okEvent: any){
-    var normal_data: any = function () {
+    const normal_data: any = function () {
         this.add = 0;
         this.add2 = 0;
         this.max = 0;
         this.min = 0;
     }
-    var category_data: any = function () {
+    const category_data: any = function () {
         this.CateCount = [];
     }
-    var bufMode = {
+    const bufMode = {
         Distance: 0,
         ObjectInPolygon : 1,
         ParentObject: 2
     }
-    var registMode = {
+    const registMode = {
         average: 0,
         sum: 1,
         standard: 2,
@@ -3295,7 +3295,7 @@ function frmMain_Buffer(okEvent: any){
 function openMapFile(call: any) {
 
     //地図ファイルを開く
-    var bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true,"", 0.2,false);
+    const bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true,"", 0.2,false);
 
     Generic.createNewButton(bbox, "MANDARA提供地図ファイル追加", "", 15, 40, addMandaraMapOn, "");
 
@@ -3323,15 +3323,15 @@ function openMapFile(call: any) {
     }
 
     //ファイル選択する場合
-    var fileIn = Generic.createNewInput(bbox, "file", "", "", 15, 75, "", "");
+    const fileIn = Generic.createNewInput(bbox, "file", "", "", 15, 75, "", "");
     fileIn.accept=".mpfj";
     fileIn.addEventListener("change", function (e: any) {
-        var file = e.target.files[0];
+        const file = e.target.files[0];
         getFile(file);
     }  , false);
 
     //ドロップする場合
-    var dropZone = Generic.createNewDiv(bbox, "地図ファイルをドロップ", "drop-zone", "", 15, 115, 250, 100, "border:dashed 1px;border-color:#888888;border-radius:4px;");
+    const dropZone = Generic.createNewDiv(bbox, "地図ファイルをドロップ", "drop-zone", "", 15, 115, 250, 100, "border:dashed 1px;border-color:#888888;border-radius:4px;");
     dropZone.addEventListener('dragover', function (e: any) {
         e.stopPropagation();
         e.preventDefault();
@@ -3340,8 +3340,8 @@ function openMapFile(call: any) {
     dropZone.addEventListener('drop', function (e: any) {
         e.stopPropagation();
         e.preventDefault();
-        var files = e.dataTransfer.files; // FileList object.
-        var file = files[0];
+        const files = e.dataTransfer.files; // FileList object.
+        const file = files[0];
         if (Generic.getExtension(file.name).toLowerCase() != "mpfj") {
             Generic.alert(undefined,"地図ファイルではありません。拡張子mpfjのファイルをドロップしてください。");
         }else{

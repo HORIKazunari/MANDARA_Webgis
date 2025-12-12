@@ -1363,7 +1363,7 @@ class spatial {
 
     static Distance(x1: number, y1: number, x2: number, y2: number) {
         const state = appState();
-        var d = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        const d = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         return d;
     }
 
@@ -1455,12 +1455,12 @@ class spatial {
         //Nearest_point:最も近い位置の線分上の点を取得（オプション）
 
         let Nearest_pointX, Nearest_pointY;
-        var po = 0;
-        var xs = BX - ax;
-        var Ys = BY - ay;
-        var d1 = this.Distance(X, Y, ax, ay);
-        var d2 = this.Distance(X, Y, BX, BY);
-        var D;
+        let po = 0;
+        let xs = BX - ax;
+        let Ys = BY - ay;
+        let d1 = this.Distance(X, Y, ax, ay);
+        let d2 = this.Distance(X, Y, BX, BY);
+        let D;
         if (xs == 0) {
             if ((Math.min(ay, BY) <= Y) && (Y <= Math.max(ay, BY))) {
                 D = Math.abs(X - ax);
@@ -1478,12 +1478,12 @@ class spatial {
                 po = 1;
             }
         } else {
-            var a = Ys / xs;
-            var b = -a * ax + ay;
+            const a = Ys / xs;
+            const b = -a * ax + ay;
 
-            var Va = -1 / a;
-            var Va2 = -Va * X + Y;
-            var crossX = (Va2 - b) / (a - Va);
+            const Va = -1 / a;
+            const Va2 = -Va * X + Y;
+            const crossX = (Va2 - b) / (a - Va);
             if ((Math.min(ax, BX) <= crossX) && (crossX <= Math.max(ax, BX))) {
                 D = Math.abs(-Ys * X + xs * Y - xs * ay + Ys * ax) / Math.sqrt(xs * xs + Ys * Ys);
                 Nearest_pointX = crossX;
@@ -1959,7 +1959,7 @@ export class Generic {
     static getLayerTypeName(layType: any){
         const state = appState();
         let tx = "";
-        var enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 };
+        const enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 };
         switch (layType) {
             case enmLayerType.Normal:
                 tx = "通常のレイヤ";
@@ -2077,7 +2077,7 @@ export class Generic {
         
         Generic.readingIcon("地図ファイル読み込み");
         let ext=Generic.getExtension(url).toLowerCase();
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.responseType = "blob";
         xhr.onload = function () {
@@ -2269,10 +2269,10 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     /**バイト配列をUTF8文字列に変換 */
     static utf8ArrayToStr(array: any) {
         const state = appState();
-        var len = array.length;
-        var out = "";
-        var i = 0;
-        var char1, char2, char3;
+        const len = array.length;
+        let out = "";
+        let i = 0;
+        let char1, char2, char3;
         if(array[0]==239){
             i=3;
         }
@@ -2301,7 +2301,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     /**UTF8文字列をバイト配列に変換 */
      static strToUtf8Array(str: any) {
         const state = appState();
-        var n = str.length,
+        let n = str.length,
             idx = -1,
             bytes = [],
             i, j, c;
@@ -3032,10 +3032,10 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         }
         y += 5;
         x += 5;
-        var clientWidth =this.getBrowserWidth();     //ウインドウの高さと幅
-        var clientHeight = this.getBrowserHeight();
-        var boxWidth = box.scrollWidth;		//作成したボックスの高さと幅
-        var boxHeight = box.scrollHeight;
+        const clientWidth =this.getBrowserWidth();     //ウインドウの高さと幅
+        const clientHeight = this.getBrowserHeight();
+        const boxWidth = box.scrollWidth;		//作成したボックスの高さと幅
+        const boxHeight = box.scrollHeight;
         if ((y + boxHeight - document.body.scrollTop) > clientHeight) {	//縦にはみ出る場合
             y = document.body.scrollTop + clientHeight - boxHeight - 10;
         }
@@ -3364,7 +3364,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //ドキュメントの高さ取得
     static getDocumentHeight() {
         const state = appState();
-        var h = Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+        const h = Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
         return h;
     }
 
@@ -3392,7 +3392,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //ボタン作成
     static createNewButton(ParentObj: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any = "") {
         const state = appState();
-        var ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
+        const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
         ok.addEventListener('click', onClick);
         ParentObj.appendChild(ok);
         return ok;
@@ -3402,7 +3402,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //img要素作成
     static createNewImage(ParentObj: any, src: any, alt: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any) {
         const state = appState();
-        var obj = document.createElement("img");
+        const obj = document.createElement("img");
         obj.src = src;
         obj.alt = alt;
         obj.setAttribute("id", ID);
@@ -3418,7 +3418,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //span要素作成
     static createNewSpan(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any = undefined, ...rest: any[]) {
         const state = appState();
-        var obj = document.createElement("span");
+        const obj = document.createElement("span");
         obj.setAttribute("id", ID);
         obj.setAttribute("class", Class);
         obj.onclick= onclick;
@@ -3721,7 +3721,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         /// <param name="onclick">onclickイベント</param>  
         /// <returns >div要素</returns>  
         /// </signature>
-        var obj = document.createElement("div");
+        const obj = document.createElement("div");
         obj.setAttribute("id", ID);
         obj.setAttribute("class", Class);
         obj.setAttribute("onclick", onclick);
@@ -4094,7 +4094,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     /**select要素作成 list.value,.text *は非選択が標準、onChangeでは要素,selectedIndex,valueを返す*/
     static createNewSelect(ParentObj: any, list: any, firstSelectIndex: any, ID: any, x: any, y: any, multipleFlag: any, onChange: any, styleinfo: any, size: any = 1,astariskNonF: any=true) {
         const state = appState();
-        var sbox = document.createElement("select")
+        const sbox = document.createElement("select")
         sbox.setAttribute("id", ID)
         sbox.multiple = multipleFlag;
         sbox.onchange =function(){
@@ -4182,7 +4182,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //Canvas要素を作成
     static createNewCanvas(ParentObj: any, ID: any, Class: any, x: any, y: any, width: any, height: any, onClick: any, styleinfo: any) {
         const state = appState();
-        var canvas = document.createElement("canvas");
+        const canvas = document.createElement("canvas");
         canvas.setAttribute("style", "position:absolute;" + styleinfo);
         canvas.setAttribute("id", ID);
         canvas.setAttribute("class", Class);
@@ -4447,7 +4447,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     static createWindow(ID: any, Class: any, title: any, x: any, y: any, width: any, height: any, visibilieF: any,menuMarkF: any,menuCall: any,XmarkF: any,XmarkCall: any,footer_Flag: any,footerID: any,maxButtonF: any,maxButtonCall: any = undefined) {
         const state = appState();
-        var hiddenWindow = function () {
+        const hiddenWindow = function () {
             const winAny = window as any;
             winAny.setVisibility?.(false) ;
             if(XmarkCall !=undefined){
@@ -4554,12 +4554,12 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         /// <returns >div要素</returns>  
         /// </signature>
 
-        var e = document.getElementsByName("backDiv");
+        const e = document.getElementsByName("backDiv");
         let maxZindex = 1000 + e.length*10;
-        var browserWidth = this.getBrowserWidth();
-        var browserHeight = this.getBrowserHeight();
-        var d = document.createElement("div");
-        var deletediv = function (e: any) {
+        const browserWidth = this.getBrowserWidth();
+        const browserHeight = this.getBrowserHeight();
+        const d = document.createElement("div");
+        const deletediv = function (e: any) {
         //固定ウインドウを消す
             e.preventDefault();
             const last1 = document.body.lastChild;
@@ -4590,22 +4590,22 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         }
         document.body.appendChild(d)
 
-        var w = browserWidth * 0.9;
+        let w = browserWidth * 0.9;
         if (innerWidth != undefined) {
             w = innerWidth;
         }
-        var h = browserHeight * 0.8// / 2
+        let h = browserHeight * 0.8// / 2
         if (innerHeight != undefined) {
             h = innerHeight;
         }
-        var y = this.getScrollY() + (browserHeight - h) / 2;
-        var x = (browserWidth - w) / 2;
-        var dup = this.createNewDiv(document.body, idname, "frontDIV", "setting", x, y, w, h, "background-color:#ffffff; border:solid 1px; border-radius: 4px;border-color:#666666;opacity:1", undefined);
+        const y = this.getScrollY() + (browserHeight - h) / 2;
+        const x = (browserWidth - w) / 2;
+        const dup = this.createNewDiv(document.body, idname, "frontDIV", "setting", x, y, w, h, "background-color:#ffffff; border:solid 1px; border-radius: 4px;border-color:#666666;opacity:1", undefined);
         dup.style.zIndex = (maxZindex+1).toString();
         let head = Generic.createNewDiv(dup, "", "", "", 0, 0, '100%', state.scrMargin.top, "background-color: gray;color:#ffffff;font-size:15px", "");
         Generic.createNewSpan(head, title, "", "", 10, 0, "margin-top:4px", "");
         if(createXmark){
-            var cv = this.createXmark(dup, cancelButton, 14);
+            const cv = this.createXmark(dup, cancelButton, 14);
         }
 
         let bux = innerWidth;
@@ -4645,37 +4645,37 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 
     static getScrollX() {
         const state = appState();
-        var supportPageOffset = window.pageXOffset !== undefined;
-        var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-        var x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft;
+        const supportPageOffset = window.pageXOffset !== undefined;
+        const isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+        const x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft;
         return x;
     }
 
     static getScrollY() {
         const state = appState();
-        var supportPageOffset = window.pageXOffset !== undefined;
-        var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-        var y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
+        const supportPageOffset = window.pageXOffset !== undefined;
+        const isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+        const y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
         return y;
     }
 
     static decodePolyline(data: any) {
         const state = appState();
         //Google Mapのエンコード化ポリラインをデコードする
-        var cood = new Array();
-        var n = 0;
-        var selpos = 0;
-        var cflag = 0;
-        var sc = new latlon(0, 0);
-        var newlat: number = 0;
-        var newlon: number = 0;
+        const cood = new Array();
+        let n = 0;
+        let selpos = 0;
+        let cflag = 0;
+        const sc = new latlon(0, 0);
+        let newlat: number = 0;
+        let newlon: number = 0;
 
         do {
-            var strcode = new Array();
-            var i = 0;
+            const strcode = new Array();
+            let i = 0;
             while (true) {
-                var w1 = data.substr(i + selpos, 1);
-                var cd = w1.charCodeAt(0);
+                const w1 = data.substr(i + selpos, 1);
+                const cd = w1.charCodeAt(0);
                 strcode[i] = cd - 63;
                 if (strcode[i] >= 32) {
                     strcode[i] -= 32;
@@ -4686,19 +4686,19 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
                 i++;
             }
             selpos += i;
-            var binary = "";
-            for (var j = 0; j < i; j++) {
-                var x = ("00000" + strcode[i - j - 1].toString(2)).slice(-5)
+            let binary = "";
+            for (let j = 0; j < i; j++) {
+                const x = ("00000" + strcode[i - j - 1].toString(2)).slice(-5)
                 binary += x;
             }
-            var binary10;
+            let binary10;
             if (binary.slice(-1) == "1") {
                 binary10 = ~(parseInt(binary, 2));
             } else {
                 binary10 = parseInt(binary, 2);
             }
             binary10 /= 2;
-            var val = binary10 / 100000;
+            const val = binary10 / 100000;
 
             if (cflag == 0) {
                 sc.lat = val;
@@ -4745,7 +4745,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
     static Angle(si: any, co: any) {//角度を求める
         const state = appState();
-        var AngleV;
+        let AngleV;
         if (co == 0) {
             AngleV = 90;
         } else {
@@ -4765,7 +4765,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     //クリップボードにテキスト出力
     static copyText(text: any) {
         const state = appState();
-        var ta = document.createElement("textarea") as HTMLTextAreaElement;
+        const ta = document.createElement("textarea") as HTMLTextAreaElement;
         ta.value = text;
         document.body.appendChild(ta);
         if (typeof ta.select === "function") {
@@ -4838,9 +4838,9 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         let e = document.getElementsByName("backDiv");
         let maxZindex = 1000 + e.length * 10;
         let touchf=false;
-        var mnudiv = document.createElement("div");
+        const mnudiv = document.createElement("div");
         
-        var deletediv = function () {
+        const deletediv = function () {
             //メニューを消す
             let nd=document.getElementById("popmenu");
             if(nd!=undefined){
@@ -4875,7 +4875,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         mnudiv.style.height = '100%';
         document.body.appendChild(mnudiv)
 
-        var mainMenu = document.createElement("div");
+        const mainMenu = document.createElement("div");
         mnudiv.appendChild(mainMenu)
         let mainw = 0;
         let lineh = 0;
@@ -5704,7 +5704,7 @@ ListViewTable.prototype.clear = function () {
 
 //ウインドウの最大化ボタンをリセットする
 // @ts-ignore
-var resetMaxButtonFunc: any = function(this: any, MaxFlag?: boolean): void {
+const resetMaxButtonFunc: any = function(this: any, MaxFlag?: boolean): void {
     let cnode = this.childNodes;
     for (let i = 0; i < cnode.length; i++) {
         if ((cnode[i] as any).name == 'maxButton') {
@@ -6061,8 +6061,8 @@ HTMLElement.prototype.addSelectList = function (list: any, firstSelectIndex: any
     if (resetF == true) {
         this.removeAll();
     }
-    for (var j = 0; j < list.length; j++) {
-        var opt = document.createElement("option");
+    for (let j = 0; j < list.length; j++) {
+        const opt = document.createElement("option");
         opt.value = list[j].value;
         opt.appendChild(document.createTextNode(list[j].text));
         if ((list[j].text.left(1) == "*") && (astariskNonF == true)) {

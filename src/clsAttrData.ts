@@ -22,7 +22,7 @@ interface point3 {
     z: number;
 }
 
-var point3: any = function (this: point3, x: number, y: number, z: number) {
+const point3: any = function (this: point3, x: number, y: number, z: number) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -35,7 +35,7 @@ interface strDegreeMinuteSeconde {
 }
 
 //度分秒構造体
-var strDegreeMinuteSeconde: any = function(this: strDegreeMinuteSeconde) {
+const strDegreeMinuteSeconde: any = function(this: strDegreeMinuteSeconde) {
     this.Degree;
     this.Minute;
     this.Second;
@@ -48,7 +48,7 @@ interface strLatLonDegreeMinuteSecond {
 }
 
 //度分秒緯度経度構造体
-var strLatLonDegreeMinuteSecond: any = function(this: strLatLonDegreeMinuteSecond) {
+const strLatLonDegreeMinuteSecond: any = function(this: strLatLonDegreeMinuteSecond) {
     this.LatitudeDMS=new strDegreeMinuteSeconde();
     this.LongitudeDMS=new strDegreeMinuteSeconde();
 }
@@ -79,7 +79,7 @@ interface Start_End_Time_data {
     Equals(SETime: Start_End_Time_data): boolean;
 }
 
-var Start_End_Time_data: any = function (this: Start_End_Time_data) {
+const Start_End_Time_data: any = function (this: Start_End_Time_data) {
     this.StartTime = new strYMD(0, 0, 0);
     this.EndTime = new strYMD(0, 0, 0);
 }
@@ -98,7 +98,7 @@ Start_End_Time_data.prototype.Equals=function(this: Start_End_Time_data, SETime:
     return false;
 }
 
-var enmDataSource = {
+const enmDataSource = {
     NoData: -1,
     Clipboard: 0,
     CSV: 1,
@@ -109,11 +109,11 @@ var enmDataSource = {
     Shapefile: 8
 }
 
-var enmClassMode_Meshod = {
+const enmClassMode_Meshod = {
     Noral: 0,
     Separated:1
 }
-var enmPointOnjectDrawOrder = {
+const enmPointOnjectDrawOrder = {
     ObjectOrder: 0,
     LowerToUpperCategory: 1,
     UpperToLowerCategory: 2
@@ -125,38 +125,38 @@ var enmPointOnjectDrawOrder = {
 //データ表示モードはglobals.d.tsで定義済み
 
 //'線端形状
-var enmEdge_Pattern = {
+const enmEdge_Pattern = {
     Round: 0,// '丸
     Rectangle: 1,// '四角
     Flat: 2 //'平ら
 }
 
 //折れ線の接続
-var enmJoinPattern = {
+const enmJoinPattern = {
     Round: 0,
     Bevel: 1,
     Miter: 2,
 }
 
-var enmLineConnect={
+const enmLineConnect={
     no : 0,
     one : 1,
     both : 2,
     loopen : 3
 }
 //階級区分モードの凡例
-var enmClassModE_Meshod = {
+const enmClassModE_Meshod = {
     Noral: 0,
     Separated: 1
 }
 // 階級区分凡例分離表示のさいの表記法
-var enmSeparateClassWords = {
+const enmSeparateClassWords = {
     Japanese: 0,
     English: 1
 }
 
 // var enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 }; // globals.d.tsで定義済み
-var enmMesh_Number = {
+const enmMesh_Number = {
     mhNonMesh: -1,
     mhFirst: 0,
     mhSecond: 1,
@@ -166,13 +166,13 @@ var enmMesh_Number = {
     mhOne_Eighth: 5,
     mhOne_Tenth: 6
 }
-var enmZahyo_System_Info = {
+const enmZahyo_System_Info = {
     Zahyo_System_No: -1,
     Zahyo_System_tokyo: 0, //日本測地系
     Zahyo_System_World: 1 //世界測地系
 }
 
-var enmScaleUnit = {
+const enmScaleUnit = {
     centimeter: 0,
     meter: 1,
     kilometer: 2,
@@ -186,7 +186,7 @@ var enmScaleUnit = {
     kairi: 10
 }
 
-var enmProjection_Info = {
+const enmProjection_Info = {
     prjNo: -1,
     prjSanson: 0,//サンソン図法
     prjSeikyoEntou: 1,//正距円筒図法
@@ -203,7 +203,7 @@ interface Cross_Line_Data {
     Point: point;
 }
 
-var Cross_Line_Data: any = function (this: Cross_Line_Data) { //交点取得用
+const Cross_Line_Data: any = function (this: Cross_Line_Data) { //交点取得用
     this.BeforPoint;
     this.Point;
 }
@@ -224,12 +224,12 @@ var Cross_Line_Data: any = function (this: Cross_Line_Data) { //交点取得用
 //     Arrival: 8,
 //     Departure: 9
 // }
-var cstLinePolygonRelationd = { //ラインとポリゴンの関係を示す定数
+const cstLinePolygonRelationd = { //ラインとポリゴンの関係を示す定数
     cstOuter: -1,
     cstCross: 0,
     cstInner: 1
 }
-var chvValue_on_twoValue = { //二つの値にチェックする値が挟まれているか調べる
+const chvValue_on_twoValue = { //二つの値にチェックする値が挟まれているか調べる
     chvOuter: -1,
     chvJust: 0,
     chvIN: 1
@@ -240,7 +240,7 @@ interface strURL_Data {
     Address: string;
 }
 
-var strURL_Data: any = function (this: strURL_Data) {
+const strURL_Data: any = function (this: strURL_Data) {
     this.Name;
     this.Address;
 }
@@ -262,7 +262,7 @@ interface strObject_Data_Info {
 }
 
 //オブジェクト名とコード、シンボル位置（属性データ）
-var strObject_Data_Info: any = function (this: strObject_Data_Info) {
+const strObject_Data_Info: any = function (this: strObject_Data_Info) {
     this.MpObjCode;
     this.Name;
     this.Objectstructure;
@@ -277,7 +277,7 @@ var strObject_Data_Info: any = function (this: strObject_Data_Info) {
     this.Visible;
 }
 strObject_Data_Info.prototype.Clone = function () {
-    var d = new strObject_Data_Info();
+    const d = new strObject_Data_Info();
     d.MpObjCode = this.MpObjCode;
     d.Name = this.Name;
     d.Objectstructure = this.Objectstructure;
@@ -305,7 +305,7 @@ interface strObject_Info {
     TripObjData: any[];
 }
 
-var strObject_Info: any = function (this: strObject_Info) {
+const strObject_Info: any = function (this: strObject_Info) {
     this.ObjectNum;
     this.NumOfSyntheticObj;
     this.atrObjectData = [];//strObject_Data_Info
@@ -320,13 +320,13 @@ interface strSynthetic_ObjectName_and_Code {
     Draw_F: boolean;
     Clone(): strSynthetic_ObjectName_and_Code;
 }
-var strSynthetic_ObjectName_and_Code: any = function (this: strSynthetic_ObjectName_and_Code) {
+const strSynthetic_ObjectName_and_Code: any = function (this: strSynthetic_ObjectName_and_Code) {
     this.code = 0;
     this.Name = "";
     this.Draw_F = false;
 }
 strSynthetic_ObjectName_and_Code.prototype.Clone = function () {
-    var dt = new strSynthetic_ObjectName_and_Code();
+    const dt = new strSynthetic_ObjectName_and_Code();
     Object.assign(dt,this);
     return dt;
 }
@@ -343,7 +343,7 @@ interface strSynthetic_Object_Data {
     Objects: strSynthetic_ObjectName_and_Code[];
     Clone(): strSynthetic_Object_Data;
 }
-var strSynthetic_Object_Data: any = function (this: strSynthetic_Object_Data) {
+const strSynthetic_Object_Data: any = function (this: strSynthetic_Object_Data) {
     this.Kind = 0;
     this.NumOfObject = 0;
     this.Name = "";
@@ -354,7 +354,7 @@ var strSynthetic_Object_Data: any = function (this: strSynthetic_Object_Data) {
     this.Objects = []; //strSynthetic_ObjectName_and_Code
 }
 strSynthetic_Object_Data.prototype.Clone = function () {
-    var dt = new strSynthetic_Object_Data();
+    const dt = new strSynthetic_Object_Data();
     Object.assign(dt, this);
     dt.SETime = this.SETime.Clone();
     dt.CenterP = this.CenterP.Clone();
@@ -363,36 +363,36 @@ strSynthetic_Object_Data.prototype.Clone = function () {
     return dt;
 }
 
-var enmLatLonLine_Order = {
+const enmLatLonLine_Order = {
     Back: 0,
     Front: 1
 }
 
-var enmInner_Data_Info_Mode = {
+const enmInner_Data_Info_Mode = {
     ClassPaint: 0,
     ClassHatch: 1
 }
 
-var enmMarkSizeValueMode = {
+const enmMarkSizeValueMode = {
     inDataItem: 0,
     UserDefinition: 1
 }
 
-var enmMarkPrintType = {
+const enmMarkPrintType = {
     Mark: 0,
     Word: 1,
     Picture:2
 }
 
 //画面上に固定または地図領域に固定
-var enmBasePosition = {
+const enmBasePosition = {
     Map: 0,
     Screen: 1
 }
 
 // enmHorizontalAlignment はglobals.d.tsで定義済み
 
-var enmScaleBarPattern = {
+const enmScaleBarPattern = {
     Thin : 0,
         Bold : 1,
         Slim : 2
@@ -406,7 +406,7 @@ interface strInner_Data_Info {
     Data: number;
     Clone(): strInner_Data_Info;
 }
-var strInner_Data_Info: any = function (this: strInner_Data_Info) {
+const strInner_Data_Info: any = function (this: strInner_Data_Info) {
     this.Flag = 0;
     this.Data = 0;
 }
@@ -420,7 +420,7 @@ strInner_Data_Info.prototype.Clone = function () {
 // colorRGBA クラスは globals.d.ts で定義済み
 
 /**イルマップを描画するタイミング */
-var enmDrawTiming={
+const enmDrawTiming={
     BeforeDataDraw:0,
     AfterDataDraw:1
 }
@@ -432,7 +432,7 @@ interface strTileMapViewInfo {
     DrawTiming: number;//enmDrawTiming
     Clone(): strTileMapViewInfo;
 }
-var strTileMapViewInfo: any = function (this: strTileMapViewInfo) {
+const strTileMapViewInfo: any = function (this: strTileMapViewInfo) {
     this.Visible = false;
     this.AlphaValue = 1;// 0-1
     this.TileMapDataSet={} ;// tileMapList.getTileInfo// strTileMapData_Info
@@ -451,7 +451,7 @@ interface tileList_Data_Info {
     ScrPosition: rectangle;
     URL: string;
 }
-var tileList_Data_Info: any = function (this: tileList_Data_Info) {
+const tileList_Data_Info: any = function (this: tileList_Data_Info) {
     this.LatLonBox = undefined;//  strLatLonBox
     this.ScrPosition = new rectangle();//  Rectangle
     this.URL = "";//  String
@@ -466,7 +466,7 @@ interface strClassPaint_Data {
     Color_Mode: number;//enmPaintColorSettingModeInfo
     Clone(): strClassPaint_Data;
 }
-var strClassPaint_Data: any = function (this: strClassPaint_Data) {
+const strClassPaint_Data: any = function (this: strClassPaint_Data) {
     this.color1 = new colorRGBA();
     this.color2 = new colorRGBA();
     this.color3 = new colorRGBA();
@@ -489,7 +489,7 @@ interface strMarkCommon_Data {
     LegendPlusWord: string;
     Clone(): strMarkCommon_Data;
 }
-var strMarkCommon_Data: any = function (this: strMarkCommon_Data) {
+const strMarkCommon_Data: any = function (this: strMarkCommon_Data) {
     this.Inner_Data = new strInner_Data_Info();
     this.MinusTile = new Tile_Property();
     this.MinusLineColor = new colorRGBA();
@@ -512,7 +512,7 @@ interface strMarkSizeModeLineShapeData {
     Color: colorRGBA;
     Clone(): strMarkSizeModeLineShapeData;
 }
-var strMarkSizeModeLineShapeData: any = function (this: strMarkSizeModeLineShapeData) {
+const strMarkSizeModeLineShapeData: any = function (this: strMarkSizeModeLineShapeData) {
     this.LineWidth = 1;  //Single
     this.LineEdge = new LineEdge_Connect_Pattern_Data_Info();
     this.Color = new colorRGBA();
@@ -534,7 +534,7 @@ interface strMarkSize_Data {
     LineShape: strMarkSizeModeLineShapeData;
     Clone(): strMarkSize_Data;
 }
-var strMarkSize_Data: any = function (this: strMarkSize_Data) {
+const strMarkSize_Data: any = function (this: strMarkSize_Data) {
     this.MaxValueMode = 0;  //enmMarkSizeValueMode
     this.MaxValue = 0;  //Double
     this.Value = [];  //Double '4
@@ -561,7 +561,7 @@ interface strMarkBlock_Data {
     LegendBlockModeWord: string;// String
     Clone(): strMarkBlock_Data;
 }
-var strMarkBlock_Data: any = function (this: strMarkBlock_Data) {
+const strMarkBlock_Data: any = function (this: strMarkBlock_Data) {
     this.Value = 0;// Double
     this.ArrangeB = 0;// enmMarkBlockArrange
     this.HasuVisible = false;// Boolean
@@ -577,7 +577,7 @@ strMarkBlock_Data.prototype.Clone=function(){
 }
 
 //記号の棒モード
-var enmMarkBarShape = {
+const enmMarkBarShape = {
     bar: 0,
     triangle: 1
 }
@@ -596,7 +596,7 @@ interface strMarkBar_Data {
     BarShape: number;//enmMarkBarShape
     Clone(): strMarkBar_Data;
 }
-var strMarkBar_Data: any = function (this: strMarkBar_Data) {
+const strMarkBar_Data: any = function (this: strMarkBar_Data) {
     this.Width = 0;  //Single
     this.MaxHeight = 0;  //Single
     this.MaxValueMode = 0;  //enmMarkSizeValueMode
@@ -625,7 +625,7 @@ interface strString_Data {
     WordTurnF: boolean;  //Boolean
     Clone(): strString_Data;
 }
-var strString_Data: any = function (this: strString_Data) {
+const strString_Data: any = function (this: strString_Data) {
     this.Font = new Font_Property();
     this.maxWidth = 0;  //Single
     this.WordTurnF = false;  //Boolean
@@ -668,7 +668,7 @@ interface strClass_Div_data {
     ODLinePat: Line_Property;
     Clone(): strClass_Div_data;
 }
-var strClass_Div_data: any = function (this: strClass_Div_data) {
+const strClass_Div_data: any = function (this: strClass_Div_data) {
     this.Value = 0;  //Double/String
     this.PaintColor = new colorRGBA();
     this.ClassMark = new Mark_Property();
@@ -696,7 +696,7 @@ interface strContour_Data_Regular_interval {
     EX_Value: number; // Double
     EX_Line_Pat: Line_Property;
 }
-var strContour_Data_Regular_interval: any = function (this: strContour_Data_Regular_interval) {
+const strContour_Data_Regular_interval: any = function (this: strContour_Data_Regular_interval) {
     //等値線モード設定（属性データ）
     this.bottom = 0; // Double
     this.Interval = 0; // Double
@@ -715,7 +715,7 @@ interface strContour_Data_Irregular_interval {
     Line_Pat: Line_Property;
     Clone(): strContour_Data_Irregular_interval;
 }
-var strContour_Data_Irregular_interval: any = function (this: strContour_Data_Irregular_interval) {
+const strContour_Data_Irregular_interval: any = function (this: strContour_Data_Irregular_interval) {
     this.Value = 0; // Double
     this.Line_Pat = new Line_Property();
 }
@@ -726,7 +726,7 @@ strContour_Data_Irregular_interval.prototype.Clone = function () {
     return ir;
 }
 
-var enmContourIntervalMode = {
+const enmContourIntervalMode = {
     RegularInterval: 0,
     SeparateSettings: 1,
     ClassPaint: 2,
@@ -742,7 +742,7 @@ interface strContour_Data {
     Irregular: strContour_Data_Irregular_interval[]; // strContour_Data_Irregular_interval
     Clone(): strContour_Data;
 }
-var strContour_Data: any = function (this: strContour_Data) {
+const strContour_Data: any = function (this: strContour_Data) {
     this.Interval_Mode = 0; // enmContourIntervalMode
     this.Draw_in_Polygon_F = false; // Boolean
     this.Spline_flag = false; // Boolean
@@ -775,7 +775,7 @@ interface strContour_Line_property {
     PointStac: number; // Integer
     Circumscribed_Rectangle: rectangle;
 }
-var strContour_Line_property: any = function (this: strContour_Line_property) {
+const strContour_Line_property: any = function (this: strContour_Line_property) {
     this.Flag = false; // Boolean
     this.Layernum = 0; // Integer
     this.DataNum = 0; // Integer
@@ -792,7 +792,7 @@ interface strClassODMode_data {
     Arrow: Arrow_Data;
     Clone(): strClassODMode_data;
 }
-var strClassODMode_data: any = function (this: strClassODMode_data) {
+const strClassODMode_data: any = function (this: strClassODMode_data) {
     this.o_Layer = 0; // Integer
     this.O_object = 0; // Integer
     this.Dummy_ObjectFlag = false; // Boolean
@@ -806,7 +806,7 @@ strClassODMode_data.prototype.Clone=function(){
     d.Arrow=this.Arrow.Clone();
     return d;
 }
-var enmMarkTurnDirection = {
+const enmMarkTurnDirection = {
     AntiClockwise: 0,
     Clockwise: 1
 }
@@ -817,7 +817,7 @@ interface strMarkTurnMode_Data {
     DegreeLap: number;// Double '一周の値
     Clone(): strMarkTurnMode_Data;
 }
-var strMarkTurnMode_Data: any = function (this: strMarkTurnMode_Data) {
+const strMarkTurnMode_Data: any = function (this: strMarkTurnMode_Data) {
     this.Dirction = 0;// enmMarkTurnDirection //0:反時計回り　1:時計回り
     this.Mark = new Mark_Property();
     this.DegreeLap = 0;// Double '一周の値
@@ -846,7 +846,7 @@ interface strSoloModeViewSettings_Data {
     MarkTurnMD: strMarkTurnMode_Data;
     Class_Div: strClass_Div_data[];  //strClass_Div_data;
 }
-var strSoloModeViewSettings_Data: any = function (this: strSoloModeViewSettings_Data) {
+const strSoloModeViewSettings_Data: any = function (this: strSoloModeViewSettings_Data) {
     this.Div_Num = 0;  //Integer
     this.Div_Method = 0;  //enmDivisionMethod
     this.ClassPaintMD = new strClassPaint_Data();
@@ -871,7 +871,7 @@ interface strStatisticInfo {
     BeforeDecimalNum: number; //Integer
     AfterDecimalNum: number; //Integer
 }
-var strStatisticInfo: any = function (this: strStatisticInfo) {
+const strStatisticInfo: any = function (this: strStatisticInfo) {
     this.Max = 0; //Double
     this.Min = 0; //Double
     this.Ave = 0; //Double
@@ -886,7 +886,7 @@ var strStatisticInfo: any = function (this: strStatisticInfo) {
 
 
 
-var enmScaleUnit = {
+const enmScaleUnit = {
     centimeter: 0,
     meter: 1,
     kilometer: 2,
@@ -902,7 +902,7 @@ var enmScaleUnit = {
 }
 
 //階級区分の分割方法
-var enmDivisionMethod = {
+const enmDivisionMethod = {
     Free: 0,
     Quantile: 1,
     AreaQuantile: 2,
@@ -911,39 +911,39 @@ var enmDivisionMethod = {
 }
 
 //記号モードなど最大サイズの値
-var enmMarkMaxValueType = {
+const enmMarkMaxValueType = {
     SelectedDataMax: 0,
     UserSettingValue: 1
 }
 
 /** 円グラフ、帯グラフの最大サイズ*/
-var enmGraphMaxSize= {
+const enmGraphMaxSize= {
     Fixed : 0,
     Changeable :1
 }
 /**帯グラフの方向*/
-var enmStackedBarChart_Direction= {
+const enmStackedBarChart_Direction= {
     Vertical : 0,
     Horizontal : 1
 }
 /** 折れ線・棒グラフの最大最小値*/
-var enmBarLineMaxMinMode= {
+const enmBarLineMaxMinMode= {
     Auto : 0,
     Manual : 1
 }
 
 
 /**棒・折れ線グラフ枠のパターン */
-var enmBarChartFrameAxePattern={
+const enmBarChartFrameAxePattern={
     Whole:0,
     Half:1
 }
 
-var enmMultiEnGraphPattern = {
+const enmMultiEnGraphPattern = {
     multiCircle: 0,
     oneCircle: 1
 }
-var enmKenCodeObjectstructure = {
+const enmKenCodeObjectstructure = {
     MapObj: 0,  //地図ファイル中のオブジェクトの場合
     SyntheticObj: 1 //時系列集計による合成オブジェクトの場合
 }
@@ -964,7 +964,7 @@ interface strData_info {
     Value: string[];  //String
     Clone(NoValueFlag?: boolean): strData_info;
 }
-var strData_info: any = function (this: strData_info) {
+const strData_info: any = function (this: strData_info) {
     this.Title = "";  //String
     this.Unit = "";  //String
     this.MissingF = false;  //Boolean
@@ -1022,7 +1022,7 @@ interface strShowViewerLayerInfo {
     Time: strYMD;
     Shape: number; //enmShape
 }
-var strShowViewerLayerInfo: any = function (this: strShowViewerLayerInfo) {
+const strShowViewerLayerInfo: any = function (this: strShowViewerLayerInfo) {
     //白地図初期属性データのレイヤ情報
     this.Name = ""; //String
     this.MapfileName = ""; //String
@@ -1036,7 +1036,7 @@ interface stratrData_Info {
     SelectedIndex: number;//選択中のデータ項目番号
     Data: strData_info[];//strData_info
 }
-var stratrData_Info: any = function (this: stratrData_Info) {
+const stratrData_Info: any = function (this: stratrData_Info) {
     this.Count = 0;//データ項目数
     this.SelectedIndex = 0;//選択中のデータ項目番号
     this.Data = [];//strData_info
@@ -1047,7 +1047,7 @@ interface strLayerPointLineShape_Data {
     LineEdge: LineEdge_Connect_Pattern_Data_Info;
     PointMark: Mark_Property;
 }
-var strLayerPointLineShape_Data: any = function (this: strLayerPointLineShape_Data) {
+const strLayerPointLineShape_Data: any = function (this: strLayerPointLineShape_Data) {
     this.LineWidth = 1; //Single
     this.LineEdge = new LineEdge_Connect_Pattern_Data_Info();
     this.PointMark = new Mark_Property();
@@ -1060,7 +1060,7 @@ interface strLabelMode_Data_info {
     AddDataSet(): void;
     Clone(): strLabelMode_Data_info;
 }
-var strLabelMode_Data_info: any = function (this: strLabelMode_Data_info) {
+const strLabelMode_Data_info: any = function (this: strLabelMode_Data_info) {
     this.SelectedIndex = 0;// Integer
     this.DataSet = [];// As strLabel_Data
 }
@@ -1103,7 +1103,7 @@ interface strLabel_Data {
     Clone(): strLabel_Data;
     initData(): void;
 }
-var strLabel_Data: any = function (this: strLabel_Data) {
+const strLabel_Data: any = function (this: strLabel_Data) {
         this.title = ""; //String
         this.Location_Mark_Flag = false; //Boolean
         this.Location_Mark=new Mark_Property();
@@ -1165,7 +1165,7 @@ interface strGraphMode_DataSetting_Info {
     AddDataSet(): void;
     Clone(): strGraphMode_DataSetting_Info;
 }
-var strGraphMode_DataSetting_Info: any = function (this: strGraphMode_DataSetting_Info) {
+const strGraphMode_DataSetting_Info: any = function (this: strGraphMode_DataSetting_Info) {
     this.SelectedIndex = 0;// Integer
     this.DataSet = [];// As strGraph_Data
 }
@@ -1196,7 +1196,7 @@ interface strGraph_Data {
     initData(): void;
     Clone(): strGraph_Data;
 }
-var strGraph_Data: any = function (this: strGraph_Data) {
+const strGraph_Data: any = function (this: strGraph_Data) {
     this.title = ""; //String
     this.GraphMode = 0; //enmGraphMode
     this.Data=[]; //GraphModeDataItem
@@ -1243,7 +1243,7 @@ interface GraphModeDataItem {
     Tile: Tile_Property;
     Clone(): GraphModeDataItem;
 }
-var GraphModeDataItem: any = function (this: GraphModeDataItem) {
+const GraphModeDataItem: any = function (this: GraphModeDataItem) {
     this.DataNumber = 0;// Integer
     this.Tile = new Tile_Property();
 }
@@ -1268,7 +1268,7 @@ interface strGraph_Data_En {
     MaxValue: number; //Double
     Clone(): strGraph_Data_En;
 }
-var strGraph_Data_En: any = function (this: strGraph_Data_En) {
+const strGraph_Data_En: any = function (this: strGraph_Data_En) {
     this.EnSizeMode = 0; //enmGraphMaxSize
     this.EnSize = 0; //Single
     this.Value1 = 0; //Double
@@ -1301,7 +1301,7 @@ interface strGraph_Data_Oresen {
     FrameAxe: number;//enmBarChartFrameAxePattern
     Clone(): strGraph_Data_Oresen;
 }
-var strGraph_Data_Oresen: any = function (this: strGraph_Data_Oresen) { //複数表示（折れ線）（属性データ）
+const strGraph_Data_Oresen: any = function (this: strGraph_Data_Oresen) { //複数表示（折れ線）（属性データ）
     this.Size = 0; //Single
     this.Line=new Line_Property();
     this.AspectRatio = 0; //Single
@@ -1328,7 +1328,7 @@ interface strLayerModeViewSetting_Data {
    PointLineShape: strLayerPointLineShape_Data;
    PolygonDummy_ClipSet_F: boolean; //Boolean
 }
-var strLayerModeViewSetting_Data: any = function (this: strLayerModeViewSetting_Data) {
+const strLayerModeViewSetting_Data: any = function (this: strLayerModeViewSetting_Data) {
    //this.TripMode = new strTripMode_Data_Info;
    this.LabelMode = new strLabelMode_Data_info();
    this.GraphMode = new strGraphMode_DataSetting_Info();
@@ -1344,7 +1344,7 @@ interface strDummyObjectName_and_Code {
     Name: string; //String
     Clone(): strDummyObjectName_and_Code;
 }
-var strDummyObjectName_and_Code: any = function (this: strDummyObjectName_and_Code) {
+const strDummyObjectName_and_Code: any = function (this: strDummyObjectName_and_Code) {
     this.code = 0; //Integer
     this.Name = ""; //String
 }
@@ -1355,7 +1355,7 @@ strDummyObjectName_and_Code.prototype.Clone = function () {
     return d;
 }
 
-var enmMoveDirection = {
+const enmMoveDirection = {
     NextPos: 1,
     PreviousPos: -1
 }
@@ -1368,7 +1368,7 @@ interface ODBezier_Data {
     Point: point;
     Clone(): ODBezier_Data;
 }
-var ODBezier_Data: any = function (this: ODBezier_Data) {
+const ODBezier_Data: any = function (this: ODBezier_Data) {
     this.ObjectPos = 0;//Integer
     this.Data = 0;//Integer
     this.Point=new point();
@@ -1408,7 +1408,7 @@ interface strLayerDataInfo {
     Remove_OD_Bezier(ObjPos: number, DataNum: number): void;
     Add_OD_Bezier(ObjPos: number, DataNum: number, RefPoint: point): void;
 }
-var strLayerDataInfo: any = function (this: strLayerDataInfo) {
+const strLayerDataInfo: any = function (this: strLayerDataInfo) {
 
     this.Name = "";//String
     this.MapFileName = "";//String
@@ -1529,7 +1529,7 @@ interface strScreen_Setting_Data_Info {
     ThreeDMode: strThreeDMode_Set;
     Clone(): strScreen_Setting_Data_Info;
 }
-var strScreen_Setting_Data_Info: any = function (this: strScreen_Setting_Data_Info) {
+const strScreen_Setting_Data_Info: any = function (this: strScreen_Setting_Data_Info) {
     //画面設定保存用
     this.title = "";
     this.frmPrint_FormSize = new rectangle();
@@ -1566,7 +1566,7 @@ interface strOverLay_DataSet_Item_Info {
     Legend_Print_Flag: boolean;//Boolean
     Clone(): strOverLay_DataSet_Item_Info;
 }
-var strOverLay_DataSet_Item_Info: any = function (this: strOverLay_DataSet_Item_Info) {
+const strOverLay_DataSet_Item_Info: any = function (this: strOverLay_DataSet_Item_Info) {
     this.Layer = 0;
     this.DataNumber = 0;
     this.Print_Mode_Layer = 0;//enmLayerMode_Number
@@ -1592,7 +1592,7 @@ interface strOverLay_Dataset_Info {
     Note: string;
     initData(): void;
 }
-var strOverLay_Dataset_Info: any = function (this: strOverLay_Dataset_Info) {
+const strOverLay_Dataset_Info: any = function (this: strOverLay_Dataset_Info) {
     this.title = "";
     this.SelectedIndex = -1;
     this.DataItem = [];// strOverLay_DataSet_Item_Info
@@ -1614,7 +1614,7 @@ interface strOverLayMOde_Dataset_Info {
     initDataSet(): void;
     AddDataSet(): void;
 }
-var strOverLayMOde_Dataset_Info: any = function (this: strOverLayMOde_Dataset_Info) {
+const strOverLayMOde_Dataset_Info: any = function (this: strOverLayMOde_Dataset_Info) {
     this.SelectedIndex = 0;
     this.DataSet = []; // strOverLay_Dataset_Info)
     // 常に重ねる設定のデータセット・存在しない場合は-1
@@ -1641,7 +1641,7 @@ interface strSeries_DataSet_Item_Info {
     SoloMode: number;// enmSoloMode_Number
     Clone(): strSeries_DataSet_Item_Info;
 }
-var strSeries_DataSet_Item_Info: any = function (this: strSeries_DataSet_Item_Info) {//連続表示モード
+const strSeries_DataSet_Item_Info: any = function (this: strSeries_DataSet_Item_Info) {//連続表示モード
     this.Layer = 0;
     this.Data = 0;
     this.Print_Mode_Total = 0;// enmTotalMode_Number
@@ -1663,7 +1663,7 @@ interface strSeries_Dataset_Info {
     AddData(LayerIndex: number, DataIndex: number, TotalDataViewMode: number, LayerDataVieMode: number, SoloViewMode: number): void;
     Clone(): strSeries_Dataset_Info;
 }
-var strSeries_Dataset_Info: any = function (this: strSeries_Dataset_Info) {
+const strSeries_Dataset_Info: any = function (this: strSeries_Dataset_Info) {
     this.title = "";
     this.SelectedIndex = -1;
     this.DataItem = []; //  strSeries_DataSet_Item_Info
@@ -1699,7 +1699,7 @@ interface strSeriesMode_Dataset_Info {
     initDataSet(): void;
     AddDataSet(): void;
 }
-var strSeriesMode_Dataset_Info: any = function (this: strSeriesMode_Dataset_Info) {
+const strSeriesMode_Dataset_Info: any = function (this: strSeriesMode_Dataset_Info) {
     this.SelectedIndex = 0;
     this.DataSet = []; //  strSeries_Dataset_Info)
     this.initDataSet = function () {
@@ -1717,7 +1717,7 @@ interface strTotalMode_Info {
     OverLay: strOverLayMOde_Dataset_Info;
     Series: strSeriesMode_Dataset_Info;
 }
-var strTotalMode_Info: any = function (this: strTotalMode_Info) {
+const strTotalMode_Info: any = function (this: strTotalMode_Info) {
     this.OverLay = new strOverLayMOde_Dataset_Info();
     this.Series = new  strSeriesMode_Dataset_Info();
 }
@@ -1735,7 +1735,7 @@ interface strMissing_set {
     LineShape: Line_Property;
     Clone(): strMissing_set;
 }
-var strMissing_set: any = function (this: strMissing_set) {
+const strMissing_set: any = function (this: strMissing_set) {
     this.Print_Flag = false; //Boolean
     this.Text = ""; //String
     this.PaintTile = new Tile_Property();
@@ -1764,7 +1764,7 @@ interface strSymbol_Lien_Data {
     Line: Line_Property;
     Clone(): strSymbol_Lien_Data;
 }
-var strSymbol_Lien_Data: any = function (this: strSymbol_Lien_Data) {
+const strSymbol_Lien_Data: any = function (this: strSymbol_Lien_Data) {
     this.Visible = false;
     this.Line = new Line_Property();
 }
@@ -1787,7 +1787,7 @@ interface strBasic_Data {
     DataSourceType: number; //enmDataSource
     Clone(): strBasic_Data;
 }
-var strBasic_Data: any = function (this: strBasic_Data) {
+const strBasic_Data: any = function (this: strBasic_Data) {
     this.Lay_Maxn = 0; //Integer
     // 選択中のレイヤ番号
     this.SelectedLayer = 0; //Integer
@@ -1804,7 +1804,7 @@ strBasic_Data.prototype.Clone=function(){
     return d;
 }
 
-var enmCondition={
+const enmCondition={
     Less : 0,
     LessEqual : 1,
     Equal : 2,
@@ -1826,7 +1826,7 @@ interface strCondition_Limitation_Info {
     Val: string; // String
     Clone(): strCondition_Limitation_Info;
 }
-var strCondition_Limitation_Info: any = function (this: strCondition_Limitation_Info) {
+const strCondition_Limitation_Info: any = function (this: strCondition_Limitation_Info) {
     this.Data = 0;// Integer
     this.Condition = 0;// enmCondition
     this.Val = ""; // String
@@ -1841,7 +1841,7 @@ interface strCondition_Data_Info {
     Condition: strCondition_Limitation_Info[];//strCondition_Limitation_Info
     Clone(): strCondition_Data_Info;
 }
-var strCondition_Data_Info: any = function (this: strCondition_Data_Info) {
+const strCondition_Data_Info: any = function (this: strCondition_Data_Info) {
     this.And_OR = 0;//enmConditionAnd_Or
     this.Condition=[];//strCondition_Limitation_Info
 }
@@ -1859,7 +1859,7 @@ interface strCondition_DataSet_Info {
     Condition_Class: strCondition_Data_Info[]; // List(Of strCondition_Data_Info) '（条件の段階別の条件スタック）
     Clone(): strCondition_DataSet_Info;
 }
-var strCondition_DataSet_Info: any = function (this: strCondition_DataSet_Info) {
+const strCondition_DataSet_Info: any = function (this: strCondition_DataSet_Info) {
     this.Enabled = false;// Boolean
     this.Layer = 0; // Integer
     this.Name = ""; // String
@@ -1882,7 +1882,7 @@ interface Total_Data_Info {
     Condition: strCondition_DataSet_Info[];//strCondition_DataSet_Info
     initTotalData(): void;
 }
-var Total_Data_Info: any = function (this: Total_Data_Info) {
+const Total_Data_Info: any = function (this: Total_Data_Info) {
     this.LV1 = new strBasic_Data();
     this.TotalMode = new strTotalMode_Info();
     this.ViewStyle = new strViewStyle_Info();
@@ -1904,7 +1904,7 @@ interface strDummyObjectPointMark_Info {
     mark: Mark_Property; //Mark_Property
     Clone(): strDummyObjectPointMark_Info;
 }
-var strDummyObjectPointMark_Info: any = function (this: strDummyObjectPointMark_Info) {
+const strDummyObjectPointMark_Info: any = function (this: strDummyObjectPointMark_Info) {
     this.ObjectKindName = ""; //String
     this.mark=new Mark_Property(); //Mark_Property
 }
@@ -1925,7 +1925,7 @@ interface strLegend_Base_Attri {
     ModeValueInScreenFlag: boolean;
     Clone(): strLegend_Base_Attri;
 }
-var strLegend_Base_Attri: any = function (this: strLegend_Base_Attri) {
+const strLegend_Base_Attri: any = function (this: strLegend_Base_Attri) {
     this.Visible = false; //Boolean
     this.Legend_Num = 0; //Integer
     this.Font = new Font_Property(); //Font_Property
@@ -1950,7 +1950,7 @@ interface strClassBoundaryLine_Info {
     LPat: Line_Property;
     Clone(): strClassBoundaryLine_Info;
 }
-var strClassBoundaryLine_Info: any = function (this: strClassBoundaryLine_Info) {
+const strClassBoundaryLine_Info: any = function (this: strClassBoundaryLine_Info) {
     this.Visible = false;
     this.LPat = new Line_Property();
 }
@@ -1972,7 +1972,7 @@ interface strLegend_Class_Attri {
     FrequencyPrint: boolean; //Boolean
     Clone(): strLegend_Class_Attri;
 }
-var strLegend_Class_Attri: any = function (this: strLegend_Class_Attri) {
+const strLegend_Class_Attri: any = function (this: strLegend_Class_Attri) {
     this.PaintMode_Line = new Line_Property();
     this.PaintMode_Method = 0; //enmClassMode_Meshod
     this.CategorySeparate_f = false; //Boolean
@@ -1996,7 +1996,7 @@ interface strLegend_Mark_Attri {
     MultiEnMode_Line: Line_Property;
     Clone(): strLegend_Mark_Attri;
 }
-var strLegend_Mark_Attri: any = function (this: strLegend_Mark_Attri) {
+const strLegend_Mark_Attri: any = function (this: strLegend_Mark_Attri) {
     this.CircleMD_CircleMini_F = false; //Boolean
     this.MultiEnMode_Line = new Line_Property();
 }
@@ -2014,7 +2014,7 @@ interface strLegend_Line_Dummy_Attri {
     Back: any;//BackGround_Box_Property (未定義)
     Clone(): strLegend_Line_Dummy_Attri;
 }
-var strLegend_Line_Dummy_Attri: any = function (this: strLegend_Line_Dummy_Attri) {
+const strLegend_Line_Dummy_Attri: any = function (this: strLegend_Line_Dummy_Attri) {
     this.Line_Visible = false; //Boolean
     this.Line_Visible_Number_STR = ""; //String '線種ごとに表示するかどうか、１は表示０は非表示で連続文字列
     this.Line_Pattern = 0; //enmCircleMDLegendLine
@@ -2033,7 +2033,7 @@ interface strOverLay_Legend_Title_Info {
     MaxWidth: number;
     Clone(): strOverLay_Legend_Title_Info;
 }
-var strOverLay_Legend_Title_Info: any = function (this: strOverLay_Legend_Title_Info) {
+const strOverLay_Legend_Title_Info: any = function (this: strOverLay_Legend_Title_Info) {
     this.Print_f = false;
     this.MaxWidth = 0;
 }
@@ -2052,7 +2052,7 @@ interface strLegend_Attri {
     En_Graph_Pattern: number; //enmMultiEnGraphPattern
     Clone(): strLegend_Attri;
 }
-var strLegend_Attri: any = function (this: strLegend_Attri) {
+const strLegend_Attri: any = function (this: strLegend_Attri) {
     this.Base = new strLegend_Base_Attri();
     this.OverLay_Legend_Title = new strOverLay_Legend_Title_Info();
     this.ClassMD = new strLegend_Class_Attri();
@@ -2080,7 +2080,7 @@ interface strLatLonLine_Print_Info {
     Equator: Line_Property;
     Clone(): strLatLonLine_Print_Info;
 }
-var strLatLonLine_Print_Info: any = function (this: strLatLonLine_Print_Info) {
+const strLatLonLine_Print_Info: any = function (this: strLatLonLine_Print_Info) {
     this.Visible = false;
     this.Order = 0;//enmLatLonLine_Order
     this.Lat_Interval = 0;
@@ -2110,7 +2110,7 @@ interface strAccessoryGroupBox_Info {
     ObjectGroup: boolean;  // Boolean
     Clone(): strAccessoryGroupBox_Info;
 }
-var strAccessoryGroupBox_Info: any = function (this: strAccessoryGroupBox_Info) {
+const strAccessoryGroupBox_Info: any = function (this: strAccessoryGroupBox_Info) {
     this.Visible = false;  // Boolean
     this.Back = new BackGround_Box_Property();
     this.Title = false;  // Boolean
@@ -2127,7 +2127,7 @@ strAccessoryGroupBox_Info.prototype.Clone=function(){
     d.Back=this.Back.Clone();
     return d;
 }
-var strScreen_Back_data: any =function(){
+const strScreen_Back_data: any =function(){
     this.MapAreaFrameLine =new Line_Property();
     this.ScreenFrameLine=new Line_Property();
     this.ScreenAreaBack =new Tile_Property();
@@ -2153,7 +2153,7 @@ interface strValueShow_Info {
     ObjNameFont: Font_Property;
     Clone(): strValueShow_Info;
 }
-var strValueShow_Info: any = function (this: strValueShow_Info) {
+const strValueShow_Info: any = function (this: strValueShow_Info) {
     this.ValueVisible = false;//Boolean
     this.ValueFont = new Font_Property();
     this.DecimalSepaF = false;//Boolean
@@ -2172,7 +2172,7 @@ strValueShow_Info.prototype.Clone = function () {
     return d;
 }
 
-var strSouByou_Info: any =function(){
+const strSouByou_Info: any =function(){
     this.Auto ;// Boolean
     this.AutoDegree;//(1-5の値)
     this.ThinningPrint_F ;// Boolean
@@ -2218,7 +2218,7 @@ interface strViewStyle_Info {
     initViewStyle(): void;
     Clone(): strViewStyle_Info;
 }
-var strViewStyle_Info: any = function (this: strViewStyle_Info) {
+const strViewStyle_Info: any = function (this: strViewStyle_Info) {
     this.ScrData = new Screen_info();
     this.MapScale = new strScale_Attri();
     this.MapTitle = new strTitle_Attri();
@@ -2476,7 +2476,7 @@ interface strScale_Attri {
     Unit: number; //enmScaleUnit
     Clone(): strScale_Attri;
 }
-var strScale_Attri: any = function (this: strScale_Attri) {
+const strScale_Attri: any = function (this: strScale_Attri) {
     this.Visible = false; //Boolean
     this.Position = new point();
     this.Font = new Font_Property();
@@ -2509,7 +2509,7 @@ interface strNote_Attri {
     Font: Font_Property;
     Clone(): strNote_Attri;
 }
-var strNote_Attri: any = function (this: strNote_Attri) {
+const strNote_Attri: any = function (this: strNote_Attri) {
     this.Visible = false; //Boolean
     this.Position = new point();
     this.MaxWidth = 0; //Single
@@ -2532,7 +2532,7 @@ interface strTitle_Attri {
     Font: Font_Property;
     Clone(): strTitle_Attri;
 }
-var strTitle_Attri: any = function (this: strTitle_Attri) {
+const strTitle_Attri: any = function (this: strTitle_Attri) {
     this.Visible = false; //Boolean
     this.Position = new point();
     this.MaxWidth = 0; //Single
@@ -2553,7 +2553,7 @@ interface Magnification {
     Mul: number; // Single
     Clone(): Magnification;
 }
-var Magnification: any = function (this: Magnification) {
+const Magnification: any = function (this: Magnification) {
     this.Xplus = 0; // Single
     this.YPlus = 0; // Single
     this.Mul = 1; // Single
@@ -2569,7 +2569,7 @@ interface ScreenMargin {
     rect: rectangle;
     Clone(): ScreenMargin;
 }
-var ScreenMargin: any = function (this: ScreenMargin) {
+const ScreenMargin: any = function (this: ScreenMargin) {
     this.ClipF = false; //Boolean
     this.rect = new rectangle();
 }
@@ -2579,12 +2579,12 @@ ScreenMargin.prototype.Clone=function(){
     d.rect=this.rect.Clone();
     return d;
 }
-var enmOutputDevice = {
+const enmOutputDevice = {
     Screen: 0,
     Printer: 1,
     EMF: 2
 }
-var enmKenCodeObjectstructure = {
+const enmKenCodeObjectstructure = {
     MapObj: 0,   //地図ファイル中のオブジェクトの場合
     SyntheticObj: 1 //時系列集計による合成オブジェクトの場合
 }
@@ -2598,7 +2598,7 @@ interface strThreeDMode_Set {
     Expand: number; //Integer
     Clone(): strThreeDMode_Set;
 }
-var strThreeDMode_Set: any = function (this: strThreeDMode_Set) {
+const strThreeDMode_Set: any = function (this: strThreeDMode_Set) {
     this.Set3D_F = false; //Boolean
     this.Pitch = 0; //Integer
     this.Head = 0; //Integer
@@ -2654,7 +2654,7 @@ interface Screen_info {
     getSRXYfromRatio(RatioP: point): point;
     Clone(): Screen_info;
 }
-var Screen_info: any = function (this: Screen_info) {
+const Screen_info: any = function (this: Screen_info) {
     this.FirstScreenMGMul = 1; //Single '全体が表示してある場合の拡大係数(MDRには保存しない)
     this.GSMul = 1; //Double '地図サイズに対するウィンドウサイズの比(MDRには保存しない)
     // MapRectangleの面積と同等の正方形の対角線の長さ
@@ -2898,7 +2898,7 @@ var Screen_info: any = function (this: Screen_info) {
         return newx;
     }
     this.getSRY = function (y: number) {
-        var newy = (y - this.ScreenMG.YPlus)/ this.ScreenMG.Mul + this.ScrView.top;
+        const newy = (y - this.ScreenMG.YPlus)/ this.ScreenMG.Mul + this.ScrView.top;
         return newy;
     }
     this.getSRXY = function (P: point) {
@@ -2965,7 +2965,7 @@ interface strObjLocation_and_Data_info {
     ObjLocation: number;
     DataValue: any;
 }
-var strObjLocation_and_Data_info: any = function (this: strObjLocation_and_Data_info) {
+const strObjLocation_and_Data_info: any = function (this: strObjLocation_and_Data_info) {
     this.ObjLocation = 0;
     this.DataValue = undefined;
 }
@@ -2977,7 +2977,7 @@ interface Overlay_Temporaly_Data_Info {
     OverLay_EMode_Now: number; // Integer
     Always_Ove_DataStac: strOverLay_DataSet_Item_Info[];
 }
-var Overlay_Temporaly_Data_Info: any = function (this: Overlay_Temporaly_Data_Info) {
+const Overlay_Temporaly_Data_Info: any = function (this: Overlay_Temporaly_Data_Info) {
     this.Printing_Number = 0; // Integer
     this.OverLay_Printing_Flag = false; // Boolean  '記号やブロックを重ね合わせる際に標示位置をずらすのに使用
     this.OverLay_EMode_N = 0; // Integer '記号モードをずらす際に使用するが、10では使用しない
@@ -2997,7 +2997,7 @@ interface Legend2_Atri {
    Rect: rectangle;
    Clone(): Legend2_Atri;
 }
-var Legend2_Atri: any = function (this: Legend2_Atri) {
+const Legend2_Atri: any = function (this: Legend2_Atri) {
    this.LineKind_Flag = false;// Boolean
    this.PointObject_Flag = false;// Boolean
    this.Layn = 0;// Integer
@@ -3040,7 +3040,7 @@ interface AccessoryTemp_Infp {
     OriginalGroupBoxRect: rectangle;
     Clone(): AccessoryTemp_Infp;
 }
-var AccessoryTemp_Infp: any = function (this: AccessoryTemp_Infp) {
+const AccessoryTemp_Infp: any = function (this: AccessoryTemp_Infp) {
     this.MapScale_Rect = new rectangle();
     this.MapTitle_Rect = new rectangle();
     this.DataNote_Rect = new rectangle();
@@ -3174,8 +3174,8 @@ class strGetLinePointAPI_Info {
     Point: point[] = [];
 }
 
-var enmPrint_Enable = { Printable: 0, Printable_with_Error: 2, UnPrintable: 1 };
-var enmPaintColorSettingModeInfo = { twoColor: 0, threeeColor: 1, SoloColor: 2, multiColor: 3 };
+const enmPrint_Enable = { Printable: 0, Printable_with_Error: 2, UnPrintable: 1 };
+const enmPaintColorSettingModeInfo = { twoColor: 0, threeeColor: 1, SoloColor: 2, multiColor: 3 };
 
 
 interface strLayerReadingInfo {
@@ -3196,7 +3196,7 @@ interface strLayerReadingInfo {
     Comment_Temp: string;
     init(): void;
 }
-var strLayerReadingInfo: any = function (this: strLayerReadingInfo) {
+const strLayerReadingInfo: any = function (this: strLayerReadingInfo) {
     this.Name = "";
     this.MapFile = "";
     this.Time = new strYMD();
@@ -3231,7 +3231,7 @@ strLayerReadingInfo.prototype.init = function () {
     this.Shape = enmShape.NotDeffinition;
     this.MeshType = enmMesh_Number.mhNonMesh;
 }
-var strSaveLinePat_Info: any =function(){
+const strSaveLinePat_Info: any =function(){
     this. MapNum ;// Integer
     this. MapFileName=[];//  As String
     this. LpatNumByMapfile=[];//  As Integer
@@ -3247,8 +3247,8 @@ interface clsAttrData {
     LineKindUse: boolean[];
     [key: string]: any; // その他の多数のメソッド
 }
-var clsAttrData: any = function (this: clsAttrData) {
-    var defaultColor: any = {}
+const clsAttrData: any = function (this: clsAttrData) {
+    const defaultColor: any = {}
     defaultColor.paintMode = [new colorRGBA(0x99, 0x34, 0x4), new colorRGBA(0xFF, 0xFF, 0xC4)];
     defaultColor.markColorTrance = new colorRGBA(0xff, 0xbf, 0xbf, 200);
     defaultColor.markColor = new colorRGBA(0xff, 0xbf, 0xbf);
@@ -6753,7 +6753,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
                     let objName = UseMap.Get_Enable_ObjectName(i, layData.Time, false);
                     if (objName != undefined) {
                         let CP = UseMap.Get_Enable_CenterP(i, layData.Time);
-                        var ob = new strObject_Data_Info();
+                        const ob = new strObject_Data_Info();
                         ob.MpObjCode = i;
                         ob.Name = objName[0];
                         ob.Objectstructure = enmKenCodeObjectstructure.MapObj;
@@ -8723,7 +8723,7 @@ interface clsAttrMapData {
     SetMapFile(MapFileName: any): any;
     [key: string]: any; // その他のメソッド
 }
-var clsAttrMapData: any = function (this: clsAttrMapData) {
+const clsAttrMapData: any = function (this: clsAttrMapData) {
     let strAttrMap = function () {
         this.FileName; //String
         this.FullPath; //String
@@ -8904,7 +8904,7 @@ var clsAttrMapData: any = function (this: clsAttrMapData) {
 }
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
-var clsObjectNameSearch: any = function (this: any, MapData: any, CheckKanjiCompatibleFlag: any) {
+const clsObjectNameSearch: any = function (this: any, MapData: any, CheckKanjiCompatibleFlag: any) {
     //オブジェクト名検索用クラス
     this.ObjNameAndTime_Info = function () {
         this.ObjCode;
