@@ -7,7 +7,7 @@ import { clsPrint } from './clsPrint';
 
 class clsDraw {
 
-    static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: any) {
+    static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info) {
         const state = appState();
 
 
@@ -87,7 +87,7 @@ class clsDraw {
 
     }
 
-    static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: any) {
+    static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: Screen_info) {
         const state = appState();
         let TH;
         if (ScrData.SampleBoxFlag == false) {
@@ -138,7 +138,7 @@ class clsDraw {
 
 
     //指定した幅で文字列を分割して返す
-    static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: any) {
+    static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info) {
         const state = appState();
 
         let Out_Text=[];
@@ -235,7 +235,7 @@ class clsDraw {
             g.stroke();
         }
     }
-    static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: any, LinePat: any, ScrData: any) {
+    static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info) {
         const state = appState();
         if (LinePat != undefined) {
             let lc: CanvasLineCap[] = ['butt', 'square', 'round'];
@@ -277,7 +277,7 @@ class clsDraw {
 }
 
 class clsDrawLine {
-    static Line(g: any, LinePat: any, d1: any, d2?: any, d3?: any) {
+    static Line(g: CanvasRenderingContext2D, LinePat: Tile_Property, d1: point | point[], d2?: point | Screen_info, d3?: Screen_info) {
         const state = appState();
         if (LinePat.BlankF == true) {
             return;
@@ -294,7 +294,7 @@ class clsDrawLine {
         this.Draw_SolidPolyLine(g, pxy, LinePat, ScrData);
     }
 
-    static Draw_SolidPolyLine(g: any, pxy: any, LinePat: any, ScrData: any) {
+    static Draw_SolidPolyLine(g: CanvasRenderingContext2D, pxy: point[], LinePat: Tile_Property, ScrData: Screen_info) {
         const state = appState();
         g.lineCap = LinePat.Edge_Connect_Pattern.lineCap;
         g.lineJoin = LinePat.Edge_Connect_Pattern.lineJoin;
@@ -303,14 +303,14 @@ class clsDrawLine {
         g.lineWidth = ScrData.Get_Line_Width(LinePat.Width);
         g.beginPath();
         g.moveTo(pxy[0].x, pxy[0].y);
-        pxy.forEach(function (p: any) {
+        pxy.forEach(function (p: point) {
             g.lineTo(p.x, p.y);
         });
         g.stroke();
     }
 
     /**矢印描画 */
-    static Arrow(g: any, P: any, BeforPoint: any, LPat: any, DArrow: any, ScrData: any) {
+    static Arrow(g: CanvasRenderingContext2D, P: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
         const state = appState();
         let e2=new point() ;
         let e3 =new point() ;
@@ -341,7 +341,7 @@ class clsDrawLine {
 
     }
 
-    static Check_Draw_Arrow_Line(OP: any, BeforPoint: any, LineP1: any, LineP2: any, LPat: any, DArrow: any, ScrData: any) {
+    static Check_Draw_Arrow_Line(OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
         const state = appState();
         let e2=new point() ;
         let e3=new point() ;
@@ -350,7 +350,7 @@ class clsDrawLine {
         return spatial.Line_Cross_Point(e3, e4, LineP1, LineP2);
     }
 
-    static Draw_Arrow_Keisan(a1: any, ac: any, a2: any, OP: any, BeforPoint: any, LPat: any, DArrow: any, Check_F: any, ScrData: any) {
+    static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info) {
         const state = appState();
 
         let VecX = OP.x - BeforPoint.x;
@@ -396,7 +396,7 @@ class clsDrawLine {
         a2.y = ac.y - newP.y;
     }
 
-    static Draw_Sample_LineBox(picBox: any, Lpat: any, ScrData: any) {
+    static Draw_Sample_LineBox(picBox: HTMLCanvasElement, Lpat: Tile_Property, ScrData: Screen_info) {
         const state = appState();
         let w = picBox.width;
         let h = picBox.height;
@@ -418,7 +418,7 @@ class clsDrawLine {
 
 class clsDrawTile {
 
-    static Draw_Poly_Inner(g: any, pxy: any, numPolyP: any, T: any) {
+    static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property) {
         const state = appState();
         if(T.BlankF==false){
             let Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
@@ -428,7 +428,7 @@ class clsDrawTile {
     }
 
     //角丸四角形
-    static Draw_Tile_RoundBox(g: any, _BoundaryRect: any, Back: any, Kakudo: any, ScrData: any) {
+    static Draw_Tile_RoundBox(g: CanvasRenderingContext2D, _BoundaryRect: rectangle, Back: Back_Property, Kakudo: number, ScrData: Screen_info) {
         const state = appState();
 
         if ((Back.Tile.BlankF == true) && (Back.Line.BlankF == true)) {
@@ -471,7 +471,7 @@ class clsDrawTile {
     }
 
     //タイル四角形描画
-    static Draw_Tile_Box(g: any, BoundaryRect: any, L: any, T: any, Kakudo: any, ScrData: any) {
+    static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info) {
         const state = appState();
         let pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
         if (T.BlankF == false) {
@@ -484,7 +484,7 @@ class clsDrawTile {
     }
 
     //サンプル背景フレーム表示
-    static Darw_Sample_BackGroundBox(picBox: any, BG: any, ScrData: any) {
+    static Darw_Sample_BackGroundBox(picBox: HTMLCanvasElement, BG: Back_Property, ScrData: Screen_info) {
         const state = appState();
         let w = picBox.width;
         let h = picBox.height;
@@ -608,7 +608,7 @@ class clsDrawMarkFan {
         return n;
     }
 
-    static Mark_Print(g: any, Position: any, r: any, Mark: any, ScrData: any) {
+    static Mark_Print(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property, ScrData: Screen_info) {
         const state = appState();
         switch (Mark.PrintMark) {
             case enmMarkPrintType.Mark: {
@@ -711,7 +711,7 @@ class clsDrawMarkFan {
     }
 
 
-    static Draw_DAEN(g: any, Position: any, XR: any, YR: any, Kakudo: any, L: any, T: any, Real_Circle_F: any, ScrData: any) {
+    static Draw_DAEN(g: CanvasRenderingContext2D, Position: point, XR: number, YR: number, Kakudo: number, L: Tile_Property, T: Tile_Property, Real_Circle_F: boolean, ScrData: Screen_info) {
         const state = appState();
         if ((XR == 0) || (YR == 0)) { return }
 
@@ -750,7 +750,7 @@ class clsDrawMarkFan {
         return inf;
     }
 
-    static Get_DAEN_Peri_XY(Position: any ,  XR: any ,  YR: any , Kakudo: any ,  ScrData: any) {
+    static Get_DAEN_Peri_XY(Position: point,  XR: number,  YR: number, Kakudo: number,  ScrData: Screen_info) {
         const state = appState();
         let ST = 1 / ((XR + YR) / 5);
         let pxy = [];
@@ -784,7 +784,7 @@ class clsDrawMarkFan {
         }
     }
 
-    static Draw_Mark_Sample_Box(picMarkBox: any, MK: any, ScrData: any) {
+    static Draw_Mark_Sample_Box(picMarkBox: HTMLCanvasElement, MK: Mark_Property, ScrData: Screen_info) {
         const state = appState();
         let w = picMarkBox.width;
         let h = picMarkBox.height;
@@ -794,7 +794,7 @@ class clsDrawMarkFan {
         this.Mark_Print(g, new point(w / 2, h / 2), Math.min(w, h) * 0.4, MK, ScrData);
     }
 
-    static Draw_Fan(g: any, centerP: any, r: any, start_p: any, end_p: any, Lpat: any, Tile: any, ScrData: any) {
+    static Draw_Fan(g: CanvasRenderingContext2D, centerP: point, r: number, start_p: number, end_p: number, Lpat: Tile_Property, Tile: Tile_Property, ScrData: Screen_info) {
         const state = appState();
 
         let w = ScrData.Get_Line_Width(Lpat.Width);
@@ -825,7 +825,7 @@ class clsDrawMarkFan {
 }
 
 class clsSpline {
-    static Spline_Get(Ls: any, ln: any, Line_XY: any, stp: any, ScrData: any) {
+    static Spline_Get(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
         const state = appState();
 
         if (ln == 2) {
@@ -890,7 +890,7 @@ class clsSpline {
         return pxy;
     }
 
-    static Spline_Get_Fill(Ls: any, ln: any, Line_XY: any, stp: any, ScrData: any) {
+    static Spline_Get_Fill(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
         const state = appState();
 
         let lpf;
@@ -945,7 +945,7 @@ class clsSpline {
         return pxy;
     }
 
-    static Spline_xy(T: any, Kvalue: any, Maxpt: any, pt: any) {
+    static Spline_xy(T: number, Kvalue: number, Maxpt: number, pt: point[]) {
         const state = appState();
         let P = new point();
 
@@ -970,7 +970,7 @@ class clsSpline {
         return P;
     }
 
-    static Blend(i: any, k: any, T: any, Kvalue: any, Maxpt: any): number {
+    static Blend(i: number, k: number, T: number, Kvalue: number, Maxpt: number): number {
         const state = appState();
 
         if (k == 1) {
@@ -1004,7 +1004,7 @@ class clsSpline {
         return value1 + value2;
     }
 
-    static Knot(i: any, Kvalue: any, Maxpt: any) {
+    static Knot(i: number, Kvalue: number, Maxpt: number) {
         const state = appState();
         if (i < Kvalue) {
             return 0
@@ -1026,7 +1026,7 @@ const clsTileMap: any =function() {
     LicenseFontData.Back=clsBase.WhiteBackground();
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
-    this.drawTileMap=function(g: any, TileMap: any, MapZahyo: any, ScrData: any, BackImageSpeed: any,afterDrawFunction: any) {
+    this.drawTileMap=function(g: CanvasRenderingContext2D, TileMap: any, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number,afterDrawFunction: (() => void) | undefined) {
         if(xhr.length>0){
             for(let i in xhr){
                 xhr[i].abort();
@@ -1072,7 +1072,7 @@ const clsTileMap: any =function() {
 
         return true;
 
-        function request(url: any, destRect: any) {
+        function request(url: string, destRect: rectangle) {
             let n = xhr.length;
             xhr[n] = new XMLHttpRequest();
             xhr[n].open('GET', url, true);
@@ -1120,7 +1120,7 @@ const clsTileMap: any =function() {
     }
 
     /**ライセンスフォントを設定 */
-    this.setLicenceFont=function(fnt: any){
+    this.setLicenceFont=function(fnt: Font_Property){
         LicenseFontData = fnt;
     }
 
@@ -1129,12 +1129,12 @@ const clsTileMap: any =function() {
     }
 
     /**既存タイルマップデータをキーで取得 */
-    this.getTileMapData=function(dataName: any){
+    this.getTileMapData=function(dataName: string){
         return TileMapData[dataName];
     }
 
     /**既存タイルマップデータをIDで取得 */
-    this.getTileMapDataById = function (id: any) {
+    this.getTileMapDataById = function (id: number) {
         for (let i in TileMapData) {
             if (TileMapData[i].opt.id == id) {
                 return TileMapData[i];
@@ -1154,7 +1154,7 @@ const clsTileMap: any =function() {
     }
 
     /**指定のタグに一致するタイルマップ一覧を取得 */
-    this.getTileMapListByTag=function(tag: any){
+    this.getTileMapListByTag=function(tag: string){
         let tiles=[];
         for(let i in TileMapData){
             if(TileMapData[i].opt.tag==tag){
@@ -1165,7 +1165,7 @@ const clsTileMap: any =function() {
     }
 
     /**  解像度と緯度経度範囲で、必要なタイルマップ数を求める*/
-    this. Get_TileMap_Image_Number=function(ZoomLevel: any, ScrLatLonBox: any) {
+    this. Get_TileMap_Image_Number=function(ZoomLevel: number, ScrLatLonBox: latlonbox) {
 
         let StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
         let EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
@@ -1181,7 +1181,7 @@ const clsTileMap: any =function() {
     }
 
     /**緯度経度とズームレベルからタイルマップのXYを求める*/
-    this.Get_TileMap_Image_Code=function(ZoomLevel: any, LatLon: any) {
+    this.Get_TileMap_Image_Code=function(ZoomLevel: number, LatLon: IdoKeido) {
 
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
@@ -1192,7 +1192,7 @@ const clsTileMap: any =function() {
         return TileXY;
     }
 
-    this. Get_TileMap_Image=function(TileMap: any, ZoomLevel: any, ScrLatLonBox: any,  MapZahyo: any, ScrData: any) {
+    this. Get_TileMap_Image=function(TileMap: any, ZoomLevel: number, ScrLatLonBox: latlonbox,  MapZahyo: zahyohenkan, ScrData: Screen_info) {
 
         let FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
         let StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
@@ -1251,7 +1251,7 @@ const clsTileMap: any =function() {
         return tileList_Data;
     }
     /**指定したZoomのタイルマップの緯度経度を求める*/
-    this.Get_TileMap_IdoKedo=function(ZoomLevel: any, X: any, Y: any) {
+    this.Get_TileMap_IdoKedo=function(ZoomLevel: number, X: number, Y: number) {
         let nw = new latlon();
         nw.lon = (X / 2 ** ZoomLevel) * 360 - 180;
         let tx1 = (Y / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
@@ -1266,7 +1266,7 @@ const clsTileMap: any =function() {
     }
 
     /**タイルマップのXYの値が外れていた場合に修正する*/
-    this.check_TileMap_XY=function (ZoomLevel: any, X: any, Y: any){
+    this.check_TileMap_XY=function (ZoomLevel: number, X: number, Y: number){
 
         if (X < 0) {
             X = -X;
@@ -1283,7 +1283,7 @@ const clsTileMap: any =function() {
         return { x: X, y: Y };
     }
     /** 画面左下に著作権表示**/
-    this. PrintCopyright=function(g: any,TileMap: any,ScrData: any) {
+    this. PrintCopyright=function(g: CanvasRenderingContext2D,TileMap: any,ScrData: Screen_info) {
         let x = 5;
         let y = ScrData.MapScreen_Scale.bottom - 5;
         let tx=TileMap.copyright+chrLF+TileMap.opt.id;
