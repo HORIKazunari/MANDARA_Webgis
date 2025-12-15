@@ -451,7 +451,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 let retV = Check_Acc(mouseUpPosition);
                                 if (retV.type == Check_Acc_Result.NoAccessory) {
                                     let av = state.attrData.TotalData.ViewStyle;
-                                    let mnuAccPopupVisible: any[] = [];
+                                    let mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: any[]}> = [];
                                     if (av.ScrData.ThreeDMode.Set3D_F == false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
@@ -645,7 +645,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         MouseDownF = false;
 
-        function Loc_Data_Menu(mnuAccPopupVisible: any[]) {
+        function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: any[]}>) {
         const state = appState();
             let alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
@@ -1144,7 +1144,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         switch (L_Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
                 //データ表示モード
-                let OnObject: any[] = [];
+                let OnObject: strLocationSearchObject[] = [];
                 let Layernum = L_Layer;
                 let dtindex = L_Data;
                 switch (L_Print_Mode_Layer) {
@@ -1453,15 +1453,15 @@ class frmPrint {
     }
 
     //線種ラインパターン設定
-    static linePattern(data: any, e: Event) {
+    static linePattern(_data: unknown, e: Event) {
         const state = appState();
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
         Generic.Set_Box_Position_in_Browser(e, backDiv);
 
         Generic.createNewSpan(backDiv, "地図ファイル", "", "", 15, 35, "", "");
-        let NewLineKind: any[] = [];
+        let NewLineKind: LPatSek_Info[][] = [];
         let MapFileList = state.attrData.GetMapFileName()
-        let list: any[] = [];
+        let list: Array<{value: string, text: string}> = [];
         for (let i = 0; i < MapFileList.length; i++) {
             let LK = state.attrData.SetMapFile(MapFileList[i]).Get_TotalLineKind();
             NewLineKind.push(LK);
@@ -1596,7 +1596,7 @@ class frmPrint {
     }
 
     //複数オブジェクトのプロパティ表示
-    static ShowOverLayObjectProperty(Layernum: number, dtindex: number, OnObject: any[]) {
+    static ShowOverLayObjectProperty(Layernum: number, dtindex: number, OnObject: strLocationSearchObject[]) {
         const state = appState();
         if ((state.propertyWindow.pnlProperty.getVisibility()==true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal)) {
             let cnode = state.propertyWindow.pnlProperty.childNodes;
