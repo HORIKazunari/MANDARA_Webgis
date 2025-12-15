@@ -47,12 +47,12 @@ class ObjectXY_Info {
 
 class clsSpatialIndexSearch {
     /// <summary>空間インデックス</summary>
-    private MeshIndex: any[][] = [];
+    private MeshIndex: (IndexContents_Info | undefined)[][] = [];
     private XYSize: number = 0;
     private meshw: number = 0;
     private meshh: number = 0;
     private ObjectXY: ObjectXY_Info[] = [];
-    private ObjectType: any;
+    private ObjectType: SpatialPointType;
     private MeshRect: rectangle = new rectangle();
     private AddEndF: boolean = false;
     private ObjectNum: number = 0;
@@ -61,7 +61,7 @@ class clsSpatialIndexSearch {
     private RectSetF: boolean = false;
     private LineCutNum: number = 0;
     
-    constructor(ObjType: any, ExtraRangeFlag: boolean, Rect?: any, ExtraRange_Size?: any) {
+    constructor(ObjType: SpatialPointType, ExtraRangeFlag: boolean, Rect?: rectangle, ExtraRange_Size?: number) {
         this.ObjectType = ObjType;
         this.ExtraRangeF = ExtraRangeFlag;
         
@@ -75,7 +75,7 @@ class clsSpatialIndexSearch {
         }
     }
     
-    private BoxData_AddExtraRange(pbox: any) {
+    private BoxData_AddExtraRange(pbox: rectangle) {
         //四角形に幅をプラスする
         let d = new rectangle();
         d.left = pbox.left - this.ExtraRange;
@@ -196,7 +196,7 @@ class clsSpatialIndexSearch {
             }
         }
     }
-    private AddMeshRect(ObjNum: any, AddorRemove: any) {
+    private AddMeshRect(ObjNum: number, AddorRemove: number) {
         const PBox = this.BoxData_AddExtraRange(spatial.Get_Rectangle(this.ObjectXY[ObjNum].Point[0], this.ObjectXY[ObjNum].Point[1]));
         const RBox = new rectangle();
         const f = this.GetRangeXY(PBox, RBox);
@@ -215,7 +215,7 @@ class clsSpatialIndexSearch {
             }
         }
     }
-    private AddMeshPoint(ObjNum: any, AddorRemove: any) {
+    private AddMeshPoint(ObjNum: number, AddorRemove: number) {
         const oxy = this.ObjectXY[ObjNum];
         for (let k = 0; k < oxy.Pnum; k++) {
             if (this.ExtraRangeF === false) {
@@ -254,7 +254,7 @@ class clsSpatialIndexSearch {
         }
     }
 
-    private Add_Mesh_PointSub(X: any, Y: any, ObjNum: any, Pointnum: any) {
+    private Add_Mesh_PointSub(X: number, Y: number, ObjNum: number, Pointnum: number) {
         if (typeof this.MeshIndex[X][Y] === "undefined"){
             this.MeshIndex[X][Y]  = new IndexContents_Info();
         }
@@ -263,7 +263,7 @@ class clsSpatialIndexSearch {
         this.MeshIndex[X][Y].Num++;
     }
 
-    private GetConPointXY(inXY: any, outXY: any) {
+    private GetConPointXY(inXY: point, outXY: point) {
         //メッシュ領域に入るかチェック
         outXY.x = Math.floor((inXY.x - this.MeshRect.left) / this.meshw);
         outXY.y = Math.floor((inXY.y - this.MeshRect.top) / this.meshh);
@@ -274,7 +274,7 @@ class clsSpatialIndexSearch {
         }
     }
 
-    private GetExtraRange_XY(xy: any, OutPutRect: any) {
+    private GetExtraRange_XY(xy: point, OutPutRect: rectangle) {
         const PBox = new rectangle();
         PBox.left = xy.x - this.ExtraRange;
         PBox.right = xy.x + this.ExtraRange;
@@ -284,7 +284,7 @@ class clsSpatialIndexSearch {
         return this.GetRangeXY(PBox, OutPutRect);
     }
 
-    private GetRangeXY(InPBox: any, OutRBox: any) {
+    private GetRangeXY(InPBox: rectangle, OutRBox: rectangle) {
         if (spatial.Compare_Two_Rectangle_Position(InPBox, this.MeshRect) != cstRectangle_Cross.cstOuter) {
             let x1 = Math.floor((InPBox.left - this.MeshRect.left) / this.meshw);
             let y1 = Math.floor((InPBox.top - this.MeshRect.top) / this.meshh);
@@ -304,7 +304,7 @@ class clsSpatialIndexSearch {
             return false;
         }
     }
-    private Add_Point_Sub(Pnum: any, XY: any, TagData: any) {
+    private Add_Point_Sub(Pnum: number, XY: latlon[], TagData: string | number) {
         this.ObjectXY[this.ObjectNum] = new ObjectXY_Info(Pnum, XY, TagData,false);
         if (this.AddEndF == true) {
             switch (this.ObjectType) {
@@ -322,7 +322,7 @@ class clsSpatialIndexSearch {
         this.ObjectNum++;
 
     }
-    AddMultiPoint(Pnum: any, XY: any, TagData: any) {
+    AddMultiPoint(Pnum: number, XY: latlon[], TagData: string | number) {
         //複数地点オブジェクトを追加
         if (this.ObjectType != SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -330,7 +330,7 @@ class clsSpatialIndexSearch {
         }
         this.Add_Point_Sub(Pnum, XY, TagData);
     }
-    AddDoublePoint(XY1: any, XY2: any, TagData: any) {
+    AddDoublePoint(XY1: latlon, XY2: latlon, TagData: string | number) {
         //2地点オブジェクトを追加
         if (this.ObjectType != SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -340,7 +340,7 @@ class clsSpatialIndexSearch {
         this.Add_Point_Sub(2, XY, TagData);
     }
 
-    AddSinglePoint(XY1: any, TagData: any) {
+    AddSinglePoint(XY1: latlon, TagData: string | number) {
         /// <signature>
         /// <summary>地点オブジェクトを追加</summary>
         /// <returns type="Number" >同じ値の数</returns>
@@ -352,7 +352,7 @@ class clsSpatialIndexSearch {
         const XY = new Array(XY1);
         this.Add_Point_Sub(1, XY, TagData);
     }
-    AddSinglePoint_Array(Num: any, XY: any, TagData: any) {
+    AddSinglePoint_Array(Num: number, XY: latlon[], TagData: string | number) {
         //1地点オブジェクトを配列で追加
         if (this.ObjectType != SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -364,7 +364,7 @@ class clsSpatialIndexSearch {
         }
     }
 
-    GetSamePointNumber(x: any, y: any) {
+    GetSamePointNumber(x: number, y: number) {
         /// <signature>
         /// <summary>同じ地点を求め、番号を返す 存在しない場合は-1を返す</summary>
         /// <returns type="Number" >同じ値の数</returns>
@@ -406,7 +406,7 @@ class clsSpatialIndexSearch {
         return new GetObjectPointTagInfo(gn, PointNumber, Tag ?? "") ;
     }
 
-    GetSamePointNumberArray(x: any, y: any, SamePointData: any) {
+    GetSamePointNumberArray(x: number, y: number, SamePointData: GetObjectPointTagInfo[]) {
         /// <signature>
         /// <summary>同じ地点を求め、番号を返す 存在しない場合は-1か0を返す</summary>
         /// <param name="SamePointData" >GetObjectPointTagInfoの配列、オブジェクト番号、オブジェクト-ポイント番号、タグ（戻り値）</param>
@@ -444,7 +444,7 @@ class clsSpatialIndexSearch {
         return SamePointData.length;
     }
 
-    GetNearestLineNumber(x: any, y: any, BaseDistance: any, ExceptionNumber: any, ExceptionTag: any) {
+    GetNearestLineNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number, ExceptionTag: string | number) {
         
         if (this.ObjectType != SpatialPointType.SPILine) {
             alert("線以外はできません。");
@@ -516,11 +516,11 @@ class clsSpatialIndexSearch {
     }
 
     //近い地点を返す、数と番号（配列）を返す（複数出力） 存在しない場合は-1を返す
-    GetNearPointNumber(x: any, y: any, BaseDistance: any, ExceptionNumber: any = -1, ExceptionTag: any) {
+    GetNearPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number = -1, ExceptionTag?: (string | number)[]) {
         let ObStac: number[] = [];
         let PStac: number[] = [];
         let Distance: number[] = [];
-        let Tags: any[] = [];
+        let Tags: (string | number)[] = [];
         if (this.ObjectType != SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance};
@@ -561,7 +561,7 @@ class clsSpatialIndexSearch {
         return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance}
     }
 
-    GetNearestPointNumber(x: any, y: any, BaseDistance: any, ExceptionNumber: any, ExceptionTag: any) {
+    GetNearestPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number, ExceptionTag?: string | number | (string | number)[]) {
         /// <signature>
         /// <summary>最も近い地点を求め、数と番号（配列）を返す（複数出力） 存在しない場合は-1を返す</summary>
         /// <param name="BaseDistance" >基準となる距離</param>
@@ -615,7 +615,7 @@ class clsSpatialIndexSearch {
     }
 
     //指定した点が入る四角領域を取得
-    GetRectIn(x: any, y: any) {
+    GetRectIn(x: number, y: number) {
         if (this.ObjectType != SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
             return 0;
@@ -655,7 +655,7 @@ class clsSpatialIndexSearch {
 
         }
 
-    RemoveObject(Number: any) {
+    RemoveObject(Number: number) {
         /// <signature>
         /// <summary>指定したオブジェクト番号を検索インデックスから削除</summary>
         /// <param name="Number" >オブジェクト番号</param>
@@ -678,7 +678,7 @@ class clsSpatialIndexSearch {
         }
     }
 
-    private RemoveObject_sub(x: any, y: any, Number: any) {
+    private RemoveObject_sub(x: number, y: number, Number: number) {
         const meshxy = this.MeshIndex[x][y];
         let i = -1;
         do {
@@ -692,7 +692,7 @@ class clsSpatialIndexSearch {
         meshxy.Num--;
     }
 
-    RemoveObject_byTag(TagNumber: any) {
+    RemoveObject_byTag(TagNumber: string | number) {
         //指定したタグのオブジェクトの検索インデックスを削除
         for (let i = 0; i < this.ObjectNum; i++) {
             if (this.ObjectXY[i].Tag == TagNumber) {
@@ -703,7 +703,7 @@ class clsSpatialIndexSearch {
         }
     }
 
-    AddLine(Pnum: any, XY: any, TagData: any) {
+    AddLine(Pnum: number, XY: latlon[], TagData: string | number) {
         //線オブジェクト追加
         if (this.ObjectType != SpatialPointType.SPILine) {
             alert("線以外はできません。");
@@ -712,7 +712,7 @@ class clsSpatialIndexSearch {
         this.Add_Point_Sub(Pnum, XY , TagData);
     }
 
-    ChangeTagValue(ChangeValue: any, StartRangeValue: any, LastRangeValue: any) {
+    ChangeTagValue(ChangeValue: number, StartRangeValue: number, LastRangeValue: number) {
         //タグの値を変化させる
         for (let i = 0; i < this.ObjectNum; i++) {
             if (Generic.Check_Two_Value_In(this.ObjectXY[i].Tag, StartRangeValue, LastRangeValue) != (chvOuter as any)) {
@@ -721,7 +721,7 @@ class clsSpatialIndexSearch {
         }
     }
 
-    AddRect(XY1_rectangle: any, XY2_TagData: any, TagData?: any) {
+    AddRect(XY1_rectangle: point | rectangle, XY2_TagData: latlon | string | number, TagData?: string | number) {
         //四角オブジェクト追加
         if (this.ObjectType != SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
