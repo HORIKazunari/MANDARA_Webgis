@@ -11,7 +11,7 @@ class clsTime  {
     }
 
     // 前日を取得
-    static getYesterday(YMD: any) {
+    static getYesterday(YMD: strYMD) {
         const state = appState();
         let d = YMD.toDate();
         d.setDate(d.getDate() - 1);
@@ -19,7 +19,7 @@ class clsTime  {
     }
 
     // 翌日を取得
-    static getTomorrow(YMD: any) {
+    static getTomorrow(YMD: strYMD) {
         const state = appState();
         let d = YMD.toDate();
         d.setDate(d.getDate() + 1);
@@ -27,7 +27,7 @@ class clsTime  {
     }
 
     //指定の日付の間の日数を数える。Time1がTime2より後の場合は負の値
-    static getDifference (Time1: any, Time2: any) {
+    static getDifference (Time1: strYMD, Time2: strYMD) {
         let day1 = Time1.toDate();
         let day2 = Time2.toDate();
         let termDay = (day2 - day1) / 86400000;
@@ -41,7 +41,7 @@ class clsTime  {
         return d;
     }
 
-    static YMDtoString(YMD: any) {
+    static YMDtoString(YMD: strYMD) {
         const state = appState();
         if (YMD.nullFlag() == true) {
             return "未設定";
@@ -51,12 +51,12 @@ class clsTime  {
     }
 
     /**20131116のような年月日をそのまま数値にした値を返す。nullValueの場合は0 */
-    static YMDtoValue(YMD: any) {
+    static YMDtoValue(YMD: strYMD) {
         const state = appState();
             return YMD.Day + YMD.Month * 100 + YMD.Year * 10000;
     }
 
-    static GetYMDfromValue(value: any){
+    static GetYMDfromValue(value: number){
         const state = appState();
         let  YMD =new  strYMD();
         let s  = "00000000" + value.toString().right( 8);
@@ -65,7 +65,7 @@ class clsTime  {
         YMD.Day = Number(s.substr(6, 2));
         return YMD;
     }
-    static StartEndtoString(StartEnd: any) {
+    static StartEndtoString(StartEnd: Start_End_Time_data) {
         const state = appState();
         let txs = "";
         if (StartEnd.StartTime.nullFlag() == true) {
@@ -78,7 +78,7 @@ class clsTime  {
         txs += this.YMDtoString(StartEnd.EndTime);
         return txs;
     }
-    static checkDurationIn(duration: any, Point: any) {
+    static checkDurationIn(duration: Start_End_Time_data, Point: strYMD) {
         const state = appState();
         //現時点が指定の期間に含まれているかどうかをチェックし、含まれている場合にtrue
         if ((Point.nullFlag() == true) || (duration.StartTime.nullFlag() == true) && (duration.EndTime.nullFlag() == true)) {
@@ -108,15 +108,15 @@ class clsTime  {
         }
     }
 
-    static GetYMD(date: any) {
+    static GetYMD(date: Date) {
         const state = appState();
         return new strYMD(date.getFullYear(), date.getMonth()+1, date.getDate());
     }
-    static GetFromInputDate  (value: any) {
+    static GetFromInputDate  (value: string) {
         let t = value.split("-");
         return new strYMD(Number(t[0]), Number(t[1]), Number(t[2]));
     }
-    static Check_YMD_Correct(y: any, m: any, d: any) {
+    static Check_YMD_Correct(y: number, m: number, d: number) {
         const state = appState();
         if ((new Date(y, m, 0).getDate() < d) || (m < 1)|| (m > 12) || (d < 1)) {
             return false;
@@ -149,7 +149,7 @@ class Font_Property {
         return d;
     }
     
-    toContextFont(ScrData: any): { font: string | undefined; height: number } {
+    toContextFont(ScrData: Screen_info): { font: string | undefined; height: number } {
         let TH: number;
         if (ScrData.SampleBoxFlag == false) {
             TH = ScrData.Get_Length_On_Screen(this.Size ?? 0);
@@ -356,7 +356,7 @@ class clsBase {
         BaseTile.Color = new colorRGBA([255, 255, 255]);
         return BaseTile;
     }
-    static PaintTile(col: any) {
+    static PaintTile(col: colorRGBA) {
         const state = appState();
         let BaseTile = new Tile_Property();
         BaseTile.BlankF = false;

@@ -155,7 +155,7 @@ function init(): void {
     setting(location.search); // 設定画面の作成
 
 
-    function FrmprintMenuClick(pos: any): void {
+    function FrmprintMenuClick(pos: point): void {
         const state = appState();
         const pwchwck: boolean = (state.propertyWindow.getVisibility?.() === true);
         const popmenu = [
@@ -223,7 +223,7 @@ function frmPrintProjection(): void {
     const av = state.attrData.TotalData.ViewStyle;
     frmProjectionConvert(av.Zahyo, av.ScrData.MapRectanglem, okButton);
     
-    function okButton(newZahyo: any): void {
+    function okButton(newZahyo: Zahyo_info): void {
         const state = appState();
         const centerLon: number = newZahyo.CenterXY.x;
         
