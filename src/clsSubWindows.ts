@@ -5,7 +5,7 @@ import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 // JavaScript source code
 
 //カラーチャート
-function clsColorChart(event: any, ClassN: any, buttonOK: any){
+function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: colorRGBA[]) => void) {
     const colorChart = Generic.set_backDiv("", "カラーチャート", 260, 400, false, true, undefined, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, colorChart);
     const pnlColorPattern = Generic.createNewDiv(colorChart, "", "", "", 10, state.scrMargin.top + 10, 240, 310, "overflow-y: scroll;border:solid 1px;border-color:#666666;", "");
@@ -279,8 +279,8 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
     const picFrameLine = Generic.createNewWordDivCanvas(pnlMark, "", "輪郭", 40, 18,undefined, LinePatternClick);
     const pnlWord = Generic.createNewDiv(gbMark, "", "", "", 110, 0, 100, 60, "", "");
     const txtWord = Generic.createNewInput(pnlWord, "text", mk.wordmark, "", 0, 18, "", "width: 50px");
-    txtWord.onchange = function (e: any) {
-        mk.wordmark= e.target.value;
+    txtWord.onchange = function (e: Event) {
+        mk.wordmark= (e.target as HTMLInputElement).value;
     }
     txtWord.style.color = mk.WordFont.Color.toHex();
     Generic.createNewButton(pnlWord, "フォント", "", 60, 18,fontClick,"" );
@@ -293,7 +293,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
     clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData);
     const angleBox = Generic.createNewWordNumberInput(gbSize, "回転角度", "度", mk.WordFont.Kakudo, "", 15,45,undefined, 40, undefined, "");
 
-    function fontClick(e: any) {
+    function fontClick(e: MouseEvent) {
         mk.WordFont.Kakudo = Number(angleBox.value);
         mk.WordFont.Size = Number(sizeBox.value);
         clsFontSet(e, mk.WordFont, fontGet, _attrData);
@@ -308,7 +308,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
         }
     }
-    function backClick(e: any) {
+    function backClick(e: MouseEvent) {
         clsBackgroundPatternSet(e, mk.WordFont.Back, backGet, _attrData);
         function backGet(back: any) {
             mk.WordFont.Back = back;
@@ -317,7 +317,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
         }
     }
 
-    function LinePatternClick(e: any) {
+    function LinePatternClick(e: MouseEvent) {
         clsLinePatternSet(e, mk.Line, LinePatternGet);
         function LinePatternGet(Lpat: any) {
             mk.Line = Lpat;
@@ -326,7 +326,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
         }
     }
 
-    function markClick(e: any) {
+    function markClick(e: MouseEvent) {
         clsMarkSelect(e, markSet, mk.ShapeNumber);
         function markSet(number: any) {
             mk.ShapeNumber = number;
@@ -334,7 +334,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
         }
     }
 
-    function tileClick(e: any) {
+    function tileClick(e: MouseEvent) {
         clsTileSet(e, mk.Tile, tileGet);
         function tileGet(retTile: any) {
             mk.Tile = retTile;
@@ -343,7 +343,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
         }
     }
-    function markPrintTypeChange(v: any) {
+    function markPrintTypeChange(v: number) {
         mk.PrintMark = v;
         switch (mk.PrintMark) {
             case (enmMarkPrintType.Mark): {
@@ -368,7 +368,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
         okEvent(mk);
     }
     //記号選択ウインドウ
-    function clsMarkSelect(event: any, okEvent: any, markNumber: any) {
+    function clsMarkSelect(event: MouseEvent, okEvent: (markNumber: number) => void, markNumber: number) {
         let n = clsDrawMarkFan.getMarkShameNum();
         let turnN = 6;
         let tp = state.scrMargin.top+5;
@@ -391,8 +391,8 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
             smk.ShapeNumber = i;
             _attrData.Draw_Sample_Mark_Box(c,  smk);
         }
-        function clickMark(e: any) {
-            let n = parseInt(e.target.id);
+        function clickMark(this: HTMLCanvasElement, e: MouseEvent) {
+            let n = parseInt((e.target as HTMLElement).id);
             smk.ShapeNumber = n;
             _attrData.Draw_Sample_Mark_Box(selected, smk);
         }
@@ -403,7 +403,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
     }
 }
 
-function clsBackgroundPatternSet(event: any, back: any, okEvent: any, _attrData: any) {
+function clsBackgroundPatternSet(event: MouseEvent, back: any, okEvent: (back: any) => void, _attrData: any) {
     /// <signature>
     /// <summary>背景設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -420,7 +420,7 @@ function clsBackgroundPatternSet(event: any, back: any, okEvent: any, _attrData:
     const cornerSize = Generic.createNewSizeSelect(backDiv, back.Round, "", "角丸サイズ", 15, 110,70, 1, "");
     const paddingSize = Generic.createNewSizeSelect(backDiv, back.Padding, "", "余白", 15, 140,70, 1, "");
 
-    function LinePatternClick(e: any) {
+    function LinePatternClick(e: MouseEvent) {
         clsLinePatternSet(e, bk.Line, LinePatternGet);
         function LinePatternGet(Lpat: any) {
             bk.Line = Lpat;
@@ -428,7 +428,7 @@ function clsBackgroundPatternSet(event: any, back: any, okEvent: any, _attrData:
         }
     }
 
-    function tileClick(e: any) {
+    function tileClick(e: MouseEvent) {
         clsTileSet(e, bk.Tile, tileGet);
         function tileGet(retTile: any) {
             bk.Tile = retTile;
@@ -444,7 +444,7 @@ function clsBackgroundPatternSet(event: any, back: any, okEvent: any, _attrData:
 }
 
 /**タイル設定 >eventの引数。表示位置を決める。tile:最初のタイル okEvent:された際に呼び出す関数 設定されたTileを返す*/
-function clsTileSet(event: any,  tile: any, okEvent: any) {
+function clsTileSet(event: MouseEvent, tile: any, okEvent: (tile: any) => void) {
 
     const backDiv = Generic.set_backDiv("", "タイル設定", 170, 140, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -456,7 +456,7 @@ function clsTileSet(event: any,  tile: any, okEvent: any) {
     const colBox = Generic.createNewColorBox(backDiv, "", "",newTile.Color, 45, state.scrMargin.top+10, undefined);
     tileTypeChange(v);
 
-    function tileTypeChange(v: any) {
+    function tileTypeChange(v: number) {
         if (v == 0) {
             newTile.BlankF = true;
             colBox.style.visibility = "hidden";
@@ -473,7 +473,7 @@ function clsTileSet(event: any,  tile: any, okEvent: any) {
     }
 }
 
-function clsLinePatternSet(event: any, line: any, okEvent: any) {
+function clsLinePatternSet(event: MouseEvent, line: any, okEvent: (line: any) => void) {
     /// <signature>
     /// <summary>ライン設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -493,14 +493,14 @@ function clsLinePatternSet(event: any, line: any, okEvent: any) {
     const sizeInput = Generic.createNewSizeSelect(backDiv, line.Width, "","幅", 15, 80,40, 1, undefined);
     Generic.createNewButton(backDiv, "線端設定","",55,113,btnPaintLineEdge,"");
 
-    function btnPaintLineEdge(e: any){
+    function btnPaintLineEdge(e: MouseEvent) {
         clsLineEdgePattern(e, newEdge, okButton);
         function okButton(retEdge: any) {
             newEdge = retEdge;
         }
     }
 
-    function tileClick(e: any) {
+    function tileClick(e: MouseEvent) {
         clsTileSet(e, tile, tileGet);
         function tileGet(retTile: any) {
             tile = retTile;
@@ -518,7 +518,7 @@ function clsLinePatternSet(event: any, line: any, okEvent: any) {
     }
 }
 
-function clsFontSet(event: any, font: any, okEvent: any, _attrData: any) {
+function clsFontSet(event: MouseEvent, font: any, okEvent: (font: any) => void, _attrData: any) {
         /// <signature>
     /// <summary>フォント設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -544,7 +544,7 @@ function clsFontSet(event: any, font: any, okEvent: any, _attrData: any) {
     const fringeSizeBox = Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (obj: any, v: any) { ft.FringeWidth = v;}, true);
     const fringeColBox = Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
 
-    function backClick(e: any) {
+    function backClick(e: MouseEvent) {
         clsBackgroundPatternSet(e, ft.Back, backGet, _attrData);
         function backGet(back: any) {
             ft.Back = back;
@@ -553,7 +553,7 @@ function clsFontSet(event: any, font: any, okEvent: any, _attrData: any) {
         }
     }
 
-    function buttonOK(e: any) {
+    function buttonOK(e: MouseEvent) {
         if (Generic.checkFontExist(name.value)== false){
             Generic.alert(new point(e.clientX, e.clientY),"フォント名「"+name.value + "」は使えません。");
             return;
@@ -572,7 +572,7 @@ function clsFontSet(event: any, font: any, okEvent: any, _attrData: any) {
     }
 }
 
-function clsInnerDataSet(event: any, attrData: any ) {
+function clsInnerDataSet(event: MouseEvent, attrData: any ) {
             /// <signature>
     /// <summary>記号の大きさモードの内部データ設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -611,7 +611,7 @@ function clsInnerDataSet(event: any, attrData: any ) {
 }
 
 //線端・中間点接合設定
-function clsLineEdgePattern(event: any, edgePat: any, okEvent: any) {
+function clsLineEdgePattern(event: MouseEvent, edgePat: any, okEvent: (edgePat: any) => void) {
     let newEdge = edgePat.Clone();
     const backDiv = Generic.set_backDiv("", "線端・中間点接合設定", 290, 200, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -628,11 +628,11 @@ function clsLineEdgePattern(event: any, edgePat: any, okEvent: any) {
     Generic.createNewRadioButtonList(jointFrame, "jointPattern", jointList, 15, 15,undefined, 22,newEdge.lineJoin, jointPatternChange);
     let limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
 
-    function jointPatternChange(v: any) {
+    function jointPatternChange(v: string) {
         newEdge.lineJoin =v;
     }
 
-    function edgePatternChange(v: any) {
+    function edgePatternChange(v: string) {
         newEdge.lineCap = v;
     }
     function buttonOK() {
@@ -643,7 +643,7 @@ function clsLineEdgePattern(event: any, edgePat: any, okEvent: any) {
 }
 
 /**矢印設定 */
-function clsArrow(event: any, Arrow: any,Start_Arrow_Caption: any,End_Arrow_Caption: any, okEvent: any) {
+function clsArrow(event: MouseEvent, Arrow: any, Start_Arrow_Caption: string, End_Arrow_Caption: string, okEvent: (Arrow: any) => void) {
     let newArrow=Arrow.Clone();
     const backDiv = Generic.set_backDiv("", "矢印設定", 370, 230, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -676,7 +676,7 @@ function clsArrow(event: any, Arrow: any,Start_Arrow_Caption: any,End_Arrow_Capt
 }
 
 /**データ項目選択 PreAstariskはアスタリスクを付けたい番号を配列に入れ、ない場合はundefined、返す値は選択番号リスト配列,選択truefalse配列*/
-function clsSelectData(event: any, _attrData: any, Layernum: any,okEvent: any, PreAstarisk: any=undefined,
+function clsSelectData(event: MouseEvent, _attrData: any, Layernum: number, okEvent: (checkedStatus: boolean[], checkedArray: number[]) => void, PreAstarisk: number[] | undefined = undefined,
     Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true) {
     const backDiv = Generic.set_backDiv("", "データ項目選択", 230, 330, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -706,7 +706,7 @@ function clsSelectData(event: any, _attrData: any, Layernum: any,okEvent: any, P
 }
 
 /**出力画面：オブジェクト名・データ値表示 */
-function frmPrint_ObjectValue(_attrData: any, okEvent: any) {
+function frmPrint_ObjectValue(_attrData: any, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名・データ値表示", 210, 280, true, true, buttonOK, 0.2, true);
 
     let avs = _attrData.TotalData.ViewStyle.ValueShow.Clone();
@@ -732,7 +732,7 @@ function frmPrint_ObjectValue(_attrData: any, okEvent: any) {
 }
 
 /**背景表示設定 */
-function frmPrint_backImageSet(_attrData: any, okEvent: any) {
+function frmPrint_backImageSet(_attrData: any, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "背景画像設定", 260, 300, true, true, buttonOK, 0.2, true);
     let avt = _attrData.TotalData.ViewStyle.TileMapView;
     let chkVisible = Generic.createNewCheckBox(backDiv, "背景画像を表示", "", avt.Visible, 15, 40,undefined,  undefined, "");
@@ -769,7 +769,7 @@ function frmPrint_backImageSet(_attrData: any, okEvent: any) {
     gbAlpha.appendChild(rangeObj);
 
     /**タグリストが変更になった場合は子要素リストを変更 */
-    function setTileMapListByTag(firstID: any) {
+    function setTileMapListByTag(firstID: string) {
         let tag = tileTagSelect.getValue();
         let tlist = state.tileMapClass.getTileMapListByTag(tag);
         let list = [];
@@ -908,7 +908,7 @@ function graphModeOresen_Bou() {
 }
 
 /**緯度経度の入力 */
-function frmLatLonInput(LatLon: any,BoxF: any, okEvent: any){
+function frmLatLonInput(LatLon: any, BoxF: boolean, okEvent: (LatLon: any) => void) {
     const backDiv = Generic.set_backDiv("", "緯度経度入力", 300, 200, true, true, buttonOK, 0.2, true);
     const pnlLat=Generic.createNewDiv(backDiv,"","","",15,40,280,50,"");
     const pnlLon=Generic.createNewDiv(backDiv,"","","",15,100,280,50,"");
