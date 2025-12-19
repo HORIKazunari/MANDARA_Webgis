@@ -507,15 +507,16 @@ class clsDrawTile {
     }
 }
 
+class MarkInfo {
+    name?: string;
+    stac?: unknown;
+}
+
 class clsDrawMarkFan {
-    static mShape: any[] = [];
+    static mShape: MarkInfo[] = [];
     
     static init() {
         const state = appState();
-        let mark_info: any = function (this: any) {
-            this.name;
-            this.stac;
-        }
         //'最初の数値：記号内の要素の数
         //'要素の内訳
         //'単独円0、ポリゴン1、線2
@@ -590,12 +591,12 @@ class clsDrawMarkFan {
         this.mShape = [];
         for (let i = 0; i < sr.length;i++) {
             let Mark_XY_Split = sr[i].split(",");
-            let d = new mark_info();
+            let d = new MarkInfo();
             d.name = Mark_XY_Split[0];
             d.stac = [];
             for (let j = 1; j < Mark_XY_Split.length; j++) {
                 if (Mark_XY_Split[j] != "") {
-                    d.stac.push(Number(Mark_XY_Split[j]));                
+                    (d.stac as number[]).push(Number(Mark_XY_Split[j]));                
                 }
             }
             this.mShape.push(d);
@@ -1017,16 +1018,20 @@ class clsSpline {
 }
 
 
-const clsTileMap: any =function() {
+class clsTileMap {
+    private xhr: XMLHttpRequest[] = [];
+    private TileMapData: {[key: string]: unknown};
+    private LicenseFontData: Font_Property;
 
-    let xhr: XMLHttpRequest[] =[];
-    let TileMapData = setTileMapData();
-    let LicenseFontData=clsBase.Font();
-    LicenseFontData.Size = 2.5;
-    LicenseFontData.Back=clsBase.WhiteBackground();
+    constructor() {
+        this.TileMapData = this.setTileMapData();
+        this.LicenseFontData = clsBase.Font();
+        this.LicenseFontData.Size = 2.5;
+        this.LicenseFontData.Back = clsBase.WhiteBackground();
+    }
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
-    this.drawTileMap=function(g: CanvasRenderingContext2D, TileMap: any, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number,afterDrawFunction: (() => void) | undefined) {
+    drawTileMap(g: CanvasRenderingContext2D, TileMap: unknown, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
         if(xhr.length>0){
             for(let i in xhr){
                 xhr[i].abort();
@@ -1120,21 +1125,21 @@ const clsTileMap: any =function() {
     }
 
     /**ライセンスフォントを設定 */
-    this.setLicenceFont=function(fnt: Font_Property){
+    setLicenceFont(fnt: Font_Property): void {
         LicenseFontData = fnt;
     }
 
-    this.getLicenceFont=function(){
+    getLicenceFont(): Font_Property {
         return LicenseFontData;
     }
 
     /**既存タイルマップデータをキーで取得 */
-    this.getTileMapData=function(dataName: string){
+    getTileMapData(dataName: string): any {
         return TileMapData[dataName];
     }
 
     /**既存タイルマップデータをIDで取得 */
-    this.getTileMapDataById = function (id: number) {
+    getTileMapDataById(id: number): any {
         for (let i in TileMapData) {
             if (TileMapData[i].opt.id == id) {
                 return TileMapData[i];
@@ -1145,7 +1150,7 @@ const clsTileMap: any =function() {
     
 
     /**既存タイルマップの中のタグの一覧を取得 */
-    this.getTileMapTagList=function(){
+    getTileMapTagList(): string[] {
         let tag=[];
         for(let i in TileMapData){
             tag.push(TileMapData[i].opt.tag);
@@ -1154,7 +1159,7 @@ const clsTileMap: any =function() {
     }
 
     /**指定のタグに一致するタイルマップ一覧を取得 */
-    this.getTileMapListByTag=function(tag: string){
+    getTileMapListByTag(tag: string): any[] {
         let tiles=[];
         for(let i in TileMapData){
             if(TileMapData[i].opt.tag==tag){
@@ -1165,8 +1170,7 @@ const clsTileMap: any =function() {
     }
 
     /**  解像度と緯度経度範囲で、必要なタイルマップ数を求める*/
-    this. Get_TileMap_Image_Number=function(ZoomLevel: number, ScrLatLonBox: latlonbox) {
-
+    Get_TileMap_Image_Number(ZoomLevel: number, ScrLatLonBox: latlonbox): number {
         let StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
         let EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
 
@@ -1181,8 +1185,7 @@ const clsTileMap: any =function() {
     }
 
     /**緯度経度とズームレベルからタイルマップのXYを求める*/
-    this.Get_TileMap_Image_Code=function(ZoomLevel: number, LatLon: IdoKeido) {
-
+    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): any {
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
         }
@@ -1192,7 +1195,7 @@ const clsTileMap: any =function() {
         return TileXY;
     }
 
-    this. Get_TileMap_Image=function(TileMap: any, ZoomLevel: number, ScrLatLonBox: latlonbox,  MapZahyo: zahyohenkan, ScrData: Screen_info) {
+    Get_TileMap_Image(TileMap: unknown, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): unknown {
 
         let FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
         let StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
@@ -1250,8 +1253,9 @@ const clsTileMap: any =function() {
 
         return tileList_Data;
     }
+
     /**指定したZoomのタイルマップの緯度経度を求める*/
-    this.Get_TileMap_IdoKedo=function(ZoomLevel: number, X: number, Y: number) {
+    Get_TileMap_IdoKedo(ZoomLevel: number, X: number, Y: number): IdoKeido {
         let nw = new latlon();
         nw.lon = (X / 2 ** ZoomLevel) * 360 - 180;
         let tx1 = (Y / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
@@ -1266,8 +1270,7 @@ const clsTileMap: any =function() {
     }
 
     /**タイルマップのXYの値が外れていた場合に修正する*/
-    this.check_TileMap_XY=function (ZoomLevel: number, X: number, Y: number){
-
+    check_TileMap_XY(ZoomLevel: number, X: number, Y: number): boolean {
         if (X < 0) {
             X = -X;
         }
@@ -1283,15 +1286,15 @@ const clsTileMap: any =function() {
         return { x: X, y: Y };
     }
     /** 画面左下に著作権表示**/
-    this. PrintCopyright=function(g: CanvasRenderingContext2D,TileMap: any,ScrData: Screen_info) {
+    PrintCopyright(g: CanvasRenderingContext2D, TileMap: any, ScrData: Screen_info): void {
         let x = 5;
         let y = ScrData.MapScreen_Scale.bottom - 5;
-        let tx=TileMap.copyright+chrLF+TileMap.opt.id;
-        clsDraw.print(g, tx, new point(x, y), LicenseFontData, enmHorizontalAlignment.Left, enmVerticalAlignment.Bottom, ScrData);
+        let tx = TileMap.copyright + chrLF + TileMap.opt.id;
+        clsDraw.print(g, tx, new point(x, y), this.LicenseFontData, enmHorizontalAlignment.Left, enmVerticalAlignment.Bottom, ScrData);
     }
 
     /**既存タイルマップデータを設定 */
-    function setTileMapData() {
+    private setTileMapData(): {[key: string]: unknown} {
         let gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
 
         let MapTypeArray: {[key: string]: any} = {};

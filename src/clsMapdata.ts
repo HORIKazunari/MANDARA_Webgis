@@ -7,82 +7,80 @@ import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 
 /** Description placeholder */
-const Hennyu_Data: any = function(this: any) {
-    this.code; //Integer
-    this.Name; //String
-    this.Time; //strYMD
-    this.Part; //Boolean
-
+class Hennyu_Data {
+    code?: number;
+    Name?: string;
+    Time?: strYMD;
+    Part?: boolean;
 }
 
 //オブジェクト継承データ（地図データ）
 /**
  * Description placeholder
- *
- * @returns 
  */
-const Object_Succession_Data: any = function(this: any) {
-    this.ObjectCode; //Integer
-    this.Time = new strYMD;
-}
-Object_Succession_Data.prototype.Clone = function () {
-    let d=new Object_Succession_Data();
-    d.ObjectCode=this.ObjectCode;
-    d.Time=this.Time.Clone();
+class Object_Succession_Data {
+    ObjectCode?: number;
+    Time: strYMD = new strYMD();
+
+    Clone(): Object_Succession_Data {
+        let d = new Object_Succession_Data();
+        d.ObjectCode = this.ObjectCode;
+        d.Time = this.Time.Clone();
+        return d;
+    }
 }
 
 //オブジェクト名スタック（地図データ）
 /**
  * Description placeholder
- *
- * @returns 
  */
-const Object_NameTimeStac_Data: any = function(this: any) {
-    this.NamesList = []; //String
-    this.SETime = new Start_End_Time_data();
-}
-Object_NameTimeStac_Data.prototype.connectNames = function (delimiter = '/') {
-    return this.NamesList.join(delimiter);
-}
-Object_NameTimeStac_Data.prototype.Clone = function () {
-    let o = new Object_NameTimeStac_Data();
-    o.SETime = this.SETime.Clone();
-    o.NamesList = Generic.ArrayShallowCopy(this.NamesList);
-    return o;
+class Object_NameTimeStac_Data {
+    NamesList: string[] = [];
+    SETime: Start_End_Time_data = new Start_End_Time_data();
+
+    connectNames(delimiter: string = '/'): string {
+        return this.NamesList.join(delimiter);
+    }
+
+    Clone(): Object_NameTimeStac_Data {
+        let o = new Object_NameTimeStac_Data();
+        o.SETime = this.SETime.Clone();
+        o.NamesList = Generic.ArrayShallowCopy(this.NamesList);
+        return o;
+    }
 }
 
 // オブジェクト代表点（地図データ）
 /**
  * Description placeholder
- *
- * @returns 
  */
-const Object_CenterPoint_Data: any = function(this: any) {
-    this.Position = new point();
-    this.SETime = new Start_End_Time_data();
+class Object_CenterPoint_Data {
+    Position: point = new point();
+    SETime: Start_End_Time_data = new Start_End_Time_data();
+
+    Clone(): Object_CenterPoint_Data {
+        let d = new Object_CenterPoint_Data();
+        d.Position = this.Position.Clone();
+        d.SETime = this.SETime.Clone();
+        return d;
+    }
 }
-Object_CenterPoint_Data.prototype.Clone=function(){
-    let d=new Object_CenterPoint_Data();
-    d.Position=this.Position.Clone();
-    d.SETime=this.SETime.Clone();
-    return d;
-}
+
 /**
  * Description placeholder
- *
- * @returns 
  */
-const LineCodeStac_Data: any = function(this: any) {
-    this.LineCode; //Integer
-    this.NumOfTime; //Integer
-    this.Times = []; //Start_End_Time_data
-}
-LineCodeStac_Data.prototype.Clone=function(){
-    let d=new LineCodeStac_Data();
-    d.LineCode=this.LineCode;
-    d.NumOfTime=this.NumOfTime;
-    d.Times=Generic.ArrayClone( this.Times);
-    return d;
+class LineCodeStac_Data {
+    LineCode?: number;
+    NumOfTime?: number;
+    Times: Start_End_Time_data[] = [];
+
+    Clone(): LineCodeStac_Data {
+        let d = new LineCodeStac_Data();
+        d.LineCode = this.LineCode;
+        d.NumOfTime = this.NumOfTime;
+        d.Times = Generic.ArrayClone(this.Times);
+        return d;
+    }
 }
 
 /**
@@ -164,41 +162,37 @@ const enmDefTimeAttDataType = {
  *
  * @returns 
  */
-const strMPObjDefTimeAttData_Info: any = function(this: any) {
-    this.Type; //enmDefTimeAttDataType
-    this.attData = new strMPObjDefAttData_Info();
-    this.ExtraValue; // enmDefPointAttDataExtraValue
-}
-strMPObjDefTimeAttData_Info.prototype.Clone = function () {
-    let d = new strMPObjDefTimeAttData_Info();
-    Object.assign(d, this);
-    d.attData = this.attData.Clone();
-    return d;
+class strMPObjDefTimeAttData_Info {
+    Type?: number;
+    attData: strMPObjDefAttData_Info = new strMPObjDefAttData_Info();
+    ExtraValue?: number;
+
+    Clone(): strMPObjDefTimeAttData_Info {
+        let d = new strMPObjDefTimeAttData_Info();
+        Object.assign(d, this);
+        d.attData = this.attData.Clone();
+        return d;
+    }
 }
 
 //オブジェクトグループデータ
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strObjectGroup_Data: any = function(this: any) {
-    this.ObjectType; //enmObjectGoupType_Data 'ObjectGoupType_Dataの内容
-    this.Name; //String
-    this.Shape; //enmShape
-    this.Mesh; //enmMesh_Number
-    this.Color = new colorRGBA();
+class strObjectGroup_Data {
+    ObjectType?: number;
+    Name?: string;
+    Shape?: number;
+    Mesh?: number;
+    Color: colorRGBA = new colorRGBA();
+    DefTimeAttDataNum?: number;
+    DefTimeAttSTC: strMPObjDefTimeAttData_Info[] = [];
+    ObjectNameNum?: number;
+    ObjectNameList: string[] = [];
+    UseLineType: boolean[] = [];
+    UseObjectGroup: boolean[] = [];
 
-    this.DefTimeAttDataNum; //Integer
-    this.DefTimeAttSTC = []; //strMPObjDefTimeAttData_Info
-
-    this.ObjectNameNum; //Integer
-    this.ObjectNameList = []; //String
-
-    this.UseLineType = []; //Boolean 'NormalObjectで使用
-    this.UseObjectGroup = []; //Boolean 'AggregationObjectで使用するオブジェクトグループ
-}
-strObjectGroup_Data.prototype.Clone = function () {
+    Clone(): strObjectGroup_Data {
     let d = new strObjectGroup_Data();
     Object.assign(d, this);
     d.DefTimeAttSTC = [];
@@ -209,61 +203,59 @@ strObjectGroup_Data.prototype.Clone = function () {
     d.UseLineType = this.UseLineType.slice();
     d.UseObjectGroup = this.UseObjectGroup.slice();
     return d;
+    }
 }
 
 //初期時間属性データ個別(TypeがPointの場合はSpanの開始だけを使う)
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strDefTimeAttDataEach_Info: any = function(this: any) {
-    this.Span = new Start_End_Time_data();
-    this.Value; //String
+class strDefTimeAttDataEach_Info {
+    Span: Start_End_Time_data = new Start_End_Time_data();
+    Value?: string;
+
+    Clone(): strDefTimeAttDataEach_Info {
+        let d = new strDefTimeAttDataEach_Info();
+        d.Span = this.Span.Clone();
+        d.Value = this.Value;
+        return d;
+    }
 }
-strDefTimeAttDataEach_Info.prototype.Clone= function () {
-    let d=new strDefTimeAttDataEach_Info();
-    d.Span=this.Span.Clone();
-    d.Value=this.Value;
-    return d;
-}
+
 //初期時間属性データ
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strDefTimeAttData_Info: any = function(this: any) {
-    this.Data = []; //strDefTimeAttDataEach_Info
-}
-strDefTimeAttData_Info.prototype.Clone= function () {
-    let d=new strDefTimeAttData_Info();
-    d.Data=Generic.ArrayClone(this.Data);
-    return d;
+class strDefTimeAttData_Info {
+    Data: strDefTimeAttDataEach_Info[] = [];
+
+    Clone(): strDefTimeAttData_Info {
+        let d = new strDefTimeAttData_Info();
+        d.Data = Generic.ArrayClone(this.Data);
+        return d;
+    }
 }
 
 //オブジェクト（地図データ）
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strObj_Data: any = function(this: any) {
-    this.Number; //Integer 'オブジェクト番号
-    this.Kind; //Integer
-    this.Shape; //enmShape
-    this.NumOfNameTime; //Integer
-    this.NumOfCenterP; //Integer
-    this.NumOfSuc; //Integer
-    this.NumOfLine; //Integer '集約オブジェクトの場合は、AggrtObj、普通のオブジェクトの場合はLineの数
-    this.Circumscribed_Rectangle = new rectangle();
-    this.DefTimeAttValue = []; //strDefTimeAttData_Inf
-    this.SucSTC = []; //Object_Succession_Data
-    this.NameTimeSTC = []; //Object_NameTimeStac_Data
-    this.CenterPSTC = []; //Object_CenterPoint_Data
-    this.LineCodeSTC = []; //LineCodeStac_Data
-}
-strObj_Data.prototype.Clone = function () {
+class strObj_Data {
+    Number?: number;
+    Kind?: number;
+    Shape?: number;
+    NumOfNameTime?: number;
+    NumOfCenterP?: number;
+    NumOfSuc?: number;
+    NumOfLine?: number;
+    Circumscribed_Rectangle: rectangle = new rectangle();
+    DefTimeAttValue: strDefTimeAttData_Info[] = [];
+    SucSTC: Object_Succession_Data[] = [];
+    NameTimeSTC: Object_NameTimeStac_Data[] = [];
+    CenterPSTC: Object_CenterPoint_Data[] = [];
+    LineCodeSTC: LineCodeStac_Data[] = [];
+
+    Clone(): strObj_Data {
     let d=new strObj_Data();
     Object.assign(d, this);
     d.Circumscribed_Rectangle=this.Circumscribed_Rectangle.Clone();
@@ -273,44 +265,41 @@ strObj_Data.prototype.Clone = function () {
     d.CenterPSTC=Generic.ArrayClone(this.CenterPSTC);
     d.LineCodeSTC=Generic.ArrayClone(this.LineCodeSTC);
     return d;
+    }
 }
-
 
 //方位の文字
 /**
  * Description placeholder
- *
- * @returns 
  */
-const dirWord_Data: any = function(this: any) {
-    this.East = ""; //String
-    this.West = ""; //String
-    this.North = ""; //String
-    this.South = ""; //String
-}
-dirWord_Data.prototype.Clone = function () {
+class dirWord_Data {
+    East: string = "";
+    West: string = "";
+    North: string = "";
+    South: string = "";
+
+    Clone(): dirWord_Data {
     let w = new dirWord_Data();
     w.East = this.East;
     w.West = this.West;
     w.North = this.North;
     w.South = this.South;
     return w;
+    }
 }
 
 //方位の設定（地図・属性データ）
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strCompass_Attri: any = function(this: any) {
-    this.Visible; //Boolean
-    this.Position = new point();
-    this.Mark = new Mark_Property();
-    this.dirWord = new dirWord_Data();
-    this.Font = new Font_Property();
-}
-strCompass_Attri.prototype.Clone = function () {
+class strCompass_Attri {
+    Visible?: boolean;
+    Position: point = new point();
+    Mark: Mark_Property = new Mark_Property();
+    dirWord: dirWord_Data = new dirWord_Data();
+    Font: Font_Property = new Font_Property();
+
+    Clone(): strCompass_Attri {
     let cp = new strCompass_Attri();
     cp.Visible = this.Visible;
     cp.Position = this.Position.Clone();
@@ -318,209 +307,159 @@ strCompass_Attri.prototype.Clone = function () {
     cp.dirWord = this.dirWord.Clone();
     cp.Font = this.Font.Clone();
     return cp;
+    }
 }
 
 //ライン線種・時間データ（地図データ）
 /**
  * Description placeholder
- *
- * @returns 
  */
-const Line_Time_Data: any = function(this: any) {
-    this.Kind; //Integer
-    this.SETime = new Start_End_Time_data();
-}
-Line_Time_Data.prototype.Clone = function () {
-    let d = new Line_Time_Data();
-    d.Kind = this.Kind;
-    d.SETime = this.SETime.Clone();
-    return d;
-}
-Line_Time_Data.prototype.Equals = function (LT: any) {
-    if(LT.Kind == this.Kind){
-        if(LT.SETime.Equals(this.SETime)){
-            return true;
-        }
+class Line_Time_Data {
+    Kind?: number;
+    SETime: Start_End_Time_data = new Start_End_Time_data();
+
+    Clone(): Line_Time_Data {
+        let d = new Line_Time_Data();
+        d.Kind = this.Kind;
+        d.SETime = this.SETime.Clone();
+        return d;
     }
-    return false;
+
+    Equals(LT: any): boolean {
+        if (LT.Kind == this.Kind) {
+            if (LT.SETime.Equals(this.SETime)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 //ラインデータ（地図データ）
 /**
- * Description placeholder
- *
- * @returns 
+ * Description placeholder (属性・地図データ用のライン情報)
  */
-const strLine_Data: any = function(this: any) {
-    this.Number; //Integer 'ライン番号
-    this.NumOfPoint; //Integer
-    this.Connect; //enmLineConnect
-    this.NumOfLineUse; //Integer
-    this.Circumscribed_Rectangle = new rectangle();
-    this.NumOfTime; //Integer
-    this.Drawn; //Boolean
-    this.LineTimeSTC = []; //Line_Time_Data
-    this.PointSTC = []; //PointF
-}
-strLine_Data.prototype.Clone = function () {
-    let d = new strLine_Data();
-    Object.assign(d, this);
-    d.Circumscribed_Rectangle = this.Circumscribed_Rectangle.Clone();
-    d.PointSTC = Generic.ArrayClone(this.PointSTC);
-    d.LineTimeSTC = Generic.ArrayClone(this.LineTimeSTC);
-    return d;
+class strLine_Data {
+    Number?: number;
+    NumOfPoint?: number;
+    Connect?: number;
+    NumOfLineUse?: number;
+    Circumscribed_Rectangle: rectangle = new rectangle();
+    NumOfTime?: number;
+    Drawn?: boolean;
+    LineTimeSTC: Line_Time_Data[] = [];
+    PointSTC: point[] = [];
+
+    Clone(): strLine_Data {
+        let d = new strLine_Data();
+        Object.assign(d, this);
+        d.Circumscribed_Rectangle = this.Circumscribed_Rectangle.Clone();
+        d.PointSTC = Generic.ArrayClone(this.PointSTC);
+        d.LineTimeSTC = Generic.ArrayClone(this.LineTimeSTC);
+        return d;
+    }
 }
 
 //利用可能なライン（属性・地図データ）
 /**
  * Description placeholder
- *
- * @param {*} lcode 
- * @param {*} Kind 
- * @returns 
  */
-const EnableMPLine_Data: any = function(this: any, lcode?: any, Kind?: any) {
-    this.LineCode = lcode; //Integer
-    this.Kind = Kind; //Integer
-}
-EnableMPLine_Data.prototype.Clone = function () {
-    let d = new EnableMPLine_Data();
-    Object.assign(d, this);
-    return d;
-}
+class EnableMPLine_Data {
+    LineCode?: number;
+    Kind?: number;
 
-interface Zahyo_info {
-    Mode: number; //enmZahyo_mode_info
-    System: number; //enmZahyo_System_Info
-    HeimenTyokkaku_KEI_Number: number;
-    Projection: number; //enmProjection_Info
-    CenterXY: point;
-    Clone(): Zahyo_info;
+    constructor(lcode?: number, Kind?: number) {
+        this.LineCode = lcode;
+        this.Kind = Kind;
+    }
+
+    Clone(): EnableMPLine_Data {
+        let d = new EnableMPLine_Data();
+        Object.assign(d, this);
+        return d;
+    }
 }
 
 /**
  * Description placeholder
- *
- * @returns 
  */
-const Zahyo_info: any = function(this: Zahyo_info) {
-    this.Mode; //enmZahyo_mode_info '緯度経度か、平面直角か
-    this.System; //enmZahyo_System_Info '世界測地系か、日本測地系か
-    this.HeimenTyokkaku_KEI_Number; //Short  '1-19の値
-    this.Projection; //enmProjection_Info '投影法
-    this.CenterXY = new point(); //PointF  '緯度経度の中心
-}
-Zahyo_info.prototype.Clone = function () {
-    let d = new Zahyo_info();
-    Object.assign(d, this);
-    d.CenterXY = this.CenterXY.Clone();
-    return d;
-}
+class Zahyo_info {
+    Mode?: number;
+    System?: number;
+    HeimenTyokkaku_KEI_Number?: number;
+    Projection?: number;
+    CenterXY: point = new point();
 
-interface strMap_data {
-    MPVersion: number;
-    FileName: string;
-    FullPath: string;
-    OBKNum: number;
-    Kend: number;
-    LpNum: number;
-    ALIN: number;
-    SCL: number;
-    SCL_U: number; //enmScaleUnit
-    Comment: string;
-    Time_Mode: boolean;
-    Circumscribed_Rectangle: rectangle;
-    Zahyo: Zahyo_info;
-    Detail: any; //Map_Detail_Data
-    MapCompass: any; //strCompass_Attri
+    Clone(): Zahyo_info {
+        let d = new Zahyo_info();
+        Object.assign(d, this);
+        d.CenterXY = this.CenterXY.Clone();
+        return d;
+    }
 }
 
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strMap_data: any = function(this: strMap_data) {
-    this.MPVersion; //Single
-    this.FileName; //String
-    this.FullPath; //String
-    this.OBKNum; //Integer
-    this.Kend; //Integer
-    this.LpNum; //Integer
-    this.ALIN; //Integer
-    this.SCL; //Single
-    this.SCL_U; //enmScaleUnit
-    this.Comment; //String
-    this.Time_Mode; //Boolean
-    this.Circumscribed_Rectangle = new rectangle(); //地図の外接四角形
-    this.Zahyo = new Zahyo_info();
-    this.Detail = new Map_Detail_Data();
-    this.MapCompass = new strCompass_Attri();
+class strMap_data {
+    MPVersion?: number;
+    FileName?: string;
+    FullPath?: string;
+    OBKNum?: number;
+    Kend?: number;
+    LpNum?: number;
+    ALIN?: number;
+    SCL?: number;
+    SCL_U?: number;
+    Comment?: string;
+    Time_Mode?: boolean;
+    Circumscribed_Rectangle: rectangle = new rectangle();
+    Zahyo: Zahyo_info = new Zahyo_info();
+    Detail: any = new Map_Detail_Data();
+    MapCompass: any = new strCompass_Attri();
 }
 
 /**
  * Description placeholder
- *
- * @returns 
  */
-const strLKOjectGroup_Info: any = function(this: any) {
-    this.GroupNumber; //Integer
-    this.UseOnly; //Boolean
-    this.Pattern = new Line_Property();
-}
-strLKOjectGroup_Info.prototype.Clone = function () {
-    let d = new strLKOjectGroup_Info();
-    Object.assign(d, this);
-    d.Pattern = this.Pattern.Clone();
-    return d;
+class strLKOjectGroup_Info {
+    GroupNumber?: number;
+    UseOnly?: boolean;
+    Pattern: Line_Property = new Line_Property();
+
+    Clone(): strLKOjectGroup_Info {
+        let d = new strLKOjectGroup_Info();
+        Object.assign(d, this);
+        d.Pattern = this.Pattern.Clone();
+        return d;
+    }
 }
 
-//線種名とパターン（地図データ）
-/**
- * Description placeholder
- *
- * @returns 
- */
-const LineKind_Data: any = function(this: any) {
-    this.Name; //String
-    this.NumofObjectGroup; //Integer '1の場合は通常の線種、2以上の場合はオブジェクトグループ連動
-    this.ObjGroup = []; //strLKOjectGroup_Info '(0)は通常の線種のパターン
-    this.Mesh; //enmMesh_Number
-}
-LineKind_Data.prototype.Clone = function () {
-    let d = new LineKind_Data();
-    Object.assign(d, this);
-    d.ObjGroup = [];
-    d.ObjGroup=Generic.ArrayClone(this.ObjGroup);
-    return d;
-}
+
 
 //線種をオブジェクトグループ連動を個別に数えた場合に使用
 /**
  * Description placeholder
- *
- * @returns 
  */
-const LPatSek_Info: any = function(this: any) {
-    this.LKind; //Integer
-    this.LkindPatNum; //Integer
-    this.Name; //String
-    this.Pat = new Line_Property();
+class LPatSek_Info {
+    LKind?: number;
+    LkindPatNum?: number;
+    Name?: string;
+    Pat: Line_Property = new Line_Property();
 }
 
 /** Description placeholder */
-const Map_Detail_Data: any = function(this: any) {
-    this.DistanceMeasurable; //Boolean
-    this.ScaleVisible; //Boolean
-
+class Map_Detail_Data {
+    DistanceMeasurable?: boolean;
+    ScaleVisible?: boolean;
 }
 
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
 /** Description placeholder */
-const Hennyu_Data: any = function(this: any) {
-    this.code; //Integer
-    this.Direction; //Integer '1 or -1
+class Hennyu_Data2 {
+    code?: number;
+    Direction?: number;
 }
 
 
