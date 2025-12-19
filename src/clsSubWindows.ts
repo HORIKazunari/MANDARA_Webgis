@@ -965,7 +965,7 @@ function frmLatLonInput(LatLon: any, BoxF: boolean, okEvent: (LatLon: any) => vo
 }
 
 /**投影法変換 */
-function frmProjectionConvert(_Zahyo: any,MapRect: any,okEvent: any){
+function frmProjectionConvert(_Zahyo: any, MapRect: any, okEvent: (Zahyo: any) => void) {
     let Zahyo=_Zahyo.Clone();
     const backDiv = Generic.set_backDiv("", "投影法変換", 425, 300, true, true, buttonOK, 0.2, true);
     const gbPresentProjection=Generic.createNewFrame(backDiv,"","",15,40,200,50,"現在の投影法");
@@ -984,7 +984,7 @@ function frmProjectionConvert(_Zahyo: any,MapRect: any,okEvent: any){
         {value:enmProjection_Info.prjMollweide,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMollweide)},
         {value:enmProjection_Info.prjSanson,text:Generic.getStringProjectionEnum(enmProjection_Info.prjSanson)}];
     Generic.createNewRadioButtonList(gbProjection, "Projection", prjList, 15, 15, undefined,25, Zahyo.Projection, 
-        function(v: any){Zahyo.Projection=v;}, "");
+        function(v: number){Zahyo.Projection=v;}, "");
       
     function buttonOK(){
         let csel=Generic.getRadioCheckByValue("rdCenter");
@@ -1004,7 +1004,7 @@ function frmProjectionConvert(_Zahyo: any,MapRect: any,okEvent: any){
 }
 
 /**方位記号の設定 */
-function frmCompassSettings(_compass: any,okEvent: any){
+function frmCompassSettings(_compass: any, okEvent: (comp: any) => void) {
     let comp=_compass.Clone();
     const backDiv = Generic.set_backDiv("", "方位記号の設定", 280, 270, true, true, buttonOK, 0.2, true);
     Generic.createNewCheckBox(backDiv,"方位記号を表示","",comp.Visible,10,40,undefined, function(obj: any){comp.Visible=obj.checked;},"");
@@ -1035,7 +1035,7 @@ function frmCompassSettings(_compass: any,okEvent: any){
 }
 
 /**出力画面のオプション */
-function frmPrintOption(firstTab=0){
+function frmPrintOption(firstTab: number = 0) {
     let atv=state.attrData.TotalData.ViewStyle.Clone();
     let sdata=clsSettingData.Clone();
     const backDiv = Generic.set_backDiv("", "オブション", 600, 420, true, true, buttonOK, 0.2, true);
@@ -1452,7 +1452,7 @@ function frmPrintOption(firstTab=0){
 }
 
 /**データ項目設定コピー */
-function frmMainCopyDataSettings(okEvent: any){
+function frmMainCopyDataSettings(okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "データ項目設定コピー", 560, 400, true, true, buttonOK, 0.2, true);
     let origin = Generic.createNewFrame(backDiv, "", "", 20, 50, 250, 290, "コピー元");
     let dest = Generic.createNewFrame(backDiv, "", "", 290, 50, 250, 290, "コピー先");
@@ -1474,7 +1474,7 @@ function frmMainCopyDataSettings(okEvent: any){
     let chkODMarkSizeValueCopy=Generic.createNewCheckBox(grCopyMode,"記号の大きさモードの凡例値もコピー","",true,30,110,130,undefined,"");
     let chkContour=Generic.createNewCheckBox(grCopyMode,"等値線モード","",true,10,155,100,undefined,"");
 
-    function changeOriginLayer(obj: any, sel: any, v: any){
+    function changeOriginLayer(obj: HTMLSelectElement, sel: number, v: string) {
         state.attrData.Set_DataTitle_to_cboBox(originData, sel, 0);
         setDestDataItem();
         }
@@ -1521,7 +1521,7 @@ function frmMainCopyDataSettings(okEvent: any){
 }
 
 /**連続表示モードにまとめて設定 */
-function frmMain_SetSeriesMode(okEvent: any) {
+function frmMain_SetSeriesMode(okEvent: () => void) {
     let DataItem: any[] = [];
     const backDiv = Generic.set_backDiv("", "連続表示モードにまとめて設定", 790, 390, true, true, buttonOK, 0.2, true);
     let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
