@@ -1085,7 +1085,7 @@ class spatial {
                 f = false;
                 break;
             }
-            let k2: any = PointIndex.GetSamePointNumber(exy.x, exy.y);
+            let k2: {ObjectNumber: number, Tag: number, PointNumber: number} = PointIndex.GetSamePointNumber(exy.x, exy.y);
             let LINENO2: number = k2.Tag;
             let PointNumber: number = k2.PointNumber;
             if (k2.ObjectNumber != -1) {
@@ -1509,7 +1509,7 @@ class spatial {
     }
 
     //緯度経度等もともとの座標から、投影変換した座標を返す
-    static Get_Converted_XY (Position: any, MPDataMapZahyo: any) {
+    static Get_Converted_XY (Position: point, MPDataMapZahyo: zahyohenkan) {
         let ox = Position.x;
         let oy = Position.y;
         switch (MPDataMapZahyo.Mode) {
@@ -1581,7 +1581,7 @@ class spatial {
             }
         }
     }
-    static newtonMollweide (lat: any) {
+    static newtonMollweide (lat: number) {
         let x = 0;
         let lat2 = lat * Math.PI / 180;
         let n = 0;
@@ -1597,7 +1597,7 @@ class spatial {
         return x / 2;
     }
 
-    static newtonEckert4 (lat: any) {
+    static newtonEckert4 (lat: number) {
         let x = 0;
         let lat2 = lat * Math.PI / 180;
         let n = 0;
@@ -1614,7 +1614,7 @@ class spatial {
     }
 
 
-    static Check_Zahyo_Projection_Convert_Enabled (OriginMap: any, ConvertMap: any) {
+    static Check_Zahyo_Projection_Convert_Enabled (OriginMap: zahyohenkan, ConvertMap: zahyohenkan) {
         /// <signature>
         /// <summary>座標系・測地系が変換可能か調べる</summary>
         /// <param name="OriginMap">もともとの座標系</param>  
@@ -1647,7 +1647,7 @@ class spatial {
         return { ok: true, emes: "" };
     }
     //緯度経度・平面直角座標系を変換した四角形の四隅座標から、元の緯度経度・平面直角座標系座標に戻す
-    static Get_Reverse_Rect (In_Rect: any, MPDataMapZahyo: any) {
+    static Get_Reverse_Rect (In_Rect: rectangle, MPDataMapZahyo: zahyohenkan) {
         let leftP1 = this.Get_Reverse_XY(new point(In_Rect.left, In_Rect.top), MPDataMapZahyo) ?? new point(0, 0);
         let leftP2 = this.Get_Reverse_XY(new point(In_Rect.left, (In_Rect.top + In_Rect.bottom) / 2), MPDataMapZahyo) ?? new point(0, 0);
         let leftP3 = this.Get_Reverse_XY(new point(In_Rect.left, In_Rect.bottom), MPDataMapZahyo) ?? new point(0, 0);
@@ -1664,7 +1664,7 @@ class spatial {
     }
 
     //緯度経度・平面直角座標系を変換した座標(地図ファイル中の座標)から、元の緯度経度・平面直角座標系座標に戻す
-    static Get_Reverse_XY (Position: any, MPDataMapZahyo: any) {
+    static Get_Reverse_XY (Position: point, MPDataMapZahyo: zahyohenkan) {
         let ox = Position.x;
         let oy = Position.y;
         let mz = MPDataMapZahyo;
@@ -1733,14 +1733,14 @@ class spatial {
 export class Generic {
 
     /**読み込み中マーク 処理終了後に Generic.clear_backDiv();で消す*/
-    static readingIcon(title: any){
+    static readingIcon(title: string){
         const state = appState();
         let boxReading = Generic.set_backDiv("", title, 300, 150, false, false, undefined, 0.2, false);     
         Generic.createNewDiv(boxReading,  " 読み込み中", "", "grayFrame", 30, 50, 230, 40, "padding:5px", undefined);   
         Generic.createNewImage(boxReading, "image/icon_loader.gif", "", "", "", 140, 110, "", undefined);
     }
     /**外部クリップボードから貼り付け */
-    static outerPaste(okCall: any, cancelCall: any){
+    static outerPaste(okCall: (value: string) => void, cancelCall: (() => void) | undefined){
         const state = appState();
         const backDiv = Generic.set_backDiv("", "外部から貼り付け", 200, 240, true, true, buttonOK, 0.2, true,true,cancelCall);
         Generic.createNewSpan(backDiv,"下に貼り付けて下さい(Ctrl+V)","","",15,40,"",undefined);
@@ -1753,13 +1753,13 @@ export class Generic {
     }
 
     /**オブジェクト名と設定期間の組み合わせ文字列を返す */
-    static getTimeList(OnameStac: any, separator = "") {
+    static getTimeList(OnameStac: Object_NameTimeStac_Data, separator = "") {
         const state = appState();
         let tx = "【" + OnameStac.connectNames() + "】" + separator + clsTime.StartEndtoString(OnameStac.SETime);
         return tx;
     }
     /**メッシュコードの名称を取得 */
-    static ConvertMeshTypeFromEnum(MeshNumber: any) {
+    static ConvertMeshTypeFromEnum(MeshNumber: enmMesh_Number) {
         const state = appState();
         switch (MeshNumber) {
             case enmMesh_Number.mhNonMesh:
@@ -1780,7 +1780,7 @@ export class Generic {
                 return "1/10メッシュ";
         }
     }
-    static ConvertMeshTypeFromString(MeshType: any) {
+    static ConvertMeshTypeFromString(MeshType: string) {
         const state = appState();
         switch (MeshType) {
             case "":
@@ -1802,7 +1802,7 @@ export class Generic {
         }
     }
     /** レイヤタイプの文字列を返す*/
-    static ConvertStringFromLayerType(Type: any) {
+    static ConvertStringFromLayerType(Type: enmLayerType) {
         const state = appState();
         switch (Type) {
             case enmLayerType.Normal:
@@ -1816,7 +1816,7 @@ export class Generic {
                 break;
         }
     }
-    static ConvertStringLayerFromString(TypeStr: any) {
+    static ConvertStringLayerFromString(TypeStr: string) {
         const state = appState();
         switch (TypeStr) {
             case "通常のレイヤ":
@@ -1832,7 +1832,7 @@ export class Generic {
     }
 
     /** 属性データ編集で欠損値扱い欄に表示する文字を返す*/
-    static ConvertMissingValueFromBool(MissingValueF: any) {
+    static ConvertMissingValueFromBool(MissingValueF: boolean) {
         const state = appState();
         switch (MissingValueF) {
             case true:
@@ -1843,7 +1843,7 @@ export class Generic {
                 break;
         }
     }
-    static ConvertMissingValueFromString(MissingStr: any) {
+    static ConvertMissingValueFromString(MissingStr: string) {
         const state = appState();
         switch (MissingStr) {
             case "欠損値":
@@ -1857,7 +1857,7 @@ export class Generic {
 
 
     /**条件検索の文字を返す */
-    static getConditionString(con: any){
+    static getConditionString(con: enmCondition){
         const state = appState();
         switch (con) {
             case enmCondition.Less:
@@ -1907,7 +1907,7 @@ export class Generic {
     }
 
     /**オブジェクト名の漢字を統一する。比較する漢字が含まれていた場合にtrue */
-    static ObjName_Kanji_Compatible(objName: any){
+    static ObjName_Kanji_Compatible(objName: string){
         const state = appState();
         let Word_Compatible  = clsSettingData.ObjectName_Word_Compatible.split("|");
         let f = false;
@@ -1956,7 +1956,7 @@ export class Generic {
     }
 
     /**レイヤの種類の名称 */
-    static getLayerTypeName(layType: any){
+    static getLayerTypeName(layType: enmLayerType){
         const state = appState();
         let tx = "";
         const enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 };
@@ -1975,7 +1975,7 @@ export class Generic {
     }
 
     /**スペース、カンマ、タブで区切る */
-    static String_Cut(Wo: any, Spliter: any){
+    static String_Cut(Wo: string, Spliter: string){
         const state = appState();
         let CUT = [];
         const vbQuate = String.fromCharCode(34);
@@ -2072,7 +2072,7 @@ export class Generic {
     }
 
     /**地図ファイルをgetMapfileByHttpRequestで開き、JSONで返す */
-    static getMapfileByHttpRequest(url: any, readCall: any){
+    static getMapfileByHttpRequest(url: string, readCall: (data: any) => void){
         const state = appState();
         
         Generic.readingIcon("地図ファイル読み込み");
@@ -2084,7 +2084,7 @@ export class Generic {
             if (xhr.status === 200) {
                 let file = new Blob([xhr.response]);
                 Generic.unzipFile(file, unzipOk, unzipError);
-                function unzipOk(data: any) {
+                function unzipOk(data: {[key: string]: Uint8Array}) {
                     let key = Object.keys(data)[0];
                     if(ext=="mpfj"){
                         readCall(JSON.parse(Generic.utf8ArrayToStr(data[key]))) ;
@@ -2093,7 +2093,7 @@ export class Generic {
                     }
                     Generic.clear_backDiv();
                 }
-                function unzipError(err: any) {
+                function unzipError(err: Error) {
                     Generic.clear_backDiv();
                     alert(url+"の展開に失敗しました");
                 }
@@ -2107,7 +2107,7 @@ export class Generic {
     }
 
     /**画像ウインドウ表示 */
-    static windowCenterOpen(img: any, Xv: any, Yv: any, title: any) {
+    static windowCenterOpen(img: string, Xv: number, Yv: number, title: string) {
         const state = appState();
     let Xw = Xv + 10;
     let Yw = Yv + 80;
@@ -2126,7 +2126,7 @@ export class Generic {
 }
 
 /** ウィンドウでutl表示 */
-static windowCenterPage(help_url: any, Xv: any, Yv: any) {
+static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const state = appState();
 
     let Xw = Xv + 50;
@@ -2136,7 +2136,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 }
 
 /**prompt入力 event_pointがundefinedの場合は画面中央表示*/
-    static prompt(event_point: any, promptText: any, defoText: any, okCall: any, textAlign='left', cancelCall: any = undefined) {
+    static prompt(event_point: point | undefined, promptText: string, defoText: string, okCall: (value: string) => void, textAlign='left', cancelCall: (() => void) | undefined = undefined) {
         const state = appState();
         let gsize = Generic.getDivSize(promptText, 270, "");
         let fheight = (gsize.height) + 130;
@@ -2173,7 +2173,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**yes　noの確認 event_point:表示座標*/
-    static confirm(event_point: any, text: any, yesFunc: any, noFunc: any) {
+    static confirm(event_point: point | undefined, text: string, yesFunc: (() => void) | undefined, noFunc: (() => void) | undefined) {
         const state = appState();
         let gsize=Generic.getDivSize(text,220,"");
         let fheight=(gsize.height)+100;
@@ -2201,7 +2201,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**alertメッセージ event_pointがundefinedの場合は画面中央表示*/
-    static alert(event_point: any, text: any, returnFunction: any = undefined) {
+    static alert(event_point: point | undefined, text: string, returnFunction: (() => void) | undefined = undefined) {
         const state = appState();
         let gsize=Generic.getDivSize(text,220,"");
         let fheight=(gsize.height)+100;
@@ -2219,7 +2219,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**圧縮ファイルを展開 展開後のファイル名の連想配列のバイナリデータを返す*/
-    static unzipFile(file: any, onOK: any, onError: any) {
+    static unzipFile(file: Blob, onOK: (data: {[key: string]: Uint8Array}) => void, onError: (err: Error) => void) {
         const state = appState();
         let zipReader = new FileReader();
         zipReader.readAsArrayBuffer(file);
@@ -2243,7 +2243,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**データ（バイナリ）と対応するファイル名をtotalFileNameにZIP圧縬 */
-    static zipFile(totalFileName: any, data: any, fileName: any) {
+    static zipFile(totalFileName: string, data: Uint8Array[], fileName: string[]) {
         const state = appState();
         let zip = new Zlib.Zip();
         for(let i in data){
@@ -2267,7 +2267,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**バイト配列をUTF8文字列に変換 */
-    static utf8ArrayToStr(array: any) {
+    static utf8ArrayToStr(array: Uint8Array) {
         const state = appState();
         const len = array.length;
         let out = "";
@@ -2299,7 +2299,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**UTF8文字列をバイト配列に変換 */
-     static strToUtf8Array(str: any) {
+     static strToUtf8Array(str: string) {
         const state = appState();
         let n = str.length,
             idx = -1,
@@ -2328,7 +2328,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     };
 
     /**投影法に対応した文字列を返す */
-    static getStringProjectionEnum (prj: any){
+    static getStringProjectionEnum (prj: enmProjection_Info){
         switch (prj) {
             case enmProjection_Info.prjNo:
                 return "設定なし";
@@ -2349,7 +2349,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         }
     }
     /**指定の文字数より長い場合、以降を...で省略して返す。短い場合はそのまま返す */
-    static Check_StringLength_And_Cut(Str: any, MaxLen: any){
+    static Check_StringLength_And_Cut(Str: string, MaxLen: number){
         const state = appState();
         let rstr  = Str;
         if(rstr.length>MaxLen){
@@ -2359,7 +2359,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
 } 
 
 /**単独表示モードの文字列を返す */
-    static getSolomodeStrings (solomode: any){
+    static getSolomodeStrings (solomode: enmSoloMode_Number){
         switch (solomode) {
             case enmSoloMode_Number.ClassPaintMode:
                 return "ペイント";
@@ -2385,7 +2385,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**spanの文字のサイズをbodyに設定して求める（改行しない） */
-    static getSpanSize(text: any, fontSize: any){
+    static getSpanSize(text: string, fontSize: number){
         const state = appState();
         let t = this.createNewSpan(document.body, text, "", "", 0, 0, "", "visibility:hidden");
         t.whiteSpace = 'nowrap';
@@ -2398,7 +2398,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**divの文字のサイズをbodyに設定して求める（指定幅より広いと改行） */
-    static getDivSize(text: any, width: any, styleinfo: any) {
+    static getDivSize(text: string, width: number | undefined, styleinfo: string) {
         const state = appState();
         let t = this.createNewDiv(document.body, text, "", "", 0, 0, "", "", styleinfo + ";visibility:hidden", undefined);
         if (width != undefined) {
@@ -2410,7 +2410,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
         return new size(w, h);
     }
     /** 線モードの曲線の座標列を求めるための4つのコントロールポイント取得*/
-    static Get_OD_Spline_Point(ControlP: any, OriginP: any, DestP: any) {
+    static Get_OD_Spline_Point(ControlP: point, OriginP: point, DestP: point) {
         const state = appState();
         let poxy = [];
         let retV = spatial.Distance_PointLine2(ControlP, OriginP, DestP);
@@ -2440,7 +2440,7 @@ static windowCenterPage(help_url: any, Xv: any, Yv: any) {
     }
 
     /**前後文字付き数字入力テキストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用 */
-    static createNewWordNumberInput(ParentObj: any, headWord: any, footWord: any, defoValue: any, ID: any, x: any, y: any, headWordWidth: any, width: any, onChange: any, styleinfo: any) {
+    static createNewWordNumberInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoValue: number, ID: string, x: number, y: number, headWordWidth: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, styleinfo: string) {
         const state = appState();
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         let tx = this.createNewNumberInput(ParentObj, defoValue, ID, x + hsw, y, width, onChange, styleinfo);
