@@ -1247,10 +1247,10 @@ function frmPrintOption(firstTab: number = 0) {
 
     /**凡例背景*/
     Generic.createNewButton(tabLegend.panel[0], "凡例フォント", "", 30, 25, 
-        function(e: any){
+        function(e: MouseEvent){
             clsFontSet(e, atv.MapLegend.Base.Font, function (newFont: any) { atv.MapLegend.Base.Font = newFont }, state.attrData);
         }, "");
-     Generic.createNewWordDivCanvas(tabLegend.panel[0], "BaseBack", "凡例背景", 30, 80,undefined, function(e: any){
+     Generic.createNewWordDivCanvas(tabLegend.panel[0], "BaseBack", "凡例背景", 30, 80,undefined, function(e: MouseEvent){
         clsBackgroundPatternSet(e, atv.MapLegend.Base.Back, backGet, state.attrData);
         function backGet(back: any) {
             atv.MapLegend.Base.Back = back;
@@ -1258,34 +1258,34 @@ function frmPrintOption(firstTab: number = 0) {
         }
     });
     clsDrawTile.Darw_Sample_BackGroundBox(document.getElementById("BaseBack"), atv.MapLegend.Base.Back, atv.ScrData);
-    Generic.createNewCheckBox(tabLegend.panel[0], "局地変動モード", "", atv.MapLegend.Base.ModeValueInScreenFlag, 30, 130,undefined,  function (obj: any) { atv.MapLegend.Base.ModeValueInScreenFlag = obj.checked }, "");
+    Generic.createNewCheckBox(tabLegend.panel[0], "局地変動モード", "", atv.MapLegend.Base.ModeValueInScreenFlag, 30, 130,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.Base.ModeValueInScreenFlag = obj.checked }, "");
 
     const tabLegendtab00 = Generic.createNewFrame(tabLegend.panel[0], "", "", 200, 25, 200, 120, "重ね合わせの凡例タイトル");
-    Generic.createNewCheckBox(tabLegendtab00, "表示", "", atv.MapLegend.OverLay_Legend_Title.Print_f, 10, 70,undefined,  function (obj: any) { atv.MapLegend.OverLay_Legend_Title.Print_f = obj.checked }, "");
+    Generic.createNewCheckBox(tabLegendtab00, "表示", "", atv.MapLegend.OverLay_Legend_Title.Print_f, 10, 70,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.OverLay_Legend_Title.Print_f = obj.checked }, "");
     Generic.createNewSizeSelect(tabLegendtab00, atv.MapLegend.OverLay_Legend_Title.MaxWidth, "","サイズ", 15, 25,40,3,
-    function(obj: any, v: any){
+    function(obj: HTMLSelectElement, v: number){
         atv.MapLegend.OverLay_Legend_Title.MaxWidth=v;
     });
     /**階級区分*/
     const tabLegendtab10 = Generic.createNewFrame(tabLegend.panel[1], "", "", 10, 15, 110, 115, "凡例の表示方法");
     Generic.createNewRadioButtonList(tabLegendtab10, "PaintMode_Method", [{ value: enmClassMode_Meshod.Noral, text: "通常表示" }, { value: enmClassMode_Meshod.Separated, text: "分離表示" }], 5, 25, undefined,25, atv.MapLegend.ClassMD.PaintMode_Method,
-        function (v: any) { atv.MapLegend.ClassMD.PaintMode_Method = v }, "");
-    Generic.createNewCheckBox(tabLegendtab10, "カテゴリーデータは常に分離表示", "", atv.MapLegend.ClassMD.CategorySeparate_f, 5, 80, 90,function (obj: any) { atv.MapLegend.ClassMD.CategorySeparate_f = obj.checked }, "");
+        function (v: number) { atv.MapLegend.ClassMD.PaintMode_Method = v }, "");
+    Generic.createNewCheckBox(tabLegendtab10, "カテゴリーデータは常に分離表示", "", atv.MapLegend.ClassMD.CategorySeparate_f, 5, 80, 90,function (obj: HTMLInputElement) { atv.MapLegend.ClassMD.CategorySeparate_f = obj.checked }, "");
 
     const tabLegendtab11 = Generic.createNewFrame(tabLegend.panel[1], "", "", 130, 15, 150, 115, "分離表示の文字と間隔");
     Generic.createNewRadioButtonList(tabLegendtab11, "SeparateClassWords", [{ value: enmSeparateClassWords.Japanese, text: "以上/未満" }, { value: enmSeparateClassWords.English, text: "or more/less than" }], 5, 15,undefined, 25, atv.MapLegend.ClassMD.SeparateClassWords,
-        function (v: any) { atv.MapLegend.ClassMD.SeparateClassWords = v }, "");
+        function (v: number) { atv.MapLegend.ClassMD.SeparateClassWords = v }, "");
     Generic.createNewSizeSelect(tabLegendtab11, atv.MapLegend.ClassMD.SeparateGapSize, "", "間隔（文字の高さとの比）", 2, 70, 70, [0.1, 0.2, 0.3, 0.4],
-        function (obj: any, v: any) {
+        function (obj: HTMLSelectElement, v: number) {
             atv.MapLegend.ClassMD.SeparateGapSize = v;
         },false);
     const tabLegendtab12 = Generic.createNewFrame(tabLegend.panel[1], "", "", 290, 15, 190, 115, "階級区分枠");
     Generic.createNewSizeSelect(tabLegendtab12, atv.MapLegend.ClassMD.PaintMode_Width, "", "枠の幅（文字の高さとの比）", 10, 15, 90, [0.8, 1.0, 1.2, 1.5, 2.0],
-        function (obj: any, v: any) {
+        function (obj: HTMLSelectElement, v: number) {
             atv.MapLegend.ClassMD.PaintMode_Width = v;
         },false);
     Generic.createNewWordDivCanvas(tabLegendtab12, "PaintMode_Line", "ラインパターン", 10, 45, 100,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.MapLegend.ClassMD.PaintMode_Line,
                 function (Lpat: any) {
                     atv.MapLegend.ClassMD.PaintMode_Line = Lpat;
@@ -1293,13 +1293,13 @@ function frmPrintOption(firstTab: number = 0) {
                 });
         });
     state.attrData.Draw_Sample_LineBox(document.getElementById("PaintMode_Line"), atv.MapLegend.ClassMD.PaintMode_Line);
-    Generic.createNewCheckBox(tabLegendtab12, "階級記号モードでも表示", "", atv.MapLegend.ClassMD.ClassMarkFrame_Visible, 10, 80, undefined,function (obj: any) { atv.MapLegend.ClassMD.ClassMarkFrame_Visible = obj.checked }, "");
+    Generic.createNewCheckBox(tabLegendtab12, "階級記号モードでも表示", "", atv.MapLegend.ClassMD.ClassMarkFrame_Visible, 10, 80, undefined,function (obj: HTMLInputElement) { atv.MapLegend.ClassMD.ClassMarkFrame_Visible = obj.checked }, "");
 
     const tabLegendtab13 = Generic.createNewFrame(tabLegend.panel[1], "", "", 10, 145, 260, 50, "面形状階級区分オブジェクト間の境界線");
     Generic.createNewCheckBox(tabLegendtab13, "表示", "", atv.MapLegend.ClassMD.ClassBoundaryLine.Visible, 15, 15,undefined,
-     function (obj: any) { atv.MapLegend.ClassMD.ClassBoundaryLine.Visible = obj.checked }, "");
+     function (obj: HTMLInputElement) { atv.MapLegend.ClassMD.ClassBoundaryLine.Visible = obj.checked }, "");
     let ClassBoundaryLine = Generic.createNewWordDivCanvas(tabLegendtab13, "", "ラインパターン", 100, 15, 100,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.MapLegend.ClassMD.ClassBoundaryLine.LPat,
                 function (Lpat: any) {
                     atv.MapLegend.ClassMD.ClassBoundaryLine.LPat = Lpat;
@@ -1307,14 +1307,14 @@ function frmPrintOption(firstTab: number = 0) {
                 });
         });
     state.attrData.Draw_Sample_LineBox(ClassBoundaryLine, atv.MapLegend.ClassMD.ClassBoundaryLine.LPat);
-    Generic.createNewCheckBox(tabLegend.panel[1], "度数の表示", "", atv.MapLegend.ClassMD.FrequencyPrint, 290, 160, undefined,function (obj: any) { atv.MapLegend.ClassMD.FrequencyPrint = obj.checked }, "");
+    Generic.createNewCheckBox(tabLegend.panel[1], "度数の表示", "", atv.MapLegend.ClassMD.FrequencyPrint, 290, 160, undefined,function (obj: HTMLInputElement) { atv.MapLegend.ClassMD.FrequencyPrint = obj.checked }, "");
 
     /**記号・円グラフ*/
     Generic.createNewCheckBox(tabLegend.panel[2],"記号の大きさモードで円の凡例をコンパクトにまとめる","",atv.MapLegend.MarkMD.CircleMD_CircleMini_F,20,20,180,
-    function(obj: any){atv.MapLegend.MarkMD.CircleMD_CircleMini_F=obj.checked;},"")
+    function(obj: HTMLInputElement){atv.MapLegend.MarkMD.CircleMD_CircleMini_F=obj.checked;},"")
 
     let ClasMarkMDMultiEnMode_Lines = Generic.createNewWordDivCanvas(tabLegend.panel[2], "", "記号の大きさモードの円、円・縦帯グラフの際の凡例線", 20, 60, 160,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.MapLegend.MarkMD.MultiEnMode_Line,
                 function (Lpat: any) {
                     atv.MapLegend.MarkMD.MultiEnMode_Line = Lpat;
@@ -1323,27 +1323,27 @@ function frmPrintOption(firstTab: number = 0) {
         });
     state.attrData.Draw_Sample_LineBox(ClasMarkMDMultiEnMode_Lines, atv.MapLegend.MarkMD.MultiEnMode_Line);
     Generic.createNewWordWidthDiv(tabLegend.panel[2], "", "負の値の記号モードの既定凡例文字", 20, 110, 21, undefined, undefined);
-    Generic.createNewWordTextInput(tabLegend.panel[2], "正の値", "", clsSettingData.LegendPlusWord, "", 40, 130, undefined, 80, function (e: any) {sdata.LegendPlusWord = e.target.value }, "");
-    Generic.createNewWordTextInput(tabLegend.panel[2], "負の値", "", clsSettingData.LegendMinusWord, "", 40, 155, undefined, 80, function (e: any) { sdata.LegendMinusWord = e.target.value }, "");
-    Generic.createNewWordTextInput(tabLegend.panel[2], "記号の数モードの際の凡例文字", "", clsSettingData.LegendBlockmodeWord, "", 270, 20, 100, 100, function (e: any) { sdata.LegendBlockmodeWord = e.target.value }, "");
+    Generic.createNewWordTextInput(tabLegend.panel[2], "正の値", "", clsSettingData.LegendPlusWord, "", 40, 130, undefined, 80, function (e: Event) {sdata.LegendPlusWord = (e.target as HTMLInputElement).value }, "");
+    Generic.createNewWordTextInput(tabLegend.panel[2], "負の値", "", clsSettingData.LegendMinusWord, "", 40, 155, undefined, 80, function (e: Event) { sdata.LegendMinusWord = (e.target as HTMLInputElement).value }, "");
+    Generic.createNewWordTextInput(tabLegend.panel[2], "記号の数モードの際の凡例文字", "", clsSettingData.LegendBlockmodeWord, "", 270, 20, 100, 100, function (e: Event) { sdata.LegendBlockmodeWord = (e.target as HTMLInputElement).value }, "");
     const gbEnGraphLegend = Generic.createNewFrame(tabLegend.panel[2], "", "", 270, 85, 150, 80, "円グラフの凡例形状");
     Generic.createNewRadioButtonList(gbEnGraphLegend, "enmMultiEnGraphPattern", [{ value: enmMultiEnGraphPattern.multiCircle, text: "複数の扇形に分ける" }, { value: enmMultiEnGraphPattern.oneCircle, text: "１つの円" }], 5, 20, 130, 30, atv.MapLegend.En_Graph_Pattern,
-        function (v: any) { atv.MapLegend.En_Graph_Pattern = v }, "");
+        function (v: number) { atv.MapLegend.En_Graph_Pattern = v }, "");
 
     /**線種・点ダミー*/
     let atvl=atv.MapLegend.Line_DummyKind;
     Generic.createNewCheckBox(tabLegend.panel[3], "線種の凡例を表示", "", atvl.Line_Visible, 20, 20, 180,
-        function (obj: any) { atvl.Line_Visible = obj.checked; }, "");
+        function (obj: HTMLInputElement) { atvl.Line_Visible = obj.checked; }, "");
     let lLK = state.attrData.GetAllMapLineKindName();
     let lLKList = [];
     for (let i = 0; i < lLK.length; i++) {
         let cv = (atvl.Line_Visible_Number_STR.mid(i, 1) == "1");
         lLKList.push({ text: lLK[i], checked: cv });
     }
-    Generic.createNewCheckListBox(tabLegend.panel[3], "", lLKList, 20, 45, 150, 150, function (num: any, checked: any) {
+    Generic.createNewCheckListBox(tabLegend.panel[3], "", lLKList, 20, 45, 150, 150, function (num: number, checked: boolean) {
         atvl.Line_Visible_Number_STR = atvl.Line_Visible_Number_STR.midReplace(num, (checked == true) ? "1" : "0");
     }, "");
-    let MapLegendLine_DummyKind = Generic.createNewWordDivCanvas(tabLegend.panel[3], "", "背景", 190, 45, undefined, function (e: any) {
+    let MapLegendLine_DummyKind = Generic.createNewWordDivCanvas(tabLegend.panel[3], "", "背景", 190, 45, undefined, function (e: MouseEvent) {
         clsBackgroundPatternSet(e, atvl.Back, backGet, state.attrData);
         function backGet(back: any) {
             atvl.Back = back;
@@ -1353,23 +1353,23 @@ function frmPrintOption(firstTab: number = 0) {
     clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, atvl.Back, atv.ScrData);
     let gbMapLegendLine = Generic.createNewFrame(tabLegend.panel[3], "", "", 190, 85, 100, 80, "線の描き方");
     Generic.createNewRadioButtonList(gbMapLegendLine, "enmCircleMDLegendLine", [{ value: enmCircleMDLegendLine.Zigzag, text: "＼／＼" }, { value: enmCircleMDLegendLine.Straight, text: "───" }], 5, 20, 130, 30, atvl.Line_Pattern,
-        function (v: any) { atvl.Line_Pattern = v }, "");
+        function (v: number) { atvl.Line_Pattern = v }, "");
     Generic.createNewCheckBox(tabLegend.panel[3], "点オブジェクトのダミーの凡例を表示", "", atvl.Dummy_Point_Visible, 310, 20, 130,
-        function (obj: any) { atvl.Dummy_Point_Visible = obj.checked }, "");
+        function (obj: HTMLInputElement) { atvl.Dummy_Point_Visible = obj.checked }, "");
 
 
     /**欠損値●●●●●●●●●●●●●●●●●●●●● */
 
     let atvm = atv.Missing_Data;
-    Generic.createNewCheckBox(tab.panel[3], "欠損値を表示", "", atvm.Print_Flag, 20, 20, undefined, function (obj: any) { atvm.Print_Flag = obj.checked }, "");
+    Generic.createNewCheckBox(tab.panel[3], "欠損値を表示", "", atvm.Print_Flag, 20, 20, undefined, function (obj: HTMLInputElement) { atvm.Print_Flag = obj.checked }, "");
     let gbmPat = Generic.createNewFrame(tab.panel[3], "", "", 30, 50, 500, 200, "欠損値のパターン");
-    Generic.createNewWordTextInput(gbmPat, "欠損値の凡例文字", "", atvm.Text, "", 15, 15, 120, 90, function (e: any) { atvm.Text = e.target.value }, "");
+    Generic.createNewWordTextInput(gbmPat, "欠損値の凡例文字", "", atvm.Text, "", 15, 15, 120, 90, function (e: Event) { atvm.Text = (e.target as HTMLInputElement).value }, "");
     Generic.createNewTileBox(gbmPat, "", "ペイントモードの凡例", atvm.PaintTile, 15, 50, 120,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsTileSet(e, atvm.PaintTile,
                 function (retTile: any) { atvm.PaintTile = retTile });
         });
-    let atvmClassMark = Generic.createNewWordDivCanvas(gbmPat, "", "階級記号モードの凡例記号", 15, 85, 120, function (e: any) {
+    let atvmClassMark = Generic.createNewWordDivCanvas(gbmPat, "", "階級記号モードの凡例記号", 15, 85, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.ClassMark, state.attrData);
         function picMarkChange(newMark: any) {
             atvm.ClassMark = newMark;
@@ -1377,7 +1377,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmClassMark, atvm.ClassMark);
-    let atvmMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の大きさモードの凡例記号", 15, 120, 120, function (e: any) {
+    let atvmMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の大きさモードの凡例記号", 15, 120, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.Mark, state.attrData);
         function picMarkChange(newMark: any) {
             atvm.Mark = newMark;
@@ -1385,7 +1385,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmMark, atvm.Mark);
-    let atvmBlockMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の数モードの凡例記号", 15, 155, 120, function (e: any) {
+    let atvmBlockMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の数モードの凡例記号", 15, 155, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.BlockMark, state.attrData);
         function picMarkChange(newMark: any) {
             atvm.BlockMark = newMark;
@@ -1393,7 +1393,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmBlockMark, atvm.BlockMark);
-    let atvmBlockMarkBar = Generic.createNewWordDivCanvas(gbmPat, "", "棒の高さモードの凡例記号", 250, 15, 120, function (e: any) {
+    let atvmBlockMarkBar = Generic.createNewWordDivCanvas(gbmPat, "", "棒の高さモードの凡例記号", 250, 15, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.MarkBar, state.attrData);
         function picMarkChange(newMark: any) {
             atvm.MarkBar = newMark;
@@ -1401,9 +1401,9 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmBlockMarkBar, atvm.MarkBar);
-    Generic.createNewWordTextInput(gbmPat, "文字・ラベルモードの凡例文字", "", atvm.Label, "", 250, 50, 120, 90, function (e: any) { atvm.Label = e.target.value }, "");
+    Generic.createNewWordTextInput(gbmPat, "文字・ラベルモードの凡例文字", "", atvm.Label, "", 250, 50, 120, 90, function (e: Event) { atvm.Label = (e.target as HTMLInputElement).value }, "");
     let atvmLineShape = Generic.createNewWordDivCanvas(gbmPat, "", "線形状オブジェクトの凡例", 250, 85, 120,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atvm.LineShape,
                 function (Lpat: any) {
                     atvm.LineShape = Lpat;
@@ -1414,12 +1414,12 @@ function frmPrintOption(firstTab: number = 0) {
 
     /**スケール設定●●●●●●●●●●●●●●●●●●●●● */
     let atvs = atv.MapScale;
-    Generic.createNewCheckBox(tab.panel[4], "スケールを表示", "", atvs.Visible, 20, 20, undefined, function (obj: any) { atvs.Visible = obj.checked }, "");
+    Generic.createNewCheckBox(tab.panel[4], "スケールを表示", "", atvs.Visible, 20, 20, undefined, function (obj: HTMLInputElement) { atvs.Visible = obj.checked }, "");
     Generic.createNewButton(tab.panel[4], "フォント", "", 30, 55,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsFontSet(e, atvs.Font, function (newFont: any) { atvs.Font = newFont }, state.attrData);
         }, "");
-    let atvsBack = Generic.createNewWordDivCanvas(tab.panel[4], "", "背景", 30, 90, undefined, function (e: any) {
+    let atvsBack = Generic.createNewWordDivCanvas(tab.panel[4], "", "背景", 30, 90, undefined, function (e: MouseEvent) {
         clsBackgroundPatternSet(e, atvs.Back, backGet, state.attrData);
         function backGet(back: any) {
             atvs.Back = back;
@@ -1430,17 +1430,17 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewSpan(tab.panel[4], "スケールバーの表示単位", "", "", 30, 125, "", "");
     const scaleList = Generic.getScaleUnit_for_select();
     Generic.createNewSelect(tab.panel[4], scaleList, atvs.Unit, "", 40, 150, false,
-        function (obj: any, sel: any, v: any) { atvs.Unit = v }, "",1,false);
+        function (obj: HTMLSelectElement, sel: number, v: number) { atvs.Unit = v }, "",1,false);
     let gbScaleLength = Generic.createNewFrame(tab.panel[4], "", "", 180, 55, 200, 130, "スケールバーの長さ・間隔");
-    Generic.createNewCheckBox(gbScaleLength, "スケールバー自動設定", "", atvs.BarAuto, 20, 20, undefined, function (obj: any) { atvs.BarAuto = obj.checked }, "");
-    Generic.createNewWordNumberInput(gbScaleLength, "スケールバーの距離", "", atvs.BarDistance, "", 30, 55, 80, 70, function (obj: any, v: any) { atvs.BarDistance = v }, "");
+    Generic.createNewCheckBox(gbScaleLength, "スケールバー自動設定", "", atvs.BarAuto, 20, 20, undefined, function (obj: HTMLInputElement) { atvs.BarAuto = obj.checked }, "");
+    Generic.createNewWordNumberInput(gbScaleLength, "スケールバーの距離", "", atvs.BarDistance, "", 30, 55, 80, 70, function (obj: HTMLInputElement, v: number) { atvs.BarDistance = v }, "");
     Generic.createNewDiv(gbScaleLength, "スケールバーの区切り数", "", "", 30, 90, 90, undefined, "", "");
     const sclDivList = [{ value: 1, text: "1" }, { value: 2, text: "2" }, { value: 3, text: "3" }, { value: 4, text: "4" }, { value: 5, text: "5" }, { value: 6, text: "6" }];
     Generic.createNewSelect(gbScaleLength, sclDivList, atvs.BarKugiriNum, "", 130, 90, false,
-        function (obj: any, sel: any, v: any) { atvs.BarKugiriNum = v }, "");
+        function (obj: HTMLSelectElement, sel: number, v: number) { atvs.BarKugiriNum = v }, "");
     let gbScaleType = Generic.createNewFrame(tab.panel[4], "", "", 400, 55, 150, 110, "スケールバーの種類");
     Generic.createNewRadioButtonList(gbScaleType, "enmScaleBarPattern", [{ value: enmScaleBarPattern.Thin, text: "通常" }, { value: enmScaleBarPattern.Bold, text: "白黒交互" }, { value: enmScaleBarPattern.Slim, text: "細い" }], 15, 20, undefined, 30, atvs.BarPattern,
-        function (v: any) { atvs.BarPattern = v }, "");
+        function (v: number) { atvs.BarPattern = v }, "");
 
 
     function buttonOK(){
