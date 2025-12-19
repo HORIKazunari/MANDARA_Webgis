@@ -2583,7 +2583,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const inFrame = this.createNewDiv(frame, "", ID, "", 0, 0, w, allh, "", undefined);
         for (let i in list) {
             let cbox = this.createNewCheckBox(inFrame, list[i].text, "", list[i].checked, 3, (i as unknown as number) * lineH,undefined, 
-                function (obj: any) {
+                function (obj: HTMLInputElement) {
                     if (typeof onChange == 'function') {
                         onChange(Number(obj.tag), obj.checked);
                     }
@@ -3173,7 +3173,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
-    static Get_Outer_Mpline_AggregatedObj(LCode: any[], Shape: any) { //LCode:EnableMPLine_Data
+    static Get_Outer_Mpline_AggregatedObj(LCode: any[], Shape: enmShape) { //LCode:EnableMPLine_Data
         const state = appState();
         let lc = this.ArrayClone(LCode);
 
@@ -3302,7 +3302,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             //Clone関数を持たない場合
             return undefined;
         }
-        let rea = array.map((x: any) => x.Clone());
+        let rea = array.map((x: T) => x.Clone());
         return rea;
     }
     /**Cloneメソッドを持つオブジェクトの2次元配列をコピーする */
@@ -3369,11 +3369,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ウィンドウで表示  
-    static CenterPage(help_url: any, Xv: any, Yv: any) {
+    static CenterPage(help_url: string, Xv: number, Yv: number) {
         const state = appState();
         let win2p: string = "";
         let win1p: string = "";
-        let new2: any = null;
+        let new2: Window | null = null;
         let Xw: number;
         let Yw: number;
         
@@ -3390,7 +3390,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ボタン作成
-    static createNewButton(ParentObj: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any = "") {
+    static createNewButton(ParentObj: HTMLElement, text: string, ID: string, x: number, y: number, onClick: (event: MouseEvent) => void, styleinfo: string = "") {
         const state = appState();
         const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
         ok.addEventListener('click', onClick);
@@ -3400,7 +3400,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //img要素作成
-    static createNewImage(ParentObj: any, src: any, alt: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any) {
+    static createNewImage(ParentObj: HTMLElement, src: string, alt: string, ID: string, Class: string, x: number, y: number, styleinfo: string, onclick: string | undefined) {
         const state = appState();
         const obj = document.createElement("img");
         obj.src = src;
@@ -3416,7 +3416,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //span要素作成
-    static createNewSpan(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, styleinfo: any, onclick: any = undefined, ...rest: any[]) {
+    static createNewSpan(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, styleinfo: string, onclick: ((event: MouseEvent) => void) | undefined = undefined) {
         const state = appState();
         const obj = document.createElement("span");
         obj.setAttribute("id", ID);
@@ -3431,7 +3431,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //文字配列中の同じ文字を削除した配列を返す
-    static Remove_Same_String(ST: any) {
+    static Remove_Same_String(ST: string[]) {
         const state = appState();
         let ST2 = [];
         let sdv = [];
@@ -3454,7 +3454,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //二色の間で指定の数だけグラデーションをかける
-    static TwoColorGradation(StartCol: any, EndCol: any, n: any) {
+    static TwoColorGradation(StartCol: colorRGBA, EndCol: colorRGBA, n: number) {
         const state = appState();
         let ColData = [];
         let a1 = StartCol.a;
@@ -3489,7 +3489,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //3色の間で指定の数だけグラデーションをかける
-    static ThreeColorGradation(StartCol: any, CenterCol: any, EndCol: any, n: any, Color_cng_n: any) {
+    static ThreeColorGradation(StartCol: colorRGBA, CenterCol: colorRGBA, EndCol: colorRGBA, n: number, Color_cng_n: number) {
         const state = appState();
         let ColData = [];
         let coldata1 = this.TwoColorGradation(StartCol, CenterCol, Color_cng_n + 1);
@@ -3504,7 +3504,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //最大値と最小値を指定の区分数で切りのよい数字で区切る
-    static WIC(CUTN: any, Max: any, Min: any) {
+    static WIC(CUTN: number, Max: number, Min: number) {
         const state = appState();
         if (Max == Min) {
             return { max: Max + 1, min: Min - 1, step: 1 }
@@ -3561,7 +3561,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return ret;
     }
 
-    static Figure_Arrange(Value: any) {
+    static Figure_Arrange(Value: number) {
         const state = appState();
         let Left, Right;
 
@@ -3585,7 +3585,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return { BeforeDecimal: Left, AfterDecimal: Right };
     }
 
-    static Figure_Using_Solo(val: any, commma_f: any) {
+    static Figure_Using_Solo(val: number, commma_f: boolean) {
         const state = appState();
 
         let retv = this.Figure_Arrange(val);
@@ -3601,12 +3601,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //指定した数値を、指定した小数点以下桁数の文字列に変換して返す
-    static Figure_Using(Value: any, RightOfDecimaplPoint: any) {
+    static Figure_Using(Value: number, RightOfDecimaplPoint: number) {
         const state = appState();
         return Value.toFixed(RightOfDecimaplPoint);
     }
 
-    static Figure_Using3(Value: any, LeftOfDecimalPoint: any, RightOfDecimaplPoint: any, Comma_f: any) {
+    static Figure_Using3(Value: number, LeftOfDecimalPoint: number, RightOfDecimaplPoint: number, Comma_f: boolean) {
         const state = appState();
         
         let Comma_Num;
@@ -3633,7 +3633,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //配列から特定の値の位置を取り出す
-    static Get_Specified_Value_Array(Original_Array: any, Specified_Value: any) {
+    static Get_Specified_Value_Array<T>(Original_Array: T[], Specified_Value: T) {
         const state = appState();
         let retArray = [];
         for (let key in Original_Array) {
@@ -3644,7 +3644,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return retArray;
     }
     //配列中の指定した値の数をカウントする
-    static Count_Specified_Value_Array(Original_Array: any, Specified_Value: any) {
+    static Count_Specified_Value_Array<T>(Original_Array: T[], Specified_Value: T) {
         const state = appState();
         let n = 0;
         for (let key in Original_Array) {
@@ -3655,7 +3655,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return n;
     }
     /**配列中から含まれる要素とその数の一覧の配列[{value: num:}]を返す */
-    static getArrayContentsList(originArray: any){
+    static getArrayContentsList<T>(originArray: T[]){
         const state = appState();
         let s=new clsSortingSearch();
         s.AddRange(originArray);
@@ -3663,7 +3663,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**タブ作成(base.panel[]に内部要素を追加する) */
-    static createNewTab(ParentObj: any, tabList: any, firstSel: any, x: any, y: any, width: any, height: any) {
+    static createNewTab(ParentObj: HTMLElement, tabList: string[], firstSel: number, x: number, y: number, width: number, height: number) {
         const state = appState();
         let tabh = 20;
         let base = this.createNewDiv(ParentObj, "", "", "", x, y, width, height, "", "");
@@ -3693,7 +3693,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         mask.style.backgroundColor = "#ffffff";
         mask.style.left = (firstSel * tabw + 1 as any).px();
         return base;
-        function tabclick(e: any) {
+        function tabclick(this: HTMLElement) {
             for (let i = 0; i < n; i++) {
                 base.tab[i].style.backgroundColor = "#e1e1e1";
                 base.panel[i]?.setVisibility?.(false);
@@ -3705,7 +3705,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static createNewDiv(ParentObj: any, innerHtml: any, ID: any, Class: any, x: any, y: any, width: any, height: any, styleinfo: any, onclick?: any) {
+    static createNewDiv(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, width: number | string | undefined, height: number | string | undefined, styleinfo: string, onclick?: ((event: MouseEvent) => void) | string) {
         const state = appState();
         /// <signature>
         /// <summary>div要素を作成</summary>
@@ -3758,7 +3758,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
      * @param {*} styleinfo
      * @memberof Generic
      */
-    static createNewRadioButtonList(ParentObj: any, name: any, list: any, x: any, y: any, wordWidth: any, yplus: any, defoCheckValue: any, onClick: any, styleinfo: any) {
+    static createNewRadioButtonList(ParentObj: HTMLElement, name: string, list: {value: any, text: string}[], x: number, y: number, wordWidth: number, yplus: number | number[], defoCheckValue: any, onClick: (value: any) => void, styleinfo: string) {
         const state = appState();
         let sy = y;
         for (let i = 0; i < list.length; i++) {
@@ -3771,7 +3771,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     /**ラジオボタン要素作成 onClickで選択されたValueを返す */
-    static createNewRadioButton(ParentObj: any, text: any, ID: any, name: any, checked: any, value: any, x: any, y: any, wordWidth: any, onClick: any, styleinfo: any) {
+    static createNewRadioButton(ParentObj: HTMLElement, text: string, ID: string, name: string, checked: boolean, value: any, x: number, y: number, wordWidth: number, onClick: (value: any) => void, styleinfo: string) {
         const state = appState();
         let ok = this.createNewInput(ParentObj, "radio", "", ID, x, y, "", styleinfo);
         ok.addEventListener('change', change);
@@ -3806,7 +3806,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ラジオボタンの指定valueの要素をenabled/disableする
-    static enableRadioByValue(name: any, value: any, enabled: any) {
+    static enableRadioByValue(name: string, value: any, enabled: boolean) {
         const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
@@ -3821,7 +3821,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     //ラジオボタンの指定valueの要素をチェックする
-    static checkRadioByValue(name: any, value: any) {
+    static checkRadioByValue(name: string, value: any) {
         const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
@@ -3837,7 +3837,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ラジオボタンのチェック要素のvalueを取得する
-    static getRadioCheckByValue(name: any) {
+    static getRadioCheckByValue(name: string) {
         const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
@@ -3854,7 +3854,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**チェックボックス要素作成 onClickでは要素を返す */
-    static createNewCheckBox(ParentObj: any, text: any, ID: any, checked: any, x: any, y: any, wordWidth: any, onClick: any, styleinfo: any = "") {
+    static createNewCheckBox(ParentObj: HTMLElement, text: string, ID: string, checked: boolean, x: number, y: number, wordWidth: number, onClick: ((obj: HTMLInputElement) => void) | undefined, styleinfo: string = "") {
         const state = appState();
         let ok = this.createNewInput(ParentObj, "checkbox", "", ID, x, y, undefined, styleinfo);
         if (checked == true) {
@@ -3877,7 +3877,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**inputText要素作成*/
-    static createNewWordTextInput(ParentObj: any, headWord: any, footWord: any, defoText: any, ID: any, x: any, y: any, headWordWidth: any, boxWidth: any, onChange: any, styleinfo: any) {
+    static createNewWordTextInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoText: string, ID: string, x: number, y: number, headWordWidth: number, boxWidth: number, onChange: ((this: HTMLInputElement, ev: Event) => any) | undefined, styleinfo: string) {
         const state = appState();
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         styleinfo = "width:" + String(boxWidth) + "px;" + styleinfo;
@@ -3890,7 +3890,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**イメージボタン */
-    static createNewImageButton(ParentObj: any,ID: any,src: any,x: any,y: any,width: any,height: any,onClick: any,styleinfo: any){
+    static createNewImageButton(ParentObj: HTMLElement, ID: string, src: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLImageElement, ev: MouseEvent) => any) | null, styleinfo: string) {
         const state = appState();
         let ok=document.createElement("img");
         ok.setAttribute("style", "position:absolute;width:"+width.px()+";height:" +height.px() +";"+ styleinfo);
@@ -3907,7 +3907,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //** input要素作成*/
-    static createNewInput(ParentObj: any, type: any, text: any, ID: any, x: any, y: any, onClick: any, styleinfo: any) {
+    static createNewInput(ParentObj: HTMLElement, type: string, text: string, ID: string, x: number, y: number, onClick: string | undefined, styleinfo: string) {
         const state = appState();
         let ok = document.createElement("input");
         ok.setAttribute("type", type);
@@ -3922,7 +3922,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /** 改行つきDIV作成*/
-    static createNewWordWidthDiv(ParentObj: any, ID: any, word: any,  x: any, y: any,lineHeight: any,wordWidth: any, onclick: any,styleinfo: any=""){
+    static createNewWordWidthDiv(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, lineHeight: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, styleinfo: string = "") {
         const state = appState();
         if (word == "") {
             return 0;
@@ -3934,7 +3934,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //タイルdivボックス
-    static createNewTileBox(ParentObj: any, ID: any, word: any, defoTile: any, x: any, y: any,wordWidth: any, onclick: any, tileWidth: any = 45) {
+    static createNewTileBox(ParentObj: HTMLElement, ID: string, word: string, defoTile: any, x: number, y: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, tileWidth: number = 45) {
         const state = appState();
         let lineH = 23;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
@@ -3945,7 +3945,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
 
     //タイルDIVに設定
-    static setTileDiv(tileDiv: any, Tile: any) {
+    static setTileDiv(tileDiv: HTMLElement, Tile: {BlankF: boolean, Color: colorRGBA}) {
         const state = appState();
         const trans = tileDiv.children;
         if(trans.length==0){
@@ -3961,7 +3961,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //** 背景Canvasボックス */
-    static createNewWordDivCanvas(ParentObj: any, ID: any, word: any, x: any, y: any,wordWidth: any, onclick: any) {
+    static createNewWordDivCanvas(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, wordWidth: number, onclick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null) {
         const state = appState();
         let lineH = 23;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
@@ -3972,7 +3972,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //** 色divボックス */
-    static createNewColorBox(ParentObj: any,ID: any, word: any,color: any, x: any, y: any, onclick: any) {
+    static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: colorRGBA) => void) | undefined) {
         const state = appState();
         let sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", "");
         let sw = sp.offsetWidth;
@@ -3986,13 +3986,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             colbox.style.backgroundColor = color.toRGBA();
         }
         return colbox;
-        function colSelect(e: any) {
+        function colSelect(e: MouseEvent) {
             clsColorPicker(e, onclick);
         }
     }
 
     /**サイズ選択用select valueType:配列はそのまま入れる、1（0.1間隔）,2(0.5),3(5),4(10))、onChangeでは要素,オブジェクトと値を返す*/ 
-    static createNewSizeSelect(ParentObj: any, defoValue: any, ID: any,preWord: any, x: any, y: any,preWordWidth: any,valueType: any, onChange: any,percentShowF: any=true) {
+    static createNewSizeSelect(ParentObj: HTMLElement, defoValue: number, ID: string, preWord: string, x: number, y: number, preWordWidth: number, valueType: number[] | number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, percentShowF: boolean = true) {
         const state = appState();
         let cboCodeList=[];
         if( valueType instanceof Array==true){
@@ -4047,7 +4047,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     /**最初からドロップダウンされているリストを表示 戻り値はselectedIndex番号 */
-    static createNewDropdownSelect(title: any,textList: any,x: any,y: any,width: any,onChange: any){
+    static createNewDropdownSelect(title: string, textList: string[], x: number, y: number, width: number, onChange: (selectedIndex: number) => void) {
         const state = appState();
         let pele=this.set_backDiv("",title,width,100,false,false,undefined,0,true);
         let oneHeight=this.getSpanSize(textList[0],15).height+2;
@@ -4069,13 +4069,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
         }
 
-        function change(selectedIndex: any){
+        function change(selectedIndex: number) {
             Generic.clear_backDiv();
             onChange(selectedIndex);
         }
     }
     /**文つきselect要素作成 selectPosition:0は右、1は下*/
-    static createNewWordSelect(ParentObj: any,headWord: any,  list: any, firstSelectIndex: any, ID: any, x: any, y: any,headWordWidth: any,selectWidth: any, selectPosition: any, onChange: any,divStyle: any, selectStyleinfo: any, astariskNonF: any=true) {
+    static createNewWordSelect(ParentObj: HTMLElement, headWord: string, list: string[] | undefined, firstSelectIndex: number, ID: string, x: number, y: number, headWordWidth: number, selectWidth: number, selectPosition: number, onChange: ((sbox: HTMLSelectElement, sel: number | number[], v?: string) => void) | undefined, divStyle: string, selectStyleinfo: string, astariskNonF: boolean = true) {
         const state = appState();
         let lineH = this.getDivSize("A", undefined, divStyle).height ;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, lineH, headWordWidth, undefined,divStyle);
@@ -4092,7 +4092,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return sbox;
     }
     /**select要素作成 list.value,.text *は非選択が標準、onChangeでは要素,selectedIndex,valueを返す*/
-    static createNewSelect(ParentObj: any, list: any, firstSelectIndex: any, ID: any, x: any, y: any, multipleFlag: any, onChange: any, styleinfo: any, size: any = 1,astariskNonF: any=true) {
+    static createNewSelect(ParentObj: HTMLElement, list: string[] | undefined, firstSelectIndex: number, ID: string, x: number, y: number, multipleFlag: boolean, onChange: ((sbox: HTMLSelectElement, sel: number | number[], v?: string) => void) | undefined, styleinfo: string, size: number = 1, astariskNonF: boolean = true) {
         const state = appState();
         const sbox = document.createElement("select")
         sbox.setAttribute("id", ID)
@@ -4124,14 +4124,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.oldSel = firstSelectIndex;
         ParentObj.appendChild(sbox);
         return sbox;
-        function mouseEnter(e: any) {
+        function mouseEnter(this: HTMLSelectElement, e: MouseEvent) {
             let w = Generic.getSpanSize(sbox.getText ? sbox.getText() : "", sbox.style.fontSize.removePx()).width + 20;
             if (w > sbox.offsetWidth) {
                 Generic.createNewDiv(this.parentNode, sbox.getText ? sbox.getText() : "", "", "", x + 50, y + sbox.offsetHeight, 150, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#fffff0;text-align:center", "");
                 sbox.tooltip = 'true';
             }
         }
-        function mouseLeave(e: any) {
+        function mouseLeave(this: HTMLSelectElement, e: MouseEvent) {
             if (sbox.tooltip == 'true') {
                 this.parentNode.removeChild(this.parentNode.lastChild);
                 sbox.tooltip = '';
@@ -4143,7 +4143,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     //
     /**複数選択select要素の選択状態を取得 mode0は選択された番号の配列、mode1は選択をtruefalseを配列で返す */
-    static getMultipleSelectIndex(obj: any, mode: any) {
+    static getMultipleSelectIndex(obj: HTMLSelectElement, mode: number) {
         const state = appState();
         let opts = obj.options;
         let selectedIndex = [];
@@ -4167,7 +4167,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //子要素までdisabledを設定
-    static setDisabled(element: any, value: any) {
+    static setDisabled(element: HTMLElement, value: boolean) {
         const state = appState();
         let children = element.children;
         for (let i = 0; i < children.length; i++) {
@@ -4180,7 +4180,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //Canvas要素を作成
-    static createNewCanvas(ParentObj: any, ID: any, Class: any, x: any, y: any, width: any, height: any, onClick: any, styleinfo: any) {
+    static createNewCanvas(ParentObj: HTMLElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, styleinfo: string) {
         const state = appState();
         const canvas = document.createElement("canvas");
         canvas.setAttribute("style", "position:absolute;" + styleinfo);
@@ -4195,7 +4195,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return canvas;
     }
 
-    static createMenuMark(parentObj: any, onClick: any, markSize: any) {
+    static createMenuMark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, markSize: number | undefined) {
         const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", 10, 4, size, size, handleClick, "");
@@ -4216,7 +4216,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         return canvas;
 
-        function handleClick(e: any) {
+        function handleClick(this: HTMLCanvasElement, e: MouseEvent) {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             onClick(new point(rect.right, rect.bottom));
@@ -4224,7 +4224,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // ParentObjの右上にXマーク表示
-    static createXmark(parentObj: any, onClick: any, markSize: any) {
+    static createXmark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, markSize: number | undefined) {
         const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", parentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
@@ -4246,7 +4246,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // windowの右上に最大化マーク表示
-    static createMaxButton(parentObj: any, onClick: any, markSize: any) {
+    static createMaxButton(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, markSize: number | undefined) {
         const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", parentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
@@ -4255,7 +4255,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // 移動要素の内部の要素で右下に固定のものを動かす
-    static moveInnerElement(parentObj: any) {
+    static moveInnerElement(parentObj: HTMLElement) {
         const state = appState();
         const cnode = parentObj.children;
         const w = parentObj.style.width.removePx(); // 親要素で幅100%指定だと効かないので注意
@@ -4289,7 +4289,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // 指定したオブジェクトの子要素に、指定したIDの子要素が含まれるかどうかチェックする
-    static checkHasChildNode(parentObj: any, childObjID: any) {
+    static checkHasChildNode(parentObj: HTMLElement, childObjID: string) {
         const state = appState();
         const cnode = parentObj.childNodes;
         for (let i = 0; i < cnode.length; i++) {
@@ -4301,7 +4301,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // テキストエリアを作成
-    static createNewTextarea(parentObj: any, text: any, id: any, x: any, y: any, row: any, col: any, styleinfo: any) {
+    static createNewTextarea(parentObj: HTMLElement, text: string, id: string, x: number, y: number, row: number, col: number, styleinfo: string) {
         const state = appState();
         const obj = document.createElement("textarea");
         obj.setAttribute("id", id);
@@ -4315,7 +4315,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return obj;
     }
 
-    static createNewTable(parentObj: any, id: any, tableClass: any, data: any, width: any, styleinfo: any, headNum: any, headStyleinfo: any, normalStyleinfo: any, headXStyleinfo: any, normalXStyleinfo: any) {
+    static createNewTable(parentObj: HTMLElement, id: string, tableClass: string, data: any[][], width: number, styleinfo: string, headNum: number, headStyleinfo: string, normalStyleinfo: string, headXStyleinfo: string, normalXStyleinfo: string) {
         const state = appState();
         const xcell = data.length;
         const ycell = data[1].length;
@@ -4346,8 +4346,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tb;
     }
 
-    static createNewGrid(parentObj: any, gridID: any, tableID: any, gridClass: any, tableClass: any, data: any, x: any, y: any, width: any, height: any, tableWidth: any, styleinfo: any, tableStyleinfo: any, tableHeadNum: any,
-        tableHeadStyleinfo: any, tableNormalStyleinfo: any, tableHeadXStyleinfo: any, tableNormalXStyleinfo: any) {
+    static createNewGrid(parentObj: HTMLElement, gridID: string, tableID: string, gridClass: string, tableClass: string, data: any[][], x: number, y: number, width: number | string, height: number | string, tableWidth: number, styleinfo: string, tableStyleinfo: string, tableHeadNum: number,
+        tableHeadStyleinfo: string, tableNormalStyleinfo: string, tableHeadXStyleinfo: string, tableNormalXStyleinfo: string) {
         const state = appState();
         const obj = document.createElement("div");
         obj.setAttribute("style", "position:absolute;overflow: auto;" + styleinfo);
@@ -4364,7 +4364,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // 表の中身を取得する
-    static getTableValue(table: any) {
+    static getTableValue(table: HTMLTableElement) {
         const state = appState();
         let tx = "";
         for (let i = 0; i < table.rows.length; i++) {
@@ -4376,7 +4376,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tx;
     }
 
-    static Array2Dimension(dim1num: any, dim2num: any, defoValue: any = undefined) {
+    static Array2Dimension<T>(dim1num: number, dim2num: number, defoValue: T = undefined as T) {
         const state = appState();
         const arrayData = new Array(dim1num);
         for (let i = 0; i < dim1num; i++) {
@@ -4388,7 +4388,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return arrayData;
     }
 
-    static createNewFrame(parentObj: any, id: any, Class: any, x: any, y: any, width: any, height: any, text: any = "") {
+    static createNewFrame(parentObj: HTMLElement, id: string, Class: string, x: number, y: number, width: number, height: number, text: string = "") {
         const state = appState();
         let yy = y;
         if (text !== "") {
@@ -4406,7 +4406,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**メッセージ表示 borderFlag:枠を動かせるかどうか*/
-    static createMsgBox(title: any, text: any, borderFlag: any, width: any = 350, height: any = 400) {
+    static createMsgBox(title: string, text: string, borderFlag: boolean, width: number = 350, height: number = 400) {
         const state = appState();
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
         const ta = this.createNewTextarea(msgbox, text, "", 10, state.scrMargin.top + 10, 20, 50, "resize:none;width:480px;height:420px;font-size:13px");
