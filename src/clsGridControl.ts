@@ -1002,18 +1002,18 @@ export class gridControl {
     }
 
     /**グリッドの文字設定取得（セル単位）：実行時のみ */
-    getGridDataCell(LayerNum: any, X: any, Y: any) {
+    getGridDataCell(LayerNum: number, X: number, Y: number) {
         let GP = this.Grid_Property[LayerNum];
         return GP.Grid_Text[X][Y].Text;
     }
     /** */
-    setGridDataCell(LayerNum: any, X: any, Y: any, value: any) {
+    setGridDataCell(LayerNum: number, X: number, Y: number, value: string) {
         let GP = this.Grid_Property[LayerNum];
         GP.Grid_Text[X][Y].Text = value;
     }
 
     /**グリッドの左上固定部分を配列取得 */
-    getFixedUpperLeftDataArray(LayerNum: any) {
+    getFixedUpperLeftDataArray(LayerNum: number) {
         let GP = this.Grid_Property[LayerNum];
         let xs = this.Grid_Total.FixedObjectName_n;
         let ys = this.Grid_Total.FixedDataItem_n;
@@ -1029,12 +1029,12 @@ export class gridControl {
  
 
     /** */
-    setInternal(LayerNum: any, X: any, Y: any, value: any) {
+    setInternal(LayerNum: number, X: number, Y: number, value: string) {
         let GP = this.Grid_Property[LayerNum];
         GP.FixedObjectName[X][Y].Text = value;
     }
     /** グリッドの左端固定部分の個別色設定*/
-    getFixedXSColor(Layernum: any, X: any, Y: any) {
+    getFixedXSColor(Layernum: number, X: number, Y: number) {
         if (this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF == true) {
             return this.Grid_Property[Layernum].FixedObjectName[X][Y].Color
         } else {
@@ -1047,12 +1047,12 @@ export class gridControl {
     }
     /** */
 
-    setFixedXSColor(Layernum: any, X: any, Y: any,value: any) {
+    setFixedXSColor(Layernum: number, X: number, Y: number, value: colorRGBA) {
         this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF = true;
         this.Grid_Property[Layernum].FixedObjectName[X][Y].Color = value;
     }
     /**レイヤのグリッドの左端固定部分の色設定をすべてクリア */
-    FixedAllXSColorReset(LayerNum: any) {
+    FixedAllXSColorReset(LayerNum: number) {
         let GP = this.Grid_Property[LayerNum];
         for (let i = 0; i < this.Grid_Total.FixedObjectName_n; i++) {
             for (let j = 0; j < GP.Ymax; j++) {
@@ -1063,12 +1063,12 @@ export class gridControl {
     }
 
     /**グリッドの左端固定部分の色設定クリア */
-    FixedXSColorReset(Layernum: any, X: any, Y: any) {
+    FixedXSColorReset(Layernum: number, X: number, Y: number) {
         this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF = false;
     }
 
     /**グリッドの上端固定部分の文字設定取得 XY指定なしの場合は配列で取得*/
-    getFixedYSData(LayerNum: any, X: any = undefined, Y: any = undefined) {
+    getFixedYSData(LayerNum: number, X?: number, Y?: number) {
         let GP = this.Grid_Property[LayerNum];
         if (X != undefined) {
             return GP.FixedDataItem[X][Y].Text;
@@ -1085,13 +1085,13 @@ export class gridControl {
         }
     }
 
-    setFixedYSData(LayerNum: any, X: any, Y: any,value: any) {
+    setFixedYSData(LayerNum: number, X: number, Y: number, value: string) {
         let GP = this.Grid_Property[LayerNum];
         GP.FixedDataItem[X][Y].Text = value;
     }
 
     /**グリッドの上端固定部分の個別色設定 */
-    getFixedYSColor(Layernum: any, X: any, Y: any) {
+    getFixedYSColor(Layernum: number, X: number, Y: number) {
         if (this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF == true) {
             return this.Grid_Property[Layernum].Grid_Text[X][Y].Color;
         } else {
@@ -1102,12 +1102,12 @@ export class gridControl {
             }
         }
     }
-    setFixedYSColor(Layernum: any, X: any, Y: any,value: any) {
+    setFixedYSColor(Layernum: number, X: number, Y: number, value: colorRGBA) {
         this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF = true;
         this.Grid_Property[Layernum].FixedDataItem[X][Y].Color = value;
     }
     /**レイヤのグリッドの上端固定部分の色設定をすべてクリア */
-    FixedAllYSColorReset(LayerNum: any) {
+    FixedAllYSColorReset(LayerNum: number) {
         let GP = this.Grid_Property[LayerNum];
         for (let i = 0; i < this.Grid_Total.FixedDataItem_n; i++) {
             for (let j = 0; j < GP.Ymax ; j++) {
@@ -1117,83 +1117,83 @@ export class gridControl {
         this.Print_Grid_Data();
     }
     /**グリッドの上端固定部分の色設定クリア */
-    FixedYSColorReset(Layernum: any, X: any, Y: any) {
+    FixedYSColorReset(Layernum: number, X: number, Y: number) {
         this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF = false
     }
 
 
     /**グリッド上端固定部分の文字設定 */
-    getFixedUpperLeftDataCell(LayerNum: any, X: any, Y: any) {
+    getFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text;
     }
-    setFixedUpperLeftDataCell(LayerNum: any, X: any, Y: any, value: any) {
+    setFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text = value;
     }
 
     /** グリッドの高さ設定 */
-    getGridHeight(LayerNum: any, Y: any) {
+    getGridHeight(LayerNum: number, Y: number) {
         return this.Grid_Property[LayerNum].CellHeight[Y]
     }
-    setGridHeight(LayerNum: any,Y: any, value: any) {
+    setGridHeight(LayerNum: number, Y: number, value: number) {
         this.Grid_Property[LayerNum].CellHeight[Y] = value;
     }
 
 
     /** グリッドの幅設定 */
-    getGridWidth(LayerNum: any, X: any) {
+    getGridWidth(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].DataItemData[X].Width;
     }
-    setGridWidth(LayerNum: any, X: any, value: any) {
+    setGridWidth(LayerNum: number, X: number, value: number) {
         this.Grid_Property[LayerNum].DataItemData[X].Width = value;
     }
 
     /** グリッドの配置設定 */
-    getGridAlligntment(LayerNum: any, X: any) {
+    getGridAlligntment(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].DataItemData[X].Allignment
     }
-    setGridAlligntment(LayerNum: any, X: any, value: any) {
+    setGridAlligntment(LayerNum: number, X: number, value: string) {
         this.Grid_Property[LayerNum].DataItemData[X].Allignment = value;
     }
 
 
     /** グリッドの左上固定部分の配置設定 */
-    getFixedUpperLeftAlligntment(LayerNum: any) {
+    getFixedUpperLeftAlligntment(LayerNum: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeftAllignment
     }
-    setFixedUpperLeftAlligntment(LayerNum: any, value: any) {
+    setFixedUpperLeftAlligntment(LayerNum: number, value: string) {
         this.Grid_Property[LayerNum].FixedUpperLeftAllignment = value;
     }
 
 
     /** グリッドの左端固定部分の配置設定 */
-    getFixedXSAllignmentData(LayerNum: any, n: any) {
+    getFixedXSAllignmentData(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[n].Allignment
     }
-    setFixedXSAllignmentData(LayerNum: any, n: any, value: any) {
+    setFixedXSAllignmentData(LayerNum: number, n: number, value: string) {
         this.Grid_Property[LayerNum].FixedObjectNameData[n].Allignment = value;
     }
 
     /** グリッドの左端固定部分の幅設定 */
-    getFixedXSWidthData(LayerNum: any, n: any) {
+    getFixedXSWidthData(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[n].Width
     }
-    setFixedXSWidthData(LayerNum: any, n: any, value: any) {
+    setFixedXSWidthData(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedObjectNameData[n].Width = value;
     }
 
     /** 上部固定部分の行ごとの配置設定 */
-    getFixedYSAllignment(LayerNum: any, n: any) {
+    getFixedYSAllignment(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedDataItemData[n].Allignment
     }
-    setFixedYSAllignment(LayerNum: any, n: any, value: any) {
+    setFixedYSAllignment(LayerNum: number, n: number, value: string) {
         this.Grid_Property[LayerNum].FixedDataItemData[n].Allignment = value;
     }
 
     /** 上部固定部分の行ごとの高さ設定 */
-    getFixedYSHeight(LayerNum: any, n: any) {
+    getFixedYSHeight(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedDataItemData[n].Height
     }
-    setFixedYSHeight(LayerNum: any, n: any, value: any) {
+    setFixedYSHeight(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedDataItemData[n].Height = value;
     }
 
@@ -1204,10 +1204,10 @@ export class gridControl {
 
 
     /** レイヤタグを取得：：実行時・取得のみ　設定はAddLayerメソッド */
-    getLayerData(LayerNum: any, key: any) {
+    getLayerData(LayerNum: number, key: string) {
         return this.Grid_Property[LayerNum].LayerData[key];
     }
-    setLayerData(LayerNum: any, key: any, value: any) {
+    setLayerData(LayerNum: number, key: string, value: any) {
         this.Grid_Property[LayerNum].LayerData[key] = value;
     }
 
@@ -1215,15 +1215,15 @@ export class gridControl {
     getLayer() {
         return this.Grid_Total.Layer;
     }
-    setLayer(value: any) {
+    setLayer(value: number) {
         this.Grid_Total.Layer = value;
     }
 
     /**レイヤ名を取得・設定 */
-    getLayerName(LayerNum: any) {
+    getLayerName(LayerNum: number) {
         return this.Grid_Property[LayerNum].LayerName;
     }
-    setLayerName(LayerNum: any, value: any) {
+    setLayerName(LayerNum: number, value: string) {
         this.Grid_Property[LayerNum].LayerName = value;
         this.Set_SSTAB_Name();
     }
@@ -1232,7 +1232,7 @@ export class gridControl {
     getTabClickEnabled() {
         return this.Grid_Total.TabClickEnabled
     }
-    setTabClickEnabled(value: any) {
+    setTabClickEnabled(value: boolean) {
         this.Grid_Total.TabClickEnabled = value;
     }
 
@@ -1240,19 +1240,19 @@ export class gridControl {
     getTotalGridColor() {
         return this.Grid_Total.Color.Grid;
     }
-    setTotalGridColor(value: any) {
+    setTotalGridColor(value: colorRGBA) {
         this.Grid_Total.Color.Grid = value;
     }
 
     /** セルの個別色設定 */
-    getGridColor(LayerNum: any, X: any, Y: any) {
+    getGridColor(LayerNum: number, X: number, Y: number) {
         if (this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF == false) {
             return this.Grid_Total.Color.Grid;
         } else {
             return this.Grid_Property[LayerNum].Grid_Text[X][Y].Color;
         }
     }
-    setGridColor(LayerNum: any, X: any, Y: any,value: any) {
+    setGridColor(LayerNum: number, X: number, Y: number, value: colorRGBA) {
         this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF = true;
         this.Grid_Property[LayerNum].Grid_Text[X][Y].Color = value;
     }
