@@ -1894,7 +1894,7 @@ export class Generic {
     }
 
     /**文字列配列Wordsをチェックして「新規1」「新規2」など連番を付ける */
-    static Get_New_Numbering_Strings(CheckWords: any, Words: any) {
+    static Get_New_Numbering_Strings(CheckWords: string, Words: string[]) {
         const state = appState();
         let L = CheckWords.length;
         let V = 0;
@@ -2451,7 +2451,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**数値に変換する */
-    static convValue(value: any){
+    static convValue(value: string){
         const state = appState();
         let v=value;
         v = v.replace(/\s+/g, "");//スペース削除
@@ -2459,14 +2459,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         v = v.replaceAll("．", ".");
         v = v.replaceAll("－", "-");
         v = v.replaceAll("＋", "+");
-        v = v.replace(/[０-９]/g, function (s: any) {
+        v = v.replace(/[０-９]/g, function (s: string) {
             return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
         });
         return v;
     }
 
     /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
-    static createNewNumberInput(ParentObj: any, defoValue: any, ID: any, x: any, y: any, width: any, onChange: any, styleinfo: any) {
+    static createNewNumberInput(ParentObj: HTMLElement, defoValue: number, ID: string, x: number, y: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, styleinfo: string) {
         const state = appState();
         let box = this.createNewInput(ParentObj, "text", defoValue, ID, x, y, undefined, "width:" + (width as any).px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
         box.preValue = defoValue;
@@ -2512,7 +2512,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**数字入力＋リストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用**/
-    static createNewNumberComboBox(ParentObj: any, defoValue: any, ID: any, list: any, x: any, y: any, width: any, maxNumber: any, onChange: any){
+    static createNewNumberComboBox(ParentObj: HTMLElement, defoValue: number, ID: string, list: number[], x: number, y: number, width: number, maxNumber: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined){
         const state = appState();
         let dropinwidth=18;
         let ipsize=this.createNewNumberInput(document.body,defoValue,"",0,0,width-dropinwidth+1,onChange,"visibility:hidden");
@@ -2573,7 +2573,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**チェックリストボックス */
-    static createNewCheckListBox(ParentObj: any, ID: any, list: any, x: any, y: any, width: any, height: any, onChange: any, styleinfo: any) {
+    static createNewCheckListBox(ParentObj: HTMLElement, ID: string, list: {text: string, checked: boolean}[], x: number, y: number, width: number, height: number, onChange: ((index: number, checked: boolean) => void) | undefined, styleinfo: string) {
         const state = appState();
         let lineH = this.getDivSize("A", undefined, "").height + 3;
         let allh = lineH * list.length;
@@ -2595,7 +2595,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //**色を指定分明るくまたは暗くする（0を下回った場合は0、255を上回った場合は255） */
-    static GetColorArrange(Col: any, ChangeValue: any){
+    static GetColorArrange(Col: color, ChangeValue: number){
         const state = appState();
         let newcol=Col.Clone();
         let r  = Generic.m_min_max(Col.r + ChangeValue, 0, 255)
@@ -2609,7 +2609,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //2次元配列aData()の内容から、データ項目ごとに通常、文字列、カテゴリーと分類する
-    static Check_DataType(DataNum: any, ObjNum: any, aData: any) {
+    static Check_DataType(DataNum: number, ObjNum: number, aData: string[][]) {
         const state = appState();
         let UNT = [];
         let SS = new clsSortingSearch();
@@ -2666,7 +2666,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**拡張子取得 */ 
-    static getExtension(filename: any){
+    static getExtension(filename: string){
         const state = appState();
         let n=filename.lastIndexOf(".");
         if(n==-1){
@@ -2677,7 +2677,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
        /**フォルダを除いたファイル名を取得 */
-       static getFilename(filename: any) {
+       static getFilename(filename: string) {
         const state = appState();
         let hn = filename.lastIndexOf("/");//スラッシュ
         let tx = "";
@@ -2690,7 +2690,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**拡張子を除いたファイル名を取得 */
-    static getFilenameWithoutExtension(filename: any) {
+    static getFilenameWithoutExtension(filename: string) {
         const state = appState();
         let n = filename.lastIndexOf(".");
         let hn = filename.lastIndexOf("/");//スラッシュ
@@ -2708,7 +2708,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //テキストファイル保存
-    static saveText(text: any, fileName: any) {
+    static saveText(text: string, fileName: string) {
         const state = appState();
         /// <signature>
         /// <summary>ファイル保存</summary>
@@ -2730,7 +2730,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     };
 
     //座標の文字列取得
-    static Get_PositionCoordinate_Strings(P: any, MPDataMapZahyo: any, Header_Flag = true) {
+    static Get_PositionCoordinate_Strings(P: point, MPDataMapZahyo: zahyohenkan, Header_Flag = true) {
         const state = appState();
         let retPS: {x: string, y: string} = {x: "", y: ""};
         switch (MPDataMapZahyo.Mode) {
@@ -2761,14 +2761,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**緯度経度(latlon)の文字列取得 (.x,.y)*/
-    static Get_LatLon_Strings(LatLon: any, Header_Flag = true) {
+    static Get_LatLon_Strings(LatLon: latlon, Header_Flag = true) {
         const state = appState();
         let p = LatLon.toPoint();
         return this.Get_LatLon_PointStrings(p, Header_Flag);
     }
 
     /**緯度経度(point)の文字列取得*/
-    static Get_LatLon_PointStrings(Pos: any, Header_Flag=true){
+    static Get_LatLon_PointStrings(Pos: point, Header_Flag=true){
         const state = appState();
         let P = Pos.Clone();
         let retPS = {x: "", y: ""};
@@ -2815,7 +2815,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //メッシュコードの文字の長さを取得
-    static getMeshCodeLength(MeshNumber: any) {
+    static getMeshCodeLength(MeshNumber: enmMesh_Number) {
         const state = appState();
         let CodeLen;
         switch (MeshNumber) {
@@ -2865,7 +2865,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     
     /**距離単位列挙型から面積文字列を返す */
-    static getScaleUnitAreaStrings(scl: any) {
+    static getScaleUnitAreaStrings(scl: enmScaleUnit) {
         const state = appState();
         switch (scl) {
             case enmScaleUnit.meter:
@@ -2896,7 +2896,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     ///*距離単位列挙型と値から距離文字列を返す 距離単位だけの場合はValue=undefined*/
-    static getScaleUnitStrings(Value: any, scl: any) {
+    static getScaleUnitStrings(Value: number | undefined, scl: enmScaleUnit) {
         const state = appState();
         let vs;
         if(Value==undefined){
@@ -2956,7 +2956,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //距離単位の変換係数を求める
-    static Convert_ScaleUnit(from_Unit: any, to_Unit: any){
+    static Convert_ScaleUnit(from_Unit: enmScaleUnit, to_Unit: enmScaleUnit){
         const state = appState();
         let kmco = [];
         kmco[enmScaleUnit.meter] = 1000;
@@ -2977,7 +2977,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 }
 
     //レイヤの形状ごとの数を入れた配列から、可能な形状を返す
-    static checkShape(Shape: any) {
+    static checkShape(Shape: number[]) {
         const state = appState();
         if (Shape[enmShape.PointShape] > 0) {
             return enmShape.PointShape;
@@ -2988,7 +2988,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static RGBAfromElement(ele: any) {
+    static RGBAfromElement(ele: HTMLElement) {
         const state = appState();
         //要素の背景色をcolorRGBAに変換して返す
         let opa=1 ;
@@ -3004,7 +3004,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let col = new colorRGBA(parseInt(RGB[0]), parseInt(RGB[1]), parseInt(RGB[2]), opa);
         return col;
     }
-    static Set_Box_Position_in_Browser(e_point: any, box: any) {	//
+    static Set_Box_Position_in_Browser(e_point: point | MouseEvent, box: HTMLElement) {	//
         const state = appState();
         /// <signature>
         /// <summary>ブラウザからはみださないようにボックスの位置を決める</summary>
@@ -3046,7 +3046,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         box.style.top = (y as any).px();
     }
 
-    static Check_Point_in_screen(p: any, ScrData: any, Mode: any) {
+    static Check_Point_in_screen(p: point, ScrData: Screen_info, Mode: number) {
         const state = appState();
         //定義
         //Mode=0/SRX:SRY  Mode=1/SR:SY
@@ -3064,7 +3064,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //属性データタイプ列挙型から文字を返す
-    static ConvertAttDataTypeString(dataType: any) {
+    static ConvertAttDataTypeString(dataType: enmAttDataType) {
         const state = appState();
         switch (dataType) {
             case enmAttDataType.Normal:
@@ -3104,7 +3104,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //selectのアイテム削除後に、次のインデックスを指定する
-    static ListIndex_Reset(select: any, Old_n: any) {
+    static ListIndex_Reset(select: HTMLSelectElement, Old_n: number) {
         const state = appState();
         if (select.options.length == 0) {
             return;
@@ -3118,7 +3118,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //形状列挙型からその文字を返す
-    static ConvertShapeEnumString(shape: any) {
+    static ConvertShapeEnumString(shape: enmShape) {
         const state = appState();
         switch (shape) {
             case enmShape.LineShape:
@@ -3137,7 +3137,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //イベント情報からcanvas上の座標位置を求める
-    static getCanvasXY(e: any) {
+    static getCanvasXY(e: MouseEvent) {
         const state = appState();
         let cx = e.clientX;
         let cy = e.clientY;
@@ -3147,7 +3147,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
         //イベント情報からcanvas上の座標位置を求める
-        static getCanvasXY2(e: any) {
+        static getCanvasXY2(e: MouseEvent) {
         const state = appState();
             let cx = e.clientX;
             let cy = e.clientY;
@@ -3160,7 +3160,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
 
     //画面表示領域変更の可否のチェック
-    static Check_New_ScrView(MapRect: any, new_Rect: any) {
+    static Check_New_ScrView(MapRect: rectangle, new_Rect: rectangle) {
         const state = appState();
         if (new_Rect.width() > MapRect.width() / 5000) {
             //拡大しすぎでない場合
@@ -3173,7 +3173,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
-    static Get_Outer_Mpline_AggregatedObj(LCode: any, Shape: any) { //LCode:EnableMPLine_Data
+    static Get_Outer_Mpline_AggregatedObj(LCode: any[], Shape: any) { //LCode:EnableMPLine_Data
         const state = appState();
         let lc = this.ArrayClone(LCode);
 
@@ -3200,7 +3200,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //タイトル、単位から属性データタイプ列挙型を返す
-    static getAttDataType_From_TitleUnit(Title: any, Unit: any) {
+    static getAttDataType_From_TitleUnit(Title: string, Unit: string) {
         const state = appState();
         let dtype;
         let UTitle = Title.toUpperCase();
@@ -3231,7 +3231,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //属性データタイプ列挙型からTITLE、単位文字列を設定
 
     /** @returns {MyType} */
-    static SetTitleUnit_from_AttDataType(dtype: any, defoTitle: any, defoUnit: any, ) {
+    static SetTitleUnit_from_AttDataType(dtype: enmAttDataType, defoTitle: string, defoUnit: string) {
         const state = appState();
         let Title=defoTitle;
         let Unit=defoUnit;
@@ -3278,22 +3278,22 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //オブジェクトが同じかどうか調べる
-    static equal(objecta: any, objectb: any) {
+    static equal<T>(objecta: T, objectb: T) {
         const state = appState();
         return (JSON.stringify(objecta) == JSON.stringify(objectb))
     }
-    static Clone(odata: any) {
+    static Clone<T>(odata: T): T {
         const state = appState();
         return JSON.parse(JSON.stringify(odata));
     }
 
     //配列のシャローコピー
-    static ArrayShallowCopy(Arr: any){
+    static ArrayShallowCopy<T>(Arr: T[]): T[]{
         const state = appState();
         return Arr.concat();
     }
     /**Cloneメソッドを持つオブジェクトの配列をコピーする */ 
-    static ArrayClone(array: any) {
+    static ArrayClone<T extends {Clone(): T}>(array: T[]): T[] | undefined {
         const state = appState();
         if (array.length==0){
             return [];
@@ -3306,9 +3306,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return rea;
     }
     /**Cloneメソッドを持つオブジェクトの2次元配列をコピーする */
-    static Array2Clone(array: any){
+    static Array2Clone<T extends {Clone(): T}>(array: T[][]): (T[] | undefined)[] {
         const state = appState();
-        let ca = [];
+        let ca: (T[] | undefined)[] = [];
         for (let i = 0; i < array.length; i++) {
             ca.push(this.ArrayClone(array[i]));
         }
@@ -3316,7 +3316,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     
-    static m_min_max(V: any, Min: any, Max: any) {
+    static m_min_max(V: number, Min: number, Max: number) {
         const state = appState();
         //検査値がMinより小さければMinを返し、Maxより大きければMaxを返す
 
