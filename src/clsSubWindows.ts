@@ -1044,31 +1044,31 @@ function frmPrintOption(firstTab: number = 0) {
 
     /**全般●●●●●●●●●●●●●●●●●●●●● */
     const tab00 = Generic.createNewFrame(tab.panel[0], "", "", 15, 10, 150, 260, "飾り");
-    Generic.createNewCheckBox(tab00,"タイトル表示","",atv.MapTitle.Visible,10,15,undefined, function(obj: any){atv.MapTitle.Visible=obj.checked;},"");
+    Generic.createNewCheckBox(tab00,"タイトル表示","",atv.MapTitle.Visible,10,15,undefined, function(obj: HTMLInputElement){atv.MapTitle.Visible=obj.checked;},"");
     Generic.createNewButton(tab00,"フォント設定","",30,38,
-    function(e: any){
+    function(e: MouseEvent){
         clsFontSet(e, atv.MapTitle.Font, function (newFont: any) { atv.MapTitle.Font = newFont }, state.attrData);
     },"padding-top:0;padding-bottom:0");
-    Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.MapTitle.MaxWidth,"",30,60,undefined,40,function (obj: any, v: any) { atv.MapTitle.MaxWidth = v;},"")
-    Generic.createNewCheckBox(tab00,"方位表示","",atv.AttMapCompass.Visible,10,90,undefined, function(obj: any){atv.AttMapCompass.Visible=obj.checked;},"");
+    Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.MapTitle.MaxWidth,"",30,60,undefined,40,function (obj: HTMLInputElement, v: number) { atv.MapTitle.MaxWidth = v;},"")
+    Generic.createNewCheckBox(tab00,"方位表示","",atv.AttMapCompass.Visible,10,90,undefined, function(obj: HTMLInputElement){atv.AttMapCompass.Visible=obj.checked;},"");
     Generic.createNewButton(tab00,"方位設定","",30,113,
-        function(v: any){
+        function(v: MouseEvent){
             frmCompassSettings(atv.AttMapCompass,function(v: any){atv.AttMapCompass=v;});
         },"padding-top:0;padding-bottom:0");
-    Generic.createNewCheckBox(tab00,"注表示","",atv.DataNote.Visible,10,145,undefined, function(obj: any){atv.DataNote.Visible=obj.checked;},"");
+    Generic.createNewCheckBox(tab00,"注表示","",atv.DataNote.Visible,10,145,undefined, function(obj: HTMLInputElement){atv.DataNote.Visible=obj.checked;},"");
     Generic.createNewButton(tab00,"フォント設定","",30,168,
-    function(e: any){
+    function(e: MouseEvent){
         clsFontSet(e, atv.DataNote.Font, function (newFont: any) { atv.DataNote.Font = newFont }, state.attrData);
     },"padding-top:0;padding-bottom:0");
-    Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.DataNote.MaxWidth,"",30,190,undefined,40,function (obj: any, v: any) { atv.DataNote.MaxWidth = v;},"")
-    Generic.createNewCheckBox(tab00,"図形表示","",atv.FigureVisible,10,220,undefined, function(obj: any){atv.FigureVisible=obj.checked;},"");
+    Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.DataNote.MaxWidth,"",30,190,undefined,40,function (obj: HTMLInputElement, v: number) { atv.DataNote.MaxWidth = v;},"")
+    Generic.createNewCheckBox(tab00,"図形表示","",atv.FigureVisible,10,220,undefined, function(obj: HTMLInputElement){atv.FigureVisible=obj.checked;},"");
 
     let atva=atv.AccessoryGroupBox;
     const tab01 = Generic.createNewFrame(tab.panel[0], "", "", 180, 10, 170, 210, "飾りグループボックス");
-    Generic.createNewCheckBox(tab01,"設定する","",atva.Visible,10,15,undefined, function(obj: any){atva.Visible=obj.checked;},"");
+    Generic.createNewCheckBox(tab01,"設定する","",atva.Visible,10,15,undefined, function(obj: HTMLInputElement){atva.Visible=obj.checked;},"");
     const accGList=[{text:"凡例",checked:atva.Legend},{text:"タイトル",checked:atva.Title},{text:"方位",checked:atva.Comapss},{text:"スケール",checked:atva.Scale},
     {text:"注",checked:atva.Note},{text:"線種凡例",checked:atva.LinePattern},{text:"オブジェクトグループ凡例",checked:atva.ObjectGroup}];
-    Generic.createNewCheckListBox(tab01,"",accGList,10,45,150,125,function(num: any,checked: any){
+    Generic.createNewCheckListBox(tab01,"",accGList,10,45,150,125,function(num: number, checked: boolean){
         switch (num) {
             case 0:
                 atva.Legend = checked;
@@ -1093,7 +1093,7 @@ function frmPrintOption(firstTab: number = 0) {
                 break;
         }
     },"");
-    Generic.createNewWordDivCanvas(tab01, "atvaBack", "背景", 10, 180,undefined, function(e: any){
+    Generic.createNewWordDivCanvas(tab01, "atvaBack", "背景", 10, 180,undefined, function(e: MouseEvent){
         clsBackgroundPatternSet(e, atva.Back, backGet, state.attrData);
         function backGet(back: any) {
             atva.Back = back;
@@ -1105,13 +1105,13 @@ function frmPrintOption(firstTab: number = 0) {
     const tab03 = Generic.createNewFrame(tab.panel[0], "", "", 180, 235, 170, 50, "幅が「0」のライン幅");
         let zeroWidthList=[{value:0,text:"0.1ピクセル"},{value:1,text:"0.3ピクセル"},{value:2,text:"0.5ピクセル"},{value:3,text:"0.7ピクセル"},{value:4,text:"0.9ピクセル"}];
         Generic.createNewSelect(tab03,zeroWidthList,sdata.MinimumLineWidth,"",30,15,false,
-        function(obj: any, sel: any, v: any){sdata.MinimumLineWidth=v;},"",1,false);
+        function(obj: HTMLSelectElement, sel: number, v: number){sdata.MinimumLineWidth=v;},"",1,false);
 
 
     const tab02 = Generic.createNewFrame(tab.panel[0], "", "", 365, 10, 190, 70, "記号表示位置と代表点");
-    Generic.createNewCheckBox(tab02,"線で結ぶ","",atv.SymbolLine.Visible,10,15,undefined, function(obj: any){atv.SymbolLine.Visible=obj.checked;},"");
+    Generic.createNewCheckBox(tab02,"線で結ぶ","",atv.SymbolLine.Visible,10,15,undefined, function(obj: HTMLInputElement){atv.SymbolLine.Visible=obj.checked;},"");
     Generic.createNewWordDivCanvas(tab02, "SymbolLine", "ラインパターン", 20, 35, 100,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.SymbolLine.Line,
                 function (Lpat: any) {
                     atv.SymbolLine.Line = Lpat;
@@ -1124,36 +1124,36 @@ function frmPrintOption(firstTab: number = 0) {
     let def_PointInterval = atv.SouByou.PointInterval * ConvScaleValue;
     let def_LoopSize = atv.SouByou.LoopSize * ConvScaleValue;
     const tab04 = Generic.createNewFrame(tab.panel[0], "", "", 365, 95, 190, 190, "総描");
-    Generic.createNewCheckBox(tab04,"自動設定","",atv.SouByou.Auto,15,12,100,function(ob: any){
+    Generic.createNewCheckBox(tab04,"自動設定","",atv.SouByou.Auto,15,12,100,function(ob: HTMLInputElement){
         atv.SouByou.Auto=ob.checked;
        Generic.setDisabled( soubyouManual,(ob.checked==true));
     },"");
     let autoLst=[{ value: 1, text: "弱"},{ value: 2, text: "中"},{ value: 3, text: "強"},{ value: 4, text: "最強"}];
-    const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,tab04,"",100,12,false,function(sbox: any,sel: any,v: any){
+    const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,tab04,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v: number){
         atv.SouByou.AutoDegree=v;
     },"");
     cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree);
-    Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: any){atv.SouByou.Spline_F=obj.checked;},"");
+    Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: HTMLInputElement){atv.SouByou.Spline_F=obj.checked;},"");
     const soubyouManual = Generic.createNewFrame(tab04, "", "", 10, 50, 170, 122, "マニュアル設定");
-    Generic.createNewCheckBox(soubyouManual, "ポイント間引き", "", atv.SouByou.ThinningPrint_F, 5, 15,undefined,  function (obj: any) { atv.SouByou.ThinningPrint_F = obj.checked; }, "");
+    Generic.createNewCheckBox(soubyouManual, "ポイント間引き", "", atv.SouByou.ThinningPrint_F, 5, 15,undefined,  function (obj: HTMLInputElement) { atv.SouByou.ThinningPrint_F = obj.checked; }, "");
     Generic.createNewWordNumberInput(soubyouManual, "取得間隔", Generic.getScaleUnitStrings(undefined, atv.MapScale.Unit), def_PointInterval, "", 10, 37, undefined,50,
-        function (obj: any, v: any) { atv.SouByou.PointInterval = v / ConvScaleValue; }, "");
-    Generic.createNewCheckBox(soubyouManual, "ループ間引き", "", atv.SouByou.LoopAreaF, 5, 70,undefined,  function (obj: any) { atv.SouByou.LoopAreaF = obj.checked; }, "");
+        function (obj: HTMLInputElement, v: number) { atv.SouByou.PointInterval = v / ConvScaleValue; }, "");
+    Generic.createNewCheckBox(soubyouManual, "ループ間引き", "", atv.SouByou.LoopAreaF, 5, 70,undefined,  function (obj: HTMLInputElement) { atv.SouByou.LoopAreaF = obj.checked; }, "");
     Generic.createNewWordNumberInput(soubyouManual, "最小取得サイズ", Generic.getScaleUnitStrings(undefined, atv.MapScale.Unit) + "<sup>2</sup>", def_LoopSize, "", 10, 92, undefined,40,
-        function (obj: any, v: any) { atv.SouByou.LoopSize = v / ConvScaleValue; }, "");
+        function (obj: HTMLInputElement, v: number) { atv.SouByou.LoopSize = v / ConvScaleValue; }, "");
     Generic.setDisabled( soubyouManual,(atv.SouByou.Auto==true));
 
     /**背景・描画●●●●●●●●●●●●●●●●●●●●● */
     const tab10 = Generic.createNewFrame(tab.panel[1], "", "", 15, 10, 260, 80, "ウインドウ内余白");
-    Generic.createNewWordNumberInput(tab10, "上余白", "%", atv.ScrData.Screen_Margin.rect.top, "", 10, 15,undefined, 40, function (obj: any, v: any) { atv.ScrData.Screen_Margin.rect.top = v; }, "")
-    Generic.createNewWordNumberInput(tab10, "下余白", "%", atv.ScrData.Screen_Margin.rect.bottom, "", 10, 45,undefined, 40, function (obj: any, v: any) { atv.ScrData.Screen_Margin.rect.bottom = v; }, "")
-    Generic.createNewWordNumberInput(tab10, "右余白", "%", atv.ScrData.Screen_Margin.rect.right, "", 130, 15,undefined, 40, function (obj: any, v: any) { atv.ScrData.Screen_Margin.rect.right = v; }, "")
-    Generic.createNewWordNumberInput(tab10, "左余白", "%", atv.ScrData.Screen_Margin.rect.left, "", 130, 45,undefined, 40, function (obj: any, v: any) { atv.ScrData.Screen_Margin.rect.left = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "上余白", "%", atv.ScrData.Screen_Margin.rect.top, "", 10, 15,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.top = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "下余白", "%", atv.ScrData.Screen_Margin.rect.bottom, "", 10, 45,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.bottom = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "右余白", "%", atv.ScrData.Screen_Margin.rect.right, "", 130, 15,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.right = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "左余白", "%", atv.ScrData.Screen_Margin.rect.left, "", 130, 45,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.left = v; }, "")
 
     const tab11 = Generic.createNewFrame(tab.panel[1], "", "", 15, 110, 260, 140, "枠・色");
-    Generic.createNewCheckBox(tab11, "余白で地図画像クリップ", "", atv.ScrData.Screen_Margin.ClipF, 10, 15,undefined,  function (obj: any) { atv.ScrData.Screen_Margin.ClipF = obj.checked }, "");
+    Generic.createNewCheckBox(tab11, "余白で地図画像クリップ", "", atv.ScrData.Screen_Margin.ClipF, 10, 15,undefined,  function (obj: HTMLInputElement) { atv.ScrData.Screen_Margin.ClipF = obj.checked }, "");
     Generic.createNewWordDivCanvas(tab11, "MapAreaFrameLine", "地図領域枠線", 10, 45, 60,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.Screen_Back.MapAreaFrameLine,
                 function (Lpat: any) {
                     atv.Screen_Back.MapAreaFrameLine = Lpat;
@@ -1162,13 +1162,13 @@ function frmPrintOption(firstTab: number = 0) {
         });
     state.attrData.Draw_Sample_LineBox(document.getElementById("MapAreaFrameLine"), atv.Screen_Back.MapAreaFrameLine);
     Generic.createNewTileBox(tab11, "MapAreaBack", "地図領域背景色", atv.Screen_Back.MapAreaBack, 135, 45,60,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsTileSet(e, atv.Screen_Back.MapAreaBack,
                 function (retTile: any) { atv.Screen_Back.MapAreaBack = retTile });
         });
 
     Generic.createNewWordDivCanvas(tab11, "ScreenFrameLine", "画面外枠線", 10, 75, 60,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.Screen_Back.ScreenFrameLine,
                 function (Lpat: any) {
                     atv.Screen_Back.ScreenFrameLine = Lpat;
@@ -1177,25 +1177,25 @@ function frmPrintOption(firstTab: number = 0) {
         });
     state.attrData.Draw_Sample_LineBox(document.getElementById("ScreenFrameLine"), atv.Screen_Back.ScreenFrameLine);
     Generic.createNewTileBox(tab11, "ObjectInner", "オブジェクト内部色", atv.Screen_Back.ObjectInner, 135, 75,60,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsTileSet(e, atv.Screen_Back.ObjectInner,
                 function (retTile: any) { atv.Screen_Back.ObjectInner = retTile });
         });
     Generic.createNewTileBox(tab11, "ScreenAreaBack", "画面領域色", atv.Screen_Back.ScreenAreaBack, 10, 105,60,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsTileSet(e, atv.Screen_Back.ScreenAreaBack,
                 function (retTile: any) { atv.Screen_Back.ScreenAreaBack = retTile });
         });
 
     const tab12 = Generic.createNewFrame(tab.panel[1], "", "", 290, 10, 260, 240, "経緯線");
-    Generic.createNewCheckBox(tab12, "表示", "", atv.LatLonLine_Print.Visible, 10, 15,undefined,  function (obj: any) { atv.LatLonLine_Print.Visible = obj.checked }, "");
+    Generic.createNewCheckBox(tab12, "表示", "", atv.LatLonLine_Print.Visible, 10, 15,undefined,  function (obj: HTMLInputElement) { atv.LatLonLine_Print.Visible = obj.checked }, "");
     const gbtab12Order = Generic.createNewFrame(tab12, "", "", 10, 45, 80, 60, "表示階層");
     let latlonOrderList=[{value:enmLatLonLine_Order.Back, text:"背面"},{value:enmLatLonLine_Order.Front, text:"前面"}];
     Generic.createNewRadioButtonList(gbtab12Order, "latlonOrder", latlonOrderList, 10, 10,undefined, 25, atv.LatLonLine_Print.Order, 
-        function (v: any) { atv.LatLonLine_Print.Order = v }, "");
+        function (v: number) { atv.LatLonLine_Print.Order = v }, "");
     const gbtab12Lpat = Generic.createNewFrame(tab12, "", "", 110, 8, 140, 100, "ラインパターン");
     Generic.createNewWordDivCanvas(gbtab12Lpat, "OuterPat", "外周", 10, 10, 50,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.LatLonLine_Print.OuterPat,
                 function (Lpat: any) {
                     atv.LatLonLine_Print.OuterPat = Lpat;
@@ -1204,7 +1204,7 @@ function frmPrintOption(firstTab: number = 0) {
         });
     state.attrData.Draw_Sample_LineBox(document.getElementById("OuterPat"), atv.LatLonLine_Print.OuterPat);
     Generic.createNewWordDivCanvas(gbtab12Lpat, "Equator", "赤道", 10, 40, 50,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.LatLonLine_Print.Equator,
                 function (Lpat: any) {
                     atv.LatLonLine_Print.Equator = Lpat;
@@ -1213,7 +1213,7 @@ function frmPrintOption(firstTab: number = 0) {
         });
     state.attrData.Draw_Sample_LineBox(document.getElementById("Equator"), atv.LatLonLine_Print.Equator);
     Generic.createNewWordDivCanvas(gbtab12Lpat, "LPat", "その他", 10, 70, 50,
-        function (e: any) {
+        function (e: MouseEvent) {
             clsLinePatternSet(e, atv.LatLonLine_Print.LPat,
                 function (Lpat: any) {
                     atv.LatLonLine_Print.LPat = Lpat;
@@ -1228,7 +1228,7 @@ function frmPrintOption(firstTab: number = 0) {
         let retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false);
         txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
     }
-    Generic.createNewButton(gbtab12Interval, "間隔設定", "", 50, 70, function (lp: any) {
+    Generic.createNewButton(gbtab12Interval, "間隔設定", "", 50, 70, function (lp: MouseEvent) {
         frmLatLonInput(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false, function (lp: any) {
             atv.LatLonLine_Print.Lat_Interval = lp.lat;
             atv.LatLonLine_Print.Lon_Interval = lp.lon;
@@ -1241,8 +1241,8 @@ function frmPrintOption(firstTab: number = 0) {
     }
 
     /**凡例設定●●●●●●●●●●●●●●●●●●●●● */
-    Generic.createNewCheckBox(tab.panel[2], "凡例を表示", "", atv.MapLegend.Base.Visible, 10, 15,undefined,  function (obj: any) { atv.MapLegend.Base.Visible = obj.checked }, "");
-    Generic.createNewCheckBox(tab.panel[2], "桁区切りカンマを表示", "", atv.MapLegend.Base.Comma_f, 150, 15,undefined,  function (obj: any) { atv.MapLegend.Base.Comma_f = obj.checked }, "");
+    Generic.createNewCheckBox(tab.panel[2], "凡例を表示", "", atv.MapLegend.Base.Visible, 10, 15,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.Base.Visible = obj.checked }, "");
+    Generic.createNewCheckBox(tab.panel[2], "桁区切りカンマを表示", "", atv.MapLegend.Base.Comma_f, 150, 15,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.Base.Comma_f = obj.checked }, "");
     const tabLegend=Generic.createNewTab(tab.panel[2],["凡例背景・フォント","階級区分","記号・円グラフ","線種・点ダミー凡例"],0,30,50,490,230);
 
     /**凡例背景*/
