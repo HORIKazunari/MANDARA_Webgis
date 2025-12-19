@@ -416,7 +416,7 @@ function setting(locSearch: string) {
     function mnuOpenShapeFile() {
         const state = appState();
         openShapeFile(okButton);
-        function okButton(mapdata: any, layerdata: any) {
+        function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
@@ -429,7 +429,7 @@ function setting(locSearch: string) {
     function menuReadData() {
         const state = appState();
         readData(okButton);
-        function okButton(mapdata: any, attrText: string, filename: string, ext: string) {
+        function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
             attrData = new clsAttrData();
             let retv = attrData.OpenNewMandaraFile(mapdata, attrText, filename, ext);
             if(retv.emes != "") {
@@ -458,7 +458,7 @@ function setting(locSearch: string) {
     /**データ挿入(既存属性データから) */
     function menuInsertDataFile(){
         readData(okButton);
-        function okButton(mapdata: any, attrText: string, filename: string, ext: string) {
+        function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
             let newAttrData = new clsAttrData();
             let retv = newAttrData.OpenNewMandaraFile(mapdata, attrText, filename, ext);            
             if(retv.emes != "") {
@@ -478,7 +478,7 @@ function setting(locSearch: string) {
     /**データ挿入(シェープファイルから) */
     function menuInsertShapefile() {
         openShapeFile(okButton);
-        function okButton(mapdata: any, layerdata: any) {
+        function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
             let newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
             newAttrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
@@ -494,7 +494,7 @@ function setting(locSearch: string) {
     /**データ挿入(白地図・初期属性データ表示から) */
     function menuInsertMapViewer(){
         mapViewer(okButton);
-        function okButton(mapdata: any, layerdata: any) {
+        function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
             let newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
 
@@ -598,7 +598,7 @@ function setting(locSearch: string) {
         Check_EraseSettei_OK(function () {
             clsGrid(true, buttonOK);
         })
-        function buttonOK(newAttr: any) {
+        function buttonOK(newAttr: clsAttrData) {
             man_Data=enmDataSource.DataEdit;
             settingModeWindow?.setVisibility?.(true);
             attrData = new clsAttrData();
@@ -611,7 +611,7 @@ function setting(locSearch: string) {
     /**属性データ編集 */
     function mnuPropertyEdit(){
         clsGrid(false,buttonOK);
-        function buttonOK(newAttr: any){
+        function buttonOK(newAttr: clsAttrData){
             attrData = new clsAttrData();
             attrData=newAttr;
             Init_Screen_Set(true);
@@ -1180,13 +1180,13 @@ function setting(locSearch: string) {
         Generic.createMsgBox("統計値表示", txt,true);
     }
     //レイヤの変更
-    function changeLayer(obj: any, sel: number, v: any) {
+    function changeLayer(obj: HTMLSelectElement, sel: number, v: string) {
         attrData.TotalData.LV1.SelectedLayer =sel;
         setDataItemList();
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
-    function changeDataItem(obj: any, sel: number, v: any) {
+    function changeDataItem(obj: HTMLSelectElement, sel: number, v: string) {
         let LayerNum = attrData.TotalData.LV1.SelectedLayer;
         attrData.LayerData[LayerNum].atrData.SelectedIndex = sel;
         for (let k in enmSoloMode_Number) {
