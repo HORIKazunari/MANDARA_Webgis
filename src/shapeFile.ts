@@ -33,86 +33,88 @@ interface BoundingBox {
 
 type UnzippedShape = Record<string, Uint8Array>;
 
-clsShapefile = function () {
+// 内部クラスの定義
+class IndexFileData_info implements IndexFileDataInfo {
+    offset = 0;
+    contentsLength = 0;
+}
 
-    class IndexFileData_info implements IndexFileDataInfo {
-        offset = 0;
-        contentsLength = 0;
+class DBF_Info implements DBFInfo {
+    VerData = 0;
+    RecordNumber = 0;
+    FieldNumber = 0;
+    Year = 0;
+    Month = 0;
+    dbfDate = 0;
+    Header_Byte = 0;
+    Record_Byte = 0;
+}
+
+class Field_Info implements FieldInfo {
+    Name = "";
+    StringData_Flag = false;
+    Length = 0;
+    PointLen = 0;
+}
+
+const enmShape = {
+    NotDeffinition: -1,
+    PointShape: 0,
+    LineShape: 1,
+    PolygonShape: 2
+} as const;
+
+const endian = {
+    little: true,
+    big: false
+} as const;
+
+export class clsShapefile {
+    private boundingBox: BoundingBox = { maxX: 0, minX: 0, maxY: 0, minY: 0 };
+    private zahyoSettingFlag = false;
+    private fileName: string = "";
+    private mapZahyo: Zahyo_info;
+    private indexData: IndexFileData_info[] = [];
+    private c_Point: point[] = [];
+    private pointIndex: number[][] = [];
+    private points: point[] = [];
+    private shapeS!: number;
+    private fieldDT: Field_Info[] = [];
+    private dataStr: string[][] = [];
+    private onError: ((tag: unknown) => void) | undefined;
+    private tag: unknown;
+
+    constructor() {
+        this.mapZahyo = new Zahyo_info();
+        this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
+        this.mapZahyo.System = enmZahyo_System_Info.Zahyo_System_World;
+        this.mapZahyo.HeimenTyokkaku_KEI_Number = 1;
     }
 
-    class DBF_Info implements DBFInfo {
-        VerData = 0;
-        RecordNumber = 0;
-        FieldNumber = 0;
-        Year = 0;
-        Month = 0;
-        dbfDate = 0;
-        Header_Byte = 0;
-        Record_Byte = 0;
+    getMapZahyo(): Zahyo_info {
+        return this.mapZahyo.Clone();
     }
 
-    class Field_Info implements FieldInfo {
-        Name = "";
-        StringData_Flag = false;
-        Length = 0;
-        PointLen = 0;
+    setMapZahyo(zahyo: Zahyo_info): void {
+        this.mapZahyo = zahyo.Clone();
     }
 
-    const boundingBox: BoundingBox = { maxX: 0, minX: 0, maxY: 0, minY: 0 };
-
-    let enmShape = {
-        NotDeffinition: -1,
-        PointShape: 0,
-        LineShape: 1,
-        PolygonShape: 2
-    }
-    let endian = {
-        little: true,
-        big: false
+    getZahyoSettingFlag(): boolean {
+        return this.zahyoSettingFlag;
     }
 
-    let ZahyoSettingFlag=false;
-    this.getMapZahyo=function(){
-        return MapZahyo.Clone();;
-    }
-    this.setMapZahyo=function(zahyo: Zahyo_info){
-        MapZahyo=zahyo.Clone();
-    }
-    this.getZahyoSettingFlag=function(){
-        return ZahyoSettingFlag;
-    }
-
-    let FileName: string;
-    let MapZahyo = new Zahyo_info();
-    MapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
-    MapZahyo.System = enmZahyo_System_Info.Zahyo_System_World;
-    MapZahyo.HeimenTyokkaku_KEI_Number = 1;
-
-    let IndexData: IndexFileData_info[] = [];
-    let C_Point: point[] = [];
-    let PointIndex: number[][] = [];
-    let Points: point[] = [];
-    let ShapeS: number;
-    let FieldDT: Field_Info[] = [];
-    let DataStr: string[][] = [];
-    let onError: ((tag: unknown) => void) | undefined;
-    let tag: unknown;
-    let getSHXFile: (buffer: ArrayBuffer) => IndexFileData_info[] | undefined;
-    let getShapeFile: (buffer: ArrayBuffer) => boolean | undefined;
-    let getDbfFile: (buffer: ArrayBuffer, encodenumber: string | number) => boolean;
-    let getPrjFile: (Prjtext: string) => boolean;
-    this.getShape=function(){
-        return ShapeS;
+    getShape(): number {
+        return this.shapeS;
     }
     
-    this.fileRead = function (files: File[], dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void, _onError: (tag: unknown) => void) {
-        onError = _onError;
-        tag = _tag;
+    fileRead(files: File[], dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void, _onError: (tag: unknown) => void): void {
+        this.onError = _onError;
+        this.tag = _tag;
         let shxFile: File | undefined;
         let shapeFile: File | undefined;
         let dbfFile: File | undefined;
         let prjFile: File | undefined;
-        FileName = Generic.getFilenameWithoutExtension(files[0].name);
+        this.fileName = Generic.getFilenameWithoutExtension(files[0].name);
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             let ext = file.name.slice(-3).toLowerCase();
@@ -126,76 +128,74 @@ clsShapefile = function () {
         let okf = true;
         const shxReader = new FileReader();
         if (!shxFile || !shapeFile || !dbfFile) {
-            onError?.(tag);
+            this.onError?.(this.tag);
             return;
         }
         shxReader.readAsArrayBuffer(shxFile);
         //ファイルの読込が終了した時の処理
-        shxReader.onload = function (evt) {
-            IndexData = [];
+        shxReader.onload = () => {
+            this.indexData = [];
             if (shxReader.result instanceof ArrayBuffer) {
-                getSHXFile(shxReader.result);
+                this.getSHXFile(shxReader.result);
             }
             const shpReader = new FileReader();
             shpReader.readAsArrayBuffer(shapeFile);
-            shpReader.onload = function (evt) {
+            shpReader.onload = () => {
                 if (shpReader.result instanceof ArrayBuffer) {
-                    getShapeFile(shpReader.result);
+                    this.getShapeFile(shpReader.result);
                 }
                 const dbfReader = new FileReader();
                 dbfReader.readAsArrayBuffer(dbfFile);
-                dbfReader.onload = function (evt) {
+                dbfReader.onload = () => {
                     try {
                         if (dbfReader.result instanceof ArrayBuffer) {
-                            getDbfFile(dbfReader.result, dbfEncode);
+                            this.getDbfFile(dbfReader.result, dbfEncode);
                         }
                     }
                     catch (e) {
                         okf = false;
-                        onError?.(tag);
+                        this.onError?.(this.tag);
                         return;
                     }
                     if (prjFile != undefined) {
                         const prjReader = new FileReader();
                         prjReader.readAsText(prjFile, 'utf8');
-                        prjReader.onload = function (evt) {
+                        prjReader.onload = () => {
                             if (typeof prjReader.result === 'string') {
-                                ZahyoSettingFlag = getPrjFile(prjReader.result);
+                                this.zahyoSettingFlag = this.getPrjFile(prjReader.result);
                             }
-                            //onloadFunction(MapZahyo, boundingBox, ShapeS, C_Point, PointIndex, Points, FieldDT, DataStr);
                             if (okf == true) {
-                                onOK(tag);
+                                onOK(this.tag);
                             }
-                        }
+                        };
                     } else {
                         if (okf == true) {
-                            onOK(tag);
+                            onOK(this.tag);
                         }
-                        //onloadFunction(MapZahyo, boundingBox, ShapeS, C_Point, PointIndex, Points, FieldDT, DataStr);
                     }
-                }
-            }
-        }
+                };
+            };
+        };
     }
 
     /**zipファイル圧縮シェープファイル */
-    this.fileReadZip= function (unZipData: UnzippedShape, dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void) {
-        tag = _tag;
+    fileReadZip(unZipData: UnzippedShape, dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void): void {
+        this.tag = _tag;
         let shxFile: string | undefined;
         let shapeFile: string | undefined;
         let dbfFile: string | undefined;
         let prjFile: string | undefined;
-        for (let file  in unZipData) {
-            let ext =Generic.getExtension(file).toLowerCase();
+        for (let file in unZipData) {
+            let ext = Generic.getExtension(file).toLowerCase();
             if (ext == "shx") { shxFile = file; }
             if (ext == "shp") { 
                 shapeFile = file;
-                FileName = Generic.getFilenameWithoutExtension(shapeFile);
+                this.fileName = Generic.getFilenameWithoutExtension(shapeFile);
              }
             if (ext == "dbf") { dbfFile = file; }
             if (ext == "prj") { prjFile = file; }
         }
-        IndexData = [];
+        this.indexData = [];
         if (!shxFile || !shapeFile || !dbfFile) {
             return;
         }
@@ -203,19 +203,19 @@ clsShapefile = function () {
         const shpData = unZipData[shapeFile];
         const dbfData = unZipData[dbfFile];
         if (shxData && shpData && dbfData) {
-            getSHXFile(Uint8Array.from(shxData).buffer);
-            getShapeFile(Uint8Array.from(shpData).buffer);
-            getDbfFile(Uint8Array.from(dbfData).buffer, dbfEncode);
+            this.getSHXFile(Uint8Array.from(shxData).buffer);
+            this.getShapeFile(Uint8Array.from(shpData).buffer);
+            this.getDbfFile(Uint8Array.from(dbfData).buffer, dbfEncode);
         }
         if (prjFile != undefined) {
             let prjtx = Generic.utf8ArrayToStr(unZipData[prjFile]);
-            ZahyoSettingFlag = getPrjFile(prjtx);
+            this.zahyoSettingFlag = this.getPrjFile(prjtx);
         }
-        onOK(tag);
+        onOK(this.tag);
     }
 
     //prjファイル読み込み
-    getPrjFile = function (Prjtext: string) {
+    private getPrjFile(Prjtext: string): boolean {
         const FData = Prjtext.toUpperCase();
         if (FData.indexOf("UNDEFINED") != -1) {
             return false;
@@ -224,22 +224,22 @@ clsShapefile = function () {
         let fixf = false;
         if ((FData.indexOf("D_TOKYO") != -1)) {
             //日本測地系
-            MapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
-            MapZahyo.System = enmZahyo_System_Info.Zahyo_System_tokyo;
+            this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
+            this.mapZahyo.System = enmZahyo_System_Info.Zahyo_System_tokyo;
             fixf = true;
         }
 
         if ((FData.indexOf("D_JGD_2000") != -1) || (FData.indexOf("D_JGD_2011") != -1) ||
             ((FData.indexOf("D_WGS84") != -1) || (FData.indexOf("D_WGS_1984") != -1))) {
             //'世界測地系
-            MapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
-            MapZahyo.System = enmZahyo_System_Info.Zahyo_System_World;
+            this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
+            this.mapZahyo.System = enmZahyo_System_Info.Zahyo_System_World;
             fixf = true;
         }
         if ((FData.indexOf("JAPAN_ZONE_") != -1)) {
             //平面直角
-            MapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
-            MapZahyo.HeimenTyokkaku_KEI_Number = parseInt(FData.substr(FData.indexOf("JAPAN_ZONE_") + 11, 2));
+            this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
+            this.mapZahyo.HeimenTyokkaku_KEI_Number = parseInt(FData.substr(FData.indexOf("JAPAN_ZONE_") + 11, 2));
             fixf = true;
         } else {
             let HC = "Japan_Plane_Rectangular_CS_";
@@ -266,8 +266,8 @@ clsShapefile = function () {
             heimen_Code[19] = HC + "XIX";
             for (let i = 19; i > 0; i--) {
                 if ((FData.indexOf(heimen_Code[i].toUpperCase()) != -1)) { //平面直角
-                    MapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku
-                    MapZahyo.HeimenTyokkaku_KEI_Number = i;
+                    this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
+                    this.mapZahyo.HeimenTyokkaku_KEI_Number = i;
                     fixf = true;
                     break;
                 }
@@ -278,7 +278,7 @@ clsShapefile = function () {
 
 
     //dbfファイル読み込み
-    getDbfFile = function (buffer: ArrayBuffer, encodenumber: string | number) {
+    private getDbfFile(buffer: ArrayBuffer, encodenumber: string | number): boolean {
 
         const dv = new DataView(buffer);
 
@@ -325,7 +325,7 @@ clsShapefile = function () {
             pos += 3;
             pos += 10;
             pos += 1;
-            FieldDT.push(fd);
+            this.fieldDT.push(fd);
         }
         pos++;
         //データベースレコード読み込み
@@ -333,11 +333,11 @@ clsShapefile = function () {
             pos++;
             let fdata = [];
             for (let j = 0; j < DataSet.FieldNumber; j++) {
-                let dt = Get_WCharData_Binary(pos, FieldDT[j].Length, encodenumber.toString()).trim();
+                let dt = Get_WCharData_Binary(pos, this.fieldDT[j].Length, encodenumber.toString()).trim();
                 fdata.push(dt);
-                pos += FieldDT[j].Length;
+                pos += this.fieldDT[j].Length;
             }
-            DataStr.push(fdata);
+            this.dataStr.push(fdata);
         }
         return true;
 
@@ -363,30 +363,30 @@ clsShapefile = function () {
     }
 
     //shxファイル読み込み
-    getSHXFile = function (buffer: ArrayBuffer) {
+    private getSHXFile(buffer: ArrayBuffer): IndexFileData_info[] | undefined {
 
-            const dv = new DataView(buffer)
+            const dv = new DataView(buffer);
 
             let fcode = dv.getUint32(0, endian.big);
             let flen = dv.getUint32(24, endian.big) * 2 - 100;
             let fc2 = dv.getUint16(28, endian.little);
-            boundingBox.minX = dv.getFloat64(36, endian.little);
-            boundingBox.minY = dv.getFloat64(44, endian.little);
-            boundingBox.maxX = dv.getFloat64(52, endian.little);
-            boundingBox.maxY = dv.getFloat64(60, endian.little);
+            this.boundingBox.minX = dv.getFloat64(36, endian.little);
+            this.boundingBox.minY = dv.getFloat64(44, endian.little);
+            this.boundingBox.maxX = dv.getFloat64(52, endian.little);
+            this.boundingBox.maxY = dv.getFloat64(60, endian.little);
             for (let i = 0; i < flen; i += 8) {
                 let dt = new IndexFileData_info();
                 dt.offset = dv.getUint32(i + 100, false);
                 dt.contentsLength = dv.getUint32(i + 104, false);
-                IndexData.push(dt);
+                this.indexData.push(dt);
             }
-            return IndexData;
+            return this.indexData;
 
     }
 
 
     //shpファイル読み込み
-    getShapeFile = function (buffer: ArrayBuffer) {
+    private getShapeFile(buffer: ArrayBuffer): boolean | undefined {
             const dv = new DataView(buffer);
     
             let fcode = dv.getUint32(0, endian.big);
@@ -398,19 +398,19 @@ clsShapefile = function () {
                 case 1:
                 case 11:
                 case 21: {
-                    ShapeS = enmShape.PointShape;
+                    this.shapeS = enmShape.PointShape;
                     break;
                 }
                 case 3:
                 case 13:
                 case 23: {
-                    ShapeS = enmShape.LineShape;
+                    this.shapeS = enmShape.LineShape;
                     break;
                 }
                 case 5:
                 case 15:
                 case 25: {
-                    ShapeS = enmShape.PolygonShape;
+                    this.shapeS = enmShape.PolygonShape;
                     break;
                 }
                 default:
@@ -421,7 +421,7 @@ clsShapefile = function () {
     
             do {
                 
-                let pos = IndexData[n].offset * 2;
+                let pos = this.indexData[n].offset * 2;
                 let RecordNumber = dv.getUint32(pos, endian.big)+12;
                 if (RecordNumber == 0) {
                     break;
@@ -432,7 +432,7 @@ clsShapefile = function () {
                     case 21: {
                         pos += 12;
                         let p = getPointXY(dv, pos);
-                        C_Point.push(p);
+                        this.c_Point.push(p);
                         break;
                     }
                     case 3:
@@ -451,16 +451,16 @@ clsShapefile = function () {
                             pos += 4;
                         }
                         for (let i = 0; i < NumPoints; i++) {
-                            Points.push(getPointXY(dv, pos));
+                            this.points.push(getPointXY(dv, pos));
                             pos += 16;
                         }
                         pindex2.push(NumPoints);
-                        PointIndex.push(pindex2);
+                        this.pointIndex.push(pindex2);
                         break;
                     }
                 }
                 n++;
-            } while (n < IndexData.length);
+            } while (n < this.indexData.length);
             return true;
 
     
@@ -474,38 +474,38 @@ clsShapefile = function () {
     }
 
     //読み込んだシェープファイルを地図ファイルに変換する
-    this.convertToMapfile = function (projection: number | undefined, UnitCheckFlag: boolean) {
+    convertToMapfile(projection: number | undefined, UnitCheckFlag: boolean): clsMapdata {
         let MapData = new clsMapdata();
         MapData.init_MapData();
-        MapData.Add_OneObjectGroup_Parameter(FileName, ShapeS, enmMesh_Number.mhNonMesh, enmObjectGoupType_Data.NormalObject);
-        if (ShapeS != enmShape.PointShape) {
+        MapData.Add_OneObjectGroup_Parameter(this.fileName, this.shapeS, enmMesh_Number.mhNonMesh, enmObjectGoupType_Data.NormalObject);
+        if (this.shapeS != enmShape.PointShape) {
             let lp = clsBase.Line();
-            if (IndexData.length > 500) {
+            if (this.indexData.length > 500) {
                 lp.BlankF = true;
             }
-            MapData.Add_OneLineKind(FileName, lp, enmMesh_Number.mhNonMesh);
+            MapData.Add_OneLineKind(this.fileName, lp, enmMesh_Number.mhNonMesh);
         }
 
         const Obk = 0;
         const LK = 0;
         let pos = 0;
-        for (let n = 0; n < IndexData.length; n++) {
+        for (let n = 0; n < this.indexData.length; n++) {
             let newObj = MapData.Init_One_Object(Obk);
-            newObj.Shape = ShapeS;
-            newObj.NameTimeSTC[0].NamesList[0] = FileName + String(n);
-            switch (ShapeS) {
+            newObj.Shape = this.shapeS;
+            newObj.NameTimeSTC[0].NamesList[0] = this.fileName + String(n);
+            switch (this.shapeS) {
                 case enmShape.PointShape:
-                    newObj.CenterPSTC[0].Position  = C_Point[n].Clone();
+                    newObj.CenterPSTC[0].Position  = this.c_Point[n].Clone();
                     break;
                 default:
                     let AlinS = MapData.Map.ALIN;
-                    let NumParts = PointIndex[n];
+                    let NumParts = this.pointIndex[n];
                     newObj.NumOfLine = NumParts.length-1;
                     for (let i = 0; i < NumParts.length-1; i++) {
                         let newLine = MapData.Init_One_Line(LK);
                         newLine.NumOfPoint = NumParts[i + 1] - NumParts[i];
                         for (let j = 0; j < newLine.NumOfPoint; j++) {
-                            newLine.PointSTC.push(Points[pos].Clone());
+                            newLine.PointSTC.push(this.points[pos].Clone());
                             pos++;
                         }
                         MapData.Save_Line(newLine, false, false, false);
@@ -523,12 +523,12 @@ clsShapefile = function () {
             MapData.Save_Object(newObj, false);
         }
 
-        let unit = []
+        let unit = [];
         if (UnitCheckFlag == true) {
-            unit = Generic.Check_DataType(FieldDT.length, IndexData.length, DataStr);
+            unit = Generic.Check_DataType(this.fieldDT.length, this.indexData.length, this.dataStr);
         } else {
-            for (let i = 0; i < FieldDT.length; i++) {
-                let fd = FieldDT[i];
+            for (let i = 0; i < this.fieldDT.length; i++) {
+                let fd = this.fieldDT[i];
                 let unt = "";
                 if (fd.StringData_Flag == true) {
                     unt = "STR";
@@ -536,25 +536,25 @@ clsShapefile = function () {
                 unit.push(unt);
             }
         }
-        for (let i = 0; i < FieldDT.length; i++) {
-            let fd = FieldDT[i];
+        for (let i = 0; i < this.fieldDT.length; i++) {
+            let fd = this.fieldDT[i];
             MapData.Add_one_DefAttDataSet(Obk, fd.Name, unit[i], "");
         }
 
-        for (let i = 0; i < IndexData.length; i++) {
+        for (let i = 0; i < this.indexData.length; i++) {
             let mo = MapData.MPObj[i];
-            for (let j = 0; j < FieldDT.length; j++) {
+            for (let j = 0; j < this.fieldDT.length; j++) {
                 let defv = new strDefTimeAttDataEach_Info();
-                defv.Value = DataStr[i][j];
+                defv.Value = this.dataStr[i][j];
                 let defa=new strDefTimeAttData_Info();
                 defa.Data.push(defv);
                 mo.DefTimeAttValue.push(defa);
             }
         }
 
-        MapData.Map.Zahyo = MapZahyo.Clone();
+        MapData.Map.Zahyo = this.mapZahyo.Clone();
         MapData.Map.Zahyo.Projection=projection;
-        MapData.Map.FileName = FileName;
+        MapData.Map.FileName = this.fileName;
         MapData.Map.FullPath = "";
         MapData.NoDataFlag = false;
         MapData.Set_First_ObjectKind_Color();
@@ -564,7 +564,7 @@ clsShapefile = function () {
              MapData.MapLatLon_Zahyo_convert();
                 break;
             case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
-                MapData.YReverse()
+                MapData.YReverse();
                 MapData.Checl_All_Line_Maxmin();
                 MapData.Check_All_Obj_MaxMin();
                 MapData.GetObjectGravity_All();

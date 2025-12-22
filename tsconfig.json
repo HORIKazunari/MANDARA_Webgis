@@ -16,15 +16,16 @@
     "isolatedModules": false,
 
     /* TypeScript厳密モード - 段階的に有効化 */
-    "strict": false,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
+    "strict": false,                    // 将来的にtrueに設定予定
+    "noImplicitAny": true,              // any型の暗黙的な使用を禁止
+    "strictNullChecks": true,           // null/undefinedの厳密なチェック
     "strictFunctionTypes": true,        // 関数型の厳密なチェック
     "strictBindCallApply": true,        // bind/call/applyの厳密なチェック
     "noImplicitThis": true,             // thisの暗黙的なanyを禁止
     "alwaysStrict": true,               // strictモードでコンパイル
     "noImplicitReturns": true,          // 関数の全パスでreturnを強制
     "noFallthroughCasesInSwitch": true, // switchのfallthrough防止
+    "useUnknownInCatchVariables": true, // catch句の変数をunknown型に
     // "strictPropertyInitialization": true,  // クラスプロパティの初期化チェック（後で有効化）
     // "exactOptionalPropertyTypes": true,
     // "noImplicitOverride": true,

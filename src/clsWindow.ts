@@ -1,8 +1,22 @@
 ﻿import { Generic, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { appState } from './core/AppState';
+import type { 
+  ExtendedHTMLElement, 
+  SelectChangeHandler, 
+  SelectMode, 
+  SoloMode, 
+  ValueCallback, 
+  ObjectValueCallback, 
+  Mark, 
+  Tile, 
+  LinePattern, 
+  Color, 
+  Font, 
+  Edge 
+} from './types';
 
 // Helper for DOM access with legacy extensions
-const doc = document as any;
+const doc = document;
 
 // ESM化ステップ: 旧来の参照タグは不要
 
@@ -28,7 +42,7 @@ const enmSelectMode = {
 class strLayerInfo {
     Name?: string;
     MapfileName?: string;
-    UseObjectKind: any[] = [];
+    UseObjectKind: unknown[] = [];
     Time?: strYMD;
     Shape?: string;
 }
@@ -48,10 +62,10 @@ function setting(locSearch: string) {
     const state = appState();
     let man_Data=enmDataSource.NoData;
     let totalh = 680;
-    let overlayListView: any;//重ね合わせデータセットりリストビュー
-    let seriesListView: any;//連続表示データセットりリストビュー
-    let lstLabelDataItem: any;//ラベルデータセットのデータ項目
-    let lstcontourSeparateValue: any;//等値線モードの個別設定のリストボックス
+    let overlayListView: ListViewTable | undefined;//重ね合わせデータセットりリストビュー
+    let seriesListView: ListViewTable | undefined;//連続表示データセットりリストビュー
+    let lstLabelDataItem: ListBox | undefined;//ラベルデータセットのデータ項目
+    let lstcontourSeparateValue: ListBox | undefined;//等値線モードの個別設定のリストボックス
     let popmenu = [{
         caption: "ファイル",enabled:true, child: [
             { caption: "白地図・初期属性データ表示", event: mnuMapViewer },
@@ -295,23 +309,26 @@ function setting(locSearch: string) {
     let SelectedCategoryIndex=-1;
 
     //モードのdivにenter
-    function modeEnter(e: MouseEvent) {
+    function modeEnter(this: ExtendedHTMLElement, e: MouseEvent): void {
         if(this.selected == false) {
             this.style.backgroundColor = "#ffdcdc";
         }
-        Generic.createNewDiv(this, this.tooltip, "", "", e.offsetX, e.offsetY - 10, 80, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:white;text-align:center","");
+        Generic.createNewDiv(this, this.tooltip ?? "", "", "", e.offsetX, e.offsetY - 10, 80, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:white;text-align:center","");
     }
-    function modeLeave(e: MouseEvent) {
+    function modeLeave(this: ExtendedHTMLElement): void {
         if(this.selected == false) {
             this.style.backgroundColor = "white";
         }
-        this.removeChild(this.lastChild);
+        const lastChild = this.lastChild;
+        if (lastChild) {
+            this.removeChild(lastChild);
+        }
     }
 
     /**複数表示モードをクリック */
-    function multiModeClick(){
+    function multiModeClick(this: ExtendedHTMLElement): void {
         clearModeIcon();
-        let selDiv: any = undefined;
+        let selDiv: HTMLElement | undefined = undefined;
         attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
         let Layernum = attrData.TotalData.LV1.SelectedLayer;
         let al=attrData.LayerData[Layernum];
@@ -341,9 +358,9 @@ function setting(locSearch: string) {
         }
     }
     /**複合表示モードをクリック */
-    function ComplexModeClick(){
+    function ComplexModeClick(this: ExtendedHTMLElement): void {
         clearModeIcon();
-        let selDiv: any = undefined;
+        let selDiv: HTMLElement | undefined = undefined;
         switch (this.id) {
             case "divOverlay":
                 attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.OverLayMode;
@@ -890,9 +907,9 @@ function setting(locSearch: string) {
     }
 
     //白地図初期属性データ
-    function mnuMapViewer() {
+    function mnuMapViewer(): void {
         mapViewer(okButton);
-        function okButton(mapdata: any, layerdata: any) {
+        function okButton(mapdata: clsMapdata, layerdata: unknown[]): void {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Viwer;
@@ -927,7 +944,7 @@ function setting(locSearch: string) {
         
         let OverLayDataSetNum = attrData.TotalData.TotalMode.OverLay.SelectedIndex;
         let ovdn = attrData.TotalData.TotalMode.OverLay.DataSet.length;
-        let ovttl: any[] = [];
+        let ovttl: string[] = [];
         for (let i = 0; i < ovdn; i++) {
             ovttl[i] =attrData.TotalData.TotalMode.OverLay.DataSet[i].title;
             if(ovttl[i] == "") {
@@ -1081,7 +1098,7 @@ function setting(locSearch: string) {
 
         let ats = attrData.TotalData.TotalMode.Series;
         let sedn = ats.DataSet.length;
-        let ttl: any[] = [];
+        let ttl: string[] = [];
         for (let i = 0; i < sedn; i++) {
             ttl[i] = ats.DataSet[i].title;
             if (ttl[i] == "") {
@@ -1312,14 +1329,14 @@ function setting(locSearch: string) {
 
     //データ項目が変更された際に、単独表示モードの可否を調べ、コントロールを設定
     //solomode:enmSoloMode_Number
-    function SetPicPnlSoloDataEnabled(solomode: any, LayerNum: number, DataNum: number) {
+    function SetPicPnlSoloDataEnabled(solomode: SoloMode, LayerNum: number, DataNum: number) {
         let f = attrData.Check_Enable_SoloMode(solomode, LayerNum, DataNum);
         SetPicPnlDataEnabled(GetSelectModeFromSoloMode(solomode), f);
     }
 
     //表示モードセレクタのEnabel設定
     //Mode:enmSelectMode
-    function SetPicPnlDataEnabled(Mode: any, Flag: boolean) {
+    function SetPicPnlDataEnabled(Mode: SelectMode, Flag: boolean) {
         let name = GetModeControlName(Mode);
         let ele = doc.getElementById(name);
         if(ele != undefined) {
@@ -1341,7 +1358,7 @@ function setting(locSearch: string) {
 
     //表示モード列挙型からコントロール名を取得
     //sm:enmSelectMode
-    function GetModeControlName(sm: any) {
+    function GetModeControlName(sm: SelectMode): string {
         switch (sm) {
             case enmSelectMode.ClassPaintMode:
                 return "divClassPaint";
@@ -1394,7 +1411,7 @@ function setting(locSearch: string) {
     }
 
     //単独表示モードから選択モードを取得noModeの場合はラベルモードを返す
-    function GetSelectModeFromSoloMode(SoloMode: any) {
+    function GetSelectModeFromSoloMode(SoloMode: SoloMode): SelectMode {
         switch (SoloMode) {
             case enmSoloMode_Number.ClassPaintMode:
                 return enmSelectMode.ClassPaintMode;
@@ -1487,7 +1504,7 @@ function setting(locSearch: string) {
                     let i = Number(this.tag)
                     let tile = tsel.Data[i].Tile;
                     clsTileSet(e, tile,
-                        function (retTile: any) { tsel.Data[i].Tile = retTile });
+                        function (retTile: Tile) { tsel.Data[i].Tile = retTile });
                 },30);
             eleTile.tag = i;
         }
@@ -1817,7 +1834,7 @@ function setting(locSearch: string) {
                         case enmSoloMode_Number.ClassMarkMode: {
                             let md = attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark;
                             clsMarkSet(e, mkChange, md, attrData)
-                            function mkChange(newMark: any) {
+                            function mkChange(newMark: Mark) {
                                 attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark = newMark.Clone();
                                 attrData.Draw_Sample_Mark_Box(tgt, newMark);
                             }
@@ -1826,7 +1843,7 @@ function setting(locSearch: string) {
                         case enmSoloMode_Number.ClassODMode: {
                             let md = attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat;
                             clsLinePatternSet(e,md,lineChange)
-                            function lineChange(newPat: any) {
+                            function lineChange(newPat: LinePattern) {
                                 attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat = newPat.Clone();
                                 attrData.Draw_Sample_LineBox(tgt,newPat);
                             }
@@ -1876,7 +1893,7 @@ function setting(locSearch: string) {
                 };
                 txele.setAttribute("ondragover", "return false;");
                 txele.tag = i;
-                function txeleOnChange (obj: any, v: any) {
+                function txeleOnChange (obj: HTMLElement, v: unknown) {
                     //階級区分値を変更設定
                     let n = obj.tag;
                     let L = attrData.TotalData.LV1.SelectedLayer;
@@ -2501,23 +2518,23 @@ function setting(locSearch: string) {
             }
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
 
-            function LArrow(data: any, e: MouseEvent) {
+            function LArrow(data: unknown, e: MouseEvent) {
                 let ldd = attrData.nowDataSolo().ClassODMD;
-                clsArrow(e, ldd.Arrow, "起点方向", "終点方向", function (newArrow: any) { ldd.Arrow = newArrow });
+                clsArrow(e, ldd.Arrow, "起点方向", "終点方向", function (newArrow: unknown) { ldd.Arrow = newArrow });
             }
-            function LpatChange(data: any, e: MouseEvent) {
+            function LpatChange(data: unknown, e: MouseEvent) {
                 let ldd = attrData.nowDataSolo();
-                clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: any) {
+                clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: LinePattern) {
                     for (let i = 0; i < ldd.Div_Num; i++) {
                         ldd.Class_Div[i].ODLinePat = newLpat.Clone();
                     }
                     SetPictureBox();
                 })
             }
-            function LColorChange(data: any, e: MouseEvent) {
+            function LColorChange(data: unknown, e: MouseEvent) {
                 let ldd = attrData.nowDataSolo();
                 clsColorPicker(new point(e.clientX, e.clientY),
-                    function (newColor: any) {
+                    function (newColor: Color) {
                         for (let i = 0; i < ldd.Div_Num; i++) {
                             ldd.Class_Div[i].ODLinePat.Color = newColor.Clone();
                         }
@@ -2569,10 +2586,10 @@ function setting(locSearch: string) {
                 { caption: "内部データの設定", event: innerDataSet }
             ];
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
-            function setSameMark(data: any, e: MouseEvent) {
+            function setSameMark(data: unknown, e: MouseEvent) {
                 let md = sv.Class_Div[0].ClassMark;
                 clsMarkSet(e, mkChange, md, attrData)
-                function mkChange(newMark: any) {
+                function mkChange(newMark: Mark) {
                     for (let i = 0; i < sv.Div_Num; i++) {
                         sv.Class_Div[i].ClassMark = newMark.Clone();
                     }
@@ -2586,7 +2603,7 @@ function setting(locSearch: string) {
                 }
                 SetPictureBox();
             }
-            function innerDataSet(data: any, e: MouseEvent) {
+            function innerDataSet(data: unknown, e: MouseEvent) {
                 clsInnerDataSet(e, attrData);
             }
         }
@@ -2596,13 +2613,13 @@ function setting(locSearch: string) {
             let Layernum = attrData.TotalData.LV1.SelectedLayer;
             let md = attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
             clsMarkSet(e, picMarkChange, md.PointMark, attrData);
-            function picMarkChange(newMark: any) {
+            function picMarkChange(newMark: Mark) {
                 md.PointMark = newMark;
                 attrData.Draw_Sample_Mark_Box(e.target, newMark);
             }
         }
         //ペイントモード線オブジェクトのサイズ設定
-        function cboPaintLineSizeChange(obj: any, v: any) {
+        function cboPaintLineSizeChange(obj: HTMLElement, v: unknown) {
             let Layernum = attrData.TotalData.LV1.SelectedLayer;
             attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth = v;
         }
@@ -2611,7 +2628,7 @@ function setting(locSearch: string) {
             let Layernum = attrData.TotalData.LV1.SelectedLayer;
             let edge = attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineEdge;
             clsLineEdgePattern(e, edge, okButton);
-            function okButton(retEdge: any) {
+            function okButton(retEdge: Edge) {
                 attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineEdge = retEdge;
             }
         }
@@ -2645,7 +2662,7 @@ function setting(locSearch: string) {
         }
 
         //色設定方法ボタンクリック
-        function PaintColorSettingModeChange(v: any) {
+        function PaintColorSettingModeChange(v: unknown) {
             let Layernum = attrData.TotalData.LV1.SelectedLayer;
             let DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD.Color_Mode = v;
@@ -2667,7 +2684,7 @@ function setting(locSearch: string) {
         }
 
         //階級区分方法クリック
-        function cboDivisionMethodChange(obj: any, sel: number, v: any) {
+        function cboDivisionMethodChange(obj: HTMLElement, sel: number, v: unknown) {
             let Layernum = attrData.TotalData.LV1.SelectedLayer;
             let DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             let data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
@@ -2704,7 +2721,7 @@ function setting(locSearch: string) {
             setFrequencyLabel();
         }
         //階級分割数クリック
-        function cboDivisionCountChange(obj: any, sel: number, v: any) {
+        function cboDivisionCountChange(obj: HTMLElement, sel: number, v: unknown) {
             let Layernum = attrData.TotalData.LV1.SelectedLayer;
             let DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             let data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;

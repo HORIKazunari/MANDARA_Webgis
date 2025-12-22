@@ -2610,43 +2610,44 @@ const strSaveLinePat_Info: any =function(){
     this. Lpat=[];//  As List(Of clsMapData.LineKind_Data)
 }
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-interface clsAttrData {
+
+class clsAttrData {
     TempData: strTem;
     LayerData: strLayerDataInfo[];
     TotalData: Total_Data_Info;
     MapData: any; // clsAttrMapData
     MPSubLine: strGetLinePointAPI_Info;
     LineKindUse: boolean[];
-    [key: string]: any; // その他の多数のメソッド
-}
-const clsAttrData: any = function (this: clsAttrData) {
-    const defaultColor: any = {}
-    defaultColor.paintMode = [new colorRGBA(0x99, 0x34, 0x4), new colorRGBA(0xFF, 0xFF, 0xC4)];
-    defaultColor.markColorTrance = new colorRGBA(0xff, 0xbf, 0xbf, 200);
-    defaultColor.markColor = new colorRGBA(0xff, 0xbf, 0xbf);
-    defaultColor.markBarColor = new colorRGBA(0xff, 0x80, 0x00);
-    defaultColor.minusColor = new colorRGBA(0x55, 0x55, 0xbf);
+    private defaultColor: any;
 
-    this.TempData = new strTem();
+    constructor() {
+        this.defaultColor = {}
+        this.defaultColor.paintMode = [new colorRGBA(0x99, 0x34, 0x4), new colorRGBA(0xFF, 0xFF, 0xC4)];
+        this.defaultColor.markColorTrance = new colorRGBA(0xff, 0xbf, 0xbf, 200);
+        this.defaultColor.markColor = new colorRGBA(0xff, 0xbf, 0xbf);
+        this.defaultColor.markBarColor = new colorRGBA(0xff, 0x80, 0x00);
+        this.defaultColor.minusColor = new colorRGBA(0x55, 0x55, 0xbf);
 
+        this.TempData = new strTem();
 
-    this.LayerData = []; //strLayerDataInfo
-    this.TotalData = new Total_Data_Info(); //Total_Data_Info
-    let lv = this.TotalData.LV1;
-    lv.Comment = "";
-    lv.Lay_Maxn = 0;
-    lv.SelectedLayer = 0;
-    lv.DataSourceType = enmDataSource.NoData;
-    lv.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
+        this.LayerData = []; //strLayerDataInfo
+        this.TotalData = new Total_Data_Info(); //Total_Data_Info
+        let lv = this.TotalData.LV1;
+        lv.Comment = "";
+        lv.Lay_Maxn = 0;
+        lv.SelectedLayer = 0;
+        lv.DataSourceType = enmDataSource.NoData;
+        lv.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
 
-    this.MapData = new clsAttrMapData(); //clsAttrMapData
-    this.MPSubLine = new strGetLinePointAPI_Info();
-    this.LineKindUse = []; //Boolean
+        this.MapData = new clsAttrMapData(); //clsAttrMapData
+        this.MPSubLine = new strGetLinePointAPI_Info();
+        this.LineKindUse = []; //Boolean
+    }
 
     //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 
     /**ダミーオブジェクトグループの設定をDummyOBGArray[true,false]の配列で返す、trueNumはtrueの数 */
-    this.getDummyObjGroupArray = function (Layernum: any, shape: any = undefined) {
+    getDummyObjGroupArray(Layernum: any, shape: any = undefined): {DummyOBGArray: boolean[], trueNum: number} {
         let al = state.attrData.LayerData[Layernum];
         let alm = al.MapFileData;
         let DummyObjG = new Array(alm.Map.OBKNum);
@@ -2663,7 +2664,7 @@ const clsAttrData: any = function (this: clsAttrData) {
     }
 
     /**設定した状態で描画可能か調べる Print_Enable: enmPrint_Enable.とmessageを返す*/
-    this.Get_PrintError=function(){
+    Get_PrintError(): {Print_Enable: number, message: string} {
         
         let LV1E  = false;
         let LV2E  = false;
@@ -2843,7 +2844,7 @@ const clsAttrData: any = function (this: clsAttrData) {
     }
 
     /** データ挿入 AddMapFileNameF:レイヤ名に地図ファイルを追加する場合true */
-this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
+    ADD_AttrData(InsertData: any, AddMapFileNameF: any): {ok: boolean, ErrorMessage: string} {
 
     let ErrorMessage = "";
     let checkResult = spatial.Check_Zahyo_Projection_Convert_Enabled(this.TotalData.ViewStyle.Zahyo, InsertData.TotalData.ViewStyle.Zahyo);
@@ -3007,7 +3008,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 }
 
     /**データ中の座標を変換する */
-    this.Convert_Zahyo= function(newZahyo: any){
+    Convert_Zahyo(newZahyo: any): void {
         let oldZahyo = this.TotalData.ViewStyle.Zahyo;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             let li = this.LayerData[i];
@@ -3065,13 +3066,13 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**重ね合わせデータセットの内容を自動で並べ替える */
-    this.Sort_OverLay_Data = function (DataSetNumber: any) {
+    Sort_OverLay_Data(DataSetNumber: any): void {
             let d = this.TotalData.TotalMode.OverLay.DataSet[DataSetNumber]
                 ; d.DataItem = this.Sort_OverLay_Data_Sub(d.DataItem);
         }
 
     /**重ね合わせモードにセットするデータを並べ替える（一つのstrOverLay_DataSet_Item_Infoデータセット） */
-    this.Sort_OverLay_Data_Sub = function (Ov_Data: any) {
+    Sort_OverLay_Data_Sub(Ov_Data: any): any[] {
 
         let PicUpMode = [];
         let PicUpShape = [];// enmShape
@@ -3141,7 +3142,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return Sub_Over;
     }
 
-    this.Check_Missing_Value = function (Layernum: any, DataNumber: any, objNumber: any) {
+    Check_Missing_Value(Layernum: any, DataNumber: any, objNumber: any): boolean {
         let ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber];
         if ((ad.MissingValueNum == 0) || (ad.MissingF == false)) {
             return false;
@@ -3155,7 +3156,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**レイヤ内のURLリンクの最大数を求める */
-    this.Get_MaxURLNum = function (Layernum: any) {
+    Get_MaxURLNum(Layernum: any): number {
         let mx=0;
         let al = state.attrData.LayerData[Layernum];
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
@@ -3165,9 +3166,9 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**通常データ、カテゴリーデータの凡例を指定したデータ項目にコピーする */
-    this.Set_Legend = function (D_Layer: any, D_DataNum: any, O_Data: any, ClassPaintF: any, MarkSizeF: any, MarkSizeValueCopyF: any, MarkBlockF: any,
+    Set_Legend(D_Layer: any, D_DataNum: any, O_Data: any, ClassPaintF: any, MarkSizeF: any, MarkSizeValueCopyF: any, MarkBlockF: any,
         ContourF: any, ClassMarkF: any, ClassODF: any, StringModeF: any, MarkBarF: any, ClassODOriginCopyF: any,
-        copyMarkCommonInnerDataF: any) {
+        copyMarkCommonInnerDataF: any): void {
 
         let ls =this.LayerData[D_Layer].atrData.Data[D_DataNum].SoloModeViewSettings;
         if ((ClassPaintF == true) || (ClassMarkF == true) || (ClassODF == true)) {
@@ -3307,7 +3308,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //オブジェクト名とデータ項目を文字列で取得
-    this.getOneObjectPanelLabelString = function (LayerNum: any, DataNumber: any, objNumber: any, SeparataString: any) {
+    getOneObjectPanelLabelString(LayerNum: any, DataNumber: any, objNumber: any, SeparataString: any): string {
         let SoloProperty = this.Get_DataTitle(LayerNum, DataNumber, false) + SeparataString +
             this.Get_Data_Value(LayerNum, DataNumber, objNumber, this.TotalData.ViewStyle.Missing_Data.Text) +
             this.Get_DataUnit_With_Kakko(LayerNum, DataNumber);
@@ -3339,7 +3340,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //MDRJ形式で保存
-    this.saveAsMDRJ=function(fname: any,MDRMJFlag: any){
+    saveAsMDRJ(fname: any, MDRMJFlag: any): void {
         let saveLPat = new strSaveLinePat_Info();
         let MapFileList = this.GetMapFileName();
         saveLPat.MapNum = MapFileList.length;
@@ -3385,7 +3386,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //ある地点がオブジェクト内部に入るかどうかを調べる
-    this.Check_Point_in_Kencode_OneObject = function (Layernum: any, ObjNum: any, MapP: any) {
+    Check_Point_in_Kencode_OneObject(Layernum: any, ObjNum: any, MapP: any): any {
         if (this.LayerData[Layernum].Type == enmLayerType.Mesh) {
             let meshP =Generic.ArrayClone( this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
             meshP.push(meshP[0].Clone());
@@ -3418,7 +3419,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
     //階級区分の度数分布を求める。区分値が不正の場合はfalseを返す
-    this.Get_ClassFrequency = function (Layernum: any, DataNum: any, ConditionCheck: any) {
+    Get_ClassFrequency(Layernum: any, DataNum: any, ConditionCheck: any): any {
         let ld = this.LayerData[Layernum].atrData.Data[DataNum];
         let ldd = ld.SoloModeViewSettings;
         if (ld.DataType == enmAttDataType.Category) {
@@ -3450,7 +3451,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //Backgroundの余白部分のピクセル数を取得
-    this.Get_PaddingPixcel = function (back: any) {
+    Get_PaddingPixcel(back: any): number {
         if ((back.Line.BlankF == true) && (back.Tile.BlankF == true)) {
             return 0;
         } else {
@@ -3459,16 +3460,16 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**レイヤの階級区分数を取得 */
-    this.Get_DivNum=function(Layernum: any,DataNum: any){
+    Get_DivNum(Layernum: any, DataNum: any): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Div_Num;
     }
     //レイヤ名を取得
-    this.Get_LayerName = function (Layernum: any){
+    Get_LayerName(Layernum: any): string {
         return this.LayerData[Layernum].Name;
     }
 
     //レイヤ内のオブジェクトのオブジェクト名を取得
-    this.Get_KenObjName = function (Layernum: any, Objectnum: any) {
+    Get_KenObjName(Layernum: any, Objectnum: any): string {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Trip: {
                 return this.LayerData[Layernum].atrObject.TripObjData[Objectnum].TripPersonName;
@@ -3482,7 +3483,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**レイヤ内のオブジェクトのオブジェクト番号(地図ファイル中)を取得 */
-    this.Get_KenObjCode= function (Layernum: any, Objectnum: any) {
+    Get_KenObjCode(Layernum: any, Objectnum: any): number {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Trip: {
                 return this.LayerData[Layernum].atrObject.TripObjData[Objectnum].TripPersonCode;
@@ -3496,7 +3497,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //レイヤ・データ・オブジェクトを指定して値を取得
-    this.Get_Data_Value = function (Layernum: any, DataNum: any, Obj: any, Missing_word: any) {
+    Get_Data_Value(Layernum: any, DataNum: any, Obj: any, Missing_word: any): any {
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
         let v = ad.Value[Obj];
         if (ad.MissingF == false) {
@@ -3511,7 +3512,8 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
-    this.Get_Length_On_Screen = function (Percentage: any) {
+    //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
+    Get_Length_On_Screen(Percentage: any): string {
         let s = this.TotalData.ViewStyle.ScrData;
         if (s.SampleBoxFlag == false) {
             let RR = s.STDWsize * Percentage / 100 * s.ScreenMG.Mul * s.GSMul;
@@ -3523,11 +3525,11 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /** */
-    this.Draw_Arrow= function(g: any, DestFP: any, StartFP: any, LinePat: any, Arrow: any){
+    Draw_Arrow(g: any, DestFP: any, StartFP: any, LinePat: any, Arrow: any): void {
         clsDrawLine.Arrow?.(g,DestFP,StartFP,LinePat,Arrow,this.TotalData.ViewStyle.ScrData);
     }
     //ライン描画
-    this.Draw_Line = function (g: any, LinePat: any, P1: any, P2?: any) {
+    Draw_Line(g: any, LinePat: any, P1: any, P2?: any): void {
         if (P2 === undefined) {
             clsDrawLine.Line?.(g, LinePat, P1, this.TotalData.ViewStyle.ScrData);
         } else {
@@ -3535,48 +3537,48 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
 
-    this.Draw_Poly_Inner= function (g: any, pxy: any, nPolyP: any,T: any) {
+    Draw_Poly_Inner(g: any, pxy: any, nPolyP: any, T: any): void {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
-    this.Draw_Tile_Region= function (g: any, BoundaryRect: any, L: any, T: any, Kakudo: any) {}
+    Draw_Tile_Region(g: any, BoundaryRect: any, L: any, T: any, Kakudo: any): void {}
     
-    this.Draw_Tile_Box = function (g: any, BoundaryRect: any, L: any, T: any, Kakudo: any) {
+    Draw_Tile_Box(g: any, BoundaryRect: any, L: any, T: any, Kakudo: any): void {
         clsDrawTile.Draw_Tile_Box?.(g, BoundaryRect, L, T, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    this.Draw_Tile_RoundBox = function (g: any, BoundaryRect: any, Back: any, Kakudo: any) {
+    Draw_Tile_RoundBox(g: any, BoundaryRect: any, Back: any, Kakudo: any): void {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    this.Draw_Print = function (g: any, Word: any, Pos: any, Font_P: any, HorizonalAlignment: any, VerticalAlignment: any) {
+    Draw_Print(g: any, Word: any, Pos: any, Font_P: any, HorizonalAlignment: any, VerticalAlignment: any): any {
         return clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
-    this.Draw_Fan= function (g: any, OP: any, r: any, start_p: any, end_p: any,Lpat: any,Tile: any){
+    Draw_Fan(g: any, OP: any, r: any, start_p: any, end_p: any, Lpat: any, Tile: any): void {
         clsDrawMarkFan.Draw_Fan?.(g,OP,r,start_p, end_p,Lpat,Tile,this.TotalData.ViewStyle.ScrData);
     }
 
         // サンプル記号ボックスに記号を描画
-    this.Draw_Sample_Mark_Box = function (picBox: any, Mark: any) {
+    Draw_Sample_Mark_Box(picBox: any, Mark: any): void {
         clsDrawMarkFan.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
-    this.Draw_Sample_LineBox = function (picBox: any, LinePat: any) {
+    Draw_Sample_LineBox(picBox: any, LinePat: any): void {
         clsDrawLine.Draw_Sample_LineBox?.(picBox, LinePat, this.TotalData.ViewStyle.ScrData);
     }
     //記号描画
-    this.Draw_Mark = function (g: any, Position: any, r: any, Mark: any) {
+    Draw_Mark(g: any, Position: any, r: any, Mark: any): void {
 
         clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
-    this.Radius = function (R_Percent: any, Value: any, max_Value: any) {
+    Radius(R_Percent: any, Value: any, max_Value: any): number {
         return this.TotalData.ViewStyle.ScrData.Radius(R_Percent, Value, max_Value);
     }
 
     //データ項目の中央値を求める
-    this.Get_MedianValue = function (Layernum: any, DataNum: any) {
+    Get_MedianValue(Layernum: any, DataNum: any): number {
 
         let ST = new clsSortingSearch();
         let MV = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
@@ -3598,23 +3600,23 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**属性データ編集から座標系を設定する */
-    this.attrGridZahyoSet=function(){
+    attrGridZahyoSet(): boolean {
         this.TotalData.ViewStyle.Zahyo = this.MapData.GetPrestigeZahyoMode();
         return this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo).ok;
     }
     //指定した地図ファイルを削除
-    this.RemoveMapData = function (MapFileName: any) {
+    RemoveMapData(MapFileName: any): void {
         this.MapData.RemoveMapData(MapFileName);
     }
     //既存地図ファイル追加
-    this.AddExistingMapData = function (MData: any, MapFileName: any) {
+    AddExistingMapData(MData: any, MapFileName: any): void {
         if (this.MapData == undefined) {
             this.MapData = new clsAttrMapData();
         }
         this.MapData.AddExistingMapData(MData, MapFileName);
     }
     //同じ名前の地図ファイルが存在する場合、別名をつけて返す
-    this.getUniqueMapFileName = function (checkMfile: any) {
+    getUniqueMapFileName(checkMfile: any): string {
         let ExtMfile = this.GetMapFileName();
         if (ExtMfile.indexOf(checkMfile) == -1) {
             return checkMfile;
@@ -3627,23 +3629,23 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
     //地図デーセットをセットする 空白の場合、最初に読み込まれた地図
-    this.SetMapFile = function (MapFileName: any) {
+    SetMapFile(MapFileName: any): any {
         return this.MapData.SetMapFile(MapFileName);
     }
 
     //地図ファイル数を取得
-    this.GetNumOfMapFile = function () {
+    GetNumOfMapFile(): number {
         return this.MapData.GetNumOfMapFile();
     }
 
     //読み込んだ地図ファイルのファイル名の配列を返す
-    this.GetMapFileName = function () {
+    GetMapFileName(): string[] {
         return this.MapData.GetMapFileName();
     }
 
     //指定したレイヤ・データ項目で指定した単独表示モードが表示可能か調べる
     //Solo_md:enmSoloMode_Number
-    this.Check_Enable_SoloMode = function (Solo_md: any, Layernum: any, DataNum: any) {
+    Check_Enable_SoloMode(Solo_md: any, Layernum: any, DataNum: any): boolean {
         switch (this.LayerData[Layernum].atrData.Data[DataNum].DataType) {
             case enmAttDataType.Strings:
                 if (Solo_md != enmSoloMode_Number.StringMode) {
@@ -3710,7 +3712,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //飾りの初期位置指定
-    this.Set_Acc_First_Position = function () {
+    Set_Acc_First_Position(): void {
         let mv = this.TotalData.ViewStyle;
         let mr = mv.ScrData.MapRectangle;
         let w = mr.width();
@@ -3742,7 +3744,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
             this.Change_Acc_Position_by_Accessory_Base_Set_Screen()
         }
     }
-    this.Boundary_Kencode_Arrange = function (Layernum: any, ObjNum: any) {
+    Boundary_Kencode_Arrange(Layernum: any, ObjNum: any): any {
         let O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
         let badata = new boundArrangeData();
 
@@ -3759,7 +3761,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //飾りをウインドウに固定する際の飾り位置をチェック・修正
-    this.Change_Acc_Position_by_Accessory_Base_Set_Screen = function () {
+    Change_Acc_Position_by_Accessory_Base_Set_Screen(): void {
         let mv = this.TotalData.ViewStyle;
         let ms = mv.ScrData.ScrRectangle;
         let lft = ms.left;
@@ -3787,7 +3789,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //変換した座標を計算済み座標に登録
-    this.Set_MPSubLineXY = function (MapFileName: any, LineCode: any, XY: any, ReverseF: any) {
+    Set_MPSubLineXY(MapFileName: any, LineCode: any, XY: any, ReverseF: any): void {
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         let LP = new strGetLinePointAPI_Info();
         LP.GetF = true;
@@ -3798,14 +3800,14 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /** MPSubLine.Drawnの値をfalseにする*/
-    this.ResetMPSubLineDrawn = function (MapFileName: any) {
+    ResetMPSubLineDrawn(MapFileName: any): void {
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         for (let i = 0; i < LinePoint.Length; i++) {
             LinePoint[i].Drawn = false;
         }
     }
 
-    this.getMpLineDrawn = function (MapFileName: any, LineCode: any) {
+    getMpLineDrawn(MapFileName: any, LineCode: any): any {
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         if (LinePoint[LineCode] == undefined) {
             return undefined;
@@ -3813,28 +3815,28 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
             return this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn;
         }
     }
-    this.setMpLineDrawn = function (MapFileName: any, LineCode: any, value: any) {
+    setMpLineDrawn(MapFileName: any, LineCode: any, value: any): void {
          this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn = value;
     }
 
 
     //線種の使用チェック
-    this.getLineKindUseChecked = function (MapFileName: any, lineKindNum: any, PatternNum: any) {
+    getLineKindUseChecked(MapFileName: any, lineKindNum: any, PatternNum: any): boolean {
         let n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         return this.LineKindUse[n];
     }
-    this.setLineKindUseChecked = function (MapFileName: any, lineKindNum: any, PatternNum: any, value: any) {
+    setLineKindUseChecked(MapFileName: any, lineKindNum: any, PatternNum: any, value: any): void {
         let n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         this.LineKindUse[n] = value;
     }
 
     /**線種の使用状況を取得 */
-    this.Get_LineKindUsedList = function (){
+    Get_LineKindUsedList(): boolean[] {
         return this.LineKindUse;
     }
 
     //地図データの保存してある計算済み座標を取得する
-    this.Get_MPSubLineXY = function (MapFileName: any, LineCode: any, ReverseF: any) {
+    Get_MPSubLineXY(MapFileName: any, LineCode: any, ReverseF: any): any {
         let xy = [];
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         let MPSubLinePointXY = LinePoint[LineCode];
@@ -3859,7 +3861,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //計算済み座標と使用線種をリセットする
-    this.ResetMPSubLineXY = function () {
+    ResetMPSubLineXY(): void {
         for (var key in this.MPSubLine) {
             delete this.MPSubLine[key];
         }
@@ -3875,7 +3877,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //**点ダミーオブジェクトの凡例表示用に記録する */
-    this.AddPointObjectKindUsed= function (MapFilename: any,ObjKindNumber: any,MK: any) {
+    AddPointObjectKindUsed(MapFilename: any, ObjKindNumber: any, MK: any): void {
         for(let i in this.TempData.PointObjectKindUsedStack){
             let Ob=this.TempData.PointObjectKindUsedStack[i];
             if(( Ob.MapFileName== MapFilename )&&( Ob.ObjectKindNumber == ObjKindNumber) ){
@@ -3892,7 +3894,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //オブジェクトの表示チェックをクリア
-    this.ResetObjectPrintedCheckFlag = function () {
+    ResetObjectPrintedCheckFlag(): void {
         this.TempData.ObjectPrintedCheckFlag = [];
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             this.TempData.ObjectPrintedCheckFlag[i] = [];
@@ -3900,7 +3902,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //データ読み込み後の共通初期化
-    this.initTotalData_andOther = function () {
+    initTotalData_andOther(): void {
         let DourceType = this.TotalData.LV1.DataSourceType;
         if ((DourceType == enmDataSource.CSV) ||
             (DourceType == enmDataSource.Clipboard) ||
@@ -3945,14 +3947,14 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //単独表示モードで選択中のデータ項目のタイトルを返す
-    this.Get_SelectedDataTitle = function () {
+    Get_SelectedDataTitle(): string {
         let l = this.TotalData.LV1.SelectedLayer;
         let d = this.LayerData[l].atrData.SelectedIndex;
         return this.LayerData[l].atrData.Data[d].Title;
     }
 
     //レイヤごとのオブジェクトの空間インデックス作成
-    this.PrtObjectSpatialIndex = function () {
+    PrtObjectSpatialIndex(): void {
         let mrect = this.TotalData.ViewStyle.ScrData.MapRectangle;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             let LD = this.LayerData[i];
@@ -4002,11 +4004,11 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**レイヤの地図ファイルのオブジェクト番号からオブジェクトの外周を取得 */
-    this.Get_Object_Circumscribed_Rectangle= function (Layernum: any, ObjCode: any) {
+    Get_Object_Circumscribed_Rectangle(Layernum: any, ObjCode: any): any {
         return this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
     }
     //レイヤのオブジェクト位置からオブジェクトの外周を取得
-    this.Get_Kencode_Object_Circumscribed_Rectangle = function (Layernum: any, ObjNum: any) {
+    Get_Kencode_Object_Circumscribed_Rectangle(Layernum: any, ObjNum: any): any {
         let LD = this.LayerData[Layernum];
         switch (LD.Type) {
             case enmLayerType.Mesh: {
@@ -4036,7 +4038,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //ダミー点オブジェクトの記号を初期化
-    this.initDummuyPointObjectMark = function () {
+    initDummuyPointObjectMark(): void {
         let vs = this.TotalData.ViewStyle;
         vs.MapLegend.Line_DummyKind.Line_Visible_Number_STR = "1".repeat(this.GetAllMapLineKindNum());
         vs.DummyObjectPointMark = [];
@@ -4056,26 +4058,26 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
-    this.GetAllPointObjectGroup = function () {
+    GetAllPointObjectGroup(): any {
         return this.MapData.GetAllPointObjectGroup();
     }
 
     /**読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す */
-    this.Get_AllMapLineKind = function () {
+    Get_AllMapLineKind(): any {
         return this.MapData.GetAllMapLineKind();
     }
 
     /**読み込んだ地図ファイルの全線種名（オブジェクト連動型を含む）一覧を返す */
-    this.GetAllMapLineKindName=function(){
+    GetAllMapLineKindName(): any {
         return this.MapData.GetAllMapLineKindName();
     }
     //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
-    this.GetAllMapLineKindNum = function () {
+    GetAllMapLineKindNum(): number {
         return this.MapData.GetAllMapLineKindNum();
     }
 
     //表示領域の最大サイズを求めてMapRectangleに格納する
-    this.Check_Vector_Object = function () {
+    Check_Vector_Object(): void {
         let TotalScrRect = new rectangle();
 
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -4177,7 +4179,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         this.TempData.MapAreaLatLon = this.get_DataLatLonBox();
     }
 
-    this.getSolomodeWord = function (md: any) {
+    getSolomodeWord(md: any): string {
 
         switch (md) {
             case enmSoloMode_Number.ClassPaintMode: {
@@ -4226,73 +4228,73 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**現在のレイヤのグラフモードを返す */
-    this.layerGraph= function () {
+    layerGraph(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
     }
 
     /**現在のレイヤのグラフモードの選択データセットを返す */
-    this.nowGraph= function () {
+    nowGraph(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const gv=state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         return gv.DataSet[gv.SelectedIndex];
     }
 
     /**現在のレイヤのラベルモードを返す */
-    this.layerLabel= function () {
+    layerLabel(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
     }
     /**現在のレイヤのラベルモードの選択データセットを返す */
-    this.nowLabel= function () {
+    nowLabel(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         return lv.DataSet[lv.SelectedIndex];;
     }
     /**現在の重ね合わせモードのデータセットを返す */
-    this.nowSeries = function () {
+    nowSeries(): any {
         let series = state.attrData.TotalData.TotalMode.Series;
         return series.DataSet[series.SelectedIndex];
     }
 
     /**現在の重ね合わせモードのデータセットを返す */
-    this.nowOverlay=function(){
+    nowOverlay(): any {
         let over = state.attrData.TotalData.TotalMode.OverLay;
         return over.DataSet[over.SelectedIndex];
     }
 
     /**現在のレイヤの位置を返す */
-    this.nowLayer= function(){
+    nowLayer(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum];
     }
 
     /**
      * 現在のレイヤ・データ項目の位置を返す */
-    this.nowData= function(){
+    nowData(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum];
     }
 
     /**現在のレイヤ・データ項目のSoloModeViewSettings位置を返す */
-    this.nowDataSolo= function(){
+    nowDataSolo(): any {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
     }
 
     //単独表示モードのモードを取得
-    this.getSoloMode = function (LayerNum: any, DataNum: any) {
+    getSoloMode(LayerNum: any, DataNum: any): any {
         return this.LayerData[LayerNum].atrData.Data[DataNum].ModeData;
     }
 
-    this.setSoloMode = function (LayerNum: any, DataNum: any, mode: any) {
+    setSoloMode(LayerNum: any, DataNum: any, mode: any): void {
         this.LayerData[LayerNum].atrData.Data[DataNum].ModeData = mode;
     }
 
     //データの緯度経度の領域を返す
-    this.get_DataLatLonBox = function () {
+    get_DataLatLonBox(): rectangle {
         let IdoKedoRect = new rectangle();
         let Zahyo = this.TotalData.ViewStyle.Zahyo;
         if (Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido) {
@@ -4397,7 +4399,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return LLRect;
     }
 
-    this.getLinelatLon= function(mapdata: any,LineNumber: any,rect: any){
+    getLinelatLon(mapdata: any, LineNumber: any, rect: any): rectangle {
         let ml=mapdata.MPLine[LineNumber];
         let LP=[];
         for (let i = 0; i <  ml.NumOfPoint;i++){
@@ -4408,7 +4410,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return newRect;
     }
     //MANDARAファイルデータを開く
-    this.OpenNewMandaraFile = function (MapDataList: any, attrText: any, filename: any, ext: any) {
+    OpenNewMandaraFile(MapDataList: any, attrText: any, filename: any, ext: any): any {
         let retv;
         if (ext == "clipboard") {
             retv = this.SetDataFromClipBoard(MapDataList, attrText)
@@ -4437,7 +4439,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return retv;
     }
     //mdrjファイルから読み込み
-    this.SetDataFromMDRJ = function (MapDataList: any, attrText: any) {
+    SetDataFromMDRJ(MapDataList: any, attrText: any): any {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
@@ -5145,7 +5147,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 }
 
     //クリップボードから読み込み
-    this.SetDataFromClipBoard = function (MapDataList: any, attrText: any) {
+    SetDataFromClipBoard(MapDataList: any, attrText: any): any {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
@@ -5167,7 +5169,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //Clipboard,CSVのデータを一行ずつ処理して読み込む
-    this.ReadAttrDataOneLine = function (STR: any) {
+    ReadAttrDataOneLine(STR: any): any {
         let ObjectErrorMessage = '';
         let lay = -1;
         let LayerReading = new strLayerReadingInfo();
@@ -5588,7 +5590,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**オブジェクトからオブジェクトコードを返す。見つからない場合は-1を返す Timeは地図ファイル指定の場合     */
-    this.Get_ObjectCode_from_ObjName= function(Layernum_MapfileName: any, ObjName: any,Time: any){
+    Get_ObjectCode_from_ObjName(Layernum_MapfileName: any, ObjName: any, Time: any): number {
         if(typeof(Layernum_MapfileName)=="string"){//地図ファイル指定
             let MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
             return MapFileObjectNameSearch.Get_KenToCode(ObjName, Time);
@@ -5600,7 +5602,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
     //文字列からデータに変換
-    this.Set_Data_from_String = function (LayerReading: any, TotalMissing: any) {
+    Set_Data_from_String(LayerReading: any, TotalMissing: any): any {
         let E_Mes = "";
         let MapFileData = this.MapData.SetMapFile(LayerReading.MapFile);
         let MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile);
@@ -5794,7 +5796,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
     //レイヤ単位で文字列配列に入れたデータを設定する
-    this.Set_STRData_To_Cell = function (Layernum: any, DataNum: any, TTL: any, UNT: any, DTMissing: any, Note: any, DN_Str: any) {
+    Set_STRData_To_Cell(Layernum: any, DataNum: any, TTL: any, UNT: any, DTMissing: any, Note: any, DN_Str: any): any {
         let ErrorMes = "";
         let L = this.LayerData[Layernum];
         let ObjNum = L.atrObject.ObjectNum;
@@ -6056,7 +6058,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //レイヤにダミーオブジェクトとグループを設定する
-    this.Set_Dummy_and_Group=function(LayerNum: any, Dummy: any, DummyGroup: any){
+    Set_Dummy_and_Group(LayerNum: any, Dummy: any, DummyGroup: any): string {
         let L = this.LayerData[LayerNum];
         if (L.Type == enmLayerType.Trip_Definition) {
             return "";
@@ -6104,7 +6106,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**白地図・初期属性データ表示から読み込み DeleteDefDataFlag:取得した初期属性データを地図データ中から削除する場合true */
-    this.SetMapViewerData = function (MapDataList: any, LayDataInf: any, DeleteDefDataFlag: any) {      
+    SetMapViewerData(MapDataList: any, LayDataInf: any, DeleteDefDataFlag: any): void {      
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length;i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
@@ -6195,7 +6197,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //レイヤの形状を実際のオブジェクトの形状に基づいて設定
-    this.Check_LayerShape = function () {
+    Check_LayerShape(): void {
         let EMes = "";
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             let L = this.LayerData[i];
@@ -6242,7 +6244,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return EMes;
     }
 
-    this.Check_LayerShape_Sub = function (LayerNum: any) {
+    Check_LayerShape_Sub(LayerNum: any): void {
         let EMes = "";
         let L = this.LayerData[LayerNum];
         switch (L.Type) {
@@ -6297,7 +6299,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //オブジェクトグループ連動型線種の線種決定
-    this.LinePatternCheck = function () {
+    LinePatternCheck(): void {
         for (let Lay = 0; Lay < this.TotalData.LV1.Lay_Maxn; Lay++) {
             let LD = this.LayerData[Lay];
             if (LD.Type != enmLayerType.Trip_Definition) {
@@ -6351,7 +6353,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
-    this.Get_Enable_KenCode_MPLine = function (Layernum: any, ObjNum: any) {
+    Get_Enable_KenCode_MPLine(Layernum: any, ObjNum: any): any[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
             case enmKenCodeObjectstructure.MapObj:
                 let O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
@@ -6363,7 +6365,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
     //合成オブジェクトの外周線を返す
-    this.Get_EnableMPLine_SyntheticObject = function (Layernum: any, ObjNum: any) {
+    Get_EnableMPLine_SyntheticObject(Layernum: any, ObjNum: any): any[] {
         let LD = this.LayerData[Layernum];
         let SO_Code = LD.atrObject.atrObjectData[ObjNum].MpObjCode;
         let Time = LD.Time;
@@ -6385,7 +6387,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //オブジェクトが画面内に入るかどうかチェック
-    this.Check_screen_Kencode_In = function (Layernum: any, ObjNum: any) {
+    Check_screen_Kencode_In(Layernum: any, ObjNum: any): boolean {
         let rect = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
             let turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
@@ -6410,7 +6412,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
         //地図ファイル中のオブジェクトが画面内に入るかどうかチェック
-    this.Check_Screen_Objcode_In = function (Layernum: any, ObjCode: any) {
+    Check_Screen_Objcode_In(Layernum: any, ObjCode: any): boolean {
         let rect = this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
             let turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
@@ -6435,7 +6437,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //指定の画面座標の中心点と半径の領域が画面に入る場合はtrue
-    this.Check_Screen_In = function (CenterP: any, R: any) {
+    Check_Screen_In(CenterP: any, R: any): boolean {
         if ((CenterP instanceof rectangle) == true){
             if (spatial.Compare_Two_Rectangle_Position(CenterP, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) != cstRectangle_Cross.cstOuter) {
                 return true;
@@ -6452,7 +6454,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
 
-    this.Add_One_Data_Value = function (Layernum: any, TTL: any, UNT: any, Note: any, Dn_Val_str: any, Missing_F: any) {
+    Add_One_Data_Value(Layernum: any, TTL: any, UNT: any, Note: any, Dn_Val_str: any, Missing_F: any): void {
 
         if(TTL == null){TTL=""}
         if(UNT == null){UNT=""}
@@ -6513,12 +6515,12 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //レイヤのオブジェクト数を求める
-    this.Get_ObjectNum = function (Layernum: any) {
+    Get_ObjectNum(Layernum: any): number {
         return this.LayerData[Layernum].atrObject.ObjectNum;
     }
 
     //レイヤ名を取得する。レイヤが1つでレイヤ名が空白の場合は""を返す
-    this.Get_Layer_Name = function (Layernum: any, CR_F=false) {
+    Get_Layer_Name(Layernum: any, CR_F=false): string {
         let ln = "";
         if ((this.TotalData.LV1.Lay_Maxn == 1) && (this.LayerData[Layernum].Name == "")) {
         } else {
@@ -6530,7 +6532,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**指定レイヤの条件設定情報を文字列で出力 */
-    this.Get_Condition_Info = function (Layernum: any) {
+    Get_Condition_Info(Layernum: any): any {
         let ST1 = "表示オブジェクト限定:"
 
         if (this.Check_ObjectLimitation(Layernum) == true) {
@@ -6578,7 +6580,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //指定したレイヤに条件設定または表示オブジェクト限定が有効に設定されているかを調べる
-    this.Check_Condition_UMU = function (Layernum: any) {
+    Check_Condition_UMU(Layernum: any): boolean {
         for (let i = 0; i < this.TotalData.Condition.length; i++) {
             if ((this.TotalData.Condition[i].Enabled == true) && (this.TotalData.Condition[i].Layer == Layernum)) {
                 return true;
@@ -6591,7 +6593,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //**指定したレイヤに表示オブジェクト限定が有効に設定されているかを調べる */
-    this.Check_ObjectLimitation = function (Layernum: any) {
+    Check_ObjectLimitation(Layernum: any): boolean {
         if (this.TotalData.ViewStyle.ObjectLimitationF == true) {
             for (let i = 0; i < this.Get_ObjectNum(Layernum); i++) {
                 if (this.LayerData[Layernum].atrObject.atrObjectData[i].Visible == false) {
@@ -6603,7 +6605,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数えて文字列で出力
-    this.Get_Condition_Ok_Num_Info = function (Layernum: any) {
+    Get_Condition_Ok_Num_Info(Layernum: any): any {
         let T = this.Get_Layer_Name(Layernum,false);
         T += "全オブジェクト数:"+ this.Get_ObjectNum(Layernum).toString()  + '\n';
         T += "条件に適合するオブジェクト数:" + this.Get_Condition_Ok_Num(Layernum).toString() +  '\n' + '\n';
@@ -6611,7 +6613,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数える
-    this.Get_Condition_Ok_Num = function (Layernum: any) {
+    Get_Condition_Ok_Num(Layernum: any): number {
         let n = 0;
         for (let j = 0; j < this.Get_ObjectNum(Layernum); j++) {
             if ((this.TotalData.ViewStyle.ObjectLimitationF == false) || (this.LayerData[Layernum].atrObject.atrObjectData[j].Visible == true)) {
@@ -6624,7 +6626,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //属性検索条件･オブジェクト限定のチェック
-    this.Check_Condition = function (Layernum: any, Obj: any) {
+    Check_Condition(Layernum: any, Obj: any): boolean {
         if ((this.LayerData[Layernum].atrObject.atrObjectData[Obj].Visible == false) && (this.TotalData.ViewStyle.ObjectLimitationF == true)) {
             return false;
         }
@@ -6752,7 +6754,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
     //データ項目のデータを配列で取得、欠損値は最小値-1に、カテゴリーデータの場合はカテゴリーの位置
-    this.Get_Data_Cell_Array_With_MissingValue = function (Layernum: any, DataNum: any) {
+    Get_Data_Cell_Array_With_MissingValue(Layernum: any, DataNum: any): any[] {
         let ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
         let DT: any[] = [];
@@ -6779,7 +6781,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //データ項目のデータが欠損値だった場合にTRUEが入る配列を返す
-    this.Get_Missing_Value_DataArray = function (Layernum: any, DataNum: any) {
+    Get_Missing_Value_DataArray(Layernum: any, DataNum: any): any[] {
         let ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let dt =[];
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
@@ -6795,7 +6797,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
     //指定したレイヤのデータ項目の全オブジェクトの階級区分の際の位置を配列で取得する。欠損値は-1
-    this.Get_CategolyArray = function (Layernum: any, DataNum: any) {
+    Get_CategolyArray(Layernum: any, DataNum: any): string[] {
         let Category_Array = [];
         for (let i = 0; i < this.LayerData[Layernum].atrObject.ObjectNum; i++) {
             Category_Array.push(this.Get_Categoly(Layernum, DataNum, i));
@@ -6804,7 +6806,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //指定したレイヤのデータ項目・オブジェクトの階級区分の際の位置を取得する。欠損値の場合は-1を返す
-    this.Get_Categoly = function (Layernum: any, DataNum: any, Objectnum: any) {
+    Get_Categoly(Layernum: any, DataNum: any, Objectnum: any): string {
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
         let Div_Num = ad.SoloModeViewSettings.Div_Num;
         let sj;
@@ -6838,7 +6840,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return sj;
     }
     //データ項目の初期凡例の設定
-    this.SetIniHanrei = function (Layernum: any, DataNum: any) {
+    SetIniHanrei(Layernum: any, DataNum: any): void {
         let data = this.LayerData[Layernum].atrData.Data[DataNum];
         let lay = this.LayerData[Layernum];
 
@@ -7132,7 +7134,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
-    this.Get_InnerTile = function (InnerData: any, Layernum: any, CategoryPos: any) {
+    Get_InnerTile(InnerData: any, Layernum: any, CategoryPos: any): any {
         let t;
         if (CategoryPos == -1) {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
@@ -7143,7 +7145,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return t;
     }
     //階級区分設定(ペイントモードでは特に設定なし)
-    this.Set_Class_Div = function (Layernum: any, DataNum: any, setStartPos: any) {
+    Set_Class_Div(Layernum: any, DataNum: any, setStartPos: any): void {
         let att_DTA = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         let n = att_DTA.Div_Num;
         for (let j = setStartPos; j < n; j++) {
@@ -7174,7 +7176,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //2色グラテーション設定
-    this.Twocolort = function (Layernum: any, DataNum: any) {
+    Twocolort(Layernum: any, DataNum: any): void {
         let pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         let n = pms.Div_Num;
         if (n == 1) {
@@ -7188,7 +7190,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //3色グラテーション設定
-    this.Threecolor = function (Layernum: any, DataNum: any, Color_cng_n: any) {
+    Threecolor(Layernum: any, DataNum: any, Color_cng_n: any): void {
         let pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         let n = pms.Div_Num;
         let coldata = Generic.ThreeColorGradation(pms.ClassPaintMD.color1, pms.ClassPaintMD.color3, pms.ClassPaintMD.color2, n, Color_cng_n);
@@ -7198,7 +7200,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //複数グラデーション
-    this.FourColor = function (Layernum: any, DataNum: any, Color_cng_n: any, GradationPoint4: any, col: any) {
+    FourColor(Layernum: any, DataNum: any, Color_cng_n: any, GradationPoint4: any, col: any): void {
         let ColData = [];// colorARGB
 
         if (Color_cng_n == GradationPoint4) { return; }
@@ -7230,7 +7232,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
    
     //データ項目の平均、合計、標準偏差等を計算
-    this.CulcuOne = function (Layernum: any, DataNum: any) {
+    CulcuOne(Layernum: any, DataNum: any): void {
         let L = this.LayerData[Layernum].atrData.Data[DataNum];
         L.MissingValueNum = this.Get_Att_Missing_Num(Layernum, DataNum);
         L.EnableValueNum = this.LayerData[Layernum].atrObject.ObjectNum - L.MissingValueNum;
@@ -7269,7 +7271,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
     /**オブジェクトの重心取得、できなかった場合はFalse */
-    this.Get_ObjectGravityPoint = function (Layernum: any, ObjNumber: any) {
+    Get_ObjectGravityPoint(Layernum: any, ObjNumber: any): point {
         let lay = this.LayerData[Layernum];
         let LO = lay.atrObject.atrObjectData[ObjNumber];
         if (lay.Type == enmLayerType.Mesh) {
@@ -7294,7 +7296,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //オブジェクトの面積取得
-    this.GetObjMenseki = function (Layernum: any, ObjNumber: any) {
+    GetObjMenseki(Layernum: any, ObjNumber: any): number {
         let lay=this.LayerData[Layernum];
         let LO = lay.atrObject.atrObjectData[ObjNumber];
         if (lay.Type == enmLayerType.Mesh) {
@@ -7318,7 +7320,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //オブジェクトの周長を求める
-    this.Get_ObjectLength = function (Layernum: any, ObjNum: any) {
+    Get_ObjectLength(Layernum: any, ObjNum: any): number {
         let lay=this.LayerData[Layernum];
         let ELine;
         switch (lay.atrObject.atrObjectData[ObjNum].Objectstructure) {
@@ -7356,7 +7358,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //階級区分値の指定
-    this.Set_Div_Value = function (Layernum: any, DataNum: any) {
+    Set_Div_Value(Layernum: any, DataNum: any): void {
         let L = this.LayerData[Layernum].atrData.Data[DataNum];
         let v = L.SoloModeViewSettings.Div_Method;
         let EDataNum = L.EnableValueNum;
@@ -7434,7 +7436,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
 
-    this.Get_Att_Missing_Num = function (LayerNum: any, DataNum: any) {
+    Get_Att_Missing_Num(LayerNum: any, DataNum: any): number {
         if (this.LayerData[LayerNum].atrData.Data[DataNum].MissingF == false) {
             return 0;
         } else {
@@ -7443,7 +7445,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //欠損値を除いた配列でデータ項目の値を取得
-    this.Get_Data_Cell_Array_Without_MissingValue = function (LayerNum: any, DataNum: any) {
+    Get_Data_Cell_Array_Without_MissingValue(LayerNum: any, DataNum: any): any[] {
         let ObjNum = this.LayerData[LayerNum].atrObject.ObjectNum;
         let DT = [];
         let LD = this.LayerData[LayerNum].atrData.Data[DataNum];
@@ -7471,15 +7473,15 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
 
-    this.Get_DataType = function (Layernum: any, DataNum: any) {
+    Get_DataType(Layernum: any, DataNum: any): any {
         return this.LayerData[Layernum].atrData.Data[DataNum].DataType;
 
     }
-    this.Get_DataNote = function (Layernum: any, DataNum: any) {
+    Get_DataNote(Layernum: any, DataNum: any): string {
         return this.LayerData[Layernum].atrData.Data[DataNum].Note;
     }
 
-    this.Set_DataTitle_to_CheckedListBox= function(CheckedListBox: any, Layernum: any, defoChecked: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1){
+    Set_DataTitle_to_CheckedListBox(CheckedListBox: any, Layernum: any, defoChecked: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         let titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         let list = [];
         for(let i in titles){
@@ -7490,7 +7492,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
 
-    this.Set_DataTitle_to_cboBox= function(cbox: any, Layernum: any, SelectedIndex: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1){
+    Set_DataTitle_to_cboBox(cbox: any, Layernum: any, SelectedIndex: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         let titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         let items = [];
         for (let i = 0; i < titles.length; i++) {
@@ -7500,7 +7502,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //**グラフデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    this.getGraphTitle= function (Layernum: any){
+    getGraphTitle(Layernum: any): string[] {
         let graph = this.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         let items = [];
         for (let i = 0; i < graph.DataSet.length; i++) {
@@ -7514,7 +7516,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //**ラベルデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    this.getLabelTitle = function (Layernum: any) {
+    getLabelTitle(Layernum: any): string[] {
         let lbl = this.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         let items = [];
         for (let i = 0; i < lbl.DataSet.length; i++) {
@@ -7528,7 +7530,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     //**重ね合わせデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    this.getOverlayTitle= function (){
+    getOverlayTitle(): string[] {
         let over = this.TotalData.TotalMode.OverLay;
         let items = [];
         for (let i = 0; i < over.DataSet.length; i++) {
@@ -7547,7 +7549,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     // <param name="Category_f">カテゴリーデータを選択可に</param>
     // <param name="String_f">文字列データを選択可に</param>
     // <param name="Special_Astarisk_Num">特別にアスタリスクにする番号</param>
-    this.getDataTitleName = function (Layernum: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1) {
+    getDataTitleName(Layernum: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): string[] {
         let ad = this.LayerData[Layernum].atrData;
         let items = [];
         const n = this.Get_DataNum(Layernum);
@@ -7588,7 +7590,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return items;
     }
 
-    this.Get_DataTitle = function (Layernum: any, DataNum: any, PreFixDataNumberFlag: any) {
+    Get_DataTitle(Layernum: any, DataNum: any, PreFixDataNumberFlag: any): string {
         let tx = this.LayerData[Layernum].atrData.Data[DataNum].Title;
         if (PreFixDataNumberFlag == true) {
             tx = (DataNum + 1) + ":" + tx;
@@ -7596,7 +7598,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return tx;
     }
 
-    this.Get_DataTitleLayer = function (Layernum: any, PreFixDataNumberFlag: any) {
+    Get_DataTitleLayer(Layernum: any, PreFixDataNumberFlag: any): string[] {
         let n = this.LayerData[Layernum].atrData.Count;
         let ttl = [];
         for (let i = 0; i < n; i++){
@@ -7605,7 +7607,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return ttl;
     }
 
-    this.Get_DataUnitLayer = function (Layernum: any) {
+    Get_DataUnitLayer(Layernum: any): string[] {
         let n = this.LayerData[Layernum].atrData.Count;
         let unt = [];
         for (let i = 0; i < n; i++) {
@@ -7614,11 +7616,11 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         return unt;
     }
 
-    this.Get_DataUnit = function (Layernum: any, DataNum: any) {
+    Get_DataUnit(Layernum: any, DataNum: any): string {
         return this.LayerData[Layernum].atrData.Data[DataNum].Unit;
     }
 
-    this.Get_DataUnit_With_Kakko = function (Layernum: any, DataNum: any) {
+    Get_DataUnit_With_Kakko(Layernum: any, DataNum: any): string {
         let tx = "";
         if (this.LayerData[Layernum].atrData.Data[DataNum].DataType == enmAttDataType.Normal) {
             tx = this.Get_DataUnit(Layernum, DataNum);
@@ -7628,23 +7630,23 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
         return tx;
     }
-    this.Get_DataMax = function (Layernum: any, DataNum: any) {
+    Get_DataMax(Layernum: any, DataNum: any): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].Statistics.Max;
     }
 
-    this.Get_DataMin = function (Layernum: any, DataNum: any) {
+    Get_DataMin(Layernum: any, DataNum: any): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].Statistics.Min;
     }
 
-    this.Get_DataNum = function (LayerNum: any) {
+    Get_DataNum(LayerNum: any): number {
         return this.LayerData[LayerNum].atrData.Count;
     }
-    this.Get_DataMissingNum = function (LayerNum: any, DataNum: any) {
+    Get_DataMissingNum(LayerNum: any, DataNum: any): number {
         return this.LayerData[LayerNum].atrData.Data[DataNum].MissingValueNum;
     }
   
     /**連続表示モードのデータセット一覧を取得 */
-    this.getSeriesDataSetName=function(){
+    getSeriesDataSetName(): string[] {
         let series = state.attrData.TotalData.TotalMode.Series;
         let seriesDataSetList = [];
         for (let i = 0; i < series.DataSet.length; i++) {
@@ -7658,7 +7660,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /** 連続表示モードのデータセットをリストビューに入れる*/
-    this.SeriesMode_to_ListViewData=function(seriesListView: any,DataSetItem: any){
+    SeriesMode_to_ListViewData(seriesListView: any, DataSetItem: any): void {
         seriesListView.clear();
         let seriesData: any[] = [4];
         for (let i = 0; i < DataSetItem.length; i++) {
@@ -7707,7 +7709,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
 
     }
-    this.Add_one_Layer = function (LayerName: any, LayerType: any, LayerMeshType: any, LayerShape: any, LayerMapFile: any, LayerTime: any, LayerSystem: any, comment: any,ObjectNum: any, ObjData: any) {
+    Add_one_Layer(LayerName: any, LayerType: any, LayerMeshType: any, LayerShape: any, LayerMapFile: any, LayerTime: any, LayerSystem: any, comment: any, ObjectNum: any, ObjData: any): void {
         //レイヤの追加
         let NewL = new strLayerDataInfo();
         if (LayerMapFile == "") {
@@ -7736,7 +7738,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**レイヤ名をセレクトボックスに入れる */
-    this.Set_LayerName_to= function(selbox: any,SelectedIndex: any,NormalF=true,syntheticF=true,PointF=true,MeshF=true){
+    Set_LayerName_to(selbox: any, SelectedIndex: any, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
         let lst = [];
         let fall=false;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -7770,7 +7772,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
     
     /**セレクトボックスにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    this.Set_ObjectName_to_selectBox = function (selbox: any, Layernum: any, SelectedObject: any) {
+    Set_ObjectName_to_selectBox(selbox: any, Layernum: any, SelectedObject: any): void {
         let objList=[];
         selbox.removeAll();
         let L = this.LayerData[Layernum].atrObject;
@@ -7783,7 +7785,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
     /**セレクトボックスにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    this.Set_DummyObjectName_to_selectBox = function (selbox: any, Layernum: any, SelectedObject: any) {
+    Set_DummyObjectName_to_selectBox(selbox: any, Layernum: any, SelectedObject: any): void {
         let objList = [];
         selbox.removeAll();
         let L = this.LayerData[Layernum].Dummy
@@ -7797,7 +7799,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**リストボックスexにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    this.Set_ObjectName_to_checkedListBox = function (lbox: any,Layernum: any, SelectedObjects: any) {
+    Set_ObjectName_to_checkedListBox(lbox: any, Layernum: any, SelectedObjects: any): void {
         let objList=[];
         lbox.removeAll();
         let L = this.LayerData[Layernum].atrObject;
@@ -7812,7 +7814,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    this.Set_DummyObjectName_to_checkedListBox = function (lbox: any,Layernum: any, SelectedObjects: any) {
+    Set_DummyObjectName_to_checkedListBox(lbox: any, Layernum: any, SelectedObjects: any): void {
         let objList=[];
         lbox.removeAll();
         let L=this.LayerData[Layernum].Dummy
@@ -7828,12 +7830,12 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
         }
     }
     /**レイヤとそのでのオブジェクト位置から代表点を取得 */
-    this.Get_CenterP=function(Layernum: any,ObjNum: any){
+    Get_CenterP(Layernum: any, ObjNum: any): point {
         return this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].CenterPoint;
     }
 
     /**オブジェクトと座標の距離 */
-    this.Distance_Kencode_Point = function (Layernum: any, Obj: any, Point: any) {
+    Distance_Kencode_Point(Layernum: any, Obj: any, Point: any): number {
         let L = this.LayerData[Layernum];
         let v: any;
         if (L.Shape == enmShape.LineShape) {
@@ -7853,7 +7855,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**KecnCodeと地図ファイルのオブジェクトの間で指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
-    this.Distance_Kencode_MPObject = function (LayNum1: any, ObjNum1: any, MapFile: any, ObjCode2: any, Time: any ) {
+    Distance_Kencode_MPObject(LayNum1: any, ObjNum1: any, MapFile: any, ObjCode2: any, Time: any): number {
         let P1;
         let P2;
         let d;
@@ -7888,7 +7890,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**KecnCodeで指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
-    this.Distance_Kencode_Object = function (ObjNum1: any, ObjNum2: any, LayNum1: any, LayNum2: any) {
+    Distance_Kencode_Object(ObjNum1: any, ObjNum2: any, LayNum1: any, LayNum2: any): number {
         let P1;
         let P2;
 
@@ -7914,7 +7916,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**オブジェクトの線とある地点との距離を求める */
-    this.Get_Distance_Kencode_Between_ObjectLine_and_Point = function (LayNum: any, ObjNum: any, P: any) {
+    Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum: any, ObjNum: any, P: any): number {
 
         let ELine = this.Get_Enable_KenCode_MPLine(LayNum, ObjNum);
         let d = this.LayerData[LayNum].MapFileData.Distance_PointMPLineAllay(P,  ELine);
@@ -7922,7 +7924,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**オブジェクトを削除（移動レイヤ、移動主体定義レイヤ、合成オブジェクト使用レイヤは削除不可 LayerDelNum:レイヤごとの削除数の配列。削除しない場合は0,ObjectDeleteCheck:オブジェクトの数だけの配列で、削除する場合Trueを、全レイヤ分Listに格納） */
-    this.DeleteObjects=function(LayerDelNum: any,ObjectDeleteCheck: any){
+    DeleteObjects(LayerDelNum: any, ObjectDeleteCheck: any): void {
         //線モードの起点オブジェクトをチェックするために新旧対応リスト作成
         let LayMax=this.TotalData.LV1.Lay_Maxn;
         let ConvObj = [];
@@ -7987,7 +7989,7 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
     }
 
     /**レイヤごとに自動間引きができるかどうかチェック */
-    this.check_AutoSoubyou_Enable = function () {
+    check_AutoSoubyou_Enable(): boolean {
         this.TempData.SoubyouLayerEnable = [];
         this.TempData.SoubyouLoopLineArea = [];
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -8089,63 +8091,58 @@ this.ADD_AttrData= function( InsertData: any ,  AddMapFileNameF: any  ) {
 
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-interface clsAttrMapData {
-    getAllMapData(): { [key: string]: any };
-    AddExistingMapData(MapData: any, MapFileName: any): void;
-    SetMapFile(MapFileName: any): any;
-    [key: string]: any; // その他のメソッド
-}
-const clsAttrMapData: any = function (this: clsAttrMapData) {
-    let strAttrMap = function () {
-        this.FileName; //String
-        this.FullPath; //String
-        this.Mapdata; //clsMapData
-    }
-    let Prestage_MapFileName: string;
-    let attrMapData: { [key: string]: any } = {}; //  clsMapData
-    let Object_Name_Search: { [key: string]: any } = []; //clsObjectNameSearch
 
-    this.getAllMapData= function (){
-        return attrMapData;
+class clsAttrMapData {
+    private strAttrMap = class {
+        FileName: string | undefined; //String
+        FullPath: string | undefined; //String
+        Mapdata: any; //clsMapData
+    };
+    private Prestage_MapFileName: string = "";
+    private attrMapData: { [key: string]: any } = {}; //  clsMapData
+    private Object_Name_Search: { [key: string]: any } = {}; //clsObjectNameSearch
+
+    getAllMapData(): any[] {
+        return this.attrMapData;
     }
 
-    this.AddExistingMapData = function (MapData: any, MapFileName: any) {
+    AddExistingMapData(MapData: any, MapFileName: any): void {
         let key = MapFileName.toUpperCase();
-        attrMapData[key] = MapData;
-        Object_Name_Search[key] = new clsObjectNameSearch(MapData, true);
-        if (Object.keys(attrMapData).length == 1) {
-            Prestage_MapFileName = key;
+        this.attrMapData[key] = MapData;
+        this.Object_Name_Search[key] = new clsObjectNameSearch(MapData, true);
+        if (Object.keys(this.attrMapData).length == 1) {
+            this.Prestage_MapFileName = key;
         }
     }
-    this.SetMapFile = function (MapFileName: any) {
+    SetMapFile(MapFileName: any): any {
         if (MapFileName == "") {
-            return attrMapData[Prestage_MapFileName];
+            return this.attrMapData[this.Prestage_MapFileName];
         } else {
             //存在しない場合はundefined
-            return attrMapData[MapFileName.toUpperCase()];
+            return this.attrMapData[MapFileName.toUpperCase()];
         }
     }
-    this.SetObject_Name_Search = function (MapFileName: any) {
+    SetObject_Name_Search(MapFileName: any): any {
         if (MapFileName == "") {
-            return Object_Name_Search[Prestage_MapFileName];
+            return this.Object_Name_Search[this.Prestage_MapFileName];
         } else {
             //存在しない場合はundefined
-            return Object_Name_Search[MapFileName.toUpperCase()];
+            return this.Object_Name_Search[MapFileName.toUpperCase()];
         }
     }
 
     // 読み込んだ地図ファイル名の配列を返す
-    this.GetMapFileName = function () {
-        let fname = Object.keys(attrMapData);
+    GetMapFileName(): string[] {
+        let fname = Object.keys(this.attrMapData);
         return fname;
     }
     //読み込んだ地図ファイル数を返す
-    this.GetNumOfMapFile = function () {
-        return Object.keys(attrMapData).length;
+    GetNumOfMapFile(): number {
+        return Object.keys(this.attrMapData).length;
     }
     //地図ファイルの有無を調べる
-    this.CheckMapfileExists = function (MapFileName: any) {
-        let fname = Object.keys(attrMapData);
+    CheckMapfileExists(MapFileName: any): boolean {
+        let fname = Object.keys(this.attrMapData);
         if (fname.indexOf(MapFileName) == -1) {
             return false;
         } else {
@@ -8154,38 +8151,36 @@ const clsAttrMapData: any = function (this: clsAttrMapData) {
     }
 
 
-    this.EqualizeZahyoMode = function (Zahyo: any) {
+    EqualizeZahyoMode(Zahyo: any): any {
         //読み込んだ地図ファイルの投影法等座標設定を同じにする
         let f = true;
         let emes = "";
         //コレクションのループ
-        Object.keys(attrMapData).forEach(function (key) {
-            let retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo, attrMapData[key].Map.Zahyo);
+        const self = this;
+        Object.keys(this.attrMapData).forEach(function (key) {
+            let retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo, self.attrMapData[key].Map.Zahyo);
             if (retv.ok == false) { 
                 f = false;
                 emes += key + ":" + retv.emes + '\n';
             }
-        }, attrMapData);
+        });
         if (f == true) {
-            Object.keys(attrMapData).forEach(function (key) {
-                if (Generic.equal(attrMapData[key].Map.Zahyo, Zahyo) == false) {
-                    attrMapData[key].Convert_ZahyoMode(Zahyo);
+            Object.keys(this.attrMapData).forEach(function (key) {
+                if (Generic.equal(self.attrMapData[key].Map.Zahyo, Zahyo) == false) {
+                    self.attrMapData[key].Convert_ZahyoMode(Zahyo);
                 }
-            }, attrMapData);
+            });
         }
         return {
             ok: f, emes: emes
         };
     }
-    this.GetPrestigeZahyoMode = function () {
-        return attrMapData[Prestage_MapFileName].Map.Zahyo;
-    }
 
     //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
-    this.GetAllPointObjectGroup = function () {
+    GetAllPointObjectGroup(): any[] {
         let AllPOBJG: { [key: string]: any[] } = {};
-        for (let key in attrMapData) {
-            let cmap = attrMapData[key];
+        for (let key in this.attrMapData) {
+            let cmap = this.attrMapData[key];
             let PointObk = [];
             for (let i = 0; i < cmap.Map.OBKNum; i++) {
                 if(cmap.ObjectKind[i].Shape == enmShape.PointShape){
@@ -8200,10 +8195,10 @@ const clsAttrMapData: any = function (this: clsAttrMapData) {
     }
 
     //地図ファイル名、線種、グループで、線種位置番号を求める
-    this.GetLineKindPosition = function(MapFileName: any, lineKindNum: any, PatternNum: any){
+    GetLineKindPosition(MapFileName: any, lineKindNum: any, PatternNum: any): any {
         let n = 0;
-        for (let key in attrMapData) {
-            let cmap = attrMapData[key];
+        for (let key in this.attrMapData) {
+            let cmap = this.attrMapData[key];
             if (key != MapFileName.toUpperCase()) {
                 n += cmap.Get_TotalLineKind_Num();
             } else {
@@ -8217,19 +8212,19 @@ const clsAttrMapData: any = function (this: clsAttrMapData) {
         return -1;
     }
     //優先地図ファイル名取得
-    this.GetPrestigeMapFileName = function () {
-        return Prestage_MapFileName;
+    GetPrestigeMapFileName(): string {
+        return this.Prestage_MapFileName;
     }
     //最初の地図ファイル名の座標プロパティ取得
-    this.GetPrestigeZahyoMode = function () {
-        return attrMapData[Prestage_MapFileName].Map.Zahyo;
+    GetPrestigeZahyoMode(): any {
+        return this.attrMapData[this.Prestage_MapFileName].Map.Zahyo;
     }
 
     /** 読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す*/
-    this.GetAllMapLineKind = function () {
+    GetAllMapLineKind(): any[] {
         let LKind = [];
-        for (let key in attrMapData) {
-            let LK = attrMapData[key].Get_TotalLineKind();
+        for (let key in this.attrMapData) {
+            let LK = this.attrMapData[key].Get_TotalLineKind();
             for (let j = 0; j < LK.length; j++) {
                 LKind.push(LK[j]);
             }
@@ -8238,10 +8233,10 @@ const clsAttrMapData: any = function (this: clsAttrMapData) {
     }
 
     /** 読み込んだ地図ファイルの全線種名（オブジェクト連動型を含む）一覧を返す*/
-    this.GetAllMapLineKindName = function () {
+    GetAllMapLineKindName(): string[] {
         let STR = [];
-        for (let key in attrMapData) {
-            let LK = attrMapData[key].Get_TotalLineKind();
+        for (let key in this.attrMapData) {
+            let LK = this.attrMapData[key].Get_TotalLineKind();
             for (let j = 0; j < LK.length; j++) {
                 STR.push(LK[j].Name);
             }
@@ -8250,94 +8245,104 @@ const clsAttrMapData: any = function (this: clsAttrMapData) {
     }
 
     //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
-    this.GetAllMapLineKindNum = function () {
+    GetAllMapLineKindNum(): number[] {
         let n = 0;
-        for (let key in attrMapData) {
-            n += attrMapData[key].Get_TotalLineKind_Num();
+        for (let key in this.attrMapData) {
+            n += this.attrMapData[key].Get_TotalLineKind_Num();
         }
         return n;
     }
 
     /**指定した地図ファイルを削除 */
-    this.RemoveMapData= function(mapFileName: any){
+    RemoveMapData(mapFileName: any): void {
         if(mapFileName == "" ){
             mapFileName = this.Prestage_MapFileName
         }
-        delete attrMapData[mapFileName];
-        delete Object_Name_Search[mapFileName];
-        if(mapFileName == Prestage_MapFileName ){
-            if(attrMapData.length == 0 ){
-                Prestage_MapFileName = ""
+        delete this.attrMapData[mapFileName];
+        delete this.Object_Name_Search[mapFileName];
+        if(mapFileName == this.Prestage_MapFileName ){
+            if(Object.keys(this.attrMapData).length == 0 ){
+                this.Prestage_MapFileName = ""
             }else{
-                Prestage_MapFileName = Object.keys(attrMapData)[0];
+                this.Prestage_MapFileName = Object.keys(this.attrMapData)[0];
             }
         }
     }
 }
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
-const clsObjectNameSearch: any = function (this: any, MapData: any, CheckKanjiCompatibleFlag: any) {
-    //オブジェクト名検索用クラス
-    this.ObjNameAndTime_Info = function () {
-        this.ObjCode;
-        this.SETime = new Start_End_Time_data();
-    }
-    let Object_Name_Search = new clsSortingSearch();
-    let Object_Name_Stac_for_Search_O_Code = []; //ObjNameAndTime_Info
-   let checkObjectNameKanjiCompatibleFF = CheckKanjiCompatibleFlag; //Boolean
-    // let Name_n = 0
-    // for (let i = 0; i < MapData.Map.Kend; i++) {
-    //     Name_n += MapData.MPObj[i].NumOfNameTime * MapData.ObjectKind[MapData.MPObj[i].Kind].ObjectNameNum;
-    // }
-    
-    for (let i = 0; i < MapData.Map.Kend; i++) {
-        for (let j = 0; j < MapData.MPObj[i].NumOfNameTime; j++) {
-            let nstc = MapData.MPObj[i].NameTimeSTC[j];
-            for (let k = 0; k < nstc.NamesList.length; k++) {
-                let nam = nstc.NamesList[k];
-                if (nam != "") {
-                    if (checkObjectNameKanjiCompatibleFF == true) {
-                        let retV=Generic.ObjName_Kanji_Compatible(nam);
-                        nam=retV.newObjname;
+class clsObjectNameSearch {
+    private Object_Name_Search: any;
+    private Object_Name_Stac_for_Search_O_Code: any[];
+    private checkObjectNameKanjiCompatibleFF: boolean;
+
+    ObjNameAndTime_Info = class {
+        ObjCode: number | undefined;
+        SETime: Start_End_Time_data = new Start_End_Time_data();
+    };
+
+    constructor(MapData: any, CheckKanjiCompatibleFlag: any) {
+        //オブジェクト名検索用クラス
+        this.Object_Name_Search = new clsSortingSearch();
+        this.Object_Name_Stac_for_Search_O_Code = []; //ObjNameAndTime_Info
+        this.checkObjectNameKanjiCompatibleFF = CheckKanjiCompatibleFlag; //Boolean
+        // let Name_n = 0
+        // for (let i = 0; i < MapData.Map.Kend; i++) {
+        //     Name_n += MapData.MPObj[i].NumOfNameTime * MapData.ObjectKind[MapData.MPObj[i].Kind].ObjectNameNum;
+        // }
+        
+        for (let i = 0; i < MapData.Map.Kend; i++) {
+            for (let j = 0; j < MapData.MPObj[i].NumOfNameTime; j++) {
+                let nstc = MapData.MPObj[i].NameTimeSTC[j];
+                for (let k = 0; k < nstc.NamesList.length; k++) {
+                    let nam = nstc.NamesList[k];
+                    if (nam != "") {
+                        if (this.checkObjectNameKanjiCompatibleFF == true) {
+                            let retV=Generic.ObjName_Kanji_Compatible(nam);
+                            nam=retV.newObjname;
+                        }
+                        this.Object_Name_Search.Add(nam);
+                        let dt = new this.ObjNameAndTime_Info();
+                        dt.ObjCode = i;
+                        dt.SETime = nstc.SETime;
+                        this.Object_Name_Stac_for_Search_O_Code.push(dt);
                     }
-                    Object_Name_Search.Add(nam);
-                    let dt = new this.ObjNameAndTime_Info();
-                    dt.ObjCode = i;
-                    dt.SETime = nstc.SETime;
-                    Object_Name_Stac_for_Search_O_Code.push(dt);
                 }
             }
         }
-    }
-    Object_Name_Search.AddEnd();
-
-    this.Object_Name_Stac = function (Pos: any) {
-        return Object_Name_Stac_for_Search_O_Code[Pos];
-    }
-    this.DataPositionValue = function (Pos: any) {
-        return (Object_Name_Search.DataPositionValue as any)[Pos];
-    }
-    this.NumofData = function () {
-        return Object_Name_Search.NumofData();
-    }
-    this.DataPosition = function (num: any) {
-        return Object_Name_Search.DataPosition(num);
+        this.Object_Name_Search.AddEnd();
     }
 
-    this.Get_KenToCode = function (ObjName: any, Time: any) {
+    Object_Name_Stac(Pos: any): any {
+        return this.Object_Name_Stac_for_Search_O_Code[Pos];
+    }
+
+    DataPositionValue(Pos: any): any {
+        return (this.Object_Name_Search.DataPositionValue as any)[Pos];
+    }
+
+    NumofData(): number {
+        return this.Object_Name_Search.NumofData();
+    }
+
+    DataPosition(num: any): any {
+        return this.Object_Name_Search.DataPosition(num);
+    }
+
+    Get_KenToCode(ObjName: any, Time: any): number {
         //オブジェクト名からオブジェクト番号を取得する。見つからなかった場合-1を返す
         if (ObjName == "") {
             return -1;
         }
-        if (checkObjectNameKanjiCompatibleFF  == true) {
+        if (this.checkObjectNameKanjiCompatibleFF  == true) {
             let retV=Generic.ObjName_Kanji_Compatible(ObjName);
             ObjName=retV.newObjname;
         }
-        let DataList = Object_Name_Search.SearchData_Array(ObjName);
+        let DataList = this.Object_Name_Search.SearchData_Array(ObjName);
         for (let i in DataList) {
             let j = DataList[i];
-            if (clsTime.checkDurationIn(Object_Name_Stac_for_Search_O_Code[j].SETime, Time) == true) {
-                return Object_Name_Stac_for_Search_O_Code[j].ObjCode;
+            if (clsTime.checkDurationIn(this.Object_Name_Stac_for_Search_O_Code[j].SETime, Time) == true) {
+                return this.Object_Name_Stac_for_Search_O_Code[j].ObjCode;
             }
         }
         return - 1;

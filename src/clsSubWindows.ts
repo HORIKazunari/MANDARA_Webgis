@@ -1,6 +1,7 @@
 ﻿// @ts-nocheck
 import { appState } from './core/AppState';
 import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
+import type { Color, Mark, LinePattern, Font, Tile } from './types';
 
 // JavaScript source code
 
@@ -112,14 +113,14 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
 }
 
 /**カラーピッカー event_pointがpointの場合は表示位置のみ、targetがある場合はその要素の色も変える*/
-function clsColorPicker(event_point: any, okEvent: any) {
+function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color) => void): void {
     /// <signature>
     /// <summary>カラーピッカー</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
     /// <param name="okEvent" >okされた際に呼び出す関数</param>
     /// </signature>
     
-    let OriginControl: any;
+    let OriginControl: HTMLElement | undefined;
     let framepos;
     if( event_point instanceof point){
         framepos=event_point.Clone(); 
@@ -231,7 +232,7 @@ function clsColorPicker(event_point: any, okEvent: any) {
     colorPickerBoxStyle.border = "1px solid #444444";
     colorPickerObj.appendChild(colorPickerBox);
 
-    function setCol(e: any) {
+    function setCol(e: MouseEvent): void {
         const col = Generic.RGBAfromElement(e.target);
         col.a = parseInt(String(Number(rangeObj.value) * 2.55));
         colorPickerBox.style.backgroundColor = col.toRGBA();
@@ -258,7 +259,7 @@ function clsColorPicker(event_point: any, okEvent: any) {
     }
 }
 
-function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
+function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: unknown): void {
     /// <signature>
     /// <summary>記号選択</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -297,7 +298,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
         mk.WordFont.Kakudo = Number(angleBox.value);
         mk.WordFont.Size = Number(sizeBox.value);
         clsFontSet(e, mk.WordFont, fontGet, _attrData);
-        function fontGet(newFont: any) {
+        function fontGet(newFont: Font): void {
             mk.WordFont = newFont;
             angleBox.value = mk.WordFont.Kakudo;
             sizeBox.setNumberValue(mk.WordFont.Size);
@@ -319,7 +320,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
 
     function LinePatternClick(e: MouseEvent) {
         clsLinePatternSet(e, mk.Line, LinePatternGet);
-        function LinePatternGet(Lpat: any) {
+        function LinePatternGet(Lpat: LinePattern): void {
             mk.Line = Lpat;
             _attrData.Draw_Sample_LineBox(picFrameLine, mk.Line);
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
@@ -328,7 +329,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
 
     function markClick(e: MouseEvent) {
         clsMarkSelect(e, markSet, mk.ShapeNumber);
-        function markSet(number: any) {
+        function markSet(number: number): void {
             mk.ShapeNumber = number;
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
         }
@@ -336,7 +337,7 @@ function clsMarkSet(event: any, okEvent: any, mark: any, _attrData: any) {
 
     function tileClick(e: MouseEvent) {
         clsTileSet(e, mk.Tile, tileGet);
-        function tileGet(retTile: any) {
+        function tileGet(retTile: Tile): void {
             mk.Tile = retTile;
             mk.WordFont.Color = mk.Tile.Color;
             txtWord.style.color = mk.Tile.Color.toHex();
@@ -3404,16 +3405,16 @@ function openMapFile(call: any) {
     }
 }
 
-let strFrmCopyObjectName_init_parameter_data: any = function () {
-    this.ObjName=""; //String
-    this.Time=clsTime.GetNullYMD();; //strYMD
-    this.TimeChangeEnabled=true; //Boolean
-    this.pointShapeChecked=true; //Boolean
-    this.lineShapeChecked=true; //Boolean
-    this.polygonShapeChecked=true; //Boolean
-    this.ShapeChangeEnabled=true; //Boolean
-    this.ObjectGroupChecked=[]; //Boolean
-    this.ObjectGroupEnabled=true; //Boolean
+class strFrmCopyObjectName_init_parameter_data {
+    ObjName: string = "";
+    Time: any = clsTime.GetNullYMD();
+    TimeChangeEnabled: boolean = true;
+    pointShapeChecked: boolean = true;
+    lineShapeChecked: boolean = true;
+    polygonShapeChecked: boolean = true;
+    ShapeChangeEnabled: boolean = true;
+    ObjectGroupChecked: boolean[] = [];
+    ObjectGroupEnabled: boolean = true;
 }
 
 /**オブジェクト名コピー */

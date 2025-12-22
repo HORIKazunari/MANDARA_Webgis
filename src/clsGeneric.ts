@@ -1,6 +1,7 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
 import { EARTH_R } from './constants/geometry';
+import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
@@ -21,90 +22,90 @@ class EllipPar {
     E: number = 0;
     namec: string = "";
 }
-// TKY2JGDInfo は globals.d.ts で定義済み
-const TKY2JGDInfo_Impl = function() {
-    const EP = new Array(3);
-    const XY_Genten = new Array(20);
-    const rad2deg = 57.2957795130823;
-    const deg2rad = 0.0174532925199433;
-    const HAF_PI = 1.5707963267949;
-    const PID = 3.14159265358979;
-    const TWO_PI = 6.28318530717959;
-    const ROBYO = 206264.806247;
-    Set_EP_Parameter();
 
-    //国土地理院技術資料 Ｈ・１－Ｎｏ．２「測地成果2000のための座標変換ソフトウェアTKY2JGD」によるTKY2JGDソース・コードを利用
-     this.Tokyo97toITRF94=function(latlonP: latlon) {
-        // Ver.1.1  1999/1/28  (C) Mikio TOBITA 飛田幹男，国土地理院
-        // 「3ﾊﾟﾗﾒｰﾀによる」Tokyo97系からITRF94系への座標変換を行う。
-        //  この変換では楕円体高Hはゼロとする。
-        // by 飛田幹男
+// TKY2JGDInfo クラス: 測地系変換（Tokyo97 ⇔ ITRF94）
+// 国土地理院技術資料 Ｈ・１－Ｎｏ．２「測地成果2000のための座標変換ソフトウェアTKY2JGD」によるTKY2JGDソース・コードを利用
+class TKY2JGDInfo_Impl {
+    private readonly EP = new Array<EllipPar>(3);
+    private readonly XY_Genten = new Array<latlon>(20);
+    private readonly rad2deg = 57.2957795130823;
+    private readonly deg2rad = 0.0174532925199433;
+    private readonly HAF_PI = 1.5707963267949;
+    private readonly PID = 3.14159265358979;
+    private readonly TWO_PI = 6.28318530717959;
+    private readonly ROBYO = 206264.806247;
+
+    constructor() {
+        this.Set_EP_Parameter();
+    }
+
+    // Tokyo97系からITRF94系への座標変換
+    // Ver.1.1  1999/1/28  (C) Mikio TOBITA 飛田幹男，国土地理院
+    // この変換では楕円体高Hはゼロとする
+    Tokyo97toITRF94(latlonP: latlon): latlon {
         // 入力　B1    : 緯度(度)
         // 　　　L1    : 経度(度)
         // 出力　B2    : 緯度(度)
         // 　　　L2    : 経度(度)
-        let B1 = latlonP.lat;
-        let L1 = latlonP.lon;
+        const B1 = latlonP.lat;
+        const L1 = latlonP.lon;
 
-        let Brad = B1 * deg2rad;
-        let ALrad = L1 * deg2rad;
+        const Brad = B1 * this.deg2rad;
+        const ALrad = L1 * this.deg2rad;
 
         //緯度，経度から三次元直交座標系(X,Y,Z)への換算
-        let xyz1= BLHXYZcalc(Brad, ALrad, 0, EP[1]) //EP(1):Bessel楕円体
+        const xyz1 = this.BLHXYZcalc(Brad, ALrad, 0, this.EP[1]); //EP(1):Bessel楕円体
         //三次元直交座標系(X,Y,Z)から三次元直交座標系(X,Y,Z)への座標変換
-         let xyz2 = xyz2xyz(xyz1)
+        const xyz2 = this.xyz2xyz(xyz1);
         //三次元直交座標系(X,Y,Z)から緯度，経度への換算
-            let retV = XYZBLHcalc(xyz2, EP[2]) || { Brad: 0, ALrad: 0 };
+        const retV = this.XYZBLHcalc(xyz2, this.EP[2]) || { Brad: 0, ALrad: 0 };
 
-            let B2 = retV.Brad * rad2deg;
-            let L2 = retV.ALrad * rad2deg;
-         return new latlon(B2, L2);
-    }
-
-    this.ITRF94toTokyo97 = function (latlonP: latlon) {
-        let B1 = latlonP.lat;
-        let L1 = latlonP.lon;
-        let Brad = B1 * deg2rad;
-        let ALrad = L1 * deg2rad;
-        let xyz1 = BLHXYZcalc(Brad, ALrad, 0, EP[2]);
-        let xyz2 = xyz2xyzR(xyz1);
-        let retV = XYZBLHcalc(xyz2, EP[1]) || { Brad: 0, ALrad: 0, H: 0 }
-
-        xyz1 = BLHXYZcalc(retV.Brad, retV.ALrad, -retV.H, EP[2]);
-        xyz2 = xyz2xyzR(xyz1);
-        retV = XYZBLHcalc(xyz2, EP[1]) || { Brad: 0, ALrad: 0, H: 0 };
-        let B2 = retV.Brad * rad2deg;
-        let L2 = retV.ALrad * rad2deg;
+        const B2 = retV.Brad * this.rad2deg;
+        const L2 = retV.ALrad * this.rad2deg;
         return new latlon(B2, L2);
     }
 
-    this.doCalcXy2bl = function (Ellip12: number, Kei: number, X: number, Y: number) {
-        let M0  //Kei    //系番号，基準子午線の縮尺係数
-        let cB1 , cL1    //原点の緯度，経度。c = combo box
-        let B1 , L1      //原点の緯度，経度。基本的にradian
-        let b , L        //求める緯度，経度。基本的にradian
-        let Bdeg , Ldeg  //求める緯度，経度。基本的にdeg
-        let Gamma                 //=γ 子午線収差角。radian
-        let Gammadeg              //真北方向角。deg
-        let MMM                   //縮尺係数
-        let D , AM , s , SN , SNS 
-        let AEE , CEE , Ep2 
-        let AJ , BJ , CJ , DJ , EJ 
-        let FJ , GJ , HJ , IJ 
-        let S0                    //赤道から座標原点までの子午線弧長
-        let M 
-        let Eta2 , M1 , N1          //phi1の関数
-        let Eta2phi , Mphi , Nphi   //phi(=B)の関数
-        let T , T2 , T4 , T6 
-        let e2 , e4 , e6 , e8 , e10 
-        let e12 , e14 , e16 
-        let S1 , phi1 , oldphi1 , icount 
-        let Bunsi , Bunbo 
-        let YM0 , N1CosPhi1 
-        let EPs = new EllipPar();
+    ITRF94toTokyo97(latlonP: latlon): latlon {
+        const B1 = latlonP.lat;
+        const L1 = latlonP.lon;
+        const Brad = B1 * this.deg2rad;
+        const ALrad = L1 * this.deg2rad;
+        let xyz1 = this.BLHXYZcalc(Brad, ALrad, 0, this.EP[2]);
+        let xyz2 = this.xyz2xyzR(xyz1);
+        let retV = this.XYZBLHcalc(xyz2, this.EP[1]) || { Brad: 0, ALrad: 0, H: 0 };
+
+        xyz1 = this.BLHXYZcalc(retV.Brad, retV.ALrad, -retV.H, this.EP[2]);
+        xyz2 = this.xyz2xyzR(xyz1);
+        retV = this.XYZBLHcalc(xyz2, this.EP[1]) || { Brad: 0, ALrad: 0, H: 0 };
+        const B2 = retV.Brad * this.rad2deg;
+        const L2 = retV.ALrad * this.rad2deg;
+        return new latlon(B2, L2);
+    }
+
+    doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
+        let M0: number;  //Kei    //系番号，基準子午線の縮尺係数
+        let B1: number, L1: number;      //原点の緯度，経度。基本的にradian
+        let b: number, L: number;        //求める緯度，経度。基本的にradian
+        let Bdeg: number, Ldeg: number;  //求める緯度，経度。基本的にdeg
+        let Gamma: number;                 //=γ 子午線収差角。radian
+        let MMM: number;                   //縮尺係数
+        let AEE: number, CEE: number, Ep2: number;
+        let AJ: number, BJ: number, CJ: number, DJ: number, EJ: number;
+        let FJ: number, GJ: number, HJ: number, IJ: number;
+        let S0: number;                    //赤道から座標原点までの子午線弧長
+        let M: number;
+        let Eta2: number, M1: number, N1: number;          //phi1の関数
+        let Eta2phi: number, Mphi: number, Nphi: number;   //phi(=B)の関数
+        let T: number, T2: number, T4: number, T6: number;
+        let e2: number, e4: number, e6: number, e8: number, e10: number;
+        let e12: number, e14: number, e16: number;
+        let S1: number, phi1: number, oldphi1: number, icount: number;
+        let Bunsi: number, Bunbo: number;
+        let YM0: number, N1CosPhi1: number;
+        const EPs = new EllipPar();
 
         M0 = 0.9999;
-        const epSrc = EP[Ellip12] ?? new EllipPar();
+        const epSrc = this.EP[Ellip12] ?? new EllipPar();
         EPs.a = epSrc.a ?? 0;
         EPs.f1 = epSrc.f1 ?? 0;
         EPs.f = epSrc.f ?? 0;
@@ -172,80 +173,81 @@ const TKY2JGDInfo_Impl = function() {
         IJ = 765765.0 / 7516192768.0 * e16
 
 
-        B1 = XY_Genten[Kei].CenterB * deg2rad
-        L1 = XY_Genten[Kei].CenterL * deg2rad
+        B1 = this.XY_Genten[Kei].lat * this.deg2rad;
+        L1 = this.XY_Genten[Kei].lon * this.deg2rad;
 
   
 
         //赤道からの子午線長の計算
-        S0= MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ ) //赤道から座標原点までの子午線弧長
-        M = S0 + X / M0
+        S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
+        M = S0 + X / M0;
 
         //Baileyの式による異性緯度（isometric latitude）phi1の計算。
         //「精密測地網一次基準点測量計算式」P57の11.(1)の式から。
         //この式と「現代測量学１ 測量の数学的基礎」P102の式とは，Cos(phi1)だけ異なる。
         //この式を導入したためベッセル楕円体以外で往復計算OKとなった。
-        icount = 0
-        phi1 = B1
+        icount = 0;
+        phi1 = B1;
         do {
             icount++;
-            oldphi1 = phi1
-            S1 = MeridS(phi1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ) //赤道から点までの子午線弧長
-            Bunsi = 2.0 * (S1 - M) * (1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) ** 1.5
-            Bunbo = 3.0 * EPs.E * (S1 - M) * Math.sin(phi1) * Math.cos(phi1) * Math.sqrt(1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) - 2.0 * EPs.a * (1.0 - EPs.E)
-            phi1 = phi1 + Bunsi / Bunbo
-        } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)) //本では1e-12で十分　iterationの回数は４回
+            oldphi1 = phi1;
+            S1 = this.MeridS(phi1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から点までの子午線弧長
+            Bunsi = 2.0 * (S1 - M) * (1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) ** 1.5;
+            Bunbo = 3.0 * EPs.E * (S1 - M) * Math.sin(phi1) * Math.cos(phi1) * Math.sqrt(1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) - 2.0 * EPs.a * (1.0 - EPs.E);
+            phi1 = phi1 + Bunsi / Bunbo;
+        } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)); //本では1e-12で十分　iterationの回数は４回
 
         //何度も使う式を変数に代入
-        YM0 = Y / M0
-        T = Math.tan(phi1)  //「精密測地網一次基準点測量計算式」P51のt1に等しい
-        T2 = T * T
-        T4 = T2 * T2
-        T6 = T4 * T2
-        Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1)     //=η1*η1
-        M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0)
-        N1 = CEE / Math.sqrt(1.0 + Eta2)
-        N1CosPhi1 = N1 * Math.cos(phi1)
+        YM0 = Y / M0;
+        T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
+        T2 = T * T;
+        T4 = T2 * T2;
+        T6 = T4 * T2;
+        Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
+        M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0);
+        N1 = CEE / Math.sqrt(1.0 + Eta2);
+        N1CosPhi1 = N1 * Math.cos(phi1);
 
         //緯度Bの計算 「精密測地網一次基準点測量計算式」P51のphiを求める式より
-        b = ((1385.0 + 3633.0 * T2 + 4095 * T4 + 1575.0 * T6) / (40320.0 * N1 ** 8.0)) * YM0 ** 8.0
-        b = b - ((61.0 + 90.0 * T2 + 45 * T4 + 107.0 * Eta2 - 162.0 * T2 * Eta2 - 45.0 * T4 * Eta2) / (720.0 * N1 ** 6.0)) * YM0 ** 6.0
-        b = b + ((5.0 + 3.0 * T2 + 6.0 * Eta2 - 6.0 * T2 * Eta2 - 3.0 * Eta2 ** 2 - 9.0 * T2 * Eta2 ** 2) / (24.0 * N1 ** 4.0)) * YM0 ** 4.0
-        b = b - ((1.0 + Eta2) / (2.0 * N1 ** 2.0)) * YM0 ** 2.0
-        b = b * T
-        b = b + phi1
+        b = ((1385.0 + 3633.0 * T2 + 4095 * T4 + 1575.0 * T6) / (40320.0 * N1 ** 8.0)) * YM0 ** 8.0;
+        b = b - ((61.0 + 90.0 * T2 + 45 * T4 + 107.0 * Eta2 - 162.0 * T2 * Eta2 - 45.0 * T4 * Eta2) / (720.0 * N1 ** 6.0)) * YM0 ** 6.0;
+        b = b + ((5.0 + 3.0 * T2 + 6.0 * Eta2 - 6.0 * T2 * Eta2 - 3.0 * Eta2 ** 2 - 9.0 * T2 * Eta2 ** 2) / (24.0 * N1 ** 4.0)) * YM0 ** 4.0;
+        b = b - ((1.0 + Eta2) / (2.0 * N1 ** 2.0)) * YM0 ** 2.0;
+        b = b * T;
+        b = b + phi1;
 
         //経度Lの計算 「精密測地網一次基準点測量計算式」P51のΔλを求める式より
-        L = -((61.0 + 662.0 * T2 + 1320.0 * T4 + 720.0 * T6) / (5040.0 * N1 ** 6.0 * N1CosPhi1)) * YM0 ** 7.0
-        L = L + ((5.0 + 28.0 * T2 + 24.0 * T4 + 6.0 * Eta2 + 8.0 * T2 * Eta2) / (120.0 * N1 ** 4.0 * N1CosPhi1)) * YM0 ** 5.0
-        L = L - ((1.0 + 2.0 * T2 + Eta2) / (6.0 * N1 ** 2.0 * N1CosPhi1)) * YM0 ** 3.0
-        L = L + (1.0 / N1CosPhi1) * YM0
-        L = L + L1
+        L = -((61.0 + 662.0 * T2 + 1320.0 * T4 + 720.0 * T6) / (5040.0 * N1 ** 6.0 * N1CosPhi1)) * YM0 ** 7.0;
+        L = L + ((5.0 + 28.0 * T2 + 24.0 * T4 + 6.0 * Eta2 + 8.0 * T2 * Eta2) / (120.0 * N1 ** 4.0 * N1CosPhi1)) * YM0 ** 5.0;
+        L = L - ((1.0 + 2.0 * T2 + Eta2) / (6.0 * N1 ** 2.0 * N1CosPhi1)) * YM0 ** 3.0;
+        L = L + (1.0 / N1CosPhi1) * YM0;
+        L = L + L1;
 
         //子午線収差角の計算 「精密測地網一次基準点測量計算式」P51のγを求める式より
-        Gamma = ((1.0 + T2) * (2.0 + 3.0 * T2) / (15.0 * N1 ** 5.0)) * (Y / M0) ** 5.0
-        Gamma = Gamma - ((1.0 + T2 - Eta2) / (3.0 * N1 ** 3.0)) * (Y / M0) ** 3.0
-        Gamma = Gamma + (1.0 / N1) * Y / M0
-        Gamma = Gamma * T
+        Gamma = ((1.0 + T2) * (2.0 + 3.0 * T2) / (15.0 * N1 ** 5.0)) * (Y / M0) ** 5.0;
+        Gamma = Gamma - ((1.0 + T2 - Eta2) / (3.0 * N1 ** 3.0)) * (Y / M0) ** 3.0;
+        Gamma = Gamma + (1.0 / N1) * Y / M0;
+        Gamma = Gamma * T;
 
         //縮尺係数の計算 「精密測地網一次基準点測量計算式」P51のmを求める式より
-        Eta2phi = Ep2 * Math.cos(b) * Math.cos(b)     //=η*η。Bはphiと同じ。
-        Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0)
-        Nphi = CEE / Math.sqrt(1.0 + Eta2phi)
-        MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0)
-        MMM = MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0)
-        MMM = MMM + 1.0
-        MMM = MMM * M0
+        Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
+        Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
+        Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
+        MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0);
+        MMM = MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0);
+        MMM = MMM + 1.0;
+        MMM = MMM * M0;
 
         //出力
-        Bdeg = b * rad2deg
-        Ldeg = L * rad2deg
+        Bdeg = b * this.rad2deg;
+        Ldeg = L * this.rad2deg;
 
         return new latlon(Bdeg, Ldeg);
     }
 
-    function MeridS(Phi: number, AEE: number, AJ: number, BJ: number, CJ: number, DJ: number, EJ: number, FJ: number, GJ: number, HJ: number, IJ: number) {
-        let SS;
+    // プライベートヘルパーメソッド群
+    private MeridS(Phi: number, AEE: number, AJ: number, BJ: number, CJ: number, DJ: number, EJ: number, FJ: number, GJ: number, HJ: number, IJ: number): number {
+        let SS: number;
         SS = IJ / 16.0 * Math.sin(16.0 * Phi);
         SS = SS - HJ / 14.0 * Math.sin(14.0 * Phi);
         SS = SS + GJ / 12.0 * Math.sin(12.0 * Phi);
@@ -254,147 +256,147 @@ const TKY2JGDInfo_Impl = function() {
         SS = SS - DJ / 6.0 * Math.sin(6.0 * Phi);
         SS = SS + CJ / 4.0 * Math.sin(4.0 * Phi);
         SS = SS - BJ / 2.0 * Math.sin(2.0 * Phi);
-        SS = SS + AJ * Phi
+        SS = SS + AJ * Phi;
         return SS;
     }
-    function xyz2xyzR(xyz: { x: number; y: number; z: number }): { x: number; y: number; z: number } {
-        let T1 = 14641.4
-        let T2 = -50733.7
-        let T3 = -68050.7
-        let T1real = T1 * 0.01
-        let T2real = T2 * 0.01
-        let T3real = T3 * 0.01 
-        let x2 = xyz.x + T1real
-        let y2 = xyz.y + T2real
-        let z2 = xyz.z + T3real
+
+    private xyz2xyzR(xyz: { x: number; y: number; z: number }): { x: number; y: number; z: number } {
+        const T1 = 14641.4;
+        const T2 = -50733.7;
+        const T3 = -68050.7;
+        const T1real = T1 * 0.01;
+        const T2real = T2 * 0.01;
+        const T3real = T3 * 0.01;
+        const x2 = xyz.x + T1real;
+        const y2 = xyz.y + T2real;
+        const z2 = xyz.z + T3real;
         return new point3(x2, y2, z2);
     }
 
-    function XYZBLHcalc(xyz: { x: number; y: number; z: number }, EP: EllipPar) {
-        let x = xyz.x;
-        let y = xyz.y;
-        let z = xyz.z;
+    private XYZBLHcalc(xyz: { x: number; y: number; z: number }, EP: EllipPar): { Brad: number; ALrad: number; H: number } | undefined {
+        const x = xyz.x;
+        const y = xyz.y;
+        const z = xyz.z;
 
-        let a = EP.a;
-        let fi = EP.f1;
-        let E = EP.E;
+        const a = EP.a;
+        const fi = EP.f1;
+        const E = EP.E;
 
-        let P2 = x * x + y * y;
-        let p = Math.sqrt(P2);
+        const P2 = x * x + y * y;
+        const p = Math.sqrt(P2);
         if (p == 0) {
             return;
         }
-        let ALradV;
+        let ALradV: number;
         if (x == 0) {
-            ALradV = HAF_PI;
+            ALradV = this.HAF_PI;
         } else {
-            ALradV = Math.atan(y / x)
+            ALradV = Math.atan(y / x);
         }
         if (x < 0) {
-            ALradV += PID;
+            ALradV += this.PID;
         }
-        if (ALradV > PID) {
-            ALradV -= TWO_PI;
+        if (ALradV > this.PID) {
+            ALradV -= this.TWO_PI;
         }
 
-        let r = Math.sqrt(P2 + z * z);
-        let myu = Math.atan((z / p) * (1.0 - (1.0 / fi) + E * a / r));
+        const r = Math.sqrt(P2 + z * z);
+        const myu = Math.atan((z / p) * (1.0 - (1.0 / fi) + E * a / r));
         let myus3 = Math.sin(myu);
         myus3 = myus3 * myus3 * myus3;
         let myuc3 = Math.cos(myu);
         myuc3 = myuc3 * myuc3 * myuc3;
-        let BradV = Math.atan((z * (1.0 - 1.0 / fi) + E * a * myus3) / ((1.0 - 1.0 / fi) * (p - E * a * myuc3)));
-        let Hv = p * Math.cos(BradV) + z * Math.sin(BradV) - a * Math.sqrt(1.0 - E * Math.sin(BradV) * Math.sin(BradV));    //楕円体高
+        const BradV = Math.atan((z * (1.0 - 1.0 / fi) + E * a * myus3) / ((1.0 - 1.0 / fi) * (p - E * a * myuc3)));
+        const Hv = p * Math.cos(BradV) + z * Math.sin(BradV) - a * Math.sqrt(1.0 - E * Math.sin(BradV) * Math.sin(BradV));    //楕円体高
 
-        return { Brad: BradV, ALrad: ALradV,H:Hv};
+        return { Brad: BradV, ALrad: ALradV, H: Hv };
     }
 
-    function xyz2xyz(xyz: { x: number; y: number; z: number }): { x: number; y: number; z: number } {
-        let T1 = -14641.4
-        let T2 = 50733.7
-        let T3 = 68050.7
-        let T1real = T1 * 0.01  
-        let T2real = T2 * 0.01
-        let T3real = T3 * 0.01 
-        let x2 = xyz.x + T1real
-        let y2 = xyz.y + T2real
-        let z2 = xyz.z + T3real
+    private xyz2xyz(xyz: { x: number; y: number; z: number }): { x: number; y: number; z: number } {
+        const T1 = -14641.4;
+        const T2 = 50733.7;
+        const T3 = 68050.7;
+        const T1real = T1 * 0.01;
+        const T2real = T2 * 0.01;
+        const T3real = T3 * 0.01;
+        const x2 = xyz.x + T1real;
+        const y2 = xyz.y + T2real;
+        const z2 = xyz.z + T3real;
         return new point3(x2, y2, z2);
     }
 
-    function BLHXYZcalc(Brad: number, ALrad: number, H: number, EP: EllipPar) {
-
-        let a = EP.a
-        let fi = EP.f1
-        let E = EP.E
-        let CB = Math.cos(Brad);
-        let SB = Math.sin(Brad);
-        let CL = Math.cos(ALrad);
-        let SL = Math.sin(ALrad)
-        let w = Math.sqrt(1.0 - E * SB * SB);
-        let an = a / w;
-        let x = (an + H) * CB * CL;
-        let y = (an + H) * CB * SL;
-        let z = (an * (1.0 - E) + H) * SB;
+    private BLHXYZcalc(Brad: number, ALrad: number, H: number, EP: EllipPar): point3 {
+        const a = EP.a;
+        const fi = EP.f1;
+        const E = EP.E;
+        const CB = Math.cos(Brad);
+        const SB = Math.sin(Brad);
+        const CL = Math.cos(ALrad);
+        const SL = Math.sin(ALrad);
+        const w = Math.sqrt(1.0 - E * SB * SB);
+        const an = a / w;
+        const x = (an + H) * CB * CL;
+        const y = (an + H) * CB * SL;
+        const z = (an * (1.0 - E) + H) * SB;
         return new point3(x, y, z);
     }
 
-    function Set_EP_Parameter() {
-        EP[1]=new EllipPar();
-        EP[2] = new EllipPar();
+    private Set_EP_Parameter(): void {
+        this.EP[1] = new EllipPar();
+        this.EP[2] = new EllipPar();
         
-        EP[1].a = 6377397.155;
-        EP[1].f1 = 299.152813;
-        EP[1].namec = "Bessel";
-        EP[1].f = 1.0/ EP[1].f1;
-        EP[1].E = (2.0 * EP[1].f1 - 1.0) / EP[1].f1 / EP[1].f1; //=e*e [squared e]
-        EP[2].a = 6378137.0;
-        EP[2].f1 = 298.257222101;
-        EP[2].namec = "GRS-80";
-        EP[2].f = 1.0 / EP[2].f1;
-        EP[2].E = (2.0 * EP[2].f1 - 1.0) / EP[2].f1 / EP[2].f1; //=e*e [squared e]
+        this.EP[1].a = 6377397.155;
+        this.EP[1].f1 = 299.152813;
+        this.EP[1].namec = "Bessel";
+        this.EP[1].f = 1.0 / this.EP[1].f1;
+        this.EP[1].E = (2.0 * this.EP[1].f1 - 1.0) / this.EP[1].f1 / this.EP[1].f1; //=e*e [squared e]
+        this.EP[2].a = 6378137.0;
+        this.EP[2].f1 = 298.257222101;
+        this.EP[2].namec = "GRS-80";
+        this.EP[2].f = 1.0 / this.EP[2].f1;
+        this.EP[2].E = (2.0 * this.EP[2].f1 - 1.0) / this.EP[2].f1 / this.EP[2].f1; //=e*e [squared e]
 
         for (let i = 1; i < 20; i++) {
-            XY_Genten[i] = new latlon();
+            this.XY_Genten[i] = new latlon();
         }
-        XY_Genten[1].lat = 33;
-        XY_Genten[1].lon = 129.5;
-        XY_Genten[2].lat = 33;
-        XY_Genten[2].lon = 131;
-        XY_Genten[3].lat = 36;
-        XY_Genten[3].lon = 132 + 10 / 60;
-        XY_Genten[4].lat = 33;
-        XY_Genten[4].lon = 133.5;
-        XY_Genten[5].lat = 36;
-        XY_Genten[5].lon = 134 + 20 / 60;
-        XY_Genten[6].lat = 36;
-        XY_Genten[6].lon = 136;
-        XY_Genten[7].lat = 36;
-        XY_Genten[7].lon = 137 + 10 / 60;
-        XY_Genten[8].lat = 36;;
-        XY_Genten[8].lon = 138.5;
-        XY_Genten[9].lat = 36;
-        XY_Genten[9].lon = 139 + 50 / 60;
-        XY_Genten[10].lat = 40;
-        XY_Genten[10].lon = 140 + 50 / 60;
-        XY_Genten[11].lat = 44;
-        XY_Genten[11].lon = 140 + 15 / 60;
-        XY_Genten[12].lat = 44;
-        XY_Genten[12].lon = 142 + 15 / 60;
-        XY_Genten[13].lat = 44;
-        XY_Genten[13].lon = 144 + 15 / 60;
-        XY_Genten[14].lat = 26;
-        XY_Genten[14].lon = 142;
-        XY_Genten[15].lat = 26;
-        XY_Genten[15].lon = 127.5;
-        XY_Genten[16].lat = 26;
-        XY_Genten[16].lon = 124;
-        XY_Genten[17].lat = 26;
-        XY_Genten[17].lon = 131;
-        XY_Genten[18].lat = 20;
-        XY_Genten[18].lon = 136;
-        XY_Genten[19].lat = 26;
-        XY_Genten[19].lon = 154;
+        this.XY_Genten[1].lat = 33;
+        this.XY_Genten[1].lon = 129.5;
+        this.XY_Genten[2].lat = 33;
+        this.XY_Genten[2].lon = 131;
+        this.XY_Genten[3].lat = 36;
+        this.XY_Genten[3].lon = 132 + 10 / 60;
+        this.XY_Genten[4].lat = 33;
+        this.XY_Genten[4].lon = 133.5;
+        this.XY_Genten[5].lat = 36;
+        this.XY_Genten[5].lon = 134 + 20 / 60;
+        this.XY_Genten[6].lat = 36;
+        this.XY_Genten[6].lon = 136;
+        this.XY_Genten[7].lat = 36;
+        this.XY_Genten[7].lon = 137 + 10 / 60;
+        this.XY_Genten[8].lat = 36;
+        this.XY_Genten[8].lon = 138.5;
+        this.XY_Genten[9].lat = 36;
+        this.XY_Genten[9].lon = 139 + 50 / 60;
+        this.XY_Genten[10].lat = 40;
+        this.XY_Genten[10].lon = 140 + 50 / 60;
+        this.XY_Genten[11].lat = 44;
+        this.XY_Genten[11].lon = 140 + 15 / 60;
+        this.XY_Genten[12].lat = 44;
+        this.XY_Genten[12].lon = 142 + 15 / 60;
+        this.XY_Genten[13].lat = 44;
+        this.XY_Genten[13].lon = 144 + 15 / 60;
+        this.XY_Genten[14].lat = 26;
+        this.XY_Genten[14].lon = 142;
+        this.XY_Genten[15].lat = 26;
+        this.XY_Genten[15].lon = 127.5;
+        this.XY_Genten[16].lat = 26;
+        this.XY_Genten[16].lon = 124;
+        this.XY_Genten[17].lat = 26;
+        this.XY_Genten[17].lon = 131;
+        this.XY_Genten[18].lat = 20;
+        this.XY_Genten[18].lon = 136;
+        this.XY_Genten[19].lat = 26;
+        this.XY_Genten[19].lon = 154;
     }
 }
 
@@ -954,10 +956,10 @@ class spatial {
                             XY2 = P2.toLatlon ? TKY2JGD.ITRF94toTokyo97(P2.toLatlon()) : undefined;
                             break;
                     }
-                    if (!XY2 || typeof (XY2 as any).toPoint !== "function") {
+                    if (!XY2 || typeof (XY2 as {toPoint?: () => point}).toPoint !== "function") {
                         return OldP;
                     }
-                    P2 = (XY2 as any).toPoint();
+                    P2 = (XY2 as {toPoint: () => point}).toPoint();
                 }
             } else if ((oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (newMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
                 //元が平面直角、新規が緯度経度の場合、
@@ -2072,7 +2074,7 @@ export class Generic {
     }
 
     /**地図ファイルをgetMapfileByHttpRequestで開き、JSONで返す */
-    static getMapfileByHttpRequest(url: string, readCall: (data: any) => void){
+    static getMapfileByHttpRequest(url: string, readCall: (data: MapData | string) => void): void {
         const state = appState();
         
         Generic.readingIcon("地図ファイル読み込み");
@@ -2254,7 +2256,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let blob = new Blob([compressData], { 'type': 'application/octet-stream' });
 
-        const nav: any = window.navigator;
+        const nav = window.navigator as ExtendedNavigator;
         if (typeof nav?.msSaveBlob === "function") {
             nav.msSaveBlob(blob, totalFileName);
             nav.msSaveOrOpenBlob?.(blob, totalFileName);
@@ -2390,7 +2392,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let t = this.createNewSpan(document.body, text, "", "", 0, 0, "", "visibility:hidden");
         t.whiteSpace = 'nowrap';
         t.style.top = '600px';
-        t.style.fontSize = (fontSize as any).px();
+        t.style.fontSize = fontSize.px();
         let w = t.offsetWidth;
         let h = t.offsetHeight;
         document.body.removeChild(t);
@@ -2402,7 +2404,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const state = appState();
         let t = this.createNewDiv(document.body, text, "", "", 0, 0, "", "", styleinfo + ";visibility:hidden", undefined);
         if (width != undefined) {
-            t.style.width = (width as any).px();
+            t.style.width = width.px();
         }
         let w = t.offsetWidth;
         let h = t.offsetHeight;
@@ -2468,7 +2470,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
     static createNewNumberInput(ParentObj: HTMLElement, defoValue: number, ID: string, x: number, y: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, styleinfo: string) {
         const state = appState();
-        let box = this.createNewInput(ParentObj, "text", defoValue, ID, x, y, undefined, "width:" + (width as any).px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
+        let box = this.createNewInput(ParentObj, "text", defoValue, ID, x, y, undefined, "width:" + width.px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
         box.preValue = defoValue;
         box.numberCheck = true;//数字のチェックをしない場合はfalseにする
         box.onchange = function () {
@@ -2552,7 +2554,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 document.body.removeChild(msp);
                 y += lineh;
             }
-            dropArea.style.height=(Math.min(maxNumber,list.length)*lineh as any).px();
+            dropArea.style.height=(Math.min(maxNumber,list.length)*lineh).px();
             for (let i in list) {
                 let md = Generic.createNewDiv(selectList, list[i], "", "", 0, lineh * parseInt(i), mainw + 20, lineh, "padding-left:5px", "");
                 md.onmouseover = function () {
@@ -3042,8 +3044,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if ((x + boxWidth - document.body.scrollLeft) > clientWidth) {  //横にはみ出る場合
             x = clientWidth - boxWidth - 20;
         }
-        box.style.left = (x as any).px();
-        box.style.top = (y as any).px();
+        box.style.left = x.px();
+        box.style.top = y.px();
     }
 
     static Check_Point_in_screen(p: point, ScrData: Screen_info, Mode: number) {
@@ -3173,7 +3175,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
-    static Get_Outer_Mpline_AggregatedObj(LCode: any[], Shape: enmShape) { //LCode:EnableMPLine_Data
+    static Get_Outer_Mpline_AggregatedObj(LCode: Array<{LineCode: number}>, Shape: enmShape): Array<{LineCode: number}> { //LCode:EnableMPLine_Data
         const state = appState();
         let lc = this.ArrayClone(LCode);
 
@@ -3409,8 +3411,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         obj.setAttribute("class", Class);
         obj.setAttribute("onclick", onclick);
         obj.setAttribute("style", "position:absolute;" + styleinfo)
-        obj.style.top = (y as any).px();
-        obj.style.left = (x as any).px();
+        obj.style.top = y.px();
+        obj.style.left = x.px();
         ParentObj.appendChild(obj);
         return obj;
     }
@@ -3628,7 +3630,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if (RightOfDecimaplPoint != 0) {
             FL += "." + Number(Value).toFixed(RightOfDecimaplPoint).split(".")[1];
         }
-        FL = (FL as any).right(Num);
+        FL = FL.right(Num);
         return FL;
     }
 
@@ -3673,7 +3675,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let n = tabList.length;
         let tabw = Math.floor(width - 20) / n;
         for (let i = 0; i < n; i++) {
-            let tab = this.createNewDiv(base, tabList[i], "", "", i * tabw, 0, tabw, tabh, "border:solid 1px;border-color:#666666;line-height:"+(tabh-2 as any).px(), tabclick);
+            let tab = this.createNewDiv(base, tabList[i], "", "", i * tabw, 0, tabw, tabh, "border:solid 1px;border-color:#666666;line-height:"+(tabh-2).px(), tabclick);
             tab.style.backgroundColor = "#e1e1e1";
             tab.align = 'center';
             tab.tag = i;
@@ -3691,7 +3693,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         let mask = this.createNewDiv(base, "", "", "", 0, tabh - 1, tabw - 1, 3, "", undefined);
         mask.style.backgroundColor = "#ffffff";
-        mask.style.left = (firstSel * tabw + 1 as any).px();
+        mask.style.left = (firstSel * tabw + 1).px();
         return base;
         function tabclick(this: HTMLElement) {
             for (let i = 0; i < n; i++) {
@@ -3701,7 +3703,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             this.style.backgroundColor = "#ffffff";
             base.panel[this.tag]?.setVisibility?.(true);
             base.selectedIndex = Number(this.tag);
-            mask.style.left = (this.tag * tabw + 1 as any).px();
+            mask.style.left = (this.tag * tabw + 1).px();
         }
     }
 
@@ -3758,7 +3760,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
      * @param {*} styleinfo
      * @memberof Generic
      */
-    static createNewRadioButtonList(ParentObj: HTMLElement, name: string, list: {value: any, text: string}[], x: number, y: number, wordWidth: number, yplus: number | number[], defoCheckValue: any, onClick: (value: any) => void, styleinfo: string) {
+    static createNewRadioButtonList(ParentObj: HTMLElement, name: string, list: RadioListItem[], x: number, y: number, wordWidth: number, yplus: number | number[], defoCheckValue: RadioValue, onClick: (value: RadioValue) => void, styleinfo: string): void {
         const state = appState();
         let sy = y;
         for (let i = 0; i < list.length; i++) {
@@ -3771,7 +3773,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     /**ラジオボタン要素作成 onClickで選択されたValueを返す */
-    static createNewRadioButton(ParentObj: HTMLElement, text: string, ID: string, name: string, checked: boolean, value: any, x: number, y: number, wordWidth: number, onClick: (value: any) => void, styleinfo: string) {
+    static createNewRadioButton(ParentObj: HTMLElement, text: string, ID: string, name: string, checked: boolean, value: RadioValue, x: number, y: number, wordWidth: number, onClick: (value: RadioValue) => void, styleinfo: string): HTMLInputElement {
         const state = appState();
         let ok = this.createNewInput(ParentObj, "radio", "", ID, x, y, "", styleinfo);
         ok.addEventListener('change', change);
@@ -3785,9 +3787,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         ok.setAttribute("name", name);
         sp.tag = ID;
         sp.addEventListener('click', function gg(e) {
-            const target = e?.target as HTMLElement | null;
+            const target = e?.target as (HTMLElement & {tag?: string}) | null;
             if (!target) { return; }
-            let obj = document.getElementById((target as any).tag) as HTMLInputElement | null;
+            let obj = target.tag ? document.getElementById(target.tag) as HTMLInputElement | null : null;
             if (obj && obj.disabled == false) {
                 obj.checked = true;
                 change();
@@ -3806,7 +3808,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ラジオボタンの指定valueの要素をenabled/disableする
-    static enableRadioByValue(name: string, value: any, enabled: boolean) {
+    static enableRadioByValue(name: string, value: RadioValue, enabled: boolean): void {
         const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
@@ -3821,7 +3823,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     //ラジオボタンの指定valueの要素をチェックする
-    static checkRadioByValue(name: string, value: any) {
+    static checkRadioByValue(name: string, value: RadioValue): void {
         const state = appState();
         let rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
@@ -3934,7 +3936,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //タイルdivボックス
-    static createNewTileBox(ParentObj: HTMLElement, ID: string, word: string, defoTile: any, x: number, y: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, tileWidth: number = 45) {
+    static createNewTileBox(ParentObj: HTMLElement, ID: string, word: string, defoTile: {BlankF: boolean, Color: colorRGBA}, x: number, y: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, tileWidth: number = 45): HTMLElement {
         const state = appState();
         let lineH = 23;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
@@ -4052,7 +4054,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let pele=this.set_backDiv("",title,width,100,false,false,undefined,0,true);
         let oneHeight=this.getSpanSize(textList[0],15).height+2;
         let totalHeight=Math.min(8,textList.length)*oneHeight;
-        pele.style.height=(state.scrMargin.top+totalHeight+2 as any).px();
+        pele.style.height=(state.scrMargin.top+totalHeight+2).px();
         let frame=this.createNewDiv(pele,"","","grayFrame",0,state.scrMargin.top,width-1,totalHeight,"overflow-y:scroll;overflow-x:hidden", undefined);
         Generic.Set_Box_Position_in_Browser(new point(x,y), pele);
         for (let i in textList) {
@@ -4261,7 +4263,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const w = parentObj.style.width.removePx(); // 親要素で幅100%指定だと効かないので注意
         const h = parentObj.style.height.removePx();
         for (let i = 0; i < cnode.length; i++) {
-            const node = cnode[i] as any;
+            const node = cnode[i] as HTMLElement & {rightPositionFixed?: boolean, bottomRightPositionFixed?: boolean, bottomPositionFixed?: boolean, relativePosition?: point};
             if (Object.prototype.hasOwnProperty.call(node, 'rightPositionFixed')) {
                 node.style.left = (w - node.relativePosition.x).px();
             }
@@ -4293,7 +4295,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const state = appState();
         const cnode = parentObj.childNodes;
         for (let i = 0; i < cnode.length; i++) {
-            if ((cnode[i] as any).id === childObjID) {
+            const child = cnode[i];
+            if (child instanceof HTMLElement && child.id === childObjID) {
                 return true;
             }
         }
@@ -4315,7 +4318,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return obj;
     }
 
-    static createNewTable(parentObj: HTMLElement, id: string, tableClass: string, data: any[][], width: number, styleinfo: string, headNum: number, headStyleinfo: string, normalStyleinfo: string, headXStyleinfo: string, normalXStyleinfo: string) {
+    static createNewTable(parentObj: HTMLElement, id: string, tableClass: string, data: TableData, width: number, styleinfo: string, headNum: number, headStyleinfo: string, normalStyleinfo: string, headXStyleinfo: string, normalXStyleinfo: string): HTMLTableElement {
         const state = appState();
         const xcell = data.length;
         const ycell = data[1].length;
@@ -4346,8 +4349,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tb;
     }
 
-    static createNewGrid(parentObj: HTMLElement, gridID: string, tableID: string, gridClass: string, tableClass: string, data: any[][], x: number, y: number, width: number | string, height: number | string, tableWidth: number, styleinfo: string, tableStyleinfo: string, tableHeadNum: number,
-        tableHeadStyleinfo: string, tableNormalStyleinfo: string, tableHeadXStyleinfo: string, tableNormalXStyleinfo: string) {
+    static createNewGrid(parentObj: HTMLElement, gridID: string, tableID: string, gridClass: string, tableClass: string, data: TableData, x: number, y: number, width: number | string, height: number | string, tableWidth: number, styleinfo: string, tableStyleinfo: string, tableHeadNum: number,
+        tableHeadStyleinfo: string, tableNormalStyleinfo: string, tableHeadXStyleinfo: string, tableNormalXStyleinfo: string): HTMLElement & {table: HTMLTableElement} {
         const state = appState();
         const obj = document.createElement("div");
         obj.setAttribute("style", "position:absolute;overflow: auto;" + styleinfo);
@@ -4426,7 +4429,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static createMsgTableBox(title: any, data: any, width: any, height: any, borderFlag: any) {
+    static createMsgTableBox(title: string, data: TableData, width: number, height: number, borderFlag: boolean): void {
         const state = appState();
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
         const gd = Generic.createNewGrid(msgbox, "", "", "", "", data, 5, 35, width - 10, height - 80, '100%', "", "font-size:13px", 1, "background-color:#aaffaa;", "", "", "");
@@ -4445,7 +4448,24 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static createWindow(ID: any, Class: any, title: any, x: any, y: any, width: any, height: any, visibilieF: any,menuMarkF: any,menuCall: any,XmarkF: any,XmarkCall: any,footer_Flag: any,footerID: any,maxButtonF: any,maxButtonCall: any = undefined) {
+    static createWindow(
+        ID: string,
+        Class: string,
+        title: string,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        visibilieF: boolean,
+        menuMarkF: boolean,
+        menuCall: (() => void) | null,
+        XmarkF: boolean,
+        XmarkCall: (() => void) | null,
+        footer_Flag: boolean,
+        footerID: string,
+        maxButtonF: boolean,
+        maxButtonCall: (() => void) | null = null
+    ): HTMLElement {
         const state = appState();
         const hiddenWindow = function () {
             const winAny = window as any;
@@ -4543,7 +4563,19 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static set_backDiv(idname: any, title: any, innerWidth: any, innerHeight: any,okButtonF: any,cancelButtonF: any,okCall: any, opacity: any,outerClickF: any,createXmark: any=true,cancelCall: any=undefined) {
+    static set_backDiv(
+        idname: string, 
+        title: string, 
+        innerWidth: number | string, 
+        innerHeight: number | string,
+        okButtonF: boolean,
+        cancelButtonF: boolean,
+        okCall: (() => void) | undefined, 
+        opacity: number,
+        outerClickF: boolean,
+        createXmark: boolean = true,
+        cancelCall: (() => void) | undefined = undefined
+    ): HTMLDivElement {
         const state = appState();
         /// <signature>
         /// <summary>固定ウインドウを作る</summary>
@@ -4559,7 +4591,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const browserWidth = this.getBrowserWidth();
         const browserHeight = this.getBrowserHeight();
         const d = document.createElement("div");
-        const deletediv = function (e: any) {
+        const deletediv = function (e: Event) {
         //固定ウインドウを消す
             e.preventDefault();
             const last1 = document.body.lastChild;
@@ -4629,13 +4661,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
             ele.name="ok";
         }
-        function cancelButton(e: any){
+        function cancelButton(e: Event): void {
             deletediv(e);
             if(cancelCall!=undefined){
                 cancelCall();
             }
         }
-        function okButton(e: any) {
+        function okButton(e: Event): void {
             okCall(e);
         }
         return dup;
@@ -4659,7 +4691,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return y;
     }
 
-    static decodePolyline(data: any) {
+    static decodePolyline(data: string): number[][] {
         const state = appState();
         //Google Mapのエンコード化ポリラインをデコードする
         const cood = new Array();
@@ -4726,7 +4758,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
 
-    static Check_Two_Value_In(CheckV: any, V1: any, V2: any) {
+    static Check_Two_Value_In(CheckV: number, V1: number, V2: number): boolean {
         const state = appState();
         //チェックする値が二つの数字の中間であればtrue
 
@@ -4743,7 +4775,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         return chvValue_on_twoValue.chvOuter;
     }
-    static Angle(si: any, co: any) {//角度を求める
+    static Angle(si: number, co: number): number {//角度を求める
         const state = appState();
         let AngleV;
         if (co == 0) {
@@ -4763,7 +4795,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //クリップボードにテキスト出力
-    static copyText(text: any) {
+    static copyText(text: string): void {
         const state = appState();
         const ta = document.createElement("textarea") as HTMLTextAreaElement;
         ta.value = text;
@@ -4776,7 +4808,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //フォントがシステムに入っているかチェック
-    static checkFontExist(checkFont: any) {
+    static checkFontExist(checkFont: string): boolean {
         const state = appState();
         const baseFonts = ['monospace', 'sans-serif', 'serif'];
         const testString = "mmmmmmmmmmlli";
@@ -4806,7 +4838,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return detected;
     }
 //トップメニュー(ポップアップと上下の調整が取れないため未使用)
-    static ceateTopMenu(ParentObj: any,list: any, pos: any,width: any) {
+    static ceateTopMenu(ParentObj: HTMLElement, list: unknown[], pos: point, width: number): void {
         const state = appState();
         for(let i in list){
             let data=list[i];
@@ -4832,7 +4864,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     //ポップアップメニュー
-    static ceatePopupMenu(list: any, pos: any) {
+    static ceatePopupMenu(list: unknown[], pos: point): void {
         const state = appState();
         
         let e = document.getElementsByName("backDiv");
@@ -4854,7 +4886,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         };
         mnudiv.onclick = mnudicclivk;
         mnudiv.addEventListener('touchstart',mnudicclivk,false)
-        function mnudicclivk(e: any){
+        function mnudicclivk(e: MouseEvent): void {
             e.stopPropagation();
             e.preventDefault();
             if(touchf==true){//タッチした直後はクリックスルー
@@ -5054,7 +5086,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**メニューオブジェクトのプロパティからオブジェクトを取得する */
-    static getPopMenuObj(menuObj: any, property: any, pname: any): any {
+    static getPopMenuObj(menuObj: unknown[], property: string, pname: string): unknown {
         const state = appState();
         for (let i in menuObj) {
             if (menuObj[i].hasOwnProperty(property)) {
@@ -5062,7 +5094,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     return menuObj[i];
                 }
                 if (menuObj[i].hasOwnProperty('child')) {
-                    let v: any = this.getPopMenuObj(menuObj[i].child, property, pname);
+                    let v: unknown = this.getPopMenuObj(menuObj[i].child, property, pname);
                     if (v != undefined) {
                         return v;
                     }
@@ -5075,517 +5107,604 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 (globalThis as any).Generic = Generic;
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(globalThis as any).TKY2JGDInfo = TKY2JGDInfo_Impl;
+(globalThis as any).TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 // ESM-friendly export handles
-export const TKY2JGDInfo: any = TKY2JGDInfo_Impl;
+export const TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 
 /**チェックリストボックス twoStepCheckF:二回目のクリックでチェックを変更*/
-export const CheckedListBox: any = function(ParentObj: any, Class: any, list: any,x: any, y: any,width: any,height: any,twoStepCheckF: any, onChange: any,styleinfo: any = ""){
-    let _this = this;
-    let lineH = Generic.getDivSize("A", undefined, "").height + 3;
-    let allh = lineH * list.length;
-    let ovy = (allh < height - 2) ? "" : "overflow-y: scroll;";
-    let w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
-    let lBox: any[] = [];
-    const frame = Generic.createNewDiv(ParentObj, "", Class, "grayFrame", x, y, width, height - 24, ovy + "overflow-x:hidden;background-color:white;user-Select:none");
-    const allSelFrame = Generic.createNewDiv(ParentObj, "", "", "", x, y + (height - 22), w, 22, "");
-    Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, function () { allChange(true);if(onChange!=undefined){onChange()}  }, "width:55px;height:22px;padding:0");
-    Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, function () { allChange(false);if(onChange!=undefined){onChange()} }, "width:55px;height:22px;padding:0");
-    const inFrame = Generic.createNewDiv(frame, "", "", "", 0, 0, w, allh, "");
-    _addList(list, 0);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class CheckedListBox {
+    length: number = 0;
+    selectedIndex: number = -1;
+    private lineH: number;
+    private allh: number;
+    private w: number;
+    private lBox: any[] = [];
+    private frame: HTMLElement;
+    private inFrame: HTMLElement;
+    private width: number;
+    private height: number;
+    private twoStepCheckF: boolean;
+    private onChange: (index: number) => void;
+
+    constructor(
+        ParentObj: HTMLElement,
+        Class: string,
+        list: unknown[],
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        twoStepCheckF: boolean,
+        onChange: (index: number) => void,
+        styleinfo: string = ""
+    ) {
+        this.width = width;
+        this.height = height;
+        this.twoStepCheckF = twoStepCheckF;
+        this.onChange = onChange;
+        this.lineH = Generic.getDivSize("A", undefined, "").height + 3;
+        this.allh = this.lineH * list.length;
+        let ovy = (this.allh < height - 2) ? "" : "overflow-y: scroll;";
+        this.w = (this.allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
+        this.frame = Generic.createNewDiv(ParentObj, "", Class, "grayFrame", x, y, width, height - 24, ovy + "overflow-x:hidden;background-color:white;user-Select:none");
+        const allSelFrame = Generic.createNewDiv(ParentObj, "", "", "", x, y + (height - 22), this.w, 22, "");
+        Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, () => { this.allChange(true); if (onChange != undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
+        Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, () => { this.allChange(false); if (onChange != undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
+        this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w, this.allh, "");
+        this._addList(list, 0, styleinfo);
+    }
 
     /**リ1つ追加 */
-    this.add = function (soloData: any, pos: any=undefined) {
-        if(pos==undefined){
-            pos=this.length;
+    add(soloData: any, pos: any = undefined): void {
+        if (pos == undefined) {
+            pos = this.length;
         }
-        _addList([soloData],pos);
+        this._addList([soloData], pos, "");
     }
-    
+
     /**リストを追加 */
-    this.addList = function (list: any, pos: any) {
-        _addList(list, pos);
+    addList(list: any, pos: any): void {
+        this._addList(list, pos, "");
     }
+
     /**指定範囲のリストを削除 */
-    this.removeList = function (pos: any, delNum: any) {
-        _removeList(pos, delNum);
+    removeList(pos: any, delNum: any): void {
+        this._removeList(pos, delNum);
     }
+
     /**全リストを削除 */
-    this.removeAll = function () {
-        _removeList(0, lBox.length);
+    removeAll(): void {
+        this._removeList(0, this.lBox.length);
     }
 
     /**チェック状態を取得 */
-    this.getCheckedStatus = function (n: any) {
-        return lBox[n].checked;
+    getCheckedStatus(n: any): boolean {
+        return this.lBox[n].checked;
     }
 
     /**チェック状態を設定 */
-    this.setCheckStatus= function(n: any,checked: any){
-        lBox[n].checked=checked;
+    setCheckStatus(n: any, checked: any): void {
+        this.lBox[n].checked = checked;
     }
 
     /**テキストを設定 */
-    this.setText= function(n: any,text: any){
-        lBox[n].word.innerHTML=text;
+    setText(n: any, text: any): void {
+        this.lBox[n].word.innerHTML = text;
     }
 
-
-    this.length = 0;
-    this.selectedIndex=-1;
     /**チェックの状態を返す checkedStatus:全項目のtrue|false,checkedArray:trueの番号一覧*/
-    this.getChecked=function(){
-        return _getChecked();
+    getChecked(): { checkedStatus: boolean[], checkedArray: number[] } {
+        return this._getChecked();
     }
-    function _removeList(pos: any, delNum: any) {
-        if (lBox.length == 0) {
+
+    private _removeList(pos: any, delNum: any): void {
+        if (this.lBox.length == 0) {
             return;
         }
         for (let i = 0; i < delNum; i++) {
-            if(_this.selectedIndex == (i+pos)){
-                setIndexColor(-1);
+            if (this.selectedIndex == (i + pos)) {
+                this.setIndexColor(-1);
             }
-            inFrame.removeChild(lBox[i + pos].word);
-            inFrame.removeChild(lBox[i + pos]);
+            this.inFrame.removeChild(this.lBox[i + pos].word);
+            this.inFrame.removeChild(this.lBox[i + pos]);
         }
-        lBox.splice(pos, delNum);
-        reNumbering();
+        this.lBox.splice(pos, delNum);
+        this.reNumbering();
     }
 
-    function _addList(lst: any, pos: any) {
-        let osel=_this.selectedIndex;
+    private _addList(lst: any, pos: any, styleinfo: string): void {
+        let osel = this.selectedIndex;
         let newsel = (osel == -1) ? -1 : osel + lst.length;
-        if(osel >=pos){
-            setIndexColor(-1);
+        if (osel >= pos) {
+            this.setIndexColor(-1);
         }
         for (let i = 0; i < lst.length; i++) {
-            let ypos = (i + pos) * lineH;
+            let ypos = (i + pos) * this.lineH;
             let asfdisabled = (lst[i].text.left(1) == "*");
-            let cbox = Generic.createNewInput(inFrame, "checkbox", "", "", 3, ypos, undefined, "");
+            let cbox = Generic.createNewInput(this.inFrame, "checkbox", "", "", 3, ypos, undefined, "");
             cbox.checked = lst[i].checked;
             cbox.disabled = asfdisabled;
+            const change = (e: any) => {
+                let obj = e.target;
+                let newSel = Number(obj.tag);
+                if (this.selectedIndex != newSel) {
+                    this.setIndexColor(newSel);
+                    if (this.twoStepCheckF == true) {
+                        this.lBox[newSel].checked = !this.lBox[newSel].checked;
+                        return;
+                    }
+                }
+                if (typeof this.onChange == 'function') {
+                    let retV = this._getChecked();
+                    this.onChange(newSel);
+                }
+            };
             cbox.onchange = change;
-            cbox.word = Generic.createNewDiv(inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
+            cbox.word = Generic.createNewDiv(this.inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
                 function (e: any) {
                     if (asfdisabled == false) {
                         cbox.checked = !cbox.checked;
                         change(e);
                     }
                 });
-            lBox.splice(pos + i, 0, cbox);
+            this.lBox.splice(pos + i, 0, cbox);
         }
-        reNumbering();
-        if(osel >=pos){
-            setIndexColor(newsel);
-        }
-        function change(e: any) {
-            let obj = e.target;
-            let newSel=Number(obj.tag);
-            if(_this.selectedIndex != newSel){
-                setIndexColor(newSel);
-                if(twoStepCheckF==true){
-                    lBox[newSel].checked=!lBox[newSel].checked;
-                    return;
-                }
-            }
-            if (typeof onChange == 'function') {
-                let retV=_getChecked();
-                onChange(newSel, retV.checkedStatus, retV.checkedArray);
-            }
+        this.reNumbering();
+        if (osel >= pos) {
+            this.setIndexColor(newsel);
         }
     }
 
-    function setIndexColor(newSel: any){
-        if (_this.selectedIndex != -1) {
-            lBox[_this.selectedIndex].word.style.backgroundColor = "#ffffff";
+    private setIndexColor(newSel: any): void {
+        if (this.selectedIndex != -1) {
+            this.lBox[this.selectedIndex].word.style.backgroundColor = "#ffffff";
         }
-        _this.selectedIndex = newSel;
+        this.selectedIndex = newSel;
         if (newSel != -1) {
-            lBox[newSel].word.style.backgroundColor = "#e1e1ff";
+            this.lBox[newSel].word.style.backgroundColor = "#e1e1ff";
         }
     }
 
-    function _getChecked(){
+    private _getChecked(): { checkedStatus: boolean[], checkedArray: number[] } {
         let checkedList = [];
         let checkedArray = [];
-        for (let i = 0; i < lBox.length; i++) {
-            checkedList.push(lBox[i].checked);
-            if (lBox[i].checked) {
+        for (let i = 0; i < this.lBox.length; i++) {
+            checkedList.push(this.lBox[i].checked);
+            if (this.lBox[i].checked) {
                 checkedArray.push(i);
             }
         }
-        return {checkedStatus:checkedList,checkedArray:checkedArray};
+        return { checkedStatus: checkedList, checkedArray: checkedArray };
     }
 
-    function allChange(checked: any) {
-        for (let i = 0; i < lBox.length; i++) {
-            if(lBox[i].disabled==false){
-                lBox[i].checked = checked;
+    private allChange(checked: any): void {
+        for (let i = 0; i < this.lBox.length; i++) {
+            if (this.lBox[i].disabled == false) {
+                this.lBox[i].checked = checked;
             }
         }
     }
-    function reNumbering() {
-        allh = lineH * lBox.length;
-        w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
-        inFrame.style.height = allh.px();
-        for (let i = 0; i < lBox.length; i++) {
-            lBox[i].style.top = (i * lineH).px();
-            lBox[i].tag = i;
-            lBox[i].word.style.top = (i * lineH + 3).px();
-            lBox[i].word.style.width = (w - 20).px();
-            lBox[i].word.tag = i;
+
+    private reNumbering(): void {
+        this.allh = this.lineH * this.lBox.length;
+        this.w = (this.allh < this.height - 2) ? this.width - 2 : this.width - (state.scrMargin.scrollWidth ?? 0) - 1;
+        this.inFrame.style.height = this.allh.px();
+        for (let i = 0; i < this.lBox.length; i++) {
+            this.lBox[i].style.top = (i * this.lineH).px();
+            this.lBox[i].tag = i;
+            this.lBox[i].word.style.top = (i * this.lineH + 3).px();
+            this.lBox[i].word.style.width = (this.w - 20).px();
+            this.lBox[i].word.tag = i;
         }
-        _this.length = lBox.length;
+        this.length = this.lBox.length;
     }
 }
 
 /**リストボックスコントロール addEventListenerを付ける場合は.frameに*/
-export const ListBox: any = function(ParentObj: any, Class: any, list: any,x: any, y: any,width: any,height: any, onChange: any,styleinfo: any = ""){
-    let _this=this;
-    this.selectedIndex= -1;
-    this.length=0;
-    this.value=undefined;
-    let lBox: any[]=[];
-    let lineH = Generic.getDivSize("A", undefined, "").height + 3;
-    let allh = lineH * list.length;
-    let ovy = (allh < height - 2) ? "" : "overflow-y: scroll";
-    let w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
-    this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", x, y, width, height, ovy + "overflow-x:hidden;background-color:white");//addEventListenerを付ける場合はframeに
-    const inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, w, allh, "");
-    _addList(list, 0);
+export class ListBox {
+    selectedIndex: number = -1;
+    length: number = 0;
+    value: any = undefined;
+    frame: HTMLElement;
+    private lBox: any[] = [];
+    private lineH: number;
+    private allh: number;
+    private w: number;
+    private width: number;
+    private height: number;
+    private inFrame: HTMLElement;
+    private Class: any;
+    private styleinfo: any;
+    private onChange: any;
+
+    constructor(ParentObj: any, Class: any, list: any, x: any, y: any, width: any, height: any, onChange: any, styleinfo: any = "") {
+        this.width = width;
+        this.height = height;
+        this.Class = Class;
+        this.styleinfo = styleinfo;
+        this.onChange = onChange;
+        this.lineH = Generic.getDivSize("A", undefined, "").height + 3;
+        this.allh = this.lineH * list.length;
+        let ovy = (this.allh < height - 2) ? "" : "overflow-y: scroll";
+        this.w = (this.allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
+        this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", x, y, width, height, ovy + "overflow-x:hidden;background-color:white");
+        this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w, this.allh, "");
+        this._addList(list, 0);
+    }
 
     /**1つ追加 */
-    this.add=function(soloData: any,pos: any=undefined){
-        if(pos==undefined){
-            pos=this.length;
+    add(soloData: any, pos: any = undefined): void {
+        if (pos == undefined) {
+            pos = this.length;
         }
-        _addList([soloData],pos);
+        this._addList([soloData], pos);
     }
+
     /**リストを配列で追加 */
-    this.addList = function (list: any, pos: any=undefined) {
-        if(pos==undefined){
-            pos=this.length;
+    addList(list: any, pos: any = undefined): void {
+        if (pos == undefined) {
+            pos = this.length;
         }
-        _addList(list, pos);
+        this._addList(list, pos);
     }
+
     /**指定範囲のリストを削除 */
-    this.removeList = function (pos: any, delNum: any) {
-        _removeList(pos, delNum);
+    removeList(pos: any, delNum: any): void {
+        this._removeList(pos, delNum);
     }
+
     /**全リストを削除 */
-    this.removeAll = function () {
-        _removeList(0, lBox.length);
+    removeAll(): void {
+        this._removeList(0, this.lBox.length);
     }
+
     /**選択要素を指定 */
-    this.setSelectedIndex = function (newIndex: any){
-        if(this.selectedIndex!=-1){
-            lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
-        }
-        this.selectedIndex=newIndex;
-        lBox[newIndex].style.backgroundColor = "#e1e1e1";
-        this.value=lBox[newIndex].value;
-    }
-
-    this.getText=function(){
+    setSelectedIndex(newIndex: any): void {
         if (this.selectedIndex != -1) {
-            return lBox[this.selectedIndex].innerText;
-        }else{
+            this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
+        }
+        this.selectedIndex = newIndex;
+        this.lBox[newIndex].style.backgroundColor = "#e1e1e1";
+        this.value = this.lBox[newIndex].value;
+    }
+
+    getText(): any {
+        if (this.selectedIndex != -1) {
+            return this.lBox[this.selectedIndex].innerText;
+        } else {
             return undefined;
         }
     }
-    this.getAllText = function () {
+
+    getAllText(): any[] {
         let v = [];
         for (let i = 0; i < this.length; i++) {
-            v.push(lBox[i].innerText)
+            v.push(this.lBox[i].innerText);
         }
         return v;
     }
 
-    this.getValue=function(){
-        if(this.selectedIndex!=-1){
-            return lBox[this.selectedIndex].value;
-        }else{
+    getValue(): any {
+        if (this.selectedIndex != -1) {
+            return this.lBox[this.selectedIndex].value;
+        } else {
             return undefined;
         }
     }
-    this.getAllValue = function () {
+
+    getAllValue(): any[] {
         let v = [];
         for (let i = 0; i < this.length; i++) {
-            v.push(lBox[i].value)
+            v.push(this.lBox[i].value);
         }
         return v;
     }
 
-    this.setText=function(row: any,text: any){
-        lBox[row].innerText=text;
+    setText(row: any, text: any): void {
+        this.lBox[row].innerText = text;
     }
 
-    this.setValue=function(row: any,value: any){
-        lBox[row].innerText=value;
+    setValue(row: any, value: any): void {
+        this.lBox[row].innerText = value;
     }
 
-    this.rowUp = function (row: any) {
-        if (lBox.length < 2) {
+    rowUp(row: any): void {
+        if (this.lBox.length < 2) {
             return;
         }
         let dest = row - 1;
-        dest = (dest == -1) ? lBox.length - 1 : dest;
-        [lBox[row].innerText, lBox[dest].innerHTML] = [lBox[dest].innerText, lBox[row].innerHTML];
-        [lBox[row].value, lBox[dest].value] = [lBox[dest].value, lBox[row].value];
+        dest = (dest == -1) ? this.lBox.length - 1 : dest;
+        [this.lBox[row].innerText, this.lBox[dest].innerHTML] = [this.lBox[dest].innerText, this.lBox[row].innerHTML];
+        [this.lBox[row].value, this.lBox[dest].value] = [this.lBox[dest].value, this.lBox[row].value];
         if (row == this.selectedIndex) {
-            lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
+            this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
             this.selectedIndex = dest;
-            lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
+            this.lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
         }
     }
 
-    this.rowDown = function (row: any) {
-        if (lBox.length < 2) {
+    rowDown(row: any): void {
+        if (this.lBox.length < 2) {
             return;
         }
         let dest = row + 1;
-        dest = (dest == lBox.length) ? 0 : dest;
-        [lBox[row].innerText, lBox[dest].innerHTML] = [lBox[dest].innerText, lBox[row].innerHTML];
-        [lBox[row].value, lBox[dest].value] = [lBox[dest].value, lBox[row].value];
+        dest = (dest == this.lBox.length) ? 0 : dest;
+        [this.lBox[row].innerText, this.lBox[dest].innerHTML] = [this.lBox[dest].innerText, this.lBox[row].innerHTML];
+        [this.lBox[row].value, this.lBox[dest].value] = [this.lBox[dest].value, this.lBox[row].value];
         if (row == this.selectedIndex) {
-            lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
+            this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
             this.selectedIndex = dest;
-            lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
+            this.lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
         }
     }
 
-    function _addList(lst: any, pos: any) {
+    private _addList(lst: any, pos: any): void {
         if (lst.length == 0) {
             return;
         }
-        if (_this.selectedIndex != -1) {
-            lBox[_this.selectedIndex].style.backgroundColor = "#ffffff";
+        if (this.selectedIndex != -1) {
+            this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
         }
-        _this.selectedIndex = pos;
+        this.selectedIndex = pos;
         for (let i in lst) {
-            let div = Generic.createNewDiv(inFrame, lst[i].text, "", Class, 3, Number(i) * lineH, w, lineH, styleinfo+";overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background-color:white",
-                function (e: any) {
-                    if (_this.selectedIndex != -1) {
-                        lBox[_this.selectedIndex].style.backgroundColor = "#ffffff";
+            let div = Generic.createNewDiv(this.inFrame, lst[i].text, "", this.Class, 3, Number(i) * this.lineH, this.w, this.lineH, this.styleinfo + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background-color:white",
+                (e: any) => {
+                    if (this.selectedIndex != -1) {
+                        this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
                     }
                     let obj = e.target;
                     obj.style.backgroundColor = "#e1e1e1";
-                    _this.selectedIndex = Number(obj.tag);
-                    _this.value = lBox[_this.selectedIndex].value;
-                    if (typeof onChange == 'function') {
-                        onChange(Number(obj.tag), obj.value);
+                    this.selectedIndex = Number(obj.tag);
+                    this.value = this.lBox[this.selectedIndex].value;
+                    if (typeof this.onChange == 'function') {
+                        this.onChange(Number(obj.tag), obj.value);
                     }
                 });
             div.value = lst[i].value;
-            lBox.splice(pos + Number(i), 0, div);
+            this.lBox.splice(pos + Number(i), 0, div);
         }
-        reNumbering();
+        this.reNumbering();
     }
-    function _removeList(pos: any, delNum: any) {
-        if (lBox.length == 0) {
+
+    private _removeList(pos: any, delNum: any): void {
+        if (this.lBox.length == 0) {
             return;
         }
-        if(_this.selectedIndex!=-1){
-            lBox[_this.selectedIndex].style.backgroundColor = "#ffffff";
+        if (this.selectedIndex != -1) {
+            this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
         }
         for (let i = 0; i < delNum; i++) {
-            inFrame.removeChild(lBox[i + pos]);
+            this.inFrame.removeChild(this.lBox[i + pos]);
         }
-        lBox.splice(pos,delNum);
-        if (_this.selectedIndex >= pos) {
-            _this.selectedIndex -= delNum;
-            _this.selectedIndex = (_this.selectedIndex < 0) ? 0 : _this.selectedIndex;
+        this.lBox.splice(pos, delNum);
+        if (this.selectedIndex >= pos) {
+            this.selectedIndex -= delNum;
+            this.selectedIndex = (this.selectedIndex < 0) ? 0 : this.selectedIndex;
         }
-        reNumbering();
+        this.reNumbering();
     }
-    function reNumbering() {
-         allh = lineH * lBox.length;
-         w = (allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
-        inFrame.style.height =allh.px();
-        for (let i = 0; i < lBox.length; i++) {
-            lBox[i].style.top = (i * lineH).px();
-            lBox[i].style.width=w.px();
-            lBox[i].tag = i;
+
+    private reNumbering(): void {
+        this.allh = this.lineH * this.lBox.length;
+        this.w = (this.allh < this.height - 2) ? this.width - 2 : this.width - (state.scrMargin.scrollWidth ?? 0) - 1;
+        this.inFrame.style.height = this.allh.px();
+        for (let i = 0; i < this.lBox.length; i++) {
+            this.lBox[i].style.top = (i * this.lineH).px();
+            this.lBox[i].style.width = this.w.px();
+            this.lBox[i].tag = i;
         }
-        if(lBox.length>0){
-            lBox[_this.selectedIndex].style.backgroundColor = "#e1e1e1";
-            _this.value=lBox[_this.selectedIndex].value;
-        }else{
-            _this.selectedIndex=-1;
-            _this.value=undefined;
+        if (this.lBox.length > 0) {
+            this.lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
+            this.value = this.lBox[this.selectedIndex].value;
+        } else {
+            this.selectedIndex = -1;
+            this.value = undefined;
         }
-        _this.length=lBox.length;
+        this.length = this.lBox.length;
     }
 }
 
 /**リストビューコントロール_rowselFlag=trueでクリックした行を返す,selectedRowで選択中の行 */
-export const ListViewTable: any = function(ParentObj: any, gridID: any,gridClass: any, tableClass: any,hdata: any, data: any,x: any, y: any,width: any,height: any,frameStyleinfo: any,  styleinfo: any,  
-    headStyleinfo: any, normalStyleinfo: any, headXStyleinfo: any, normalXStyleinfo: any,_rowselFlag: any,onclick: any){
+export class ListViewTable {
+    frameStyleinfo: any;
+    styleinfo: any;
+    normalStyleinfo: any;
+    headStyleinfo: any;
+    headXStyleinfo: any;
+    normalXStyleinfo: any;
+    rowselFlag: any;
+    selectedRow: number = -1;
+    oldBG: any[] = [];
+    thead: any;
+    tb: any;
+    tbody: any;
+    tbdiv: any;
+    private topDIV: HTMLElement;
+    private headNum: number;
+    private bpos: number = -1;
+    private mousePointingSituation: number = mousePointingSituations.up;
+    private tbhdiv: HTMLElement;
+    private tbh: HTMLTableElement | undefined;
+    private tbhHeight: number = 0;
+    private onclick: any;
 
-    this.frameStyleinfo=frameStyleinfo;
-    this.styleinfo=styleinfo;
-    this.normalStyleinfo=normalStyleinfo;
-    this.headStyleinfo=headStyleinfo;
-    this.headXStyleinfo=headXStyleinfo;
-    this.normalXStyleinfo=normalXStyleinfo;
-    this.rowselFlag=_rowselFlag;
-    let _this=this;
-    let topDIV=Generic.createNewDiv(ParentObj,gridID,"",gridClass,x,y,width,height,this.frameStyleinfo,undefined);
+    constructor(
+        ParentObj: any,
+        gridID: any,
+        gridClass: any,
+        tableClass: any,
+        hdata: any,
+        data: any,
+        x: any,
+        y: any,
+        width: any,
+        height: any,
+        frameStyleinfo: any,
+        styleinfo: any,
+        headStyleinfo: any,
+        normalStyleinfo: any,
+        headXStyleinfo: any,
+        normalXStyleinfo: any,
+        _rowselFlag: any,
+        onclick: any
+    ) {
+        this.frameStyleinfo = frameStyleinfo;
+        this.styleinfo = styleinfo;
+        this.normalStyleinfo = normalStyleinfo;
+        this.headStyleinfo = headStyleinfo;
+        this.headXStyleinfo = headXStyleinfo;
+        this.normalXStyleinfo = normalXStyleinfo;
+        this.rowselFlag = _rowselFlag;
+        this.onclick = onclick;
+        this.topDIV = Generic.createNewDiv(ParentObj, gridID, "", gridClass, x, y, width, height, this.frameStyleinfo, undefined);
 
-    let headNum=hdata[0].length;
-    let bpos: number;
-    this.selectedRow= -1;
-    this.oldBG=[];
-    let mousePointingSituation=mousePointingSituations.up;
-    let tbhdiv = document.createElement("div");
-    let tbh: HTMLTableElement;
-    this.thead;
-    let tbhHeight = 0;
+        this.headNum = hdata[0].length;
+        this.tbhdiv = document.createElement("div");
 
-    if (headNum > 0) {
-        tbh = document.createElement("table");
-        tbh.setAttribute("style", "user-select: none;" + this.styleinfo)
-        //tbh.setAttribute("id", ID);
-        tbh.setAttribute("class", tableClass);
-        tbh.style.tableLayout = 'fixed';
-        tbh.style.width = '100%';
-        tbh.onmousemove = function (e) {
-            if (!e.target) { return; }
-            switch (mousePointingSituation) {
-                case mousePointingSituations.up: {
-                    const target = e.target as HTMLElement;
-                    let x = target.offsetLeft + e.offsetX;
-                    let n = tbh.rows[0].cells.length;
-                    bpos = -1;
-                    for (let i = 0; i < n - 1; i++) {
-                        let cellBorderx0 = tbh.rows[0].cells[i].offsetLeft + tbh.rows[0].cells[i].offsetWidth;
-                        if ((Math.abs(x - cellBorderx0) < 10)) {
-                            tbh.style.cursor = 'w-resize';
-                            bpos = i;
-                            break;
-                        }
-                    }
-                    if (bpos == -1) {
-                        tbh.style.cursor = 'default';
-                    }
-                    break;
-                }
-                case mousePointingSituations.down as any: {
-                    if (bpos != -1) {
+        if (this.headNum > 0) {
+            this.tbh = document.createElement("table");
+            this.tbh.setAttribute("style", "user-select: none;" + this.styleinfo);
+            this.tbh.setAttribute("class", tableClass);
+            this.tbh.style.tableLayout = 'fixed';
+            this.tbh.style.width = '100%';
+            this.tbh.onmousemove = (e) => {
+                if (!e.target) { return; }
+                switch (this.mousePointingSituation) {
+                    case mousePointingSituations.up: {
                         const target = e.target as HTMLElement;
                         let x = target.offsetLeft + e.offsetX;
-                        let w = x - tbh.rows[0].cells[bpos].offsetLeft;
-                        tbh.rows[0].cells[bpos].style.width = w.px();
-                        if(_this.tb.rows[0] !=undefined){
-                            _this.tb.rows[0].cells[bpos].style.width = w.px();
+                        let n = this.tbh!.rows[0].cells.length;
+                        this.bpos = -1;
+                        for (let i = 0; i < n - 1; i++) {
+                            let cellBorderx0 = this.tbh!.rows[0].cells[i].offsetLeft + this.tbh!.rows[0].cells[i].offsetWidth;
+                            if ((Math.abs(x - cellBorderx0) < 10)) {
+                                this.tbh!.style.cursor = 'w-resize';
+                                this.bpos = i;
+                                break;
+                            }
                         }
+                        if (this.bpos == -1) {
+                            this.tbh!.style.cursor = 'default';
+                        }
+                        break;
                     }
-                    break;
-                }
-            }
-        }
-        tbh.onmousedown = function (e) {
-            mousePointingSituation = mousePointingSituations.down as any;
-        }
-        tbh.onmouseup = function (e) {
-            bpos = -1;
-            mousePointingSituation = mousePointingSituations.up as any;
-        }
-        this.thead = tbh.createTHead();
-        this.thead.setAttribute("style", this.headStyleinfo);
-        
-        for (let i = 0; i < headNum; i++) {
-            let row = this.thead.insertRow(-1);
-            
-            for (let j = 0; j < hdata.length; j++) {
-                let newCell = row.insertCell(-1);
-                newCell.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-                if ((this.headXStyleinfo[j] != undefined)) {
-                    newCell.setAttribute("style", this.headXStyleinfo[j]);
-                }
-                newCell.innerHTML = hdata[j][i] ;
-            }
-        }
-        
-        tbhdiv.appendChild(tbh);
-        document.body.appendChild(tbhdiv);//displayがnoneだと高さが取得できないため一時的にbodyに入れる
-        tbhHeight=tbhdiv.clientHeight;
-        document.body.removeChild(tbhdiv);
-        topDIV.appendChild(tbhdiv);
-    }
-
-    let xcell = data.length;
-
-    this.tbdiv = document.createElement("div");
-    if (headNum > 0) {
-        tbhHeight = height - tbhHeight;
-    } else {
-        tbhHeight = height;
-    }
-    this.tbdiv.setAttribute("style", "height:" + tbhHeight.px() + ";overflow-y: scroll;overflow-x:hidden")
-    this.tb = document.createElement("table");
-    this.tb.setAttribute("style", "user-select: none;" + this.styleinfo);
-    this.tb.setAttribute("class", tableClass);
-    this.tb.style.tableLayout = 'fixed';
-    this.tb.style.width = '100%';
-    this.tbody = this.tb.createTBody();
-    if (xcell>0){//データがある場合
-        let ycell = data[0].length;
-        for (let i = 0; i < ycell; i++) {
-            let row = this.tbody.insertRow(-1)
-            row.setAttribute("style", this.normalStyleinfo);
-            for (let j = 0; j < xcell; j++) {
-                let newtd = row.insertCell(-1);
-                newtd.innerHTML = data[j][i];
-                newtd.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-                if (this.normalXStyleinfo[j] != undefined) {
-                    newtd.setAttribute("style", this.normalXStyleinfo[j]);
-                }
-                newtd.onclick = function (e: any) { clickTBody(e) };
-            }
-        } 
-        this.selectRow(0);
-    }
-
-    this.tb.appendChild(this.tbody);
-    this.tbdiv.appendChild(this.tb);
-    topDIV.appendChild(this.tbdiv);
-    if (headNum > 0) {
-        //ヘッダの幅をスクロールバーに合わせる
-        tbhdiv.style.width = (width-(state.scrMargin.scrollWidth ?? 0)).px();
-    }
-
-    function clickTBody(e: any) {
-        _this.selectRow(e.target.parentNode.rowIndex);
-        if (typeof onclick == 'function') {
-            onclick(e.target.parentNode.rowIndex);
-        }
-    }
-    this.selectRow = function (newSelRow: any) {
-        if (_this.rowselFlag == true) {
-            if (_this.rowselFlag == true) {
-                if ((_this.selectedRow >= 0) && (_this.selectedRow < _this.tb.rows.length)) {
-                    for (let i = 0; i < _this.tb.rows[_this.selectedRow].cells.length; i++) {
-                        _this.tb.rows[_this.selectedRow].cells[i].style.backgroundColor = _this.oldBG[i];
+                    case mousePointingSituations.down as any: {
+                        if (this.bpos != -1) {
+                            const target = e.target as HTMLElement;
+                            let x = target.offsetLeft + e.offsetX;
+                            let w = x - this.tbh!.rows[0].cells[this.bpos].offsetLeft;
+                            this.tbh!.rows[0].cells[this.bpos].style.width = w.px();
+                            if (this.tb.rows[0] != undefined) {
+                                this.tb.rows[0].cells[this.bpos].style.width = w.px();
+                            }
+                        }
+                        break;
                     }
                 }
+            };
+            this.tbh.onmousedown = (e) => {
+                this.mousePointingSituation = mousePointingSituations.down as any;
+            };
+            this.tbh.onmouseup = (e) => {
+                this.bpos = -1;
+                this.mousePointingSituation = mousePointingSituations.up as any;
+            };
+            this.thead = this.tbh.createTHead();
+            this.thead.setAttribute("style", this.headStyleinfo);
+
+            for (let i = 0; i < this.headNum; i++) {
+                let row = this.thead.insertRow(-1);
+
+                for (let j = 0; j < hdata.length; j++) {
+                    let newCell = row.insertCell(-1);
+                    newCell.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+                    if ((this.headXStyleinfo[j] != undefined)) {
+                        newCell.setAttribute("style", this.headXStyleinfo[j]);
+                    }
+                    newCell.innerHTML = hdata[j][i];
+                }
             }
-            _this.oldBG = [];
+
+            this.tbhdiv.appendChild(this.tbh);
+            document.body.appendChild(this.tbhdiv);
+            this.tbhHeight = this.tbhdiv.clientHeight;
+            document.body.removeChild(this.tbhdiv);
+            this.topDIV.appendChild(this.tbhdiv);
+        }
+
+        let xcell = data.length;
+
+        this.tbdiv = document.createElement("div");
+        if (this.headNum > 0) {
+            this.tbhHeight = height - this.tbhHeight;
+        } else {
+            this.tbhHeight = height;
+        }
+        this.tbdiv.setAttribute("style", "height:" + this.tbhHeight.px() + ";overflow-y: scroll;overflow-x:hidden");
+        this.tb = document.createElement("table");
+        this.tb.setAttribute("style", "user-select: none;" + this.styleinfo);
+        this.tb.setAttribute("class", tableClass);
+        this.tb.style.tableLayout = 'fixed';
+        this.tb.style.width = '100%';
+        this.tbody = this.tb.createTBody();
+
+        const clickTBody = (e: any) => {
+            this.selectRow(e.target.parentNode.rowIndex);
+            if (typeof this.onclick == 'function') {
+                this.onclick(e.target.parentNode.rowIndex);
+            }
+        };
+
+        if (xcell > 0) {
+            let ycell = data[0].length;
+            for (let i = 0; i < ycell; i++) {
+                let row = this.tbody.insertRow(-1);
+                row.setAttribute("style", this.normalStyleinfo);
+                for (let j = 0; j < xcell; j++) {
+                    let newtd = row.insertCell(-1);
+                    newtd.innerHTML = data[j][i];
+                    newtd.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+                    if (this.normalXStyleinfo[j] != undefined) {
+                        newtd.setAttribute("style", this.normalXStyleinfo[j]);
+                    }
+                    newtd.onclick = clickTBody;
+                }
+            }
+            this.selectRow(0);
+        }
+
+        this.tb.appendChild(this.tbody);
+        this.tbdiv.appendChild(this.tb);
+        this.topDIV.appendChild(this.tbdiv);
+        if (this.headNum > 0) {
+            this.tbhdiv.style.width = (width - (state.scrMargin.scrollWidth ?? 0)).px();
+        }
+    }
+
+    selectRow(newSelRow: any): void {
+        if (this.rowselFlag == true) {
+            if ((this.selectedRow >= 0) && (this.selectedRow < this.tb.rows.length)) {
+                for (let i = 0; i < this.tb.rows[this.selectedRow].cells.length; i++) {
+                    this.tb.rows[this.selectedRow].cells[i].style.backgroundColor = this.oldBG[i];
+                }
+            }
+            this.oldBG = [];
             if (newSelRow != -1) {
-                for (let i = 0; i < _this.tb.rows[newSelRow].cells.length; i++) {
-                    _this.oldBG.push(_this.tb.rows[newSelRow].cells[i].style.backgroundColor)
-                    _this.tb.rows[newSelRow].cells[i].style.backgroundColor = "#e1e1e1";
+                for (let i = 0; i < this.tb.rows[newSelRow].cells.length; i++) {
+                    this.oldBG.push(this.tb.rows[newSelRow].cells[i].style.backgroundColor);
+                    this.tb.rows[newSelRow].cells[i].style.backgroundColor = "#e1e1e1";
                 }
+            }
         }
-        }
-        _this.selectedRow = newSelRow;
+        this.selectedRow = newSelRow;
     }
 
     /**行にデータ挿入prototypeでは作りにくい rowInsertPos=0の場合はselectedRowの前に、1の場合は後ろに追加*/
-    this.insertRow = function (rowInsertPos: any, plusData: any) {
-        let rn=this.tb.rows.length;
+    insertRow(rowInsertPos: any, plusData: any): void {
+        let rn = this.tb.rows.length;
         let rowpos = this.selectedRow + rowInsertPos;
         let row = this.tbody.insertRow(rowpos);
         row.setAttribute("style", this.normalStyleinfo);
@@ -5596,121 +5715,126 @@ export const ListViewTable: any = function(ParentObj: any, gridID: any,gridClass
             if (this.normalXStyleinfo[j] != undefined) {
                 newtd.setAttribute("style", this.normalXStyleinfo[j]);
             }
-            newtd.onclick = function (e: any) { clickTBody(e) };
-            if((headNum>0)&&(rn==0)){//行がない状態で追加する場合、幅をヘッダに合わせる
-                newtd.style.width=tbh.rows[0].cells[j].style.width;
+            newtd.onclick = (e: any) => {
+                this.selectRow(e.target.parentNode.rowIndex);
+                if (typeof this.onclick == 'function') {
+                    this.onclick(e.target.parentNode.rowIndex);
+                }
+            };
+            if ((this.headNum > 0) && (rn == 0)) {
+                newtd.style.width = this.tbh!.rows[0].cells[j].style.width;
             }
         }
-        if(rowInsertPos==0){
+        if (rowInsertPos == 0) {
             this.selectedRow++;
         }
         this.selectRow(rowpos);
     }
-}
-/**ListViewの行数取得 */
-ListViewTable.prototype.getRowNumber = function () {
-    return this.tb.rows.length;
-}
+    /**ListViewの行数取得 */
+    getRowNumber(): number {
+        return this.tb.rows.length;
+    }
 
-/**selectedRowの行削除 */
-ListViewTable.prototype.deleteRow = function () {
-    let rowPos = this.selectedRow;
-    if (rowPos == -1) { return; }
-    this.tbody.deleteRow(rowPos);
-    if (this.tb.rows.length == 0) {
-        this.selectedRow = -1;
-    } else {
-        let newsel = Math.min(this.selectedRow, this.tb.rows.length - 1);
+    /**selectedRowの行削除 */
+    deleteRow(): void {
+        let rowPos = this.selectedRow;
+        if (rowPos == -1) { return; }
+        this.tbody.deleteRow(rowPos);
+        if (this.tb.rows.length == 0) {
+            this.selectedRow = -1;
+        } else {
+            let newsel = Math.min(this.selectedRow, this.tb.rows.length - 1);
+            this.selectRow(newsel);
+        }
+    }
+
+    /**セルに値を設定 */
+    setValue(x: any, y: any, value: any): void {
+        this.tb.rows[y].cells[x].innerHTML = value;
+    }
+
+    /**行の上下を反転 */
+    reverse(): void {
+        let n = this.tb.rows.length;
+        let celln = this.tb.rows[0].cells.length;
+        for (let i = 0; i < Math.floor(n / 2); i++) {
+            let r1 = this.tb.rows[i];
+            let r2 = this.tb.rows[n - 1 - i];
+            for (let j = 0; j < celln; j++) {
+                [r1.cells[j].innerHTML, r2.cells[j].innerHTML] = [r2.cells[j].innerHTML, r1.cells[j].innerHTML];
+            }
+        }
+        let newsel = this.tb.rows.length - 1 - this.selectedRow;
         this.selectRow(newsel);
     }
-}
 
-/**セルに値を設定 */
-ListViewTable.prototype.setValue=function(x: any,y: any,value: any){
-    this.tb.rows[y].cells[x].innerHTML=value;;
-}
-
-/**行の上下を反転 */
-ListViewTable.prototype.reverse=function(){
-    let n=this.tb.rows.length;
-    let celln = this.tb.rows[0].cells.length;
-    for (let i = 0; i < Math.floor(n/2); i++) {
-        let r1=this.tb.rows[i];
-        let r2=this.tb.rows[n-1-i];
-        for (let j = 0; j < celln; j++) {
-            [r1.cells[j].innerHTML, r2.cells[j].innerHTML] = [r2.cells[j].innerHTML, r1.cells[j].innerHTML]
+    /**selectedRowの行上移動 */
+    rowUp(): void {
+        if (this.tb.rows.length < 2) { return; }
+        let rowPos = this.selectedRow;
+        let celln = this.tb.rows[rowPos].cells.length;
+        let dest = rowPos - 1;
+        if (dest == -1) {
+            let stac = [];
+            for (let i = 0; i < celln; i++) {
+                stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+            }
+            this.deleteRow();
+            this.selectRow(this.tb.rows.length - 1);
+            this.insertRow(1, stac);
+            this.tbdiv.scrollTop = this.tbdiv.scrollTopMax;
+        } else {
+            for (let i = 0; i < celln; i++) {
+                [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML];
+            }
+            this.selectRow(dest);
         }
     }
-    let newsel=this.tb.rows.length-1-this.selectedRow;
-    this.selectRow(newsel);
-}
-
-/**selectedRowの行上移動 */
-ListViewTable.prototype.rowUp = function () {
-    if(this.tb.rows.length<2){return;}
-    let rowPos=this.selectedRow;
-
-    let celln = this.tb.rows[rowPos].cells.length;
-    let dest = rowPos - 1;
-    if (dest == -1) {
-        let stac = [];
-        for (let i = 0; i < celln; i++) {
-            stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+    /**selectedRowの行下移動 */
+    rowDown(): void {
+        let maxrow = this.tb.rows.length;
+        if (maxrow < 2) { return; }
+        let rowPos = this.selectedRow;
+        let celln = this.tb.rows[rowPos].cells.length;
+        let dest = rowPos + 1;
+        if (dest == maxrow) {
+            let stac = [];
+            for (let i = 0; i < celln; i++) {
+                stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+            }
+            this.deleteRow();
+            this.selectRow(0);
+            this.insertRow(0, stac);
+            this.tbdiv.scrollTop = 0;
+        } else {
+            for (let i = 0; i < celln; i++) {
+                [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML];
+            }
+            this.selectRow(dest);
         }
-        this.deleteRow();
-        this.selectRow(this.tb.rows.length-1);
-        this.insertRow(1, stac);
-        this.tbdiv.scrollTop = this.tbdiv.scrollTopMax;
-    } else {
-        for (let i = 0; i < celln; i++) {
-            [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML]
-        }
-        this.selectRow(dest);
     }
-    
-}
-/**selectedRowの行下移動 */
-ListViewTable.prototype.rowDown = function () {
-    let maxrow = this.tb.rows.length;
-    if(maxrow<2){return;}
-    let rowPos=this.selectedRow;
-    let celln = this.tb.rows[rowPos].cells.length;
-    let dest = rowPos + 1;
-    if (dest == maxrow) {
-        let stac = [];
-        for (let i = 0; i < celln; i++) {
-            stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+    /**表クリア */
+    clear(): void {
+        let maxrow = this.tb.rows.length;
+        for (let i = maxrow - 1; i >= 0; i--) {
+            this.selectRow(i);
+            this.deleteRow();
         }
-        this.deleteRow();
-        this.selectRow(0);
-        this.insertRow(0, stac);
-        this.tbdiv.scrollTop = 0;
-    } else {
-        for (let i = 0; i < celln; i++) {
-            [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML]
-        }
-        this.selectRow(dest);
+        this.selectRow(-1);
     }
-}
-/**表クリア */
-ListViewTable.prototype.clear = function () {
-    let maxrow = this.tb.rows.length;
-    for (let i = maxrow - 1; i >= 0; i--) {
-        this.selectRow(i);
-        this.deleteRow();
-    }
-    this.selectRow(-1);
 }
 
 //ウインドウの最大化ボタンをリセットする
 // @ts-ignore
-const resetMaxButtonFunc: any = function(this: any, MaxFlag?: boolean): void {
+const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void {
     let cnode = this.childNodes;
     for (let i = 0; i < cnode.length; i++) {
-        if ((cnode[i] as any).name == 'maxButton') {
-            const ctx = cnode[i].getContext("2d");
-            let w=cnode[i].width;
-            ctx.clearRect(0, 0,cnode[i].width,cnode[i].height);
+        const child = cnode[i] as HTMLCanvasElement & {name?: string};
+        if (child.name == 'maxButton') {
+            const ctx = child.getContext("2d");
+            if (!ctx) continue;
+            let w=child.width;
+            ctx.clearRect(0, 0,child.width,child.height);
             ctx.strokeStyle = "#ffffff";
             ctx.lineWidth = 2;
             ctx.strokeRect(2, 2,w-4,w-4);
@@ -5721,11 +5845,11 @@ const resetMaxButtonFunc: any = function(this: any, MaxFlag?: boolean): void {
         }
     }
     if(MaxFlag==true){
-        this.maxSizeFlag=false;
+        (this as any).maxSizeFlag=false;
     }else{
-        this.maxSizeFlag=true;
+        (this as any).maxSizeFlag=true;
     }
-}
+};
 // @ts-ignore
 (Element.prototype as any)['resetMaxButton'] = resetMaxButtonFunc;
 

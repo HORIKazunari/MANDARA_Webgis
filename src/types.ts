@@ -147,6 +147,146 @@ export interface SearchFilter {
   fields?: string[];
 }
 
+/**
+ * HTMLElement with custom properties (clsWindowで使用)
+ */
+export interface ExtendedHTMLElement extends HTMLElement {
+  selected?: boolean;
+  disabled?: boolean;
+  tooltip?: string;
+  tag?: string | number;
+}
+
+/**
+ * Radio button value type
+ */
+export type RadioValue = string | number | boolean;
+
+/**
+ * Radio button list item
+ */
+export interface RadioListItem {
+  value: RadioValue;
+  text: string;
+}
+
+/**
+ * Table data type (2D array of strings or numbers)
+ */
+export type TableData = Array<Array<string | number>>;
+
+/**
+ * Map data type (any JSONデータ)
+ */
+export type MapData = Record<string, unknown>;
+
+/**
+ * Navigator with legacy IE properties
+ */
+export interface ExtendedNavigator extends Navigator {
+  msSaveBlob?: (blob: Blob, filename: string) => boolean;
+  msSaveOrOpenBlob?: (blob: Blob, filename: string) => void;
+}
+
+/**
+ * Select element change handler
+ */
+export type SelectChangeHandler = (
+  obj: HTMLSelectElement,
+  sel: number,
+  v: string
+) => void;
+
+/**
+ * 色設定型
+ */
+export type ColorValue = string; // CSS color string
+
+/**
+ * タイル設定型 (仮定)
+ */
+export interface TileConfig {
+  pattern?: string;
+  color?: ColorValue;
+  [key: string]: unknown;
+}
+
+/**
+ * マーク設定型
+ */
+export interface MarkConfig {
+  type?: string;
+  size?: number;
+  color?: ColorValue;
+  [key: string]: unknown;
+}
+
+/**
+ * 線パターン設定型
+ */
+export interface LinePattern {
+  type?: string;
+  width?: number;
+  color?: ColorValue;
+  [key: string]: unknown;
+}
+
+/**
+ * 矢印設定型
+ */
+export interface ArrowConfig {
+  start?: string;
+  end?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * 選択モード型（enmSelectMode）
+ */
+export type SelectMode = number;
+
+/**
+ * ソロモード型（enmSoloMode_Number）
+ */
+export type SoloMode = number;
+
+/**
+ * コールバック関数型（汎用）
+ */
+export type CallbackFunction = (...args: unknown[]) => void;
+export type ValueCallback<T = unknown> = (value: T) => void;
+export type ObjectValueCallback = (obj: HTMLElement, value: unknown) => void;
+
+/**
+ * マーク型
+ */
+export type Mark = unknown; // 具体的な型定義が必要な場合は後で詳細化
+
+/**
+ * タイル型
+ */
+export type Tile = unknown; // 具体的な型定義が必要な場合は後で詳細化
+
+/**
+ * ラインパターン型
+ */
+export type LinePattern = unknown; // 具体的な型定義が必要な場合は後で詳細化
+
+/**
+ * カラー型
+ */
+export type Color = string | number;
+
+/**
+ * フォント型
+ */
+export type Font = unknown; // 具体的な型定義が必要な場合は後で詳細化
+
+/**
+ * エッジ型
+ */
+export type Edge = unknown; // 具体的な型定義が必要な場合は後で詳細化
+
 // ==================== Note ====================
 // 以下の型は globals.d.ts に既に定義されているため、このファイルでは定義しない:
 // - point, rectangle, size (既存のグローバルクラス)
