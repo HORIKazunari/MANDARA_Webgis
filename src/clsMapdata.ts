@@ -95,19 +95,19 @@ const enmObjectGoupType_Data = {
 
 
 class strMPObjDefAttData_Info {
-    Title: any;
-    Unit: any;
-    MissingF: any;
-    Note: any;
+    Title: string = "";
+    Unit: string = "";
+    MissingF: boolean = false;
+    Note: string = "";
     /**
  * Creates an instance of strMPObjDefAttData_Info.
  *
  * @constructor
  */
 constructor() {
-        this.Title;
-        this.Unit; //String
-        this.MissingF; //Boolean
+        this.Title = "";
+        this.Unit = ""; //String
+        this.MissingF = false; //Boolean
         this.Note;  //String
     }
     get AttDataType() {
@@ -415,8 +415,8 @@ class strMap_data {
     Time_Mode?: boolean;
     Circumscribed_Rectangle: rectangle = new rectangle();
     Zahyo: Zahyo_info = new Zahyo_info();
-    Detail: any = new Map_Detail_Data();
-    MapCompass: any = new strCompass_Attri();
+    Detail: Map_Detail_Data = new Map_Detail_Data();
+    MapCompass: strCompass_Attri = new strCompass_Attri();
 }
 
 /**
@@ -471,13 +471,13 @@ class Hennyu_Data2 {
  */
 class clsMapdata {
     Map: strMap_data;
-    ObjectKind: any[] = []; //strObjectGroup_Data()
-    MPObj: any[] = []; // strObj_Data
-    LineKind: any[] = []; // new LineKind_Data()
-    MPLine: any[] = []; // strLine_Data
-    DefTimeAttSTC: any[] = []; // strMPObjDefTimeAttData_Info
-    NoDataFlag: any; // Boolean
-    private Enable_MPObjStac: any[] = [];
+    ObjectKind: strObjectGroup_Data[] = [];
+    MPObj: strObj_Data[] = [];
+    LineKind: strLKOjectGroup_Info[] = [];
+    MPLine: strLine_Data[] = [];
+    DefTimeAttSTC: strMPObjDefTimeAttData_Info[] = [];
+    NoDataFlag: boolean = false;
+    private Enable_MPObjStac: any[] = []; // EnableMPOBJ_Data未定義
 
     constructor() {
         this.Map = new strMap_data();
@@ -511,7 +511,7 @@ class clsMapdata {
     }
 
     //初期属性データ項目を追加（時間属性設定なし）
-    Add_one_DefAttDataSet(OBKNum: any, title: any, Unit: any, Note: any) {
+    Add_one_DefAttDataSet(OBKNum: number, title: string, Unit: string, Note: string) {
         let ok = this.ObjectKind[OBKNum];
         let def = new strMPObjDefTimeAttData_Info();
         def.attData.Title = title;
@@ -555,7 +555,7 @@ class clsMapdata {
         }
     }
     //オブジェクトグループの代表点の色の初期値を決める（一つずつ）
-    Set_First_ObjectKind_Color_Solo(ObkCode: any) {
+    Set_First_ObjectKind_Color_Solo(ObkCode: number) {
         let Object_Color = [];
         Object_Color.push(new colorRGBA(0, 255, 0));
         Object_Color.push(new colorRGBA(0, 255, 255));
@@ -569,7 +569,7 @@ class clsMapdata {
     }
 
     //ラインの初期化
-    Init_One_Line(LineKindNumber: any) {
+    Init_One_Line(LineKindNumber: number) {
         let line = new strLine_Data();
         line.Number = -1;
         line.NumOfPoint = 0;
@@ -582,7 +582,7 @@ class clsMapdata {
     }
 
     //初期化したオブジェクトを返す
-    Init_One_Object(ObjectKindNumber: any) {
+    Init_One_Object(ObjectKindNumber: number) {
         let Obj = new strObj_Data();
         Obj.Number = -1;
         Obj.NumOfNameTime = 1;
@@ -609,7 +609,7 @@ class clsMapdata {
         return Obj;
     }
 
-    Save_Object(EditingObject: any, checkObjectmaxMinFlaf: any) {
+    Save_Object(EditingObject: strObj_Data, checkObjectmaxMinFlaf: boolean) {
 
         if (EditingObject.Number == -1) {
             //新規オブジェクト
@@ -623,7 +623,7 @@ class clsMapdata {
     }
 
     //ライン登録
-    Save_Line(EditingLine: any, checkRelatedLineFlag: any, checkRelatedObjectShapeFlag: any, checkLineMaxMinFlag: any) {
+    Save_Line(EditingLine: strLine_Data, checkRelatedLineFlag: boolean, checkRelatedObjectShapeFlag: boolean, checkLineMaxMinFlag: boolean) {
         let SEpoint = [];
         let newf;
         SEpoint.push(EditingLine.PointSTC[0].Clone());
@@ -663,7 +663,7 @@ class clsMapdata {
     }
 
     //指定した起終点の座標のラインを検索し、結節関係をチェックする
-    Check_Related_Line(SEpoint: any, exCode: any) {
+    Check_Related_Line(SEpoint: point[], exCode: number) {
         let n = SEpoint.length;
         for (let i = 0; i < this.Map.ALIN; i++) {
             let ml = this.MPLine[i];
@@ -743,7 +743,7 @@ class clsMapdata {
     }
 
     //同じオブジェクトグループ名の番号を返す見つからなかった場合-1
-    Get_ObjectGroupNumber_By_Name(Name: any) {
+    Get_ObjectGroupNumber_By_Name(Name: string) {
         for (let i = 0; i < this.Map.OBKNum; i++) {
             if (this.ObjectKind[i].Name == Name) {
                 return i;
@@ -765,7 +765,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトグループのオブジェクトを抽出して配列に取得(時間指定)
-    Get_Objects_by_Group(ObjGroup: any, Time: any) {
+    Get_Objects_by_Group(ObjGroup: number, Time: number) {
         let Get_Objects = [];
         for (let i = 0; i < this.Map.Kend; i++) {
             if (this.MPObj[i].Kind == ObjGroup) {
@@ -778,7 +778,7 @@ class clsMapdata {
     }
 
     //地図データを指定の座標モードに変換 
-    Convert_ZahyoMode(newMapZahyo: any) {
+    Convert_ZahyoMode(newMapZahyo: Zahyo_info) {
         let m = this.Map;
         m.MapCompass.Position = spatial.Get_Reverse_and_Convert_XY(m.MapCompass.Position, m.Zahyo, newMapZahyo);
 
@@ -893,7 +893,7 @@ class clsMapdata {
     }
     
     //線種を一つ追加する
-    Add_OneLineKind(LineKindName: any, LPat: any, LMesh: any) {
+    Add_OneLineKind(LineKindName: string, LPat: Line_Property, LMesh: boolean) {
         this.LineKind.push(this.Get_OneLineKind_Parameter(LineKindName, LPat, LMesh));
         this.Map.LpNum++;
         for (let i = 0; i < this.Map.OBKNum; i++) {
@@ -901,7 +901,7 @@ class clsMapdata {
         }
     }
 
-    Get_OneLineKind_Parameter(LineKindName: any, LPat: any, LMesh: any) {
+    Get_OneLineKind_Parameter(LineKindName: string, LPat: Line_Property, LMesh: boolean) {
         let Lkind = new LineKind_Data();
         Lkind.ObjGroup = [];
         Lkind.ObjGroup.push(new strLKOjectGroup_Info());
@@ -913,7 +913,7 @@ class clsMapdata {
     }
 
     //オブジェクトグループの追加
-    Add_OneObjectGroup_Parameter(Name: any, Shape: any, Mesh: any, type: any) {
+    Add_OneObjectGroup_Parameter(Name: string, Shape: number, Mesh: boolean, type: number) {
         let Okind = this.Get_OneObjectGroup_Parameter(Name, Shape, this.Map.OBKNum, this.Map.LpNum, Mesh, type);
         this.ObjectKind.push(Okind);
         for (let i = 0; i < this.Map.OBKNum; i++) {
@@ -925,7 +925,7 @@ class clsMapdata {
     }
 
     //新規オブジェクトグループパラメータの取得
-    Get_OneObjectGroup_Parameter(Name: any, Shape: any, ObkNum: any, LpNum: any, Mesh: any, type: any) {
+    Get_OneObjectGroup_Parameter(Name: string, Shape: number, ObkNum: number, LpNum: number, Mesh: boolean, type: number) {
         let Okind = new strObjectGroup_Data();
         Okind.Color = clsBase.ColorWhite();//マップエディタがないので設定不要
         Okind.Mesh = Mesh;
@@ -1018,7 +1018,7 @@ class clsMapdata {
         }
     }
     //オブジェクトの重心を求める。面形状でない場合はundefinedを返す
-    GetObjGraviityXY(ObjData: any, L_Time: any) {
+    GetObjGraviityXY(ObjData: strObj_Data, L_Time: number) {
         if (ObjData.Shape != enmShape.PolygonShape) {
             //ポリゴンでない場合は求めない
             return undefined;
@@ -1070,7 +1070,7 @@ class clsMapdata {
         return GPoint;
     }
 
-    Check_Obj_Maxmin(ObjData: any, MapRectCheckF: any) {
+    Check_Obj_Maxmin(ObjData: strObj_Data, MapRectCheckF: boolean) {
         let oldObjRect = ObjData.Circumscribed_Rectangle;
         let Obj_rect = new rectangle();
         for (let i = 0; i < ObjData.NumOfCenterP; i++) {
@@ -1101,7 +1101,7 @@ class clsMapdata {
             this.Check_MapCircumscribedRectangle(oldObjRect, Obj_rect);
         }
     }
-    Check_MapCircumscribedRectangle(oldRect: any, newRect: any) {
+    Check_MapCircumscribedRectangle(oldRect: rectangle, newRect: rectangle) {
         if (spatial.Compare_Two_Rectangle_Position(this.Map.Circumscribed_Rectangle, newRect) != cstRectangle_Cross.cstInclusion) {
             //内部に含まれない場合はUNIONで外接四角形を求める
             this.Map.Circumscribed_Rectangle = spatial.Get_Rectangle_Union(this.Map.Circumscribed_Rectangle, newRect);
@@ -1122,7 +1122,7 @@ class clsMapdata {
     }
 
     //指定したラインコードの外接四角形を求める
-    Check_Line_Maxmin(Lcode: any, MapRectCheckF: any) {
+    Check_Line_Maxmin(Lcode: number, MapRectCheckF: boolean) {
         let oldRect = this.MPLine[Lcode].Circumscribed_Rectangle;
         this.MPLine[Lcode].Circumscribed_Rectangle = spatial.getCircumscribedRectangle(this.MPLine[Lcode].PointSTC);
         if (MapRectCheckF == true) {
