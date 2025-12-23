@@ -317,9 +317,9 @@ export class gridControl {
     height: number;
     
     // クラスプロパティ（元のコンストラクタ内ローカル変数）
-    private Grid_Property: any[] = [];
+    private Grid_Property: unknown[] = [];
     private Grid_Total: Grid_Total_Info = new Grid_Total_Info();
-    private UndoArray: any[] = [];
+    private UndoArray: unknown[] = [];
     private TimerObj: number | undefined = undefined;
     private TimerVX: number = 0;
     private TimerVY: number = 0;
@@ -345,7 +345,7 @@ export class gridControl {
     private canvas: HTMLCanvasElement;
     private txtTextBox: HTMLTextAreaElement;
     private ctx: CanvasRenderingContext2D | null;
-    private eventCall: any;
+    private eventCall: Function | undefined;
     
     constructor(
         ParentObj: HTMLElement,
@@ -1207,7 +1207,7 @@ export class gridControl {
     getLayerData(LayerNum: number, key: string) {
         return this.Grid_Property[LayerNum].LayerData[key];
     }
-    setLayerData(LayerNum: number, key: string, value: any) {
+    setLayerData(LayerNum: number, key: string, value: unknown) {
         this.Grid_Property[LayerNum].LayerData[key] = value;
     }
 
@@ -1258,7 +1258,7 @@ export class gridControl {
     }
 
     /** レイヤのグリッドの色設定をすべてクリア */
-    GridColorReset(LayerNum: any) {
+    GridColorReset(LayerNum: number) {
         let GP = this.Grid_Property[LayerNum];
         for (let i = 0; i <= GP.Xmax; i++) {
             for (let j = 0; j < GP.Ymax; j++) {
@@ -1269,7 +1269,7 @@ export class gridControl {
     }
 
     /** グリッドの色設定クリア */
-    getGridColorReset(LayerNum: any, X: any, Y: any) {
+    getGridColorReset(LayerNum: number, X: number, Y: number) {
         this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF = false;
     }
 
@@ -1277,7 +1277,7 @@ export class gridControl {
     getFixedGridColor() {
         return this.Grid_Total.Color.FixedGrid;
     }
-    setFixedGridColor(value: any) {
+    setFixedGridColor(value: string) {
         this.Grid_Total.Color.FixedGrid = value;
     }
 
@@ -1285,21 +1285,21 @@ export class gridControl {
     getGridLineColor() {
         return this.Grid_Total.Color.GridLine;
     }
-    setGridLineColor(value: any) {
+    setGridLineColor(value: string) {
         this.Grid_Total.Color.GridLine = value;
     }
     /**枠部分色設定 */
     getFrameColor() {
         return this.Grid_Total.Color.Frame;
     }
-    setFrameColor(value: any) {
+    setFrameColor(value: string) {
         this.Grid_Total.Color.Frame = value;
     }
     /**行のキャプション */
     getRowCaption() {
         return this.Grid_Total.RowCaption;
     }
-    setRowCaption(value: any) {
+    setRowCaption(value: string) {
         this.Grid_Total.RowCaption = value;
     }
     /**列のキャプション */
@@ -1310,7 +1310,7 @@ export class gridControl {
     getLayerCaption() {
         return this.Grid_Total.LayerCaption;
     }
-    setLayerCaption(value: any) {
+    setLayerCaption(value: string) {
         this.Grid_Total.LayerCaption = value;
     }
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 内部関数*/
@@ -1535,7 +1535,7 @@ export class gridControl {
     }
 
     /** 指定された位置のグリッド配列のデータを取得する*/
-    Get_Data_from_Grid = (Grid_Lay: any, X: any, Y: any) => {
+    Get_Data_from_Grid = (Grid_Lay: number, X: number, Y: number) => {
         let tx;
         let GP = this.Grid_Property[Grid_Lay];
         if ((X < 0) && (Y < 0)) {
@@ -1575,7 +1575,7 @@ export class gridControl {
     }
 
     /**テキストボックス、コンボボックスを指定した位置のセルのサイズに合わせる */
-    Get_Object_to_Cell_Size = (X: any, Y: any, Obj: any) => {
+    Get_Object_to_Cell_Size = (X: number, Y: number, Obj: unknown) => {
         let w, H;
         let n;
         let GP = this.Grid_Property[this.Grid_Total.Layer];
@@ -1613,7 +1613,7 @@ export class gridControl {
         Obj.style.top = (tp + 1).px();
     }
 
-    SetTextBox = (X: any, Y: any) => {
+    SetTextBox = (X: number, Y: number) => {
         let AL, n;
         this.Get_Object_to_Cell_Size(X, Y, this.txtTextBox);
         let GP = this.Grid_Property[this.Grid_Total.Layer];
@@ -1646,7 +1646,7 @@ export class gridControl {
         }
     }
 
-    Print_Data = (STT: any, Allignment: any, X: any, Y: any, CellW: any, CellHeight: any, BorderColor: any, Fillcolor: any, BorderWidth: any, font: any) => {
+    Print_Data = (STT: unknown, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
         if(STT==undefined){return;}
         if (!this.ctx) return;
         
@@ -1773,7 +1773,7 @@ export class gridControl {
     }
 
     /**レイヤ追加（内部） */
-    Insert_Layer = (LayName: any, lay: any, OriginalLayerNumber: any, xs: any, ys: any, OperationEnable: any) => {
+    Insert_Layer = (LayName: string, lay: number, OriginalLayerNumber: number, xs: number, ys: number, OperationEnable: boolean) => {
         this.Grid_Total.LayerNum++;
         this.tabMake();
         if (this.Grid_Total.LayerNum != 1) {
@@ -1811,12 +1811,12 @@ export class gridControl {
             this.tabbase.tab[i].innerHTML = this.Grid_Property[i].LayerName;
         }
     }
-    RaiseEvent = (call: any) => {
+    RaiseEvent = (call: Function) => {
         if(call !=undefined){
 
         }
     }
-    rightClickmenu = (pos: any) => {
+    rightClickmenu = (pos: point) => {
         let GPO = this.Grid_Property[this.Grid_Total.Layer].Ope;
         if(GPO.RightClickAllEnabled==false){return;}
         let udo="";
@@ -1844,11 +1844,11 @@ export class gridControl {
             }
         }
         /**外部から貼り付け */
-        function mnuouterPaste(event: any){
+        function mnuouterPaste(event: Event){
             self.removeEventlister();
             document.body.removeEventListener("contextmenu", contextMenuPrevent);
             self.base.removeEventListener("contextmenu", contextMenuPrevent);
-            Generic.outerPaste(function (tx: any) {
+            Generic.outerPaste(function (tx: string) {
                 self.addDocumentEvent();
                 self.base.addEventListener("contextmenu", contextMenuPrevent);
                 document.body.addEventListener("contextmenu", contextMenuPrevent);
@@ -1867,7 +1867,7 @@ export class gridControl {
         function mnuRowNumber() {
             let PV = self.Grid_Property[self.Grid_Total.Layer].Ymax;
             self.removeEventlister();
-            Generic.prompt(undefined, self.Grid_Total.RowCaption + "数指定", PV, function (SF: any) {
+            Generic.prompt(undefined, self.Grid_Total.RowCaption + "数指定", PV, function (SF: string) {
                 if (SF != "") {
                     SF=Generic.convValue(SF);
                     if (isNaN(SF) == true) {
@@ -1896,7 +1896,7 @@ export class gridControl {
         function mnuColNumber(){
             let PV = self.Grid_Property[self.Grid_Total.Layer].Xmax;
             self.removeEventlister();
-            Generic.prompt(undefined, self.Grid_Total.ColumnCaption + "数指定", PV, function (SF: any) {
+            Generic.prompt(undefined, self.Grid_Total.ColumnCaption + "数指定", PV, function (SF: string) {
                 if (SF != "") {
                     SF=Generic.convValue(SF);
                     if (isNaN(SF) == true) {
@@ -1924,7 +1924,7 @@ export class gridControl {
             },"right",self.addDocumentEvent);
         }
 
-        function mnuInsertRow(e: any) {
+        function mnuInsertRow(e: Event) {
             let GP = self.Grid_Property[self.Grid_Total.Layer];
             let ip;
             let rect = GP.MouseUpDownRect();
@@ -1944,7 +1944,7 @@ export class gridControl {
             self.eventCall.evtChange_Data()
             self.Print_Grid_Data();
         }
-        function mnuInsertCOl(e: any) {
+        function mnuInsertCOl(e: Event) {
             let GP = self.Grid_Property[self.Grid_Total.Layer];
             let rect = GP.MouseUpDownRect();
             if (rect.left < 0) {
@@ -2006,7 +2006,7 @@ export class gridControl {
         }
     }
     /**レイヤのグリッド初期化 */
-    Init_Grid = (L: any) => {
+    Init_Grid = (L: number) => {
         let GP = this.Grid_Property[L];
         GP.DataItemData = [];
         GP.CellHeight = [];
@@ -2105,7 +2105,7 @@ export class gridControl {
     }
 
     /** 行削除*/
-    DeleteRows = (GridLay: any, DeletePoint: any, DeleteNum: any) => {
+    DeleteRows = (GridLay: number, DeletePoint: number, DeleteNum: number) => {
 
         //データ部分を削除
         let GP = this.Grid_Property[GridLay];
@@ -2146,7 +2146,7 @@ export class gridControl {
     }
 
 
-    InsertRows = (GridLay: any, InsertPoint: any, InsertNum: any) => {
+    InsertRows = (GridLay: number, InsertPoint: number, InsertNum: number) => {
         /** データ部分を挿入*/
         let GP = this.Grid_Property[GridLay];
         let oldYs = GP.Ymax;

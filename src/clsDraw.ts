@@ -1159,7 +1159,7 @@ class clsTileMap {
     }
 
     /**指定のタグに一致するタイルマップ一覧を取得 */
-    getTileMapListByTag(tag: string): any[] {
+    getTileMapListByTag(tag: string): unknown[] {
         let tiles=[];
         for(let i in TileMapData){
             if(TileMapData[i].opt.tag==tag){
@@ -1286,7 +1286,7 @@ class clsTileMap {
         return { x: X, y: Y };
     }
     /** 画面左下に著作権表示**/
-    PrintCopyright(g: CanvasRenderingContext2D, TileMap: any, ScrData: Screen_info): void {
+    PrintCopyright(g: CanvasRenderingContext2D, TileMap: unknown, ScrData: Screen_info): void {
         let x = 5;
         let y = ScrData.MapScreen_Scale.bottom - 5;
         let tx = TileMap.copyright + chrLF + TileMap.opt.id;

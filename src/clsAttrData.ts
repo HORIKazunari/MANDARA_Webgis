@@ -1222,7 +1222,7 @@ interface strScreen_Setting_Data_Info {
     MapScale: strScale_Attri;
     MapTitle: strTitle_Attri;
     DataNote: strNote_Attri;
-    AttMapCompass: any;//strCompass_Attri (未定義)
+    AttMapCompass: unknown;//strCompass_Attri (未定義)
     MapLegend: strLegend_Attri;
     ThreeDMode: strThreeDMode_Set;
     Clone(): strScreen_Setting_Data_Info;
@@ -1497,7 +1497,7 @@ class Total_Data_Info {
     LV1: strBasic_Data = new strBasic_Data();
     TotalMode: strTotalMode_Info = new strTotalMode_Info();
     ViewStyle: strViewStyle_Info = new strViewStyle_Info();
-    FigureStac: any[] = [];
+    FigureStac: unknown[] = [];
     Condition: strCondition_DataSet_Info[] = [];//strCondition_DataSet_Info
 
     initTotalData(): void {
@@ -1734,7 +1734,7 @@ class strViewStyle_Info {
     Missing_Data: strMissing_set = new strMissing_set();
     Screen_Back: strScreen_Back_data = new strScreen_Back_data();
     SymbolLine: strSymbol_Lien_Data = new strSymbol_Lien_Data();
-    Trip_Line: any; // strTrip_Line_Data (未定義)
+    Trip_Line: unknown; // strTrip_Line_Data (未定義)
     PointPaint_Order: number = 0; // enmPointOnjectDrawOrder
     Dummy_Size_Flag: boolean = false;
     MeshLine: Line_Property = new Line_Property();
@@ -2205,7 +2205,7 @@ class Screen_info {
     //回転を考慮して地図座標列をスクリーン座標に変換
     Get_SxSy_With_3D(Pnum: number, inXY: point[], ReverseGetF: boolean): point[];
     Get_SxSy_With_3D(Point: point): point;
-    Get_SxSy_With_3D(p1: any, p2?: any, p3?: any): any {
+    Get_SxSy_With_3D(p1: point, p2?: point, p3?: point): point {
         if ((typeof p1) == 'number') {
             let Pnum = p1;
             let inXY = p2;
@@ -2497,26 +2497,26 @@ class strTempLocationMenuString {
 class frmPrint_temp_info {
     OnObject: strLocationSearchObject[] = [];
     OldObject: strLocationSearchObject[] = [];
-    PrintMouseMode: any; // enmPrintMouseMode (未定義)
-    MultiObjectSelectSub: any; // enmMultiObjectSelecModesSub (未定義)
+    PrintMouseMode: unknown; // enmPrintMouseMode (未定義)
+    MultiObjectSelectSub: unknown; // enmMultiObjectSelecModesSub (未定義)
     MultiObjectSelectShowFlag: boolean = false;
     MultiObjects: number[] = [];
-    FigMode: any; // strFigureMode (未定義)
-    mouseAccesoryDragType: any; // Check_Acc_Result (未定義)
+    FigMode: unknown; // strFigureMode (未定義)
+    mouseAccesoryDragType: unknown; // Check_Acc_Result (未定義)
     OD_Drag: ODBezier_Data = new ODBezier_Data();
     MouseDownF: boolean = false;
     LocationMenuString: strTempLocationMenuString = new strTempLocationMenuString();
     RightButtonClickF: boolean = false;
     SymbolPointFirstMessage: boolean = false;
     LabelPointFirstMessage: boolean = false;
-    Menu_Enable: any; // menu_Ename_Info (未定義)
+    Menu_Enable: unknown; // menu_Ename_Info (未定義)
     PointDistanceArea: point[] = [];
-    image: any; //出力画面の保存 (未定義)
+    image: unknown; //出力画面の保存 (未定義)
 }
 
 class DotMapTemp_Info {
     DotMapTempResetF: boolean | undefined; // Boolean
-    DotMapPoint: any[] = []; // Dictionary(Of Integer, PointF()) (未定義)
+    DotMapPoint: unknown[] = []; // Dictionary(Of Integer, PointF()) (未定義)
 }
 
 class strSeries_Temporaly_Data_Info {
@@ -2526,7 +2526,7 @@ class strSeries_Temporaly_Data_Info {
 }
 class ContourModeTemp_Temporaly_Data_Info {
     ContourDataResetF: boolean | undefined; //Boolean
-    ContourMesh: any; //clsMeshContour (未定義)
+    ContourMesh: unknown; //clsMeshContour (未定義)
     Contour_Object: strContour_Line_property[] = [];
     Contour_Point: point[] = [];
     Contour_All_Number: number | undefined; //Integer '描いた等値線の全体数
@@ -2538,30 +2538,30 @@ class ModeValueInScreen_Stac_Info {
     LayerNum: number | undefined; // Integer
     DataNum: number | undefined; // Integer
     divValue: number[] = []; // Double
-    MarkSize_MaxValueMode: any; // enmMarkSizeValueMode (未定義)
+    MarkSize_MaxValueMode: unknown; // enmMarkSizeValueMode (未定義)
     MarkSize_MaxValue: number | undefined; // Double
-    MarkBar_MaxValueMode: any; // enmMarkSizeValueMode (未定義)
+    MarkBar_MaxValueMode: unknown; // enmMarkSizeValueMode (未定義)
     MarkBar_MaxValue: number | undefined; // Double
 }
 class strTem {
     Series_temp: strSeries_Temporaly_Data_Info = new strSeries_Temporaly_Data_Info();
     OverLay_Temp: Overlay_Temporaly_Data_Info = new Overlay_Temporaly_Data_Info();
     ContourMode_Temp: ContourModeTemp_Temporaly_Data_Info = new ContourModeTemp_Temporaly_Data_Info();
-    Trip_Temp: any; //TripModeTemp_DataInfo (未定義)
+    Trip_Temp: unknown; //TripModeTemp_DataInfo (未定義)
     Accessory_Temp: AccessoryTemp_Infp = new AccessoryTemp_Infp();
     frmPrint_Temp: frmPrint_temp_info = new frmPrint_temp_info();
     FigurePrinted: boolean[] = []; //Boolean
     ObjectPrintedCheckFlag: boolean[] = []; //Boolean
-    PointObjectKindUsedStack: any[] = []; //strObjectKindUsed_Info[] (未定義)
+    PointObjectKindUsedStack: unknown[] = []; //strObjectKindUsed_Info[] (未定義)
     drawing: boolean | undefined; //boolean描画中
     DotMap_Temp: DotMapTemp_Info = new DotMapTemp_Info();
     ModeValueInScreen_Stac: ModeValueInScreen_Stac_Info = new ModeValueInScreen_Stac_Info();
     // 地図の緯度経度の領域
-    MapAreaLatLon: any; //RectangleF (未定義)
+    MapAreaLatLon: unknown; //RectangleF (未定義)
     SoubyouLayerEnable: boolean[] = []; //Boolean
-    SoubyouLoopLineArea: any[] = []; //(未定義)
-    SoubyouLoopAreaCriteria: any; //(未定義)
-    SoubyouLinePointIntervalCriteria: any; //(未定義)
+    SoubyouLoopLineArea: unknown[] = []; //(未定義)
+    SoubyouLoopAreaCriteria: unknown; //(未定義)
+    SoubyouLinePointIntervalCriteria: unknown; //(未定義)
 }
 
 
@@ -2593,7 +2593,7 @@ class strLayerReadingInfo {
     Note: string[] = [];
     ObjectDataStac: strObject_Data_Info[] = [];
     Dummy_Temp: strDummyObjectName_and_Code[] = [];
-    Dummy_OBKTemp: any[] = []; // (未定義)
+    Dummy_OBKTemp: unknown[] = []; // (未定義)
     Comment_Temp: string = "";
 
     //レイヤの初期化。タイプはNormal形状はNotDefinition
@@ -2626,10 +2626,10 @@ class clsAttrData {
     TempData: strTem;
     LayerData: strLayerDataInfo[];
     TotalData: Total_Data_Info;
-    MapData: any; // clsAttrMapData
+    MapData: unknown; // clsAttrMapData
     MPSubLine: strGetLinePointAPI_Info;
     LineKindUse: boolean[];
-    private defaultColor: any;
+    private defaultColor: unknown;
 
     constructor() {
         this.defaultColor = {}
@@ -3475,12 +3475,12 @@ class clsAttrData {
         return this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Div_Num;
     }
     //レイヤ名を取得
-    Get_LayerName(Layernum: any): string {
+    Get_LayerName(Layernum: number): string {
         return this.LayerData[Layernum].Name;
     }
 
     //レイヤ内のオブジェクトのオブジェクト名を取得
-    Get_KenObjName(Layernum: any, Objectnum: any): string {
+    Get_KenObjName(Layernum: number, Objectnum: number): string {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Trip: {
                 return this.LayerData[Layernum].atrObject.TripObjData[Objectnum].TripPersonName;
@@ -3494,7 +3494,7 @@ class clsAttrData {
     }
 
     /**レイヤ内のオブジェクトのオブジェクト番号(地図ファイル中)を取得 */
-    Get_KenObjCode(Layernum: any, Objectnum: any): number {
+    Get_KenObjCode(Layernum: number, Objectnum: number): number {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Trip: {
                 return this.LayerData[Layernum].atrObject.TripObjData[Objectnum].TripPersonCode;
@@ -3508,7 +3508,7 @@ class clsAttrData {
     }
 
     //レイヤ・データ・オブジェクトを指定して値を取得
-    Get_Data_Value(Layernum: any, DataNum: any, Obj: any, Missing_word: any): any {
+    Get_Data_Value(Layernum: number, DataNum: number, Obj: number, Missing_word: string): unknown {
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
         let v = ad.Value[Obj];
         if (ad.MissingF == false) {
@@ -3524,7 +3524,7 @@ class clsAttrData {
 
     //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
     //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
-    Get_Length_On_Screen(Percentage: any): string {
+    Get_Length_On_Screen(Percentage: number): string {
         let s = this.TotalData.ViewStyle.ScrData;
         if (s.SampleBoxFlag == false) {
             let RR = s.STDWsize * Percentage / 100 * s.ScreenMG.Mul * s.GSMul;
@@ -3536,11 +3536,11 @@ class clsAttrData {
     }
 
     /** */
-    Draw_Arrow(g: any, DestFP: any, StartFP: any, LinePat: any, Arrow: any): void {
+    Draw_Arrow(g: CanvasRenderingContext2D, DestFP: point, StartFP: point, LinePat: Line_Property, Arrow: Arrow_Property): void {
         clsDrawLine.Arrow?.(g,DestFP,StartFP,LinePat,Arrow,this.TotalData.ViewStyle.ScrData);
     }
     //ライン描画
-    Draw_Line(g: any, LinePat: any, P1: any, P2?: any): void {
+    Draw_Line(g: CanvasRenderingContext2D, LinePat: Line_Property, P1: point[], P2?: point): void {
         if (P2 === undefined) {
             clsDrawLine.Line?.(g, LinePat, P1, this.TotalData.ViewStyle.ScrData);
         } else {
@@ -3548,48 +3548,48 @@ class clsAttrData {
         }
     }
 
-    Draw_Poly_Inner(g: any, pxy: any, nPolyP: any, T: any): void {
+    Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number, T: Tile_Property): void {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
-    Draw_Tile_Region(g: any, BoundaryRect: any, L: any, T: any, Kakudo: any): void {}
+    Draw_Tile_Region(g: CanvasRenderingContext2D, BoundaryRect: Rect, L: Line_Property, T: Tile_Property, Kakudo: number): void {}
     
-    Draw_Tile_Box(g: any, BoundaryRect: any, L: any, T: any, Kakudo: any): void {
+    Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: Rect, L: Line_Property, T: Tile_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_Box?.(g, BoundaryRect, L, T, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Tile_RoundBox(g: any, BoundaryRect: any, Back: any, Kakudo: any): void {
+    Draw_Tile_RoundBox(g: CanvasRenderingContext2D, BoundaryRect: Rect, Back: BackGround_Box_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Print(g: any, Word: any, Pos: any, Font_P: any, HorizonalAlignment: any, VerticalAlignment: any): any {
+    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): point {
         return clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Fan(g: any, OP: any, r: any, start_p: any, end_p: any, Lpat: any, Tile: any): void {
+    Draw_Fan(g: CanvasRenderingContext2D, OP: point, r: number, start_p: number, end_p: number, Lpat: Line_Property, Tile: Tile_Property): void {
         clsDrawMarkFan.Draw_Fan?.(g,OP,r,start_p, end_p,Lpat,Tile,this.TotalData.ViewStyle.ScrData);
     }
 
         // サンプル記号ボックスに記号を描画
-    Draw_Sample_Mark_Box(picBox: any, Mark: any): void {
+    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: Mark): void {
         clsDrawMarkFan.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
-    Draw_Sample_LineBox(picBox: any, LinePat: any): void {
+    Draw_Sample_LineBox(picBox: HTMLElement, LinePat: Line_Property): void {
         clsDrawLine.Draw_Sample_LineBox?.(picBox, LinePat, this.TotalData.ViewStyle.ScrData);
     }
     //記号描画
-    Draw_Mark(g: any, Position: any, r: any, Mark: any): void {
+    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark): void {
 
         clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
-    Radius(R_Percent: any, Value: any, max_Value: any): number {
+    Radius(R_Percent: number, Value: number, max_Value: number): number {
         return this.TotalData.ViewStyle.ScrData.Radius(R_Percent, Value, max_Value);
     }
 
     //データ項目の中央値を求める
-    Get_MedianValue(Layernum: any, DataNum: any): number {
+    Get_MedianValue(Layernum: number, DataNum: number): number {
 
         let ST = new clsSortingSearch();
         let MV = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
@@ -3616,18 +3616,18 @@ class clsAttrData {
         return this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo).ok;
     }
     //指定した地図ファイルを削除
-    RemoveMapData(MapFileName: any): void {
+    RemoveMapData(MapFileName: string): void {
         this.MapData.RemoveMapData(MapFileName);
     }
     //既存地図ファイル追加
-    AddExistingMapData(MData: any, MapFileName: any): void {
+    AddExistingMapData(MData: unknown, MapFileName: string): void {
         if (this.MapData == undefined) {
             this.MapData = new clsAttrMapData();
         }
         this.MapData.AddExistingMapData(MData, MapFileName);
     }
     //同じ名前の地図ファイルが存在する場合、別名をつけて返す
-    getUniqueMapFileName(checkMfile: any): string {
+    getUniqueMapFileName(checkMfile: unknown): string {
         let ExtMfile = this.GetMapFileName();
         if (ExtMfile.indexOf(checkMfile) == -1) {
             return checkMfile;
@@ -3656,7 +3656,7 @@ class clsAttrData {
 
     //指定したレイヤ・データ項目で指定した単独表示モードが表示可能か調べる
     //Solo_md:enmSoloMode_Number
-    Check_Enable_SoloMode(Solo_md: any, Layernum: any, DataNum: any): boolean {
+    Check_Enable_SoloMode(Solo_md: number, Layernum: number, DataNum: number): boolean {
         switch (this.LayerData[Layernum].atrData.Data[DataNum].DataType) {
             case enmAttDataType.Strings:
                 if (Solo_md != enmSoloMode_Number.StringMode) {
@@ -3755,7 +3755,7 @@ class clsAttrData {
             this.Change_Acc_Position_by_Accessory_Base_Set_Screen()
         }
     }
-    Boundary_Kencode_Arrange(Layernum: any, ObjNum: any): any {
+    Boundary_Kencode_Arrange(Layernum: number, ObjNum: number): unknown {
         let O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
         let badata = new boundArrangeData();
 
@@ -3800,7 +3800,7 @@ class clsAttrData {
     }
 
     //変換した座標を計算済み座標に登録
-    Set_MPSubLineXY(MapFileName: any, LineCode: any, XY: any, ReverseF: any): void {
+    Set_MPSubLineXY(MapFileName: string, LineCode: number, XY: unknown, ReverseF: boolean): void {
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         let LP = new strGetLinePointAPI_Info();
         LP.GetF = true;
@@ -3811,7 +3811,7 @@ class clsAttrData {
     }
 
     /** MPSubLine.Drawnの値をfalseにする*/
-    ResetMPSubLineDrawn(MapFileName: any): void {
+    ResetMPSubLineDrawn(MapFileName: string): void {
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         for (let i = 0; i < LinePoint.Length; i++) {
             LinePoint[i].Drawn = false;

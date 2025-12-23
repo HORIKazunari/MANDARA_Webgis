@@ -287,7 +287,7 @@ class Setting_Info {
     Compass_Mark = 11;
     Compass_Mark_Size = 8;
     default_Projection = enmProjection_Info.prjMercator;
-    MDRFileHistory?: any;
+    MDRFileHistory?: unknown;
     BackImageSpeed = 3;
     LegendMinusWord = "負の値";
     LegendPlusWord = "正の値";

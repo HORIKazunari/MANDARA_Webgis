@@ -451,7 +451,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 let retV = Check_Acc(mouseUpPosition);
                                 if (retV.type == Check_Acc_Result.NoAccessory) {
                                     let av = state.attrData.TotalData.ViewStyle;
-                                    let mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: any[]}> = [];
+                                    let mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}> = [];
                                     if (av.ScrData.ThreeDMode.Set3D_F == false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
@@ -583,7 +583,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                                 break;
                                             case "方位設定":
                                                 frmCompassSettings(state.attrData.TotalData.ViewStyle.AttMapCompass,
-                                                    function (v: any) {
+                                                    function (v: MapCompass) {
                                                         state.attrData.TotalData.ViewStyle.AttMapCompass = v;
                                                         clsPrint.printMapScreen(Frm_Print.picMap);
                                                     });
@@ -645,7 +645,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         MouseDownF = false;
 
-        function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: any[]}>) {
+        function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}>) {
         const state = appState();
             let alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
@@ -760,7 +760,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             mnuAccPopupVisible.push({ caption: "-" })
                         }
                         for (let i = 0; i < alo.HyperLinkNum; i++) {
-                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: any, e: Event){
+                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: unknown, e: Event){
                                 window.open(data.tag, '_blank');
                             },tag:alo.HyperLink[i].Address} );
                         }
@@ -883,7 +883,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         let DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         let poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const splineGet = (clsSpline as any).Spline_Get as ((a: number, b: number, pts: any, c: number, scr: any) => any) | undefined;
+        const splineGet = (clsSpline as any).Spline_Get as ((a: number, b: number, pts: unknown, c: number, scr: unknown) => unknown) | undefined;
         let pxy = splineGet ? splineGet(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData) : poxy;
         let Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         let O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
@@ -1493,7 +1493,7 @@ class frmPrint {
         function meshLinePatternClick(e: Event) {
         const state = appState();
             clsLinePatternSet(e, MeshLpat, LinePatternGet);
-            function LinePatternGet(Lpat: any) {
+            function LinePatternGet(Lpat: Line_Property) {
         const state = appState();
                 MeshLpat = Lpat;
                 state.attrData.Draw_Sample_LineBox(e.target, Lpat);
@@ -1542,7 +1542,7 @@ class frmPrint {
                 if (!target) { return; }
                 let n=target.tag;
                 clsLinePatternSet(e, NewLineKind[Mpindex][n].Pat, LinePatternGet);
-                function LinePatternGet(Lpat: any) {
+                function LinePatternGet(Lpat: Line_Property) {
         const state = appState();
                     NewLineKind[Mpindex][n].Pat = Lpat;
                     state.attrData.Draw_Sample_LineBox(target, Lpat);
