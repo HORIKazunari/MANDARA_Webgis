@@ -1025,7 +1025,7 @@ class clsMapdata {
         }
 
         let GPoint = new point();
-        let retV: any = this.Menseki(ObjData,  L_Time);
+        let retV: unknown = this.Menseki(ObjData,  L_Time);
         let xy2=retV.gpoint;
         if (retV.menseki == -1) {
             return false;
@@ -1038,7 +1038,7 @@ class clsMapdata {
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
             }
-            let retV: any = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
+            let retV: unknown = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
             if (retV.ok == true) {
                 GPoint = xy2.Clone();
             } else {
@@ -1258,16 +1258,16 @@ class clsMapdata {
         let Fringe = badata.Fringe;
         let mens = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
-            let LXY2: any = [];
+            let LXY2: unknown[] = [];
             let n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
-            LXY2.push(LXY2[1]);
+            (LXY2 as unknown[]).push((LXY2 as unknown[])[1]);
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map);
         }
         let m;
         if (Pon == 1) {
             m = mens[0]
         } else {
-            let TotalInOut: any = [];
+            let TotalInOut: number[] = [];
             let In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             for (let i = 0; i < Pon; i++) {
@@ -1295,9 +1295,9 @@ class clsMapdata {
         let gp = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
 
-            let LXY2: any = [];
+            let LXY2: unknown[] = [];
             let n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
-            LXY2.push(LXY2[1]);
+            (LXY2 as unknown[]).push((LXY2 as unknown[])[1]);
             let w = 0;
             if (n2 > 2) {
                 //重心の位置を求める
@@ -1340,7 +1340,7 @@ class clsMapdata {
             m = mens[0]
             GXY = gp[0];
         } else {
-            let TotalInOut: any = [];
+            let TotalInOut: number[] = [];
             let In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             let sm = 0;
@@ -1425,7 +1425,7 @@ class clsMapdata {
             let ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
             let X = ML.PointSTC[0].x;
             let Y = ML.PointSTC[0].y;
-            let retRin: any = SIndex.GetRectIn(X, Y);
+            let retRin: unknown = SIndex.GetRectIn(X, Y);
             let n=retRin.number;
             let Onum =retRin.ObStac;
             let Otags=retRin.Tags;
@@ -1485,7 +1485,7 @@ class clsMapdata {
         poxy.length = 0;
         let n = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
-            let XYS: any = [];
+            let XYS: unknown[] = [];
             let Fr = Fringe[Arrange_LineCode[Num][0] + i];
             let PN = this.Get_Coords_by_LineCode(Fr.code, Get_Coords_Data, Fr.Direction, XYS, getStep);
             for (let j = 0; j < PN; j++) {
@@ -1588,7 +1588,7 @@ class clsMapdata {
             ObjData = ObjData_objNum;
         }
 
-        let LCode: any = [];
+        let LCode: unknown[] = [];
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
             let AggObs = this.Get_MpObj_used_AggregateObject(ObjData, Time);
             for (let i = 0; i < AggObs.length; i++) {
@@ -2705,7 +2705,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標（戻り値）</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_PolyShape_PolygonNum( ObjData: any ,  L_Time: any ,  CutPoint: any  = undefined) {
+    Check_PolyShape_PolygonNum( ObjData: unknown ,  L_Time: number ,  CutPoint: unknown  = undefined) {
 
         let ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;
@@ -2797,7 +2797,7 @@ class clsMapdata {
                 } else {
                     ml.Connect = 0;
                     for (let j = 0; j < 1; j++) {
-                        let SamePointData: any = {};
+                        let SamePointData: Record<string, unknown> = {};
                         let n = PointIndex.GetSamePointNumberArray(ml.PointSTC[j * (ml.NumOfPoint - 1)].x, ml.PointSTC[j * (ml.NumOfPoint - 1)].y, SamePointData)
                         for (let k = 0; k < n; k++) {
                             if (SamePointData.ObjectNumber[k] != i) {

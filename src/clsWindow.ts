@@ -1824,7 +1824,7 @@ function setting(locSearch: string) {
                 let cbox = Generic.createNewCanvas(pnlClassDiv,  "picClassBox" + i,"", 0, i * picClassBoxHeight, picClassBoxWidth, picClassBoxHeight,undefined, "border:solid 1px");
                 cbox.tag = i;
                 cbox.onclick = function (e: MouseEvent) {
-                    const tgt = e.target as any;
+                    const tgt = e.target as HTMLCanvasElement;
                     if (!tgt) { return; }
                     switch (attrData.nowData().ModeData) {
                         case enmSoloMode_Number.ClassPaintMode: {
@@ -1863,7 +1863,7 @@ function setting(locSearch: string) {
                 let txele=Generic.createNewNumberInput(pnlClassDiv,0,"txtClassValue" + i,picClassBoxWidth + 2, i * picClassBoxHeight, txtClassValueWidth,txeleOnChange,txtStyle);
                 txele.ondragstart = function (e: DragEvent) {
                     if (!e.dataTransfer || !e.target) { return; }
-                    const tgt = e.target as any;
+                    const tgt = e.target as HTMLInputElement;
                     e.dataTransfer.setData('abc', tgt.tag);
                 };
                 txele.ondrop = function (e: DragEvent) {
@@ -1871,7 +1871,7 @@ function setting(locSearch: string) {
                     if (!e.dataTransfer || !e.target) { return; }
                     let oele = doc.getElementById("txtClassValue" + String(e.dataTransfer.getData('abc')));
                     let dragN = oele.tag;
-                    let dropN = (e.target as any).tag;
+                    let dropN = (e.target as HTMLElement).tag;
                     if(dropN == dragN) { return; }
                     let Layernum = attrData.TotalData.LV1.SelectedLayer;
                     let DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -1950,7 +1950,7 @@ function setting(locSearch: string) {
 
             /**ペイントモードのクリックして色変更*/
             function colorChange(e: MouseEvent) {
-                const target = e.target as any;
+                const target = e.target as HTMLElement;
                 if (!target || target.tag == null) {
                     return;
                 }
@@ -2219,8 +2219,8 @@ function setting(locSearch: string) {
     function clearModeIcon(){
         let modeDiv = document.getElementsByClassName("modeDivIcon");
         for (let i = 0; i < modeDiv.length; i++) {
-            (modeDiv[i] as any).selected = false;
-            if((modeDiv[i] as any).disabled==true){//アイコンが利用可能かどうかはSetPicPnlDataEnabledで設定
+            (modeDiv[i] as HTMLElement & {selected: boolean}).selected = false;
+            if((modeDiv[i] as HTMLElement & {disabled: boolean}).disabled==true){//アイコンが利用可能かどうかはSetPicPnlDataEnabledで設定
                 (modeDiv[i] as HTMLElement).style.backgroundColor = "#cccccc";
             }else{
                 (modeDiv[i] as HTMLElement).style.backgroundColor="#ffffff";
@@ -2237,7 +2237,7 @@ function setting(locSearch: string) {
         }
         let settingControl=document.getElementsByClassName("rightSettingWindowControlBase");
         for (let i = 0; i < settingControl.length; i++) {
-            (settingControl[i] as any)?.setVisibility?.(false);
+            (settingControl[i] as unknown)?.setVisibility?.(false);
         }
 
         switch(attrData.TotalData.LV1.Print_Mode_Total){
@@ -3827,7 +3827,7 @@ function setting(locSearch: string) {
 //属性データ読み込み
 function readData(okCall: () => void) {
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
-    let mapList: { [key: string]: any } = {};
+    let mapList: Record<string, unknown> = {};
     let bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);
     let mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, scrMargin.top+5, 450, 140, "使用地図ファイル");
     Generic.createNewSpan(mapFileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", "");
@@ -4101,7 +4101,7 @@ function openShapeFile(okCall: (() => void) | undefined): void{
 
     let dropShapeFiles = function (files: FileList) {
         //ファイル読み込み（ドロップ）
-        let sFiles: { [key: string]: any } = {};
+        let sFiles: Record<string, unknown> = {};
         let er = "";
         let er_sub = "";
         let encode = cboCode?.getValue ? cboCode.getValue() : undefined;

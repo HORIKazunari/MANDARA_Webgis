@@ -1134,12 +1134,12 @@ class clsTileMap {
     }
 
     /**既存タイルマップデータをキーで取得 */
-    getTileMapData(dataName: string): any {
+    getTileMapData(dataName: string): unknown {
         return TileMapData[dataName];
     }
 
     /**既存タイルマップデータをIDで取得 */
-    getTileMapDataById(id: number): any {
+    getTileMapDataById(id: number): unknown {
         for (let i in TileMapData) {
             if (TileMapData[i].opt.id == id) {
                 return TileMapData[i];
@@ -1185,7 +1185,7 @@ class clsTileMap {
     }
 
     /**緯度経度とズームレベルからタイルマップのXYを求める*/
-    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): any {
+    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): unknown {
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
         }
@@ -1297,7 +1297,7 @@ class clsTileMap {
     private setTileMapData(): {[key: string]: unknown} {
         let gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
 
-        let MapTypeArray: {[key: string]: any} = {};
+        let MapTypeArray: Record<string, unknown> = {};
         MapTypeArray['k_cj4'] = {
             href: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
             info:'http://www.gsi.go.jp/common/000058211.pdf',

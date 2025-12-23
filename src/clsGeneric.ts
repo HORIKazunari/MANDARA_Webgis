@@ -4468,7 +4468,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     ): HTMLElement {
         const state = appState();
         const hiddenWindow = function () {
-            const winAny = window as any;
+            const winAny = window as unknown;
             winAny.setVisibility?.(false) ;
             if(XmarkCall !=undefined){
                 XmarkCall();
@@ -4536,7 +4536,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 maxButtonCall();
             }
         }
-        const winAny = window as any;
+        const winAny = window as unknown;
         winAny.setVisibility?.(visibilieF);
         window.setTitle = function (title) {
             let cnode = this.childNodes;
@@ -5105,9 +5105,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(globalThis as any).Generic = Generic;
+(globalThis as unknown).Generic = Generic;
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(globalThis as any).TKY2JGDInfo = new TKY2JGDInfo_Impl();
+(globalThis as unknown).TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 // ESM-friendly export handles
 export const TKY2JGDInfo = new TKY2JGDInfo_Impl();
@@ -5228,8 +5228,8 @@ export class CheckedListBox {
             cbox.checked = lst[i].checked;
             cbox.disabled = asfdisabled;
             const change = (e: Event) => {
-                let obj = e.target as any;
-                let newSel = Number(obj.tag);
+                let obj = e.target as unknown;
+                let newSel = Number((obj as HTMLInputElement).tag);
                 if (this.selectedIndex != newSel) {
                     this.setIndexColor(newSel);
                     if (this.twoStepCheckF == true) {
@@ -5455,7 +5455,7 @@ export class ListBox {
                     if (this.selectedIndex != -1) {
                         this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
                     }
-                    let obj = e.target as any;
+                    let obj = e.target as unknown;
                     obj.style.backgroundColor = "#e1e1e1";
                     this.selectedIndex = Number(obj.tag);
                     this.value = this.lBox[this.selectedIndex].value;
@@ -5591,7 +5591,7 @@ export class ListViewTable {
                         }
                         break;
                     }
-                    case mousePointingSituations.down as any: {
+                    case mousePointingSituations.down as number: {
                         if (this.bpos != -1) {
                             const target = e.target as HTMLElement;
                             let x = target.offsetLeft + e.offsetX;
@@ -5606,11 +5606,11 @@ export class ListViewTable {
                 }
             };
             this.tbh.onmousedown = (e) => {
-                this.mousePointingSituation = mousePointingSituations.down as any;
+                this.mousePointingSituation = mousePointingSituations.down as number;
             };
             this.tbh.onmouseup = (e) => {
                 this.bpos = -1;
-                this.mousePointingSituation = mousePointingSituations.up as any;
+                this.mousePointingSituation = mousePointingSituations.up as number;
             };
             this.thead = this.tbh.createTHead();
             this.thead.setAttribute("style", this.headStyleinfo);
@@ -5784,7 +5784,7 @@ export class ListViewTable {
             this.deleteRow();
             this.selectRow(this.tb!.rows.length - 1);
             this.insertRow(1, stac);
-            this.tbdiv!.scrollTop = (this.tbdiv as any).scrollTopMax;
+            this.tbdiv!.scrollTop = (this.tbdiv as HTMLElement & {scrollTopMax: number}).scrollTopMax;
         } else {
             for (let i = 0; i < celln; i++) {
                 [this.tb!.rows[rowPos].cells[i].innerHTML, this.tb!.rows[dest].cells[i].innerHTML] = [this.tb!.rows[dest].cells[i].innerHTML, this.tb!.rows[rowPos].cells[i].innerHTML];
@@ -5847,9 +5847,9 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
     }
     if(MaxFlag==true){
-        (this as any).maxSizeFlag=false;
+        (this as unknown).maxSizeFlag=false;
     }else{
-        (this as any).maxSizeFlag=true;
+        (this as unknown).maxSizeFlag=true;
     }
 };
 // @ts-ignore

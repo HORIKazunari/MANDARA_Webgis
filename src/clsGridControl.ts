@@ -338,7 +338,7 @@ export class gridControl {
     private GY: number = 0;
     private touchStartTime: number = 0;
     private base: HTMLDivElement;
-    private tabbase: any = {};
+    private tabbase: Record<string, unknown> = {};
     private picGrid: HTMLDivElement;
     private vScroll!: scrollBar;
     private hScroll!: scrollBar;
@@ -1553,7 +1553,7 @@ export class gridControl {
         return tx
     }
 
-    Grid_Clear = (Caption: any ) => {
+    Grid_Clear = (Caption: string ) => {
         let GP = this.Grid_Property[this.Grid_Total.Layer];
         if (GP.SelectedF == false) {
             return;
@@ -2321,7 +2321,7 @@ export class gridControl {
     }
 
     /**指定された位置のグリッド配列にﾃﾞｰﾀをｾｯﾄする Check_F:変更できるかどうかチェックする */
-    Set_Data_To_Grid = ( Grid_Lay: any ,  X: any ,  Y: any ,  tx: any ,  Check_F: any ) => {
+    Set_Data_To_Grid = ( Grid_Lay: number ,  X: number ,  Y: number ,  tx: string ,  Check_F: boolean ) => {
         if (Check_F == true) {
             let gpo = this.Grid_Property[this.Grid_Total.Layer].Ope;
             if (((Y < 0) && (X >= 0)) && (gpo.FixedYSEnabled == false) ||
@@ -2434,7 +2434,7 @@ Grid_Copy = () => {
         this.UndoArray.push(UndoData);
     }
 
-    SetUndo_InsertRows = (Caption: any , y: any , InsertNum: any ) => {
+    SetUndo_InsertRows = (Caption: string , y: number , InsertNum: number ) => {
         //行挿入
         let UndoData = new Undo_InsertRows();
         UndoData.caption = Caption;
@@ -2652,7 +2652,7 @@ Grid_Copy = () => {
             this.Check_ChangeEventRange(xg, yg, Xn, Yn);
         }
     }
-    Check_ChangeEvent = (X: any , Y: any ) => {
+    Check_ChangeEvent = (X: number , Y: number ) => {
     let f = false;
     let GPo= this.Grid_Property[this.Grid_Total.Layer].Ope;
         if((X < 0 )&&( Y >= 0 )&&(GPo.FixedXSEnabled == true) ){
@@ -2672,7 +2672,7 @@ Grid_Copy = () => {
         }
 }
 
-Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
+Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     let GPo= this.Grid_Property[this.Grid_Total.Layer].Ope;
         if((Y < 0 )&&( X < 0 )&&(GPo.FixedUpperLeftEnabeld == true) ){
             this.eventCall.evtChange_FixedUpperLeft();
@@ -4060,7 +4060,7 @@ class scrollBar {
         _areaRange: number,
         largeChange: number,
         smallChange: number,
-        changeEventCall: any
+        changeEventCall: Function | undefined
     ) {
 
     let maxValue = _maxValue;

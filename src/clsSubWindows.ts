@@ -2594,7 +2594,7 @@ function frmMain_GetDistance(okEvent: () => void){
         LayerDummy : 2,
         MapObject : 3
     }
-    let pos_info: any =function () {
+    let pos_info: unknown =function () {
         this.xy =new point();
         this.type ;// DisType
         this.lay ;// Integer
@@ -2853,13 +2853,13 @@ function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, Canc
 
 /**空間検索 */
 function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
-    const normal_data: any = function () {
+    const normal_data: unknown = function () {
         this.add = 0;
         this.add2 = 0;
         this.max = 0;
         this.min = 0;
     }
-    const category_data: any = function () {
+    const category_data: unknown = function () {
         this.CateCount = [];
     }
     const bufMode = {
@@ -3407,7 +3407,7 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
 
 class strFrmCopyObjectName_init_parameter_data {
     ObjName: string = "";
-    Time: any = clsTime.GetNullYMD();
+    Time: unknown = clsTime.GetNullYMD();
     TimeChangeEnabled: boolean = true;
     pointShapeChecked: boolean = true;
     lineShapeChecked: boolean = true;
@@ -3419,7 +3419,7 @@ class strFrmCopyObjectName_init_parameter_data {
 
 /**オブジェクト名コピー */
 function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
-    let condidateInfo: any =function(){
+    let condidateInfo: unknown =function(){
         this.ObjCode;
         this.TimeStac;
     }

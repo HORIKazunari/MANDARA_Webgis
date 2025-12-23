@@ -1119,7 +1119,7 @@ class strLayerDataInfo {
     ReferenceSystem: number = 0; // enmZahyo_System_Info
     Time: strYMD = new strYMD();
     Comment: string = ""; // String
-    TripTimeSpan: any = undefined; // TripTimeSpan_Info (未定義のため暫定的にany)
+    TripTimeSpan: unknown = undefined; // TripTimeSpan_Info (未定義のため暫定的にunknown)
     TripType: number = 0; // enmTripPositionType
     // オブジェクトの情報
     atrObject: strObject_Info = new strObject_Info();
@@ -2614,7 +2614,7 @@ class strLayerReadingInfo {
         this.MeshType = enmMesh_Number.mhNonMesh;
     }
 }
-const strSaveLinePat_Info: any =function(){
+const strSaveLinePat_Info: unknown =function(){
     this. MapNum ;// Integer
     this. MapFileName=[];//  As String
     this. LpatNumByMapfile=[];//  As Integer
@@ -4029,7 +4029,7 @@ class clsAttrData {
             case enmLayerType.DefPoint: {
                 let LDA = LD.atrObject.atrObjectData[ObjNum];
                 let pt = [LDA.CenterPoint, LDA.Symbol, LDA.Label];
-                let rect = spatial.getCircumscribedRectangle(pt as any);
+                let rect = spatial.getCircumscribedRectangle(pt as unknown);
                 return rect;
                 break;
             }
@@ -4069,17 +4069,17 @@ class clsAttrData {
     }
 
     //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
-    GetAllPointObjectGroup(): any {
+    GetAllPointObjectGroup(): unknown {
         return this.MapData.GetAllPointObjectGroup();
     }
 
     /**読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す */
-    Get_AllMapLineKind(): any {
+    Get_AllMapLineKind(): unknown {
         return this.MapData.GetAllMapLineKind();
     }
 
     /**読み込んだ地図ファイルの全線種名（オブジェクト連動型を含む）一覧を返す */
-    GetAllMapLineKindName(): any {
+    GetAllMapLineKindName(): unknown {
         return this.MapData.GetAllMapLineKindName();
     }
     //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
@@ -4175,7 +4175,7 @@ class clsAttrData {
             if (i == 0) {
                 TotalScrRect = ScrRect.Clone();     
             }else{
-                TotalScrRect=spatial.getCircumscribedRectangle(TotalScrRect as any,ScrRect as any);
+                TotalScrRect=spatial.getCircumscribedRectangle(TotalScrRect as unknown,ScrRect as unknown);
             }
         }
         if (TotalScrRect.left == TotalScrRect.right) {
@@ -4239,57 +4239,57 @@ class clsAttrData {
     }
 
     /**現在のレイヤのグラフモードを返す */
-    layerGraph(): any {
+    layerGraph(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
     }
 
     /**現在のレイヤのグラフモードの選択データセットを返す */
-    nowGraph(): any {
+    nowGraph(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const gv=state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         return gv.DataSet[gv.SelectedIndex];
     }
 
     /**現在のレイヤのラベルモードを返す */
-    layerLabel(): any {
+    layerLabel(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
     }
     /**現在のレイヤのラベルモードの選択データセットを返す */
-    nowLabel(): any {
+    nowLabel(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         return lv.DataSet[lv.SelectedIndex];;
     }
     /**現在の重ね合わせモードのデータセットを返す */
-    nowSeries(): any {
+    nowSeries(): unknown {
         let series = state.attrData.TotalData.TotalMode.Series;
         return series.DataSet[series.SelectedIndex];
     }
 
     /**現在の重ね合わせモードのデータセットを返す */
-    nowOverlay(): any {
+    nowOverlay(): unknown {
         let over = state.attrData.TotalData.TotalMode.OverLay;
         return over.DataSet[over.SelectedIndex];
     }
 
     /**現在のレイヤの位置を返す */
-    nowLayer(): any {
+    nowLayer(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum];
     }
 
     /**
      * 現在のレイヤ・データ項目の位置を返す */
-    nowData(): any {
+    nowData(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum];
     }
 
     /**現在のレイヤ・データ項目のSoloModeViewSettings位置を返す */
-    nowDataSolo(): any {
+    nowDataSolo(): unknown {
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
@@ -4330,9 +4330,9 @@ class clsAttrData {
                 let MapFileData = ld.MapFileData;
                 if (Object.keys(LineCheck).indexOf(ld.MapFileName) == -1) {
                     let LineL = new Array(MapFileData.Map.ALIN).fill(false);
-                    (LineCheck as any)[ld.MapFileName] = LineL;
+                    (LineCheck as Record<string, unknown>)[ld.MapFileName] = LineL;
                 }
-                let LC = (LineCheck as any)[ld.MapFileName];
+                let LC = (LineCheck as Record<string, unknown>)[ld.MapFileName];
                 let LayerTime = ld.Time;
                 if (this.TotalData.ViewStyle.Dummy_Size_Flag == true) {
                     //ダミー領域も範囲に含む場合
@@ -4375,7 +4375,7 @@ class clsAttrData {
                         for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                             let Meshcode = ld.atrObject.atrObjectData[j].Name;
                             let RectLatLon = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode);
-                            LLRect = spatial.getCircumscribedRectangle(RectLatLon as any, LLRect);
+                            LLRect = spatial.getCircumscribedRectangle(RectLatLon as unknown, LLRect);
                         }
                         break;
                     }
@@ -4416,7 +4416,7 @@ class clsAttrData {
         for (let i = 0; i <  ml.NumOfPoint;i++){
             LP.push( spatial.Get_Reverse_XY(ml.PointSTC[i], this.TotalData.ViewStyle.Zahyo))
         }
-        let rectf = spatial.getCircumscribedRectangle(LP as any);
+        let rectf = spatial.getCircumscribedRectangle(LP as unknown);
         let newRect = spatial.getCircumscribedRectangle(rect, rectf)  ;
         return newRect;
     }
@@ -7007,12 +7007,12 @@ class clsAttrData {
                     mzn = [DataMax, 0, 0];
                 }
                 let mmd = data.SoloModeViewSettings.MarkSizeMD;
-                mmd.Value[0] = mzn[(h as any).h1];
-                mmd.Value[1] = mzn[(h as any).h2];
+                mmd.Value[0] = mzn[(h as Record<string, number>).h1];
+                mmd.Value[1] = mzn[(h as Record<string, number>).h2];
                 if (zn[3] == 0) {
-                    mmd.Value[2] = mzn[(h as any).h2] / 2;
+                    mmd.Value[2] = mzn[(h as Record<string, number>).h2] / 2;
                 } else {
-                    mmd.Value[2] = mzn[(h as any).h3];
+                    mmd.Value[2] = mzn[(h as Record<string, number>).h3];
                 }
                 mmd.Value[3] = 0;
                 mmd.Value[4] = 0;
@@ -8110,8 +8110,8 @@ class clsAttrMapData {
         Mapdata: unknown; //clsMapData
     };
     private Prestage_MapFileName: string = "";
-    private attrMapData: { [key: string]: any } = {}; //  clsMapData
-    private Object_Name_Search: { [key: string]: any } = {}; //clsObjectNameSearch
+    private attrMapData: Record<string, unknown> = {}; //  clsMapData
+    private Object_Name_Search: Record<string, unknown> = {}; //clsObjectNameSearch
 
     getAllMapData(): unknown[] {
         return this.attrMapData;
@@ -8227,7 +8227,7 @@ class clsAttrMapData {
         return this.Prestage_MapFileName;
     }
     //最初の地図ファイル名の座標プロパティ取得
-    GetPrestigeZahyoMode(): any {
+    GetPrestigeZahyoMode(): unknown {
         return this.attrMapData[this.Prestage_MapFileName].Map.Zahyo;
     }
 
@@ -8329,7 +8329,7 @@ class clsObjectNameSearch {
     }
 
     DataPositionValue(Pos: number): unknown {
-        return (this.Object_Name_Search.DataPositionValue as any)[Pos];
+        return (this.Object_Name_Search.DataPositionValue as unknown[])[Pos];
     }
 
     NumofData(): number {
