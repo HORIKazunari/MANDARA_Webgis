@@ -690,7 +690,7 @@ class clsMapdata {
 
     //指定したラインの他ラインとの接続状況を返す
     //exclude_codeで、比較対象からはずすラインを指定できる
-    Check_Line_Connect(Line: any, exclusion_code = -1) {
+    Check_Line_Connect(Line: strLine_Data, exclusion_code = -1) {
         let ck = this.Check_Line_Connect_Detail(Line, exclusion_code);
         switch (ck) {
             case 0:
@@ -710,7 +710,7 @@ class clsMapdata {
     }
 
     //指定したラインの他ラインとの接続状況の詳細を返す
-    Check_Line_Connect_Detail(Line: any, exclusion_code = -1) {
+    Check_Line_Connect_Detail(Line: strLine_Data, exclusion_code = -1) {
         if (Line.NumOfPoint == 0) {
             return 0;
         }
@@ -829,7 +829,7 @@ class clsMapdata {
     }
 
     /**線のポイントを指定した距離に応じて削除、座標と数を返すルーチン */
-    Smoothing_Line(_PointXY: any,s_distanceas: any){
+    Smoothing_Line(_PointXY: point[], s_distanceas: number){
         let PointXY = Generic.ArrayClone(_PointXY);
         let FirstPointNum = PointXY.length;
         if (FirstPointNum <= 3) {
@@ -1904,7 +1904,7 @@ class clsMapdata {
     }
 
     /**オブジェクトの線とある地点との距離を求める */
-    Get_Distance_Between_ObjectLine_and_Point(Ocode: any ,  Time: any ,  P: any){
+    Get_Distance_Between_ObjectLine_and_Point(Ocode: number,  Time: clsTime,  P: point){
         let ELine=this.Get_EnableMPLine(this.MPObj[Ocode], Time);
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
@@ -2229,8 +2229,8 @@ class clsMapdata {
     }
 
     /**一致する箇所でラインを分断する */
-    private TopologyStructure_Two_SameLine_Cutsub(Start_JointPoint: any, JointNum: any, OldPNum: any, NewPnum: any,
-        OldXY: any) {
+    private TopologyStructure_Two_SameLine_Cutsub(Start_JointPoint: number, JointNum: number, OldPNum: number, NewPnum: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] },
+        OldXY: point[]) {
 
         let LoopF = OldXY[0].Equals(OldXY[OldPNum - 1]);
         NewPnum.B = -1;
@@ -2380,7 +2380,7 @@ class clsMapdata {
     }
 
     /**ラインがループの場合trueを返す */
-    Check_Line_Loop(LCode: any){
+    Check_Line_Loop(LCode: number){
         let ml = this.MPLine[LCode];
         return ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]);
     }
@@ -2555,7 +2555,7 @@ class clsMapdata {
     // <returns></returns>
     // <remarks></remarks>
     /**全期間を通したオブジェクトの形状をチェック */
-    Check_Obj_Shape_AllTime(ObjData: any, CutPoint: any = undefined) {
+    Check_Obj_Shape_AllTime(ObjData: strObj_Data, CutPoint: point | undefined = undefined) {
         //オブジェクト名の有効期間の開始と終了時期での形状チェック
 
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
@@ -2838,7 +2838,7 @@ class clsMapdata {
     }
 
     /**切断したラインを使用するオブジェクトの修正 */
-    Cut_Line_Object_Shori(Search_LineCode: any, ODALIN: any, num: any){
+    Cut_Line_Object_Shori(Search_LineCode: number, ODALIN: number, num: number){
         let Add_LineCode = [];
         for (let i = 0; i < num; i++) {
             Add_LineCode[i] = ODALIN + i;
@@ -2846,7 +2846,7 @@ class clsMapdata {
         this.Object_LineCode_Add(Search_LineCode, num, Add_LineCode);
     }
     /**切断したラインを使用するオブジェクトの修正 */
-    Object_LineCode_Add(Search_LineCode: any, AddLineNum: any, Add_LineCode: any){
+    Object_LineCode_Add(Search_LineCode: number, AddLineNum: number, Add_LineCode: number[]){
         for (let i = 0; i < this.Map.Kend; i++) {
             let mo = this.MPObj[i];
             if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
