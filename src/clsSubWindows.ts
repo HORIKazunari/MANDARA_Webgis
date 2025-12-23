@@ -404,7 +404,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
     }
 }
 
-function clsBackgroundPatternSet(event: MouseEvent, back: any, okEvent: (back: any) => void, _attrData: any) {
+function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Property, okEvent: (back: BackGround_Box_Property) => void, _attrData: clsAttrData) {
     /// <signature>
     /// <summary>背景設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -445,7 +445,7 @@ function clsBackgroundPatternSet(event: MouseEvent, back: any, okEvent: (back: a
 }
 
 /**タイル設定 >eventの引数。表示位置を決める。tile:最初のタイル okEvent:された際に呼び出す関数 設定されたTileを返す*/
-function clsTileSet(event: MouseEvent, tile: any, okEvent: (tile: any) => void) {
+function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void) {
 
     const backDiv = Generic.set_backDiv("", "タイル設定", 170, 140, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -474,7 +474,7 @@ function clsTileSet(event: MouseEvent, tile: any, okEvent: (tile: any) => void) 
     }
 }
 
-function clsLinePatternSet(event: MouseEvent, line: any, okEvent: (line: any) => void) {
+function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line: LinePattern) => void) {
     /// <signature>
     /// <summary>ライン設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -519,7 +519,7 @@ function clsLinePatternSet(event: MouseEvent, line: any, okEvent: (line: any) =>
     }
 }
 
-function clsFontSet(event: MouseEvent, font: any, okEvent: (font: any) => void, _attrData: any) {
+function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void, _attrData: clsAttrData) {
         /// <signature>
     /// <summary>フォント設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -573,7 +573,7 @@ function clsFontSet(event: MouseEvent, font: any, okEvent: (font: any) => void, 
     }
 }
 
-function clsInnerDataSet(event: MouseEvent, attrData: any ) {
+function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
             /// <signature>
     /// <summary>記号の大きさモードの内部データ設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>

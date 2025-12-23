@@ -1195,7 +1195,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange(ObjData_objNum: any, Time: any) {
+    Boundary_Arrange(ObjData_objNum: number, Time: number) {
         let ELine = this.Get_EnableMPLine(ObjData_objNum, Time)
         let boundArrange = this.Boundary_Arrange_Sub(ELine);
         return boundArrange;
@@ -1224,7 +1224,7 @@ class clsMapdata {
     }
 
     //指定したラインコードがループでない場合は－１、ループの場合は面積を返す
-    Get_LoopLine_Menseki(L_Code: any) {
+    Get_LoopLine_Menseki(L_Code: number) {
         let ml = this.MPLine[L_Code];
         let men;
         let PN = ml.NumOfPoint;
@@ -1243,7 +1243,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトの面積を重心付きで返す
-    Menseki(ObjData: any,  L_Time: any) {
+    Menseki(ObjData: strObj_Data,  L_Time: number) {
         let badata = this.Boundary_Arrange(ObjData, L_Time);
         if (badata.Pon <= 0) {
             return -1;
@@ -1362,7 +1362,7 @@ class clsMapdata {
     }
 
     //ある地点がオブジェクトの外接四角形に入るかどうかを調べ、さらに面オブジェクトの中かどうかを調べる
-    Check_Point_in_OneObject(Obj_ObjNumber: any, x: any, y: any, LAY_Time: any) {
+    Check_Point_in_OneObject(Obj_ObjNumber: number | strObj_Data, x: number, y: number, LAY_Time: number) {
         let obj;
         if ((typeof Obj_ObjNumber) == 'number') {
             obj = this.MPObj[Obj_ObjNumber];
@@ -1384,7 +1384,7 @@ class clsMapdata {
     }
 
     //ある地点がオブジェクトの外接四角形に入るかどうかを調べる
-    Check_Point_in_oneObject_Box(Obj_ObjNumber: any, x: any, y: any) {
+    Check_Point_in_oneObject_Box(Obj_ObjNumber: number, x: number, y: number) {
         let obj;
         if ((typeof Obj_ObjNumber) == 'number') {
             obj = this.MPObj[Obj_ObjNumber];
@@ -1580,7 +1580,7 @@ class clsMapdata {
     }
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン番号を返す
-    Get_EnableMPLine(ObjData_objNum: any, Time: any) {
+    Get_EnableMPLine(ObjData_objNum: number, Time: number) {
         let ObjData;
         if ((ObjData_objNum instanceof strObj_Data) == false) {
             ObjData = this.MPObj[ObjData_objNum];
@@ -1608,13 +1608,13 @@ class clsMapdata {
     }
 
     //集成オブジェクトを構成する元のオブジェクト番号を取得
-    Get_MpObj_used_AggregateObject(ObjData: any, Time: any) {
+    Get_MpObj_used_AggregateObject(ObjData: strObj_Data, Time: number) {
         this.Enable_MPObjStac = [];
         this.Get_MpObj_used_AggregateObject_Sub(ObjData, Time)
         return this.Enable_MPObjStac;
     }
     //集成オブジェクトを構成する元のオブジェクト番号を取得、再帰処理を行う
-    Get_MpObj_used_AggregateObject_Sub(ObjData: any, Time: any) {
+    Get_MpObj_used_AggregateObject_Sub(ObjData: strObj_Data, Time: number) {
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             let lc = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time)
             if (lc != -1) {
@@ -1630,7 +1630,7 @@ class clsMapdata {
     }
 
     //ラインコードスタックのラインが指定時期に利用できるかをチェック、利用できる場合はラインコード番号を返し，そうでない場合は－１を返す
-    Check_Enable_LineCode(Lcode_Stac: any, Time: any) {
+    Check_Enable_LineCode(Lcode_Stac: number[], Time: clsTime) {
         if ((Lcode_Stac.NumOfTime == 0) || (Time.nullFlag() == true)) {
             return Lcode_Stac.LineCode;
         } else {
@@ -1643,7 +1643,7 @@ class clsMapdata {
         return -1;
     }
     //ラインが指定時期に利用できるかをチェック,利用できる場合は線種番号そうでない場合は-1を返す
-    Check_Enable_Line(MpLine: any, Check_Time: any) {
+    Check_Enable_Line(MpLine: strLine_Data, Check_Time: clsTime) {
         let L_K = -1;
         if (Check_Time.nullFlag() == true) {
             L_K = MpLine.LineTimeSTC[0].Kind;
@@ -1659,7 +1659,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトで、指定した時間に利用できるライン番号を戻し、その要素を返す
-    Get_EnableMPLine_Normal(ObjData: any, Time: any) {
+    Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: clsTime) {
         let Enable_LCode = [];
         if (Time.nullFlag() == true) {
             for (let i = 0; i < ObjData.NumOfLine; i++) {
@@ -1706,7 +1706,7 @@ class clsMapdata {
 
 
     //指定した時間に指定したオブジェクトが存在する場合trueを返す
-    CheckEnableObject(ObjData: any, Time: any) {
+    CheckEnableObject(ObjData: strObj_Data, Time: number) {
         for (let i = 0; i < ObjData.NumOfNameTime; i++) {
             if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) == true) {
                 return true;
@@ -1716,7 +1716,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトグループの初期属性をすべて削除
-    DeleteAllDefAttrData(objG: any) {
+    DeleteAllDefAttrData(objG: number) {
         this.ObjectKind[objG].DefTimeAttDataNum = 0;
         this.DefTimeAttSTC = [];
         for (let i = 0; i < this.Map.Kend; i++) {
@@ -1752,7 +1752,7 @@ class clsMapdata {
         return PatNum;
     }
     //オブジェクトの初期属性データ取得。時期がはずれてデータが取得できない場合はundefined
-    Get_DefTimeAttrValue(ObjCode: any, defNumber: any, Time: any) {
+    Get_DefTimeAttrValue(ObjCode: number, defNumber: number, Time: clsTime) {
         let ob = this.MPObj[ObjCode];
         let ogp = ob.Kind;
         let Value;
@@ -1862,7 +1862,7 @@ class clsMapdata {
     }
 
     /**オブジェクト番号で指定、'線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、 */
-    Distance_Object(O_Code1: any, O_Code2: any, Time1: any, Time2: any) {
+    Distance_Object(O_Code1: number, O_Code2: number, Time1: clsTime, Time2: clsTime) {
         let P1;
         let P2;
         if (this.MPObj[O_Code2].Shape == enmShape.LineShape) {
@@ -1887,7 +1887,7 @@ class clsMapdata {
         return d;
     }
 
-    Distance_ObjectCenterP(CP: any, O_Code1: any,  Time1: any) {
+    Distance_ObjectCenterP(CP: point, O_Code1: number,  Time1: clsTime) {
         let d;
         if (this.MPObj[O_Code1].Shape == enmShape.LineShape) {
             //一方が線オブジェクトの場合
@@ -1909,7 +1909,7 @@ class clsMapdata {
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
 
-    Distance_PointMPLineAllay(P: any, LCode: any) {
+    Distance_PointMPLineAllay(P: point, LCode: number) {
         let mind;
         let f = false;
         for (let i = 0; i < LCode.length; i++) {
@@ -1942,7 +1942,7 @@ class clsMapdata {
 
 
     /**ライン中の同一座標の連続を削除 */
-    DeleteSamePoints_inLine(Linenum: any) {
+    DeleteSamePoints_inLine(Linenum: number) {
 
         let ml = this.MPLine[Linenum];
         if (ml.NumOfPoint > 0) {
@@ -2464,7 +2464,7 @@ class clsMapdata {
     /**
      * ラインの削除 Chack_Object_Shape_F:削除するラインを使用するオブジェクトの形状をチェックする場合true
      */
-    Erase_Line(EraseLineCode: any, Chack_Object_Shape_F: any) {
+    Erase_Line(EraseLineCode: number, Chack_Object_Shape_F: boolean) {
         let LCode = [EraseLineCode];
         let SEpoint = [];
         let ml = this.MPLine[EraseLineCode];
@@ -2481,7 +2481,7 @@ class clsMapdata {
     // <param name="Check_ObjectShape_F">ラインを使用するオブジェクトの形状を削除後にチェックする場合true</param>
     // <param name="MapRectCheckF">地図データ全体の外接四角形をチェックするか</param>
     // <returns>実際に削除したライン番号の配列</returns>
-    Erase_MultiLine(LNum: any, LCode: any, UsedLine_Delete_F: any, Check_ObjectShape_F: any, MapRectCheckF: any) {
+    Erase_MultiLine(LNum: number, LCode: number[], UsedLine_Delete_F: boolean, Check_ObjectShape_F: boolean, MapRectCheckF: boolean) {
 
         let C_Mpline = [];
         let RealDeleteLineCode = [];
@@ -2667,7 +2667,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_Obj_Shape_Cut(ObjData: any, L_Time: any, CutPoint: any) {
+    Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: clsTime, CutPoint: point) {
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
             //集成オブジェクトタイプの場合
             let OBShape = new Array(3);
@@ -2811,7 +2811,7 @@ class clsMapdata {
         }
     }
     //指定した時間のオブジェクトの代表点を取得、取得できない場合はundefinedを返す
-    Get_Enable_CenterP(ObjInfo: any, Time: any) {
+    Get_Enable_CenterP(ObjInfo: strObj_Data, Time: clsTime) {
         let ObjData;
         if (typeof ObjInfo == 'number') {
             ObjData = this.MPObj[ObjInfo];
@@ -2831,7 +2831,7 @@ class clsMapdata {
     }
 
     /**位相構造化したラインを使用するオブジェクトの修正 */
-    Topology_Line_Object_Shori(Search_LineCode: any, Add_LineCode: any) {
+    Topology_Line_Object_Shori(Search_LineCode: number, Add_LineCode: number) {
         let Add_LineCode_Stac = [];
         Add_LineCode_Stac[0] = Add_LineCode;
         this.Object_LineCode_Add(Search_LineCode, 1, Add_LineCode_Stac);
