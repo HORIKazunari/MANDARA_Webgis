@@ -3640,7 +3640,7 @@ class clsAttrData {
         }
     }
     //地図デーセットをセットする 空白の場合、最初に読み込まれた地図
-    SetMapFile(MapFileName: any): any {
+    SetMapFile(MapFileName: string): unknown {
         return this.MapData.SetMapFile(MapFileName);
     }
 
@@ -3818,7 +3818,7 @@ class clsAttrData {
         }
     }
 
-    getMpLineDrawn(MapFileName: any, LineCode: any): any {
+    getMpLineDrawn(MapFileName: string, LineCode: number): unknown {
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         if (LinePoint[LineCode] == undefined) {
             return undefined;
@@ -3826,17 +3826,17 @@ class clsAttrData {
             return this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn;
         }
     }
-    setMpLineDrawn(MapFileName: any, LineCode: any, value: any): void {
+    setMpLineDrawn(MapFileName: string, LineCode: number, value: unknown): void {
          this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn = value;
     }
 
 
     //線種の使用チェック
-    getLineKindUseChecked(MapFileName: any, lineKindNum: any, PatternNum: any): boolean {
+    getLineKindUseChecked(MapFileName: string, lineKindNum: number, PatternNum: number): boolean {
         let n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         return this.LineKindUse[n];
     }
-    setLineKindUseChecked(MapFileName: any, lineKindNum: any, PatternNum: any, value: any): void {
+    setLineKindUseChecked(MapFileName: string, lineKindNum: number, PatternNum: number, value: unknown): void {
         let n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         this.LineKindUse[n] = value;
     }
@@ -3847,7 +3847,7 @@ class clsAttrData {
     }
 
     //地図データの保存してある計算済み座標を取得する
-    Get_MPSubLineXY(MapFileName: any, LineCode: any, ReverseF: any): any {
+    Get_MPSubLineXY(MapFileName: string, LineCode: number, ReverseF: boolean): unknown {
         let xy = [];
         let LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         let MPSubLinePointXY = LinePoint[LineCode];
@@ -3888,7 +3888,7 @@ class clsAttrData {
     }
 
     //**点ダミーオブジェクトの凡例表示用に記録する */
-    AddPointObjectKindUsed(MapFilename: any, ObjKindNumber: any, MK: any): void {
+    AddPointObjectKindUsed(MapFilename: string, ObjKindNumber: number, MK: unknown): void {
         for(let i in this.TempData.PointObjectKindUsedStack){
             let Ob=this.TempData.PointObjectKindUsedStack[i];
             if(( Ob.MapFileName== MapFilename )&&( Ob.ObjectKindNumber == ObjKindNumber) ){
@@ -4015,11 +4015,11 @@ class clsAttrData {
     }
 
     /**レイヤの地図ファイルのオブジェクト番号からオブジェクトの外周を取得 */
-    Get_Object_Circumscribed_Rectangle(Layernum: any, ObjCode: any): any {
+    Get_Object_Circumscribed_Rectangle(Layernum: number, ObjCode: number): unknown {
         return this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
     }
     //レイヤのオブジェクト位置からオブジェクトの外周を取得
-    Get_Kencode_Object_Circumscribed_Rectangle(Layernum: any, ObjNum: any): any {
+    Get_Kencode_Object_Circumscribed_Rectangle(Layernum: number, ObjNum: number): unknown {
         let LD = this.LayerData[Layernum];
         switch (LD.Type) {
             case enmLayerType.Mesh: {
@@ -4190,7 +4190,7 @@ class clsAttrData {
         this.TempData.MapAreaLatLon = this.get_DataLatLonBox();
     }
 
-    getSolomodeWord(md: any): string {
+    getSolomodeWord(md: number): string {
 
         switch (md) {
             case enmSoloMode_Number.ClassPaintMode: {
@@ -4296,11 +4296,11 @@ class clsAttrData {
     }
 
     //単独表示モードのモードを取得
-    getSoloMode(LayerNum: any, DataNum: any): any {
+    getSoloMode(LayerNum: number, DataNum: number): unknown {
         return this.LayerData[LayerNum].atrData.Data[DataNum].ModeData;
     }
 
-    setSoloMode(LayerNum: any, DataNum: any, mode: any): void {
+    setSoloMode(LayerNum: number, DataNum: number, mode: unknown): void {
         this.LayerData[LayerNum].atrData.Data[DataNum].ModeData = mode;
     }
 
@@ -4410,7 +4410,7 @@ class clsAttrData {
         return LLRect;
     }
 
-    getLinelatLon(mapdata: any, LineNumber: any, rect: any): rectangle {
+    getLinelatLon(mapdata: unknown, LineNumber: number, rect: rectangle): rectangle {
         let ml=mapdata.MPLine[LineNumber];
         let LP=[];
         for (let i = 0; i <  ml.NumOfPoint;i++){
@@ -4421,7 +4421,7 @@ class clsAttrData {
         return newRect;
     }
     //MANDARAファイルデータを開く
-    OpenNewMandaraFile(MapDataList: any, attrText: any, filename: any, ext: any): any {
+    OpenNewMandaraFile(MapDataList: unknown, attrText: string, filename: string, ext: string): unknown {
         let retv;
         if (ext == "clipboard") {
             retv = this.SetDataFromClipBoard(MapDataList, attrText)
@@ -4450,7 +4450,7 @@ class clsAttrData {
         return retv;
     }
     //mdrjファイルから読み込み
-    SetDataFromMDRJ(MapDataList: any, attrText: any): any {
+    SetDataFromMDRJ(MapDataList: unknown, attrText: string): unknown {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
@@ -4500,7 +4500,7 @@ class clsAttrData {
         let oldDOG = oldvs.DummyObjectPointMark;
         for (let key in oldDOG) {
             let d = oldDOG[key];
-            let nd: any[] = [];
+            let nd: unknown[] = [];
             for (let i = 0; i < d.length; i++) {
                 let dd = new strDummyObjectPointMark_Info();
                 dd.ObjectKindName = d.ObjectKindName;
@@ -4621,14 +4621,14 @@ class clsAttrData {
         return { ok: true, emes: ObjectErrorMessage };
 
         //-----------------
-        function cnvAccessoryGroupBox(oa: any){
+        function cnvAccessoryGroupBox(oa: unknown){
             let d=new strAccessoryGroupBox_Info();
             Object.assign(d, oa);
             d.Back=cnvBackGround_Box_Property(oa.Back);
             return d;
         }
 
-        function cnvLayerData(oldLay: any) {
+        function cnvLayerData(oldLay: unknown) {
             let ld = new strLayerDataInfo();
             ld.Name = oldLay.Name;
             ld.MapFileName = oldLay.MapFileName;
@@ -4840,21 +4840,21 @@ class clsAttrData {
             return ld;
         }
 
-        function cnvArrow(oa: any) {
+        function cnvArrow(oa: unknown) {
             let a = new Arrow_Data();
             Object.assign(oa);
             return a;
         }
-        function cnvStart_End_Time_data(ot: any) {
+        function cnvStart_End_Time_data(ot: unknown) {
             let nt = new Start_End_Time_data();
             nt.StartTime = new strYMD(ot.StartTime);
             nt.EndTime = new strYMD(ot.EndTime);
             return nt;
         }
-        function cnvTime(oldT: any) {
+        function cnvTime(oldT: unknown) {
             return new strYMD(oldT.Year, oldT.Month, oldT.Day);
         }
-        function cnvTotalmode(oldTM: any) {
+        function cnvTotalmode(oldTM: unknown) {
             let otmo = oldTM.OverLay;
             let tm = new strTotalMode_Info();
             let tmo = tm.OverLay;
@@ -4891,7 +4891,7 @@ class clsAttrData {
             return tm;
         }
 
-        function cnvCondition(oldC: any) {
+        function cnvCondition(oldC: unknown) {
             let cd = [];
             for (let i = 0; i < oldC.length; i++) {
                 let od = oldC[i];
@@ -4914,13 +4914,13 @@ class clsAttrData {
             }
             return cd;
         }
-        function cnvTileMapView(oldTV: any){
+        function cnvTileMapView(oldTV: unknown){
             let tm = new strTileMapViewInfo();
             Object.assign(tm, oldTV);
             return tm;
         }
 
-        function cnvSouByou(oldSB: any) {
+        function cnvSouByou(oldSB: unknown) {
             let sb = new strSouByou_Info();
             Object.assign(sb, oldSB);
             if (sb.Auto==undefined){
@@ -4930,7 +4930,7 @@ class clsAttrData {
             return sb;
         }
 
-        function cnvValueShow(oldvs: any) {
+        function cnvValueShow(oldvs: unknown) {
             let sv = new strValueShow_Info();
             Object.assign(sv, oldvs);
             if (sv.DecimalNumber == undefined) {
@@ -4944,7 +4944,7 @@ class clsAttrData {
             return sv;
         }
 
-        function cnvScreen_Setting(oldSS: any) {
+        function cnvScreen_Setting(oldSS: unknown) {
             let ss = [];
             for (let i = 0; i < oldSS.length; i++) {
                 let s = new strScreen_Setting_Data_Info();
@@ -4967,7 +4967,7 @@ class clsAttrData {
             return ss;
         }
 
-        function cnvDataNode(oldDN: any) {
+        function cnvDataNode(oldDN: unknown) {
             let dn = new strNote_Attri();
             dn.Visible = oldDN.Visible;
             dn.Position = cnvPoint(oldDN.Position);
@@ -4976,7 +4976,7 @@ class clsAttrData {
             return dn;
         }
 
-        function cnvScreen_Back(oldsb: any) {
+        function cnvScreen_Back(oldsb: unknown) {
             let sb = new strScreen_Back_data();
             sb.MapAreaFrameLine = cnvLineProperty(oldsb.MapAreaFrameLine);
             sb.ScreenFrameLine = cnvLineProperty(oldsb.ScreenFrameLine);
@@ -4985,7 +4985,7 @@ class clsAttrData {
             sb.ObjectInner = cnvTileProperty(oldsb.ObjectInner);
             return sb;
         }
-        function cnvMissingData(oldM: any) {
+        function cnvMissingData(oldM: unknown) {
             let m = new strMissing_set();
             m.Print_Flag = oldM.Print_Flag;
             m.Text = oldM.Text;
@@ -4998,7 +4998,7 @@ class clsAttrData {
             m.LineShape = cnvLineProperty(oldM.LineShape);
             return m;
         }
-        function cnvMapTitle(oldTtl: any) {
+        function cnvMapTitle(oldTtl: unknown) {
             let ttl = new strTitle_Attri();
             ttl.Visible = oldTtl.Visible;
             ttl.Position = cnvPoint(oldTtl.Position);
@@ -5006,7 +5006,7 @@ class clsAttrData {
             ttl.Font = cnvFontProperty(oldTtl.Font);
             return ttl;
         }
-        function cnvMapSCL(olsSCL: any) {
+        function cnvMapSCL(olsSCL: unknown) {
             let scl = new strScale_Attri();
             scl.Visible = olsSCL.Visible;
             scl.Position = cnvPoint(olsSCL.Position);
@@ -5019,7 +5019,7 @@ class clsAttrData {
             scl.Unit = olsSCL.Unit;
             return scl;
         }
-        function cnvMapLegend(oldML: any) {
+        function cnvMapLegend(oldML: unknown) {
             let MapLegend = new strLegend_Attri();
             let mlb = MapLegend.Base;
             mlb.Back = cnvBackGround_Box_Property(oldML.Base.Back);
@@ -5067,14 +5067,14 @@ class clsAttrData {
             return MapLegend;
         }
 
-        function cnvPoint(oldP: any) {
+        function cnvPoint(oldP: unknown) {
             return new point(oldP.x, oldP.y);
         }
-        function cnvRectgle(orect: any) {
+        function cnvRectgle(orect: unknown) {
             let rec = new rectangle(orect.left, orect.right, orect.top, orect.bottom);
             return rec;
         }
-        function cnvCompass(ovsc: any) {
+        function cnvCompass(ovsc: unknown) {
             let vsc = new strCompass_Attri();
             vsc.dirWord.East = ovsc.dirWord.East;
             vsc.dirWord.West = ovsc.dirWord.West;
@@ -5087,7 +5087,7 @@ class clsAttrData {
             vsc.Position.y = ovsc.Position.y;
             return vsc;
         }
-        function cnvMarkProperty(oldMK: any) {
+        function cnvMarkProperty(oldMK: unknown) {
             let mk = new Mark_Property();
             mk.PrintMark = oldMK.PrintMark;
             mk.ShapeNumber = oldMK.ShapeNumber;
@@ -5097,7 +5097,7 @@ class clsAttrData {
             mk.WordFont = cnvFontProperty(oldMK.WordFont);
             return mk;
         }
-        function cnvFontProperty(oldFont: any) {
+        function cnvFontProperty(oldFont: unknown) {
             let fnt = new Font_Property();
             fnt.Color = cnvColorProperty(oldFont.Color);
             fnt.Size = oldFont.Size;
@@ -5125,7 +5125,7 @@ class clsAttrData {
             }
             return fnt;
         }
-        function cnvBackGround_Box_Property(oldBK: any) {
+        function cnvBackGround_Box_Property(oldBK: unknown) {
             let bk = new BackGround_Box_Property();
             bk.Tile = cnvTileProperty(oldBK.Tile)
             bk.Line = cnvLineProperty(oldBK.Line);
@@ -5133,11 +5133,11 @@ class clsAttrData {
             bk.Padding = oldBK.Padding;
             return bk;
         }
-        function cnvColorProperty(oldColor: any) {
+        function cnvColorProperty(oldColor: unknown) {
             let col = new colorRGBA();
             return Object.assign(col, oldColor);
         }
-        function cnvLineProperty(oldLine: any) {
+        function cnvLineProperty(oldLine: unknown) {
             let line = new Line_Property();
             line.BlankF = oldLine.BlankF;
             line.Width = oldLine.Width;
@@ -5145,11 +5145,11 @@ class clsAttrData {
             line.Edge_Connect_Pattern = cnvLineEdgeProperty(oldLine.Edge_Connect_Pattern);
             return line;
         }
-        function cnvLineEdgeProperty(oldLineEdsge: any) {
+        function cnvLineEdgeProperty(oldLineEdsge: unknown) {
             let ledge = new LineEdge_Connect_Pattern_Data_Info();
             return Object.assign(ledge, oldLineEdsge);
         }
-        function cnvTileProperty(oldTile: any) {
+        function cnvTileProperty(oldTile: unknown) {
             let tile = new Tile_Property();
             tile.BlankF = oldTile.BlankF;
             tile.Color = cnvColorProperty(oldTile.Color);
@@ -5158,7 +5158,7 @@ class clsAttrData {
 }
 
     //クリップボードから読み込み
-    SetDataFromClipBoard(MapDataList: any, attrText: any): any {
+    SetDataFromClipBoard(MapDataList: unknown, attrText: string): unknown {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
@@ -5180,7 +5180,7 @@ class clsAttrData {
     }
 
     //Clipboard,CSVのデータを一行ずつ処理して読み込む
-    ReadAttrDataOneLine(STR: any): any {
+    ReadAttrDataOneLine(STR: string): unknown {
         let ObjectErrorMessage = '';
         let lay = -1;
         let LayerReading = new strLayerReadingInfo();
@@ -5601,7 +5601,7 @@ class clsAttrData {
     }
 
     /**オブジェクトからオブジェクトコードを返す。見つからない場合は-1を返す Timeは地図ファイル指定の場合     */
-    Get_ObjectCode_from_ObjName(Layernum_MapfileName: any, ObjName: any, Time: any): number {
+    Get_ObjectCode_from_ObjName(Layernum_MapfileName: unknown, ObjName: string, Time: number): number {
         if(typeof(Layernum_MapfileName)=="string"){//地図ファイル指定
             let MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
             return MapFileObjectNameSearch.Get_KenToCode(ObjName, Time);
@@ -5613,7 +5613,7 @@ class clsAttrData {
 
 
     //文字列からデータに変換
-    Set_Data_from_String(LayerReading: any, TotalMissing: any): any {
+    Set_Data_from_String(LayerReading: unknown, TotalMissing: unknown): unknown {
         let E_Mes = "";
         let MapFileData = this.MapData.SetMapFile(LayerReading.MapFile);
         let MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile);
@@ -5807,7 +5807,7 @@ class clsAttrData {
 
 
     //レイヤ単位で文字列配列に入れたデータを設定する
-    Set_STRData_To_Cell(Layernum: any, DataNum: any, TTL: any, UNT: any, DTMissing: any, Note: any, DN_Str: any): any {
+    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string, UNT: string, DTMissing: string, Note: string, DN_Str: string): unknown {
         let ErrorMes = "";
         let L = this.LayerData[Layernum];
         let ObjNum = L.atrObject.ObjectNum;
@@ -6069,7 +6069,7 @@ class clsAttrData {
     }
 
     //レイヤにダミーオブジェクトとグループを設定する
-    Set_Dummy_and_Group(LayerNum: any, Dummy: any, DummyGroup: any): string {
+    Set_Dummy_and_Group(LayerNum: number, Dummy: string, DummyGroup: string): string {
         let L = this.LayerData[LayerNum];
         if (L.Type == enmLayerType.Trip_Definition) {
             return "";
@@ -6117,7 +6117,7 @@ class clsAttrData {
     }
 
     /**白地図・初期属性データ表示から読み込み DeleteDefDataFlag:取得した初期属性データを地図データ中から削除する場合true */
-    SetMapViewerData(MapDataList: any, LayDataInf: any, DeleteDefDataFlag: any): void {      
+    SetMapViewerData(MapDataList: unknown, LayDataInf: unknown, DeleteDefDataFlag: boolean): void {      
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length;i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
@@ -6255,7 +6255,7 @@ class clsAttrData {
         return EMes;
     }
 
-    Check_LayerShape_Sub(LayerNum: any): void {
+    Check_LayerShape_Sub(LayerNum: number): void {
         let EMes = "";
         let L = this.LayerData[LayerNum];
         switch (L.Type) {
@@ -6364,7 +6364,7 @@ class clsAttrData {
 
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
-    Get_Enable_KenCode_MPLine(Layernum: any, ObjNum: any): any[] {
+    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): unknown[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
             case enmKenCodeObjectstructure.MapObj:
                 let O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
@@ -6376,7 +6376,7 @@ class clsAttrData {
         }
     }
     //合成オブジェクトの外周線を返す
-    Get_EnableMPLine_SyntheticObject(Layernum: any, ObjNum: any): any[] {
+    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): unknown[] {
         let LD = this.LayerData[Layernum];
         let SO_Code = LD.atrObject.atrObjectData[ObjNum].MpObjCode;
         let Time = LD.Time;
@@ -6398,7 +6398,7 @@ class clsAttrData {
     }
 
     //オブジェクトが画面内に入るかどうかチェック
-    Check_screen_Kencode_In(Layernum: any, ObjNum: any): boolean {
+    Check_screen_Kencode_In(Layernum: number, ObjNum: number): boolean {
         let rect = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
             let turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
@@ -6423,7 +6423,7 @@ class clsAttrData {
         }
     }
         //地図ファイル中のオブジェクトが画面内に入るかどうかチェック
-    Check_Screen_Objcode_In(Layernum: any, ObjCode: any): boolean {
+    Check_Screen_Objcode_In(Layernum: number, ObjCode: number): boolean {
         let rect = this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
             let turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
@@ -6448,7 +6448,7 @@ class clsAttrData {
     }
 
     //指定の画面座標の中心点と半径の領域が画面に入る場合はtrue
-    Check_Screen_In(CenterP: any, R: any): boolean {
+    Check_Screen_In(CenterP: point, R: number): boolean {
         if ((CenterP instanceof rectangle) == true){
             if (spatial.Compare_Two_Rectangle_Position(CenterP, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) != cstRectangle_Cross.cstOuter) {
                 return true;
@@ -6465,7 +6465,7 @@ class clsAttrData {
         }
     }
 
-    Add_One_Data_Value(Layernum: any, TTL: any, UNT: any, Note: any, Dn_Val_str: any, Missing_F: any): void {
+    Add_One_Data_Value(Layernum: number, TTL: string, UNT: string, Note: string, Dn_Val_str: string, Missing_F: boolean): void {
 
         if(TTL == null){TTL=""}
         if(UNT == null){UNT=""}
@@ -6526,12 +6526,12 @@ class clsAttrData {
     }
 
     //レイヤのオブジェクト数を求める
-    Get_ObjectNum(Layernum: any): number {
+    Get_ObjectNum(Layernum: number): number {
         return this.LayerData[Layernum].atrObject.ObjectNum;
     }
 
     //レイヤ名を取得する。レイヤが1つでレイヤ名が空白の場合は""を返す
-    Get_Layer_Name(Layernum: any, CR_F=false): string {
+    Get_Layer_Name(Layernum: number, CR_F=false): string {
         let ln = "";
         if ((this.TotalData.LV1.Lay_Maxn == 1) && (this.LayerData[Layernum].Name == "")) {
         } else {
@@ -6543,7 +6543,7 @@ class clsAttrData {
     }
 
     /**指定レイヤの条件設定情報を文字列で出力 */
-    Get_Condition_Info(Layernum: any): any {
+    Get_Condition_Info(Layernum: number): unknown {
         let ST1 = "表示オブジェクト限定:"
 
         if (this.Check_ObjectLimitation(Layernum) == true) {
@@ -6591,7 +6591,7 @@ class clsAttrData {
     }
 
     //指定したレイヤに条件設定または表示オブジェクト限定が有効に設定されているかを調べる
-    Check_Condition_UMU(Layernum: any): boolean {
+    Check_Condition_UMU(Layernum: number): boolean {
         for (let i = 0; i < this.TotalData.Condition.length; i++) {
             if ((this.TotalData.Condition[i].Enabled == true) && (this.TotalData.Condition[i].Layer == Layernum)) {
                 return true;
@@ -6604,7 +6604,7 @@ class clsAttrData {
     }
 
     //**指定したレイヤに表示オブジェクト限定が有効に設定されているかを調べる */
-    Check_ObjectLimitation(Layernum: any): boolean {
+    Check_ObjectLimitation(Layernum: number): boolean {
         if (this.TotalData.ViewStyle.ObjectLimitationF == true) {
             for (let i = 0; i < this.Get_ObjectNum(Layernum); i++) {
                 if (this.LayerData[Layernum].atrObject.atrObjectData[i].Visible == false) {
@@ -6616,7 +6616,7 @@ class clsAttrData {
     }
 
     //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数えて文字列で出力
-    Get_Condition_Ok_Num_Info(Layernum: any): any {
+    Get_Condition_Ok_Num_Info(Layernum: number): unknown {
         let T = this.Get_Layer_Name(Layernum,false);
         T += "全オブジェクト数:"+ this.Get_ObjectNum(Layernum).toString()  + '\n';
         T += "条件に適合するオブジェクト数:" + this.Get_Condition_Ok_Num(Layernum).toString() +  '\n' + '\n';
@@ -6624,7 +6624,7 @@ class clsAttrData {
     }
 
     //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数える
-    Get_Condition_Ok_Num(Layernum: any): number {
+    Get_Condition_Ok_Num(Layernum: number): number {
         let n = 0;
         for (let j = 0; j < this.Get_ObjectNum(Layernum); j++) {
             if ((this.TotalData.ViewStyle.ObjectLimitationF == false) || (this.LayerData[Layernum].atrObject.atrObjectData[j].Visible == true)) {
@@ -6637,7 +6637,7 @@ class clsAttrData {
     }
 
     //属性検索条件･オブジェクト限定のチェック
-    Check_Condition(Layernum: any, Obj: any): boolean {
+    Check_Condition(Layernum: number, Obj: number): boolean {
         if ((this.LayerData[Layernum].atrObject.atrObjectData[Obj].Visible == false) && (this.TotalData.ViewStyle.ObjectLimitationF == true)) {
             return false;
         }
@@ -6765,10 +6765,10 @@ class clsAttrData {
 
 
     //データ項目のデータを配列で取得、欠損値は最小値-1に、カテゴリーデータの場合はカテゴリーの位置
-    Get_Data_Cell_Array_With_MissingValue(Layernum: any, DataNum: any): any[] {
+    Get_Data_Cell_Array_With_MissingValue(Layernum: number, DataNum: number): unknown[] {
         let ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
-        let DT: any[] = [];
+        let DT: unknown[] = [];
         if (ad.EnableValueNum == 0) {
             return DT;
         }
@@ -6792,7 +6792,7 @@ class clsAttrData {
     }
 
     //データ項目のデータが欠損値だった場合にTRUEが入る配列を返す
-    Get_Missing_Value_DataArray(Layernum: any, DataNum: any): any[] {
+    Get_Missing_Value_DataArray(Layernum: number, DataNum: number): unknown[] {
         let ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let dt =[];
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
@@ -6808,7 +6808,7 @@ class clsAttrData {
 
 
     //指定したレイヤのデータ項目の全オブジェクトの階級区分の際の位置を配列で取得する。欠損値は-1
-    Get_CategolyArray(Layernum: any, DataNum: any): string[] {
+    Get_CategolyArray(Layernum: number, DataNum: number): string[] {
         let Category_Array = [];
         for (let i = 0; i < this.LayerData[Layernum].atrObject.ObjectNum; i++) {
             Category_Array.push(this.Get_Categoly(Layernum, DataNum, i));
@@ -6817,7 +6817,7 @@ class clsAttrData {
     }
 
     //指定したレイヤのデータ項目・オブジェクトの階級区分の際の位置を取得する。欠損値の場合は-1を返す
-    Get_Categoly(Layernum: any, DataNum: any, Objectnum: any): string {
+    Get_Categoly(Layernum: number, DataNum: number, Objectnum: number): string {
         let ad = this.LayerData[Layernum].atrData.Data[DataNum];
         let Div_Num = ad.SoloModeViewSettings.Div_Num;
         let sj;
@@ -6851,7 +6851,7 @@ class clsAttrData {
         return sj;
     }
     //データ項目の初期凡例の設定
-    SetIniHanrei(Layernum: any, DataNum: any): void {
+    SetIniHanrei(Layernum: number, DataNum: number): void {
         let data = this.LayerData[Layernum].atrData.Data[DataNum];
         let lay = this.LayerData[Layernum];
 
@@ -7145,7 +7145,7 @@ class clsAttrData {
     }
 
     //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
-    Get_InnerTile(InnerData: any, Layernum: any, CategoryPos: any): any {
+    Get_InnerTile(InnerData: unknown, Layernum: number, CategoryPos: number): unknown {
         let t;
         if (CategoryPos == -1) {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
@@ -7156,7 +7156,7 @@ class clsAttrData {
         return t;
     }
     //階級区分設定(ペイントモードでは特に設定なし)
-    Set_Class_Div(Layernum: any, DataNum: any, setStartPos: any): void {
+    Set_Class_Div(Layernum: number, DataNum: number, setStartPos: number): void {
         let att_DTA = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         let n = att_DTA.Div_Num;
         for (let j = setStartPos; j < n; j++) {
@@ -7187,7 +7187,7 @@ class clsAttrData {
     }
 
     //2色グラテーション設定
-    Twocolort(Layernum: any, DataNum: any): void {
+    Twocolort(Layernum: number, DataNum: number): void {
         let pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         let n = pms.Div_Num;
         if (n == 1) {
@@ -7201,7 +7201,7 @@ class clsAttrData {
     }
 
     //3色グラテーション設定
-    Threecolor(Layernum: any, DataNum: any, Color_cng_n: any): void {
+    Threecolor(Layernum: number, DataNum: number, Color_cng_n: number): void {
         let pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         let n = pms.Div_Num;
         let coldata = Generic.ThreeColorGradation(pms.ClassPaintMD.color1, pms.ClassPaintMD.color3, pms.ClassPaintMD.color2, n, Color_cng_n);
@@ -7211,7 +7211,7 @@ class clsAttrData {
     }
 
     //複数グラデーション
-    FourColor(Layernum: any, DataNum: any, Color_cng_n: any, GradationPoint4: any, col: any): void {
+    FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: unknown, col: unknown): void {
         let ColData = [];// colorARGB
 
         if (Color_cng_n == GradationPoint4) { return; }
@@ -7243,7 +7243,7 @@ class clsAttrData {
     }
    
     //データ項目の平均、合計、標準偏差等を計算
-    CulcuOne(Layernum: any, DataNum: any): void {
+    CulcuOne(Layernum: number, DataNum: number): void {
         let L = this.LayerData[Layernum].atrData.Data[DataNum];
         L.MissingValueNum = this.Get_Att_Missing_Num(Layernum, DataNum);
         L.EnableValueNum = this.LayerData[Layernum].atrObject.ObjectNum - L.MissingValueNum;
@@ -7282,7 +7282,7 @@ class clsAttrData {
 
 
     /**オブジェクトの重心取得、できなかった場合はFalse */
-    Get_ObjectGravityPoint(Layernum: any, ObjNumber: any): point {
+    Get_ObjectGravityPoint(Layernum: number, ObjNumber: number): point {
         let lay = this.LayerData[Layernum];
         let LO = lay.atrObject.atrObjectData[ObjNumber];
         if (lay.Type == enmLayerType.Mesh) {
@@ -7307,7 +7307,7 @@ class clsAttrData {
     }
 
     //オブジェクトの面積取得
-    GetObjMenseki(Layernum: any, ObjNumber: any): number {
+    GetObjMenseki(Layernum: number, ObjNumber: number): number {
         let lay=this.LayerData[Layernum];
         let LO = lay.atrObject.atrObjectData[ObjNumber];
         if (lay.Type == enmLayerType.Mesh) {
@@ -7331,7 +7331,7 @@ class clsAttrData {
     }
 
     //オブジェクトの周長を求める
-    Get_ObjectLength(Layernum: any, ObjNum: any): number {
+    Get_ObjectLength(Layernum: number, ObjNum: number): number {
         let lay=this.LayerData[Layernum];
         let ELine;
         switch (lay.atrObject.atrObjectData[ObjNum].Objectstructure) {
@@ -7369,7 +7369,7 @@ class clsAttrData {
     }
 
     //階級区分値の指定
-    Set_Div_Value(Layernum: any, DataNum: any): void {
+    Set_Div_Value(Layernum: number, DataNum: number): void {
         let L = this.LayerData[Layernum].atrData.Data[DataNum];
         let v = L.SoloModeViewSettings.Div_Method;
         let EDataNum = L.EnableValueNum;
@@ -7447,7 +7447,7 @@ class clsAttrData {
         }
     }
 
-    Get_Att_Missing_Num(LayerNum: any, DataNum: any): number {
+    Get_Att_Missing_Num(LayerNum: number, DataNum: number): number {
         if (this.LayerData[LayerNum].atrData.Data[DataNum].MissingF == false) {
             return 0;
         } else {
@@ -7456,7 +7456,7 @@ class clsAttrData {
     }
 
     //欠損値を除いた配列でデータ項目の値を取得
-    Get_Data_Cell_Array_Without_MissingValue(LayerNum: any, DataNum: any): any[] {
+    Get_Data_Cell_Array_Without_MissingValue(LayerNum: number, DataNum: number): unknown[] {
         let ObjNum = this.LayerData[LayerNum].atrObject.ObjectNum;
         let DT = [];
         let LD = this.LayerData[LayerNum].atrData.Data[DataNum];
@@ -7484,15 +7484,15 @@ class clsAttrData {
         }
     }
 
-    Get_DataType(Layernum: any, DataNum: any): any {
+    Get_DataType(Layernum: number, DataNum: number): unknown {
         return this.LayerData[Layernum].atrData.Data[DataNum].DataType;
 
     }
-    Get_DataNote(Layernum: any, DataNum: any): string {
+    Get_DataNote(Layernum: number, DataNum: number): string {
         return this.LayerData[Layernum].atrData.Data[DataNum].Note;
     }
 
-    Set_DataTitle_to_CheckedListBox(CheckedListBox: any, Layernum: any, defoChecked: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
+    Set_DataTitle_to_CheckedListBox(CheckedListBox: unknown, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         let titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         let list = [];
         for(let i in titles){
@@ -7503,7 +7503,7 @@ class clsAttrData {
     }
 
 
-    Set_DataTitle_to_cboBox(cbox: any, Layernum: any, SelectedIndex: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
+    Set_DataTitle_to_cboBox(cbox: unknown, Layernum: number, SelectedIndex: number, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         let titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         let items = [];
         for (let i = 0; i < titles.length; i++) {
@@ -7513,7 +7513,7 @@ class clsAttrData {
     }
 
     //**グラフデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    getGraphTitle(Layernum: any): string[] {
+    getGraphTitle(Layernum: number): string[] {
         let graph = this.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         let items = [];
         for (let i = 0; i < graph.DataSet.length; i++) {
@@ -7527,7 +7527,7 @@ class clsAttrData {
     }
 
     //**ラベルデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    getLabelTitle(Layernum: any): string[] {
+    getLabelTitle(Layernum: number): string[] {
         let lbl = this.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         let items = [];
         for (let i = 0; i < lbl.DataSet.length; i++) {
@@ -7560,7 +7560,7 @@ class clsAttrData {
     // <param name="Category_f">カテゴリーデータを選択可に</param>
     // <param name="String_f">文字列データを選択可に</param>
     // <param name="Special_Astarisk_Num">特別にアスタリスクにする番号</param>
-    getDataTitleName(Layernum: any, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): string[] {
+    getDataTitleName(Layernum: number, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): string[] {
         let ad = this.LayerData[Layernum].atrData;
         let items = [];
         const n = this.Get_DataNum(Layernum);
@@ -7601,7 +7601,7 @@ class clsAttrData {
         return items;
     }
 
-    Get_DataTitle(Layernum: any, DataNum: any, PreFixDataNumberFlag: any): string {
+    Get_DataTitle(Layernum: number, DataNum: number, PreFixDataNumberFlag: boolean): string {
         let tx = this.LayerData[Layernum].atrData.Data[DataNum].Title;
         if (PreFixDataNumberFlag == true) {
             tx = (DataNum + 1) + ":" + tx;
@@ -7609,7 +7609,7 @@ class clsAttrData {
         return tx;
     }
 
-    Get_DataTitleLayer(Layernum: any, PreFixDataNumberFlag: any): string[] {
+    Get_DataTitleLayer(Layernum: number, PreFixDataNumberFlag: boolean): string[] {
         let n = this.LayerData[Layernum].atrData.Count;
         let ttl = [];
         for (let i = 0; i < n; i++){
@@ -7618,7 +7618,7 @@ class clsAttrData {
         return ttl;
     }
 
-    Get_DataUnitLayer(Layernum: any): string[] {
+    Get_DataUnitLayer(Layernum: number): string[] {
         let n = this.LayerData[Layernum].atrData.Count;
         let unt = [];
         for (let i = 0; i < n; i++) {
@@ -7627,11 +7627,11 @@ class clsAttrData {
         return unt;
     }
 
-    Get_DataUnit(Layernum: any, DataNum: any): string {
+    Get_DataUnit(Layernum: number, DataNum: number): string {
         return this.LayerData[Layernum].atrData.Data[DataNum].Unit;
     }
 
-    Get_DataUnit_With_Kakko(Layernum: any, DataNum: any): string {
+    Get_DataUnit_With_Kakko(Layernum: number, DataNum: number): string {
         let tx = "";
         if (this.LayerData[Layernum].atrData.Data[DataNum].DataType == enmAttDataType.Normal) {
             tx = this.Get_DataUnit(Layernum, DataNum);
@@ -7641,18 +7641,18 @@ class clsAttrData {
         }
         return tx;
     }
-    Get_DataMax(Layernum: any, DataNum: any): number {
+    Get_DataMax(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].Statistics.Max;
     }
 
-    Get_DataMin(Layernum: any, DataNum: any): number {
+    Get_DataMin(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].Statistics.Min;
     }
 
-    Get_DataNum(LayerNum: any): number {
+    Get_DataNum(LayerNum: number): number {
         return this.LayerData[LayerNum].atrData.Count;
     }
-    Get_DataMissingNum(LayerNum: any, DataNum: any): number {
+    Get_DataMissingNum(LayerNum: number, DataNum: number): number {
         return this.LayerData[LayerNum].atrData.Data[DataNum].MissingValueNum;
     }
   
@@ -7671,9 +7671,9 @@ class clsAttrData {
     }
 
     /** 連続表示モードのデータセットをリストビューに入れる*/
-    SeriesMode_to_ListViewData(seriesListView: any, DataSetItem: any): void {
+    SeriesMode_to_ListViewData(seriesListView: unknown, DataSetItem: unknown): void {
         seriesListView.clear();
-        let seriesData: any[] = [4];
+        let seriesData: unknown[] = [4];
         for (let i = 0; i < DataSetItem.length; i++) {
             let di = DataSetItem[i];
             seriesData[0] = Number((i + 1).toString());
@@ -7720,7 +7720,7 @@ class clsAttrData {
         }
 
     }
-    Add_one_Layer(LayerName: any, LayerType: any, LayerMeshType: any, LayerShape: any, LayerMapFile: any, LayerTime: any, LayerSystem: any, comment: any, ObjectNum: any, ObjData: any): void {
+    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: number, LayerSystem: number, comment: string, ObjectNum: number, ObjData: unknown): void {
         //レイヤの追加
         let NewL = new strLayerDataInfo();
         if (LayerMapFile == "") {
@@ -7749,7 +7749,7 @@ class clsAttrData {
     }
 
     /**レイヤ名をセレクトボックスに入れる */
-    Set_LayerName_to(selbox: any, SelectedIndex: any, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
+    Set_LayerName_to(selbox: unknown, SelectedIndex: number, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
         let lst = [];
         let fall=false;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -7783,7 +7783,7 @@ class clsAttrData {
 
     
     /**セレクトボックスにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    Set_ObjectName_to_selectBox(selbox: any, Layernum: any, SelectedObject: any): void {
+    Set_ObjectName_to_selectBox(selbox: unknown, Layernum: number, SelectedObject: number): void {
         let objList=[];
         selbox.removeAll();
         let L = this.LayerData[Layernum].atrObject;
@@ -7796,7 +7796,7 @@ class clsAttrData {
         }
     }
     /**セレクトボックスにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    Set_DummyObjectName_to_selectBox(selbox: any, Layernum: any, SelectedObject: any): void {
+    Set_DummyObjectName_to_selectBox(selbox: unknown, Layernum: number, SelectedObject: number): void {
         let objList = [];
         selbox.removeAll();
         let L = this.LayerData[Layernum].Dummy
@@ -7810,7 +7810,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    Set_ObjectName_to_checkedListBox(lbox: any, Layernum: any, SelectedObjects: any): void {
+    Set_ObjectName_to_checkedListBox(lbox: unknown, Layernum: number, SelectedObjects: unknown): void {
         let objList=[];
         lbox.removeAll();
         let L = this.LayerData[Layernum].atrObject;
@@ -7825,7 +7825,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    Set_DummyObjectName_to_checkedListBox(lbox: any, Layernum: any, SelectedObjects: any): void {
+    Set_DummyObjectName_to_checkedListBox(lbox: unknown, Layernum: number, SelectedObjects: unknown): void {
         let objList=[];
         lbox.removeAll();
         let L=this.LayerData[Layernum].Dummy
@@ -7841,14 +7841,14 @@ class clsAttrData {
         }
     }
     /**レイヤとそのでのオブジェクト位置から代表点を取得 */
-    Get_CenterP(Layernum: any, ObjNum: any): point {
+    Get_CenterP(Layernum: number, ObjNum: number): point {
         return this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].CenterPoint;
     }
 
     /**オブジェクトと座標の距離 */
-    Distance_Kencode_Point(Layernum: any, Obj: any, Point: any): number {
+    Distance_Kencode_Point(Layernum: number, Obj: number, Point: point): number {
         let L = this.LayerData[Layernum];
-        let v: any;
+        let v: unknown;
         if (L.Shape == enmShape.LineShape) {
             v = this.Get_Distance_Kencode_Between_ObjectLine_and_Point(Layernum, Obj, Point);
         } else {
@@ -7866,7 +7866,7 @@ class clsAttrData {
     }
 
     /**KecnCodeと地図ファイルのオブジェクトの間で指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
-    Distance_Kencode_MPObject(LayNum1: any, ObjNum1: any, MapFile: any, ObjCode2: any, Time: any): number {
+    Distance_Kencode_MPObject(LayNum1: number, ObjNum1: number, MapFile: string, ObjCode2: number, Time: number): number {
         let P1;
         let P2;
         let d;
@@ -7901,7 +7901,7 @@ class clsAttrData {
     }
 
     /**KecnCodeで指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
-    Distance_Kencode_Object(ObjNum1: any, ObjNum2: any, LayNum1: any, LayNum2: any): number {
+    Distance_Kencode_Object(ObjNum1: number, ObjNum2: number, LayNum1: number, LayNum2: number): number {
         let P1;
         let P2;
 
@@ -7927,7 +7927,7 @@ class clsAttrData {
     }
 
     /**オブジェクトの線とある地点との距離を求める */
-    Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum: any, ObjNum: any, P: any): number {
+    Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum: number, ObjNum: number, P: point): number {
 
         let ELine = this.Get_Enable_KenCode_MPLine(LayNum, ObjNum);
         let d = this.LayerData[LayNum].MapFileData.Distance_PointMPLineAllay(P,  ELine);
@@ -7935,7 +7935,7 @@ class clsAttrData {
     }
 
     /**オブジェクトを削除（移動レイヤ、移動主体定義レイヤ、合成オブジェクト使用レイヤは削除不可 LayerDelNum:レイヤごとの削除数の配列。削除しない場合は0,ObjectDeleteCheck:オブジェクトの数だけの配列で、削除する場合Trueを、全レイヤ分Listに格納） */
-    DeleteObjects(LayerDelNum: any, ObjectDeleteCheck: any): void {
+    DeleteObjects(LayerDelNum: number, ObjectDeleteCheck: unknown): void {
         //線モードの起点オブジェクトをチェックするために新旧対応リスト作成
         let LayMax=this.TotalData.LV1.Lay_Maxn;
         let ConvObj = [];
@@ -8107,17 +8107,17 @@ class clsAttrMapData {
     private strAttrMap = class {
         FileName: string | undefined; //String
         FullPath: string | undefined; //String
-        Mapdata: any; //clsMapData
+        Mapdata: unknown; //clsMapData
     };
     private Prestage_MapFileName: string = "";
     private attrMapData: { [key: string]: any } = {}; //  clsMapData
     private Object_Name_Search: { [key: string]: any } = {}; //clsObjectNameSearch
 
-    getAllMapData(): any[] {
+    getAllMapData(): unknown[] {
         return this.attrMapData;
     }
 
-    AddExistingMapData(MapData: any, MapFileName: any): void {
+    AddExistingMapData(MapData: unknown, MapFileName: string): void {
         let key = MapFileName.toUpperCase();
         this.attrMapData[key] = MapData;
         this.Object_Name_Search[key] = new clsObjectNameSearch(MapData, true);
@@ -8125,7 +8125,7 @@ class clsAttrMapData {
             this.Prestage_MapFileName = key;
         }
     }
-    SetMapFile(MapFileName: any): any {
+    SetMapFile(MapFileName: string): unknown {
         if (MapFileName == "") {
             return this.attrMapData[this.Prestage_MapFileName];
         } else {
@@ -8133,7 +8133,7 @@ class clsAttrMapData {
             return this.attrMapData[MapFileName.toUpperCase()];
         }
     }
-    SetObject_Name_Search(MapFileName: any): any {
+    SetObject_Name_Search(MapFileName: string): unknown {
         if (MapFileName == "") {
             return this.Object_Name_Search[this.Prestage_MapFileName];
         } else {
@@ -8152,7 +8152,7 @@ class clsAttrMapData {
         return Object.keys(this.attrMapData).length;
     }
     //地図ファイルの有無を調べる
-    CheckMapfileExists(MapFileName: any): boolean {
+    CheckMapfileExists(MapFileName: string): boolean {
         let fname = Object.keys(this.attrMapData);
         if (fname.indexOf(MapFileName) == -1) {
             return false;
@@ -8162,7 +8162,7 @@ class clsAttrMapData {
     }
 
 
-    EqualizeZahyoMode(Zahyo: any): any {
+    EqualizeZahyoMode(Zahyo: unknown): unknown {
         //読み込んだ地図ファイルの投影法等座標設定を同じにする
         let f = true;
         let emes = "";
@@ -8188,8 +8188,8 @@ class clsAttrMapData {
     }
 
     //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
-    GetAllPointObjectGroup(): any[] {
-        let AllPOBJG: { [key: string]: any[] } = {};
+    GetAllPointObjectGroup(): unknown[] {
+        let AllPOBJG: { [key: string]: unknown[] } = {};
         for (let key in this.attrMapData) {
             let cmap = this.attrMapData[key];
             let PointObk = [];
@@ -8206,7 +8206,7 @@ class clsAttrMapData {
     }
 
     //地図ファイル名、線種、グループで、線種位置番号を求める
-    GetLineKindPosition(MapFileName: any, lineKindNum: any, PatternNum: any): any {
+    GetLineKindPosition(MapFileName: string, lineKindNum: number, PatternNum: number): unknown {
         let n = 0;
         for (let key in this.attrMapData) {
             let cmap = this.attrMapData[key];
@@ -8232,7 +8232,7 @@ class clsAttrMapData {
     }
 
     /** 読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す*/
-    GetAllMapLineKind(): any[] {
+    GetAllMapLineKind(): unknown[] {
         let LKind = [];
         for (let key in this.attrMapData) {
             let LK = this.attrMapData[key].Get_TotalLineKind();
@@ -8265,7 +8265,7 @@ class clsAttrMapData {
     }
 
     /**指定した地図ファイルを削除 */
-    RemoveMapData(mapFileName: any): void {
+    RemoveMapData(mapFileName: string): void {
         if(mapFileName == "" ){
             mapFileName = this.Prestage_MapFileName
         }
@@ -8283,8 +8283,8 @@ class clsAttrMapData {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 class clsObjectNameSearch {
-    private Object_Name_Search: any;
-    private Object_Name_Stac_for_Search_O_Code: any[];
+    private Object_Name_Search: unknown;
+    private Object_Name_Stac_for_Search_O_Code: unknown[];
     private checkObjectNameKanjiCompatibleFF: boolean;
 
     ObjNameAndTime_Info = class {
@@ -8292,7 +8292,7 @@ class clsObjectNameSearch {
         SETime: Start_End_Time_data = new Start_End_Time_data();
     };
 
-    constructor(MapData: any, CheckKanjiCompatibleFlag: any) {
+    constructor(MapData: unknown, CheckKanjiCompatibleFlag: boolean) {
         //オブジェクト名検索用クラス
         this.Object_Name_Search = new clsSortingSearch();
         this.Object_Name_Stac_for_Search_O_Code = []; //ObjNameAndTime_Info
@@ -8324,11 +8324,11 @@ class clsObjectNameSearch {
         this.Object_Name_Search.AddEnd();
     }
 
-    Object_Name_Stac(Pos: any): any {
+    Object_Name_Stac(Pos: number): unknown {
         return this.Object_Name_Stac_for_Search_O_Code[Pos];
     }
 
-    DataPositionValue(Pos: any): any {
+    DataPositionValue(Pos: number): unknown {
         return (this.Object_Name_Search.DataPositionValue as any)[Pos];
     }
 
@@ -8336,11 +8336,11 @@ class clsObjectNameSearch {
         return this.Object_Name_Search.NumofData();
     }
 
-    DataPosition(num: any): any {
+    DataPosition(num: number): unknown {
         return this.Object_Name_Search.DataPosition(num);
     }
 
-    Get_KenToCode(ObjName: any, Time: any): number {
+    Get_KenToCode(ObjName: string, Time: number): number {
         //オブジェクト名からオブジェクト番号を取得する。見つからなかった場合-1を返す
         if (ObjName == "") {
             return -1;

@@ -2202,7 +2202,7 @@ export class gridControl {
         this.Print_Grid_ViewSize();
     }
 
-    DeleteColumns = (GridLay: any, DeletePoint: any, DeleteNum: any) => {
+    DeleteColumns = (GridLay: number, DeletePoint: number, DeleteNum: number) => {
 
         //データ部分を挿入
         let GP = this.Grid_Property[GridLay];
@@ -2243,7 +2243,7 @@ export class gridControl {
         this.Print_Grid_ViewSize();
     }
 
-    InsertColumns = (GridLay: any, InsertPoint: any, InsertNum: any) => {
+    InsertColumns = (GridLay: number, InsertPoint: number, InsertNum: number) => {
 
         //データ部分を挿入
         let GP = this.Grid_Property[GridLay];
@@ -2306,7 +2306,7 @@ export class gridControl {
     }
 
     /** 固定行・列に番号をふる */
-    Set_FixedCell_Words = (L: any) => {
+    Set_FixedCell_Words = (L: number) => {
         let GP = this.Grid_Property[L];
         if (this.Grid_Total.FixedObjectName_n > 0) {
             for (let i = 0; i < GP.Ymax; i++) {
@@ -2342,7 +2342,7 @@ export class gridControl {
         }
     }
 
-    Get_XYData = (Layer: any, X: any, Y: any) => {
+    Get_XYData = (Layer: number, X: number, Y: number) => {
         let GP = this.Grid_Property[Layer];
         if ((X < 0) && (Y < 0)) {
             return GP.FixedUpperLeft[X + this.Grid_Total.FixedObjectName_n][Y + this.Grid_Total.FixedDataItem_n].Text;
@@ -2389,7 +2389,7 @@ Grid_Copy = () => {
     }
 
     /** 切り取り、貼り付け、入力、クリアのアンドゥセット*/
-    SetUndo_CopyPasteCutClear = (Caption: any) => {
+    SetUndo_CopyPasteCutClear = (Caption: string) => {
         let rect = this.Grid_Property[this.Grid_Total.Layer].MouseUpDownRect();
         let sb = "";
         for (let i = rect.top; i <= rect.bottom; i++) {
@@ -2406,7 +2406,7 @@ Grid_Copy = () => {
         this.UndoArray.push(UndoInput);
     }
 
-    SetUndo_ChangeRowHeight = (Layer: any, top: any, bottom: any) => {
+    SetUndo_ChangeRowHeight = (Layer: number, top: number, bottom: number) => {
         let UndoData = new Undo_ChangeRowHeight();
         let oldH = [];
         let GP = this.Grid_Property[Layer];
@@ -2424,7 +2424,7 @@ Grid_Copy = () => {
         UndoData.Bottom = bottom;
         this.UndoArray.push(UndoData);
     }
-    SetUndo_Input = (X: any, Y: any, Caption: any) => {
+    SetUndo_Input = (X: number, Y: number, Caption: string) => {
         let UndoData = new Undo_InputCopyPasteClearInfo();
         UndoData.Layer = this.Grid_Total.Layer;
         UndoData.GridData = this.Get_Data_from_Grid(this.Grid_Total.Layer, X, Y);
@@ -2444,7 +2444,7 @@ Grid_Copy = () => {
         this.UndoArray.push(UndoData)
     }
     
-    SetUndo_InsertColumns = (Caption: any, x: any, InsertNum: any) => {
+    SetUndo_InsertColumns = (Caption: string, x: number, InsertNum: number) => {
         //列挿入
         let UndoData = new Undo_InsertColumns();
         UndoData.caption = Caption;
@@ -2455,7 +2455,7 @@ Grid_Copy = () => {
     }
 
     // 行削除のundo
-    SetUndo_DeleteRows = (Caption: any, Y: any, DeleteNum: any) => {
+    SetUndo_DeleteRows = (Caption: string, Y: number, DeleteNum: number) => {
         let sb = "";
         for (let i = Y; i < Y + DeleteNum; i++) {
             for (let j = -this.Grid_Total.FixedObjectName_n; j < this.Grid_Property[this.Grid_Total.Layer].Xmax; j++) {
@@ -2472,7 +2472,7 @@ Grid_Copy = () => {
     }
 
     ////// 列削除のundo
-    SetUndo_DeleteColumns = (Caption: any, X: any, DeleteNum: any) => {
+    SetUndo_DeleteColumns = (Caption: string, X: number, DeleteNum: number) => {
         let sb = "";
         for (let i = -this.Grid_Total.FixedDataItem_n; i < this.Grid_Property[this.Grid_Total.Layer].Ymax;i++) {
             for (let j = X; j < X + DeleteNum; j++) {
@@ -2488,7 +2488,7 @@ Grid_Copy = () => {
         this.UndoArray.push(UndoData);
     }
 
-    Grid_Paste = (clipText: any, UndoMode_Flag: any) => {
+    Grid_Paste = (clipText: string, UndoMode_Flag: boolean) => {
 
         let GP = this.Grid_Property[this.Grid_Total.Layer];
 
@@ -2750,7 +2750,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
 
     /**タブクリック */
-    tabMouseDown = (e: any) => {
+    tabMouseDown = (e: MouseEvent) => {
         //マウスダウンでレイヤ移動
         if (this.txtTextBox?.getVisibility?.() == true) {
             if (this.txtTextBox.setVisibility) this.txtTextBox.setVisibility(false);
@@ -2781,7 +2781,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
             }
         }
 
-    tabTouchend = (e: any) => {
+    tabTouchend = (e: TouchEvent) => {
         let touchTime = (new Date().getTime() - this.touchStartTime) / 1000;
         if ((touchTime > 0.5)&&(this.Grid_Total.tOpe.TabClickEnabled)) {
             //タッチで0.5秒以上移動しない場合は右クリック
@@ -2790,10 +2790,10 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
 
     /**タブを右クリック */
-    tabRightClickMenu = (p: any) => {
+    tabRightClickMenu = (p: point) => {
         let GPO = this.Grid_Property[this.Grid_Total.Layer].Ope;
         let lc = this.Grid_Total.LayerCaption;
-        let mnuTabRightMenuMove = (e: any) => {
+        let mnuTabRightMenuMove = (e: Event) => {
             let nt = this.Grid_Total.Layer;
             switch (e.caption) {
                 case "1つ前に移動": {
@@ -2863,7 +2863,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         };
         let mnuTabRightMenuChangeTabName = () => {
             this.removeEventlister();
-            Generic.prompt(undefined, "新しい" + this.Grid_Total.LayerCaption + "名", this.Grid_Property[this.Grid_Total.Layer].LayerName, (newLayerName: any) => {
+            Generic.prompt(undefined, "新しい" + this.Grid_Total.LayerCaption + "名", this.Grid_Property[this.Grid_Total.Layer].LayerName, (newLayerName: string) => {
                 if (newLayerName == "") {
                 } else {
                     let UndoData = new Undo_ChangeLayerName();
@@ -2878,7 +2878,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
                 }
             }, "left", this.addDocumentEvent);
         };
-        let mnuTabRightMenuInsert = (e: any) => {
+        let mnuTabRightMenuInsert = (e: Event) => {
             let nt;
             if (e.caption == "前に挿入") {
                 nt = this.Grid_Total.Layer;
@@ -2935,14 +2935,14 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         Generic.ceatePopupMenu(popmenu, p);
     }
 
-    Swap_GridLay = (L1: any,L2: any) => {
+    Swap_GridLay = (L1: number,L2: number) => {
         let TempGridLay=this.Grid_Property[L1].Clone();
         this.Grid_Property[L1] = this.Grid_Property[L2].Clone();
         this.Grid_Property[L2] = TempGridLay;
     }
 
     /**レイヤを削除 */
-    Delete_Layer = (DLay: any) => {
+    Delete_Layer = (DLay: number) => {
         this.Grid_Total.LayerNum--;
         this.Grid_Property.splice(DLay,1);
         this.Grid_Property.length = this.Grid_Total.LayerNum;
@@ -2960,7 +2960,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
     /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
     //マウス操作
-    mdown = (e: any) => {
+    mdown = (e: MouseEvent) => {
         e.preventDefault();
         let event;
         if (e.type === "mousedown") {
@@ -3096,7 +3096,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
             }
         }
     }
-    mmove = (e: any) => {
+    mmove = (e: MouseEvent) => {
         let event;
         e.preventDefault();
         if(this.txtTextBox?.getVisibility?.()==true){return;}
@@ -3181,7 +3181,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
 
     /**キーダウン */
-    keydown = (e: any) => {
+    keydown = (e: KeyboardEvent) => {
         if (this.txtTextBox?.getVisibility?.() == true) {
             let op=new point(this.GX,this.GY);
             this.txtTextBox_KeyDown(e);
@@ -3291,7 +3291,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         }
     }
 
-    Key_Move = (KeyCode: any, Shit_f: any) => {
+    Key_Move = (KeyCode: number, Shit_f: boolean) => {
 
         let X, Y;
         let GP = this.Grid_Property[this.Grid_Total.Layer];
@@ -3367,7 +3367,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
 
     /**テキストボックス中でのキー操作 */
-    txtTextBox_KeyDown = (e: any) => {
+    txtTextBox_KeyDown = (e: KeyboardEvent) => {
         
         let CTRL_Key = e.ctrlKey;
         let Shift_Key = e.shiftKey;
@@ -3439,7 +3439,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         }
     }
 
-    Scroll_Set = (X: any, Y: any) => {
+    Scroll_Set = (X: number, Y: number) => {
 
         let GP = this.Grid_Property[this.Grid_Total.Layer];
         if ((GP.BottomCell - 1 < Y) && (Y <= GP.Ymax - 1)) {
@@ -3458,7 +3458,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         }
     }
 
-    mup = (e: any) => {
+    mup = (e: MouseEvent) => {
         e.preventDefault();
         let event;
 
@@ -3631,7 +3631,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
 
     /** グリッド上のマウスカーソルが列・行の境界線上にあるかどうかを調べる 0を返す/変更できない位置、1/行高変更可、2/列幅変更可　*/
-    check_Width_Height_Change = (mx: any, my: any) => {
+    check_Width_Height_Change = (mx: number, my: number) => {
 
         let i, s
         let H, w
@@ -3703,7 +3703,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
     }
 
     
-    Print_GridResizeLine = (mox: any, moy: any) => {
+    Print_GridResizeLine = (mox: number, moy: number) => {
         if (!this.ctx || !this.GridResize.tempImage) return;
         
         let w, H;
@@ -3742,7 +3742,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         }
     }
 
-    Grid_Resize_MouseUp = (X: any, Y: any) => {
+    Grid_Resize_MouseUp = (X: number, Y: number) => {
         let S1, s2, T, TY, tx;
         let w, H;
 
@@ -3799,7 +3799,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         this.Print_Grid_Data();
     }
 
-    ChangeRowHeight = (Layer: any, top: any, bottom: any, Height: any) => {
+    ChangeRowHeight = (Layer: number, top: number, bottom: number, Height: number) => {
         let GP = this.Grid_Property[Layer];
         for (let i = top; i <= bottom; i++) {
             if (i < 0) {
@@ -3818,7 +3818,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         }
     }
 
-    ChangeColumnWidth = (Layer: any, left: any, right: any, Width: any) => {
+    ChangeColumnWidth = (Layer: number, left: number, right: number, Width: number) => {
         let GP = this.Grid_Property[Layer];
         for (let i = left; i <= right; i++) {
             if (i < 0) {
@@ -3837,7 +3837,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         }
     }
 
-    SetUndo_ChangeColumnWidth = (Layer: any, left: any, right: any, Width: any) => {
+    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, Width: number) => {
         let UndoData=new Undo_ChangeColumnWidth();
         let oldW = [];
         let GP = this.Grid_Property[Layer];
@@ -3856,13 +3856,13 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         this.UndoArray.push(UndoData);
     }
 
-    GetGridXY = (MouseX: any, MouseY: any, ZaroLine_F: any) => {
+    GetGridXY = (MouseX: number, MouseY: number, ZaroLine_F: boolean) => {
         const GridX = this.GetGridX(MouseX, ZaroLine_F);
         const GridY = this.GetGridY(MouseY, ZaroLine_F);
         return new point(GridX, GridY)
     }
 
-    GetGridX = (MouseX: any, ZaroLine_F: any) => {
+    GetGridX = (MouseX: number, ZaroLine_F: boolean) => {
         let GridX;
         let GP = this.Grid_Property[this.Grid_Total.Layer];
         let w = 0;
@@ -3891,7 +3891,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         return GridX;
     }
 
-    GetGridY = (MouseY: any, ZaroLine_F: any) => {
+    GetGridY = (MouseY: number, ZaroLine_F: boolean) => {
         let GridY;
         let H = 0;
 
@@ -4019,7 +4019,7 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
         this.UndoArray.pop();
         this.Print_Grid_Data();
     }
-    SetGrid_UndoData = (Layer: any,rect: any,GridData: any) => {
+    SetGrid_UndoData = (Layer: number,rect: rectangle,GridData: unknown) => {
         let  SN  = 0;
         let cst = GridData.split("\t");
         for (let i = rect.top; i <= rect.bottom; i++) {
@@ -4036,49 +4036,49 @@ Check_ChangeEventRange = (X: any , Y: any , Xn: any , Yn: any ) => {
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /**　スクロールバーコントロール type:0縦、type1横　_areaRange:中身の大きさ*/
 class scrollBar {
-    setLength: (newLength: any) => void;
-    setVisibility: (visiflag: any) => void;
-    setXY: (x: any, y: any) => void;
-    getXY: (x: any, y: any) => any;
-    setPosition: (newPosition: any) => void;
+    setLength: (newLength: number) => void;
+    setVisibility: (visiflag: boolean) => void;
+    setXY: (x: number, y: number) => void;
+    getXY: (x: number, y: number) => point;
+    setPosition: (newPosition: number) => void;
     getPosition: () => number;
-    setMaxValue: (newMax: any) => void;
+    setMaxValue: (newMax: number) => void;
     getMaxValue: () => number;
-    setAreaRange: (newAreaRange: any) => void;
+    setAreaRange: (newAreaRange: number) => void;
     getAreaRange: () => number;
     removeEventlister: () => void;
     addEventlister: () => void;
 
     constructor(
-        ParentObj: any,
-        x: any,
-        y: any,
-        size: any,
-        length: any,
-        type: any,
-        _maxValue: any,
-        _areaRange: any,
-        largeChange: any,
-        smallChange: any,
+        ParentObj: unknown,
+        x: number,
+        y: number,
+        size: number,
+        length: number,
+        type: string,
+        _maxValue: number,
+        _areaRange: number,
+        largeChange: number,
+        smallChange: number,
         changeEventCall: any
     ) {
 
     let maxValue = _maxValue;
     let position = 0;
     let areaRange = _areaRange;
-    let frame: any;
-    let slideFrame: any;
-    let slider: any;
+    let frame: unknown;
+    let slideFrame: unknown;
+    let slider: unknown;
     let slength = length - size*2;
-    let slideArea: any;
-    let sliderSize: any;
-    let btnPlusCanvas: any;
+    let slideArea: unknown;
+    let sliderSize: unknown;
+    let btnPlusCanvas: unknown;
     const arrowCol = "#555555";
     const backCol = "#eeeeee";
     const sliderCol = "#bbbbbb";
     let btnMDownF = false;
-    let btnDownTimer: any;
-    let btnDownID: any;
+    let btnDownTimer: unknown;
+    let btnDownID: unknown;
     if (type == 0) {//縦
         frame = Generic.createNewDiv(ParentObj, "", "", "", x, y, size, length, "background-color:" + backCol, undefined);
         let btnMinusCanvas = Generic.createNewCanvas(frame, "tateMinus", "", 0, 0, size, size , undefined, "");
@@ -4157,7 +4157,7 @@ class scrollBar {
     addEvent();
     
     /**長さを変更 */
-    this.setLength = (newLength: any) => {
+    this.setLength = (newLength: number) => {
         length = newLength;
         slength = length - size*2;
         sliderSize = Math.max(areaRange / maxValue * slength, size);
@@ -4175,7 +4175,7 @@ class scrollBar {
     }
 
     /**表示非表示 */
-    this.setVisibility = (visiflag: any) => {
+    this.setVisibility = (visiflag: boolean) => {
         if (visiflag == true) {
             addEvent();
             frame.style.display = "inline";
@@ -4186,18 +4186,18 @@ class scrollBar {
     }
 
     /**スクロールバーの位置設定 */
-    this.setXY = (x: any, y: any) => {
+    this.setXY = (x: number, y: number) => {
         frame.style.left = x.px()
         frame.style.top = y.px()
     }
 
     /**スクロールバーの位置取得 */
-    this.getXY = (x: any, y: any) => {
+    this.getXY = (x: number, y: number): point => {
         return new point(frame.style.left.removePx(), frame.style.top.removePx());
     }
 
     /**スライダーの位置を設定 */
-    this.setPosition = (newPosition: any) => {
+    this.setPosition = (newPosition: number) => {
         position = newPosition;
         setSliderPosition();
     }
@@ -4208,7 +4208,7 @@ class scrollBar {
     }
 
     /**最大値を設定 */
-    this.setMaxValue = (newMax: any) => {
+    this.setMaxValue = (newMax: number) => {
         maxValue = newMax;
         if (position > maxValue) {
             position = maxValue;
@@ -4224,7 +4224,7 @@ class scrollBar {
     }
 
     /**エリアレンジを設定 */
-    this.setAreaRange = (newAreaRange: any) => {
+    this.setAreaRange = (newAreaRange: number) => {
         areaRange = newAreaRange;
         sliderSize = Math.max(areaRange / maxValue * slength, size);
         slideArea = slength - sliderSize;
@@ -4254,7 +4254,7 @@ class scrollBar {
         }
     }
 
-    function btnMdown(e: any) {
+    function btnMdown(e: MouseEvent) {
         if (btnMDownF == false) {
             btnMDownF = true;
             btnDownID = e.target.id;
@@ -4290,7 +4290,7 @@ class scrollBar {
         }
     }
 
-    function btnMup(e: any) {
+    function btnMup(e: MouseEvent) {
         if (btnMDownF == true) {
             btnMDownF = false;
             clearInterval(btnDownTimer);
@@ -4299,7 +4299,7 @@ class scrollBar {
         
     }
 
-    function wheel(e: any) {
+    function wheel(e: WheelEvent) {
         let opos = position;
         if (type == 0) {//縦
             position += smallChange * e.deltaY;
@@ -4330,10 +4330,10 @@ class scrollBar {
 
 
     let mdownF = false;
-    let sliderInPosition: any;//-1,0,1
-    let mDownsliderInPosition: any;
-    let mdownPos: any;
-    function mdown(event: any) {
+    let sliderInPosition: number;//-1,0,1
+    let mDownsliderInPosition: number;
+    let mdownPos: unknown;
+    function mdown(event: MouseEvent) {
         let e;
         if (event.type === "mousedown") {
             e = event ;
@@ -4373,7 +4373,7 @@ class scrollBar {
         }
     }
 
-    function mmove(event: any) {
+    function mmove(event: MouseEvent) {
         let e;
         if (event.type === "mousemove") {
             e = event ;
@@ -4402,7 +4402,7 @@ class scrollBar {
         changeEventCall(position);
     }
 
-    function mup(event: any) {
+    function mup(event: MouseEvent) {
         let e;
         if (event.type === "mouseup"){
             e = event ;
