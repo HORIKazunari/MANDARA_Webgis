@@ -2778,18 +2778,18 @@ function setting(locSearch: string) {
 
         const gbContourDrawMethod = Generic.createNewFrame(contourView, "", "", 0, 125, 170, 100, "等値線の描き方");
         Generic.createNewCheckBox(gbContourDrawMethod, "ポリゴン内部のみ描画", "contourDraw_in_Polygon_F", true, 10, 20, undefined,
-            function (obj: any) { attrData.nowDataSolo().ContourMD.Draw_in_Polygon_F = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowDataSolo().ContourMD.Draw_in_Polygon_F = obj.checked }, "");
         Generic.createNewCheckBox(gbContourDrawMethod, "等値線を曲線で近似", "contourSpline_flag", true, 10, 45, undefined,
-            function (obj: any) { attrData.nowDataSolo().ContourMD.Spline_flag = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowDataSolo().ContourMD.Spline_flag = obj.checked }, "");
         const cboDetailedList = [{ value: 0, text: '非常に細かい' }, { value: 1, text: '細かい' },
         { value: 2, text: '少し細かい' }, { value: 3, text: '普通' }, { value: 4, text: '粗い' }];
 
         Generic.createNewWordSelect(gbContourDrawMethod, "密度", cboDetailedList, 0, "contourDetailed", 10, 70, 40, 80, 0,
-            function (obj: any, sel: number, v: any) { attrData.nowDataSolo().ContourMD.Detailed = v }, "", "", true);
+            function (obj: HTMLSelectElement, sel: number, v: number) { attrData.nowDataSolo().ContourMD.Detailed = v }, "", "", true);
         const gbContourLineLpat = Generic.createNewFrame(contourView, "gbContourLineLpat", "", 190, 0, 90, 55, "等値線線種");
         Generic.createNewCanvas(gbContourLineLpat, "contourLinePat", "imgButton", 20, 15, 50, 30, function (e: MouseEvent) {
             clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.Line_Pat,
-                function (Lpat: any) {
+                function (Lpat: Line_Property) {
                     attrData.nowDataSolo().ContourMD.Regular.Line_Pat = Lpat;
                     attrData.Draw_Sample_LineBox(doc.getElementById("contourLinePat"), Lpat);
                 }
@@ -2798,17 +2798,17 @@ function setting(locSearch: string) {
         const gbRegularInterval = Generic.createNewFrame(contourView, "gbRegularInterval", "", 185, 0, 190, 390, "等値線間隔設定");
         const gbRegularNormal = Generic.createNewFrame(gbRegularInterval, "", "", 10, 10, 170, 125, "通常の等値線");
         Generic.createNewWordNumberInput(gbRegularNormal, "下限値", "", 0, "contourRegulerMinValue", 10, 15, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.bottom = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularNormal, "上限値", "", 0, "contourRegulerMaxValue", 10, 40, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.top = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularNormal, "間隔　", "", 0, "contourRegulerInterval", 10, 65, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.Interval = v;
                 Check_Print_err();
             }, "");
@@ -2825,24 +2825,24 @@ function setting(locSearch: string) {
 
         const gbRegularSP = Generic.createNewFrame(gbRegularInterval, "", "", 10, 155, 170, 125, "上のうち強調する等値線");
         Generic.createNewWordNumberInput(gbRegularSP, "下限値", "", 0, "contourRegulerSPMinValue", 10, 15, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.SP_Bottom = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularSP, "上限値", "", 0, "contourRegulerSPMaxValue", 10, 40, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.SP_Top = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularSP, "間隔　", "", 0, "contourRegulerSPInterval", 10, 65, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.SP_interval = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordDivCanvas(gbRegularSP, "contourRegulerSPLinePat", "線種", 10, 90, 40,
             function (e: MouseEvent) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.SP_Line_Pat,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Regular.SP_Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -2851,18 +2851,18 @@ function setting(locSearch: string) {
         );
         const gbRegularEx = Generic.createNewFrame(gbRegularInterval, "", "", 10, 295, 170, 70, "1本だけ強調する等値線");
         Generic.createNewCheckBox(gbRegularEx, "", "contourRegulerExCheck", true, 10, 15, undefined,
-            function (obj: any) {
+            function (obj: HTMLInputElement) {
                 attrData.nowDataSolo().ContourMD.Regular.EX_Value_Flag = obj.checked
             }, "")
         Generic.createNewWordNumberInput(gbRegularEx, "強調値", "", 0, "contourRegulerExValue", 40, 15, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 attrData.nowDataSolo().ContourMD.Regular.EX_Value = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordDivCanvas(gbRegularEx, "contourRegulerExLine", "線種", 10, 40, 40,
             function (e: MouseEvent) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.EX_Line_Pat,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Regular.EX_Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -2875,7 +2875,7 @@ function setting(locSearch: string) {
 
         const gbContourSepaData = Generic.createNewFrame(gbSeparateSettings, "gbContourSepaData", "", 15, 175, 150, 100, "");
         Generic.createNewWordNumberInput(gbContourSepaData, "値", "", 0, "contourSepaValue", 10, 10, undefined, 80,
-            function (obj: any, v: any) {
+            function (obj: HTMLInputElement, v: number) {
                 let n = lstcontourSeparateValue.selectedIndex;
                 attrData.nowDataSolo().ContourMD.Irregular[n].Value = v;
                 sortContourSepaValue();
@@ -2884,7 +2884,7 @@ function setting(locSearch: string) {
             function (e: MouseEvent) {
                 let n = lstcontourSeparateValue.selectedIndex;
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Irregular[n].Line_Pat,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Irregular[n].Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -2973,7 +2973,7 @@ function setting(locSearch: string) {
         Generic.createNewCanvas(gbMark, "picMarkSize", "imgButton", 25, 17, 65, 65, picMark_Click, "");
         const gbMarkLine = Generic.createNewFrame(markSizeView, "gbMarkLine", "", 0, 0, 125, 95, "線の設定");
         Generic.createNewSizeSelect(gbMarkLine, 0, "cboMarkLineSize", "最大幅", 15, 10, 40, 1,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
+            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
         Generic.createNewColorBox(gbMarkLine, "markLineColor", "色", "", 15, 35, MarkLineColor);
         Generic.createNewButton(gbMarkLine, "線端設定", "", 30, 70, btnMarkLineEdge, "");
 
@@ -2982,7 +2982,7 @@ function setting(locSearch: string) {
         const gbLegendValue = Generic.createNewFrame(pnlMarkSizeLegend, "", "", 0, 15, 125, 160, "凡例");
         for (let i = 0; i < 5; i++) {
             Generic.createNewWordNumberInput(gbLegendValue, "値" + String(i + 1), "", 0, "txtMarkSizeValue" + String(i + 1), 10, i * 30 + 10, undefined, 80,
-                function (obj: any, v: any) {
+                function (obj: HTMLInputElement, v: number) {
                     const n = Number(obj.id.right(1)) - 1;
                     attrData.nowDataSolo().MarkSizeMD.Value[n] = v;
                 }, "");
@@ -2992,16 +2992,16 @@ function setting(locSearch: string) {
         const maxValuesetting = [{ value: enmMarkSizeValueMode.inDataItem, text: "データ項目の最大値" },
         { value: enmMarkSizeValueMode.UserDefinition, text: "ユーザ設定" }];
         Generic.createNewRadioButtonList(gbMarksizeLegendMaxValue, "markSizeMaxValueSetting", maxValuesetting, 10, 10, undefined, 30, undefined,
-            function (v: any) { attrData.nowDataSolo().MarkSizeMD.MaxValueMode = v }, "");
+            function (v: number) { attrData.nowDataSolo().MarkSizeMD.MaxValueMode = v }, "");
         Generic.createNewNumberInput(gbMarksizeLegendMaxValue, 0, "markSizeUserMaxValue", 40, 63, 90,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkSizeMD.MaxValue = v; }, "");
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkSizeMD.MaxValue = v; }, "");
         setMinusValueCase(markSizeView, "gbMarkSizeMinusValueCase");
 
         //記号の大きさモード線オブジェクトの線端設定
         function btnMarkLineEdge(e: MouseEvent) {
             let edge = attrData.nowDataSolo().MarkSizeMD.LineShape.LineEdge;
             clsLineEdgePattern(e, edge, okButton);
-            function okButton(retEdge: any) {
+            function okButton(retEdge: Edge_Property) {
                 attrData.nowDataSolo().MarkSizeMD.LineShape.LineEdge = retEdge;
             }
         }
@@ -3019,7 +3019,7 @@ function setting(locSearch: string) {
 
         //記号選択クリック(記号大きさ・記号の数共通)
         function picMark_Click(e: MouseEvent) {
-            let md: any;
+            let md: MarkSizeMD | MarkBlockMD;
             switch (attrData.nowData().ModeData) {
                 case enmSoloMode_Number.MarkSizeMode:
                     md = attrData.nowDataSolo().MarkSizeMD;
@@ -3029,26 +3029,26 @@ function setting(locSearch: string) {
                     break;
             }
             clsMarkSet(e, picMarkChange, md.Mark, attrData);
-            function picMarkChange(newMark: any) {
+            function picMarkChange(newMark: Mark_Property) {
                 md.Mark = newMark;
                 attrData.Draw_Sample_Mark_Box(e.target, newMark);
             }
         }
         //負の場合の内部色（記号の大きさ・数共通）
-        function setMinusValueCase(parent: any, ID: any) {
+        function setMinusValueCase(parent: HTMLDivElement, ID: string) {
             const gbBlockMinusValueCase = Generic.createNewFrame(parent, ID, "", 140, 0, 150, 120, "負の値の場合");
             Generic.createNewTileBox(gbBlockMinusValueCase, ID + "_minusColorBox", "負の値の内部", clsBase.Tile(), 10, 15, undefined,
                 function (e: MouseEvent) {
                     let mkc = attrData.nowDataSolo().MarkCommon;
                     clsTileSet(e, mkc.MinusTile,
-                        function (retTile: any) { mkc.MinusTile = retTile });
+                        function (retTile: Tile_Property) { mkc.MinusTile = retTile });
                 }
             );
             Generic.createNewSpan(gbBlockMinusValueCase, "凡例文字", "", "", 10, 45, "", "");
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "正の値", "", "", ID + "_txtMarkSizePlusValue", 20, 62, undefined, 80,
-                function (e: any) { attrData.nowDataSolo().MarkCommon.LegendPlusWord = e.target.value }, "text-align:left");
+                function (e: Event) { attrData.nowDataSolo().MarkCommon.LegendPlusWord = e.target.value }, "text-align:left");
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "負の値", "", "", ID + "_txtMarkSizeMinusValue", 20, 92, undefined, 80,
-                function (e: any) { attrData.nowDataSolo().MarkCommon.LegendMinusWord = e.target.value }, "text-align:left");
+                function (e: Event) { attrData.nowDataSolo().MarkCommon.LegendMinusWord = e.target.value }, "text-align:left");
 
         }
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■記号の数モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
