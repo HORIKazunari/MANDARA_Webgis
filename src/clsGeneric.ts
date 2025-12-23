@@ -5158,7 +5158,7 @@ export class CheckedListBox {
     }
 
     /**リ1つ追加 */
-    add(soloData: any, pos: any = undefined): void {
+    add(soloData: string, pos: number | undefined = undefined): void {
         if (pos == undefined) {
             pos = this.length;
         }
@@ -5166,7 +5166,7 @@ export class CheckedListBox {
     }
 
     /**リストを追加 */
-    addList(list: any, pos: any): void {
+    addList(list: string[], pos: number): void {
         this._addList(list, pos, "");
     }
 
@@ -5181,17 +5181,17 @@ export class CheckedListBox {
     }
 
     /**チェック状態を取得 */
-    getCheckedStatus(n: any): boolean {
+    getCheckedStatus(n: number): boolean {
         return this.lBox[n].checked;
     }
 
     /**チェック状態を設定 */
-    setCheckStatus(n: any, checked: any): void {
+    setCheckStatus(n: number, checked: boolean): void {
         this.lBox[n].checked = checked;
     }
 
     /**テキストを設定 */
-    setText(n: any, text: any): void {
+    setText(n: number, text: string): void {
         this.lBox[n].word.innerHTML = text;
     }
 
@@ -5200,7 +5200,7 @@ export class CheckedListBox {
         return this._getChecked();
     }
 
-    private _removeList(pos: any, delNum: any): void {
+    private _removeList(pos: number, delNum: number): void {
         if (this.lBox.length == 0) {
             return;
         }
@@ -5215,7 +5215,7 @@ export class CheckedListBox {
         this.reNumbering();
     }
 
-    private _addList(lst: any, pos: any, styleinfo: string): void {
+    private _addList(lst: string[], pos: number, styleinfo: string): void {
         let osel = this.selectedIndex;
         let newsel = (osel == -1) ? -1 : osel + lst.length;
         if (osel >= pos) {
@@ -5336,7 +5336,7 @@ export class ListBox {
     }
 
     /**1つ追加 */
-    add(soloData: any, pos: any = undefined): void {
+    add(soloData: string, pos: number | undefined = undefined): void {
         if (pos == undefined) {
             pos = this.length;
         }
@@ -5344,7 +5344,7 @@ export class ListBox {
     }
 
     /**リストを配列で追加 */
-    addList(list: any, pos: any = undefined): void {
+    addList(list: string[], pos: number | undefined = undefined): void {
         if (pos == undefined) {
             pos = this.length;
         }
@@ -5352,7 +5352,7 @@ export class ListBox {
     }
 
     /**指定範囲のリストを削除 */
-    removeList(pos: any, delNum: any): void {
+    removeList(pos: number, delNum: number): void {
         this._removeList(pos, delNum);
     }
 
@@ -5362,7 +5362,7 @@ export class ListBox {
     }
 
     /**選択要素を指定 */
-    setSelectedIndex(newIndex: any): void {
+    setSelectedIndex(newIndex: number): void {
         if (this.selectedIndex != -1) {
             this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
         }
@@ -5371,7 +5371,7 @@ export class ListBox {
         this.value = this.lBox[newIndex].value;
     }
 
-    getText(): any {
+    getText(): string | undefined {
         if (this.selectedIndex != -1) {
             return this.lBox[this.selectedIndex].innerText;
         } else {
@@ -5387,7 +5387,7 @@ export class ListBox {
         return v;
     }
 
-    getValue(): any {
+    getValue(): string | undefined {
         if (this.selectedIndex != -1) {
             return this.lBox[this.selectedIndex].value;
         } else {
@@ -5395,7 +5395,7 @@ export class ListBox {
         }
     }
 
-    getAllValue(): any[] {
+    getAllValue(): string[] {
         let v = [];
         for (let i = 0; i < this.length; i++) {
             v.push(this.lBox[i].value);
@@ -5403,15 +5403,15 @@ export class ListBox {
         return v;
     }
 
-    setText(row: any, text: any): void {
+    setText(row: number, text: string): void {
         this.lBox[row].innerText = text;
     }
 
-    setValue(row: any, value: any): void {
+    setValue(row: number, value: string): void {
         this.lBox[row].innerText = value;
     }
 
-    rowUp(row: any): void {
+    rowUp(row: number): void {
         if (this.lBox.length < 2) {
             return;
         }
@@ -6227,7 +6227,7 @@ HTMLElement.prototype.getValue = function () {
 }
 
 //select要素で指定した文字のテキストを選択
-HTMLElement.prototype.setSelectText = function (txt: any) {
+HTMLElement.prototype.setSelectText = function (txt: string) {
     let n = this.options.length;
     for (let i = 0; i < n; i++) {
         if (this.options[i].text == txt) {
@@ -6246,7 +6246,7 @@ HTMLElement.prototype.setSelectData=function(n: any,value: any,text: any){
 }
 
 //select要素で指定したvalueのテキストの先頭にアスタリスクを付ける、外す
-HTMLElement.prototype.setAstarisk = function (value: any,astariskAddF: any) {
+HTMLElement.prototype.setAstarisk = function (value: string | number, astariskAddF: boolean) {
     let n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
@@ -6273,7 +6273,7 @@ HTMLElement.prototype.setAstarisk = function (value: any,astariskAddF: any) {
 }
 
 //select要素で指定したvalueを選択
-HTMLElement.prototype.setSelectValue= function (value: any) {
+HTMLElement.prototype.setSelectValue= function (value: string | number) {
     let n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
@@ -6289,7 +6289,7 @@ HTMLElement.prototype.setSelectValue= function (value: any) {
     return false;
 }
 //要素の表示状態を指定のものに設定
-HTMLElement.prototype.setVisibility = function (visiflag: any) {
+HTMLElement.prototype.setVisibility = function (visiflag: boolean) {
     if (visiflag == true) {
         this.style.display = "inline";
     } else {
