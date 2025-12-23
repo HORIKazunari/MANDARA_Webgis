@@ -300,7 +300,7 @@ class strSynthetic_Object_Data {
     SETime: Start_End_Time_data = new Start_End_Time_data();
     Shape: number = 0; // enmShape
     Circumscribed_Rectangle: rectangle = new rectangle();
-    Objects: any[] = []; // strSynthetic_ObjectName_and_Code
+    Objects: strSynthetic_ObjectName_and_Code[] = [];
 
     Clone(): strSynthetic_Object_Data {
         const dt = new strSynthetic_Object_Data();
@@ -1111,26 +1111,26 @@ class ODBezier_Data {
 class strLayerDataInfo {
     Name: string = ""; // String
     MapFileName: string = ""; // String
-    MapFileData: any = undefined; // clsMapData
-    MapFileObjectNameSearch: any = undefined; // clsObjectNameSearch
+    MapFileData: clsMapdata | undefined = undefined;
+    MapFileObjectNameSearch: clsObjectNameSearch | undefined = undefined;
     Shape: number = 0; // enmShape
     Type: number = 0; // enmLayerType
     MeshType: number = 0; // enmMesh_Number
     ReferenceSystem: number = 0; // enmZahyo_System_Info
     Time: strYMD = new strYMD();
     Comment: string = ""; // String
-    TripTimeSpan: any = undefined; // TripTimeSpan_Info
+    TripTimeSpan: any = undefined; // TripTimeSpan_Info (未定義のため暫定的にany)
     TripType: number = 0; // enmTripPositionType
     // オブジェクトの情報
     atrObject: strObject_Info = new strObject_Info();
     // データ項目の情報
     atrData: stratrData_Info = new stratrData_Info();
     Dummy: strDummyObjectName_and_Code[] = [];
-    DummyGroup: any[] = []; // 番号
+    DummyGroup: number[] = [];
     Print_Mode_Layer: number = 0; // enmLayerMode_Number '0:単独 1:グラフ 2:ラベル 3:移動
     // グラフ表示、ラベル表示、移動表示、点線オブジェクトのペイントモードの記号
     LayerModeViewSettings: strLayerModeViewSetting_Data = new strLayerModeViewSetting_Data();
-    PrtSpatialIndex: any = undefined; // clsSpatialIndexSearch
+    PrtSpatialIndex: clsSpatialIndexSearch | undefined = undefined;
     ObjectGroupRelatedLine: number[] = []; // Integer()
     ODBezier_DataStac: ODBezier_Data[] = []; // List(Of ODBezier_Data)
 
@@ -1237,7 +1237,7 @@ class strScreen_Setting_Data_Info {
     MapScale: strScale_Attri = new strScale_Attri();
     MapTitle: strTitle_Attri = new strTitle_Attri();
     DataNote: strNote_Attri = new strNote_Attri();
-    AttMapCompass: any = new strCompass_Attri();
+    AttMapCompass: strCompass_Attri = new strCompass_Attri();
     MapLegend: strLegend_Attri = new strLegend_Attri();
     ThreeDMode: strThreeDMode_Set = new strThreeDMode_Set();
     
@@ -1524,8 +1524,8 @@ class strDummyObjectPointMark_Info {
 class strLegend_Base_Attri {
     Visible: boolean = false; //Boolean
     Legend_Num: number = 0; //Integer
-    Font: any = new Font_Property(); //Font_Property (未定義)
-    Back: any = new BackGround_Box_Property(); //BackGround_Box_Property (未定義)
+    Font: Font_Property = new Font_Property();
+    Back: BackGround_Box_Property = new BackGround_Box_Property();
     LegendXY: point[] = []; // PointF
     Comma_f: boolean = false; //Boolean
     ModeValueInScreenFlag: boolean = false;
@@ -1589,7 +1589,7 @@ class strLegend_Line_Dummy_Attri {
     Line_Visible_Number_STR: string = ""; //String '線種ごとに表示するかどうか、１は表示０は非表示で連続文字列
     Line_Pattern: number = 0; //enmCircleMDLegendLine
     Dummy_Point_Visible: boolean = false; //Boolean
-    Back: any = new BackGround_Box_Property();//BackGround_Box_Property (未定義)
+    Back: BackGround_Box_Property = new BackGround_Box_Property();
     
     Clone(): strLegend_Line_Dummy_Attri {
         let d = new strLegend_Line_Dummy_Attri();
@@ -1650,7 +1650,7 @@ class strLatLonLine_Print_Info {
 
 class strAccessoryGroupBox_Info {
     Visible: boolean = false;  // Boolean
-    Back: any = new BackGround_Box_Property();//BackGround_Box_Property (未定義)
+    Back: BackGround_Box_Property = new BackGround_Box_Property();
     Title: boolean = false;  // Boolean
     Comapss: boolean = false;  // Boolean
     Scale: boolean = false;  // Boolean
@@ -1666,21 +1666,23 @@ class strAccessoryGroupBox_Info {
         return d;
     }
 }
-const strScreen_Back_data: any =function(){
-    this.MapAreaFrameLine =new Line_Property();
-    this.ScreenFrameLine=new Line_Property();
-    this.ScreenAreaBack =new Tile_Property();
-    this.MapAreaBack  =new Tile_Property();
-    this.ObjectInner  =new Tile_Property();
-}
-strScreen_Back_data.prototype.Clone=function(){
-    let d=new strScreen_Back_data();
-    d.MapAreaFrameLine = this.MapAreaFrameLine.Clone();
-    d.ScreenFrameLine = this.ScreenFrameLine.Clone();
-    d.ScreenAreaBack = this.ScreenAreaBack.Clone();
-    d. MapAreaBack= this.MapAreaBack.Clone();
-    d.ObjectInner= this.ObjectInner.Clone();
-    return d;
+
+class strScreen_Back_data {
+    MapAreaFrameLine: Line_Property = new Line_Property();
+    ScreenFrameLine: Line_Property = new Line_Property();
+    ScreenAreaBack: Tile_Property = new Tile_Property();
+    MapAreaBack: Tile_Property = new Tile_Property();
+    ObjectInner: Tile_Property = new Tile_Property();
+
+    Clone(): strScreen_Back_data {
+        const d = new strScreen_Back_data();
+        d.MapAreaFrameLine = this.MapAreaFrameLine.Clone();
+        d.ScreenFrameLine = this.ScreenFrameLine.Clone();
+        d.ScreenAreaBack = this.ScreenAreaBack.Clone();
+        d.MapAreaBack = this.MapAreaBack.Clone();
+        d.ObjectInner = this.ObjectInner.Clone();
+        return d;
+    }
 }
 
 class strValueShow_Info {
@@ -1703,19 +1705,20 @@ class strValueShow_Info {
     }
 }
 
-const strSouByou_Info: any =function(){
-    this.Auto ;// Boolean
-    this.AutoDegree;//(1-5の値)
-    this.ThinningPrint_F ;// Boolean
-    this.PointInterval ;// Single
-    this.LoopAreaF ;// Boolean
-    this.LoopSize ;// Single
-    this.Spline_F ;// Boolean
-}
-strSouByou_Info.prototype.Clone =function(){
-    let d=new strSouByou_Info();
-    Object.assign(d,this);
-    return d;
+class strSouByou_Info {
+    Auto: boolean = false;
+    AutoDegree: number = 0; // 1-5の値
+    ThinningPrint_F: boolean = false;
+    PointInterval: number = 0;
+    LoopAreaF: boolean = false;
+    LoopSize: number = 0;
+    Spline_F: boolean = false;
+
+    Clone(): strSouByou_Info {
+        const d = new strSouByou_Info();
+        Object.assign(d, this);
+        return d;
+    }
 }
 
 //飾りの設定を保持（属性データ）
@@ -1724,12 +1727,12 @@ class strViewStyle_Info {
     MapScale: strScale_Attri = new strScale_Attri();
     MapTitle: strTitle_Attri = new strTitle_Attri();
     DataNote: strNote_Attri = new strNote_Attri();
-    AttMapCompass: any = new strCompass_Attri(); // strCompass_Attri (未定義)
+    AttMapCompass: strCompass_Attri = new strCompass_Attri();
     MapLegend: strLegend_Attri = new strLegend_Attri();
     FigureVisible: boolean = false;
     AccessoryGroupBox: strAccessoryGroupBox_Info = new strAccessoryGroupBox_Info();
     Missing_Data: strMissing_set = new strMissing_set();
-    Screen_Back: any = new strScreen_Back_data(); // strScreen_Back_data (未定義)
+    Screen_Back: strScreen_Back_data = new strScreen_Back_data();
     SymbolLine: strSymbol_Lien_Data = new strSymbol_Lien_Data();
     Trip_Line: any; // strTrip_Line_Data (未定義)
     PointPaint_Order: number = 0; // enmPointOnjectDrawOrder
@@ -1742,7 +1745,7 @@ class strViewStyle_Info {
     DummyObjectPointMark: strDummyObjectPointMark_Info[] = []; // Dictionary(Of String, strDummyObjectPointMark_Info())
     MapPrint_Flag: boolean = false;
     LatLonLine_Print: strLatLonLine_Print_Info = new strLatLonLine_Print_Info();
-    SouByou: any = new strSouByou_Info(); // strSouByou_Info (未定義)
+    SouByou: strSouByou_Info = new strSouByou_Info();
     TileMapView: strTileMapViewInfo = new strTileMapViewInfo();
     Screen_Setting: strScreen_Setting_Data_Info[] = [];
     ValueShow: strValueShow_Info = new strValueShow_Info();
@@ -1971,7 +1974,7 @@ class strScale_Attri {
     BarAuto: boolean = false; //Boolean
     BarDistance: number = 0; //Single
     BarKugiriNum: number = 0; //Integer
-    Back: any = new BackGround_Box_Property();//BackGround_Box_Property (未定義)
+    Back: BackGround_Box_Property = new BackGround_Box_Property();
     Unit: number = 0; //enmScaleUnit
     
     Clone(): strScale_Attri {
@@ -2094,7 +2097,7 @@ class Screen_info {
     SampleBoxFlag: boolean = false; // Boolean 'サンプルのライン、記号等に表示する際にtrueにする
     ThreeDMode: strThreeDMode_Set = new strThreeDMode_Set();
 
-    init(pictureboxSize: any, picBoxMargin: any, MapAllAreaRect: rectangle, AccessoryBase: number, SCRViewResetF: boolean): void {
+    init(pictureboxSize: rectangle, picBoxMargin: ScreenMargin, MapAllAreaRect: rectangle, AccessoryBase: number, SCRViewResetF: boolean): void {
         // <param name="picturebox">表示するpictureBoxのsize</param>
         // <param name="picBoxMargin">マージンScreenMargin構造体</param>
         // <param name="MapAllAreaRect">地図領域全体の外接四角形</param>
@@ -2117,7 +2120,7 @@ class Screen_info {
         this.OutputDevide = enmOutputDevice.Screen;
     }
 
-    Set_PictureBox_and_CulculateMul(Size: any): void {
+    Set_PictureBox_and_CulculateMul(Size: rectangle): void {
         let Wwidth = Size.width;
         let Wheight = Size.height;
         let w = Wwidth * (1 - (this.Screen_Margin.rect.left + this.Screen_Margin.rect.right) / 100);
@@ -2157,7 +2160,7 @@ class Screen_info {
     }
 
     //画面上のピクセルが地図中の何パーセントに当たるか計算
-    Get_Length_On_BaseMap(Pixcel: any): number {
+    Get_Length_On_BaseMap(Pixcel: number): number {
         let a = Pixcel / this.STDWsize * 100 / this.ScreenMG.Mul / this.GSMul;
         if (this.OutputDevide == enmOutputDevice.Printer) {
             a = a / this.PrinterMG.Mul;
@@ -2166,7 +2169,7 @@ class Screen_info {
     }
 
     //パーセントのサイズが，画面上で何ピクセルかを取得
-    Get_Length_On_Screen(Percentage: any): number {
+    Get_Length_On_Screen(Percentage: number): number {
         if (this.SampleBoxFlag == false) {
             let RR = this.STDWsize * Percentage / 100 * this.ScreenMG.Mul * this.GSMul
             if (this.OutputDevide == enmOutputDevice.Printer) {
@@ -2200,7 +2203,9 @@ class Screen_info {
     }
 
     //回転を考慮して地図座標列をスクリーン座標に変換
-    Get_SxSy_With_3D(p1: any, p2: any, p3: any): any {
+    Get_SxSy_With_3D(Pnum: number, inXY: point[], ReverseGetF: boolean): point[];
+    Get_SxSy_With_3D(Point: point): point;
+    Get_SxSy_With_3D(p1: any, p2?: any, p3?: any): any {
         if ((typeof p1) == 'number') {
             let Pnum = p1;
             let inXY = p2;
@@ -2251,7 +2256,7 @@ class Screen_info {
     }
 
     //画面上のピクセル数に対応する地図座標のサイズを取得
-    Get_MapDataSize_from_ScreenPixcel(Pixcel: any): number {
+    Get_MapDataSize_from_ScreenPixcel(Pixcel: number): number {
         return Pixcel / this.ScreenMG.Mul;
     }
 
@@ -2392,7 +2397,7 @@ class Screen_info {
 //データ項目データ取得で、欠損値以外の値を取得する際に使用
 class strObjLocation_and_Data_info {
     ObjLocation: number = 0;
-    DataValue: any = undefined;
+    DataValue: number | string | undefined = undefined;
 }
 
 class Overlay_Temporaly_Data_Info {
@@ -2466,26 +2471,32 @@ class AccessoryTemp_Infp {
 
 //一時データ
 
-let strLocationSearchObject: any = function (layer: number, objnumber: number) {
-    this.objLayer = layer;// Integer
-    this.ObjNumber = objnumber;//  Integer
-}
-strLocationSearchObject.prototype.Clone = function () {
-    let d = new strLocationSearchObject(this.layer, this.objnumber);
-    Object.assign(d, this);
-    return d;
+class strLocationSearchObject {
+    objLayer: number;
+    ObjNumber: number;
+
+    constructor(layer: number, objnumber: number) {
+        this.objLayer = layer;
+        this.ObjNumber = objnumber;
+    }
+
+    Clone(): strLocationSearchObject {
+        const d = new strLocationSearchObject(this.objLayer, this.ObjNumber);
+        Object.assign(d, this);
+        return d;
+    }
 }
 
-let strTempLocationMenuString: any = function () {
-    this.ObjectNameValue;// String
-    this.ContourStacPos;//  Integer
-    this.ClickMapPos = new point();//  PointF
-    this.DataIndex;//  Integer
+class strTempLocationMenuString {
+    ObjectNameValue?: string;
+    ContourStacPos?: number;
+    ClickMapPos: point = new point();
+    DataIndex?: number;
 }
 
 class frmPrint_temp_info {
-    OnObject: any[] = []; // strLocationSearchObject[] (未定義)
-    OldObject: any[] = []; // strLocationSearchObject[] (未定義)
+    OnObject: strLocationSearchObject[] = [];
+    OldObject: strLocationSearchObject[] = [];
     PrintMouseMode: any; // enmPrintMouseMode (未定義)
     MultiObjectSelectSub: any; // enmMultiObjectSelecModesSub (未定義)
     MultiObjectSelectShowFlag: boolean = false;
@@ -2494,7 +2505,7 @@ class frmPrint_temp_info {
     mouseAccesoryDragType: any; // Check_Acc_Result (未定義)
     OD_Drag: ODBezier_Data = new ODBezier_Data();
     MouseDownF: boolean = false;
-    LocationMenuString: any = new strTempLocationMenuString();
+    LocationMenuString: strTempLocationMenuString = new strTempLocationMenuString();
     RightButtonClickF: boolean = false;
     SymbolPointFirstMessage: boolean = false;
     LabelPointFirstMessage: boolean = false;
@@ -2647,7 +2658,7 @@ class clsAttrData {
     //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 
     /**ダミーオブジェクトグループの設定をDummyOBGArray[true,false]の配列で返す、trueNumはtrueの数 */
-    getDummyObjGroupArray(Layernum: any, shape: any = undefined): {DummyOBGArray: boolean[], trueNum: number} {
+    getDummyObjGroupArray(Layernum: number, shape?: number): {DummyOBGArray: boolean[], trueNum: number} {
         let al = state.attrData.LayerData[Layernum];
         let alm = al.MapFileData;
         let DummyObjG = new Array(alm.Map.OBKNum);
@@ -2844,7 +2855,7 @@ class clsAttrData {
     }
 
     /** データ挿入 AddMapFileNameF:レイヤ名に地図ファイルを追加する場合true */
-    ADD_AttrData(InsertData: any, AddMapFileNameF: any): {ok: boolean, ErrorMessage: string} {
+    ADD_AttrData(InsertData: clsAttrData, AddMapFileNameF: boolean): {ok: boolean, ErrorMessage: string} {
 
     let ErrorMessage = "";
     let checkResult = spatial.Check_Zahyo_Projection_Convert_Enabled(this.TotalData.ViewStyle.Zahyo, InsertData.TotalData.ViewStyle.Zahyo);
@@ -3008,7 +3019,7 @@ class clsAttrData {
 }
 
     /**データ中の座標を変換する */
-    Convert_Zahyo(newZahyo: any): void {
+    Convert_Zahyo(newZahyo: Zahyo_info): void {
         let oldZahyo = this.TotalData.ViewStyle.Zahyo;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             let li = this.LayerData[i];
@@ -3066,13 +3077,13 @@ class clsAttrData {
     }
 
     /**重ね合わせデータセットの内容を自動で並べ替える */
-    Sort_OverLay_Data(DataSetNumber: any): void {
+    Sort_OverLay_Data(DataSetNumber: number): void {
             let d = this.TotalData.TotalMode.OverLay.DataSet[DataSetNumber]
                 ; d.DataItem = this.Sort_OverLay_Data_Sub(d.DataItem);
         }
 
     /**重ね合わせモードにセットするデータを並べ替える（一つのstrOverLay_DataSet_Item_Infoデータセット） */
-    Sort_OverLay_Data_Sub(Ov_Data: any): any[] {
+    Sort_OverLay_Data_Sub(Ov_Data: strOverLay_DataSet_Item_Info[]): strOverLay_DataSet_Item_Info[] {
 
         let PicUpMode = [];
         let PicUpShape = [];// enmShape
@@ -3142,7 +3153,7 @@ class clsAttrData {
         return Sub_Over;
     }
 
-    Check_Missing_Value(Layernum: any, DataNumber: any, objNumber: any): boolean {
+    Check_Missing_Value(Layernum: number, DataNumber: number, objNumber: number): boolean {
         let ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber];
         if ((ad.MissingValueNum == 0) || (ad.MissingF == false)) {
             return false;
@@ -3156,7 +3167,7 @@ class clsAttrData {
     }
 
     /**レイヤ内のURLリンクの最大数を求める */
-    Get_MaxURLNum(Layernum: any): number {
+    Get_MaxURLNum(Layernum: number): number {
         let mx=0;
         let al = state.attrData.LayerData[Layernum];
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
@@ -3166,9 +3177,9 @@ class clsAttrData {
     }
 
     /**通常データ、カテゴリーデータの凡例を指定したデータ項目にコピーする */
-    Set_Legend(D_Layer: any, D_DataNum: any, O_Data: any, ClassPaintF: any, MarkSizeF: any, MarkSizeValueCopyF: any, MarkBlockF: any,
-        ContourF: any, ClassMarkF: any, ClassODF: any, StringModeF: any, MarkBarF: any, ClassODOriginCopyF: any,
-        copyMarkCommonInnerDataF: any): void {
+    Set_Legend(D_Layer: number, D_DataNum: number, O_Data: stratrData_Kake_Info, ClassPaintF: boolean, MarkSizeF: boolean, MarkSizeValueCopyF: boolean, MarkBlockF: boolean,
+        ContourF: boolean, ClassMarkF: boolean, ClassODF: boolean, StringModeF: boolean, MarkBarF: boolean, ClassODOriginCopyF: boolean,
+        copyMarkCommonInnerDataF: boolean): void {
 
         let ls =this.LayerData[D_Layer].atrData.Data[D_DataNum].SoloModeViewSettings;
         if ((ClassPaintF == true) || (ClassMarkF == true) || (ClassODF == true)) {
@@ -3308,7 +3319,7 @@ class clsAttrData {
     }
 
     //オブジェクト名とデータ項目を文字列で取得
-    getOneObjectPanelLabelString(LayerNum: any, DataNumber: any, objNumber: any, SeparataString: any): string {
+    getOneObjectPanelLabelString(LayerNum: number, DataNumber: number, objNumber: number, SeparataString: string): string {
         let SoloProperty = this.Get_DataTitle(LayerNum, DataNumber, false) + SeparataString +
             this.Get_Data_Value(LayerNum, DataNumber, objNumber, this.TotalData.ViewStyle.Missing_Data.Text) +
             this.Get_DataUnit_With_Kakko(LayerNum, DataNumber);
@@ -3340,7 +3351,7 @@ class clsAttrData {
     }
 
     //MDRJ形式で保存
-    saveAsMDRJ(fname: any, MDRMJFlag: any): void {
+    saveAsMDRJ(fname: string, MDRMJFlag: boolean): void {
         let saveLPat = new strSaveLinePat_Info();
         let MapFileList = this.GetMapFileName();
         saveLPat.MapNum = MapFileList.length;
@@ -3386,7 +3397,7 @@ class clsAttrData {
     }
 
     //ある地点がオブジェクト内部に入るかどうかを調べる
-    Check_Point_in_Kencode_OneObject(Layernum: any, ObjNum: any, MapP: any): any {
+    Check_Point_in_Kencode_OneObject(Layernum: number, ObjNum: number, MapP: point): boolean {
         if (this.LayerData[Layernum].Type == enmLayerType.Mesh) {
             let meshP =Generic.ArrayClone( this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
             meshP.push(meshP[0].Clone());
@@ -3419,7 +3430,7 @@ class clsAttrData {
         }
     }
     //階級区分の度数分布を求める。区分値が不正の場合はfalseを返す
-    Get_ClassFrequency(Layernum: any, DataNum: any, ConditionCheck: any): any {
+    Get_ClassFrequency(Layernum: number, DataNum: number, ConditionCheck: boolean): {ok: boolean, frequency?: number[]} {
         let ld = this.LayerData[Layernum].atrData.Data[DataNum];
         let ldd = ld.SoloModeViewSettings;
         if (ld.DataType == enmAttDataType.Category) {
@@ -3451,7 +3462,7 @@ class clsAttrData {
     }
 
     //Backgroundの余白部分のピクセル数を取得
-    Get_PaddingPixcel(back: any): number {
+    Get_PaddingPixcel(back: BackGround_Box_Property): number {
         if ((back.Line.BlankF == true) && (back.Tile.BlankF == true)) {
             return 0;
         } else {
@@ -3460,7 +3471,7 @@ class clsAttrData {
     }
 
     /**レイヤの階級区分数を取得 */
-    Get_DivNum(Layernum: any, DataNum: any): number {
+    Get_DivNum(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Div_Num;
     }
     //レイヤ名を取得

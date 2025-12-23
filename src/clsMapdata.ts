@@ -325,7 +325,7 @@ class Line_Time_Data {
         return d;
     }
 
-    Equals(LT: any): boolean {
+    Equals(LT: Line_Time_Data): boolean {
         if (LT.Kind == this.Kind) {
             if (LT.SETime.Equals(this.SETime)) {
                 return true;
@@ -477,7 +477,7 @@ class clsMapdata {
     MPLine: strLine_Data[] = [];
     DefTimeAttSTC: strMPObjDefTimeAttData_Info[] = [];
     NoDataFlag: boolean = false;
-    private Enable_MPObjStac: any[] = []; // EnableMPOBJ_Data未定義
+    private Enable_MPObjStac: unknown[] = []; // EnableMPOBJ_Data未定義
 
     constructor() {
         this.Map = new strMap_data();
@@ -753,7 +753,7 @@ class clsMapdata {
     }
 
     //Get_TotalLineKindのラインパターンを地図データの線種に設定する
-    Set_TotalLineKind(LPC: any) { //LPatSek_Info
+    Set_TotalLineKind(LPC: unknown[]) { //LPatSek_Info
         let n = 0;
         for (let i = 0; i < this.Map.LpNum; i++) {
             let lk = this.LineKind[i];
@@ -1202,7 +1202,7 @@ class clsMapdata {
     }
 
     //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange_Sub(ELine: any): boundArrangeData {
+    Boundary_Arrange_Sub(ELine: unknown[]): boundArrangeData {
         let boundArrange = new boundArrangeData();
         let NL = ELine.length;
         if (NL == 0) {
@@ -1970,7 +1970,7 @@ class clsMapdata {
             }
         }
         let Result = false;
-        TopologyLineList.sort(function (a: any, b: any) { return a - b; })
+        TopologyLineList.sort(function (a: number, b: number) { return a - b; })
         for (let i in TopologyLineList) {
             this.DeleteSamePoints_inLine(TopologyLineList[i]);
         }
@@ -2077,8 +2077,8 @@ class clsMapdata {
 
     TopologyStructure_Two_SameLine_Check(LCode1: number, LCode2: number, PNum1: number, PNum2: number, S1: number, s2: number, XYstac1: point[], XYstac2: point[]) {
 
-        let NewPnum1: { A: number, B: number, NewXYstacA: any[], NewXYstacB: any[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
-        let NewPnum2: { A: number, B: number, NewXYstacA: any[], NewXYstacB: any[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
+        let NewPnum1: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
+        let NewPnum2: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
         let JointPnum;
         let NewXYstacJoint = [];
         let jp;
@@ -2600,7 +2600,7 @@ class clsMapdata {
         TimeSort.AddEnd()
 
         let n = TimeSort.NumofData();
-        let GT: any[] = [];
+        let GT: strYMD[] = [];
         let n2 = 0
         for (let i = 0; i < n; i++) {
             let v = TimeSort.DataPositionValue_Integer[i];
@@ -2919,7 +2919,7 @@ class clsMapdata {
 }
 
     /** JSON地図ファイル(mdrmjFlag:trueはmdrmjファイル内の地図データ)読み込み */
-    openJsonMapData(JsonData: any, mdrmjFlag: boolean = false) {
+    openJsonMapData(JsonData: unknown, mdrmjFlag: boolean = false) {
     this.init_MapData();
     let m = new strMap_data();
     m.FileName = JsonData.Map.FileName;
@@ -3064,7 +3064,7 @@ class clsMapdata {
     }
 }
 
-    private cnvJsonstrYMD(json: any) {
+    private cnvJsonstrYMD(json: unknown) {
         let nt = new strYMD();
         Object.assign(nt,json);
         // nt.Year = json.Year;
@@ -3073,14 +3073,14 @@ class clsMapdata {
         return nt;
     }
 
-    private cnvJsonStart_End_Time_data(json: any) {
+    private cnvJsonStart_End_Time_data(json: unknown) {
         let nt = new Start_End_Time_data();
         nt.StartTime = this.cnvJsonstrYMD(json.StartTime);
         nt.EndTime = this.cnvJsonstrYMD(json.EndTime);
         return nt;
     }
 
-    private cnvJsonFont(jsonf: any, mdrmjFlag: boolean) {
+    private cnvJsonFont(jsonf: unknown, mdrmjFlag: boolean) {
         let newf = new Font_Property();
         if (mdrmjFlag == false) {
             newf.Color = this.cnvJsonColor(jsonf.Body.Color);
@@ -3111,7 +3111,7 @@ class clsMapdata {
     }
 
 
-    private cnvJsonRect(jsonr: any, mdrmjFlag: boolean) {
+    private cnvJsonRect(jsonr: unknown, mdrmjFlag: boolean) {
         let newr = new rectangle();
         if (mdrmjFlag == false) {
             newr.left = jsonr.Left;
@@ -3124,7 +3124,7 @@ class clsMapdata {
         return newr;
     }
 
-    private cnvJsonColor(jsonc: any) {
+    private cnvJsonColor(jsonc: unknown) {
         let newc = new colorRGBA();
         Object.assign(newc,jsonc);
         // newc.a = jsonc.a;
@@ -3134,7 +3134,7 @@ class clsMapdata {
         return newc;
     }
 
-    private cnvJsonPoint(jsonp: any, mdrmjFlag: boolean) {
+    private cnvJsonPoint(jsonp: unknown, mdrmjFlag: boolean) {
         let newp = new point();
         if (mdrmjFlag == false) {
             newp.x = jsonp.X;
@@ -3146,7 +3146,7 @@ class clsMapdata {
         return newp;
     }
 
-    private cnvJsonBackGround_Box_Property(json: any, mdrmjFlag: boolean = false) {
+    private cnvJsonBackGround_Box_Property(json: unknown, mdrmjFlag: boolean = false) {
         let nt = new BackGround_Box_Property();
         nt.Tile = this.cnvJsonTile_Property(json.Tile, mdrmjFlag);
         nt.Line = this.cnvJsonLine_Property(json.Line, mdrmjFlag);
@@ -3154,7 +3154,7 @@ class clsMapdata {
         nt.Padding = json.Padding;
         return nt
     }
-    private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: any, mdrmjFlag: boolean) {
+    private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: unknown, mdrmjFlag: boolean) {
         let nt = new LineEdge_Connect_Pattern_Data_Info();
         if (mdrmjFlag == false) {
             const lc = ['round', 'square','butt' ];
@@ -3167,7 +3167,7 @@ class clsMapdata {
         }
         return nt;
     }
-    private cnvJsonLine_Property(json: any, mdrmjFlag: boolean) {
+    private cnvJsonLine_Property(json: unknown, mdrmjFlag: boolean) {
         let nt = new Line_Property();
         if (mdrmjFlag == false) {
             nt.Width = json.BasicLine.SolidLine.Width;
@@ -3188,7 +3188,7 @@ class clsMapdata {
         return nt;
     }
 
-    private cnvJsonTile_Property(json: any, mdrmjFlag: boolean) {
+    private cnvJsonTile_Property(json: unknown, mdrmjFlag: boolean) {
         let nt = new Tile_Property();
         if (mdrmjFlag == false) {
             nt.BlankF = (json.TileCode == 7);
@@ -3200,7 +3200,7 @@ class clsMapdata {
         return nt;
     }
 
-    private cnvJsonMark_Property(json: any, mdrmjFlag: boolean = false) {
+    private cnvJsonMark_Property(json: unknown, mdrmjFlag: boolean = false) {
         let nt = new Mark_Property();
         nt.PrintMark = json.PrintMark;
         nt.ShapeNumber = json.ShapeNumber;

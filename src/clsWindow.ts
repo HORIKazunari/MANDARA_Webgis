@@ -2638,7 +2638,7 @@ function setting(locSearch: string) {
             let sv = attrData.nowDataSolo();
             let DivNum = sv.Div_Num;
             clsColorChart(e, DivNum, okButton);
-            function okButton(col: any) {
+            function okButton(col: colorRGBA[]) {
                 for (let i = 0; i < DivNum; i++) {
                     sv.Class_Div[i].PaintColor = col[i];
                 }
@@ -2768,7 +2768,7 @@ function setting(locSearch: string) {
         { value: enmContourIntervalMode.RegularInterval, text: '等間隔' },
         { value: enmContourIntervalMode.SeparateSettings, text: '個別設定' }];
         Generic.createNewRadioButtonList(gbContourMode, "contourInterval_Mode", contourIntervalList, 10, 10, undefined, 30, undefined,
-            function (v: any) {
+            function (v: number) {
                 attrData.nowDataSolo().ContourMD.Interval_Mode = v;
                 doc.getElementById("gbContourLineLpat").setVisibility(v == enmContourIntervalMode.ClassPaint);
                 doc.getElementById("gbRegularInterval").setVisibility(v == enmContourIntervalMode.RegularInterval);
@@ -2815,7 +2815,7 @@ function setting(locSearch: string) {
         Generic.createNewWordDivCanvas(gbRegularNormal, "contourRegulerLinePat", "線種", 10, 90, 40,
             function (e: MouseEvent) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.Line_Pat,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Regular.Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -3063,42 +3063,42 @@ function setting(locSearch: string) {
         { value: enmMarkBlockArrange.Horizontal, text: '横' },
         { value: enmMarkBlockArrange.Random, text: 'ランダム' }];
         Generic.createNewRadioButtonList(gbBlockMarkArrange, "blockArrange", arrangeList, 10, 10, undefined, 22, undefined,
-            function (v: any) { attrData.nowDataSolo().MarkBlockMD.ArrangeB = v }, "");
+            function (v: number) { attrData.nowDataSolo().MarkBlockMD.ArrangeB = v }, "");
         Generic.createNewWordNumberInput(markBlockView, "1記号あたりの値", "", 0, "markBlockValue", 0, 260, undefined, 100,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkBlockMD.Value = v }, "");
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBlockMD.Value = v }, "");
         Generic.createNewWordTextInput(markBlockView, "凡例文字", "（空白は既定値）", "", "markBlockWord", 0, 285, undefined, 80,
-            function (e: any) { attrData.nowDataSolo().MarkBlockMD.LegendBlockModeWord = e.target.value }, "text-align:left");
+            function (e: Event) { attrData.nowDataSolo().MarkBlockMD.LegendBlockModeWord = (e.target as HTMLInputElement).value }, "text-align:left");
         Generic.createNewCheckBox(markBlockView, "端数表示", "markBlockHasu", false, 0, 310, undefined,
-            function (obj: any) { attrData.nowDataSolo().MarkBlockMD.HasuVisible = obj.checked }, "text-align:left");
+            function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBlockMD.HasuVisible = obj.checked }, "text-align:left");
         const cboOverlapList = [{ value: 0, text: '少し離す' }, { value: 1, text: 'ぴったり' },
         { value: 2, text: '1/4重ねる' }, { value: 3, text: '1/2重ねる' }, { value: 4, text: '3/4重ねる' }];
         Generic.createNewWordSelect(markBlockView, "記号の重なり", cboOverlapList, 0, "markBlockOverlap", 0, 335, undefined, 100, 0,
-            function (obj: any, sel: number, v: any) { attrData.nowDataSolo().MarkBlockMD.Overlap = v }, "", "", false);
+            function (obj: HTMLSelectElement, sel: number, v: number) { attrData.nowDataSolo().MarkBlockMD.Overlap = v }, "", "", false);
         setMinusValueCase(markBlockView, "gbMarBlockMinusValueCase");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■棒の高さモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
         let markBarView = Generic.createNewDiv(settingModeWindow, "", "markBarView", "rightSettingWindowControlBase", 20, scrMargin.top, sw - 20, sh - 20, "", "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarHeightSize", "最大高さ", 0, 30, 60, 3,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
+            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
 
         const gbMarkBarLegendMaxValue = Generic.createNewFrame(markBarView, "", "", 0, 55, 150, 100, "最大高さの値");
         Generic.createNewRadioButtonList(gbMarkBarLegendMaxValue, "markBarmaxValueSetting", maxValuesetting, 10, 15, undefined, 30, undefined,
-            function (v: any) { attrData.nowDataSolo().MarkBarMD.MaxValueMode = v }, "");
+            function (v: number) { attrData.nowDataSolo().MarkBarMD.MaxValueMode = v }, "");
         Generic.createNewNumberInput(gbMarkBarLegendMaxValue, 0, "markBarUserMaxValue", 40, 70, 90,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkBarMD.MaxValue = v; }, "");
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxValue = v; }, "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarWidth", "幅", 0, 185, 40, 2,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkBarMD.Width = v });
+            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().MarkBarMD.Width = v });
         Generic.createNewTileBox(markBarView, "markBarInnerColor", "内部色", clsBase.Tile(), 0, 215, 40,
             function (e: MouseEvent) {
                 let mkc = attrData.nowDataSolo().MarkBarMD.InnerTile;
                 clsTileSet(e, mkc,
-                    function (retTile: any) { attrData.nowDataSolo().MarkBarMD.InnerTile = retTile });
+                    function (retTile: Tile_Property) { attrData.nowDataSolo().MarkBarMD.InnerTile = retTile });
             }
         );
         Generic.createNewWordDivCanvas(markBarView, "markBarFrame", "輪郭線", 0, 245, 40,
             function (e: MouseEvent) {
                 clsLinePatternSet(e, attrData.nowDataSolo().MarkBarMD.FrameLinePat,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowDataSolo().MarkBarMD.FrameLinePat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -3111,19 +3111,19 @@ function setting(locSearch: string) {
         const MarkBarShapeList = [{ value: enmMarkBarShape.bar, text: "縦棒" },
         { value: enmMarkBarShape.triangle, text: "三角" }];
         Generic.createNewRadioButtonList(gbMarkBarShape, "markBarShape", MarkBarShapeList, 10, 15, undefined, 25, undefined,
-            function (v: any) { attrData.nowDataSolo().MarkBarMD.BarShape = v }, "");
+            function (v: number) { attrData.nowDataSolo().MarkBarMD.BarShape = v }, "");
 
         const gbMarkBarScale = Generic.createNewFrame(markBarView, "", "", 180, 120, 150, 150, "縦棒設定");
         Generic.createNewCheckBox(gbMarkBarScale, "立体表示", "", true, 10, 20, undefined,
-            function (obj: any) { attrData.nowDataSolo().MarkBarMD.ThreeD = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBarMD.ThreeD = obj.checked }, "");
         Generic.createNewCheckBox(gbMarkBarScale, "目盛り線表示", "markBarScaleCheck", true, 10, 50, undefined,
-            function (obj: any) { attrData.nowDataSolo().MarkBarMD.ScaleLineVisible = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBarMD.ScaleLineVisible = obj.checked }, "");
         Generic.createNewWordNumberInput(gbMarkBarScale, "間隔", "", 0, "markBarScaleInterval", 15, 80, undefined, 80,
-            function (obj: any, v: any) { attrData.nowDataSolo().MarkBarMD.ScaleLineInterval = v }, "");
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.ScaleLineInterval = v }, "");
         Generic.createNewWordDivCanvas(gbMarkBarScale, "markBarScaleLine", "パターン", 15, 110, 60,
             function (e: MouseEvent) {
                 clsLinePatternSet(e, attrData.nowDataSolo().MarkBarMD.scaleLinePat,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowDataSolo().MarkBarMD.scaleLinePat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -3137,20 +3137,20 @@ function setting(locSearch: string) {
         stringView.style.backgroundColor = "#f0f0f0";
         Generic.createNewButton(stringView, "フォント", "", 30, 30, function (e: MouseEvent) {
             let md = attrData.nowDataSolo().StringMD;
-            clsFontSet(e, md.Font, function (newFont: any) { md.Font = newFont }, attrData);
+            clsFontSet(e, md.Font, function (newFont: Font_Property) { md.Font = newFont }, attrData);
         }, "");
 
         Generic.createNewSizeSelect(stringView, 0, "txtStringSizeChange", "最大幅", 30, 70, 40, 3,
-            function (obj: any, v: any) { attrData.nowDataSolo().StringMD.maxWidth = v; });
+            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().StringMD.maxWidth = v; });
         Generic.createNewCheckBox(stringView, "最大幅を超えたら折り返す", "chkStringReturn", false, 30, 110, undefined,
-            function (obj: any) { attrData.nowDataSolo().StringMD.WordTurnF = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowDataSolo().StringMD.WordTurnF = obj.checked }, "");
         Generic.createNewButton(stringView, "内部データ", "", 30, 150, innerDataSet, "");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■重ね合わせモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
         let overlayView = Generic.createNewDiv(settingModeWindow, "", "overlayView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         let gbOverlayDataSet = Generic.createNewFrame(overlayView, "gbOverlayDataSet", "", 0, 10, 380, 80, "重ね合わせデータセット");
         Generic.createNewSelect(gbOverlayDataSet, [], -1, "overlayDataSetList", 15, 15, false,
-            function (obj: any, selectedIndex: any, value: any) {
+            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
                 attrData.TotalData.TotalMode.OverLay.SelectedIndex = selectedIndex;
                 overlayDatasetDataItem();
             }, "width:185px", 1, false);
@@ -3182,14 +3182,14 @@ function setting(locSearch: string) {
                 setSettingOverlayModeWindow();
             }, "font-size:12px");
         Generic.createNewWordTextInput(gbOverlayDataSet, "タイトル", "", "", "overlayDatasetTitle", 15, 45, undefined, 200,
-            function (e: any) {
+            function (e: Event) {
                 let ov = attrData.TotalData.TotalMode.OverLay;
-                let ttl = e.target.value;
+                let ttl = (e.target as HTMLInputElement).value;
                 attrData.nowOverlay().title = ttl;
                 doc.getElementById("overlayDataSetList").setSelectData(ov.SelectedIndex, ov.SelectedIndex, ttl);
             }, "");
         Generic.createNewCheckBox(gbOverlayDataSet, "常に重ねる", "overlayAlwaysOver", false, 290, 50, undefined,
-            function (obj: any) {
+            function (obj: HTMLInputElement) {
                 attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index = (obj.checked == true) ? attrData.TotalData.TotalMode.OverLay.SelectedIndex : -1;
             }, "");
 
@@ -3203,7 +3203,7 @@ function setting(locSearch: string) {
         let borderStyle = "border:solid 1px;background-Color:#ffffff"
         overlayListView = new ListViewTable(gbOverlayDataSetItem, "", "", "", overHdata, [], 15, 15, 350, 200, borderStyle, "font-size:13px;",
             "background-Color:#dddddd;text-align:center", "", ["", "", "", "width:10%"], [], true,
-            function (row: any) { overlayDatasetDataItemEach() });
+            function (row: number) { overlayDatasetDataItemEach() });
 
         let gbOverlayItemData = Generic.createNewFrame(gbOverlayDataSetItem, "gbOverlayItemData", "", 15, 230, 230, 50, "");
         Generic.createNewImageButton(gbOverlayItemData, "", "image/112_UpArrowLong_Grey_24x24_72.png", 8, 13, 24, 24, function () {
@@ -3238,7 +3238,7 @@ function setting(locSearch: string) {
                 }
             }, "padding:2px");
         Generic.createNewCheckBox(gbOverlayItemData, "凡例を表示", "overlayItemDataLegendPrint", false, 75, 18, undefined,
-            function (obj: any) {
+            function (obj: HTMLInputElement) {
                 let n = overlayListView.selectedRow;
                 attrData.nowOverlay().DataItem[n].Legend_Print_Flag = obj.checked;
                 let tx = (obj.checked == true) ? "表示" : "非表示";
@@ -3270,7 +3270,7 @@ function setting(locSearch: string) {
         let seriesView = Generic.createNewDiv(settingModeWindow, "", "seriesView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         let gbseriesDataSet = Generic.createNewFrame(seriesView, "gbSeriesDataSet", "", 0, 10, 380, 80, "連続表示データセット");
         Generic.createNewSelect(gbseriesDataSet, [], -1, "seriesDataSetList", 15, 15, false,
-            function (obj: any, selectedIndex: any, value: any) {
+            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
                 attrData.TotalData.TotalMode.Series.SelectedIndex = selectedIndex;
                 seriesDatasetDataItem();
             }, "width:185px", 1, false);
@@ -3293,9 +3293,9 @@ function setting(locSearch: string) {
                 setSettingSeriesModeWindow();
             }, "font-size:12px");
         Generic.createNewWordTextInput(gbseriesDataSet, "タイトル", "", "", "seriesDatasetTitle", 15, 45, undefined, 200,
-            function (e: any) {
+            function (e: Event) {
                 let ov = attrData.TotalData.TotalMode.Series;
-                let ttl = e.target.value;
+                let ttl = (e.target as HTMLInputElement).value;
                 attrData.nowSeries().title = ttl;
                 doc.getElementById("seriesDataSetList").setSelectData(ov.SelectedIndex, ov.SelectedIndex, ttl);
             }, "");
@@ -3393,7 +3393,7 @@ function setting(locSearch: string) {
         let graphView = Generic.createNewDiv(settingModeWindow, "", "graphView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         let gbgraphDataSet = Generic.createNewFrame(graphView, "gbgraphDataSet", "", 0, 10, 380, 80, "グラフデータセット");
         Generic.createNewSelect(gbgraphDataSet, [], -1, "graphDataSetList", 15, 15, false,
-            function (obj: any, selectedIndex: any, value: any) {
+            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
                 attrData.layerGraph().SelectedIndex = selectedIndex;
                 pnlGraphItem.selectedRow = -1;
                 pnlGraphEachItem(0);
@@ -3419,8 +3419,8 @@ function setting(locSearch: string) {
                 setSettingGraphModeWindow();
             }, "font-size:12px");
         Generic.createNewWordTextInput(gbgraphDataSet, "タイトル", "", "", "graphDatasetTitle", 15, 45, undefined, 200,
-            function (e: any) {
-                let ttl = e.target.value;
+            function (e: Event) {
+                let ttl = (e.target as HTMLInputElement).value;
                 attrData.nowGraph().title = ttl;
                  doc.getElementById("graphDataSetList").setSelectData(attrData.layerGraph().SelectedIndex, attrData.layerGraph().SelectedIndex, ttl);
             }, "");
@@ -3470,7 +3470,7 @@ function setting(locSearch: string) {
                     preAsta.push(selGraph.Data[i].DataNumber);
                 }
                 clsSelectData(e, attrData, attrData.TotalData.LV1.SelectedLayer,
-                    function (selectedStatus: any, selectedNumber: any) {
+                    function (selectedStatus: boolean[], selectedNumber: number[]) {
                         let colorPat = [];
                         colorPat.push(new colorRGBA([255, 40, 0]));
                         colorPat.push(new colorRGBA([0, 0o0, 0xbf]));
@@ -3516,7 +3516,7 @@ function setting(locSearch: string) {
             function (e: MouseEvent) {
                 let selGraph = attrData.nowGraph();
                 clsTileSet(e, selGraph.Data[0].Tile,
-                    function (retTile: any) {
+                    function (retTile: Tile_Property) {
                         for (let i = 0; i < selGraph.Data.length; i++) {
                             selGraph.Data[i].Tile = retTile.Clone();
                             let tbox = doc.getElementById("pnlGraphIteminPanelTileBox" + String(i));
@@ -3528,7 +3528,7 @@ function setting(locSearch: string) {
         let gbGraphShape = Generic.createNewFrame(graphView, "gbGraphShape", "", 260, 110, 120, 130, "グラフの形式");
         let gslist = [{ value: enmGraphMode.PieGraph, text: "円グラフ" }, { value: enmGraphMode.StackedBarGraph, text: "帯グラフ" }, { value: enmGraphMode.LineGraph, text: "折れ線グラフ" }, { value: enmGraphMode.BarGraph, text: "棒グラフ" }];
         Generic.createNewRadioButtonList(gbGraphShape, "graphShape", gslist, 10, 15, undefined, 25, undefined,
-            function (v: any) {
+            function (v: number) {
                 let selGraph = attrData.nowGraph();
                 selGraph.GraphMode = v;
                 for (let i = 0; i < selGraph.Data.length; i++) {
@@ -3545,7 +3545,7 @@ function setting(locSearch: string) {
                 case enmGraphMode.PieGraph:
                 case enmGraphMode.StackedBarGraph:
                     clsLinePatternSet(e, selGraph.En_Obi.BoaderLine,
-                        function (Lpat: any) {
+                        function (Lpat: Line_Property) {
                             selGraph.En_Obi.BoaderLine = Lpat;
                             picGraphLinePat();
                         });
@@ -3553,7 +3553,7 @@ function setting(locSearch: string) {
                 case enmGraphMode.BarGraph:
                 case enmGraphMode.LineGraph:
                     clsLinePatternSet(e, selGraph.Oresen_Bou.Line,
-                        function (Lpat: any) {
+                        function (Lpat: Line_Property) {
                             selGraph.Oresen_Bou.Line = Lpat;
                             picGraphLinePat();
                         });
@@ -3584,7 +3584,7 @@ function setting(locSearch: string) {
         let labelView = Generic.createNewDiv(settingModeWindow, "", "labelView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         let gblabelDataSet = Generic.createNewFrame(labelView, "gblabelDataSet", "", 0, 10, 380, 80, "ラベルデータセット");
         Generic.createNewSelect(gblabelDataSet, [], -1, "labelDataSetList", 15, 15, false,
-            function (obj: any, selectedIndex: any, value: any) {
+            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
                 attrData.layerLabel().SelectedIndex = selectedIndex;
                 labelDatasetDataItem();
             }, "width:185px", 1, false);
@@ -3607,24 +3607,24 @@ function setting(locSearch: string) {
                 setSettingLabelModeWindow();
             }, "font-size:12px");
         Generic.createNewWordTextInput(gblabelDataSet, "タイトル", "", "", "labelDatasetTitle", 15, 45, undefined, 200,
-            function (e: any) {
-                let ttl = e.target.value;
+            function (e: Event) {
+                let ttl = (e.target as HTMLInputElement).value;
                 attrData.nowLabel().title = ttl;
                 doc.getElementById("labelDataSetList").setSelectData(attrData.layerLabel().SelectedIndex, attrData.layerGraph().SelectedIndex, ttl);
             }, "");
 
         let gbLabelObjName = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 0, 110, 230, 70, "オブジェクト名");
         Generic.createNewCheckBox(gbLabelObjName, "オブジェクト名表示", "chkLblObjectName", false, 15, 15, undefined,
-            function (obj: any) { attrData.nowLabel().ObjectName_Print_Flag = obj.checked; })
+            function (obj: HTMLInputElement) { attrData.nowLabel().ObjectName_Print_Flag = obj.checked; })
         Generic.createNewCheckBox(gbLabelObjName, "最大幅を超えたら折り返す", "chkLblObjectNameReturn", false, 15, 42, undefined,
-            function (obj: any) { attrData.nowLabel().ObjectName_Turn_Flag = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowLabel().ObjectName_Turn_Flag = obj.checked }, "");
         Generic.createNewButton(gbLabelObjName, "フォント", "", 155, 12, function (e: MouseEvent) {
-            clsFontSet(e, attrData.nowLabel().ObjectName_Font, function (newFont: any) { attrData.nowLabel().ObjectName_Font = newFont }, attrData);
+            clsFontSet(e, attrData.nowLabel().ObjectName_Font, function (newFont: Font_Property) { attrData.nowLabel().ObjectName_Font = newFont }, attrData);
         }, "");
 
         let gbLabelMaxSize = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 240, 110, 110, 70, "最大幅");
         Generic.createNewSizeSelect(gbLabelMaxSize, 0, "txtLabelSizeChange", "", 15, 30, 40, 3,
-            function (obj: any, v: any) { attrData.nowLabel().Width = v; });
+            function (obj: HTMLSelectElement, v: number) { attrData.nowLabel().Width = v; });
 
         let gbLabelDataItem = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 0, 195, 350, 155, "データ項目");
         lstLabelDataItem = new ListBox(gbLabelDataItem, "", [], 15, 15, 180, 80, undefined, "");
@@ -3671,7 +3671,7 @@ function setting(locSearch: string) {
                     preAsta.push(selLabel.DataItem[i]);
                 }
                 clsSelectData(e, attrData, attrData.TotalData.LV1.SelectedLayer,
-                    function (selected: any, selectedNumber: any) {
+                    function (selected: boolean[], selectedNumber: number[]) {
                         let adList = [];
                         let selN = lstLabelDataItem.length;
                         selN = (selN == -1) ? 0 : selN;
@@ -3697,20 +3697,20 @@ function setting(locSearch: string) {
                 lstLabelDataItem.removeAll();
             }, "width:80px");
         Generic.createNewCheckBox(gbLabelDataItem, "データ項目名の表示", "chkLblDataName_Print_Flag", false, 15, 105, 110,
-            function (obj: any) { attrData.nowLabel().DataName_Print_Flag = obj.checked; })
+            function (obj: HTMLInputElement) { attrData.nowLabel().DataName_Print_Flag = obj.checked; })
         Generic.createNewCheckBox(gbLabelDataItem, "単位の表示", "chkLblDataValue_Unit_Flag", false, 150, 105, undefined,
-            function (obj: any) { attrData.nowLabel().DataValue_Unit_Flag = obj.checked; })
+            function (obj: HTMLInputElement) { attrData.nowLabel().DataValue_Unit_Flag = obj.checked; })
         Generic.createNewCheckBox(gbLabelDataItem, "最大幅を超えたら折り返す", "chkLblDataValue_TurnFlag", false, 15, 130, undefined,
-            function (obj: any) { attrData.nowLabel().DataValue_TurnFlag = obj.checked }, "");
+            function (obj: HTMLInputElement) { attrData.nowLabel().DataValue_TurnFlag = obj.checked }, "");
         Generic.createNewButton(gbLabelDataItem, "フォント", "", 230, 125, function (e: MouseEvent) {
-            clsFontSet(e, attrData.nowLabel().DataValue_Font, function (newFont: any) { attrData.nowLabel().DataValue_Font = newFont }, attrData);
+            clsFontSet(e, attrData.nowLabel().DataValue_Font, function (newFont: Font_Property) { attrData.nowLabel().DataValue_Font = newFont }, attrData);
         }, "");
 
         let gbLabelFrame = Generic.createNewFrame(labelView, "gbLabelFrame", "", 0, 365, 350, 40, "枠");
         Generic.createNewWordDivCanvas(gbLabelFrame, "labelFrame", "輪郭線", 10, 10, 40,
             function (e: MouseEvent) {
                 clsLinePatternSet(e, attrData.nowLabel().BorderLine,
-                    function (Lpat: any) {
+                    function (Lpat: Line_Property) {
                         attrData.nowLabel().BorderLine = Lpat;
                         attrData.Draw_Sample_LineBox(e.target, Lpat);
                     }
@@ -3721,14 +3721,14 @@ function setting(locSearch: string) {
             function (e: MouseEvent) {
                 let mkc = attrData.nowLabel().BorderObjectTile;
                 clsTileSet(e, mkc,
-                    function (retTile: any) { attrData.nowLabel().BorderObjectTile = retTile });
+                    function (retTile: Tile_Property) { attrData.nowLabel().BorderObjectTile = retTile });
             }
         );
         Generic.createNewTileBox(gbLabelFrame, "labelDataColor", "データ項目背景", clsBase.Tile(), 240, 10, 50,
             function (e: MouseEvent) {
                 let mkc = attrData.nowLabel().BorderDataTile;
                 clsTileSet(e, mkc,
-                    function (retTile: any) { attrData.nowLabel().BorderDataTile = retTile });
+                    function (retTile: Tile_Property) { attrData.nowLabel().BorderDataTile = retTile });
             }
         );
     }
@@ -3796,7 +3796,7 @@ function setting(locSearch: string) {
         doc.getElementById("settingWindowBtnConditionInfo").setVisibility(f);
     }
     /**最初に読み込むファイルがURLパラメータに指定されている */
-    function getFirstFile(url: any){
+    function getFirstFile(url: string){
         let filename=Generic.getFilename(url);
         let ext=Generic.getExtension(url).toLowerCase();
         if((ext!="mdrj")&&(ext!="mdrmj")){
@@ -3804,9 +3804,9 @@ function setting(locSearch: string) {
             return;
         }
         Generic.readingIcon(filename +"データ読み込み");
-        Generic.getMapfileByHttpRequest(url, function (getData: any) {
+        Generic.getMapfileByHttpRequest(url, function (getData: string) {
             attrData = new clsAttrData();
-            let mapdata: any[] = [];
+            let mapdata: unknown[] = [];
             let retv = attrData.OpenNewMandaraFile(filename, getData, mapdata, ext);
             if (retv.emes != "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
@@ -3825,7 +3825,7 @@ function setting(locSearch: string) {
 }
 
 //属性データ読み込み
-function readData(okCall: any) {
+function readData(okCall: () => void) {
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
     let mapList: { [key: string]: any } = {};
     let bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);
@@ -3835,12 +3835,12 @@ function readData(okCall: any) {
     Generic.createNewButton(mapFileFrame, "地図ファイル追加", "", 230, 50, addMapOn, "");
     Generic.createNewButton(mapFileFrame, "削除", "", 360, 50, deleteMap, "");
     Generic.createNewDiv(mapFileFrame,"※以下の地図ファイルは、読み込み済みのため設定不要です。<br>JAPAN、WORLD、日本緯度経度","","",15,95,430,50,"","");
-    mapFileList.frame.addEventListener('dragover', function (e: any) {
+    mapFileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
     }, false);
-    mapFileList.frame.addEventListener('drop', function (e: any) {
+    mapFileList.frame.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
         const files = e.dataTransfer.files; // FileList object.
@@ -3853,15 +3853,15 @@ function readData(okCall: any) {
         }
         
     }, false);
-    let dropMapFile = function (file: any) {
+    let dropMapFile = function (file: File) {
         Generic.readingIcon("地図ファイル読み込み中");
         Generic.unzipFile(file, unzipOk, unzipError);
-        function unzipOk(data: any) {
+        function unzipOk(data: {[key: string]: Uint8Array}) {
             let key = Object.keys(data)[0];
             getMapFile(JSON.parse(Generic.utf8ArrayToStr(data[key])), file.name);
             Generic.clear_backDiv();
         }
-        function unzipError(err: any) {
+        function unzipError(err: Error) {
             getMapFile(undefined, undefined);
             Generic.clear_backDiv();
         }
@@ -3875,7 +3875,7 @@ function readData(okCall: any) {
 
     let ext="clipboard";
     let filename="";
-    let mdrjString: any;
+    let mdrjString: string | undefined;
 
     Generic.createNewSpan(dataFileFrame, "<b>下に属性データを貼り付ける（ctrl+v）、Excelで範囲選択してドラッグ&ドロップ、またはCSV、MDRJ、MDRMJファイルをドロップしてください</b>", "", "", 10, 55, "", "");
     let dataTextArea = Generic.createNewTextarea(dataFileFrame, "", "tArea", 15, 85, 42, 24,"font-size:12px;width:420px;height:170px;resize: none;overflow-x: scroll")
@@ -3899,16 +3899,16 @@ function readData(okCall: any) {
         ext="clipboard";
     }
 
-    fileIn.addEventListener("change", function (e: any) {
+    fileIn.addEventListener("change", function (e: Event) {
         const file = e.target.files[0];
         readAttrData(file);
     }, false);
-    dataTextArea.addEventListener('dragover', function (e: any) {
+    dataTextArea.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
     }, false);
-    dataTextArea.addEventListener('drop', function (e: any) {
+    dataTextArea.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
         const files = e.dataTransfer.files; // FileList object.
@@ -3926,7 +3926,7 @@ function readData(okCall: any) {
         }
     }, false);
 
-    function readAttrData(file: any) {
+    function readAttrData(file: File) {
         //ファイル読み込み（ボタン、ドロップ共通）
 
         Generic.readingIcon("データ読み込み");
@@ -3935,13 +3935,13 @@ function readData(okCall: any) {
         ext=Generic.getExtension(file.name).toLowerCase();
         if((ext=="mdrj")||(ext=="mdrmj")){
             Generic.unzipFile(file,unzipOk,unzipError);
-            function unzipOk(data: any){
+            function unzipOk(data: {[key: string]: Uint8Array}){
                 Generic.clear_backDiv();
                 let key=Object.keys(data)[0];
                 mdrjString=Generic.utf8ArrayToStr(data[key]);
                 dataTextArea.value = ext.toUpperCase() + "ファイル: "+file.name;
             }
-            function unzipError(err: any){
+            function unzipError(err: Error){
                 Generic.clear_backDiv();
                 Generic.alert(undefined,"読み込めませんでした。")
             }
@@ -3961,7 +3961,7 @@ function readData(okCall: any) {
         openMapFile(getMapFile);
     }
 
-    function getMapFile(jsonMapData: any, mapFilename: any) {
+    function getMapFile(jsonMapData: unknown, mapFilename: string | undefined) {
         if(jsonMapData==undefined){
             Generic.alert(undefined,"読み込めませんでした。");
             return;
@@ -4067,39 +4067,39 @@ function openShapeFile(okCall: (() => void) | undefined): void{
     let chkTopology=Generic.createNewCheckBox(bbox,"位相構造化","",false,30,260,120,undefined,"");
     let cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList(), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
 
-    function keiChange(obj: any, sel: any, v: any){
+    function keiChange(obj: HTMLSelectElement, sel: HTMLSelectElement, v: number){
         let fileKey = fileList.getValue();   
         let zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
         zahyo.HeimenTyokkaku_KEI_Number=v;
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
 
-    function zahyoModeFrameChange(v: any) {
+    function zahyoModeFrameChange(v: number) {
         let fileKey = fileList.value;   
         let zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
         zahyo.Mode=v;
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
 
-    function zahyoSystemFrameChange(v: any) {
+    function zahyoSystemFrameChange(v: number) {
         let fileKey = fileList.value;   
         let zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
         zahyo.System=v;
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
-    fileList.frame.addEventListener('dragover', function (e: any) {
+    fileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
+        e.dataTransfer!.dropEffect = 'copy';
     }, false);
-    fileList.frame.addEventListener('drop', function (e: any) {
+    fileList.frame.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
         let files = e.dataTransfer.files; // FileList object.
         dropShapeFiles(files);
     }, false);
 
-    let dropShapeFiles = function (files: any) {
+    let dropShapeFiles = function (files: FileList) {
         //ファイル読み込み（ドロップ）
         let sFiles: { [key: string]: any } = {};
         let er = "";
@@ -4129,19 +4129,19 @@ function openShapeFile(okCall: (() => void) | undefined): void{
 
         let key = Object.keys(sFiles)[0];
         sFiles[key].shape.fileRead(sFiles[key].files, encode,key, onOk, onError);
-        function onOk(tag: any) {//読み込めた
+        function onOk(tag: string) {//読み込めた
             let lst=[{ value: tag, text: tag + ".shp"  }];
             fileList.addList(lst, firstSel);
             shapeFiles[tag] = sFiles[tag];
             setShapeFileInfo();
         }
-        function onError(tag: any) {
+        function onError(tag: string) {
             Generic.alert(undefined,tag + "は読み込めませんでした。")
         }
         /**zipされたシェープファイル */
-        function zipShape(zipFile: any) {
+        function zipShape(zipFile: File) {
             Generic.unzipFile(zipFile, zipSOK, zipSErr)
-            function zipSOK(unZipData: any) {
+            function zipSOK(unZipData: {[key: string]: Uint8Array}) {
                 for (let filename in unZipData) {
                     checkSFiles(filename,true);
                 }
@@ -4157,7 +4157,7 @@ function openShapeFile(okCall: (() => void) | undefined): void{
                 Generic.alert(undefined,zipFile.name + "は読み込めませんでした。")
             }
         }
-        function checkSFiles(file: any, zipF: any) {
+        function checkSFiles(file: File | string, zipF: boolean) {
             let ext =(zipF==true ? Generic.getExtension(file).toLowerCase():Generic.getExtension(file.name).toLowerCase());
             let fname =(zipF==true ? Generic.getFilenameWithoutExtension(file): Generic.getFilenameWithoutExtension(file.name));
             switch (ext) {
@@ -4245,7 +4245,7 @@ function openShapeFile(okCall: (() => void) | undefined): void{
         cboKeiNo?.setSelectValue?.(zahyo.HeimenTyokkaku_KEI_Number);
     }
 
-    function getFile(jsonMapData: any, filename: any) {
+    function getFile(jsonMapData: unknown, filename: string | undefined) {
         let key = Object.keys(mapList);
         let fu = filename.toUpperCase();
         if(key.indexOf(fu) != -1) {
@@ -4284,8 +4284,8 @@ function openShapeFile(okCall: (() => void) | undefined): void{
     }
     function buttonOK() {
 
-        let mapList: { [key: string]: any } = {};
-        let LayerData: any[] = []; //strLayerInfo
+        let mapList: { [key: string]: unknown } = {};
+        let LayerData: unknown[] = []; //strLayerInfo
         const prj = parseInt(cboProjection?.getValue ? cboProjection.getValue() : "0");
         for (let i in shapeFiles) {
             let sfile = shapeFiles[i];
@@ -4345,15 +4345,15 @@ function mapViewer(okCall: (() => void) | undefined): void {
     layerTime.onchange = layerTimeChange;
     Generic.setDisabled(layerFrame, true);
 
-    fileList.frame.addEventListener('dragover', function (e: any) {
+    fileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
+        e.dataTransfer!.dropEffect = 'copy';
     }, false);
-    fileList.frame.addEventListener('drop', function (e: any) {
+    fileList.frame.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        const files = e.dataTransfer.files; // FileList object.
+        const files = e.dataTransfer!.files; // FileList object.
         const file = files[0];
         if (Generic.getExtension(file.name).toLowerCase() != "mpfj") {
             Generic.alert(undefined,"地図ファイルではありません。拡張子mpfjのファイルをドロップしてください。");
@@ -4361,16 +4361,16 @@ function mapViewer(okCall: (() => void) | undefined): void {
             dropMapFile(file);
         }
     }, false);
-    let dropMapFile = function (file: any) {
+    let dropMapFile = function (file: File) {
         Generic.readingIcon("地図ファイル読み込み中");
         Generic.unzipFile(file, unzipOk, unzipError);
-        function unzipOk(data: any) {
+        function unzipOk(data: {[key: string]: Uint8Array}) {
             let key = Object.keys(data)[0];
             let tx = JSON.parse(Generic.utf8ArrayToStr(data[key]));
             getFile(tx, file.name);
             Generic.clear_backDiv();
         }
-        function unzipError(err: any) {
+        function unzipError(err: Error) {
             getFile(undefined, undefined);
             Generic.clear_backDiv();
         }
@@ -4379,7 +4379,7 @@ function mapViewer(okCall: (() => void) | undefined): void {
         openMapFile(getFile);
     }
 
-    function getFile(jsonMapData: any, filename: any) {
+    function getFile(jsonMapData: unknown, filename: string | undefined) {
         if(jsonMapData==undefined){
             Generic.alert(undefined,"読み込めませんでした。");
             return;
@@ -4504,14 +4504,14 @@ function mapViewer(okCall: (() => void) | undefined): void {
     }
 
     //レイヤ名の変更
-    function layerNameChange(e: any) {
+    function layerNameChange(e: Event) {
         let n = layerList.selectedIndex;
         LayerData[n].Name = e.target.value;
         // layerList.setText(n,e.target.value); // ListBoxに存在しないメソッド
     }
 
     //レイヤのオブジェクトグループ変更
-    function objGListChange(obj: any, checkList: any, checkArray: any) {
+    function objGListChange(obj: HTMLElement, checkList: unknown, checkArray: number[]) {
         let n = layerList.selectedIndex;
         LayerData[n].UseObjectKind.fill(false);
         for (let i = 0; i < checkArray.length; i++) {
@@ -4520,7 +4520,7 @@ function mapViewer(okCall: (() => void) | undefined): void {
     }
 
     //レイヤの地図ファイル変更
-    function useMapListChange(obj: any, sel: any, v: any) {
+    function useMapListChange(obj: HTMLElement, sel: HTMLSelectElement, v: unknown) {
         let n = layerList.selectedIndex;
         const mapName = useMapList?.getText ? useMapList.getText() : "";
         LayerData[n].MapfileName = mapName;

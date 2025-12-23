@@ -2214,7 +2214,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
         
         Generic.clear_backDiv();
         frmTitleSettingsAddingData(Title, Unit, note, true,"",
-            function (retV: any) {
+            function (retV: {title: string, unit: string, note: string}) {
                 state.attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR, MisF);
                 okEvent(e);
             }
@@ -2715,7 +2715,7 @@ function frmMain_GetDistance(okEvent: () => void){
                 let unt = Generic.getScaleUnitStrings(undefined,Unit);
                 let Note = "距離測定機能で作成";
                 frmTitleSettingsAddingData(tx, unt, Note, false, "最も近い地点との距離のデータ項目名",
-                    function (retV: any) {
+                    function (retV: {title: string, unit: string, note: string}) {
                         tx = retV.title;
                         unt = retV.unit;
                         Note = retV.note;
@@ -3293,7 +3293,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
 
 
 /**地図ファイルを開く */
-function openMapFile(call: (data: any, filename?: string) => void) {
+function openMapFile(call: (data: unknown, filename?: string) => void) {
 
     //地図ファイルを開く
     const bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true,"", 0.2,false);
@@ -3418,7 +3418,7 @@ class strFrmCopyObjectName_init_parameter_data {
 }
 
 /**オブジェクト名コピー */
-function frmCopyObjectName(MapData: any, initParapeter: any, okEvent: any, cancelEvent: any = undefined) {
+function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
     let condidateInfo: any =function(){
         this.ObjCode;
         this.TimeStac;
@@ -3426,7 +3426,7 @@ function frmCopyObjectName(MapData: any, initParapeter: any, okEvent: any, cance
     const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true, true, cancelEvent);
     Generic.createNewSpan(backDiv, "検索するオブジェクト名", "", "", 10, 40, "", undefined);
     const objNameBox = Generic.createNewInput(backDiv, "text", initParapeter.ObjName, "", 20, 60, undefined, "width:160px");
-    objNameBox.onkeydown = function (e: any) {
+    objNameBox.onkeydown = function (e: KeyboardEvent) {
         if (e.keyCode == 13) {
             change();
         }else if(e.keyCode == 9){
@@ -3454,7 +3454,7 @@ function frmCopyObjectName(MapData: any, initParapeter: any, okEvent: any, cance
     let lbList = new CheckedListBox(backDiv, "", [], 195, 120, 210, 240, false, undefined,"");
     Generic.createNewButton(backDiv, "コピー", "", 220, 375, copy, "width:100px");
 
-    let candidateObject: any[] =[];// List(Of condidateInfo)
+    let candidateObject: unknown[] =[];// List(Of condidateInfo)
 
     function change(){
 
@@ -3544,7 +3544,7 @@ function frmCopyObjectName(MapData: any, initParapeter: any, okEvent: any, cance
         }
     }
 
-    function copy(e: any){
+    function copy(e: Event){
         let maxOname=0;
         let copyObjname=[];
         for (let i = 0; i < MapData.Map.OBKNum; i++) {
@@ -3565,7 +3565,7 @@ function frmCopyObjectName(MapData: any, initParapeter: any, okEvent: any, cance
             popmenu.push({ caption: copyObjname[i],value:i, event: copyMode });
         }
         Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
-        function copyMode(obj: any){
+        function copyMode(obj: HTMLInputElement){
             let copyTx = "";
             for (let i = 0; i < candidateObject.length; i++) {
                 if (lbList.getCheckedStatus(i) == true) {
@@ -3582,11 +3582,11 @@ function frmCopyObjectName(MapData: any, initParapeter: any, okEvent: any, cance
 /**ダミーオブジェクトの設定 */
 function frmPrint_DummyObjectGroup(){
 
-    let Dummy: any[] = [];//strDummyObjectInfo
-    let DummyOBGroup: any[] = [];
+    let Dummy: unknown[] = [];//strDummyObjectInfo
+    let DummyOBGroup: unknown[] = [];
     let MapFileList = state.attrData.GetMapFileName();
-    let PolygonDummy_ClipSet_F: any[] = [];
-    let DummyObjectPointMark: { [key: string]: any[] } = {};//strDummyObjectPointMark_Info
+    let PolygonDummy_ClipSet_F: unknown[] = [];
+    let DummyObjectPointMark: { [key: string]: unknown[] } = {};//strDummyObjectPointMark_Info
     let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
     for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
         let al = state.attrData.LayerData[i];
@@ -3612,9 +3612,9 @@ function frmPrint_DummyObjectGroup(){
         }, "width:60px");
     let txtDummy = Generic.createNewInput(gbDummyList, "text", "", "", 10, 185, undefined, "width:100px");
     txtDummy.addEventListener('keydown',txtKeyDown) ;
-     function txtKeyDown (e: any) {if (e.keyCode == 13) { btnAdd.click(); } }
+     function txtKeyDown (e: KeyboardEvent) {if (e.keyCode == 13) { btnAdd.click(); } }
     let btnAdd=Generic.createNewButton(gbDummyList, "追加", "", 115, 180,
-        function (e: any) {
+        function (e: MouseEvent) {
             let tx = txtDummy.value;
             if (tx == "") {
                 txtDummy.removeEventListener('keydown',txtKeyDown) ;
@@ -3628,21 +3628,21 @@ function frmPrint_DummyObjectGroup(){
             txtDummy.focus();
 
         }, "width:60px");
-    Generic.createNewButton(gbDummyList, "オブジェクト名コピーパネル", "", 10, 210, function (e: any) {
+    Generic.createNewButton(gbDummyList, "オブジェクト名コピーパネル", "", 10, 210, function (e: MouseEvent) {
         let mp=state.attrData.LayerData[LayerNum].MapFileData;
         let init_para = new strFrmCopyObjectName_init_parameter_data();
         init_para.Time = state.attrData.LayerData[LayerNum].Time;
         init_para.ObjectGroupChecked.length = mp.Map.OBKNum;
         init_para.ObjectGroupChecked.fill(true);
         init_para.TimeChangeEnabled = false;
-        frmCopyObjectName(mp,init_para,function (copyData: any) {
+        frmCopyObjectName(mp,init_para,function (copyData: string) {
             let str=copyData.split("\n");
             AddDummyObject(str);
         })
     }, "width:170px;font-size:11px");
-    Generic.createNewButton(gbDummyList, "クリップボードから追加", "", 10, 240, function (e: any) {
+    Generic.createNewButton(gbDummyList, "クリップボードから追加", "", 10, 240, function (e: MouseEvent) {
         document.body.removeEventListener("contextmenu",contextMenuPrevent);
-        Generic.outerPaste(function(val: any){
+        Generic.outerPaste(function(val: string){
             document.body.addEventListener("contextmenu",contextMenuPrevent);
             let strlst=val.split("\n");
             let oveCheck=Generic.getArrayContentsList(strlst);
@@ -3703,9 +3703,9 @@ function frmPrint_DummyObjectGroup(){
             let lc = Generic.createNewWordDivCanvas(pnlPointMarkList, "", lk.ObjectKindName, 10, y, 100, inePatternClick);
             lc.tag = i;
             state.attrData.Draw_Sample_Mark_Box(lc, DOPMark[i].mark);
-            function inePatternClick(e: any) {
+            function inePatternClick(e: MouseEvent) {
                 let n = e.target.tag;
-                clsMarkSet(e, function (newMark: any) {
+                clsMarkSet(e, function (newMark: Mark) {
                     DOPMark[n].mark = newMark;
                     state.attrData.Draw_Sample_Mark_Box(lc, newMark);
                 }, DOPMark[n].mark, state.attrData);
@@ -3713,7 +3713,7 @@ function frmPrint_DummyObjectGroup(){
         }
     }
 
-    function AddDummyObject(str: any){
+    function AddDummyObject(str: string[]){
         let emes  = "";
         let emesUsed  = "";
         let OKCodeName = [] //strDummyObjectName_and_Code)

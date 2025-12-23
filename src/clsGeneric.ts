@@ -4993,7 +4993,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         mainMenu.style.width = (mainw + 40).px();
         mainMenu.style.height = y.px();
         mainMenu.style.zIndex = (maxZindex + 1).toString();
-        let subMenu: any[] = [];
+        let subMenu: HTMLDivElement[] = [];
         for (let i in list) {
             if (list[i].hasOwnProperty('child')) {
                 let smenu = document.createElement("div");
@@ -5121,7 +5121,7 @@ export class CheckedListBox {
     private lineH: number;
     private allh: number;
     private w: number;
-    private lBox: any[] = [];
+    private lBox: HTMLDivElement[] = [];
     private frame: HTMLElement;
     private inFrame: HTMLElement;
     private width: number;
@@ -5171,7 +5171,7 @@ export class CheckedListBox {
     }
 
     /**指定範囲のリストを削除 */
-    removeList(pos: any, delNum: any): void {
+    removeList(pos: number, delNum: number): void {
         this._removeList(pos, delNum);
     }
 
@@ -5227,8 +5227,8 @@ export class CheckedListBox {
             let cbox = Generic.createNewInput(this.inFrame, "checkbox", "", "", 3, ypos, undefined, "");
             cbox.checked = lst[i].checked;
             cbox.disabled = asfdisabled;
-            const change = (e: any) => {
-                let obj = e.target;
+            const change = (e: Event) => {
+                let obj = e.target as any;
                 let newSel = Number(obj.tag);
                 if (this.selectedIndex != newSel) {
                     this.setIndexColor(newSel);
@@ -5244,7 +5244,7 @@ export class CheckedListBox {
             };
             cbox.onchange = change;
             cbox.word = Generic.createNewDiv(this.inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
-                function (e: any) {
+                function (e: MouseEvent) {
                     if (asfdisabled == false) {
                         cbox.checked = !cbox.checked;
                         change(e);
@@ -5258,7 +5258,7 @@ export class CheckedListBox {
         }
     }
 
-    private setIndexColor(newSel: any): void {
+    private setIndexColor(newSel: number): void {
         if (this.selectedIndex != -1) {
             this.lBox[this.selectedIndex].word.style.backgroundColor = "#ffffff";
         }
@@ -5280,7 +5280,7 @@ export class CheckedListBox {
         return { checkedStatus: checkedList, checkedArray: checkedArray };
     }
 
-    private allChange(checked: any): void {
+    private allChange(checked: boolean): void {
         for (let i = 0; i < this.lBox.length; i++) {
             if (this.lBox[i].disabled == false) {
                 this.lBox[i].checked = checked;
@@ -5307,20 +5307,20 @@ export class CheckedListBox {
 export class ListBox {
     selectedIndex: number = -1;
     length: number = 0;
-    value: any = undefined;
+    value: string | undefined = undefined;
     frame: HTMLElement;
-    private lBox: any[] = [];
+    private lBox: HTMLElement[] = [];
     private lineH: number;
     private allh: number;
     private w: number;
     private width: number;
     private height: number;
     private inFrame: HTMLElement;
-    private Class: any;
-    private styleinfo: any;
-    private onChange: any;
+    private Class: string;
+    private styleinfo: string;
+    private onChange: ((index: number) => void) | null;
 
-    constructor(ParentObj: any, Class: any, list: any, x: any, y: any, width: any, height: any, onChange: any, styleinfo: any = "") {
+    constructor(ParentObj: HTMLElement, Class: string, list: string[], x: number | string, y: number | string, width: number, height: number, onChange: ((index: number) => void) | null, styleinfo: string = "") {
         this.width = width;
         this.height = height;
         this.Class = Class;
@@ -5379,7 +5379,7 @@ export class ListBox {
         }
     }
 
-    getAllText(): any[] {
+    getAllText(): string[] {
         let v = [];
         for (let i = 0; i < this.length; i++) {
             v.push(this.lBox[i].innerText);
@@ -5426,7 +5426,7 @@ export class ListBox {
         }
     }
 
-    rowDown(row: any): void {
+    rowDown(row: number): void {
         if (this.lBox.length < 2) {
             return;
         }
@@ -5441,7 +5441,7 @@ export class ListBox {
         }
     }
 
-    private _addList(lst: any, pos: any): void {
+    private _addList(lst: Array<{text: string, value: string}>, pos: number): void {
         if (lst.length == 0) {
             return;
         }
@@ -5451,16 +5451,16 @@ export class ListBox {
         this.selectedIndex = pos;
         for (let i in lst) {
             let div = Generic.createNewDiv(this.inFrame, lst[i].text, "", this.Class, 3, Number(i) * this.lineH, this.w, this.lineH, this.styleinfo + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background-color:white",
-                (e: any) => {
+                (e: MouseEvent) => {
                     if (this.selectedIndex != -1) {
                         this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
                     }
-                    let obj = e.target;
+                    let obj = e.target as any;
                     obj.style.backgroundColor = "#e1e1e1";
                     this.selectedIndex = Number(obj.tag);
                     this.value = this.lBox[this.selectedIndex].value;
                     if (typeof this.onChange == 'function') {
-                        this.onChange(Number(obj.tag), obj.value);
+                        this.onChange(Number(obj.tag));
                     }
                 });
             div.value = lst[i].value;
@@ -5469,7 +5469,7 @@ export class ListBox {
         this.reNumbering();
     }
 
-    private _removeList(pos: any, delNum: any): void {
+    private _removeList(pos: number, delNum: number): void {
         if (this.lBox.length == 0) {
             return;
         }
@@ -5509,19 +5509,19 @@ export class ListBox {
 
 /**リストビューコントロール_rowselFlag=trueでクリックした行を返す,selectedRowで選択中の行 */
 export class ListViewTable {
-    frameStyleinfo: any;
-    styleinfo: any;
-    normalStyleinfo: any;
-    headStyleinfo: any;
-    headXStyleinfo: any;
-    normalXStyleinfo: any;
-    rowselFlag: any;
+    frameStyleinfo: string;
+    styleinfo: string;
+    normalStyleinfo: string;
+    headStyleinfo: string;
+    headXStyleinfo: string[];
+    normalXStyleinfo: string[];
+    rowselFlag: boolean;
     selectedRow: number = -1;
-    oldBG: any[] = [];
-    thead: any;
-    tb: any;
-    tbody: any;
-    tbdiv: any;
+    oldBG: string[] = [];
+    thead: HTMLTableSectionElement | null = null;
+    tb: HTMLTableElement | null = null;
+    tbody: HTMLTableSectionElement | null = null;
+    tbdiv: HTMLDivElement | null = null;
     private topDIV: HTMLElement;
     private headNum: number;
     private bpos: number = -1;
@@ -5529,27 +5529,27 @@ export class ListViewTable {
     private tbhdiv: HTMLElement;
     private tbh: HTMLTableElement | undefined;
     private tbhHeight: number = 0;
-    private onclick: any;
+    private onclick: ((row: number) => void) | null;
 
     constructor(
-        ParentObj: any,
-        gridID: any,
-        gridClass: any,
-        tableClass: any,
-        hdata: any,
-        data: any,
-        x: any,
-        y: any,
-        width: any,
-        height: any,
-        frameStyleinfo: any,
-        styleinfo: any,
-        headStyleinfo: any,
-        normalStyleinfo: any,
-        headXStyleinfo: any,
-        normalXStyleinfo: any,
-        _rowselFlag: any,
-        onclick: any
+        ParentObj: HTMLElement,
+        gridID: string,
+        gridClass: string,
+        tableClass: string,
+        hdata: string[][],
+        data: string[][],
+        x: number | string,
+        y: number | string,
+        width: number | string,
+        height: number,
+        frameStyleinfo: string,
+        styleinfo: string,
+        headStyleinfo: string,
+        normalStyleinfo: string,
+        headXStyleinfo: string[],
+        normalXStyleinfo: string[],
+        _rowselFlag: boolean,
+        onclick: ((row: number) => void) | null
     ) {
         this.frameStyleinfo = frameStyleinfo;
         this.styleinfo = styleinfo;
@@ -5651,7 +5651,7 @@ export class ListViewTable {
         this.tb.style.width = '100%';
         this.tbody = this.tb.createTBody();
 
-        const clickTBody = (e: any) => {
+        const clickTBody = (e: MouseEvent) => {
             this.selectRow(e.target.parentNode.rowIndex);
             if (typeof this.onclick == 'function') {
                 this.onclick(e.target.parentNode.rowIndex);
@@ -5684,7 +5684,7 @@ export class ListViewTable {
         }
     }
 
-    selectRow(newSelRow: any): void {
+    selectRow(newSelRow: number): void {
         if (this.rowselFlag == true) {
             if ((this.selectedRow >= 0) && (this.selectedRow < this.tb.rows.length)) {
                 for (let i = 0; i < this.tb.rows[this.selectedRow].cells.length; i++) {
@@ -5703,10 +5703,10 @@ export class ListViewTable {
     }
 
     /**行にデータ挿入prototypeでは作りにくい rowInsertPos=0の場合はselectedRowの前に、1の場合は後ろに追加*/
-    insertRow(rowInsertPos: any, plusData: any): void {
-        let rn = this.tb.rows.length;
+    insertRow(rowInsertPos: number, plusData: string[]): void {
+        let rn = this.tb!.rows.length;
         let rowpos = this.selectedRow + rowInsertPos;
-        let row = this.tbody.insertRow(rowpos);
+        let row = this.tbody!.insertRow(rowpos);
         row.setAttribute("style", this.normalStyleinfo);
         for (let j = 0; j < plusData.length; j++) {
             let newtd = row.insertCell(-1);
@@ -5715,10 +5715,12 @@ export class ListViewTable {
             if (this.normalXStyleinfo[j] != undefined) {
                 newtd.setAttribute("style", this.normalXStyleinfo[j]);
             }
-            newtd.onclick = (e: any) => {
-                this.selectRow(e.target.parentNode.rowIndex);
+            newtd.onclick = (e: MouseEvent) => {
+                const target = e.target as HTMLElement;
+                const row = target.parentNode as HTMLTableRowElement;
+                this.selectRow(row.rowIndex);
                 if (typeof this.onclick == 'function') {
-                    this.onclick(e.target.parentNode.rowIndex);
+                    this.onclick(row.rowIndex);
                 }
             };
             if ((this.headNum > 0) && (rn == 0)) {
@@ -5732,90 +5734,90 @@ export class ListViewTable {
     }
     /**ListViewの行数取得 */
     getRowNumber(): number {
-        return this.tb.rows.length;
+        return this.tb!.rows.length;
     }
 
     /**selectedRowの行削除 */
     deleteRow(): void {
         let rowPos = this.selectedRow;
         if (rowPos == -1) { return; }
-        this.tbody.deleteRow(rowPos);
-        if (this.tb.rows.length == 0) {
+        this.tbody!.deleteRow(rowPos);
+        if (this.tb!.rows.length == 0) {
             this.selectedRow = -1;
         } else {
-            let newsel = Math.min(this.selectedRow, this.tb.rows.length - 1);
+            let newsel = Math.min(this.selectedRow, this.tb!.rows.length - 1);
             this.selectRow(newsel);
         }
     }
 
     /**セルに値を設定 */
-    setValue(x: any, y: any, value: any): void {
-        this.tb.rows[y].cells[x].innerHTML = value;
+    setValue(x: number, y: number, value: string): void {
+        this.tb!.rows[y].cells[x].innerHTML = value;
     }
 
     /**行の上下を反転 */
     reverse(): void {
-        let n = this.tb.rows.length;
-        let celln = this.tb.rows[0].cells.length;
+        let n = this.tb!.rows.length;
+        let celln = this.tb!.rows[0].cells.length;
         for (let i = 0; i < Math.floor(n / 2); i++) {
-            let r1 = this.tb.rows[i];
-            let r2 = this.tb.rows[n - 1 - i];
+            let r1 = this.tb!.rows[i];
+            let r2 = this.tb!.rows[n - 1 - i];
             for (let j = 0; j < celln; j++) {
                 [r1.cells[j].innerHTML, r2.cells[j].innerHTML] = [r2.cells[j].innerHTML, r1.cells[j].innerHTML];
             }
         }
-        let newsel = this.tb.rows.length - 1 - this.selectedRow;
+        let newsel = this.tb!.rows.length - 1 - this.selectedRow;
         this.selectRow(newsel);
     }
 
     /**selectedRowの行上移動 */
     rowUp(): void {
-        if (this.tb.rows.length < 2) { return; }
+        if (this.tb!.rows.length < 2) { return; }
         let rowPos = this.selectedRow;
-        let celln = this.tb.rows[rowPos].cells.length;
+        let celln = this.tb!.rows[rowPos].cells.length;
         let dest = rowPos - 1;
         if (dest == -1) {
             let stac = [];
             for (let i = 0; i < celln; i++) {
-                stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+                stac.push(this.tb!.rows[rowPos].cells[i].innerHTML);
             }
             this.deleteRow();
-            this.selectRow(this.tb.rows.length - 1);
+            this.selectRow(this.tb!.rows.length - 1);
             this.insertRow(1, stac);
-            this.tbdiv.scrollTop = this.tbdiv.scrollTopMax;
+            this.tbdiv!.scrollTop = (this.tbdiv as any).scrollTopMax;
         } else {
             for (let i = 0; i < celln; i++) {
-                [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML];
+                [this.tb!.rows[rowPos].cells[i].innerHTML, this.tb!.rows[dest].cells[i].innerHTML] = [this.tb!.rows[dest].cells[i].innerHTML, this.tb!.rows[rowPos].cells[i].innerHTML];
             }
             this.selectRow(dest);
         }
     }
     /**selectedRowの行下移動 */
     rowDown(): void {
-        let maxrow = this.tb.rows.length;
+        let maxrow = this.tb!.rows.length;
         if (maxrow < 2) { return; }
         let rowPos = this.selectedRow;
-        let celln = this.tb.rows[rowPos].cells.length;
+        let celln = this.tb!.rows[rowPos].cells.length;
         let dest = rowPos + 1;
         if (dest == maxrow) {
             let stac = [];
             for (let i = 0; i < celln; i++) {
-                stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
+                stac.push(this.tb!.rows[rowPos].cells[i].innerHTML);
             }
             this.deleteRow();
             this.selectRow(0);
             this.insertRow(0, stac);
-            this.tbdiv.scrollTop = 0;
+            this.tbdiv!.scrollTop = 0;
         } else {
             for (let i = 0; i < celln; i++) {
-                [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML];
+                [this.tb!.rows[rowPos].cells[i].innerHTML, this.tb!.rows[dest].cells[i].innerHTML] = [this.tb!.rows[dest].cells[i].innerHTML, this.tb!.rows[rowPos].cells[i].innerHTML];
             }
             this.selectRow(dest);
         }
     }
     /**表クリア */
     clear(): void {
-        let maxrow = this.tb.rows.length;
+        let maxrow = this.tb!.rows.length;
         for (let i = maxrow - 1; i >= 0; i--) {
             this.selectRow(i);
             this.deleteRow();
@@ -5873,7 +5875,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     this.addEventListener("mousedown", mdown, false);
     this.addEventListener("touchstart", mdown, false);
     this.addEventListener("mousemove", mmovef, false);
-    function mmovef(event: any) {
+    function mmovef(event: MouseEvent) {
         //要素内の相対座標を取得
         fx = event.pageX- this.parentElement.offsetLeft;
         fy = event.pageY- this.parentElement.offsetTop;
@@ -5911,7 +5913,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 
     //マウスが押された際の関数
-    function mdown(e: any) {
+    function mdown(e: MouseEvent) {
         e.stopPropagation();
         let checkF = true;
          mdownF=true;
@@ -5980,7 +5982,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 
     //マウスカーソルが動いたときに発火
-    function mmove(e: any) {
+    function mmove(e: MouseEvent) {
         if(mdownF==false){
             return;
         }
@@ -6084,7 +6086,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 
     //同じ地点でマウスボタンが上がった場合の処理
-    function mdup(e: any) {
+    function mdup(e: MouseEvent) {
         this.style.cursor = 'default';
         this.addEventListener("mousemove", mmovef, false);
         targetEle.parentElement.removeEventListener("mousemove", mmove, false);
@@ -6093,7 +6095,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 
     //マウスボタンが上がったら発火
-    function mup(e: any) {
+    function mup(e: MouseEvent) {
         if(mdownF==false){
             return;
         }
@@ -6181,7 +6183,7 @@ HTMLElement.prototype.removeOne = function () {
 }
 
 //select要素にリスト追加
-HTMLElement.prototype.addSelectList = function (list: any, firstSelectIndex: any, resetF: any, astariskNonF: any,insertPoint: any=undefined) {
+HTMLElement.prototype.addSelectList = function (list: ListItem[], firstSelectIndex: number | undefined, resetF: boolean, astariskNonF: boolean,insertPoint: number | undefined=undefined) {
     if (resetF == true) {
         this.removeAll();
     }
@@ -6240,7 +6242,7 @@ HTMLElement.prototype.setSelectText = function (txt: string) {
 }
 
 /**select要素の指定の位置のvalueとテキストを変更 */
-HTMLElement.prototype.setSelectData=function(n: any,value: any,text: any){
+HTMLElement.prototype.setSelectData=function(n: number,value: string | number,text: string){
     this.options[n].text=text;
     this.options[n].value=value;
 }
