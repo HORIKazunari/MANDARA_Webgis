@@ -1136,7 +1136,7 @@ class clsMapdata {
     // <param name="Emes">エラーメッセージ（戻り値）</param>
     // <param name="check_objType">オブジェクトのタイプをチェックする場合true</param>
     // <param name="check_objNameListNum">オブジェクト名リストの数をチェックする場合true</param>
-    Check_Selected_ObjectGroup_Same(ObjSel: any, check_objType: any, check_objNameListNum: any) {
+    Check_Selected_ObjectGroup_Same(ObjSel: boolean[], check_objType: boolean, check_objNameListNum: boolean) {
         let f = true;
         let Emes = "";
         let SeFlOb = -1;
@@ -1202,7 +1202,7 @@ class clsMapdata {
     }
 
     //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange_Sub(ELine: any) {
+    Boundary_Arrange_Sub(ELine: any): boundArrangeData {
         let boundArrange = new boundArrangeData();
         let NL = ELine.length;
         if (NL == 0) {
@@ -1252,7 +1252,7 @@ class clsMapdata {
         }
     }
 
-    Menseki_sub2(badata: any) {
+    Menseki_sub2(badata: boundArrangeData) {
         let Pon = badata.Pon;
         let Arrange_LineCode = badata.Arrange_LineCode;
         let Fringe = badata.Fringe;
@@ -1283,7 +1283,7 @@ class clsMapdata {
     }
 
     //ポリゴンごとの面積を求めて、中抜け等を判定して全体の面積を返す（重心つき）
-    Menseki_Sub(badata: any) {
+    Menseki_Sub(badata: boundArrangeData) {
         // if ((GXY instanceof boundArrangeData) == true) {
         //     return this.Menseki_sub2(GXY);
         // }
@@ -1401,7 +1401,7 @@ class clsMapdata {
     }
 
     //一つのオブジェクト内のポリゴンの包含関係を返す
-    Object_Polygon_InOut(badata: any, TotalInOutNum: any) {
+    Object_Polygon_InOut(badata: boundArrangeData, TotalInOutNum: number[]) {
         let Polygon_Num = badata.Pon;
         let Arrange_LineCode = badata.Arrange_LineCode;
         let Fringe = badata.Fringe;
@@ -1456,7 +1456,7 @@ class clsMapdata {
     }
 
     /** 周辺ラインと指定した地点のX軸上の交点を求め、その地点数を返す。ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/ 
-    Check_Point_in_Polygon_LineCode(x: any, y: any, Fringe_Line: any) {
+    Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: Fringe_Line_Info[]) {
         let P = new point(x, y);
         let CheckLine = [];
 
@@ -1474,7 +1474,7 @@ class clsMapdata {
     //poxy座標列（戻り値）
     //Equal_XY_Get_F前後の座標が同一の場合にも座標を取得する場合はtrue
     //getStep座標取得間隔（1,2,3,4等）
-    Get_Object_Polygon_Coords(Num: any, Get_Coords_Data: any, Arrange_LineCode: any, Fringe: any, poxy: any, Equal_XY_Get_F: any, getStep: any) {
+    Get_Object_Polygon_Coords(Num: number, Get_Coords_Data: number, Arrange_LineCode: number[][], Fringe: Fringe_Line_Info[], poxy: point[], Equal_XY_Get_F: boolean, getStep: number) {
         //Get_Coords_Data
         //0:座標値そのもの
         //1:スクリーン上の座標に変換 --今は使わない。呼び出し元で変換する
@@ -1505,7 +1505,7 @@ class clsMapdata {
     }
 
     // Arrange_LineCodeの指定したポリゴンのポイント数を返す
-    Get_Object_Polygon_Points(Num: any, Arrange_LineCode: any, Fringe: any) {
+    Get_Object_Polygon_Points(Num: number, Arrange_LineCode: number[][], Fringe: Fringe_Line_Info[]) {
         let Pnum = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
             let L = Fringe[Arrange_LineCode[Num][0] + i].code;
@@ -1516,7 +1516,7 @@ class clsMapdata {
     }
 
     //指定したライン番号の世界測地系緯度経度などをを取得する
-    Get_Coords_by_LineCode(LCode: any, Get_Coords_Data: any, P_Dir: any, XYS: any, getStep: any) {
+    Get_Coords_by_LineCode(LCode: number, Get_Coords_Data: number, P_Dir: number, XYS: point[], getStep: number) {
         let fs;
         let fe;
         let fst;
@@ -1961,7 +1961,7 @@ class clsMapdata {
     }
 
 /** 指定された線の共通部分を抽出して、位相構造化する。変更があった場合trueを返す */
-    TopologyStructure_SameLine(TopologyLineList: any) {
+    TopologyStructure_SameLine(TopologyLineList: number[]) {
         if (TopologyLineList == undefined) {
             //全ライン
             TopologyLineList = [];
@@ -2014,7 +2014,7 @@ class clsMapdata {
     }
 
     /**二つの線ラインの共通部分を抽出して、位相構造化する。共通部分があればtrueを返す */
-    TopologyStructure_Two_SameLine(LCode1: any, LCode2: any) {
+    TopologyStructure_Two_SameLine(LCode1: number, LCode2: number) {
 
         let mLine1 = this.MPLine[LCode1];
         let mLine2 = this.MPLine[LCode2];
@@ -2075,7 +2075,7 @@ class clsMapdata {
         return f;
     }
 
-    TopologyStructure_Two_SameLine_Check(LCode1: any, LCode2: any, PNum1: any, PNum2: any, S1: any, s2: any, XYstac1: any, XYstac2: any) {
+    TopologyStructure_Two_SameLine_Check(LCode1: number, LCode2: number, PNum1: number, PNum2: number, S1: number, s2: number, XYstac1: point[], XYstac2: point[]) {
 
         let NewPnum1: { A: number, B: number, NewXYstacA: any[], NewXYstacB: any[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
         let NewPnum2: { A: number, B: number, NewXYstacA: any[], NewXYstacB: any[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
@@ -2335,7 +2335,7 @@ class clsMapdata {
     }
 
     /**一致するポイントを追跡する */
-    private TopologyStructure_Two_SameLine_sub(S1: any, s2: any, ip: any, jp: any, PNum1: any, PNum2: any, XYstac1: any, XYstac2: any) {
+    private TopologyStructure_Two_SameLine_sub(S1: number, s2: number, ip: number, jp: number, PNum1: number, PNum2: number, XYstac1: point[], XYstac2: point[]) {
 
         let i = S1;
         let j = s2;
@@ -2385,7 +2385,7 @@ class clsMapdata {
         return ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]);
     }
 
-    Check_Points_Of_Two_Lines(LC1: any, LC2: any) {
+    Check_Points_Of_Two_Lines(LC1: number, LC2: number) {
         let mLine1 = this.MPLine[LC1];
         let mLine2 = this.MPLine[LC2];
         let PNum1 = mLine1.NumOfPoint;
@@ -2866,7 +2866,7 @@ class clsMapdata {
     }
 
     /**オブジェクト番号のラインコードスタック数を変更する */
-    Move_LineCodeStac(ObjNum: any, New_NumOfLine: any, Old_NumOfLine: any) {
+    Move_LineCodeStac(ObjNum: number, New_NumOfLine: number, Old_NumOfLine: number) {
         let mo = this.MPObj[ObjNum];
         let dif = New_NumOfLine - Old_NumOfLine;
         mo.NumOfLine = mo.NumOfLine + dif;
@@ -2889,7 +2889,7 @@ class clsMapdata {
 
     //オブジェクトから、指定した時間のオブジェクト名リストを取得、取得できない場合はundefinedを返す
     //ObjData:strObj_Dataまたはオブジェクト番号
-    Get_Enable_ObjectName(ObjInfo: any, Time: any, NoDataLastGetF: any) {
+    Get_Enable_ObjectName(ObjInfo: number | strObj_Data, Time: clsTime, NoDataLastGetF: boolean) {
     let ObjData;
     if (typeof ObjInfo == 'number') {
         ObjData = this.MPObj[ObjInfo];
