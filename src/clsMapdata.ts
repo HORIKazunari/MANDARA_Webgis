@@ -2605,7 +2605,7 @@ class clsMapdata {
         for (let i = 0; i < n; i++) {
             let v = TimeSort.DataPositionValue_Integer[i];
             let T = clsTime.GetYMDfromValue(v);
-            if ((T as any).nullFlag == false) {
+            if ((T as Record<string, boolean>).nullFlag == false) {
                 if (n2 == 0) {
                     if (OT[0].StartTithis.nullFlag == true) {
                         GT[0] = clsTime.getYesterday(T);

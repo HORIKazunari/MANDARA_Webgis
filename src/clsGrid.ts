@@ -175,7 +175,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         evtChange_Layer:Change_Layer//レイヤ名の変更、レイヤの移動などで発生
       }
     setIniform();
-    ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as any);
+    ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as unknown);
     if (newDataFlag == true) {
         ktGrid.addLayer("新しいレイヤ", 0, 5, 50);
         ktGrid.setLayerData(0, GridLayerData.Shape, enmShape.NotDeffinition);

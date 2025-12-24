@@ -131,8 +131,8 @@ function init(): void {
         state.propertyWindow, "コピー", "", 30, 0, 
         frmPrint.copyProperty, ""
     );
-    (state.propertyWindow.copyButton as any).bottomPositionFixed = true;
-    (state.propertyWindow.copyButton as any).relativePosition = new point(0, 30);
+    (state.propertyWindow.copyButton as Record<string, boolean | point>).bottomPositionFixed = true;
+    (state.propertyWindow.copyButton as Record<string, boolean | point>).relativePosition = new point(0, 30);
     state.propertyWindow.fixed = false;
     state.propertyWindow.nextVisible = true;
 
@@ -140,8 +140,8 @@ function init(): void {
         footer, "", "FTRight", "", 350, 0, 295, 18, 
         "text-align:center", undefined
     );
-    (rightDIV as any).rightPositionFixed = true;
-    (rightDIV as any).relativePosition = new point(325, 0);
+    (rightDIV as Record<string, boolean | point>).rightPositionFixed = true;
+    (rightDIV as Record<string, boolean | point>).relativePosition = new point(325, 0);
     
     Generic.createNewButton(rightDIV, "データ値表示", "", 0, 0, dataValueShow, "width:90px");
     Generic.createNewButton(rightDIV, "全体表示", "", 90, 0, frmPrint.wholeMapShow, "text-aligh:center;width:75px");

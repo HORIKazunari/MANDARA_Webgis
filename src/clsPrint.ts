@@ -2208,7 +2208,7 @@ console.log(SortSumDataValue)
         }
         switch (Interval_Mode) {
             case enmContourIntervalMode.ClassPaint:
-                let col = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[(hn as number) - (Pcon as any)].PaintColor.toRGBA();
+                let col = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[(hn as number) - (Pcon as number)].PaintColor.toRGBA();
                 let poly = new PolydataInfo();   
                 poly.Pon=ponpon;
                 poly.pxy=pxy;
@@ -2464,8 +2464,8 @@ console.log(SortSumDataValue)
         let OI;
         let a;
         for (let i = 0; i < n; i++) {
-            if (O_Distance_NoUseF[(AngleSort.DataPosition as any)[i]] == false) {
-                a = (AngleSort.DataPositionValue as any)(i);
+            if (O_Distance_NoUseF[(AngleSort.DataPosition as number[])[i]] == false) {
+                a = (AngleSort.DataPositionValue as Record<number, unknown>)[i];
                 OI = i;
                 break;
             }

@@ -1207,7 +1207,7 @@ function setting(locSearch: string) {
         let LayerNum = attrData.TotalData.LV1.SelectedLayer;
         attrData.LayerData[LayerNum].atrData.SelectedIndex = sel;
         for (let k in enmSoloMode_Number) {
-            let n = (enmSoloMode_Number as any)[k];
+            let n = (enmSoloMode_Number as Record<string, number>)[k];
             SetPicPnlSoloDataEnabled(n, LayerNum, sel);
         }
         setDataMode();
@@ -1300,7 +1300,7 @@ function setting(locSearch: string) {
         let al = attrData.LayerData[LayerNum].atrData;
         attrData.Set_DataTitle_to_cboBox(selectDataItem, LayerNum, al.SelectedIndex);
         for (let k in enmSoloMode_Number) {
-            let n = (enmSoloMode_Number as any)[k];
+            let n = (enmSoloMode_Number as Record<string, number>)[k];
             SetPicPnlSoloDataEnabled(n, LayerNum, al.SelectedIndex);
         }
         setDataMode();

@@ -715,7 +715,7 @@ class clsSpatialIndexSearch {
     ChangeTagValue(ChangeValue: number, StartRangeValue: number, LastRangeValue: number) {
         //タグの値を変化させる
         for (let i = 0; i < this.ObjectNum; i++) {
-            if (Generic.Check_Two_Value_In(this.ObjectXY[i].Tag, StartRangeValue, LastRangeValue) != (chvOuter as any)) {
+            if (Generic.Check_Two_Value_In(this.ObjectXY[i].Tag, StartRangeValue, LastRangeValue) != (chvOuter as number)) {
                 this.ObjectXY[i].Tag += ChangeValue;
             }
         }

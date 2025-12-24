@@ -6381,7 +6381,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 };
 
 // expose helpers globally for legacy callers
-(globalThis as any).CheckedListBox = CheckedListBox;
-(globalThis as any).ListBox = ListBox;
-(globalThis as any).ListViewTable = ListViewTable;
+(globalThis as Record<string, unknown>).CheckedListBox = CheckedListBox;
+(globalThis as Record<string, unknown>).ListBox = ListBox;
+(globalThis as Record<string, unknown>).ListViewTable = ListViewTable;
 
