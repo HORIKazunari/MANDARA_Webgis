@@ -1449,7 +1449,6 @@ export class clsAccessory {
         return true;
     }
     static getLegendMinusWord(s: string) {
-        const state = appState();
         if (s == "") {
             return clsSettingData.LegendMinusWord;
         } else {
@@ -1457,7 +1456,6 @@ export class clsAccessory {
         }
     }
     static getLegendPlusWord(s: string) {
-        const state = appState();
         if (s == "") {
             return clsSettingData.LegendPlusWord;
         } else {
@@ -2533,21 +2531,18 @@ export class clsAccessory {
 
     //タイトルの外接四角形領域取得
     static GetTitleRect(g: CanvasRenderingContext2D) {
-        const state = appState();
         let v = this.getPrintTitle(g);
         return v.rect;
     }
 
     //注の外接四角形領域取得
     static GetNoteRect(g: CanvasRenderingContext2D) {
-        const state = appState();
         let v = this.getPrintNote(g);
         return v.rect;
     }
 
     //スケールの外接四角形領域取得
     static GetScaleRect(g: CanvasRenderingContext2D) {
-        const state = appState();
         let v = this.getScaleSub(g);
         return v.rect;
     }
