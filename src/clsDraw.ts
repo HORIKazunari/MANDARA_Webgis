@@ -179,7 +179,7 @@ class clsDraw {
 
  
     static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string) {
-        const state = appState();
+        let Pon = Polydata.Pon;
         let pxy = Polydata.pxy;
         let nPolyP = Polydata.nPolyP;
         let n = 0;
@@ -1025,6 +1025,7 @@ class clsTileMap {
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
     drawTileMap(g: CanvasRenderingContext2D, TileMap: unknown, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
+        const xhr = this.xhr;
         if(xhr.length>0){
             for(let i in xhr){
                 xhr[i].abort();

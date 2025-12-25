@@ -3161,7 +3161,7 @@ class clsAttrData {
     }
 
     /**通常データ、カテゴリーデータの凡例を指定したデータ項目にコピーする */
-    Set_Legend(D_Layer: number, D_DataNum: number, O_Data: stratrData_Kake_Info, ClassPaintF: boolean, MarkSizeF: boolean, MarkSizeValueCopyF: boolean, MarkBlockF: boolean,
+    Set_Legend(D_Layer: number, D_DataNum: number, O_Data: strData_info, ClassPaintF: boolean, MarkSizeF: boolean, MarkSizeValueCopyF: boolean, MarkBlockF: boolean,
         ContourF: boolean, ClassMarkF: boolean, ClassODF: boolean, StringModeF: boolean, MarkBarF: boolean, ClassODOriginCopyF: boolean,
         copyMarkCommonInnerDataF: boolean): void {
 
@@ -3536,13 +3536,13 @@ class clsAttrData {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
-    Draw_Tile_Region(g: CanvasRenderingContext2D, BoundaryRect: Rect, L: Line_Property, T: Tile_Property, Kakudo: number): void {}
+    Draw_Tile_Region(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {}
     
-    Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: Rect, L: Line_Property, T: Tile_Property, Kakudo: number): void {
+    Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_Box?.(g, BoundaryRect, L, T, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Tile_RoundBox(g: CanvasRenderingContext2D, BoundaryRect: Rect, Back: BackGround_Box_Property, Kakudo: number): void {
+    Draw_Tile_RoundBox(g: CanvasRenderingContext2D, BoundaryRect: rectangle, Back: BackGround_Box_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 

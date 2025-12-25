@@ -1590,7 +1590,8 @@ export class clsAccessory {
         let retv = this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,false);
         let ww = retv.ww;
         let hh = retv.hh;
-        let hxw = retv.bxw;
+        let hu = retv.hu;
+        let bxw = retv.bxw;
         let byh = retv.byh;
         let vn = retv.vn ?? 0;
         let sujiW = retv.sujiW;
@@ -1780,8 +1781,9 @@ export class clsAccessory {
             if (cvi.ODLinePat.BlankF== false) {
                 let LW = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width)
                 let H = Math.max(UH, LW)
+                let r;
                 if (cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern =='butt' ) {
-                    state.attrData.Radius(rm, 0, rm);
+                    r = state.attrData.Radius(rm, 0, rm);
                 } else {
                     r = state.attrData.Radius(rm, cvi.ODLinePat.Width, rm);
                 }
