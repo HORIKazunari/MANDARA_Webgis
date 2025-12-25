@@ -3879,7 +3879,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**inputText要素作成*/
-    static createNewWordTextInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoText: string, ID: string, x: number, y: number, headWordWidth: number, boxWidth: number, onChange: ((this: HTMLInputElement, ev: Event) => any) | undefined, styleinfo: string) {
+    static createNewWordTextInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoText: string, ID: string, x: number, y: number, headWordWidth: number, boxWidth: number, onChange: ((this: HTMLInputElement, ev: Event) => void) | undefined, styleinfo: string) {
         const state = appState();
         let hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         styleinfo = "width:" + String(boxWidth) + "px;" + styleinfo;
@@ -3892,7 +3892,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**イメージボタン */
-    static createNewImageButton(ParentObj: HTMLElement, ID: string, src: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLImageElement, ev: MouseEvent) => any) | null, styleinfo: string) {
+    static createNewImageButton(ParentObj: HTMLElement, ID: string, src: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLImageElement, ev: MouseEvent) => void) | null, styleinfo: string) {
         const state = appState();
         let ok=document.createElement("img");
         ok.setAttribute("style", "position:absolute;width:"+width.px()+";height:" +height.px() +";"+ styleinfo);
@@ -3963,7 +3963,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //** 背景Canvasボックス */
-    static createNewWordDivCanvas(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, wordWidth: number, onclick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null) {
+    static createNewWordDivCanvas(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, wordWidth: number, onclick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null) {
         const state = appState();
         let lineH = 23;
         let hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
@@ -4182,7 +4182,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //Canvas要素を作成
-    static createNewCanvas(ParentObj: HTMLElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, styleinfo: string) {
+    static createNewCanvas(ParentObj: HTMLElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, styleinfo: string) {
         const state = appState();
         const canvas = document.createElement("canvas");
         canvas.setAttribute("style", "position:absolute;" + styleinfo);
@@ -4197,7 +4197,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return canvas;
     }
 
-    static createMenuMark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, markSize: number | undefined) {
+    static createMenuMark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, markSize: number | undefined) {
         const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", 10, 4, size, size, handleClick, "");
@@ -4226,7 +4226,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // ParentObjの右上にXマーク表示
-    static createXmark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, markSize: number | undefined) {
+    static createXmark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, markSize: number | undefined) {
         const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", parentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
@@ -4248,7 +4248,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     // windowの右上に最大化マーク表示
-    static createMaxButton(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => any) | null, markSize: number | undefined) {
+    static createMaxButton(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, markSize: number | undefined) {
         const state = appState();
         const size = markSize ?? 20;
         const canvas = this.createNewCanvas(parentObj, "", "", parentObj.style.width.removePx() - 14 - size, 4, size, size, onClick, "");
@@ -5114,7 +5114,6 @@ export const TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 
 /**チェックリストボックス twoStepCheckF:二回目のクリックでチェックを変更*/
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class CheckedListBox {
     length: number = 0;
     selectedIndex: number = -1;
@@ -5853,11 +5852,11 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 };
 // @ts-ignore
-(Element.prototype as any)['resetMaxButton'] = resetMaxButtonFunc;
+(Element.prototype as unknown)['resetMaxButton'] = resetMaxButtonFunc;
 
 //DIV要素の移動，拡大縮小
 // @ts-ignore
-(Element.prototype as any)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
+(Element.prototype as unknown)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
     let x: number;
     let y: number;
     let fx: number;
@@ -6120,20 +6119,20 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 //数値にpxをつける
 // @ts-ignore
-(Number.prototype as any)['px'] = function(): string {
+(Number.prototype as unknown)['px'] = function(): string {
     const v = this.toString();
     return v + "px";
 };
 
 /**NumberInputに値を設定する */
 // @ts-ignore
-(HTMLElement.prototype as any).setNumberValue = function (v: number){
+(HTMLElement.prototype as unknown).setNumberValue = function (v: number){
     this.preValue=v;
     this.value=v;
 }
 //select要素の子要素を削除
 // @ts-ignore
-(HTMLElement.prototype as any)['removeAll'] = function (): void {
+(HTMLElement.prototype as unknown)['removeAll'] = function (): void {
     while (this.lastChild) {
         this.removeChild(this.lastChild);
     }
@@ -6141,7 +6140,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 /**select要素のoptionを入れ替える */
 // @ts-ignore
-(HTMLElement.prototype as any)['optionSwap'] = function(n1?: number, n2?: number): void {
+(HTMLElement.prototype as unknown)['optionSwap'] = function(n1?: number, n2?: number): void {
     if (n1 === undefined || n2 === undefined) {
         return;
     }
@@ -6320,29 +6319,29 @@ HTMLElement.prototype.btnDisabled = function (f) {
 
 //文字からpxをとる
 // @ts-ignore
-(String.prototype as any)['removePx'] = function (): number {
+(String.prototype as unknown)['removePx'] = function (): number {
     return parseInt(this.substr(0, this.length - 2))
 }
 
 //文字列繰り返し
 // @ts-ignore
-(String.prototype as any)['repeatString'] = function (num?: number): string {
+(String.prototype as unknown)['repeatString'] = function (num?: number): string {
     const repeatCount = num ?? 0;
     for (var str = ""; (this.length * repeatCount) > str.length; str += this);
     return str;
 };
 
 //文字列左から抜き出し
-(String.prototype as any).left = function (num: number) {
+(String.prototype as unknown).left = function (num: number) {
     return this.substr(0, num);
 };
 
 //文字列右から抜き出し
-(String.prototype as any).right = function (num: number) {
+(String.prototype as unknown).right = function (num: number) {
     return this.substr(this.length - num);
 };
 /**文字を途中から抜き出し lengthがundefinedの場合最後まで*/
-(String.prototype as any).mid = function (start: number, length?: number){
+(String.prototype as unknown).mid = function (start: number, length?: number){
     if(length==undefined){
         return this.slice(start);
 
@@ -6351,24 +6350,24 @@ HTMLElement.prototype.btnDisabled = function (f) {
     }
 }
 /**文字列の指定位置に文字列を差し替え */
-(String.prototype as any).midReplace = function (start: number, replaceString?: string): string {
+(String.prototype as unknown).midReplace = function (start: number, replaceString?: string): string {
     const rep = replaceString ?? "";
     let tx = this.substring(0, start ) + rep + this.substring(start + rep.length);
    return tx;
 }
 
 //文字列全置換
-(String.prototype as any).replaceAll = function (org: string, dest?: string): string {
+(String.prototype as unknown).replaceAll = function (org: string, dest?: string): string {
     return this.split(org).join(dest);
 }
 
 // Number型の拡張: px()メソッド
-(Number.prototype as any).px = function() {
+(Number.prototype as unknown).px = function() {
     return this.toString() + "px";
 };
 
 // String型の拡張: right()メソッド  
-(String.prototype as any).right = function(length: number) {
+(String.prototype as unknown).right = function(length: number) {
     if (length >= this.length) {
         return this;
     }
@@ -6376,7 +6375,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 };
 
 // String型の拡張: removePx()メソッド
-(String.prototype as any).removePx = function() {
+(String.prototype as unknown).removePx = function() {
     return parseFloat(this.replace("px", "")) || 0;
 };
 

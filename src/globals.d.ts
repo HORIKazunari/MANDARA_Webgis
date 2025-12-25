@@ -5,7 +5,7 @@
 // GlobalEventHandlers拡張
 interface GlobalEventHandlers {
     innerText?: string;
-    tag?: any;
+    tag?: string | number;
 }
 
 // EventTarget拡張
@@ -33,23 +33,23 @@ interface IAttrData {
             FileName?: string;
             FullPath?: string;
         };
-        Condition?: any;
+        Condition?: unknown[]; // strCondition_DataSet_Info[] (clsAttrData.tsで定義)
         TotalMode?: {
             OverLay?: {
                 SelectedIndex?: number;
-                DataSet?: any[];
+                DataSet?: unknown[]; // strOverLay_Dataset_Info[] (clsAttrData.tsで定義)
                 Always_Overlay_Index?: number;
                 MarkModePosFixFlag?: boolean;
-                AddDataSet?: (data?: any) => void;
+                AddDataSet?: (data?: unknown) => void;
             };
             Series?: {
                 SelectedIndex?: number;
-                DataSet?: any[];
-                AddDataSet?: (data?: any) => void;
+                DataSet?: unknown[]; // strSeries_Dataset_Info[] (clsAttrData.tsで定義)
+                AddDataSet?: (data?: unknown) => void;
             };
         };
         ViewStyle: {
-            Clone?: () => any;
+            Clone?: () => unknown;
             Dummy_Size_Flag?: boolean;
             ScrData: {
                 frmPrint_FormSize: rectangle;
@@ -59,9 +59,9 @@ interface IAttrData {
                 MapRectanglem?: rectangle;
                 getSXSY_Margin?: () => rectangle;
                 getSRXY?: (p: point) => point;
-                getSxSy?: (arg1: any, arg2?: any) => any;
-                getSRXYfromRatio?: (arg1: any) => any;
-                Get_SxSy_With_3D?: (arg1?: any, arg2?: any, arg3?: any) => any;
+                getSxSy?: (arg1: point, arg2?: point) => point;
+                getSRXYfromRatio?: (arg1: number) => point;
+                Get_SxSy_With_3D?: (arg1?: point, arg2?: number, arg3?: number) => point;
                 ThreeDMode?: {
                     Set3D_F: boolean;
                     Pitch?: number;
@@ -69,71 +69,71 @@ interface IAttrData {
                     Bank?: number;
                 };
                 Accessory_Base?: number;
-                OutputDevide?: any;
+                OutputDevide?: number; // enmOutputDevice
                 SampleBoxFlag?: boolean;
-                Set_PictureBox_and_CulculateMul?: (arg1?: any) => any;
+                Set_PictureBox_and_CulculateMul?: (arg1?: rectangle) => void;
                 ScrRectangle?: rectangle;
-                Screen_Margin?: any;
-                getSxSyRect?: (arg1?: any) => rectangle;
-                Get_Length_On_Screen?: (arg1?: any) => number;
-                ScreenMG?: any;
-                Clone?: () => any;
-                init?: (sz?: any, margin?: any, mapRect?: any, accessoryBase?: any, clearFlag?: boolean) => void;
+                Screen_Margin?: unknown; // IScrMargin
+                getSxSyRect?: (arg1?: rectangle) => rectangle;
+                Get_Length_On_Screen?: (arg1?: number) => number;
+                ScreenMG?: unknown; // ScreenMultiply_Data_Info
+                Clone?: () => unknown;
+                init?: (sz?: size, margin?: unknown, mapRect?: rectangle, accessoryBase?: number, clearFlag?: boolean) => void;
             };
-            AttMapCompass?: any;
+            AttMapCompass?: unknown; // strMapCompass_Attri
             MapLegend: {
                 Base: {
                     ModeValueInScreenFlag: boolean;
-                    LegendXY?: any;
-                    Font?: any;
+                    LegendXY?: point[];
+                    Font?: unknown; // Font_Property
                     Visible?: boolean;
-                    Back?: any;
+                    Back?: unknown; // BackGround_Box_Property
                     Comma_f?: boolean;
                     Legend_Num?: number;
                 };
-                Line_DummyKind?: any;
-                OverLay_Legend_Title?: any;
+                Line_DummyKind?: unknown; // Line_Property
+                OverLay_Legend_Title?: string;
                 En_Graph_Pattern?: number;
                 MarkMD?: {
                     CircleMD_CircleMini_F?: boolean;
-                    MultiEnMode_Line?: any;
+                    MultiEnMode_Line?: unknown; // Line_Property
                     CircleMDLegendLine?: number;
                 };
                 ClassMD?: {
                     SeparateGapSize?: number;
                     ClassMarkFrame_Visible?: boolean;
-                    PaintMode_Line?: any;
+                    PaintMode_Line?: unknown; // Line_Property
                     FrequencyPrint?: boolean;
                     SeparateClassWords?: number;
                     PaintMode_Method?: number;
                     CategorySeparate_f?: boolean;
                     PaintMode_Width?: number;
-                    ClassBoundaryLine?: any;
+                    ClassBoundaryLine?: unknown; // Line_Property
                 };
             };
             MapTitle?: {
-                Position: any;
+                Position: point;
                 Visible?: boolean;
-                Font?: any;
-                Clone?: () => any;
-                Back?: any;
+                Font?: unknown; // Font_Property
+                Clone?: () => unknown;
+                Back?: unknown; // BackGround_Box_Property
             };
             MapScale?: {
-                Position: any;
+                Position: point;
                 Visible?: boolean;
-                Clone?: () => any;
+                Clone?: () => unknown;
                 BarDistance?: number;
                 BarKugiriNum?: number;
-                Back?: any;
+                Back?: unknown; // BackGround_Box_Property
                 Unit?: number;
             };
             DataNote?: {
-                Position: any;
+                Position: point;
                 Visible?: boolean;
-                Font?: any;
-                Clone?: () => any;
+                Font?: unknown; // Font_Property
+                Clone?: () => unknown;
             };
-            AccessoryGroupBox?: any;
+            AccessoryGroupBox?: unknown; // BackGround_Box_Property
             Zahyo: {
                 Mode: number;
                 Projection: number;
@@ -141,25 +141,25 @@ interface IAttrData {
             };
             TileMapView: {
                 Visible: boolean;
-                DrawTiming?: any;
-                TileMapDataSet?: any;
+                DrawTiming?: number; // enmDrawTiming
+                TileMapDataSet?: unknown;
                 AlphaValue?: number;
             };
-            Missing_Data?: any;
-            SouByou?: any;
-            DummyObjectPointMark?: any;
-            Screen_Back?: any;
-            PointPaint_Order?: any;
-            ValueShow?: any;
+            Missing_Data?: unknown; // strMissing_set
+            SouByou?: unknown; // strSoubyou_Data_Info
+            DummyObjectPointMark?: unknown[]; // strDummyObjectPointMark_Info[]
+            Screen_Back?: unknown; // BackGround_Box_Property
+            PointPaint_Order?: number; // enmPointOnjectDrawOrder
+            ValueShow?: unknown; // strValueShow_Info
             InVisibleObjectBoundaryF?: boolean;
-            MeshLine?: any;
-            SymbolLine?: any;
+            MeshLine?: unknown; // Line_Property
+            SymbolLine?: unknown; // strSymbolLine_Info
             LatLonLine_Print?: {
                 Lat_Interval?: number;
                 Lon_Interval?: number;
-                LPat?: any;
-                OuterPat?: any;
-                Equator?: any;
+                LPat?: unknown; // Line_Property
+                OuterPat?: unknown; // Line_Property
+                Equator?: unknown; // Line_Property
                 Order?: number;
                 Visible?: boolean;
             };
@@ -171,163 +171,163 @@ interface IAttrData {
             image?: ImageData;
             mouseAccesoryDragType?: number;
             OD_Drag?: {
-                ObjectPos: any;
-                Data: any;
+                ObjectPos: number;
+                Data: unknown;
             };
-            OnObject?: any;
-            OldObject?: any;
+            OnObject?: unknown;
+            OldObject?: unknown;
             SymbolPointFirstMessage?: boolean;
             LabelPointFirstMessage?: boolean;
-            LocationMenuString?: any;
-            MultiObjects?: any[];
+            LocationMenuString?: string;
+            MultiObjects?: unknown[];
         };
-        Accessory_Temp?: any;
-        OnObject?: any;
+        Accessory_Temp?: unknown;
+        OnObject?: unknown;
         MouseDownF?: boolean;
         PrintMouseMode?: number;
-        PointObjectKindUsedStack?: any;
-        MapAreaLatLon?: any;
-        ContourMode_Temp?: any;
-        DotMap_Temp?: any;
-        Series_temp?: any;
-        OverLay_Temp?: any;
-        drawing?: any;
-        SoubyouLinePointIntervalCriteria?: any;
-        SoubyouLoopAreaCriteria?: any;
+        PointObjectKindUsedStack?: unknown[];
+        MapAreaLatLon?: unknown; // latlonbox
+        ContourMode_Temp?: unknown;
+        DotMap_Temp?: unknown;
+        Series_temp?: unknown;
+        OverLay_Temp?: unknown;
+        drawing?: boolean;
+        SoubyouLinePointIntervalCriteria?: number;
+        SoubyouLoopAreaCriteria?: number;
         DataSourceType?: number;
         InVisibleObjectBoundaryF?: boolean;
-        ModeValueInScreen_Stac?: any;
-        ObjectPrintedCheckFlag?: any;
+        ModeValueInScreen_Stac?: unknown[];
+        ObjectPrintedCheckFlag?: boolean[];
     };
-    LayerData?: any;
+    LayerData?: unknown[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド
-    Get_AllMapLineKind?: () => any;
-    Get_LineKindUsedList?: () => any;
-    Get_Length_On_Screen?: (arg1?: any) => any;
-    Radius?: any;
-    Draw_Line?: (arg1: any, arg2: any, arg3?: any, arg4?: any) => any;
-    Draw_Print?: (arg1: any, arg2: any, arg3?: any, arg4?: any, arg5?: any, arg6?: any) => any;
-    Draw_Mark?: (arg1: any, arg2: any, arg3?: any, arg4?: any) => any;
-    Get_DataUnit_With_Kakko?: (arg1?: any, arg2?: any) => any;
-    Get_PrintError?: () => any;
-    Get_Condition_Info?: (layer?: any) => any;
-    Get_Condition_Ok_Num_Info?: (layer?: any) => any;
-    Get_ObjectNum?: (layer?: any) => any;
-    Check_Condition?: (layer?: any, index?: any) => any;
-    Get_KenObjName?: (layer?: any, index?: any) => any;
-    getSoloMode?: (arg1?: any, arg2?: any) => any;
-    setSoloMode?: (arg1: any, arg2?: any, arg3?: any) => any;
-    Get_DataTitle?: (arg1?: any, arg2?: any, arg3?: any) => any;
-    Get_SelectedDataTitle?: () => any;
-    nowGraph?: any;
-    nowLabel?: any;
-    ResetMPSubLineXY?: () => any;
-    ResetObjectPrintedCheckFlag?: () => any;
-    check_AutoSoubyou_Enable?: (arg1?: any, arg2?: any) => any;
-    layerGraph?: any;
-    layerLabel?: any;
-    Check_Screen_In?: (CenterP: any, R?: any) => boolean;
-    Draw_Tile_RoundBox?: (context: any, rect: any, style?: any, arg4?: any) => void;
-    Convert_Zahyo?: (zahyo: any) => void;
+    Get_AllMapLineKind?: () => unknown[];
+    Get_LineKindUsedList?: () => unknown[];
+    Get_Length_On_Screen?: (arg1?: number) => number;
+    Radius?: number;
+    Draw_Line?: (arg1: CanvasRenderingContext2D, arg2: Line_Property, arg3?: point[], arg4?: unknown) => void;
+    Draw_Print?: (arg1: CanvasRenderingContext2D, arg2: string, arg3?: point, arg4?: unknown, arg5?: string | number, arg6?: string | number) => void;
+    Draw_Mark?: (arg1: CanvasRenderingContext2D, arg2: point, arg3?: unknown, arg4?: unknown) => void;
+    Get_DataUnit_With_Kakko?: (arg1?: number, arg2?: number) => string;
+    Get_PrintError?: () => string[];
+    Get_Condition_Info?: (layer?: number) => string;
+    Get_Condition_Ok_Num_Info?: (layer?: number) => number;
+    Get_ObjectNum?: (layer?: number) => number;
+    Check_Condition?: (layer?: number, index?: number) => boolean;
+    Get_KenObjName?: (layer?: number, index?: number) => string;
+    getSoloMode?: (arg1?: number, arg2?: number) => unknown;
+    setSoloMode?: (arg1: number, arg2?: number, arg3?: unknown) => void;
+    Get_DataTitle?: (arg1?: number, arg2?: number, arg3?: boolean) => string;
+    Get_SelectedDataTitle?: () => string;
+    nowGraph?: unknown; // strGraph_Data (clsAttrData.tsで定義)
+    nowLabel?: unknown; // strLabel_Data (clsAttrData.tsで定義)
+    ResetMPSubLineXY?: () => void;
+    ResetObjectPrintedCheckFlag?: () => void;
+    check_AutoSoubyou_Enable?: (arg1?: number, arg2?: number) => boolean;
+    layerGraph?: unknown; // strGraphMode_DataSetting_Info (clsAttrData.tsで定義)
+    layerLabel?: unknown; // strLabelMode_Data_info (clsAttrData.tsで定義)
+    Check_Screen_In?: (CenterP: point, R?: number) => boolean;
+    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, arg4?: unknown) => void;
+    Convert_Zahyo?: (zahyo: number) => void;
     GetMapFileName?: () => string[];
-    SetMapFile?: (filename: string) => any;
+    SetMapFile?: (filename: string) => unknown;
     Check_Vector_Object?: () => void;
     PrtObjectSpatialIndex?: () => void;
-    SetMapViewerData?: (data: any, arg2?: any, arg3?: any) => { ok: boolean; emes: string };
-    OpenNewMandaraFile?: (filename: string, callback?: any, options?: any, layer?: any) => { ok: boolean; emes: string };
-    ADD_AttrData?: (data: any, flag?: boolean) => { ok: boolean; emes: string };
-    Set_LayerName_to?: (selbox: any, SelectedIndex?: number, NormalF?: boolean, syntheticF?: boolean, PointF?: boolean, MeshF?: boolean) => void;
-    Set_ObjectName_to_selectBox?: (selbox: any, Layernum?: number, SelectedObject?: number) => void;
-    MapData?: any;
-    DeleteObjects?: (objects: any, arg2?: any) => void;
-    Set_DataTitle_to_cboBox?: (cbox: any, Layernum?: number, SelectedIndex?: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
-    Set_ObjectName_to_checkedListBox?: (selectElement: any, layerNum?: number, selectedObject?: any) => void;
-    getDummyObjGroupArray?: (Layernum?: any, shape?: any) => { DummyOBGArray: boolean[]; trueNum: number };
-    Get_MedianValue?: (layer?: any, data?: any) => number;
-    nowLayer?: () => any;
-    Screen_Back?: any;
-    Draw_Tile_Box?: (context: any, rect: rectangle, arg3?: any, arg4?: any, arg5?: any) => void;
-    Draw_Sample_LineBox?: (arg1?: any, arg2?: any, arg3?: any, arg4?: any) => void;
-    Draw_Sample_Mark_Box?: (arg1?: any, arg2?: any, arg3?: any, arg4?: any) => void;
+    SetMapViewerData?: (data: unknown, arg2?: unknown, arg3?: unknown) => { ok: boolean; emes: string };
+    OpenNewMandaraFile?: (filename: string, callback?: () => void, options?: unknown, layer?: number) => { ok: boolean; emes: string };
+    ADD_AttrData?: (data: unknown, flag?: boolean) => { ok: boolean; emes: string };
+    Set_LayerName_to?: (selbox: HTMLSelectElement, SelectedIndex?: number, NormalF?: boolean, syntheticF?: boolean, PointF?: boolean, MeshF?: boolean) => void;
+    Set_ObjectName_to_selectBox?: (selbox: HTMLSelectElement, Layernum?: number, SelectedObject?: number) => void;
+    MapData?: unknown; // clsAttrMapData (clsAttrData.tsで定義)
+    DeleteObjects?: (objects: number[], arg2?: unknown) => void;
+    Set_DataTitle_to_cboBox?: (cbox: HTMLSelectElement, Layernum?: number, SelectedIndex?: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
+    Set_ObjectName_to_checkedListBox?: (selectElement: HTMLElement, layerNum?: number, selectedObject?: number) => void;
+    getDummyObjGroupArray?: (Layernum?: number, shape?: number) => { DummyOBGArray: boolean[]; trueNum: number };
+    Get_MedianValue?: (layer?: number, data?: number) => number;
+    nowLayer?: () => unknown; // strLayerDataInfo (clsAttrData.tsで定義)
+    Screen_Back?: unknown; // BackGround_Box_Property
+    Draw_Tile_Box?: (context: CanvasRenderingContext2D, rect: rectangle, arg3?: unknown, arg4?: unknown, arg5?: unknown) => void;
+    Draw_Sample_LineBox?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: unknown, arg4?: unknown) => void;
+    Draw_Sample_Mark_Box?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: unknown, arg4?: unknown) => void;
     Get_Length_On_Screen?: (fontSize?: number) => number;
-    Draw_Tile_RoundBox?: (context: any, rect: any, style?: any, arg4?: any) => void;
-    Draw_Line?: (context: any, linePattern: any, points: any, style?: any) => void;
-    Draw_Print?: (context: any, text: string, position?: any, font?: any, hAlign?: any, vAlign?: any) => void;
+    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, arg4?: unknown) => void;
+    Draw_Line?: (context: CanvasRenderingContext2D, linePattern: Line_Property, points: point[], style?: unknown) => void;
+    Draw_Print?: (context: CanvasRenderingContext2D, text: string, position?: point, font?: unknown, hAlign?: string | number, vAlign?: string | number) => void;
     Get_DataUnit_With_Kakko?: (layerIndex?: number, dataIndex?: number) => string;
-    Get_PaddingPixcel?: (style?: any) => number;
-    Get_DataNote?: (layer?: any, data?: any) => any;
+    Get_PaddingPixcel?: (style?: Tile_Property) => number;
+    Get_DataNote?: (layer?: number, data?: number) => string;
     Get_MaxURLNum?: (Layernum?: number) => number;
     Get_KenObjCode?: (Layernum: number, Objectnum: number) => string;
-    Check_screen_Kencode_In?: (kencode: any, arg2?: any) => boolean;
-    Check_Screen_Objcode_In?: (objcode: any, arg2?: any) => any;
-    Get_DataNum?: (layer?: any) => number;
+    Check_screen_Kencode_In?: (kencode: number, arg2?: unknown) => boolean;
+    Check_Screen_Objcode_In?: (objcode: number, arg2?: unknown) => boolean;
+    Get_DataNum?: (layer?: number) => number;
     
     // 追加プロパティ・メソッド
     Print_Mode_Total?: number;
-    nowDataSolo?: any;
-    nowData?: any;
-    nowSeries?: any;
-    nowOverlay?: any;
-    Twocolort?: any;
-    Threecolor?: any;
-    FourColor?: any;
-    Get_DataNote?: (layer?: any, data?: any) => any;
-    Get_Data_Value?: (Layernum?: any, DataNum?: any, Obj?: any, Missing_word?: any) => any;
-    Get_DataUnit?: (layer?: any, data?: any) => string;
-    Get_DataType?: (layer?: any, data?: any) => number;
-    Get_Missing_Value_DataArray?: (layer?: any, data?: any) => any[];
-    Get_Data_Cell_Array_With_MissingValue?: (layer?: any, object?: any, data?: any) => any;
-    Add_One_Data_Value?: (Layernum: any, Title: any, Unit: any, Note: any, Data_Val_str: any, Missing_F?: boolean) => boolean;
-    Check_Missing_Value?: (layer?: any, object?: any, data?: any) => boolean;
-    Check_Enable_SoloMode?: (soloMode?: any, layernum?: any, dataNum?: any) => boolean;
-    Get_CategolyArray?: (layer?: any, data?: any) => any[];
-    Get_Categoly?: (layer?: any, data?: any, index?: any) => any;
-    Draw_Poly_Inner?: (context: any, points: any[], style?: any, tile?: any) => void;
-    Get_InnerTile?: (layer?: any, object?: any, arg3?: any) => any;
-    Get_Enable_KenCode_MPLine?: (layer?: any, object?: any) => any;
-    Get_DataMin?: (layer?: any, data?: any) => number;
-    Get_DataMax?: (layer?: any, data?: any) => number;
-    Get_ClassFrequency?: (layer?: any, data?: any, classNum?: any) => any;
-    Get_CenterP?: (layer?: any, object?: any) => point;
-    Check_Condition_UMU?: (layer?: any) => boolean;
-    Set_DataTitle_to_CheckedListBox?: (CheckedListBox: any, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
-    Get_DivNum?: (layer?: any, data?: any) => number;
+    nowDataSolo?: unknown; // SoloModeViewSettings (clsAttrData.tsで定義)
+    nowData?: unknown; // strData_Info (clsAttrData.tsで定義)
+    nowSeries?: unknown; // strSeries_Dataset_Info (clsAttrData.tsで定義)
+    nowOverlay?: unknown; // strOverLay_Dataset_Info (clsAttrData.tsで定義)
+    Twocolort?: unknown; // colorRGBA[]
+    Threecolor?: unknown; // colorRGBA[]
+    FourColor?: unknown; // colorRGBA[]
+    Get_DataNote?: (layer?: number, data?: number) => string;
+    Get_Data_Value?: (Layernum?: number, DataNum?: number, Obj?: number, Missing_word?: string) => string | number;
+    Get_DataUnit?: (layer?: number, data?: number) => string;
+    Get_DataType?: (layer?: number, data?: number) => number;
+    Get_Missing_Value_DataArray?: (layer?: number, data?: number) => unknown[];
+    Get_Data_Cell_Array_With_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
+    Add_One_Data_Value?: (Layernum: number, Title: string, Unit: string, Note: string, Data_Val_str: string, Missing_F?: boolean) => boolean;
+    Check_Missing_Value?: (layer?: number, object?: number, data?: number) => boolean;
+    Check_Enable_SoloMode?: (soloMode?: unknown, layernum?: number, dataNum?: number) => boolean;
+    Get_CategolyArray?: (layer?: number, data?: number) => unknown[];
+    Get_Categoly?: (layer?: number, data?: number, index?: number) => unknown;
+    Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], style?: unknown, tile?: Tile_Property) => void;
+    Get_InnerTile?: (layer?: number, object?: number, arg3?: unknown) => Tile_Property;
+    Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;
+    Get_DataMin?: (layer?: number, data?: number) => number;
+    Get_DataMax?: (layer?: number, data?: number) => number;
+    Get_ClassFrequency?: (layer?: number, data?: number, classNum?: number) => number;
+    Get_CenterP?: (layer?: number, object?: number) => point;
+    Check_Condition_UMU?: (layer?: number) => boolean;
+    Set_DataTitle_to_CheckedListBox?: (CheckedListBox: HTMLElement, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
+    Get_DivNum?: (layer?: number, data?: number) => number;
     Check_Point_in_Kencode_OneObject?: (layernum: number, objnum: number, mapP: point) => boolean;
-    Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: any, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
-    Draw_Fan?: (context: any, centerP: point, radius: number, startAngle: number, endAngle: number, style?: any, tile?: any) => void;
+    Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: unknown, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
+    Draw_Fan?: (context: CanvasRenderingContext2D, centerP: point, radius: number, startAngle: number, endAngle: number, style?: unknown, tile?: Tile_Property) => void;
     Get_SxSy_With_3D?: (point: point) => point;
-    ClassMD?: any;
-    saveAsMDRJ?: (filename?: string, options?: any) => void;
-    Sort_OverLay_Data?: (arg1?: any, arg2?: any) => any;
-    Sort_OverLay_Data_Sub?: (arg1?: any, arg2?: any) => any;
-    Boundary_Kencode_Arrange?: (layer?: any, object?: any, time?: any) => any;
-    GetObjMenseki?: (layer?: any, object?: any) => any;
-    Get_MaxMinValue_Range?: (layer?: any, data?: any) => any;
-    Get_OD_Label_Position?: (layer?: any, object?: any) => point;
-    Get_Symbol_Position?: (layer?: any, object?: any) => point;
-    Get_Label_Position?: (layer?: any, object?: any) => point;
-    Get_KenCode_Circumscribed_Rectangle?: (layer?: any, object?: any) => rectangle;
-    Get_Kencode_Object_Circumscribed_Rectangle?: (layer?: any, object?: any) => rectangle;
-    Draw_Arrow?: (context: any, arg2?: any, arg3?: any, arg4?: any, arg5?: any) => void;
-    getMpLineDrawn?: (layer?: any, lineCode?: any) => boolean;
-    setMpLineDrawn?: (layer?: any, lineCode?: any, drawn?: boolean) => void;
-    setLineKindUseChecked?: (layer?: any, lineKind?: any, arg3?: any, checked?: boolean) => void;
-    ResetMPSubLineDrawn?: (mapFileName?: any) => void;
-    ResetMPSubLineXY?: (layer?: any) => void;
-    Get_MPSubLineXY?: (layer?: any, lineCode?: any, arg3?: any) => any;
-    Set_MPSubLineXY?: (layer?: any, lineCode?: any, points?: any, reverse?: any) => void;
+    ClassMD?: unknown; // strClassMode_Data (clsAttrData.tsで定義)
+    saveAsMDRJ?: (filename?: string, options?: unknown) => void;
+    Sort_OverLay_Data?: (arg1?: unknown, arg2?: unknown) => unknown;
+    Sort_OverLay_Data_Sub?: (arg1?: unknown, arg2?: unknown) => unknown;
+    Boundary_Kencode_Arrange?: (layer?: number, object?: number, time?: unknown) => unknown[];
+    GetObjMenseki?: (layer?: number, object?: number) => number;
+    Get_MaxMinValue_Range?: (layer?: number, data?: number) => { min: number; max: number };
+    Get_OD_Label_Position?: (layer?: number, object?: number) => point;
+    Get_Symbol_Position?: (layer?: number, object?: number) => point;
+    Get_Label_Position?: (layer?: number, object?: number) => point;
+    Get_KenCode_Circumscribed_Rectangle?: (layer?: number, object?: number) => rectangle;
+    Get_Kencode_Object_Circumscribed_Rectangle?: (layer?: number, object?: number) => rectangle;
+    Draw_Arrow?: (context: CanvasRenderingContext2D, arg2?: unknown, arg3?: unknown, arg4?: unknown, arg5?: unknown) => void;
+    getMpLineDrawn?: (layer?: number, lineCode?: number) => boolean;
+    setMpLineDrawn?: (layer?: number, lineCode?: number, drawn?: boolean) => void;
+    setLineKindUseChecked?: (layer?: number, lineKind?: number, arg3?: unknown, checked?: boolean) => void;
+    ResetMPSubLineDrawn?: (mapFileName?: string) => void;
+    ResetMPSubLineXY?: (layer?: number) => void;
+    Get_MPSubLineXY?: (layer?: number, lineCode?: number, arg3?: unknown) => point[];
+    Set_MPSubLineXY?: (layer?: number, lineCode?: number, points?: point[], reverse?: boolean) => void;
     GetAllMapLineKindName?: () => string[];
-    Get_AllMapLineKind?: () => any[];
-    getDataTitleName?: (Layernum: any, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => string[];
-    Get_Data_Cell_Array_Without_MissingValue?: (layer?: any, object?: any, data?: any) => any;
-    Set_DummyObjectName_to_checkedListBox?: (element: any, layerNum?: any, selectedObject?: any) => void;
-    Set_DummyObjectName_to_selectBox?: (selbox: any, layernum: any, selectedObject: any) => void;
-    Get_LayerName?: (layer?: any) => string;
-    Get_DataMissingNum?: (layer?: any, data?: any) => number;
-    Get_ObjectCode_from_ObjName?: (layer?: any, objName?: any) => any;
+    Get_AllMapLineKind?: () => unknown[];
+    getDataTitleName?: (Layernum: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => string[];
+    Get_Data_Cell_Array_Without_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
+    Set_DummyObjectName_to_checkedListBox?: (element: HTMLElement, layerNum?: number, selectedObject?: number) => void;
+    Set_DummyObjectName_to_selectBox?: (selbox: HTMLSelectElement, layernum: number, selectedObject: number) => void;
+    Get_LayerName?: (layer?: number) => string;
+    Get_DataMissingNum?: (layer?: number, data?: number) => number;
+    Get_ObjectCode_from_ObjName?: (layer?: number, objName?: string) => number;
     // 追加メソッド
     getSeriesDataSetName?: () => string[];
-    SeriesMode_to_ListViewData?: (seriesListView: any, DataSetItem: any) => void;
+    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement, DataSetItem: unknown) => void;
     getGraphTitle?: (layernum: number) => { text: string }[];
     getLabelTitle?: (layernum: number) => { text: string }[];
     getOverlayTitle?: () => { text: string }[];
@@ -336,14 +336,14 @@ interface IAttrData {
     // 距離計算メソッド
     Distance_Kencode_Point?: (layernum: number, obj: number, point: point) => number;
     Distance_Kencode_Object?: (objNum1: number, objNum2: number, layNum1: number, layNum2: number) => number;
-    Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: any, objCode2: any, time: any) => number;
-    getOneObjectPanelLabelString?: (layernum: number, arg2?: any, objNum?: number, arg4?: any) => string;
+    Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: unknown, objCode2: number, time: unknown) => number;
+    getOneObjectPanelLabelString?: (layernum: number, arg2?: unknown, objNum?: number, arg4?: unknown) => string;
     Set_Acc_First_Position?: () => void;
-    Set_Class_Div?: (layernum: any, dataNum: any, setStartPos?: any) => void;
-    Set_Div_Value?: (layernum: any, dataNum: any) => void;
-    SetMapFile?: (mapFileName: string) => any;
-    AddPointObjectKindUsed?: (layer?: any, object?: any, arg3?: any) => any;
-    Get_Check_Enable_SoloMode?: (soloMode?: any, layerNum?: any, dataNum?: any) => any;
+    Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: unknown) => void;
+    Set_Div_Value?: (layernum: number, dataNum: number) => void;
+    SetMapFile?: (mapFileName: string) => unknown;
+    AddPointObjectKindUsed?: (layer?: number, object?: number, arg3?: unknown) => unknown;
+    Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
 }
 
 // スクリーンマージン（拡張）
@@ -366,7 +366,7 @@ interface IFrmPrint extends ExtendedHTMLDivElement {
     seriesNextButton?: HTMLInputElement;
     seriesBeforeButton?: HTMLInputElement;
     // HTMLDivElementのプロパティも継承
-    dragBorder?: (arg1: any, arg2: any) => void;
+    dragBorder?: (arg1: MouseEvent, arg2: HTMLElement) => void;
     resetMaxButton?: (flag?: boolean) => void;
 }
 
@@ -377,36 +377,36 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
     relativePosition: point;
     fixed: boolean;
     nextVisible: boolean;
-    pnlProperty?: any;
-    objInfo?: any;
-    oObject?: any;
-    oLayer?: any;
-    oData?: any;
+    pnlProperty?: HTMLDivElement;
+    objInfo?: HTMLElement;
+    oObject?: number;
+    oLayer?: number;
+    oData?: number;
     // HTMLDivElementのプロパティを継承
-    dragBorder?: (arg1: any, arg2: any) => void;
+    dragBorder?: (arg1: MouseEvent, arg2: HTMLElement) => void;
     getVisibility?: () => boolean;
     setVisibility?: (visible: boolean) => void;
 }
 
 // 強化されたグローバル変数宣言
 // attrData: AppStateで管理（削除済み）
-declare var Generic: any; // kept temporarily; being migrated to ESM import
-declare var clsSettingData: any;
-declare var clsTime: any;
-declare var clsDraw: any;
-declare var clsPrint: any;
+declare var Generic: unknown; // kept temporarily; being migrated to ESM import
+declare var clsSettingData: unknown;
+declare var clsTime: unknown;
+declare var clsDraw: unknown;
+declare var clsPrint: unknown;
 // frmPrint: AppStateで管理（削除済み）
 declare var Frm_Print: IFrmPrint;
 // propertyWindow: AppStateで管理（削除済み）
 // divmain: AppStateで管理（削除済み）
-declare var TKY2JGD: any; // kept temporarily; being migrated to ESM import
+declare var TKY2JGD: unknown; // kept temporarily; being migrated to ESM import
 // tileMapClass: AppStateで管理（削除済み）
 // preReadMapFile: AppStateで管理（削除済み）
 // scrMargin: AppStateで管理（削除済み）
 // logWindow: AppStateで管理（削除済み）
 
 declare var tx: string;
-declare var mnuPropertyWindow: any;
+declare var mnuPropertyWindow: unknown;
 declare var fname: string;
 declare var i: number;
 declare var j: number;
@@ -426,7 +426,7 @@ declare enum enmZahyo_mode_info {
 declare class point {
     x: number;
     y: number;
-    Tag?: any;
+    Tag?: string | number;
     constructor(x?: number, y?: number);
     Clone(): point;
     offset(p_xp: point | number, yp?: number): void;
@@ -504,8 +504,8 @@ interface IPolydataInfo {
 // 境界整列データ（clsPrint.tsで実装）
 interface IboundArrangeData {
     Pon?: number;
-    Fringe: any[];
-    Arrange_LineCode: any[];
+    Fringe: Fringe_Line_Info[];
+    Arrange_LineCode: number[];
     pxy?: point[];
     nPolyP?: number[];
 }
@@ -620,9 +620,9 @@ declare class LineEdge_Connect_Pattern_Data_Info {
     lineCap?: string;
     lineJoin?: string;
     miterLimit?: number;
-    Edge_Pattern?: any;
-    Join_Pattern?: any;
-    MiterLimitValue?: any;
+    Edge_Pattern?: number; // enmEdge_Pattern
+    Join_Pattern?: number; // enmJoinPattern
+    MiterLimitValue?: number;
 }
 
 declare class Line_Property {
@@ -630,19 +630,19 @@ declare class Line_Property {
     Edge_Connect_Pattern?: LineEdge_Connect_Pattern_Data_Info;
     Width?: number;
     Color?: colorRGBA;
-    Pattern?: any;
-    Pat?: any;
-    Set_Same_ColorWidth_to_LinePat?: (color: any, width: any) => void;
+    Pattern?: number[];
+    Pat?: unknown; // LinePattern関連
+    Set_Same_ColorWidth_to_LinePat?: (color: colorRGBA, width: number) => void;
     Clone?: () => Line_Property;
-    Draw_Fan?: (...args: any[]) => any;
+    Draw_Fan?: (...args: unknown[]) => void;
 }
 
 declare class Tile_Property {
     BlankF?: boolean;
     Color?: colorRGBA;
     Line?: Line_Property;
-    BasicLine?: any;
-    TileCode?: any;
+    BasicLine?: Line_Property;
+    TileCode?: number;
     Clone?: () => Tile_Property;
 }
 
@@ -669,7 +669,7 @@ declare class Font_Property {
     Back: BackGround_Box_Property;
     constructor();
     Clone?(): Font_Property;
-    toContextFont?(ScrData: any): { font: string | undefined; height: number };
+    toContextFont?(ScrData: unknown): { font: string | undefined; height: number };
 }
 
 declare class Mark_Property {
@@ -698,13 +698,13 @@ declare class boundArrangeData {
     Mark?: Mark_Property;
     Line?: Line_Property;
     Fringe?: Fringe_Line_Info[];
-    Arrange_LineCode?: any[];
+    Arrange_LineCode?: number[];
     Pon?: number;
     constructor();
 }
 
 declare class Setting_Info {
-    [key: string]: any;
+    [key: string]: unknown;
     constructor();
     Clone?(): Setting_Info;
 }
@@ -720,14 +720,14 @@ declare class Arrow_Data {
 }
 
 declare class clsBase {
-    static Arrow(): any;
+    static Arrow(): Arrow_Data;
     static LineEdge(): LineEdge_Connect_Pattern_Data_Info;
     static Line(): Line_Property;
     static BlankLine(): Line_Property;
     static BoldLine(): Line_Property;
     static Tile(): Tile_Property;
     static BlancTile(): Tile_Property;
-    static PaintTile(col: any): Tile_Property;
+    static PaintTile(col: colorRGBA): Tile_Property;
     static Font(): Font_Property;
     static Mark(): Mark_Property;
     static ColorWhite(): colorRGBA;
@@ -755,42 +755,42 @@ interface ExtendedHTMLDivElement extends HTMLDivElement {
     maxSizeFlag?: boolean;
     oldpos?: rectangle;
     setNumberValue?: (value: number) => void;
-    selectedRow?: any;
-    inPanel?: any;
-    addSelectList?: (items: any[], arg2?: any, arg3?: any, arg4?: any) => void;
+    selectedRow?: number;
+    inPanel?: number;
+    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
     getText?: () => string;
-    getValue?: () => any;
-    setSelectText?: (text: any) => void;
-    setSelectData?: (data: any, arg2?: any, arg3?: any) => void;
-    setAstarisk?: (index?: any, flag?: boolean) => void;
-    setSelectValue?: (value: any) => void;
+    getValue?: () => string | number;
+    setSelectText?: (text: string) => void;
+    setSelectData?: (data: unknown, arg2?: unknown, arg3?: unknown) => void;
+    setAstarisk?: (index?: number, flag?: boolean) => void;
+    setSelectValue?: (value: string | number) => void;
 }
 
 interface HTMLDivElement {
     tooltip?: string;
     selected?: boolean;
-    selectedRow?: any;
-    tab?: any;
-    table?: any;
+    selectedRow?: number;
+    tab?: HTMLElement[];
+    table?: HTMLElement;
     selectedIndex?: number;
-    tag?: any;
+    tag?: string | number;
     maxSizeFlag?: boolean;
     oldpos?: rectangle;
-    dragBorder?: any;
+    dragBorder?: (arg1: MouseEvent, arg2: HTMLElement) => void;
     enabled?: boolean;
-    submenunum?: any;
+    submenunum?: number;
     Capture?: boolean;
-    addSelectList?: (items: any, arg2?: any, arg3?: any, arg4?: any) => void;
-    setSelectData?: (arg1?: any, arg2?: any, arg3?: any) => void;
-    setAstarisk?: (index?: any, flag?: boolean) => void;
-    setSelectValue?: (value: any) => void;
-    setNumberValue?: (value: any) => void;
-    inPanel?: any;
-    panel?: any;
+    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
+    setSelectData?: (arg1?: unknown, arg2?: unknown, arg3?: unknown) => void;
+    setAstarisk?: (index?: number, flag?: boolean) => void;
+    setSelectValue?: (value: string | number) => void;
+    setNumberValue?: (value: number) => void;
+    inPanel?: number;
+    panel?: HTMLElement[];
 }
 
 interface HTMLCanvasElement {
-    tag?: any;
+    tag?: string | number;
     name?: string;
     rightPositionFixed?: boolean;
     bottomRightPositionFixed?: boolean;
@@ -805,9 +805,9 @@ interface HTMLInputElement {
     bottomRightPositionFixed?: boolean;
     relativePosition?: point;
     btnDisabled?: (disabled: boolean) => void;
-    tag?: any;
-    preValue?: any;
-    word?: any;
+    tag?: string | number;
+    preValue?: string | number;
+    word?: string;
 }
 
 interface HTMLTextAreaElement {
@@ -841,130 +841,130 @@ interface Element {
 }
 
 interface HTMLElement {
-    addSelectList?: (items: any, arg2?: any, arg3?: any, arg4?: any) => void;
-    setSelectData?: (arg1?: any, arg2?: any, arg3?: any) => void;
-    setAstarisk?: (index?: any, flag?: boolean) => void;
-    setSelectValue?: (value: any) => void;
-    setNumberValue?: (value: any) => void;
-    inPanel?: any;
-    panel?: any;
-    selectedRow?: any;
+    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
+    setSelectData?: (arg1?: unknown, arg2?: unknown, arg3?: unknown) => void;
+    setAstarisk?: (index?: number, flag?: boolean) => void;
+    setSelectValue?: (value: string | number) => void;
+    setNumberValue?: (value: number) => void;
+    inPanel?: number;
+    panel?: HTMLElement[];
+    selectedRow?: number;
 }
 
 interface Math {
     Max: typeof Math.max;
 }
 
-// Legacy globals still referenced across the codebase (typed as any for now)
-declare function clsSelectData(...args: any[]): any;
-declare class GraphModeDataItem { [key: string]: any; constructor(...args: any[]); }
-declare function clsTileSet(...args: any[]): any;
-declare function clsLinePatternSet(...args: any[]): any;
-declare function graphModeEn_Obi(...args: any[]): any;
-declare function graphModeOresen_Bou(...args: any[]): any;
-declare function openMapFile(...args: any[]): any;
-declare class clsMapdata { [key: string]: any; constructor(...args: any[]); }
-declare class clsAttrData { [key: string]: any; constructor(...args: any[]); }
-declare class clsTileMap { [key: string]: any; constructor(...args: any[]); }
+// Legacy globals still referenced across the codebase (typed as unknown for now)
+declare function clsSelectData(...args: unknown[]): unknown;
+declare class GraphModeDataItem { [key: string]: unknown; constructor(...args: unknown[]); }
+declare function clsTileSet(...args: unknown[]): unknown;
+declare function clsLinePatternSet(...args: unknown[]): unknown;
+declare function graphModeEn_Obi(...args: unknown[]): unknown;
+declare function graphModeOresen_Bou(...args: unknown[]): unknown;
+declare function openMapFile(...args: unknown[]): unknown;
+declare class clsMapdata { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsAttrData { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsTileMap { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class clsDrawMarkFan {
-    static init?: (...args: any[]) => any;
-    static getMarkShameNum?: (...args: any[]) => any;
-    static Draw_Fan?: (...args: any[]) => any;
-    static Draw_Mark_Sample_Box?: (...args: any[]) => any;
-    static Mark_Print?: (...args: any[]) => any;
+    static init?: (...args: unknown[]) => unknown;
+    static getMarkShameNum?: (...args: unknown[]) => unknown;
+    static Draw_Fan?: (...args: unknown[]) => unknown;
+    static Draw_Mark_Sample_Box?: (...args: unknown[]) => unknown;
+    static Mark_Print?: (...args: unknown[]) => unknown;
 }
-declare const ListBox: any;
-declare const CheckedListBox: any;
-declare const ListViewTable: any;
-declare function frmPrint_DummyObjectGroup(...args: any[]): any;
-declare function frmProjectionConvert(...args: any[]): any;
-declare function frmPrintOption(...args: any[]): any;
-declare function frmPrint_ObjectValue(...args: any[]): any;
-declare function frmPrint_backImageSet(...args: any[]): any;
-declare function frmCompassSettings(...args: any[]): any;
-declare class clsSpline { static Spline_Get?: (...args: any[]) => any; }
-declare class strLocationSearchObject { [key: string]: any; constructor(...args: any[]); }
-declare class LPatSek_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strCondition_Limitation_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strDummyObjectName_and_Code { [key: string]: any; constructor(...args: any[]); }
-declare class strOverLay_DataSet_Item_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strContour_Data_Irregular_interval { [key: string]: any; constructor(...args: any[]); }
-declare class strClass_Div_data { [key: string]: any; constructor(...args: any[]); }
-declare class clsSortingSearch { [key: string]: any; constructor(...args: any[]); }
-declare function clsColorPicker(...args: any[]): any;
-declare function clsMarkSet(...args: any[]): any;
-declare function clsInnerDataSet(...args: any[]): any;
-declare function clsLineEdgePattern(...args: any[]): any;
-declare function clsColorChart(...args: any[]): any;
-declare function clsArrow(...args: any[]): any;
-declare function clsGrid(...args: any[]): any;
-declare function clsCompassSettings(...args: any[]): any;
-declare function frmMain_Buffer(...args: any[]): any;
-declare function frmMain_AreaPeripheri(...args: any[]): any;
-declare function frmMain_Culc(...args: any[]): any;
-declare function frmMain_GetDistance(...args: any[]): any;
-declare function frmMain_ConditionSettings(...args: any[]): any;
-declare function frmMainCopyDataSettings(...args: any[]): any;
-declare function frmMain_SetSeriesMode(...args: any[]): any;
-declare function frmMain_MarkPosition(...args: any[]): any;
-declare function frmMain_LayeObjectSelectOne(...args: any[]): any;
-declare function settingFront(...args: any[]): any;
-declare const clsSpatialIndexSearch: any;
-declare class strFrmCopyObjectName_init_parameter_data { [key: string]: any; constructor(...args: any[]); }
-declare function frmCopyObjectName(...args: any[]): any;
-declare class strOverLay_Dataset_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strSeries_Dataset_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strCondition_DataSet_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strCondition_Data_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strObject_Data_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strSeries_DataSet_Item_Info { [key: string]: any; constructor(...args: any[]); }
-declare class strTileMapViewInfo { [key: string]: any; constructor(...args: any[]); }
-declare class strCompass_Attri { [key: string]: any; constructor(...args: any[]); }
-declare class clsDrawLine { [key: string]: any; static Arrow?: (...args: any[]) => any; static Line?: (...args: any[]) => any; static Draw_Sample_LineBox?: (...args: any[]) => any; static Check_Draw_Arrow_Line?: (...args: any[]) => any; }
-declare class clsDrawTile { [key: string]: any; static Darw_Sample_BackGroundBox?: (...args: any[]) => any; static Draw_Poly_Inner?: (...args: any[]) => any; static Draw_Tile_Box?: (...args: any[]) => any; static Draw_Tile_RoundBox?: (...args: any[]) => any; }
-declare class tileList_Data_Info { [key: string]: any; constructor(...args: any[]); }
-declare class EnableMPLine_Data { [key: string]: any; constructor(...args: any[]); }
-declare class strContour_Line_property { [key: string]: any; constructor(...args: any[]); }
-declare class clsMeshContour { [key: string]: any; constructor(...args: any[]); }
-declare class Legend2_Atri { [key: string]: any; constructor(...args: any[]); }
-declare class clsFontSet { [key: string]: any; constructor(...args: any[]); }
-declare function clsFontSet(...args: any[]): any;
-declare function clsDrawTileSample(...args: any[]): any;
-declare const enmBasePosition: any;
-declare const enmSoloMode_Number: any;
-declare const enmKenCodeObjectstructure: any;
-declare const enmLayerMode_Number: any;
-declare const enmObjectGoupType_Data: any;
-declare const enmCondition: any;
-declare const enmDataSource: any;
-declare const enmPrint_Enable: any;
-declare const enmMarkPrintType: any;
-declare const enmDivisionMethod: any;
-declare const enmPaintColorSettingModeInfo: any;
-declare const enmMarkBlockArrange: any;
-declare const enmMarkBarShape: any;
-declare const enmMarkSizeValueMode: any;
-declare const enmContourIntervalMode: any;
-declare const enmBarLineMaxMinMode: any;
-declare const enmMarkMaxValueType: any;
-declare const enmInner_Data_Info_Mode: any;
-declare const enmClassMode_Meshod: any;
-declare const enmEdge_Pattern: any;
-declare const enmSeparateClassWords: any;
-declare const enmScaleBarPattern: any;
-declare const enmGraphMaxSize: any;
-declare const enmStackedBarChart_Direction: any;
-declare const enmBarChartFrameAxePattern: any;
-declare const enmMultiEnGraphPattern: any;
-declare const enmLatLonLine_Order: any;
-declare const enmOutputDevice: any;
-declare const enmDrawTiming: any;
-declare const enmLineConnect: any;
-declare const enmPointOnjectDrawOrder: any;
-declare const Quad_Mesh_Info: any;
-declare const LineCodeStac_Data: any;
-declare const strDefTimeAttDataEach_Info: any;
-declare const strDefTimeAttData_Info: any;
+declare const ListBox: unknown;
+declare const CheckedListBox: unknown;
+declare const ListViewTable: unknown;
+declare function frmPrint_DummyObjectGroup(...args: unknown[]): unknown;
+declare function frmProjectionConvert(...args: unknown[]): unknown;
+declare function frmPrintOption(...args: unknown[]): unknown;
+declare function frmPrint_ObjectValue(...args: unknown[]): unknown;
+declare function frmPrint_backImageSet(...args: unknown[]): unknown;
+declare function frmCompassSettings(...args: unknown[]): unknown;
+declare class clsSpline { static Spline_Get?: (...args: unknown[]) => unknown; }
+declare class strLocationSearchObject { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class LPatSek_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strCondition_Limitation_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strDummyObjectName_and_Code { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strOverLay_DataSet_Item_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strContour_Data_Irregular_interval { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strClass_Div_data { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsSortingSearch { [key: string]: unknown; constructor(...args: unknown[]); }
+declare function clsColorPicker(...args: unknown[]): unknown;
+declare function clsMarkSet(...args: unknown[]): unknown;
+declare function clsInnerDataSet(...args: unknown[]): unknown;
+declare function clsLineEdgePattern(...args: unknown[]): unknown;
+declare function clsColorChart(...args: unknown[]): unknown;
+declare function clsArrow(...args: unknown[]): unknown;
+declare function clsGrid(...args: unknown[]): unknown;
+declare function clsCompassSettings(...args: unknown[]): unknown;
+declare function frmMain_Buffer(...args: unknown[]): unknown;
+declare function frmMain_AreaPeripheri(...args: unknown[]): unknown;
+declare function frmMain_Culc(...args: unknown[]): unknown;
+declare function frmMain_GetDistance(...args: unknown[]): unknown;
+declare function frmMain_ConditionSettings(...args: unknown[]): unknown;
+declare function frmMainCopyDataSettings(...args: unknown[]): unknown;
+declare function frmMain_SetSeriesMode(...args: unknown[]): unknown;
+declare function frmMain_MarkPosition(...args: unknown[]): unknown;
+declare function frmMain_LayeObjectSelectOne(...args: unknown[]): unknown;
+declare function settingFront(...args: unknown[]): unknown;
+declare const clsSpatialIndexSearch: unknown;
+declare class strFrmCopyObjectName_init_parameter_data { [key: string]: unknown; constructor(...args: unknown[]); }
+declare function frmCopyObjectName(...args: unknown[]): unknown;
+declare class strOverLay_Dataset_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strSeries_Dataset_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strCondition_DataSet_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strCondition_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strObject_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strSeries_DataSet_Item_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strTileMapViewInfo { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strCompass_Attri { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsDrawLine { [key: string]: unknown; static Arrow?: (...args: unknown[]) => unknown; static Line?: (...args: unknown[]) => unknown; static Draw_Sample_LineBox?: (...args: unknown[]) => unknown; static Check_Draw_Arrow_Line?: (...args: unknown[]) => unknown; }
+declare class clsDrawTile { [key: string]: unknown; static Darw_Sample_BackGroundBox?: (...args: unknown[]) => unknown; static Draw_Poly_Inner?: (...args: unknown[]) => unknown; static Draw_Tile_Box?: (...args: unknown[]) => unknown; static Draw_Tile_RoundBox?: (...args: unknown[]) => unknown; }
+declare class tileList_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class EnableMPLine_Data { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strContour_Line_property { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsMeshContour { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class Legend2_Atri { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsFontSet { [key: string]: unknown; constructor(...args: unknown[]); }
+declare function clsFontSet(...args: unknown[]): unknown;
+declare function clsDrawTileSample(...args: unknown[]): unknown;
+declare const enmBasePosition: unknown;
+declare const enmSoloMode_Number: unknown;
+declare const enmKenCodeObjectstructure: unknown;
+declare const enmLayerMode_Number: unknown;
+declare const enmObjectGoupType_Data: unknown;
+declare const enmCondition: unknown;
+declare const enmDataSource: unknown;
+declare const enmPrint_Enable: unknown;
+declare const enmMarkPrintType: unknown;
+declare const enmDivisionMethod: unknown;
+declare const enmPaintColorSettingModeInfo: unknown;
+declare const enmMarkBlockArrange: unknown;
+declare const enmMarkBarShape: unknown;
+declare const enmMarkSizeValueMode: unknown;
+declare const enmContourIntervalMode: unknown;
+declare const enmBarLineMaxMinMode: unknown;
+declare const enmMarkMaxValueType: unknown;
+declare const enmInner_Data_Info_Mode: unknown;
+declare const enmClassMode_Meshod: unknown;
+declare const enmEdge_Pattern: unknown;
+declare const enmSeparateClassWords: unknown;
+declare const enmScaleBarPattern: unknown;
+declare const enmGraphMaxSize: unknown;
+declare const enmStackedBarChart_Direction: unknown;
+declare const enmBarChartFrameAxePattern: unknown;
+declare const enmMultiEnGraphPattern: unknown;
+declare const enmLatLonLine_Order: unknown;
+declare const enmOutputDevice: unknown;
+declare const enmDrawTiming: unknown;
+declare const enmLineConnect: unknown;
+declare const enmPointOnjectDrawOrder: unknown;
+declare const Quad_Mesh_Info: unknown;
+declare const LineCodeStac_Data: unknown;
+declare const strDefTimeAttDataEach_Info: unknown;
+declare const strDefTimeAttData_Info: unknown;
 
 interface Zahyo_info {
     Mode: number;
@@ -993,8 +993,8 @@ interface strMap_data {
     Time_Mode: boolean;
     Circumscribed_Rectangle: rectangle;
     Zahyo: Zahyo_info;
-    Detail: any;
-    MapCompass: any;
+    Detail: unknown;
+    MapCompass: unknown;
 }
 declare const strMap_data: {
     new(): strMap_data;
@@ -1002,23 +1002,23 @@ declare const strMap_data: {
 };
 
 interface EventTarget {
-    tag?: any;
+    tag?: string | number;
     selectedIndex?: number;
-    value?: any;
+    value?: string | number | unknown;
 }
 
 // 関数
-declare function logX(data: any): void;
+declare function logX(data: unknown): void;
 declare function init(): void;
 declare function setting(search: string): void;
 declare function contextMenuPrevent(e: Event): void;
 declare function frmPrintFront(): void;
-declare function FrmprintMenuClick(pos: any): void;
+declare function FrmprintMenuClick(pos: point): void;
 declare function dataValueShow(): void;
 declare function backImageButton(): void;
-declare function mapMouse(canvas: any, callback: any): void;
-declare function AddMeshPoint(objectNum: any, action: any): void;
-declare function AddMeshRect(objectNum: any, action: any): void;
+declare function mapMouse(canvas: HTMLCanvasElement, callback: Function): void;
+declare function AddMeshPoint(objectNum: number, action: unknown): void;
+declare function AddMeshRect(objectNum: number, action: unknown): void;
 
 // frmPrint は clsPrint.ts で class として定義済み
 
@@ -1055,7 +1055,7 @@ declare const enmPrintMouseMode: {
     MultiObjectSelect: 12;
 };
 
-declare var TKY2JGDInfo: any;
+declare var TKY2JGDInfo: unknown;
 
 
 
@@ -1069,8 +1069,8 @@ interface String {
 
 // Zlib library
 declare var Zlib: {
-    Zip: new() => any;
-    Unzip: new(buffer: Uint8Array) => any;
+    Zip: new() => unknown;
+    Unzip: new(buffer: Uint8Array) => unknown;
 };
 
 // Navigator extensions
@@ -1085,10 +1085,10 @@ interface HTMLSpanElement {
 }
 
 interface HTMLInputElement {
-    preValue?: any;
+    preValue?: string | number;
     setNumberValue?: (value: number) => void;
     btnDisabled?: (disabled: boolean) => void;
-    numberCheck?: any;
+    numberCheck?: unknown;
 }
 
 interface HTMLDivElement {
@@ -1096,7 +1096,7 @@ interface HTMLDivElement {
     selected?: boolean;
     setTitle?: (title: string) => void;
     setVisibility?: (visible: boolean) => void;
-    panel?: any;
+    panel?: unknown;
     name?: string;
     sizeFixed?: boolean;
     relativeSize?: size;
@@ -1111,57 +1111,54 @@ interface HTMLElement {
     removeOne?: () => void;
     getVisibility?: () => boolean;
     btnDisabled?: (disabled: boolean) => void;
-    inPic?: any;
-    inTxt?: any;
-    numberCheck?: any;
+    inPic?: unknown;
+    inTxt?: unknown;
+    numberCheck?: unknown;
     getText?: () => string;
-    getValue?: () => any;
-    setSelectText?: (text: any) => void;
+    getValue?: () => string | number | unknown;
+    setSelectText?: (text: string) => void;
 }
 
 interface HTMLTextAreaElement {
     getVisibility?: () => boolean;
     setVisibility?: (visible: boolean) => void;
     select?: () => void;
-    Tag?: any;
-    tag?: any;
+    Tag?: string | number;
+    tag?: string | number;
 }
 
 interface HTMLCanvasElement {
-    tag?: any;
+    tag?: string | number;
 }
 
 interface HTMLSelectElement {
-    addSelectList?: (items: any[], arg2?: any, arg3?: any, arg4?: any) => void;
-    getValue?: () => any;
+    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
+    getValue?: () => string | number | unknown;
     getText?: () => string;
-    oldSel?: any;
-    setSelectValue?: (value: any) => void;
+    oldSel?: unknown;
+    setSelectValue?: (value: string | number) => void;
     tooltip?: string;
-    setSelectText?: (text: any) => void;
-    setSelectData?: (data: any, arg2?: any, arg3?: any) => void;
+    setSelectText?: (text: string) => void;
+    setSelectData?: (data: unknown, arg2?: unknown, arg3?: unknown) => void;
 }
 
 // Global functions
 declare function Check_Print_err(): void;
 
 // Shapefile class
-declare var clsShapefile: any;
+declare var clsShapefile: unknown;
 
 // Additional global variables
-declare var picMark: any;
-declare var lstDummyItem: any;
+declare var picMark: unknown;
+declare var lstDummyItem: unknown;
 
 // Array extensions
 interface Array<T> {
     trueNum?: number;
-    DummyOBGArray?: any[];
+    DummyOBGArray?: unknown[];
 }
 
 // EventTarget extensions
-interface EventTarget {
-    value?: any;
-}
 
 // Generic class methods
 declare class colorRGBA {
@@ -1187,11 +1184,11 @@ declare class Grid_Color {
     SelectedGrid: colorRGBA;
     FixedGrid: colorRGBA;
     SelectedFixedGrid: colorRGBA;
-    Clone(arg?: any): Grid_Color;
+    Clone(arg?: unknown): Grid_Color;
 }
 
 declare class Operation_enable_info {
-    Clone(arg?: any): Operation_enable_info;
+    Clone(arg?: unknown): Operation_enable_info;
 }
 
 declare class strYMD {
@@ -1208,31 +1205,31 @@ declare class strYMD {
 }
 
 declare class latlonbox {
-    NorthWest?: any;
-    SouthEast?: any;
-    NorthEast?: any;
-    SouthWest?: any;
-    constructor(nw?: any, se?: any);
+    NorthWest?: latlon;
+    SouthEast?: latlon;
+    NorthEast?: latlon;
+    SouthWest?: latlon;
+    constructor(nw?: latlon, se?: latlon);
 }
 
 // clsDrawLine は clsDraw.ts で実装済み
 
 declare class Generic {
-    static createNewCanvas(parent: any, id: string, className: string, x: number, y: number, width: number, height: number, selectColor?: any): HTMLCanvasElement;
-    static alert(event: any, message: string, callback?: any): void;
-    static alert(message: string, callback?: any): void;
-    static createMsgBox(title: string, message: string, showOk: boolean, arg4?: any, arg5?: any, arg6?: any, arg7?: any, arg8?: any, arg9?: any, arg10?: any): void;
-    static createNewDiv(parent: any, text: string, id: string, className: string, x: number, y: number, width?: any, height?: any, style?: string, arg10?: any): HTMLDivElement;
-    static addSelectList(selectElement: HTMLSelectElement | string, items: any[], arg3?: any, arg4?: any): void;
-    static createNewRadioButtonList(parent: any, name: string, list: any[], x: number, y: number, w?: any, h?: any, defaultValue?: any, changeHandler?: any, fontSize?: any): HTMLElement;
-    static createNewFrame(parent: any, text: string, id: string, x: number, y: number, width: number, height: number, title?: string, arg9?: any, arg10?: any): HTMLElement;
-    static createNewWordNumberInput(parent: any, label: string, id: string, value: any, unit?: string, x?: number, y?: number, w?: any, h?: any, className?: string, arg11?: any): HTMLInputElement;
-    static Get_LatLon_Strings(latlon: any, arg2?: boolean): {x: string, y: string};
-    static convValue(value: any): number;
-    static Remove_Same_String(arr: any[]): any[];
-    static createNewCheckBox(parent: any, text: string, id: string, checked: boolean, x: number, y: number, arg7?: any, onChange?: Function, arg9?: any, arg10?: any): HTMLInputElement;
-    static createNewTextarea(parent: any, type: string, id: string, x: number, y: number, width: number, height: number, style?: string): HTMLTextAreaElement;
-    static ArrayClone(arr: any[]): any[];
+    static createNewCanvas(parent: HTMLElement, id: string, className: string, x: number, y: number, width: number, height: number, selectColor?: string): HTMLCanvasElement;
+    static alert(event: Event, message: string, callback?: Function): void;
+    static alert(message: string, callback?: Function): void;
+    static createMsgBox(title: string, message: string, showOk: boolean, arg4?: unknown, arg5?: unknown, arg6?: unknown, arg7?: unknown, arg8?: unknown, arg9?: unknown, arg10?: unknown): void;
+    static createNewDiv(parent: HTMLElement, text: string, id: string, className: string, x: number, y: number, width?: number | string, height?: number | string, style?: string, arg10?: unknown): HTMLDivElement;
+    static addSelectList(selectElement: HTMLSelectElement | string, items: unknown[], arg3?: unknown, arg4?: unknown): void;
+    static createNewRadioButtonList(parent: HTMLElement, name: string, list: unknown[], x: number, y: number, w?: number | string, h?: number | string, defaultValue?: string | number, changeHandler?: Function, fontSize?: number): HTMLElement;
+    static createNewFrame(parent: HTMLElement, text: string, id: string, x: number, y: number, width: number, height: number, title?: string, arg9?: unknown, arg10?: unknown): HTMLElement;
+    static createNewWordNumberInput(parent: HTMLElement, label: string, id: string, value: string | number, unit?: string, x?: number, y?: number, w?: number | string, h?: number | string, className?: string, arg11?: unknown): HTMLInputElement;
+    static Get_LatLon_Strings(latlon: latlon, arg2?: boolean): {x: string, y: string};
+    static convValue(value: string | number): number;
+    static Remove_Same_String(arr: string[]): string[];
+    static createNewCheckBox(parent: HTMLElement, text: string, id: string, checked: boolean, x: number, y: number, arg7?: unknown, onChange?: Function, arg9?: unknown, arg10?: unknown): HTMLInputElement;
+    static createNewTextarea(parent: HTMLElement, type: string, id: string, x: number, y: number, width: number, height: number, style?: string): HTMLTextAreaElement;
+    static ArrayClone<T>(arr: T[]): T[];
 }
 
 // ==================== 列挙型定義（追加） ====================
@@ -1395,21 +1392,21 @@ declare namespace SpatialPointType {
 
 // spatialクラス（空間計算ユーティリティ）
 declare class spatial {
-    static Get_Converted_XY(point: point, zahyo: any): point;
-    static Get_Reverse_XY(point: point, zahyo: any): point;
-    static Get_MeshCode_Rectangle(meshcode: string, meshType: number, refOrigin: number, refDestZahyo: Zahyo_info): any;
+    static Get_Converted_XY(point: point, zahyo: Zahyo_info): point;
+    static Get_Reverse_XY(point: point, zahyo: Zahyo_info): point;
+    static Get_MeshCode_Rectangle(meshcode: string, meshType: number, refOrigin: number, refDestZahyo: Zahyo_info): rectangle;
     static Distance_Ido_Kedo_XY_Point(P1: point, P2: point, MapDTMapZahyo: Zahyo_info): number;
-    static Distance_Ido_Kedo_XY(P1: any, P2: any, MapDTMapZahyo: any): number;
+    static Distance_Ido_Kedo_XY(P1: point, P2: point, MapDTMapZahyo: Zahyo_info): number;
     static Distance_Ido_Kedo_LatLon(D1: latlon, D2: latlon): number;
     static Line_Cross_Point(LAP1: point, LAP2: point, LBP1: point, LBP2: point): point | undefined;
-    static Get_Ido_Kedo_from_MeshCode(meshcode: string, meshType?: number): any;
+    static Get_Ido_Kedo_from_MeshCode(meshcode: string, meshType?: number): latlon;
     static ConvertRefSystemLatLon(ll: latlon, refOrigin: number, refDest: number): latlon;
     static getCircumscribedRectangle(points: point[] | point | rectangle, margin?: number | rectangle): rectangle;
     static Get_TurnedBox(size: size, angle: number): size;
     static Get_Scale_Baititu_IdoKedo(p: point, MPDataMapZahyo: Zahyo_info): number;
-    static Trans3D(x: any, y: any, z?: any, center?: any, expand?: any, pitch?: any, head?: any, bank?: any, xyPara?: any): point;
-    static Trans2D(CP: any, Kakudo_P: any, Kakudo?: any): point;
-    static Check_Zahyo_Projection_Convert_Enabled(zahyo: any, zahyo2?: any): { ok: boolean; emes: string };
+    static Trans3D(x: number, y: number, z?: number, center?: point, expand?: number, pitch?: number, head?: number, bank?: number, xyPara?: unknown): point;
+    static Trans2D(CP: point, Kakudo_P: number, Kakudo?: number): point;
+    static Check_Zahyo_Projection_Convert_Enabled(zahyo: Zahyo_info, zahyo2?: Zahyo_info): { ok: boolean; emes: string };
     static Get_Reverse_and_Convert_XY(point: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info): point;
     static check_Point_in_Polygon(point: point, polygon: point[]): { ok: boolean };
     static Compare_Two_Rectangle_Position(rect1: rectangle, rect2: rectangle): number;
@@ -1422,47 +1419,47 @@ declare class spatial {
     static Distance_Point(p1: point, p2: point): number;
     static Distance_PointLine(X: number, Y: number, ax: number, ay: number, BX: number, BY: number): { distance: number; nearP: point };
     static Distance_PointLine2(P: point, LineP1: point, LineP2: point): { distance: number; nearP: point };
-    static Get_TurnedRectangle(Rect: any, Kakudo: any): point[];
+    static Get_TurnedRectangle(Rect: rectangle, Kakudo: number): point[];
     static Get_Rectangle(P1: point, P2: number | size | point): rectangle;
     static Get_Rectangle_Union(rect1: rectangle, rect2: rectangle): rectangle;
     static Get_World_IdoKedo(oxy: point, MapZahyo_Info: Zahyo_info): latlon;
     static Get_ReverseWorld_IdoKedo(oLatLon: latlon, MapZahyo: Zahyo_info): latlon;
-    static Get_Reverse_Rect(In_Rect: any, MPDataMapZahyo: any): any;
+    static Get_Reverse_Rect(In_Rect: rectangle, MPDataMapZahyo: Zahyo_info): rectangle;
     static Distance(x1: number, y1: number, x2: number, y2: number): number;
     static Get_Poly_Point_Juushin(points: point[]): point;
-    static Get_CenterP_from_MeshCode(meshcode: any, meshType: any): point;
-    static BoundaryArrangeGeneral(arg1?: any, arg2?: any, arg3?: any): any;
+    static Get_CenterP_from_MeshCode(meshcode: string, meshType: number): point;
+    static BoundaryArrangeGeneral(arg1?: unknown, arg2?: unknown, arg3?: unknown): unknown;
     static Check_TwoRectangele_Inner_Contact(rect1: rectangle, rect2: rectangle): boolean;
     static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle): boolean;
     static checkAndModifyPointInRect(point: point, rect: rectangle): point;
-    static Check_PsitionReverse_Enable(p1: point, p2: any): boolean;
+    static Check_PsitionReverse_Enable(p1: point, p2: point): boolean;
 }
 
 // clsDrawLine と clsDrawMarkFan は clsDraw.ts で実装済み
 
 // リストボックス
 declare class ListBox {
-    constructor(parent: any, classname?: any, list?: any[], x?: number, y?: number, width?: number, height?: number, onChange?: any, styleinfo?: any);
+    constructor(parent: HTMLElement, classname?: string, list?: unknown[], x?: number, y?: number, width?: number, height?: number, onChange?: Function, styleinfo?: unknown);
     getSelectedIndex(): number;
     setSelectedIndex(index: number): void;
-    setItems(items: any[]): void;
+    setItems(items: unknown[]): void;
     selectedIndex?: number;
-    frame?: any;
+    frame?: unknown;
     length?: number;
-    value?: any;
-    options?: any[];
-    getItems?: () => any[];
+    value?: unknown;
+    options?: unknown[];
+    getItems?: () => unknown[];
     clear?: () => void;
-    add?: (item: any) => void;
-    addList?: (items: any[], pos?: number) => void;
-    addSelectList?: (items: any[], pos?: number) => void;
+    add?: (item: unknown) => void;
+    addList?: (items: unknown[], pos?: number) => void;
+    addSelectList?: (items: unknown[], pos?: number) => void;
     removeList?: (pos: number, delNum?: number) => void;
     removeAll?: () => void;
     getText?: (index?: number) => string;
     getAllText?: () => string[];
-    getAllValue?: () => any[];
-    getValue?: () => any;
-    setValue?: (row: number, value: any) => void;
+    getAllValue?: () => unknown[];
+    getValue?: () => unknown;
+    setValue?: (row: number, value: unknown) => void;
     setText?: (row: number, text: string) => void;
     rowUp?: (row: number) => void;
     rowDown?: (row: number) => void;
@@ -1470,20 +1467,20 @@ declare class ListBox {
 
 // チェックリストボックス
 declare class CheckedListBox {
-    constructor(parent: any, classname?: any, list?: any[], x?: number, y?: number, width?: number, height?: number, twoStepCheckF?: boolean, onChange?: any, styleinfo?: any);
+    constructor(parent: HTMLElement, classname?: string, list?: unknown[], x?: number, y?: number, width?: number, height?: number, twoStepCheckF?: boolean, onChange?: Function, styleinfo?: unknown);
     getChecked(): { checkedStatus: boolean[]; checkedArray: number[] };
     getCheckedStatus(n: number): boolean;
     setChecked(index: number, checked: boolean): void;
     setCheckStatus(n: number, checked: boolean): void;
     getSelectedIndex(): number;
     setSelectedIndex(index: number): void;
-    setItems(items: any[]): void;
-    addList(list: any[], pos?: number): void;
+    setItems(items: unknown[]): void;
+    addList(list: unknown[], pos?: number): void;
     removeList(pos: number, delNum?: number): void;
     removeAll(): void;
     setText(n: number, text: string): void;
-    add(item: any): void;
-    frame?: any;
+    add(item: unknown): void;
+    frame?: unknown;
     length?: number;
     selectedIndex?: number;
     disabled?: boolean;
@@ -1505,73 +1502,73 @@ declare var chvValue_on_twoValue: {
 };
 
 // strScale_Attri型
-declare var strScale_Attri: any;
+declare var strScale_Attri: unknown;
 
 // clsAttrData.ts の関数コンストラクタ型
-declare var strDegreeMinuteSeconde: any;
-declare var strLatLonDegreeMinuteSecond: any;
-declare var Start_End_Time_data: any;
-declare var strContourData: any;
-declare var strMeshPaint: any;
-declare var strMesh3DPaint: any;
-declare var strLayerData: any;
-declare var strLabelDummyData: any;
-declare var strLabel_Data: any;
-declare var strGraphData: any;
-declare var strLabel_Attri: any;
-declare var strGraph_Attri: any;
-declare var strOverLay_Attri: any;
-declare var strTotalData: any;
-declare var strLinkURL: any;
-declare var strDataTile: any;
-declare var strDataTileList: any;
-declare var strDataObject: any;
-declare var strDataTitle: any;
-declare var strDataEdit: any;
-declare var strDataEditRow: any;
-declare var strDataEditCell: any;
-declare var strCategoryData: any;
-declare var strMaskData: any;
-declare var strMPLine: any;
-declare var strMPLineSub: any;
-declare var strDataStatistics: any;
-declare var strLegend_Attri: any;
-declare var strPrint_Mode: any;
-declare var strSoloData: any;
-declare var strSeriesData: any;
-declare var strOverlayData: any;
-declare var strPaintModeData: any;
-declare var strMarkData: any;
-declare var strBarData: any;
-declare var strPieData: any;
-declare var strFlowData: any;
-declare var strTileMarkData: any;
-declare var strTimeData: any;
-declare var strViewStyle: any;
-declare var strScreenData: any;
-declare var strMapLegend: any;
-declare var strMapTitle: any;
-declare var strMapScale: any;
-declare var strMapNorth: any;
-declare var strGridLine: any;
-declare var strBackGround: any;
-declare var strMapOverLay: any;
-declare var strCondition: any;
-declare var strConditionItem: any;
-declare var strConditionValue: any;
-declare var strPointObject: any;
-declare var strPolyObject: any;
-declare var strLineObject: any;
-declare var strObjectGroup: any;
-declare var strAttrValue: any;
-declare var strThreeD_Mode: any;
-declare var strPrintFooter: any;
-declare var strPrintHeader: any;
-declare var strMapPrint: any;
-declare var strColorPalette: any;
-declare var strDivideValue: any;
-declare var strTripObjData_Info: any;
-declare var strObjectKindUsed_Info: any;
+declare var strDegreeMinuteSeconde: unknown;
+declare var strLatLonDegreeMinuteSecond: unknown;
+declare var Start_End_Time_data: unknown;
+declare var strContourData: unknown;
+declare var strMeshPaint: unknown;
+declare var strMesh3DPaint: unknown;
+declare var strLayerData: unknown;
+declare var strLabelDummyData: unknown;
+declare var strLabel_Data: unknown;
+declare var strGraphData: unknown;
+declare var strLabel_Attri: unknown;
+declare var strGraph_Attri: unknown;
+declare var strOverLay_Attri: unknown;
+declare var strTotalData: unknown;
+declare var strLinkURL: unknown;
+declare var strDataTile: unknown;
+declare var strDataTileList: unknown;
+declare var strDataObject: unknown;
+declare var strDataTitle: unknown;
+declare var strDataEdit: unknown;
+declare var strDataEditRow: unknown;
+declare var strDataEditCell: unknown;
+declare var strCategoryData: unknown;
+declare var strMaskData: unknown;
+declare var strMPLine: unknown;
+declare var strMPLineSub: unknown;
+declare var strDataStatistics: unknown;
+declare var strLegend_Attri: unknown;
+declare var strPrint_Mode: unknown;
+declare var strSoloData: unknown;
+declare var strSeriesData: unknown;
+declare var strOverlayData: unknown;
+declare var strPaintModeData: unknown;
+declare var strMarkData: unknown;
+declare var strBarData: unknown;
+declare var strPieData: unknown;
+declare var strFlowData: unknown;
+declare var strTileMarkData: unknown;
+declare var strTimeData: unknown;
+declare var strViewStyle: unknown;
+declare var strScreenData: unknown;
+declare var strMapLegend: unknown;
+declare var strMapTitle: unknown;
+declare var strMapScale: unknown;
+declare var strMapNorth: unknown;
+declare var strGridLine: unknown;
+declare var strBackGround: unknown;
+declare var strMapOverLay: unknown;
+declare var strCondition: unknown;
+declare var strConditionItem: unknown;
+declare var strConditionValue: unknown;
+declare var strPointObject: unknown;
+declare var strPolyObject: unknown;
+declare var strLineObject: unknown;
+declare var strObjectGroup: unknown;
+declare var strAttrValue: unknown;
+declare var strThreeD_Mode: unknown;
+declare var strPrintFooter: unknown;
+declare var strPrintHeader: unknown;
+declare var strMapPrint: unknown;
+declare var strColorPalette: unknown;
+declare var strDivideValue: unknown;
+declare var strTripObjData_Info: unknown;
+declare var strObjectKindUsed_Info: unknown;
 
 // Map静的プロパティ拡張
 interface MapConstructor {

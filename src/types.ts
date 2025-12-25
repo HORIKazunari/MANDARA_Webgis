@@ -176,7 +176,7 @@ export interface RadioListItem {
 export type TableData = Array<Array<string | number>>;
 
 /**
- * Map data type (any JSONデータ)
+ * Map data type (JSONデータ)
  */
 export type MapData = Record<string, unknown>;
 
