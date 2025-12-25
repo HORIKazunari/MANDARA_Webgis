@@ -11,13 +11,13 @@ class clsDraw {
         const state = appState();
 
 
-        let Word_a = Word;
+        const Word_a = Word;
 
-        let tdata = this.TextCut_for_print(g, Word_a, Font_P, true, -1, ScrData);
-        let Word_Array = tdata.Out_Text;
-        let yw = tdata.Height;
-        let xw = tdata.RealWidth;
-        let an = Word_Array.length;
+        const tdata = this.TextCut_for_print(g, Word_a, Font_P, true, -1, ScrData);
+        const Word_Array = tdata.Out_Text;
+        const yw = tdata.Height;
+        const xw = tdata.RealWidth;
+        const an = Word_Array.length;
         let X;
         let Y;
         switch (HorizonalAlignment) {
@@ -46,7 +46,7 @@ class clsDraw {
                 break;
         }
 
-        let C_Rect = new rectangle(new point(X, Y), new size(xw, yw * an));
+        const C_Rect = new rectangle(new point(X, Y), new size(xw, yw * an));
 
         let f = false;
         if (ScrData.SampleBoxFlag == false) {

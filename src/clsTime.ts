@@ -13,7 +13,7 @@ class clsTime  {
     // 前日を取得
     static getYesterday(YMD: strYMD) {
         const state = appState();
-        let d = YMD.toDate();
+        const d = YMD.toDate();
         d.setDate(d.getDate() - 1);
         return new strYMD(d.getFullYear(), d.getMonth() + 1, d.getDate());
     }
@@ -21,21 +21,21 @@ class clsTime  {
     // 翌日を取得
     static getTomorrow(YMD: strYMD) {
         const state = appState();
-        let d = YMD.toDate();
+        const d = YMD.toDate();
         d.setDate(d.getDate() + 1);
         return new strYMD(d.getFullYear(), d.getMonth() + 1, d.getDate());
     }
 
     //指定の日付の間の日数を数える。Time1がTime2より後の場合は負の値
     static getDifference (Time1: strYMD, Time2: strYMD) {
-        let day1 = Time1.toDate();
-        let day2 = Time2.toDate();
-        let termDay = (day2 - day1) / 86400000;
+        const day1 = Time1.toDate();
+        const day2 = Time2.toDate();
+        const termDay = (day2 - day1) / 86400000;
         return termDay;
     }
     static GetNullStartEndYMD(){
         const state = appState();
-        let d=new Start_End_Time_data();
+        const d=new Start_End_Time_data();
         d.StartTime=this.GetNullYMD();
         d.EndTime=this.GetNullYMD();
         return d;
@@ -58,8 +58,8 @@ class clsTime  {
 
     static GetYMDfromValue(value: number){
         const state = appState();
-        let  YMD =new  strYMD();
-        let s  = "00000000" + value.toString().right( 8);
+        const YMD =new  strYMD();
+        const s  = "00000000" + value.toString().right( 8);
         YMD.Year = Number(s.substr(0, 4));
         YMD.Month = Number(s.substr(4, 2));
         YMD.Day = Number(s.substr(6, 2));
@@ -84,22 +84,22 @@ class clsTime  {
         if ((Point.nullFlag() == true) || (duration.StartTime.nullFlag() == true) && (duration.EndTime.nullFlag() == true)) {
             return true;
         } else {
-            let time = Point.toDate();
+            const time = Point.toDate();
             switch (duration.StartTime.nullFlag()) {
                 case true:
                     if(duration.EndTime.nullFlag() == true) {
                         return true;
                     }else{
-                        let etime = duration.EndTime.toDate();
+                        const etime = duration.EndTime.toDate();
                         return (time <= etime);
                         }
                     break;
                 case false:
-                    let stime = duration.StartTime.toDate();
+                    const stime = duration.StartTime.toDate();
                     if (duration.EndTime.nullFlag() == true) {
                         return (stime <= time);
                     } else {
-                        let etime =duration.EndTime.toDate();
+                        const etime =duration.EndTime.toDate();
                         return ((stime <= time) && (time <= etime));
                     }
                     break;
@@ -113,7 +113,7 @@ class clsTime  {
         return new strYMD(date.getFullYear(), date.getMonth()+1, date.getDate());
     }
     static GetFromInputDate  (value: string) {
-        let t = value.split("-");
+        const t = value.split("-");
         return new strYMD(Number(t[0]), Number(t[1]), Number(t[2]));
     }
     static Check_YMD_Correct(y: number, m: number, d: number) {

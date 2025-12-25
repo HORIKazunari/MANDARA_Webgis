@@ -49,7 +49,7 @@ export class clsSortingSearch {
     SearchData_Array(SearchValue: number) {
         /// <summary>指定した検索値と等しいデータ番号を配列で返す</summary>
         let EQn: number;
-        let DataNumberArray: number[] = [];
+        const DataNumberArray: number[] = [];
         const DPosition = this.Search_Data_Multi(SearchValue);
         EQn = DPosition.Num_of_Equal_Data;
         if (EQn != -1) {

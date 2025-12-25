@@ -6,18 +6,18 @@ export class clsAccessory {
     /**線種の凡例 */
     static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean){
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
-        let LFont  = av.MapLegend.Base.Font;
-        let LPC = state.attrData.Get_AllMapLineKind();
-        let LineKind_Used = state.attrData.Get_LineKindUsedList();
+        const av = state.attrData.TotalData.ViewStyle;
+        const LFont  = av.MapLegend.Base.Font;
+        const LPC = state.attrData.Get_AllMapLineKind();
+        const LineKind_Used = state.attrData.Get_LineKindUsedList();
         let Use_Line_Number=[]; 
         for(let i  = 0 ;i< LPC.length ;i++){
             if((LineKind_Used[i] == true)&&(av.MapLegend.Line_DummyKind.Line_Visible_Number_STR.mid(i, 1) == "1" )){
                 Use_Line_Number.push(i);
             }
         }
-        let n=Use_Line_Number.length;
-        let UH  = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const n=Use_Line_Number.length;
+        const UH  = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(av.ScrData).font;
         
         let Xsize  = 0;
@@ -25,7 +25,7 @@ export class clsAccessory {
             Xsize = Math.max(Xsize, g.measureText(LPC[Use_Line_Number[i]].Name).width);
         }
         Xsize += state.attrData.Radius(16, 1, 1);
-        let Ysize  = UH * n;
+        const Ysize  = UH * n;
 
         HeadBoxSize.width = Xsize;
         HeadBoxSize.height = Ysize;
@@ -40,9 +40,9 @@ export class clsAccessory {
             state.attrData.Draw_Tile_RoundBox(g, C_Rect, av.MapLegend.Line_DummyKind.Back, 0);
 
             for(let i  = 0 ;i< n ;i++){
-                let lk= LPC[Use_Line_Number[i]];
-                    let Y  = C_Rect.top + i * UH
-                    let x3  = C_Rect.left + state.attrData.Radius(16, 1, 1)
+                const lk= LPC[Use_Line_Number[i]];
+                    const Y  = C_Rect.top + i * UH
+                    const x3  = C_Rect.left + state.attrData.Radius(16, 1, 1)
                     switch( av.MapLegend.Line_DummyKind.Line_Pattern){
                         case enmCircleMDLegendLine.Zigzag:{
                             let pxy=[];
@@ -64,11 +64,11 @@ export class clsAccessory {
     /**点オブジェクトの凡例 */
     static Draw_PointObject(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, SizeGetOnlyF: boolean) {
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle;
         let Use_ObjKind_Number = [];
 
-        let LFont = av.MapLegend.Base.Font;
-        let UH = state.attrData.Get_Length_On_Screen(LFont.Body.Size);
+        const LFont = av.MapLegend.Base.Font;
+        const UH = state.attrData.Get_Length_On_Screen(LFont.Body.Size);
         g.font = LFont.toContextFont(av.ScrData).font;
         let mxw1 = 0;
         let mxw2 = 0;
@@ -95,9 +95,9 @@ export class clsAccessory {
         state.attrData.Draw_Tile_RoundBox(g, C_Rect, av.MapLegend.Line_DummyKind.Back, 0);
         Ys = 0;
         for (let i in state.attrData.TempData.PointObjectKindUsedStack) {
-            let pok = state.attrData.TempData.PointObjectKindUsedStack[i];
-            let r = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
-            let s = Math.max(r, UH);
+            const pok = state.attrData.TempData.PointObjectKindUsedStack[i];
+            const r = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
+            const s = Math.max(r, UH);
             mxw2 = Math.max(mxw2, g.measureText(pok.ObjectKindName).width);
             state.attrData.Draw_Mark(g, new point(ALP.x + mxw1 / 2, ALP.y + Ys + s / 2), state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1), pok.Mark);
             state.attrData.Draw_Print(g, pok.ObjectKindName, new point(ALP.x + mxw1, ALP.y + Ys + s / 2), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
