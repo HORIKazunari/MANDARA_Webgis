@@ -1,14 +1,10 @@
 ﻿// JavaScript source code
 import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
-import { clsTime } from './clsTime';
-import { clsMapdata } from './clsMapdata';
-import { clsPrint } from './clsPrint';
 
 class clsDraw {
 
     static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info) {
-        const state = appState();
 
 
         const Word_a = Word;
@@ -88,7 +84,6 @@ class clsDraw {
     }
 
     static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: Screen_info) {
-        const state = appState();
         let TH;
         if (ScrData.SampleBoxFlag == false) {
             TH = ScrData.Get_Length_On_Screen(P_Font.Size);
@@ -139,7 +134,6 @@ class clsDraw {
 
     //指定した幅で文字列を分割して返す
     static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info) {
-        const state = appState();
 
         let Out_Text=[];
         let thdata = P_Font.toContextFont!(ScrData);
@@ -186,7 +180,6 @@ class clsDraw {
  
     static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string) {
         const state = appState();
-        let Pon = Polydata.Pon;
         let pxy = Polydata.pxy;
         let nPolyP = Polydata.nPolyP;
         let n = 0;

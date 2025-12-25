@@ -65,7 +65,6 @@ export class clsAccessory {
     static Draw_PointObject(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, SizeGetOnlyF: boolean) {
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
-        let Use_ObjKind_Number = [];
 
         const LFont = av.MapLegend.Base.Font;
         const UH = state.attrData.Get_Length_On_Screen(LFont.Body.Size);
@@ -720,7 +719,6 @@ export class clsAccessory {
                                         state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MapLegend.MarkMD.MultiEnMode_Line, tateObiXY, tateObiMojiXY)
                                     }
                                 } else {
-                                    let tateObiYMoji = ALP.y + TH * i;
                                     VL = this.UNIT_P(g, tateObiMojiXY, V, UnitTx, i, (rep == 1));
                                     let lx2 = tateObiXY.x + (tateObiMojiXY.x - tateObiXY.x) * (LegendVn + 1 - i) / (LegendVn + 1);
                                     if (rep == 1) {
@@ -1552,7 +1550,6 @@ export class clsAccessory {
     //文字モードの凡例
     static Draw_StringMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
         let vs = state.attrData.TotalData.ViewStyle;
         let LFont = vs.MapLegend.Base.Font;
         let UH = state.attrData.Get_Length_On_Screen(LFont.Size);
@@ -1593,8 +1590,7 @@ export class clsAccessory {
         let retv = this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,false);
         let ww = retv.ww;
         let hh = retv.hh;
-        let hu = retv.hu;
-        let bxw = retv.bxw;
+        let hxw = retv.bxw;
         let byh = retv.byh;
         let vn = retv.vn ?? 0;
         let sujiW = retv.sujiW;
@@ -1784,9 +1780,8 @@ export class clsAccessory {
             if (cvi.ODLinePat.BlankF== false) {
                 let LW = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width)
                 let H = Math.max(UH, LW)
-                let r;
                 if (cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern =='butt' ) {
-                    r = state.attrData.Radius(rm, 0, rm);
+                    state.attrData.Radius(rm, 0, rm);
                 } else {
                     r = state.attrData.Radius(rm, cvi.ODLinePat.Width, rm);
                 }
@@ -1972,7 +1967,6 @@ export class clsAccessory {
 
         let retv=this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,true);
         let ww = retv.ww;
-        let hh = retv.hh;
         let hu = retv.hu;
         let bxw = retv.bxw;
         let byh = retv.byh;
@@ -2180,8 +2174,6 @@ export class clsAccessory {
 
         let FreqW = 0;
         if (vs.MapLegend.ClassMD.FrequencyPrint == true) {
-            let freq = [];
-            let missFreq;
             let retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
             if (retV.ok == true) {
                 for (let j = 0; j < retV.frequency.length; j++) {

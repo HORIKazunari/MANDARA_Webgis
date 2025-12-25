@@ -217,16 +217,6 @@ class Cross_Line_Data {
 //     Arrival: 8,
 //     Departure: 9
 // }
-const cstLinePolygonRelationd = { //ラインとポリゴンの関係を示す定数
-    cstOuter: -1,
-    cstCross: 0,
-    cstInner: 1
-}
-const chvValue_on_twoValue = { //二つの値にチェックする値が挟まれているか調べる
-    chvOuter: -1,
-    chvJust: 0,
-    chvIN: 1
-}
 
 class strURL_Data {
     Name: string = "";
@@ -313,19 +303,14 @@ class strSynthetic_Object_Data {
     }
 }
 
-const enmLatLonLine_Order = {
-    Back: 0,
-    Front: 1
-}
+// const enmLatLonLine_Order = {
+//     Back: 0,
+//     Front: 1
+// }
 
 const enmInner_Data_Info_Mode = {
     ClassPaint: 0,
     ClassHatch: 1
-}
-
-const enmMarkSizeValueMode = {
-    inDataItem: 0,
-    UserDefinition: 1
 }
 
 const enmMarkPrintType = {
@@ -671,7 +656,6 @@ class strMarkTurnMode_Data {
     Dirction: number = 0;
     Mark: Mark_Property = new Mark_Property();
     DegreeLap: number = 0;
-
     Clone(): strMarkTurnMode_Data {
         let d = new strMarkTurnMode_Data();
         d.Dirction = this.Dirction;
@@ -756,17 +740,11 @@ const enmGraphMaxSize= {
     Fixed : 0,
     Changeable :1
 }
-/**帯グラフの方向*/
-const enmStackedBarChart_Direction= {
-    Vertical : 0,
-    Horizontal : 1
-}
 /** 折れ線・棒グラフの最大最小値*/
 const enmBarLineMaxMinMode= {
     Auto : 0,
     Manual : 1
 }
-
 
 /**棒・折れ線グラフ枠のパターン */
 const enmBarChartFrameAxePattern={
@@ -1098,12 +1076,14 @@ class ODBezier_Data {
     ObjectPos: number = 0;//Integer
     Data: number = 0;//Integer
     Point: point = new point();
+    Name: string = "";
     
     Clone(): ODBezier_Data {
         let d = new ODBezier_Data();
         d.ObjectPos = this.ObjectPos;
         d.Data = this.Data;
-        d.Point = Generic.Array2Clone(this.Point);
+        d.Point = this.Point.Clone();
+        d.Name = this.Name;
         return d;
     }
 }
@@ -3584,7 +3564,6 @@ class clsAttrData {
     }
     //記号描画
     Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark): void {
-
         clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
