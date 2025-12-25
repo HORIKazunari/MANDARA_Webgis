@@ -1,6 +1,7 @@
 ﻿// JavaScript source code
 import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
+import { Screen_info } from './clsAttrData';
 
 class clsDraw {
 
@@ -1025,13 +1026,12 @@ class clsTileMap {
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
     drawTileMap(g: CanvasRenderingContext2D, TileMap: unknown, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
-        const xhr = this.xhr;
-        if(xhr.length>0){
-            for(let i in xhr){
-                xhr[i].abort();
+        if(this.xhr.length>0){
+            for(let i in this.xhr){
+                this.xhr[i].abort();
             }
         }
-        xhr=[];
+        this.xhr=[];
         let iRect = ScrData.ScrRectangle.Clone();
 
         let ScrLatLonBox = new latlonbox();

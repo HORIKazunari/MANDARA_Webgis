@@ -1605,6 +1605,16 @@ interface MapFileInfo {
 }
 
 /**
+ * 座標変換情報型
+ * 座標系の投影変換に使用
+ */
+interface zahyohenkan {
+    Mode: number; // enmZahyo_mode_info
+    Projection: number; // enmProjection_Info
+    CenterXY: point;
+}
+
+/**
  * リスト項目型
  * ドロップダウンやリストボックスで使用
  */

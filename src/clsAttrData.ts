@@ -8385,4 +8385,4 @@ export {
 };
 
 // Export constructor functions
-export { clsAttrData, clsAttrMapData };
+export { clsAttrData, clsAttrMapData, Screen_info };
