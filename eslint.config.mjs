@@ -7,6 +7,9 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    ignores: ['tests/e2e/**', 'playwright.config.ts'],
+  },
+  {
     languageOptions: {
       parserOptions: {
         projectService: true,

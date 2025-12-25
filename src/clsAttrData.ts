@@ -5,7 +5,7 @@ import { Generic } from './clsGeneric';
 import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata } from './clsMapdata';
-
+import type { strLayerInfo } from './clsWindow';
 
 
 // size クラスは globals.d.ts で定義済み
@@ -6117,7 +6117,7 @@ class clsAttrData {
     }
 
     /**白地図・初期属性データ表示から読み込み DeleteDefDataFlag:取得した初期属性データを地図データ中から削除する場合true */
-    SetMapViewerData(MapDataList: unknown, LayDataInf: unknown, DeleteDefDataFlag: boolean): void {      
+    SetMapViewerData(MapDataList: clsMapdata[], LayDataInf: strLayerInfo[], DeleteDefDataFlag: boolean): void {      
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length;i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);

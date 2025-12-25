@@ -110,21 +110,11 @@ export class clsShapefile {
     fileRead(files: File[], dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void, _onError: (tag: unknown) => void): void {
         this.onError = _onError;
         this.tag = _tag;
-        let shxFile: File | undefined;
-        let shapeFile: File | undefined;
-        let dbfFile: File | undefined;
-        let prjFile: File | undefined;
+        const shxFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "shx");
+        const shapeFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "shp");
+        const dbfFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "dbf");
+        const prjFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "prj");
         this.fileName = Generic.getFilenameWithoutExtension(files[0].name);
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            let ext = file.name.slice(-3).toLowerCase();
-            if (ext == "shx") {
-                shxFile = file;
-            }
-            if (ext == "shp") { shapeFile = file; }
-            if (ext == "dbf") { dbfFile = file; }
-            if (ext == "prj") { prjFile = file; }
-        }
         let okf = true;
         const shxReader = new FileReader();
         if (!shxFile || !shapeFile || !dbfFile) {
@@ -186,7 +176,7 @@ export class clsShapefile {
         let dbfFile: string | undefined;
         let prjFile: string | undefined;
         for (let file in unZipData) {
-            let ext = Generic.getExtension(file).toLowerCase();
+            const ext = Generic.getExtension(file).toLowerCase();
             if (ext == "shx") { shxFile = file; }
             if (ext == "shp") { 
                 shapeFile = file;
@@ -242,8 +232,8 @@ export class clsShapefile {
             this.mapZahyo.HeimenTyokkaku_KEI_Number = parseInt(FData.substr(FData.indexOf("JAPAN_ZONE_") + 11, 2));
             fixf = true;
         } else {
-            let HC = "Japan_Plane_Rectangular_CS_";
-            let heimen_Code = [];
+            const HC = "Japan_Plane_Rectangular_CS_";
+            const heimen_Code = [];
 
             heimen_Code[1] = HC + "I";
             heimen_Code[2] = HC + "II";
@@ -298,10 +288,10 @@ export class clsShapefile {
         pos += 4;
         //フィールド記述子配列読み込み
         for (let i = 0; i < DataSet.FieldNumber; i++) {
-            let fd = new Field_Info();
+            const fd = new Field_Info();
             fd.Name = Get_WCharData_Binary(pos, 11, encodenumber.toString()).trim();
             pos += 11;
-            let fieldType = String.fromCharCode(dv.getInt8(pos));
+            const fieldType = String.fromCharCode(dv.getInt8(pos));
             switch (fieldType) {
                 case "C":
                 case "D":
@@ -367,15 +357,15 @@ export class clsShapefile {
 
             const dv = new DataView(buffer);
 
-            let fcode = dv.getUint32(0, endian.big);
-            let flen = dv.getUint32(24, endian.big) * 2 - 100;
-            let fc2 = dv.getUint16(28, endian.little);
+            const fcode = dv.getUint32(0, endian.big);
+            const flen = dv.getUint32(24, endian.big) * 2 - 100;
+            const fc2 = dv.getUint16(28, endian.little);
             this.boundingBox.minX = dv.getFloat64(36, endian.little);
             this.boundingBox.minY = dv.getFloat64(44, endian.little);
             this.boundingBox.maxX = dv.getFloat64(52, endian.little);
             this.boundingBox.maxY = dv.getFloat64(60, endian.little);
             for (let i = 0; i < flen; i += 8) {
-                let dt = new IndexFileData_info();
+                const dt = new IndexFileData_info();
                 dt.offset = dv.getUint32(i + 100, false);
                 dt.contentsLength = dv.getUint32(i + 104, false);
                 this.indexData.push(dt);
@@ -389,9 +379,9 @@ export class clsShapefile {
     private getShapeFile(buffer: ArrayBuffer): boolean | undefined {
             const dv = new DataView(buffer);
     
-            let fcode = dv.getUint32(0, endian.big);
-            let flen = dv.getUint32(24, endian.big) * 2 - 100;
-            let fc2 = dv.getUint16(28, endian.little);
+            const fcode = dv.getUint32(0, endian.big);
+            const flen = dv.getUint32(24, endian.big) * 2 - 100;
+            const fc2 = dv.getUint16(28, endian.little);
     
             const shapeType = dv.getUint32(32, endian.little);
             switch (shapeType) {
@@ -422,7 +412,7 @@ export class clsShapefile {
             do {
                 
                 let pos = this.indexData[n].offset * 2;
-                let RecordNumber = dv.getUint32(pos, endian.big)+12;
+                const RecordNumber = dv.getUint32(pos, endian.big)+12;
                 if (RecordNumber == 0) {
                     break;
                 }
@@ -431,7 +421,7 @@ export class clsShapefile {
                     case 11:
                     case 21: {
                         pos += 12;
-                        let p = getPointXY(dv, pos);
+                        const p = getPointXY(dv, pos);
                         this.c_Point.push(p);
                         break;
                     }
@@ -442,10 +432,10 @@ export class clsShapefile {
                     case 23:
                     case 25: {
                         pos += 44;
-                        let NumParts = dv.getUint32(pos, endian.little );
-                        let NumPoints = dv.getUint32(pos + 4, endian.little);
+                        const NumParts = dv.getUint32(pos, endian.little );
+                        const NumPoints = dv.getUint32(pos + 4, endian.little);
                         pos += 8;
-                        let pindex2 = [];
+                        const pindex2 = [];
                         for (let i = 0; i < NumParts; i++) {
                             pindex2.push(dv.getUint32(pos, endian.little));
                             pos += 4;
@@ -466,7 +456,7 @@ export class clsShapefile {
     
 
         function getPointXY(dv: DataView, pos: number) {
-            let p = new point();
+            const p = new point();
             p.x = dv.getFloat64(pos, endian.little);
             p.y = dv.getFloat64(pos + 8, endian.little);
             return p;
@@ -475,11 +465,11 @@ export class clsShapefile {
 
     //読み込んだシェープファイルを地図ファイルに変換する
     convertToMapfile(projection: number | undefined, UnitCheckFlag: boolean): clsMapdata {
-        let MapData = new clsMapdata();
+        const MapData = new clsMapdata();
         MapData.init_MapData();
         MapData.Add_OneObjectGroup_Parameter(this.fileName, this.shapeS, enmMesh_Number.mhNonMesh, enmObjectGoupType_Data.NormalObject);
         if (this.shapeS != enmShape.PointShape) {
-            let lp = clsBase.Line();
+            const lp = clsBase.Line();
             if (this.indexData.length > 500) {
                 lp.BlankF = true;
             }
@@ -490,7 +480,7 @@ export class clsShapefile {
         const LK = 0;
         let pos = 0;
         for (let n = 0; n < this.indexData.length; n++) {
-            let newObj = MapData.Init_One_Object(Obk);
+            const newObj = MapData.Init_One_Object(Obk);
             newObj.Shape = this.shapeS;
             newObj.NameTimeSTC[0].NamesList[0] = this.fileName + String(n);
             switch (this.shapeS) {
@@ -498,11 +488,11 @@ export class clsShapefile {
                     newObj.CenterPSTC[0].Position  = this.c_Point[n].Clone();
                     break;
                 default:
-                    let AlinS = MapData.Map.ALIN;
-                    let NumParts = this.pointIndex[n];
+                    const AlinS = MapData.Map.ALIN;
+                    const NumParts = this.pointIndex[n];
                     newObj.NumOfLine = NumParts.length-1;
                     for (let i = 0; i < NumParts.length-1; i++) {
-                        let newLine = MapData.Init_One_Line(LK);
+                        const newLine = MapData.Init_One_Line(LK);
                         newLine.NumOfPoint = NumParts[i + 1] - NumParts[i];
                         for (let j = 0; j < newLine.NumOfPoint; j++) {
                             newLine.PointSTC.push(this.points[pos].Clone());
@@ -512,7 +502,7 @@ export class clsShapefile {
                     }
 
                     for (let j = 0; j < newObj.NumOfLine; j++) {
-                        let lc = new LineCodeStac_Data();
+                        const lc = new LineCodeStac_Data();
                         lc.LineCode = AlinS + j;
                         lc.NumOfTime = 0;
                         newObj.LineCodeSTC.push(lc);
@@ -528,7 +518,7 @@ export class clsShapefile {
             unit = Generic.Check_DataType(this.fieldDT.length, this.indexData.length, this.dataStr);
         } else {
             for (let i = 0; i < this.fieldDT.length; i++) {
-                let fd = this.fieldDT[i];
+                const fd = this.fieldDT[i];
                 let unt = "";
                 if (fd.StringData_Flag == true) {
                     unt = "STR";
@@ -537,16 +527,16 @@ export class clsShapefile {
             }
         }
         for (let i = 0; i < this.fieldDT.length; i++) {
-            let fd = this.fieldDT[i];
+            const fd = this.fieldDT[i];
             MapData.Add_one_DefAttDataSet(Obk, fd.Name, unit[i], "");
         }
 
         for (let i = 0; i < this.indexData.length; i++) {
-            let mo = MapData.MPObj[i];
+            const mo = MapData.MPObj[i];
             for (let j = 0; j < this.fieldDT.length; j++) {
-                let defv = new strDefTimeAttDataEach_Info();
+                const defv = new strDefTimeAttDataEach_Info();
                 defv.Value = this.dataStr[i][j];
-                let defa=new strDefTimeAttData_Info();
+                const defa=new strDefTimeAttData_Info();
                 defa.Data.push(defv);
                 mo.DefTimeAttValue.push(defa);
             }

@@ -1,7 +1,7 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
 import { EARTH_R } from './constants/geometry';
-import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
+import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator, MenuItem } from './types';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
@@ -4838,7 +4838,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return detected;
     }
 //トップメニュー(ポップアップと上下の調整が取れないため未使用)
-    static ceateTopMenu(ParentObj: HTMLElement, list: unknown[], pos: point, width: number): void {
+    static ceateTopMenu(ParentObj: HTMLElement, list: MenuItem[], pos: point, width: number): void {
         const state = appState();
         for(let i in list){
             let data=list[i];
@@ -4864,7 +4864,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     //ポップアップメニュー
-    static ceatePopupMenu(list: unknown[], pos: point): void {
+    static ceatePopupMenu(list: MenuItem[], pos: point): void {
         const state = appState();
         
         let e = document.getElementsByName("backDiv");
@@ -5086,21 +5086,22 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**メニューオブジェクトのプロパティからオブジェクトを取得する */
-    static getPopMenuObj(menuObj: unknown[], property: string, pname: string): unknown {
+    static getPopMenuObj(menuObj: MenuItem[], property: string, pname: string): MenuItem | undefined {
         const state = appState();
         for (let i in menuObj) {
             if (menuObj[i].hasOwnProperty(property)) {
-                if (menuObj[i][property] == pname) {
+                if ((menuObj[i] as Record<string, unknown>)[property] == pname) {
                     return menuObj[i];
                 }
-                if (menuObj[i].hasOwnProperty('child')) {
-                    let v: unknown = this.getPopMenuObj(menuObj[i].child, property, pname);
+                if (menuObj[i].child) {
+                    const v = this.getPopMenuObj(menuObj[i].child!, property, pname);
                     if (v != undefined) {
                         return v;
                     }
                 }
             }
         }
+        return undefined;
     }
 };
 
@@ -5131,7 +5132,7 @@ export class CheckedListBox {
     constructor(
         ParentObj: HTMLElement,
         Class: string,
-        list: unknown[],
+        list: string[],
         x: number,
         y: number,
         width: number,

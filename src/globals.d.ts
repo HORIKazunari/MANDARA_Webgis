@@ -390,27 +390,27 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
 
 // 強化されたグローバル変数宣言
 // attrData: AppStateで管理（削除済み）
-declare var Generic: unknown; // kept temporarily; being migrated to ESM import
-declare var clsSettingData: unknown;
-declare var clsTime: unknown;
-declare var clsDraw: unknown;
-declare var clsPrint: unknown;
+declare const Generic: unknown; // kept temporarily; being migrated to ESM import
+declare const clsSettingData: unknown;
+declare const clsTime: unknown;
+declare const clsDraw: unknown;
+declare const clsPrint: unknown;
 // frmPrint: AppStateで管理（削除済み）
-declare var Frm_Print: IFrmPrint;
+declare let Frm_Print: IFrmPrint; // 変更される可能性あり
 // propertyWindow: AppStateで管理（削除済み）
 // divmain: AppStateで管理（削除済み）
-declare var TKY2JGD: unknown; // kept temporarily; being migrated to ESM import
+declare const TKY2JGD: unknown; // kept temporarily; being migrated to ESM import
 // tileMapClass: AppStateで管理（削除済み）
 // preReadMapFile: AppStateで管理（削除済み）
 // scrMargin: AppStateで管理（削除済み）
 // logWindow: AppStateで管理（削除済み）
 
-declare var tx: string;
-declare var mnuPropertyWindow: unknown;
-declare var fname: string;
-declare var i: number;
-declare var j: number;
-declare var k: number;
+declare let tx: string; // 一時変数
+declare let mnuPropertyWindow: unknown; // 変更される可能性あり
+declare let fname: string; // 一時変数
+declare let i: number; // ループカウンタ
+declare let j: number; // ループカウンタ
+declare let k: number; // ループカウンタ
 // settingModeWindow: AppStateで管理（削除済み）
 
 // 列挙型の追加
@@ -568,8 +568,6 @@ declare enum chvOuter {
     Under = 3
 }
 
-// enmShape は var 宣言で定義済み（下部参照）
-
 declare enum enmPrintMouseMode {
     Normal = 0,
     PlusMinus = 1,
@@ -584,8 +582,6 @@ declare enum enmPrintMouseMode {
     MultiObjectSelect = 10,
     MultiObjectswitch = 11  // エラーで参照されていた項目
 }
-
-// enmLayerMode_Number は var 宣言で定義済み（下部参照）
 
 declare enum SpatialPointType {
     SinglePoint = 0,
@@ -1055,7 +1051,7 @@ declare const enmPrintMouseMode: {
     MultiObjectSelect: 12;
 };
 
-declare var TKY2JGDInfo: unknown;
+declare const TKY2JGDInfo: unknown;
 
 
 
@@ -1068,7 +1064,7 @@ interface String {
 }
 
 // Zlib library
-declare var Zlib: {
+declare const Zlib: {
     Zip: new() => unknown;
     Unzip: new(buffer: Uint8Array) => unknown;
 };
@@ -1146,11 +1142,11 @@ interface HTMLSelectElement {
 declare function Check_Print_err(): void;
 
 // Shapefile class
-declare var clsShapefile: unknown;
+declare const clsShapefile: unknown;
 
 // Additional global variables
-declare var picMark: unknown;
-declare var lstDummyItem: unknown;
+declare let picMark: unknown; // 変更される可能性あり
+declare let lstDummyItem: unknown; // 変更される可能性あり
 
 // Array extensions
 interface Array<T> {
@@ -1235,7 +1231,7 @@ declare class Generic {
 // ==================== 列挙型定義（追加） ====================
 
 // レイヤータイプ
-declare var enmLayerType: {
+declare const enmLayerType: {
     Normal: number;
     Trip_Definition: number;
     Trip: number;
@@ -1244,7 +1240,7 @@ declare var enmLayerType: {
 };
 
 // グラフモード
-declare var enmGraphMode: {
+declare const enmGraphMode: {
     PieGraph: number;
     StackedBarGraph: number;
     LineGraph: number;
@@ -1252,7 +1248,7 @@ declare var enmGraphMode: {
 };
 
 // 属性データタイプ
-declare var enmAttDataType: {
+declare const enmAttDataType: {
     Normal: number;
     Category: number;
     Strings: number;
@@ -1266,7 +1262,7 @@ declare var enmAttDataType: {
 };
 
 // メッシュ番号
-declare var enmMesh_Number: {
+declare const enmMesh_Number: {
     mhNonMesh: number;
     mhFirst: number;
     mhSecond: number;
@@ -1278,14 +1274,14 @@ declare var enmMesh_Number: {
 };
 
 // 座標系情報
-declare var enmZahyo_System_Info: {
+declare const enmZahyo_System_Info: {
     Zahyo_System_No: number;
     Zahyo_System_tokyo: number;
     Zahyo_System_World: number;
 };
 
 // スケール単位
-declare var enmScaleUnit: {
+declare const enmScaleUnit: {
     centimeter: number;
     meter: number;
     kilometer: number;
@@ -1300,7 +1296,7 @@ declare var enmScaleUnit: {
 };
 
 // 投影法情報
-declare var enmProjection_Info: {
+declare const enmProjection_Info: {
     prjNo: number;
     prjSanson: number;
     prjSeikyoEntou: number;
@@ -1312,7 +1308,7 @@ declare var enmProjection_Info: {
 };
 
 // 座標モード情報
-declare var enmZahyo_mode_info: {
+declare const enmZahyo_mode_info: {
     Zahyo_No_Mode: number;
     Zahyo_Ido_Keido: number;
     Zahyo_HeimenTyokkaku: number;
@@ -1326,7 +1322,7 @@ declare enum enmZahyo_mode_info_enum {
 }
 
 // 長方形交差定数
-declare var cstRectangle_Cross: {
+declare const cstRectangle_Cross: {
     cstOuter: number;
     cstCross: number;
     cstInner: number;
@@ -1335,7 +1331,7 @@ declare var cstRectangle_Cross: {
 };
 
 // 形状タイプ
-declare var enmShape: {
+declare const enmShape: {
     NotDeffinition: number;
     PointShape: number;
     LineShape: number;
@@ -1343,7 +1339,7 @@ declare var enmShape: {
 };
 
 // enmLayerMode_Numberの拡張
-declare var enmLayerMode_Number: {
+declare const enmLayerMode_Number: {
     SoloMode: number;
     MultiMode: number;
     LabelMode: number;
@@ -1352,18 +1348,18 @@ declare var enmLayerMode_Number: {
 };
 
 // ラインとポリゴンの関係
-declare var cstLinePolygonRelationd: {
+declare const cstLinePolygonRelationd: {
     cstOuter: number;
     cstCross: number;
     cstInner: number;
 };
 
 // 定数
-declare var chrLF: string;
-declare var EarthR: number;
+declare const chrLF: string;
+declare const EarthR: number;
 
 // マッチングモード
-declare var enmMatchingMode: {
+declare const enmMatchingMode: {
     Exact: number;
     Partial: number;
     Prefix: number;
@@ -1487,7 +1483,7 @@ declare class CheckedListBox {
 }
 
 // 条件And/Or
-declare var enmConditionAnd_Or: {
+declare const enmConditionAnd_Or: {
     _And: number;
     _Or: number;
     And: number;
@@ -1495,80 +1491,80 @@ declare var enmConditionAnd_Or: {
 };
 
 // 値の位置チェック
-declare var chvValue_on_twoValue: {
+declare const chvValue_on_twoValue: {
     chvIN: number;
     chvOuter: number;
     chvJust: number;
 };
 
 // strScale_Attri型
-declare var strScale_Attri: unknown;
+declare const strScale_Attri: unknown;
 
 // clsAttrData.ts の関数コンストラクタ型
-declare var strDegreeMinuteSeconde: unknown;
-declare var strLatLonDegreeMinuteSecond: unknown;
-declare var Start_End_Time_data: unknown;
-declare var strContourData: unknown;
-declare var strMeshPaint: unknown;
-declare var strMesh3DPaint: unknown;
-declare var strLayerData: unknown;
-declare var strLabelDummyData: unknown;
-declare var strLabel_Data: unknown;
-declare var strGraphData: unknown;
-declare var strLabel_Attri: unknown;
-declare var strGraph_Attri: unknown;
-declare var strOverLay_Attri: unknown;
-declare var strTotalData: unknown;
-declare var strLinkURL: unknown;
-declare var strDataTile: unknown;
-declare var strDataTileList: unknown;
-declare var strDataObject: unknown;
-declare var strDataTitle: unknown;
-declare var strDataEdit: unknown;
-declare var strDataEditRow: unknown;
-declare var strDataEditCell: unknown;
-declare var strCategoryData: unknown;
-declare var strMaskData: unknown;
-declare var strMPLine: unknown;
-declare var strMPLineSub: unknown;
-declare var strDataStatistics: unknown;
-declare var strLegend_Attri: unknown;
-declare var strPrint_Mode: unknown;
-declare var strSoloData: unknown;
-declare var strSeriesData: unknown;
-declare var strOverlayData: unknown;
-declare var strPaintModeData: unknown;
-declare var strMarkData: unknown;
-declare var strBarData: unknown;
-declare var strPieData: unknown;
-declare var strFlowData: unknown;
-declare var strTileMarkData: unknown;
-declare var strTimeData: unknown;
-declare var strViewStyle: unknown;
-declare var strScreenData: unknown;
-declare var strMapLegend: unknown;
-declare var strMapTitle: unknown;
-declare var strMapScale: unknown;
-declare var strMapNorth: unknown;
-declare var strGridLine: unknown;
-declare var strBackGround: unknown;
-declare var strMapOverLay: unknown;
-declare var strCondition: unknown;
-declare var strConditionItem: unknown;
-declare var strConditionValue: unknown;
-declare var strPointObject: unknown;
-declare var strPolyObject: unknown;
-declare var strLineObject: unknown;
-declare var strObjectGroup: unknown;
-declare var strAttrValue: unknown;
-declare var strThreeD_Mode: unknown;
-declare var strPrintFooter: unknown;
-declare var strPrintHeader: unknown;
-declare var strMapPrint: unknown;
-declare var strColorPalette: unknown;
-declare var strDivideValue: unknown;
-declare var strTripObjData_Info: unknown;
-declare var strObjectKindUsed_Info: unknown;
+declare const strDegreeMinuteSeconde: unknown;
+declare const strLatLonDegreeMinuteSecond: unknown;
+declare const Start_End_Time_data: unknown;
+declare const strContourData: unknown;
+declare const strMeshPaint: unknown;
+declare const strMesh3DPaint: unknown;
+declare const strLayerData: unknown;
+declare const strLabelDummyData: unknown;
+declare const strLabel_Data: unknown;
+declare const strGraphData: unknown;
+declare const strLabel_Attri: unknown;
+declare const strGraph_Attri: unknown;
+declare const strOverLay_Attri: unknown;
+declare const strTotalData: unknown;
+declare const strLinkURL: unknown;
+declare const strDataTile: unknown;
+declare const strDataTileList: unknown;
+declare const strDataObject: unknown;
+declare const strDataTitle: unknown;
+declare const strDataEdit: unknown;
+declare const strDataEditRow: unknown;
+declare const strDataEditCell: unknown;
+declare const strCategoryData: unknown;
+declare const strMaskData: unknown;
+declare const strMPLine: unknown;
+declare const strMPLineSub: unknown;
+declare const strDataStatistics: unknown;
+declare const strLegend_Attri: unknown;
+declare const strPrint_Mode: unknown;
+declare const strSoloData: unknown;
+declare const strSeriesData: unknown;
+declare const strOverlayData: unknown;
+declare const strPaintModeData: unknown;
+declare const strMarkData: unknown;
+declare const strBarData: unknown;
+declare const strPieData: unknown;
+declare const strFlowData: unknown;
+declare const strTileMarkData: unknown;
+declare const strTimeData: unknown;
+declare const strViewStyle: unknown;
+declare const strScreenData: unknown;
+declare const strMapLegend: unknown;
+declare const strMapTitle: unknown;
+declare const strMapScale: unknown;
+declare const strMapNorth: unknown;
+declare const strGridLine: unknown;
+declare const strBackGround: unknown;
+declare const strMapOverLay: unknown;
+declare const strCondition: unknown;
+declare const strConditionItem: unknown;
+declare const strConditionValue: unknown;
+declare const strPointObject: unknown;
+declare const strPolyObject: unknown;
+declare const strLineObject: unknown;
+declare const strObjectGroup: unknown;
+declare const strAttrValue: unknown;
+declare const strThreeD_Mode: unknown;
+declare const strPrintFooter: unknown;
+declare const strPrintHeader: unknown;
+declare const strMapPrint: unknown;
+declare const strColorPalette: unknown;
+declare const strDivideValue: unknown;
+declare const strTripObjData_Info: unknown;
+declare const strObjectKindUsed_Info: unknown;
 
 // Map静的プロパティ拡張
 interface MapConstructor {

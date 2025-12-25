@@ -555,7 +555,7 @@ class clsMeshContour {
                         }
                     }
                 }
-                let mon = this.Get_MortonNumberXY(j, i, max_PartitiopnLevel - 1, max_PartitiopnLevel);
+                const mon = this.Get_MortonNumberXY(j, i, max_PartitiopnLevel - 1, max_PartitiopnLevel);
                 //四分木線形配列の最大分割レベルに、当該メッシュの範囲と、最大標高、最低標高を保存
                 this.Quad_MeshData[mon] = new Quad_Mesh_Info(new rectangle(px2, px2 + w2 - 2, i * H, i * H + h2 - 2), mxv ?? 0, mnv ?? 0, f);
             }

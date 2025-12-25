@@ -39,10 +39,10 @@ const enmSelectMode = {
     TripMode: 23
 }
 
-class strLayerInfo {
+export class strLayerInfo {
     Name?: string;
     MapfileName?: string;
-    UseObjectKind: unknown[] = [];
+    UseObjectKind: boolean[] = [];
     Time?: strYMD;
     Shape?: string;
 }
@@ -909,7 +909,7 @@ function setting(locSearch: string) {
     //白地図初期属性データ
     function mnuMapViewer(): void {
         mapViewer(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: unknown[]): void {
+        function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]): void {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Viwer;
@@ -3806,7 +3806,7 @@ function setting(locSearch: string) {
         Generic.readingIcon(filename +"データ読み込み");
         Generic.getMapfileByHttpRequest(url, function (getData: string) {
             attrData = new clsAttrData();
-            let mapdata: unknown[] = [];
+            const mapdata: clsMapdata[] = [];
             let retv = attrData.OpenNewMandaraFile(filename, getData, mapdata, ext);
             if (retv.emes != "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
