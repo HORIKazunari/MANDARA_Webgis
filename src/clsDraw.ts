@@ -1,5 +1,4 @@
 ﻿// JavaScript source code
-import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { Screen_info } from './clsAttrData';
 
@@ -199,7 +198,7 @@ class clsDraw {
     }
 
     static ClipPolyPolygon(g: CanvasRenderingContext2D, pxy: point[], AllnPolyP: number[]) {
-        const state = appState();
+
         let Pon = AllnPolyP.length;
         let n = 0;
         g.beginPath();
@@ -216,7 +215,7 @@ class clsDraw {
     }
 
     static Ellipse(g: CanvasRenderingContext2D, Point: point, r: number, InnerColor: string | undefined, BorderColor: string | undefined, width: number) {
-        const state = appState();
+
         g.beginPath();
         g.arc(Point.x, Point.y, r, 0, 2 * Math.PI, false);
         if (InnerColor != undefined) {
@@ -230,7 +229,7 @@ class clsDraw {
         }
     }
     static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info) {
-        const state = appState();
+
         if (LinePat != undefined) {
             let lc: CanvasLineCap[] = ['butt', 'square', 'round'];
             let lj: CanvasLineJoin[] = ['miter', 'bevel', 'round'];
@@ -272,7 +271,7 @@ class clsDraw {
 
 class clsDrawLine {
     static Line(g: CanvasRenderingContext2D, LinePat: Tile_Property, d1: point | point[], d2?: point | Screen_info, d3?: Screen_info) {
-        const state = appState();
+
         if (LinePat.BlankF == true) {
             return;
         }
@@ -289,7 +288,7 @@ class clsDrawLine {
     }
 
     static Draw_SolidPolyLine(g: CanvasRenderingContext2D, pxy: point[], LinePat: Tile_Property, ScrData: Screen_info) {
-        const state = appState();
+
         g.lineCap = LinePat.Edge_Connect_Pattern.lineCap;
         g.lineJoin = LinePat.Edge_Connect_Pattern.lineJoin;
         g.miterLimit = LinePat.Edge_Connect_Pattern.miterLimit;
@@ -305,7 +304,7 @@ class clsDrawLine {
 
     /**矢印描画 */
     static Arrow(g: CanvasRenderingContext2D, P: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
-        const state = appState();
+
         let e2=new point() ;
         let e3 =new point() ;
         let e4 =new point() ;
@@ -336,7 +335,7 @@ class clsDrawLine {
     }
 
     static Check_Draw_Arrow_Line(OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
-        const state = appState();
+
         let e2=new point() ;
         let e3=new point() ;
         let e4=new point() ;
@@ -345,7 +344,7 @@ class clsDrawLine {
     }
 
     static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info) {
-        const state = appState();
+
 
         let VecX = OP.x - BeforPoint.x;
         let VecY = OP.y - BeforPoint.y;
@@ -391,7 +390,7 @@ class clsDrawLine {
     }
 
     static Draw_Sample_LineBox(picBox: HTMLCanvasElement, Lpat: Tile_Property, ScrData: Screen_info) {
-        const state = appState();
+
         let w = picBox.width;
         let h = picBox.height;
         let g = picBox.getContext('2d');
@@ -413,7 +412,7 @@ class clsDrawLine {
 class clsDrawTile {
 
     static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property) {
-        const state = appState();
+
         if(T.BlankF==false){
             let Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
             clsDraw.DrawPolyPolygon(g, Polydata, T.Color.toRGBA())
@@ -423,7 +422,7 @@ class clsDrawTile {
 
     //角丸四角形
     static Draw_Tile_RoundBox(g: CanvasRenderingContext2D, _BoundaryRect: rectangle, Back: Back_Property, Kakudo: number, ScrData: Screen_info) {
-        const state = appState();
+
 
         if ((Back.Tile.BlankF == true) && (Back.Line.BlankF == true)) {
             return;
@@ -466,7 +465,7 @@ class clsDrawTile {
 
     //タイル四角形描画
     static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info) {
-        const state = appState();
+
         let pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
         if (T.BlankF == false) {
             let Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
@@ -479,7 +478,7 @@ class clsDrawTile {
 
     //サンプル背景フレーム表示
     static Darw_Sample_BackGroundBox(picBox: HTMLCanvasElement, BG: Back_Property, ScrData: Screen_info) {
-        const state = appState();
+
         let w = picBox.width;
         let h = picBox.height;
         let rect = new rectangle(new point(2, 2),new size( w - 4, h - 4));
@@ -510,7 +509,7 @@ class clsDrawMarkFan {
     static mShape: MarkInfo[] = [];
     
     static init() {
-        const state = appState();
+
         //'最初の数値：記号内の要素の数
         //'要素の内訳
         //'単独円0、ポリゴン1、線2
@@ -598,13 +597,13 @@ class clsDrawMarkFan {
     }
 
     static getMarkShameNum() {
-        const state = appState();
+
         let n = this.mShape.length;
         return n;
     }
 
     static Mark_Print(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property, ScrData: Screen_info) {
-        const state = appState();
+
         switch (Mark.PrintMark) {
             case enmMarkPrintType.Mark: {
                 clsDrawTile.Draw_Tile_RoundBox(g, spatial.Get_Rectangle(Position, r), Mark.WordFont.Back, Mark.WordFont.Kakudo, ScrData);
@@ -707,7 +706,7 @@ class clsDrawMarkFan {
 
 
     static Draw_DAEN(g: CanvasRenderingContext2D, Position: point, XR: number, YR: number, Kakudo: number, L: Tile_Property, T: Tile_Property, Real_Circle_F: boolean, ScrData: Screen_info) {
-        const state = appState();
+
         if ((XR == 0) || (YR == 0)) { return }
 
         let inf;
@@ -746,7 +745,7 @@ class clsDrawMarkFan {
     }
 
     static Get_DAEN_Peri_XY(Position: point,  XR: number,  YR: number, Kakudo: number,  ScrData: Screen_info) {
-        const state = appState();
+
         let ST = 1 / ((XR + YR) / 5);
         let pxy = [];
         let n = 0;
@@ -780,7 +779,7 @@ class clsDrawMarkFan {
     }
 
     static Draw_Mark_Sample_Box(picMarkBox: HTMLCanvasElement, MK: Mark_Property, ScrData: Screen_info) {
-        const state = appState();
+
         let w = picMarkBox.width;
         let h = picMarkBox.height;
         let g = picMarkBox.getContext('2d');
@@ -790,7 +789,7 @@ class clsDrawMarkFan {
     }
 
     static Draw_Fan(g: CanvasRenderingContext2D, centerP: point, r: number, start_p: number, end_p: number, Lpat: Tile_Property, Tile: Tile_Property, ScrData: Screen_info) {
-        const state = appState();
+
 
         let w = ScrData.Get_Line_Width(Lpat.Width);
         let InnerColor = Tile.Color.toRGBA();
@@ -821,7 +820,7 @@ class clsDrawMarkFan {
 
 class clsSpline {
     static Spline_Get(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
-        const state = appState();
+
 
         if (ln == 2) {
             let p = [];
@@ -886,7 +885,7 @@ class clsSpline {
     }
 
     static Spline_Get_Fill(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
-        const state = appState();
+
 
         let lpf;
         if (Line_XY[Ls].Equals(Line_XY(Ls + ln - 1)) == true) {
@@ -941,7 +940,7 @@ class clsSpline {
     }
 
     static Spline_xy(T: number, Kvalue: number, Maxpt: number, pt: point[]) {
-        const state = appState();
+
         let P = new point();
 
         let z = Maxpt - 1;
@@ -966,7 +965,7 @@ class clsSpline {
     }
 
     static Blend(i: number, k: number, T: number, Kvalue: number, Maxpt: number): number {
-        const state = appState();
+
 
         if (k == 1) {
             if ((this.Knot(i, Kvalue, Maxpt) <= T) && (T < this.Knot(i + 1, Kvalue, Maxpt))) {
@@ -1000,7 +999,7 @@ class clsSpline {
     }
 
     static Knot(i: number, Kvalue: number, Maxpt: number) {
-        const state = appState();
+
         if (i < Kvalue) {
             return 0
         } else if (i <= Maxpt) {

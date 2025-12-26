@@ -1120,7 +1120,6 @@ export class gridControl {
         this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF = false
     }
 
-
     /**グリッド上端固定部分の文字設定 */
     getFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text;
@@ -1136,7 +1135,6 @@ export class gridControl {
     setGridHeight(LayerNum: number, Y: number, value: number) {
         this.Grid_Property[LayerNum].CellHeight[Y] = value;
     }
-
 
     /** グリッドの幅設定 */
     getGridWidth(LayerNum: number, X: number) {
@@ -1154,7 +1152,6 @@ export class gridControl {
         this.Grid_Property[LayerNum].DataItemData[X].Allignment = value;
     }
 
-
     /** グリッドの左上固定部分の配置設定 */
     getFixedUpperLeftAlligntment(LayerNum: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeftAllignment
@@ -1162,7 +1159,6 @@ export class gridControl {
     setFixedUpperLeftAlligntment(LayerNum: number, value: string) {
         this.Grid_Property[LayerNum].FixedUpperLeftAllignment = value;
     }
-
 
     /** グリッドの左端固定部分の配置設定 */
     getFixedXSAllignmentData(LayerNum: number, n: number) {
@@ -1200,7 +1196,6 @@ export class gridControl {
     getLayerMax() {
         return this.Grid_Total.LayerNum;
     }
-
 
     /** レイヤタグを取得：：実行時・取得のみ　設定はAddLayerメソッド */
     getLayerData(LayerNum: number, key: string) {
@@ -1355,7 +1350,6 @@ export class gridControl {
         let MBX2 = Math.max(GP.MouseDownX, GP.MouseUpX);
         let MBY1 = Math.min(GP.MouseDownY, GP.MouseUpY);
         let MBY2 = Math.max(GP.MouseDownY, GP.MouseUpY);
-
 
         let font = this.Grid_Total.GridFont;
 
@@ -2143,7 +2137,6 @@ export class gridControl {
         this.Set_FixedCell_Words(GridLay);
         this.Print_Grid_ViewSize();
     }
-
 
     InsertRows = (GridLay: number, InsertPoint: number, InsertNum: number) => {
         /** データ部分を挿入*/
@@ -3228,7 +3221,6 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             }
         }
 
-
         if (GP.SelectedF == false) {
             return;
         }
@@ -4030,8 +4022,6 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     }
 }
 
-
-
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /**　スクロールバーコントロール type:0縦、type1横　_areaRange:中身の大きさ*/
 class scrollBar {
@@ -4326,7 +4316,6 @@ class scrollBar {
             document.removeEventListener('mouseup', btnMup);
             document.removeEventListener('wheel', wheel);
     }
-
 
     let mdownF = false;
     let sliderInPosition: number;//-1,0,1

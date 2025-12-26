@@ -59,7 +59,7 @@ const freqWidth = 50;
 const allW = picClassBoxWidth + txtClassValueWidth + freqWidth+txtClassValueLeftMergin;
 const pnlGraphEachItemHeight=25;
 function setting(locSearch: string) {
-    const state = appState();
+
     let man_Data=enmDataSource.NoData;
     let totalh = 680;
     let overlayListView: ListViewTable | undefined;//重ね合わせデータセットりリストビュー
@@ -157,7 +157,7 @@ function setting(locSearch: string) {
     Generic.createNewButton(divpanel, "描画開始", "btnDraw", 150, 15, drawMap, "width:115px;height:30px;font-size:17px;font-weight:bold")
     Generic.createNewImageButton(divpanel, "settingWindowBtnPrintError", "image/Warning_yellow_7231_20x20.png", 290, 20, 20, 20, function (e: MouseEvent) {
         //エラーボタン
-        const state = appState();
+
         let retV=state.attrData.Get_PrintError();
         if(retV.Print_Enable != enmPrint_Enable.Printable ){
             Generic.alert(new point(e.clientX,e.clientY),retV.message, undefined);
@@ -167,7 +167,7 @@ function setting(locSearch: string) {
 
     Generic.createNewImageButton(divpanel, "settingWindowBtnConditionInfo", "image/Find_VS.png", 315, 20, 20, 20, function (e: MouseEvent) {
         //属性検索設定ボタン
-        const state = appState();
+
         let at = state.attrData.TotalData;
         let Check_Lay = new Array(at.LV1.Lay_Maxn).fill(false);
         let ST = "";
@@ -431,7 +431,7 @@ function setting(locSearch: string) {
 
     //シェープファイル読み込み
     function mnuOpenShapeFile() {
-        const state = appState();
+
         openShapeFile(okButton);
         function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
             attrData = new clsAttrData();
@@ -444,7 +444,7 @@ function setting(locSearch: string) {
 
     //属性データ読み込み
     function menuReadData() {
-        const state = appState();
+
         readData(okButton);
         function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
             attrData = new clsAttrData();

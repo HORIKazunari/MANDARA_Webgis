@@ -12,7 +12,7 @@ class clsTime  {
 
     // 前日を取得
     static getYesterday(YMD: strYMD) {
-        const state = appState();
+
         const d = YMD.toDate();
         d.setDate(d.getDate() - 1);
         return new strYMD(d.getFullYear(), d.getMonth() + 1, d.getDate());
@@ -20,7 +20,7 @@ class clsTime  {
 
     // 翌日を取得
     static getTomorrow(YMD: strYMD) {
-        const state = appState();
+
         const d = YMD.toDate();
         d.setDate(d.getDate() + 1);
         return new strYMD(d.getFullYear(), d.getMonth() + 1, d.getDate());
@@ -34,7 +34,7 @@ class clsTime  {
         return termDay;
     }
     static GetNullStartEndYMD(){
-        const state = appState();
+
         const d=new Start_End_Time_data();
         d.StartTime=this.GetNullYMD();
         d.EndTime=this.GetNullYMD();
@@ -42,7 +42,7 @@ class clsTime  {
     }
 
     static YMDtoString(YMD: strYMD) {
-        const state = appState();
+
         if (YMD.nullFlag() == true) {
             return "未設定";
         } else {
@@ -52,12 +52,12 @@ class clsTime  {
 
     /**20131116のような年月日をそのまま数値にした値を返す。nullValueの場合は0 */
     static YMDtoValue(YMD: strYMD) {
-        const state = appState();
+
             return YMD.Day + YMD.Month * 100 + YMD.Year * 10000;
     }
 
     static GetYMDfromValue(value: number){
-        const state = appState();
+
         const YMD =new  strYMD();
         const s  = "00000000" + value.toString().right( 8);
         YMD.Year = Number(s.substr(0, 4));
@@ -66,7 +66,7 @@ class clsTime  {
         return YMD;
     }
     static StartEndtoString(StartEnd: Start_End_Time_data) {
-        const state = appState();
+
         let txs = "";
         if (StartEnd.StartTime.nullFlag() == true) {
             txs = "開始";
@@ -79,7 +79,7 @@ class clsTime  {
         return txs;
     }
     static checkDurationIn(duration: Start_End_Time_data, Point: strYMD) {
-        const state = appState();
+
         //現時点が指定の期間に含まれているかどうかをチェックし、含まれている場合にtrue
         if ((Point.nullFlag() == true) || (duration.StartTime.nullFlag() == true) && (duration.EndTime.nullFlag() == true)) {
             return true;
@@ -109,7 +109,7 @@ class clsTime  {
     }
 
     static GetYMD(date: Date) {
-        const state = appState();
+
         return new strYMD(date.getFullYear(), date.getMonth()+1, date.getDate());
     }
     static GetFromInputDate  (value: string) {
@@ -117,7 +117,7 @@ class clsTime  {
         return new strYMD(Number(t[0]), Number(t[1]), Number(t[2]));
     }
     static Check_YMD_Correct(y: number, m: number, d: number) {
-        const state = appState();
+
         if ((new Date(y, m, 0).getDate() < d) || (m < 1)|| (m > 12) || (d < 1)) {
             return false;
         }
@@ -303,7 +303,7 @@ class Setting_Info {
 
 class clsBase {
     static Arrow() {
-        const state = appState();
+
         let BArrow = new Arrow_Data();
         BArrow.End_Arrow_F = false;
         BArrow.Start_Arrow_F = false;
@@ -350,14 +350,14 @@ class clsBase {
         return BaseTile;
     }
     static BlancTile() {
-        const state = appState();
+
         let BaseTile = new Tile_Property();
         BaseTile.BlankF = true;
         BaseTile.Color = new colorRGBA([255, 255, 255]);
         return BaseTile;
     }
     static PaintTile(col: colorRGBA) {
-        const state = appState();
+
         let BaseTile = new Tile_Property();
         BaseTile.BlankF = false;
         BaseTile.Color = col;
@@ -400,33 +400,33 @@ class clsBase {
     }
 
     static ColorWhite() {
-        const state = appState();
+
         return new colorRGBA([255, 255, 255]);
     }
     static ColorGray() {
-        const state = appState();
+
         return new colorRGBA([125, 125, 125]);
     }
     static ColorBlack() {
-        const state = appState();
+
         return new colorRGBA([0, 0, 0]);
     }
     static ColorBlue() {
-        const state = appState();
+
         return new colorRGBA([0, 0, 255]);
     }
     static ColorRed() {
-        const state = appState();
+
         return new colorRGBA([255, 0, 0]);
     }
     static ColorGreen() {
-        const state = appState();
+
         return new colorRGBA([0, 255, 0]);
     }
 
 
     static BlankBackground() {
-        const state = appState();
+
         let Back = new BackGround_Box_Property();
         Back.Line.BlankF = true;
         Back.Tile.BlankF = true;
@@ -436,7 +436,7 @@ class clsBase {
     }
 
     static WhiteBackground() {
-        const state = appState();
+
         let Back = new BackGround_Box_Property();
         Back.Line.BlankF = true;
         Back.Tile.BlankF = false;

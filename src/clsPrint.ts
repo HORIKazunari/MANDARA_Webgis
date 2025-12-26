@@ -56,7 +56,7 @@ class Fringe_Line_Info {
 
 class clsPrint {
     static setData(picMap: HTMLCanvasElement){
-        const state = appState();
+
         state.attrData.TotalData.ViewStyle.ScrData.OutputDevide = enmOutputDevice.Screen;
         let atp=state.attrData.TempData;
         atp.ContourMode_Temp.ContourDataResetF = true;
@@ -75,7 +75,7 @@ class clsPrint {
         this.printMapScreen(picMap) ;
     }
     static printMapScreen(picMap: HTMLCanvasElement) {
-        const state = appState();
+
         let avs=state.attrData.TotalData.ViewStyle.ScrData;
         let g = picMap.getContext('2d');
         if (!g) return;
@@ -96,7 +96,7 @@ class clsPrint {
     }
 
     static Series_Mapping(g: CanvasRenderingContext2D) {
-        const state = appState();
+
         state.attrData.TempData.ContourMode_Temp.ContourDataResetF = true;
         state.attrData.TempData.DotMap_Temp.DotMapTempResetF = true;
         let n = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
@@ -165,7 +165,7 @@ class clsPrint {
     }
 
     static printMap(g: CanvasRenderingContext2D) {
-        const state = appState();
+
         state.attrData.TotalData.ViewStyle.ScrData.Set_PictureBox_and_CulculateMul(state.frmPrint.picMap)
         state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = false;
         let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
@@ -203,7 +203,7 @@ class clsPrint {
     }
 
     static showMap(g: CanvasRenderingContext2D) {
-        const state = appState();
+
         let av=state.attrData.TotalData.ViewStyle;
         let avs=av.ScrData;
         state.attrData.TempData.drawing=true;
@@ -393,7 +393,7 @@ class clsPrint {
 
     /** 最後に画面枠線を描く*/
     static Screen_BackLine(g: CanvasRenderingContext2D){
-        const state = appState();
+
         let av=state.attrData.TotalData.ViewStyle.ScrData;
         let rect  = av.getSxSyRect(av.ScrRectangle);
         let sv=state.attrData.TotalData.ViewStyle.Screen_Back;
@@ -405,7 +405,7 @@ class clsPrint {
 
     /**複数のレイヤごとのポリゴンのクリッピング */
     static ClippingRegion_ObjectBoundary_set(g: CanvasRenderingContext2D, Layers: number[], RealObjClip_f: boolean, DummyClip_F: boolean) {
-        const state = appState();
+
         let f = false;
         let Allpxy = [];
         let AllnPolyP = [];
@@ -431,7 +431,7 @@ class clsPrint {
 
     /**等値線モード他の背後のポリゴンのクリッピングリージョン作成、ポリゴン数を返す */
     static ContourPolygonRegion(Layernum: number, RealObjClip_f: boolean, DummyClip_F: boolean): PolydataInfo {
-        const state = appState();
+
 
         let MultiObj = [];
         let al = state.attrData.LayerData[Layernum];
@@ -476,7 +476,7 @@ class clsPrint {
 
 /**スクリーン、地図領域背景色 */
     static Screen_Area_Back(g: CanvasRenderingContext2D){
-        const state = appState();
+
         let av = state.attrData.TotalData.ViewStyle;
         let Scrrect  = av.ScrData.getSxSyRect(av.ScrData.ScrRectangle);
         state.attrData.Draw_Tile_Box(g, Scrrect, clsBase.BlankLine(), av.Screen_Back.ScreenAreaBack, 0);
@@ -486,7 +486,7 @@ class clsPrint {
 
     /**経緯線（背面表示）とオブジェクト内部色設定 */
     static Screen_Back_ObjectInner_Set(g: CanvasRenderingContext2D){
-        const state = appState();
+
         let av = state.attrData.TotalData.ViewStyle;
         if((av.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order == enmLatLonLine_Order.Back) && (av.LatLonLine_Print.Visible == true)) {
            clsAccessory.LatLonLine_Print(g);
@@ -515,7 +515,7 @@ class clsPrint {
     
     /**オブジェクト内部の背景塗りつぶし*/
     static Screen_Back_Set_Paint(g: CanvasRenderingContext2D, Layernum: number){
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
 
         let MultiObj = [];
@@ -560,7 +560,7 @@ class clsPrint {
 
     /**複数オブジェクトにまとめて色塗り */
     static PaintMultiPolygonObject(g: CanvasRenderingContext2D, Layernum: number, MultiObj: number[], TI: Tile_Property, Dummy_F: boolean){
-        const state = appState();
+
         let MbjN=MultiObj.length;
         if((MbjN == 0)||(TI.BlankF == true) ){
             return;
@@ -573,7 +573,7 @@ class clsPrint {
 
     /**ポリゴンオブジェクトの周囲の線の座標を取得 */
     static Get_Multi_Object_Boundary(Layernum: number, ObjCode: number[], Dummy_F: boolean) {
-        const state = appState();
+
         let ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, ObjCode, Dummy_F);
 
         let boundArrange = state.attrData.LayerData[Layernum].MapFileData.Boundary_Arrange_Sub(ELine);
@@ -587,7 +587,7 @@ class clsPrint {
 
     /** 指定された複数のオブジェクトの外側のラインコードを取得*/
     static Gey_Multi_Object_OuterLineCode(Layernum: number, ObjCode: number[], Dummy_F: boolean) {
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         let ALineN = al.MapFileData.Map.ALIN;
         let Use_Line = new Array(ALineN);
@@ -616,7 +616,7 @@ class clsPrint {
 
     /**階級区分モードの表示順序と表示の可否を返す */
     static getDrawOrder_and_ShowF_ClassMode(LayerNum: number, DataNum: number, Category_Array: number[], D_Order: number[], ShowF: boolean[]) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let vs = state.attrData.TotalData.ViewStyle;
         let LayerShape = al.Shape;
@@ -691,7 +691,7 @@ class clsPrint {
 
     /**表示範囲のデータで階級区分などを設定 */
     static get_InScreenObjectData(LayerNum: number, DataNum: number, ShowF: boolean[]){
-        const state = appState();
+
 
         if (state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag == true) {
             return;
@@ -846,7 +846,7 @@ class clsPrint {
     }
 
     static Restore_InScreenObjectData(){
-        const state = appState();
+
         let atc = state.attrData.TempData.ModeValueInScreen_Stac;
         let al = state.attrData.LayerData[atc.LayerNum];
         let ald = al.atrData.Data[atc.DataNum].SoloModeViewSettings;
@@ -862,7 +862,7 @@ class clsPrint {
 
     /**  記号モードの表示順序と表示の可否を返す*/
     static getDrawOrder_and_ShowF_MarkMode(LayerNum: number, DataNum: number, mode: number, D_Order: number[], ShowF: boolean[], ObjP: point[], Missing_DataArray: boolean[], MV_Array: number[]) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let vs = state.attrData.TotalData.ViewStyle;
         let LayerShape = al.Shape;
@@ -1001,7 +1001,7 @@ class clsPrint {
 
     /**記号の大きさ、階級記号、記号の回転モードの重ね合わせの際の記号表示位置の移動*/
     static getOverlayMarkPosition(OP: point, r: number) {
-        const state = appState();
+
         let newP = OP.Clone();
         let ato = state.attrData.TempData.OverLay_Temp;
         if ((ato.OverLay_Printing_Flag == true) && (state.attrData.TotalData.TotalMode.OverLay.MarkModePosFixFlag == false)) {
@@ -1018,7 +1018,7 @@ class clsPrint {
 
     /**経緯線（前面表示）と地図領域の枠線 */
     static Screen_MapAreaLine(g: CanvasRenderingContext2D){
-        const state = appState();
+
         let av = state.attrData.TotalData.ViewStyle;
         if((av.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order == enmLatLonLine_Order.Front) && (av.LatLonLine_Print.Visible == true)) {
             clsAccessory.LatLonLine_Print(g);
@@ -1038,7 +1038,7 @@ class clsPrint {
 
     //飾りの外接四角形をまとめて記録
     static GetAccessoryRectangles(g: CanvasRenderingContext2D) {
-        const state = appState();
+
         let at = state.attrData.TempData.Accessory_Temp;
         let av = state.attrData.TotalData.ViewStyle;
         if(av.AttMapCompass.Visible == true) {
@@ -1098,7 +1098,7 @@ class clsPrint {
     }
 
     static Figure_Print(g: CanvasRenderingContext2D, back_gazo_f: boolean) {
-        const state = appState();
+
         if(back_gazo_f == false) {
             clsAccessory.AccGroupBoxDraw(g);
             clsAccessory.Scale_Print(g);
@@ -1114,7 +1114,7 @@ class clsPrint {
     }
 
     static Legend_Mark_Mode_Inner_Data_set(InnerData: strInner_Data_Info, Layernum: number, Datanum?: number) {
-        const state = appState();
+
         if(InnerData.Flag == false) {
             return undefined;
         }
@@ -1127,7 +1127,7 @@ class clsPrint {
         return mlw;
     }
     static Legend_Data_Set() {
-        const state = appState();
+
         let n = 0;
         let at = state.attrData.TempData;
         if(state.attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index != -1) {
@@ -1268,7 +1268,7 @@ class clsPrint {
 
     /**重ね合わせモードのデータセット内の表示項目ごとの凡例セット */
     static Legend_Data_Set_Over_sub(Over_D: Legend2_Atri, orn: number) {
-        const state = appState();
+
         let n = orn;
         let L = Over_D.Layer;
         switch (Over_D.Print_Mode_Layer) {
@@ -1336,7 +1336,7 @@ class clsPrint {
 
     /**重ね合わせ表示モード */
     static Print_OverLay(g: CanvasRenderingContext2D, DataSet: number) {
-        const state = appState();
+
         let aot = state.attrData.TempData.OverLay_Temp;
         aot.OverLay_Printing_Flag = true;
         let aod = state.attrData.TotalData.TotalMode.OverLay.DataSet[DataSet];
@@ -1367,7 +1367,7 @@ class clsPrint {
     }
 
     static OverLay_Print_Sub(g: CanvasRenderingContext2D, Ov_Data: Legend2_Atri) {
-        const state = appState();
+
 
         switch (Ov_Data.Print_Mode_Layer) {
             case enmLayerMode_Number.SoloMode: {
@@ -1426,7 +1426,7 @@ class clsPrint {
 
     /**常時重ね合わせが設定してある場合  */
     static OverLay_Plus_Print(g: CanvasRenderingContext2D) {
-        const state = appState();
+
         let ato = state.attrData.TotalData.TotalMode.OverLay;
         let tmpo=state.attrData.TempData.OverLay_Temp;
         let n = ato.Always_Overlay_Index;
@@ -1493,7 +1493,7 @@ class clsPrint {
 
     /**グラフモード */
     static PrintGraphMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number){
-        const state = appState();
+
         let selGraph = state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode.DataSet[DataSet];
         switch (selGraph.GraphMode) {
             case enmGraphMode.PieGraph:
@@ -1509,7 +1509,7 @@ class clsPrint {
 
     /**円グラフまたは帯グラフモード */
     static PrintGraph_Pie_StackdBarMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         let selGraph = al.LayerModeViewSettings.GraphMode.DataSet[DataSet];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
@@ -1640,7 +1640,7 @@ console.log(SortSumDataValue)
 
     /**棒グラフまたは折れ線グラフ */
     static PrintGraph_Line_BarMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
-        const state = appState();
+
 
         let al = state.attrData.LayerData[Layernum];
         let selGraph = al.LayerModeViewSettings.GraphMode.DataSet[DataSet];
@@ -1837,7 +1837,7 @@ console.log(SortSumDataValue)
 
     /**ラベルモード */
     static PrintLabelMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
@@ -1968,7 +1968,7 @@ console.log(SortSumDataValue)
 
     /**等値線モード */
     static PrintContourMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         let cont=state.attrData.TempData.ContourMode_Temp;
@@ -2121,7 +2121,7 @@ console.log(SortSumDataValue)
 
     static ContourPolyBoundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number,
         Pcon: number, hn: number, Interval_Mode: number, HnPolygon: VecContourStac_Info, Pre_CStac: contourLineStacInfo[], Frame_AllPoint: point[], Spline_flag: boolean, SplineT: number) {
-        const state = appState();
+
         let spxy = [];
         let epxy = [];
         let NL= HnPolygon.CNum + HnPolygon.fnum;
@@ -2220,7 +2220,7 @@ console.log(SortSumDataValue)
 
     
     static ContourMeshIndexSet(Layernum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         let ad = al.atrData.Data[DataNum];
         let vs = state.attrData.TotalData.ViewStyle.ScrData;
@@ -2314,7 +2314,7 @@ console.log(SortSumDataValue)
     }
 
     static ContourMesh_Value(Layernum: number, DataNum: number, DataValue: number[], P: point, md: number, F_Mesh: number[][][], F_Mesh_In: number[]) {
-        const state = appState();
+
 
         let al = state.attrData.LayerData[Layernum];
         let ad = al.atrData.Data[DataNum];
@@ -2492,7 +2492,7 @@ console.log(SortSumDataValue)
     }
 
     static GetContourIntervalValue(Layernum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         let ad = al.atrData.Data[DataNum];
         let Contour_High_M = [];
@@ -2557,7 +2557,7 @@ console.log(SortSumDataValue)
 
     ////文字モード
     static PrintStringMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
@@ -2607,7 +2607,7 @@ console.log(SortSumDataValue)
 
     /**棒の高さモード */
     static PrintMarkBarMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
@@ -2707,7 +2707,7 @@ console.log(SortSumDataValue)
     }
 
     static MarkBarRectPrint(Pos: point, w: number, h: number, threeD: boolean) {
-        const state = appState();
+
         let CenterRect= new rectangle(new point(Pos.x - w / 2, Pos.y - h), new size(w, h));
         let UpperPoly=[];
         let RightPoly=[];
@@ -2735,7 +2735,7 @@ console.log(SortSumDataValue)
 
     /**記号の数モード */
     static PrintMarkBlockMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         if(state.attrData.TempData.DotMap_Temp.DotMapTempResetF == true) {
             state.attrData.TempData.DotMap_Temp.DotMapPoint = {};// New Dictionary(Of Integer, PointF())
         }
@@ -2978,7 +2978,7 @@ console.log(SortSumDataValue)
 
     //記号の大きさモード
     static PrintMarkSizeMode(g: CanvasRenderingContext2D,  LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         let vs=state.attrData.TotalData.ViewStyle;
@@ -3054,7 +3054,7 @@ console.log(SortSumDataValue)
 
     
     static PrintMarkSizeMode_Draw(g: CanvasRenderingContext2D, Layernum: number, DataNum: number, kpos: number, pos: point, MK: Mark_Property, MV: number, MisF: boolean) {
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         let ad = al.atrData.Data[DataNum];
         let vs=state.attrData.TotalData.ViewStyle;
@@ -3112,7 +3112,7 @@ console.log(SortSumDataValue)
 
     /**線モード */
     static PrintClassODMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let Category_Array = state.attrData.Get_CategolyArray(LayerNum, DataNum);
         let DrawOrderByValue = this.ClassMode_Point_Shape_DrawOrder(LayerNum, DataNum);
         let al = state.attrData.LayerData[LayerNum];
@@ -3208,7 +3208,7 @@ console.log(SortSumDataValue)
     }
     /**階級区分モードの線形状オブジェクトの線モード */
     static PrintClassLineShapeSENMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
@@ -3251,7 +3251,7 @@ console.log(SortSumDataValue)
 
     //階級記号モード
     static PrintClassMarkMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al= state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         if(al.Shape == enmShape.PolygonShape) {
@@ -3316,7 +3316,7 @@ console.log(SortSumDataValue)
 
     //ペイントモード
     static PrintClassPaintMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let al = state.attrData.LayerData[LayerNum];
         let ad = al.atrData.Data[DataNum];
         let LayerShape = al.Shape;
@@ -3436,7 +3436,7 @@ console.log(SortSumDataValue)
 
     /**階級区分ごとの境界線 */
     static Class_Category_Boundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number){
-        const state = appState();
+
         let al = state.attrData.LayerData[Layernum];
         let ad = al.atrData.Data[DataNum];
         let av = state.attrData.TotalData.ViewStyle;
@@ -3482,7 +3482,7 @@ console.log(SortSumDataValue)
     }
 
     static Vector_Object_Boundary(g: CanvasRenderingContext2D,  Layernum: number) {
-        const state = appState();
+
         let ad = state.attrData.LayerData[Layernum];
         if((ad.Shape == enmShape.LineShape)||(ad.Shape == enmShape.PointShape)|| (ad.Type == enmLayerType.Trip)) {
 
@@ -3507,7 +3507,7 @@ console.log(SortSumDataValue)
     }
 
     static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, Dummy_F: boolean) {
-        const state = appState();
+
         let ELine = []// clsMapData.EnableMPLine_Data
         let ad = state.attrData.LayerData[Layernum];
         let pxy = [];// Point
@@ -3552,7 +3552,7 @@ console.log(SortSumDataValue)
 
 
     static PaintOnePolygonObject(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number, ocol: colorRGBA) {
-        const state = appState();
+
         let Polydata = this.Get_OnePolygonObject_Boundary( Layernum, ObjNum, false);
         if(Polydata?.Pon && Polydata.Pon > 0) {
             clsDraw.DrawPolyPolygon(g, Polydata, ocol.toRGBA());
@@ -3564,7 +3564,7 @@ console.log(SortSumDataValue)
 
     /**代表点と記号表示位置を線で結ぶ */
     static Vector_Connect_CenterP_To_SymbolPoint(g: CanvasRenderingContext2D, Layernum: number) {
-        const state = appState();
+
         let av = state.attrData.TotalData.ViewStyle;
         if (av.SymbolLine.Visible == false) {
             return;
@@ -3587,7 +3587,7 @@ console.log(SortSumDataValue)
 
     /**階級区分モードで点・線オブジェクトの場合で、オブジェクトの描画順で使用するソートクラスを作成する */
     static ClassMode_Point_Shape_DrawOrder( LayerNum: number, DataNum: number) {
-        const state = appState();
+
         let en_sort = [];
         let s=new clsSortingSearch();
         if(state.attrData.TotalData.ViewStyle.PointPaint_Order != enmPointOnjectDrawOrder.ObjectOrder) {
@@ -3598,7 +3598,7 @@ console.log(SortSumDataValue)
     }
 
     static Get_OnePolygonObject_Boundary( Layernum: number, O_ObjNum_Code: number, Dummy_F: boolean) {
-        const state = appState();
+
         let ad = state.attrData.LayerData[Layernum];
         let Polydata = new PolydataInfo();
         let badata = new boundArrangeData();        
@@ -3634,7 +3634,7 @@ console.log(SortSumDataValue)
 
     //指定されたラインをポリゴン化したXY座標を返す
     static Get_Boundary_XY(Layernum: number, badata: boundArrangeData) {
-        const state = appState();
+
         let poly = new PolydataInfo();
 
         let Pon = badata.Pon ?? 0;
@@ -3681,7 +3681,7 @@ console.log(SortSumDataValue)
 
     //指定したラインコードの座標を変換して取得
     static Get_PointXY_by_LineCode(Layernum: number, LCode: number, ReverseGetF: boolean) {
-        const state = appState();
+
         let ad = state.attrData.LayerData[Layernum];
         let av = state.attrData.TotalData.ViewStyle;
         let at=state.attrData.TempData;
@@ -3738,7 +3738,7 @@ console.log(SortSumDataValue)
 
     /** イヤのオブジェクトの値を記号表示位置の中央に表示*/
     static ObjectValue_And_Name_Print_byLayer(g: CanvasRenderingContext2D, Layernum: number, DataNum: number) {
-        const state = appState();
+
         if ((state.attrData.TotalData.ViewStyle.ValueShow.ValueVisible == true) || (state.attrData.TotalData.ViewStyle.ValueShow.ObjNameVisible == true)) {
             for (let i = 0; i < state.attrData.LayerData[Layernum].atrObject.ObjectNum; i++) {
                 if (state.attrData.Check_Condition(Layernum, i) == true) {
@@ -3752,7 +3752,7 @@ console.log(SortSumDataValue)
 
     /**データ値／オブジェクト名表示 */
     static ObjectValue_and_Name_Print(g: CanvasRenderingContext2D, Pos: point, VerticalAlignment: enmVerticalAlignment, Layernum: number, DataNum: number, ObjectNumber: number) {
-        const state = appState();
+
         let avv = state.attrData.TotalData.ViewStyle.ValueShow;
         switch (VerticalAlignment) {
             case enmVerticalAlignment.Top: {
@@ -3802,7 +3802,7 @@ console.log(SortSumDataValue)
 
     //ダミーオブジェクト・ダミーオブジェクトグループを描画
     static Vector_Dummy_Boundary(g: CanvasRenderingContext2D, Layernum: number, Polygon_F: boolean, nonPolygon_F: boolean) {
-        const state = appState();
+
         let ad = state.attrData.LayerData[Layernum];
         if(ad.DummyGroup.length > 0) {
             if(Polygon_F == true) {
@@ -3824,7 +3824,7 @@ console.log(SortSumDataValue)
     }
     //ダミーオブジェクトグループの描画。描画順は設定したグループ順
     static Vector_DummyGroup_Draw(g: CanvasRenderingContext2D, SHP: number, Layernum: number) {
-        const state = appState();
+
         let ad = state.attrData.LayerData[Layernum];
         for (let i = 0; i < ad.DummyGroup.length; i++) {
             let ok = ad.DummyGroup[i];
@@ -3839,7 +3839,7 @@ console.log(SortSumDataValue)
     }
     //ダミーオブジェクトの描画
     static Vector_Dummy_Draw(g: CanvasRenderingContext2D, code: number, Layernum: number) {
-        const state = appState();
+
         if(state.attrData.Check_Screen_Objcode_In(Layernum, code) == true) {
             let ad = state.attrData.LayerData[Layernum];
             if(ad.MapFileData.MPObj[code].Shape == enmShape.PointShape) {
@@ -3860,7 +3860,7 @@ console.log(SortSumDataValue)
     }
     //ダミー点オブジェクトの記号取得
     static getPointDummyMark(MapFIleName: string, ObjectGroupName: string) {
-        const state = appState();
+
         let av = state.attrData.TotalData.ViewStyle;
         let obk = av.DummyObjectPointMark[MapFIleName];
         for (let i = 0; i < obk.length; i++) {
