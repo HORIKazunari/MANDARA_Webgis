@@ -442,14 +442,14 @@ class spatial {
     /**二つの線分の交点を求める関数。交点がある場合座標、ない場合undefined */
     static Line_Cross_Point(LAP1: point, LAP2: point, LBP1: point, LBP2: point): point | undefined {
 
-        let ax1 = LAP1.x
-        let ay1 = LAP1.y
-        let ax2 = LAP2.x
-        let ay2 = LAP2.y
-        let bx1 = LBP1.x
-        let by1 = LBP1.y
-        let bx2 = LBP2.x
-        let by2 = LBP2.y
+        const ax1 = LAP1.x
+        const ay1 = LAP1.y
+        const ax2 = LAP2.x
+        const ay2 = LAP2.y
+        const bx1 = LBP1.x
+        const by1 = LBP1.y
+        const bx2 = LBP2.x
+        const by2 = LBP2.y
         //２点が同一、または２線が平行の場合は戻る
         if (((ax2 == ax1) && (bx2 == bx1)) || ((ay2 == ay1) && (by2 == by1)) || (
             (ax1 == bx1) && (ay1 == by1)) || ((ax2 == bx1) && (ay2 == by1)) || ((ax1 == bx2) && (ay1 == by2)) || ((ax2 == bx2) && (ay2 == by2))) {
@@ -467,10 +467,10 @@ class spatial {
             }
             if (Generic.Check_Two_Value_In(ax1, bx1, bx2) == chvValue_on_twoValue.chvIN) {
                 //交点のY座標を求める
-                let BL = (by2 - by1) / (bx2 - bx1);
-                let bm = by1 - BL * bx1;
-                let px = ax1;
-                let py = BL * px + bm;
+                const BL = (by2 - by1) / (bx2 - bx1);
+                const bm = by1 - BL * bx1;
+                const px = ax1;
+                const py = BL * px + bm;
                 if ((Generic.Check_Two_Value_In(py, ay1, ay2) != chvValue_on_twoValue.chvOuter) && (
                     Generic.Check_Two_Value_In(py, by1, by2) != chvValue_on_twoValue.chvOuter)) {
                     //Y座標がAB線の内部だったら交差
@@ -489,10 +489,10 @@ class spatial {
             }
             if (Generic.Check_Two_Value_In(ay1, by1, by2) != chvValue_on_twoValue.chvOuter) {
                 //交点のX座標を求める
-                let BL = (by2 - by1) / (bx2 - bx1);
-                let bm = by1 - BL * bx1;
-                let py = ay1;
-                let px = (py - bm) / BL;
+                const BL = (by2 - by1) / (bx2 - bx1);
+                const bm = by1 - BL * bx1;
+                const py = ay1;
+                const px = (py - bm) / BL;
                 if ((Generic.Check_Two_Value_In(px, ax1, ax2) != chvValue_on_twoValue.chvOuter) && (
                     Generic.Check_Two_Value_In(px, bx1, bx2) != chvValue_on_twoValue.chvOuter)) {
                     //X座標がAB線の内部だったら交差
@@ -501,16 +501,16 @@ class spatial {
             }
             return undefined;
         } else {
-            let AL = (ay2 - ay1) / (ax2 - ax1);
-            let BL = (by2 - by1) / (bx2 - bx1);
+            const AL = (ay2 - ay1) / (ax2 - ax1);
+            const BL = (by2 - by1) / (bx2 - bx1);
             if (AL == BL) {
                 //傾きが等しいと交差しない
                 return undefined;
             }
-            let AM = ay1 - AL * ax1;
-            let bm = by1 - BL * bx1;
-            let px = (bm - AM) / (AL - BL);
-            let py = AL * px + AM;
+            const AM = ay1 - AL * ax1;
+            const bm = by1 - BL * bx1;
+            const px = (bm - AM) / (AL - BL);
+            const py = AL * px + AM;
             if (((ax1 == px) && (ay1 == py)) || ((ax2 == px) && (ay2 == py)) || ((bx1 == px) && (by1 == py)) || ((bx2 == px) && (by2 == py))) {
             } else {
                 if ((Generic.Check_Two_Value_In(px, ax1, ax2) != chvValue_on_twoValue.chvOuter) && (Generic.Check_Two_Value_In(py, ay1, ay2) != chvValue_on_twoValue.chvOuter)) {
@@ -607,15 +607,15 @@ class spatial {
         return retV;
         //水平線アルゴリズムで、線分と調査地点の座標との水平線上のX座標を求める。Y範囲がずれていた場合はfalse
         function Get_CrossXPoint(checkPoint: point, LinePoint1: point, LinePoint2: point) {
-            let x  = checkPoint.x;
-            let y  = checkPoint.y;
-            let ay  = LinePoint1.y;
-            let by  = LinePoint2.y;
+            const x  = checkPoint.x;
+            const y  = checkPoint.y;
+            const ay  = LinePoint1.y;
+            const by  = LinePoint2.y;
             let f;
             let CrossX;
             if(( (ay <= y)&&(y < by))||( (by <= y)&&(y < ay) )){
-                let BX  = LinePoint2.x;
-                let ax  = LinePoint1.x;
+                const BX  = LinePoint2.x;
+                const ax  = LinePoint1.x;
                 if( ay == by ){
                     CrossX = ax;
                 }else{
@@ -688,15 +688,15 @@ class spatial {
     static Get_Ido_Kedo_from_MeshCode(MeshCode: string, Mesh_Size: number) {
 
         MeshCode = (MeshCode + "0000000000").left(11);
-        let id1 = Number(MeshCode.substr(0, 2));
-        let id2 = Number(MeshCode.substr(4, 1));
-        let id3 = Number(MeshCode.substr(6, 1));
-        let kd1 = Number(MeshCode.substr(2, 2));
-        let kd2 = Number(MeshCode.substr(5, 1));
-        let kd3 = Number(MeshCode.substr(7, 1));
-        let V2 = Number(MeshCode.substr(8, 1));
-        let V4 = Number(MeshCode.substr(9, 1));
-        let v8 = Number(MeshCode.substr(10, 1));
+        const id1 = Number(MeshCode.substr(0, 2));
+        const id2 = Number(MeshCode.substr(4, 1));
+        const id3 = Number(MeshCode.substr(6, 1));
+        const kd1 = Number(MeshCode.substr(2, 2));
+        const kd2 = Number(MeshCode.substr(5, 1));
+        const kd3 = Number(MeshCode.substr(7, 1));
+        const V2 = Number(MeshCode.substr(8, 1));
+        const V4 = Number(MeshCode.substr(9, 1));
+        const v8 = Number(MeshCode.substr(10, 1));
         let Ido = id1 / 1.5 + (id2 / 8) * (40 / 60) + (id3 / 10) * (5 / 60);
         let kdo = kd1 + 100 + (kd2 / 8) + (kd3 / 10) * (7.5 / 60);
         if (Mesh_Size == enmMesh_Number.mhOne_Tenth) {
@@ -727,7 +727,7 @@ class spatial {
             }
         }
 
-        let meshWH = this.Get_MeshCode_Size_IdoKedo(Mesh_Size);
+        const meshWH = this.Get_MeshCode_Size_IdoKedo(Mesh_Size);
         return new latlonbox(new latlon(Ido + meshWH.height, kdo), new latlon(Ido, (kdo + meshWH.width)));
     }
 
@@ -875,7 +875,7 @@ class spatial {
     //扇形の座標を求める
     static Get_Fan_Coordinates(CP: point, r: number, start_p: number, end_p: number, CenterLineF: boolean) {
 
-        let ST = 1 / (r * 2 / 5);
+        const ST = 1 / (r * 2 / 5);
         let pxy = [];
 
         if (((start_p == 0) && (end_p == Math.PI * 2)) || (CenterLineF == false)) {
@@ -914,7 +914,7 @@ class spatial {
                     Ellip12 = 2;
                 }
             }
-            let Kei = MapZahyo_Info.HeimenTyokkaku_KEI_Number;
+            const Kei = MapZahyo_Info.HeimenTyokkaku_KEI_Number;
             TKY2JGD.doCalcXy2bl(Ellip12, Kei, oxy.y, oxy.x, y2, x2);
             LatLon.lon = x2 ?? 0;
             LatLon.lat = y2 ?? 0;
@@ -2582,7 +2582,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const frame = this.createNewDiv(ParentObj, "", ID, "grayFrame", x, y, width, height, ovy + "overflow-x:hidden", undefined);
         const inFrame = this.createNewDiv(frame, "", ID, "", 0, 0, w, allh, "", undefined);
         for (let i in list) {
-            let cbox = this.createNewCheckBox(inFrame, list[i].text, "", list[i].checked, 3, (i as unknown as number) * lineH,undefined, 
+            const index = Number(i);
+            let cbox = this.createNewCheckBox(inFrame, list[i].text, "", list[i].checked, 3, index * lineH,undefined, 
                 function (obj: HTMLInputElement) {
                     if (typeof onChange == 'function') {
                         onChange(Number(obj.tag), obj.checked);
@@ -4466,7 +4467,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     ): HTMLElement {
 
         const hiddenWindow = function () {
-            const winAny = window as unknown;
+            const winAny = window as Record<string, any>;
             winAny.setVisibility?.(false) ;
             if(XmarkCall !=undefined){
                 XmarkCall();
@@ -4534,7 +4535,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 maxButtonCall();
             }
         }
-        const winAny = window as unknown;
+        const winAny = window as Record<string, any>;
         winAny.setVisibility?.(visibilieF);
         window.setTitle = function (title) {
             let cnode = this.childNodes;
@@ -5088,7 +5089,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         for (let i in menuObj) {
             if (menuObj[i].hasOwnProperty(property)) {
-                if ((menuObj[i] as Record<string, unknown>)[property] == pname) {
+                if ((menuObj[i] as Record<string, any>)[property] == pname) {
                     return menuObj[i];
                 }
                 if (menuObj[i].child) {
@@ -5104,9 +5105,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(globalThis as unknown).Generic = Generic;
+(globalThis as Record<string, any>).Generic = Generic;
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(globalThis as unknown).TKY2JGDInfo = new TKY2JGDInfo_Impl();
+(globalThis as Record<string, any>).TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 // ESM-friendly export handles
 export const TKY2JGDInfo = new TKY2JGDInfo_Impl();
@@ -5226,8 +5227,8 @@ export class CheckedListBox {
             cbox.checked = lst[i].checked;
             cbox.disabled = asfdisabled;
             const change = (e: Event) => {
-                let obj = e.target as unknown;
-                let newSel = Number((obj as HTMLInputElement).tag);
+                const obj = e.target as HTMLInputElement;
+                let newSel = Number(obj.tag);
                 if (this.selectedIndex != newSel) {
                     this.setIndexColor(newSel);
                     if (this.twoStepCheckF == true) {
@@ -5453,7 +5454,7 @@ export class ListBox {
                     if (this.selectedIndex != -1) {
                         this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
                     }
-                    let obj = e.target as unknown;
+                    const obj = e.target as HTMLElement & {tag: string};
                     obj.style.backgroundColor = "#e1e1e1";
                     this.selectedIndex = Number(obj.tag);
                     this.value = this.lBox[this.selectedIndex].value;
@@ -5845,17 +5846,17 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
     }
     if(MaxFlag==true){
-        (this as unknown).maxSizeFlag=false;
+        (this as Record<string, any>).maxSizeFlag=false;
     }else{
-        (this as unknown).maxSizeFlag=true;
+        (this as Record<string, any>).maxSizeFlag=true;
     }
 };
 // @ts-ignore
-(Element.prototype as unknown)['resetMaxButton'] = resetMaxButtonFunc;
+(Element.prototype as Record<string, any>)['resetMaxButton'] = resetMaxButtonFunc;
 
 //DIV要素の移動，拡大縮小
 // @ts-ignore
-(Element.prototype as unknown)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
+(Element.prototype as Record<string, any>)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
     let x: number;
     let y: number;
     let fx: number;
@@ -6118,14 +6119,14 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 //数値にpxをつける
 // @ts-ignore
-(Number.prototype as unknown)['px'] = function(): string {
+(Number.prototype as Record<string, any>)['px'] = function(): string {
     const v = this.toString();
     return v + "px";
 };
 
 /**NumberInputに値を設定する */
 // @ts-ignore
-(HTMLElement.prototype as unknown).setNumberValue = function (v: number){
+(HTMLElement.prototype as Record<string, any>).setNumberValue = function (v: number){
     this.preValue=v;
     this.value=v;
 }
@@ -6326,7 +6327,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 // @ts-ignore
 (String.prototype as unknown)['repeatString'] = function (num?: number): string {
     const repeatCount = num ?? 0;
-    for (var str = ""; (this.length * repeatCount) > str.length; str += this);
+    for (let str = ""; (this.length * repeatCount) > str.length; str += this);
     return str;
 };
 

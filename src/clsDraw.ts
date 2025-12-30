@@ -187,7 +187,7 @@ class clsDraw {
         for (let i = 0; i < Pon; i++) {
             g.moveTo(pxy[n].x, pxy[n].y);
             n++;
-            for (var j = 1; j < nPolyP[i]; j++) {
+            for (let j = 1; j < nPolyP[i]; j++) {
                 g.lineTo(pxy[n].x, pxy[n].y);
                 n++;
             }
@@ -205,7 +205,7 @@ class clsDraw {
         for (let i = 0; i < Pon; i++) {
             g.moveTo(pxy[n].x, pxy[n].y);
             n++;
-            for (var j = 1; j < AllnPolyP[i]; j++) {
+            for (let j = 1; j < AllnPolyP[i]; j++) {
                 g.lineTo(pxy[n].x, pxy[n].y);
                 n++;
             }
@@ -245,7 +245,7 @@ class clsDraw {
             if (nPolyP[i] > 0) {
                 g.moveTo(pxy[n].x, pxy[n].y);
                 n++;
-                for (var j = 1; j < nPolyP[i]; j++) {
+                for (let j = 1; j < nPolyP[i]; j++) {
                     g.lineTo(pxy[n].x, pxy[n].y);
                     n++;
                 }

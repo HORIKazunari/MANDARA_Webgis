@@ -466,7 +466,7 @@ class clsSpatialIndexSearch {
         let mind = Math.min(this.ExtraRange, BaseDistance);
         let meshxy = this.MeshIndex[outXY.x][outXY.y];
         if (meshxy != undefined) {
-            for (var i = 0; i < meshxy.Num; i++) {
+            for (let i = 0; i < meshxy.Num; i++) {
                 let Onum = meshxy.ObjectNumber[i].ObjectNumber;
                 let SP = meshxy.ObjectNumber[i].ObjectPointNumber;
                 let EP = SP + this.LineCutNum;
@@ -668,7 +668,7 @@ class clsSpatialIndexSearch {
                 this.AddMeshPoint(Number, Add_or_Remove_Remove_Obj);
                 break;
             case SpatialPointType.SPILine:
-                for (var i = 0; i < this.ObjectXY[Number].Pnum;i+=this.LineCutNum){
+                for (let i = 0; i < this.ObjectXY[Number].Pnum;i+=this.LineCutNum){
                     this.Add_Mesh_LineSub(Number, i, Add_or_Remove_Remove_Obj);
                 }
                 break;
