@@ -997,6 +997,8 @@ declare class Arrow_Property {
 declare class Back_Property {
     Tile?: Tile_Property;
     Line?: Line_Property;
+    Padding?: number;
+    Round?: number;
     Clone(): Back_Property;
 }
 
@@ -1526,6 +1528,15 @@ declare class strCondition_DataSet_Info { [key: string]: unknown; constructor(..
 declare class strCondition_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strObject_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strSeries_DataSet_Item_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strLKOjectGroup_Info { 
+    GroupNumber?: number;
+    UseOnly?: boolean;
+    Pattern?: Line_Property;
+    ObjGroup?: strLKOjectGroup_Info[];
+    NumofObjectGroup?: number;
+    [key: string]: unknown; 
+    constructor(...args: unknown[]); 
+}
 declare class strTileMapViewInfo { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strCompass_Attri { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class clsDrawLine { [key: string]: unknown; static Arrow?: (...args: unknown[]) => unknown; static Line?: (...args: unknown[]) => unknown; static Draw_Sample_LineBox?: (...args: unknown[]) => unknown; static Check_Draw_Arrow_Line?: (...args: unknown[]) => unknown; }
