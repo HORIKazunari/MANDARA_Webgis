@@ -56,6 +56,12 @@ interface Function {
     evtChange_FixedYS?: any;
 }
 
+// ChildNode拡張（name等）
+interface ChildNode {
+    name?: string;
+    innerHTML?: string;
+}
+
 // 属性データクラス（拡張版）
 interface IAttrData {
     TotalData: {
@@ -1026,6 +1032,7 @@ declare class Line_Property {
     Width: number;
     Color: colorRGBA;
     Edge_Connect_Pattern: any; // LineEdge_Connect_Pattern_Data_Info
+    Visible?: boolean; // 表示/非表示フラグ
     Clone(): Line_Property;
     Set_Same_ColorWidth_to_LinePat(Color: colorRGBA, width: number): void;
 }
