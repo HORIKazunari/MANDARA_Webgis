@@ -103,8 +103,8 @@ interface IAttrData {
                     Comma_f?: boolean;
                     Legend_Num?: number;
                 };
-                Line_DummyKind?: Line_Property;
-                OverLay_Legend_Title?: string;
+                Line_DummyKind?: ILegendLineDummyAttri;
+                OverLay_Legend_Title?: IOverLayLegendTitleInfo;
                 En_Graph_Pattern?: number;
                 MarkMD?: {
                     CircleMD_CircleMini_F?: boolean;
@@ -127,13 +127,25 @@ interface IAttrData {
                 Position: point;
                 Visible?: boolean;
                 Font?: Font_Property;
-                Clone?: () => unknown;
+                Clone?: () => {
+                    Position: point;
+                    Visible?: boolean;
+                    Font?: Font_Property;
+                    Back?: BackGround_Box_Property;
+                };
                 Back?: BackGround_Box_Property
             };
             MapScale?: {
                 Position: point;
                 Visible?: boolean;
-                Clone?: () => unknown;
+                Clone?: () => {
+                    Position: point;
+                    Visible?: boolean;
+                    BarDistance?: number;
+                    BarKugiriNum?: number;
+                    Back?: BackGround_Box_Property;
+                    Unit?: number;
+                };
                 BarDistance?: number;
                 BarKugiriNum?: number;
                 Back?: BackGround_Box_Property;
@@ -143,7 +155,14 @@ interface IAttrData {
                 Position: point;
                 Visible?: boolean;
                 Font?: Font_Property;
-                Clone?: () => unknown;
+                MaxWidth?: number;
+                Clone?: () => {
+                    Position: point;
+                    Visible?: boolean;
+                    Font?: Font_Property;
+                    MaxWidth?: number;
+                    Clone?: () => unknown;
+                };
             };
             AccessoryGroupBox?: BackGround_Box_Property;
             Zahyo: {
@@ -157,7 +176,18 @@ interface IAttrData {
                 TileMapDataSet?: unknown;
                 AlphaValue?: number;
             };
-            Missing_Data?: unknown; // strMissing_set
+            Missing_Data?: {
+                Print_Flag: boolean;
+                Text: string;
+                PaintTile: Tile_Property;
+                Mark: Mark_Property;
+                BlockMark: Mark_Property;
+                ClassMark: Mark_Property;
+                MarkBar: Mark_Property;
+                Label: string;
+                LineShape: Line_Property;
+                Clone?: () => unknown;
+            };
             SouByou?: unknown; // strSoubyou_Data_Info
             DummyObjectPointMark?: unknown[]; // strDummyObjectPointMark_Info[]
             Screen_Back?: BackGround_Box_Property;
@@ -193,7 +223,7 @@ interface IAttrData {
             LocationMenuString?: string;
             MultiObjects?: unknown[];
         };
-        Accessory_Temp?: IAccessoryTemp;
+        Accessory_Temp: IAccessoryTemp;
         OnObject?: unknown;
         MouseDownF?: boolean;
         PrintMouseMode?: number;
@@ -354,7 +384,7 @@ interface IAttrData {
     Set_Acc_First_Position?: () => void;
     Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: unknown) => void;
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
-    SetMapFile?: (mapFileName: string) => unknown;
+    SetMapFile?: (mapFileName: string) => IMapData;
     AddPointObjectKindUsed?: (layer?: number, object?: number, arg3?: unknown) => unknown;
     Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
 }
@@ -372,6 +402,7 @@ interface IMapLegendW {
     Print_Mode_Layer: number; // enmLayerMode_Number
     SoloMode: number;
     GraphMode: number;
+    LabelMode?: number;
     title: string;
     LineKind_Flag: boolean;
     PointObject_Flag: boolean;
@@ -546,6 +577,7 @@ interface ILabelDataItem {
 // マップデータ（拡張版）
 interface IMapData {
     Map: IMapInfo;
+    LineKind?: any[]; // Line_Pattern配列
     [key: string]: any;
 }
 
@@ -554,6 +586,8 @@ interface IMapInfo {
     MapCompass: IMapCompassInfo;
     ALIN?: number;
     ObjectNumber?: number;
+    LpNum?: number;
+    SCL?: number;
     [key: string]: any;
 }
 
@@ -846,6 +880,7 @@ declare class Font_Property {
     FringeWidth: number;
     FringeColor: colorRGBA;
     Back: BackGround_Box_Property;
+    Body?: Font_Property; // 再帰的プロパティ（一部のコードで使用）
     Clone(): Font_Property;
     toContextFont(ScrData: Screen_info): { font: string | undefined; height: number };
 }
@@ -856,6 +891,8 @@ declare class BackGround_Box_Property {
     Line: Line_Property;
     Round?: number;
     Padding?: number;
+    Visible?: boolean;
+    Back?: BackGround_Box_Property;
     Clone(): BackGround_Box_Property;
 }
 
@@ -895,6 +932,21 @@ type color = colorRGBA; // colorRGBAの型エイリアス
 type Arrow = Arrow_Property; // Arrow_Propertyの型エイリアス
 
 // ==================== 列挙型定義強化 ====================
+
+declare const enmGraphMaxSize: {
+    Fixed: 0;
+    Changeable: 1;
+};
+
+declare const enmBarLineMaxMinMode: {
+    Auto: 0;
+    Manual: 1;
+};
+
+declare const enmBasePosition: {
+    Screen: 0;
+    Map: 1;
+};
 
 declare enum enmCircleMDLegendLine {
     Zigzag = 0,
@@ -2007,3 +2059,26 @@ interface DataLoadResult<T = unknown> {
 // Note: 汎用的なユーティリティ型（EventHandler, Dictionary等）は
 // types.ts から import して使用することを推奨
 // 例: import type { EventHandler, Dictionary } from './types';
+
+// ==================== Legend関連の型定義 ====================
+
+/**
+ * 線凡例のダミー属性
+ */
+interface ILegendLineDummyAttri {
+    Line_Visible: boolean;
+    Line_Visible_Number_STR: string;
+    Line_Pattern: number; // enmCircleMDLegendLine
+    Dummy_Point_Visible: boolean;
+    Back: BackGround_Box_Property;
+    Clone?: () => ILegendLineDummyAttri;
+}
+
+/**
+ * オーバーレイ凡例タイトル情報
+ */
+interface IOverLayLegendTitleInfo {
+    Print_f: boolean;
+    MaxWidth: number;
+    Clone?: () => IOverLayLegendTitleInfo;
+}
