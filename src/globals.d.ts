@@ -1375,7 +1375,13 @@ declare function graphModeEn_Obi(...args: unknown[]): unknown;
 declare function graphModeOresen_Bou(...args: unknown[]): unknown;
 declare function openMapFile(...args: unknown[]): unknown;
 declare class clsMapdata { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class clsAttrData { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsAttrData implements IAttrData { 
+    TotalData: IAttrData['TotalData'];
+    TempData: IAttrData['TempData'];
+    LayerData: IAttrData['LayerData'];
+    [key: string]: unknown; 
+    constructor(...args: unknown[]); 
+}
 declare class clsTileMap { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class clsDrawMarkFan {
     static init?: (...args: unknown[]) => unknown;
