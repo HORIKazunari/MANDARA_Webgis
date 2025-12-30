@@ -278,7 +278,7 @@ interface IAttrData {
         PointObjectKindUsedStack?: unknown[];
         MapAreaLatLon?: unknown; // latlonbox
         ContourMode_Temp?: {
-            Contour_Point?: unknown;
+            Contour_Point?: point[];
             [key: string]: any;
         };
         DotMap_Temp?: {
@@ -498,6 +498,8 @@ interface IOverLayDataItem {
     Count: number;
     [index: number]: IOverLayDataItemElement;
     Clone?: () => IOverLayDataItem;
+    push?: (item: IOverLayDataItemElement) => number;
+    length?: number;
     [key: string]: any;
 }
 
@@ -1542,11 +1544,17 @@ declare const enmKenCodeObjectstructure: unknown;
 declare const enmLayerMode_Number: unknown;
 declare const enmObjectGoupType_Data: unknown;
 declare const enmCondition: unknown;
-declare const enmDataSource: unknown;
+declare const enmDataSource: {
+    NoData: number;
+    [key: string]: number;
+};
 declare const enmPrint_Enable: unknown;
 declare const enmMarkPrintType: unknown;
 declare const enmDivisionMethod: unknown;
-declare const enmPaintColorSettingModeInfo: unknown;
+declare const enmPaintColorSettingModeInfo: {
+    SoloColor: number;
+    [key: string]: number;
+};
 declare const enmMarkBlockArrange: unknown;
 declare const enmMarkBarShape: unknown;
 declare const enmMarkSizeValueMode: {
@@ -1565,7 +1573,10 @@ declare const enmEdge_Pattern: unknown;
 declare const enmSeparateClassWords: unknown;
 declare const enmScaleBarPattern: unknown;
 declare const enmGraphMaxSize: unknown;
-declare const enmStackedBarChart_Direction: unknown;
+declare const enmStackedBarChart_Direction: {
+    Vertical: number;
+    [key: string]: number;
+};
 declare const enmBarChartFrameAxePattern: unknown;
 declare const enmMultiEnGraphPattern: unknown;
 declare const enmLatLonLine_Order: unknown;
