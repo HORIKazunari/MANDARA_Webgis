@@ -25,6 +25,7 @@ interface EventTarget {
     offsetWidth: number;
     offsetHeight: number;
     style?: CSSStyleDeclaration;
+    files?: FileList; // HTMLInputElement.files
 }
 
 // ParentNode拡張
