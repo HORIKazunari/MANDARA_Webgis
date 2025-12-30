@@ -31,6 +31,27 @@ interface ParentNode {
     style: CSSStyleDeclaration;
 }
 
+// MouseEvent拡張（タッチイベント対応）
+interface MouseEvent {
+    changedTouches?: TouchList;
+}
+
+// HTMLElement拡張（select要素のoptions等）
+interface HTMLElement {
+    options?: HTMLOptionsCollection;
+    selectedIndex?: number;
+    value?: string;
+    optionSwap?: (n1?: number, n2?: number) => void;
+    objInfo?: any; // カスタムデータ保持用
+}
+
+// Function拡張（イベントハンドラデータ保持用）
+interface Function {
+    evtChange_Data?: any;
+    evtChange_FixedXS?: any;
+    evtChange_FixedYS?: any;
+}
+
 // 属性データクラス（拡張版）
 interface IAttrData {
     TotalData: {
@@ -386,6 +407,7 @@ interface IAttrData {
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
     SetMapFile?: (mapFileName: string) => IMapData;
     AddPointObjectKindUsed?: (layer?: number, object?: number, arg3?: unknown) => unknown;
+    AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
     Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
 }
 
