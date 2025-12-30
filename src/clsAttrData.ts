@@ -6237,7 +6237,7 @@ class clsAttrData {
         return EMes;
     }
 
-    Check_LayerShape_Sub(LayerNum: number): void {
+    Check_LayerShape_Sub(LayerNum: number): { shape: number; emes: string } {
         let EMes = "";
         const L = this.LayerData[LayerNum];
         switch (L.Type) {

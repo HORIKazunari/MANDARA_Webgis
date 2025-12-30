@@ -44,7 +44,9 @@ interface HTMLElement {
     value?: string;
     optionSwap?: (n1?: number, n2?: number) => void;
     objInfo?: any; // カスタムデータ保持用
-    word?: string; // カスタムテキストデータ
+    word?: HTMLElement; // カスタム子要素への参照
+    checked?: boolean; // チェックボックス等
+    onchange?: ((e: Event) => void) | null; // changeイベントハンドラ
 }
 
 // Function拡張（イベントハンドラデータ保持用）
