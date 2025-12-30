@@ -26,6 +26,7 @@ interface EventTarget {
     offsetHeight: number;
     style?: CSSStyleDeclaration;
     files?: FileList; // HTMLInputElement.files
+    parentNode?: Node;
 }
 
 // ParentNode拡張
@@ -1441,6 +1442,7 @@ interface Event {
     ctrlKey?: boolean;
     shiftKey?: boolean;
     dataTransfer?: DataTransfer;
+    caption?: string;
 }
 
 interface Element {
