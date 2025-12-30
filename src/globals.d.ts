@@ -24,6 +24,7 @@ interface EventTarget {
     offsetTop: number;
     offsetWidth: number;
     offsetHeight: number;
+    style?: CSSStyleDeclaration;
 }
 
 // ParentNode拡張
@@ -43,6 +44,7 @@ interface HTMLElement {
     value?: string;
     optionSwap?: (n1?: number, n2?: number) => void;
     objInfo?: any; // カスタムデータ保持用
+    word?: string; // カスタムテキストデータ
 }
 
 // Function拡張（イベントハンドラデータ保持用）
@@ -419,6 +421,13 @@ interface IAttrData {
     AddPointObjectKindUsed?: (layer?: number, object?: number, arg3?: unknown) => unknown;
     AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
     Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
+    
+    // MapData関連
+    MapData: {
+        SetMapFile: (mapFileName: string) => IMapData;
+        getAllMapData?: () => unknown;
+        [key: string]: any;
+    };
 }
 
 // Accessory_Temp（拡張版）
@@ -947,6 +956,8 @@ declare class Arrow_Property {
 
 // 背景プロパティクラス  
 declare class Back_Property {
+    Tile?: Tile_Property;
+    Line?: Line_Property;
     Clone(): Back_Property;
 }
 
