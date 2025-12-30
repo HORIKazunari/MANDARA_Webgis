@@ -1894,7 +1894,7 @@ function setting(locSearch: string) {
                 };
                 txele.setAttribute("ondragover", "return false;");
                 txele.tag = i;
-                function txeleOnChange (obj: HTMLElement, v: unknown) {
+                function txeleOnChange (obj: HTMLElement, v: number) {
                     //階級区分値を変更設定
                     const n = obj.tag;
                     const L = attrData.TotalData.LV1.SelectedLayer;
@@ -2519,11 +2519,11 @@ function setting(locSearch: string) {
             }
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
 
-            function LArrow(data: unknown, e: MouseEvent) {
+            function LArrow(_data: void, e: MouseEvent) {
                 const ldd = attrData.nowDataSolo().ClassODMD;
-                clsArrow(e, ldd.Arrow, "起点方向", "終点方向", function (newArrow: unknown) { ldd.Arrow = newArrow });
+                clsArrow(e, ldd.Arrow, "起点方向", "終点方向", function (newArrow: Arrow) { ldd.Arrow = newArrow });
             }
-            function LpatChange(data: unknown, e: MouseEvent) {
+            function LpatChange(_data: void, e: MouseEvent) {
                 const ldd = attrData.nowDataSolo();
                 clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: LinePattern) {
                     for (let i = 0; i < ldd.Div_Num; i++) {
@@ -2532,7 +2532,7 @@ function setting(locSearch: string) {
                     SetPictureBox();
                 })
             }
-            function LColorChange(data: unknown, e: MouseEvent) {
+            function LColorChange(_data: void, e: MouseEvent) {
                 const ldd = attrData.nowDataSolo();
                 clsColorPicker(new point(e.clientX, e.clientY),
                     function (newColor: Color) {
@@ -2587,7 +2587,7 @@ function setting(locSearch: string) {
                 { caption: "内部データの設定", event: innerDataSet }
             ];
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
-            function setSameMark(data: unknown, e: MouseEvent) {
+            function setSameMark(_data: void, e: MouseEvent) {
                 const md = sv.Class_Div[0].ClassMark;
                 clsMarkSet(e, mkChange, md, attrData)
                 function mkChange(newMark: Mark) {
@@ -2604,7 +2604,7 @@ function setting(locSearch: string) {
                 }
                 SetPictureBox();
             }
-            function innerDataSet(data: unknown, e: MouseEvent) {
+            function innerDataSet(_data: void, e: MouseEvent) {
                 clsInnerDataSet(e, attrData);
             }
         }
@@ -2620,7 +2620,7 @@ function setting(locSearch: string) {
             }
         }
         //ペイントモード線オブジェクトのサイズ設定
-        function cboPaintLineSizeChange(obj: HTMLElement, v: unknown) {
+        function cboPaintLineSizeChange(obj: HTMLElement, v: number) {
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth = v;
         }
@@ -2663,7 +2663,7 @@ function setting(locSearch: string) {
         }
 
         //色設定方法ボタンクリック
-        function PaintColorSettingModeChange(v: unknown) {
+        function PaintColorSettingModeChange(v: number) {
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD.Color_Mode = v;
@@ -2685,7 +2685,7 @@ function setting(locSearch: string) {
         }
 
         //階級区分方法クリック
-        function cboDivisionMethodChange(obj: HTMLElement, sel: number, v: unknown) {
+        function cboDivisionMethodChange(obj: HTMLElement, sel: number, v: number) {
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
@@ -2722,7 +2722,7 @@ function setting(locSearch: string) {
             setFrequencyLabel();
         }
         //階級分割数クリック
-        function cboDivisionCountChange(obj: HTMLElement, sel: number, v: unknown) {
+        function cboDivisionCountChange(obj: HTMLElement, sel: number, v: number) {
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
@@ -3962,7 +3962,7 @@ function readData(okCall: () => void) {
         openMapFile(getMapFile);
     }
 
-    function getMapFile(jsonMapData: unknown, mapFilename: string | undefined) {
+    function getMapFile(jsonMapData: Record<string, unknown>, mapFilename: string | undefined) {
         if(jsonMapData==undefined){
             Generic.alert(undefined,"読み込めませんでした。");
             return;
@@ -4028,7 +4028,8 @@ function readData(okCall: () => void) {
 
 //シェープファイル読み込み
 function openShapeFile(okCall: (() => void) | undefined): void{
-    let shapeFiles: { [key: string]: unknown } = {};//clsShapefile
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let shapeFiles: { [key: string]: any } = {};//clsShapefile
     const mapList: Record<string, unknown> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
@@ -4246,7 +4247,7 @@ function openShapeFile(okCall: (() => void) | undefined): void{
         cboKeiNo?.setSelectValue?.(zahyo.HeimenTyokkaku_KEI_Number);
     }
 
-    function getFile(jsonMapData: unknown, filename: string | undefined) {
+    function getFile(jsonMapData: Record<string, unknown>, filename: string | undefined) {
         const key = Object.keys(mapList);
         const fu = filename.toUpperCase();
         if(key.indexOf(fu) != -1) {
@@ -4285,8 +4286,10 @@ function openShapeFile(okCall: (() => void) | undefined): void{
     }
     function buttonOK() {
 
-        const mapList: { [key: string]: unknown } = {};
-        const LayerData: unknown[] = []; //strLayerInfo
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapList: { [key: string]: any } = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const LayerData: any[] = []; //strLayerInfo
         const prj = parseInt(cboProjection?.getValue ? cboProjection.getValue() : "0");
         for (const i in shapeFiles) {
             const sfile = shapeFiles[i];
@@ -4319,7 +4322,8 @@ function openShapeFile(okCall: (() => void) | undefined): void{
 /** 白地図・初期属性データ表示 */
 function mapViewer(okCall: (() => void) | undefined): void {
     const mapList: Record<string, unknown> = {};
-    const LayerData: unknown[] = []; //strLayerInfo
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const LayerData: any[] = []; //strLayerInfo
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
 
     const fileFrame=Generic.createNewFrame(bbox, "file", "", 15, scrMargin.top+5, 450, 100, "地図ファイル");
@@ -4380,7 +4384,7 @@ function mapViewer(okCall: (() => void) | undefined): void {
         openMapFile(getFile);
     }
 
-    function getFile(jsonMapData: unknown, filename: string | undefined) {
+    function getFile(jsonMapData: Record<string, unknown>, filename: string | undefined) {
         if(jsonMapData==undefined){
             Generic.alert(undefined,"読み込めませんでした。");
             return;
@@ -4512,7 +4516,8 @@ function mapViewer(okCall: (() => void) | undefined): void {
     }
 
     //レイヤのオブジェクトグループ変更
-    function objGListChange(obj: HTMLElement, checkList: unknown, checkArray: number[]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function objGListChange(obj: HTMLElement, checkList: any, checkArray: number[]) {
         const n = layerList.selectedIndex;
         LayerData[n].UseObjectKind.fill(false);
         for (let i = 0; i < checkArray.length; i++) {
@@ -4521,7 +4526,7 @@ function mapViewer(okCall: (() => void) | undefined): void {
     }
 
     //レイヤの地図ファイル変更
-    function useMapListChange(obj: HTMLElement, sel: HTMLSelectElement, v: unknown) {
+    function useMapListChange(obj: HTMLElement, sel: HTMLSelectElement, v: number) {
         const n = layerList.selectedIndex;
         const mapName = useMapList?.getText ? useMapList.getText() : "";
         LayerData[n].MapfileName = mapName;

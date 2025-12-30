@@ -54,7 +54,7 @@ export interface MapFileInfo {
   name: string;
   path?: string;
   type: 'mpfj' | 'mdrj' | 'mdrmj' | 'csv';
-  data?: unknown;
+  data?: Record<string, unknown>;
 }
 
 /**
@@ -70,7 +70,7 @@ export interface ListItem {
 /**
  * ダイアログコールバック型
  */
-export type DialogCallback = (result: boolean, data?: unknown) => void;
+export type DialogCallback = (result: boolean, data?: Record<string, unknown>) => void;
 export type OkCallback = () => void;
 export type CancelCallback = () => void;
 
@@ -80,7 +80,7 @@ export type CancelCallback = () => void;
 export interface ShapeFile {
   name: string;
   type: 'point' | 'line' | 'polygon';
-  data: unknown;
+  data: Record<string, unknown>;
   properties?: Dictionary<unknown>;
 }
 

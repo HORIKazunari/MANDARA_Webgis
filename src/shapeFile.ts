@@ -81,8 +81,8 @@ export class clsShapefile {
     private shapeS!: number;
     private fieldDT: Field_Info[] = [];
     private dataStr: string[][] = [];
-    private onError: ((tag: unknown) => void) | undefined;
-    private tag: unknown;
+    private onError: ((tag: string | number) => void) | undefined;
+    private tag: string | number = 0;
 
     constructor() {
         this.mapZahyo = new Zahyo_info();
@@ -107,7 +107,7 @@ export class clsShapefile {
         return this.shapeS;
     }
     
-    fileRead(files: File[], dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void, _onError: (tag: unknown) => void): void {
+    fileRead(files: File[], dbfEncode: string | number, _tag: string | number, onOK: (tag: string | number) => void, _onError: (tag: string | number) => void): void {
         this.onError = _onError;
         this.tag = _tag;
         const shxFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "shx");
@@ -169,7 +169,7 @@ export class clsShapefile {
     }
 
     /**zipファイル圧縮シェープファイル */
-    fileReadZip(unZipData: UnzippedShape, dbfEncode: string | number, _tag: unknown, onOK: (tag: unknown) => void): void {
+    fileReadZip(unZipData: UnzippedShape, dbfEncode: string | number, _tag: string | number, onOK: (tag: string | number) => void): void {
         this.tag = _tag;
         let shxFile: string | undefined;
         let shapeFile: string | undefined;

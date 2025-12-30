@@ -316,9 +316,11 @@ export class gridControl {
     height: number;
     
     // クラスプロパティ（元のコンストラクタ内ローカル変数）
-    private Grid_Property: unknown[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private Grid_Property: any[] = [];
     private Grid_Total: Grid_Total_Info = new Grid_Total_Info();
-    private UndoArray: unknown[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private UndoArray: any[] = [];
     private TimerObj: number | undefined = undefined;
     private TimerVX: number = 0;
     private TimerVY: number = 0;
@@ -1201,7 +1203,8 @@ export class gridControl {
     getLayerData(LayerNum: number, key: string) {
         return this.Grid_Property[LayerNum].LayerData[key];
     }
-    setLayerData(LayerNum: number, key: string, value: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setLayerData(LayerNum: number, key: string, value: any) {
         this.Grid_Property[LayerNum].LayerData[key] = value;
     }
 
@@ -1568,7 +1571,8 @@ export class gridControl {
     }
 
     /**テキストボックス、コンボボックスを指定した位置のセルのサイズに合わせる */
-    Get_Object_to_Cell_Size = (X: number, Y: number, Obj: unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Get_Object_to_Cell_Size = (X: number, Y: number, Obj: any) => {
         let w, H;
         let n;
         const GP = this.Grid_Property[this.Grid_Total.Layer];
@@ -1639,7 +1643,8 @@ export class gridControl {
         }
     }
 
-    Print_Data = (STT: unknown, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Print_Data = (STT: any, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
         if(STT==undefined){return;}
         if (!this.ctx) return;
         
@@ -4010,7 +4015,8 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         this.UndoArray.pop();
         this.Print_Grid_Data();
     }
-    SetGrid_UndoData = (Layer: number,rect: rectangle,GridData: unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    SetGrid_UndoData = (Layer: number,rect: rectangle,GridData: any) => {
         let  SN  = 0;
         const cst = GridData.split("\t");
         for (let i = rect.top; i <= rect.bottom; i++) {
@@ -4039,7 +4045,7 @@ class scrollBar {
     addEventlister: () => void;
 
     constructor(
-        ParentObj: unknown,
+        ParentObj: HTMLElement,
         x: number,
         y: number,
         size: number,
@@ -4055,19 +4061,19 @@ class scrollBar {
     let maxValue = _maxValue;
     let position = 0;
     let areaRange = _areaRange;
-    let frame: unknown;
-    let slideFrame: unknown;
-    let slider: unknown;
+    let frame: HTMLElement;
+    let slideFrame: HTMLElement;
+    let slider: HTMLElement;
     let slength = length - size*2;
-    let slideArea: unknown;
-    let sliderSize: unknown;
-    let btnPlusCanvas: unknown;
+    let slideArea: HTMLElement;
+    let sliderSize: number;
+    let btnPlusCanvas: HTMLCanvasElement;
     const arrowCol = "#555555";
     const backCol = "#eeeeee";
     const sliderCol = "#bbbbbb";
     let btnMDownF = false;
-    let btnDownTimer: unknown;
-    let btnDownID: unknown;
+    let btnDownTimer: number | undefined;
+    let btnDownID: number = 0;
     if (type == 0) {//縦
         frame = Generic.createNewDiv(ParentObj, "", "", "", x, y, size, length, "background-color:" + backCol, undefined);
         const btnMinusCanvas = Generic.createNewCanvas(frame, "tateMinus", "", 0, 0, size, size , undefined, "");
@@ -4320,7 +4326,7 @@ class scrollBar {
     let mdownF = false;
     let sliderInPosition: number;//-1,0,1
     let mDownsliderInPosition: number;
-    let mdownPos: unknown;
+    let mdownPos: point | undefined;
     function mdown(event: MouseEvent) {
         let e;
         if (event.type === "mousedown") {
