@@ -214,7 +214,7 @@ interface IAttrData {
     Get_AllMapLineKind?: () => unknown[];
     Get_LineKindUsedList?: () => unknown[];
     Get_Length_On_Screen?: (arg1?: number) => number;
-    Radius?: number;
+    Radius?: (size?: number, arg2?: number, arg3?: number) => number;
     Draw_Line?: (arg1: CanvasRenderingContext2D, arg2: Line_Property, arg3?: point[], arg4?: unknown) => void;
     Draw_Print?: (arg1: CanvasRenderingContext2D, arg2: string, arg3?: point, arg4?: unknown, arg5?: string | number, arg6?: string | number) => void;
     Draw_Mark?: (arg1: CanvasRenderingContext2D, arg2: point, arg3?: unknown, arg4?: unknown) => void;
@@ -240,7 +240,7 @@ interface IAttrData {
     Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, arg4?: unknown) => void;
     Convert_Zahyo?: (zahyo: number) => void;
     GetMapFileName?: () => string[];
-    SetMapFile?: (filename: string) => unknown;
+    SetMapFile?: (filename: string) => IMapData;
     Check_Vector_Object?: () => void;
     PrtObjectSpatialIndex?: () => void;
     SetMapViewerData?: (data: unknown, arg2?: unknown, arg3?: unknown) => { ok: boolean; emes: string };
@@ -248,14 +248,14 @@ interface IAttrData {
     ADD_AttrData?: (data: unknown, flag?: boolean) => { ok: boolean; emes: string };
     Set_LayerName_to?: (selbox: HTMLSelectElement, SelectedIndex?: number, NormalF?: boolean, syntheticF?: boolean, PointF?: boolean, MeshF?: boolean) => void;
     Set_ObjectName_to_selectBox?: (selbox: HTMLSelectElement, Layernum?: number, SelectedObject?: number) => void;
-    MapData?: unknown; // clsAttrMapData (clsAttrData.tsで定義)
+    MapData?: IMapData; // clsAttrMapData (clsAttrData.tsで定義)
     DeleteObjects?: (objects: number[], arg2?: unknown) => void;
     Set_DataTitle_to_cboBox?: (cbox: HTMLSelectElement, Layernum?: number, SelectedIndex?: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
     Set_ObjectName_to_checkedListBox?: (selectElement: HTMLElement, layerNum?: number, selectedObject?: number) => void;
     getDummyObjGroupArray?: (Layernum?: number, shape?: number) => { DummyOBGArray: boolean[]; trueNum: number };
     Get_MedianValue?: (layer?: number, data?: number) => number;
-    nowLayer?: () => unknown; // strLayerDataInfo (clsAttrData.tsで定義)
-    Screen_Back?: unknown; // BackGround_Box_Property
+    nowLayer?: () => ILayerDataInfo;
+    Screen_Back?: BackGround_Box_Property;
     Draw_Tile_Box?: (context: CanvasRenderingContext2D, rect: rectangle, arg3?: unknown, arg4?: unknown, arg5?: unknown) => void;
     Draw_Sample_LineBox?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: unknown, arg4?: unknown) => void;
     Draw_Sample_Mark_Box?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: unknown, arg4?: unknown) => void;
@@ -450,6 +450,28 @@ interface IGraphMode {
 interface ILabelMode {
     DataSet: any[];
     initDataSet?: () => void;
+    [key: string]: any;
+}
+
+// マップデータ（拡張版）
+interface IMapData {
+    Map: IMapInfo;
+    [key: string]: any;
+}
+
+// マップ情報（拡張版）
+interface IMapInfo {
+    MapCompass: IMapCompassInfo;
+    ALIN?: number;
+    ObjectNumber?: number;
+    [key: string]: any;
+}
+
+// マップコンパス情報（拡張版）
+interface IMapCompassInfo {
+    Mark: Mark_Property;
+    Position?: point;
+    Visible?: boolean;
     [key: string]: any;
 }
 
