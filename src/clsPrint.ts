@@ -590,7 +590,7 @@ class clsPrint {
 
         let al = state.attrData.LayerData[Layernum];
         let ALineN = al.MapFileData.Map.ALIN;
-        let Use_Line = new Array(ALineN);
+        const Use_Line = new Array(ALineN);
         Use_Line.fill(0);
         for (let i = 0; i < ObjCode.length; i++) {
             let badata; //boundArrangeData
@@ -706,7 +706,7 @@ class clsPrint {
         let Add2 = 0;
         let BeforeDecimal = 0;
         let AfterDecimal = 0;
-        let inObjectList = new Array(Objn);
+        const inObjectList = new Array(Objn);
 
         let ald = al.atrData.Data[DataNum];
         let alds = ald.SoloModeViewSettings;
@@ -1919,8 +1919,8 @@ console.log(SortSumDataValue)
                     state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][i] = true;
 
                     let TH = D_TxHeight * D_Word_Cut.length + O_TxHeight * O_Word_Cut.length;
-                    let AP = new point();
-                    let BP = new point();
+                    const AP = new point();
+                    const BP = new point();
                     AP.x = XY[i].x - BoxWidth / 2;
                     BP.x = AP.x + BoxWidth;
                     let scx = XY[i].x;
@@ -2435,7 +2435,7 @@ console.log(SortSumDataValue)
         //30度以内に近接し、ある程度離れている点は、近い方を選択する
         let alimit = 25 * (3 - Math.max(ad.SoloModeViewSettings.ContourMD.Detailed - 1, 0)) + 30;
 
-        let O_Distance_NoUseF = new Array(n).fill(false);
+        const O_Distance_NoUseF = new Array(n).fill(false);
         let nn = n;
         let fa = AngleSort.DataPositionValue(0);
         let fai = 0;
@@ -2813,7 +2813,7 @@ console.log(SortSumDataValue)
 
         function Vector_Block_Draw_Block(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number, OP: point, r: number, MK: Mark_Property, Block_n: number, ArrangeB: number, HasuVisible: boolean, Hasu_R: number, Hasu: number, BlockInterval: number) {
             
-            let ap = new point();
+            const ap = new point();
             let RetP = OP.Clone();
             let r2 = spatial.Get_TurnedBox(new size(r, r), MK.WordFont?.Kakudo ?? 0).width;
             switch (ArrangeB) {
@@ -3446,7 +3446,7 @@ console.log(SortSumDataValue)
 
         let Alin = al.MapFileData.Map.ALIN;
         let objN = al.atrObject.ObjectNum;
-        let StacLine = new Array(Alin).fill(0);
+        const StacLine = new Array(Alin).fill(0);
         let sti = 0;
         if ((av.Missing_Data.Print_Flag == true) && (ad.MissingValueNum != 0)) {
             sti = -1;

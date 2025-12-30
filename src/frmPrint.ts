@@ -216,7 +216,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 if (p.Equals(mousePreviousPosition) == false) {
                     let vs = state.attrData.TotalData.ViewStyle;
                     let MouseDownSRxy = vs.ScrData.getSRXY(mouseDownPosition);
-                    let movePx = new point(p.x - mouseDownPosition.x, p.y - mouseDownPosition.y);
+                    const movePx = new point(p.x - mouseDownPosition.x, p.y - mouseDownPosition.y);
                     switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                         case enmPrintMouseMode.RangePrint: {
                             //表示範囲指定
@@ -388,7 +388,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
 
                             let gr = state.attrData.TempData.Accessory_Temp;
-                            let movePx = new point(gr.GroupBox_Rect.left - gr.OriginalGroupBoxRect.left, gr.GroupBox_Rect.top - gr.OriginalGroupBoxRect.top);
+                            const movePx = new point(gr.GroupBox_Rect.left - gr.OriginalGroupBoxRect.left, gr.GroupBox_Rect.top - gr.OriginalGroupBoxRect.top);
                             stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width;
                             stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height;
                         } else {

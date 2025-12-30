@@ -305,9 +305,9 @@ class clsDrawLine {
     /**矢印描画 */
     static Arrow(g: CanvasRenderingContext2D, P: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
 
-        let e2=new point() ;
-        let e3 =new point() ;
-        let e4 =new point() ;
+        const e2=new point() ;
+        const e3 =new point() ;
+        const e4 =new point() ;
         this.Draw_Arrow_Keisan(e3, e2, e4,  P, BeforPoint, LPat, DArrow, false, ScrData);
         let pxy=[];
         pxy[0] = ScrData.Get_SxSy_With_3D(e3);
@@ -336,9 +336,9 @@ class clsDrawLine {
 
     static Check_Draw_Arrow_Line(OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
 
-        let e2=new point() ;
-        let e3=new point() ;
-        let e4=new point() ;
+        const e2=new point() ;
+        const e3=new point() ;
+        const e4=new point() ;
         this.Draw_Arrow_Keisan(e3, e2, e4,  OP, BeforPoint, LPat, DArrow, true, ScrData);
         return spatial.Line_Cross_Point(e3, e4, LineP1, LineP2);
     }
@@ -481,7 +481,7 @@ class clsDrawTile {
 
         let w = picBox.width;
         let h = picBox.height;
-        let rect = new rectangle(new point(2, 2),new size( w - 4, h - 4));
+        const rect = new rectangle(new point(2, 2),new size( w - 4, h - 4));
         let g = picBox.getContext('2d');
         g.fillStyle = "rgb(255, 255, 255)";
         g.fillRect(0, 0, w, h);
@@ -584,7 +584,7 @@ class clsDrawMarkFan {
         this.mShape = [];
         for (let i = 0; i < sr.length;i++) {
             let Mark_XY_Split = sr[i].split(",");
-            let d = new MarkInfo();
+            const d = new MarkInfo();
             d.name = Mark_XY_Split[0];
             d.stac = [];
             for (let j = 1; j < Mark_XY_Split.length; j++) {
@@ -712,7 +712,7 @@ class clsDrawMarkFan {
         let inf;
         if ((XR == YR) && (Real_Circle_F == true)) {
             //楕円が真円で内部がベタ塗りか空白、線が実線または透明の場合
-            let C_Rect = new rectangle(new point(Position.x - XR, Position.y - YR), new size(XR * 2, YR * 2));
+            const C_Rect = new rectangle(new point(Position.x - XR, Position.y - YR), new size(XR * 2, YR * 2));
 
             if (ScrData.SampleBoxFlag == false) {
                 const screenRect = ScrData.ScrRectangle ?? new rectangle(0, 0, 0, 0);

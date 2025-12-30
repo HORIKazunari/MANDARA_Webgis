@@ -1352,8 +1352,8 @@ export class clsAccessory {
                         let Line_Pat = clsBase.Line();
                         Line_Pat.Set_Same_ColorWidth_to_LinePat?.(msmd.LineShape.Color, r);
                         Line_Pat.Edge_Connect_Pattern = msmdm.Line.Edge_Connect_Pattern;
-                        let P1 = new point(ALP.x + r, ALP.y + ys2 + cyplus);
-                        let P2 = new point(ALP.x + shapexs + 1 - r, ALP.y + ys2 + cyplus);
+                        const P1 = new point(ALP.x + r, ALP.y + ys2 + cyplus);
+                        const P2 = new point(ALP.x + shapexs + 1 - r, ALP.y + ys2 + cyplus);
                         state.attrData.Draw_Line(g, Line_Pat, P1, P2);
                         HL = shapexs / 2;
                         break;
@@ -1364,7 +1364,7 @@ export class clsAccessory {
                 if (i == 0) {
                     fw += UnitTx;
                 }
-                let P = new point(ALP.x + WordsX, ALP.y + ys2 + cyplus);
+                const P = new point(ALP.x + WordsX, ALP.y + ys2 + cyplus);
                 state.attrData.Draw_Print(g, fw, P, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                 ys2 += Math.max(r * 2 + UH / 2, UH * 1.5);
             }
@@ -1376,7 +1376,7 @@ export class clsAccessory {
             switch (LayerShape) {
                 case (enmShape.PolygonShape):
                 case (enmShape.PointShape): {
-                    let P = new point(ALP.x + r, ALP.y + ys2)
+                    const P = new point(ALP.x + r, ALP.y + ys2)
                     state.attrData.Draw_Mark(g, P, r, msmdm)
                     P.y = ALP.y + ys2 + UH
                     let PushMark = msmdm.Clone();
@@ -1432,8 +1432,8 @@ export class clsAccessory {
                         } else {
                             r = MaxLW;
                         }
-                        let P1 = new point(ALP.x + r, ALP.y + ys2 + Math.max(UH, MaxLW));
-                        let P2 = new point(ALP.x + shapexs - r, P1.y);
+                        const P1 = new point(ALP.x + r, ALP.y + ys2 + Math.max(UH, MaxLW));
+                        const P2 = new point(ALP.x + shapexs - r, P1.y);
                         state.attrData.Draw_Line(g, md.LineShape, P1, P2);
                         let P3 = new point(ALP.x + shapexs, P1.y);
                         state.attrData.Draw_Print(g, md.Text, P3, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
@@ -2357,8 +2357,8 @@ export class clsAccessory {
                     LPat.Color = P_Scl.Font.Color.Clone();
                     LPat.Width = 0.3;
                     for (let i = 1; i < SCST + 2; i++) {
-                        let P1 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H);
-                        let P2 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H * 1.5 - 1);
+                        const P1 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H);
+                        const P2 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H * 1.5 - 1);
                         state.attrData.Draw_Line(g, LPat, P1, P2);
                     }
                     break;
@@ -2369,8 +2369,8 @@ export class clsAccessory {
                     state.attrData.Draw_Line(g, LPat, new point(sxy.x + zeroW, sxy.y + H * 1.5 - 1), new point(sxy.x + zeroW + ScaleLength, sxy.y + H * 1.5 - 1));
                     LPat.Width = 0.3;
                     for (let i = 1; i < (SCST + 2); i++) {
-                        let P1 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H);
-                        let P2 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H * 1.5 - 1);
+                        const P1 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H);
+                        const P2 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H * 1.5 - 1);
                         state.attrData.Draw_Line(g, LPat, P1, P2);
                     }
                     break;

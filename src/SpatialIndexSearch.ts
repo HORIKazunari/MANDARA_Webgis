@@ -647,7 +647,7 @@ class clsSpatialIndexSearch {
                 }
             }
         }
-        let Tags = new Array(same_N);
+        const Tags = new Array(same_N);
         for (let i = 0; i < same_N; i++) {
             Tags[i] = this.ObjectXY[ObStac[i]].Tag;
         }

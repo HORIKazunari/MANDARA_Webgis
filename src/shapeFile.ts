@@ -338,7 +338,7 @@ export class clsShapefile {
             for (let i = 0; i < GetLen; i++) {
                 ubt.push(dv.getInt8(Position + i));
             }
-            let text_decoder = new TextDecoder(encode);
+            const text_decoder = new TextDecoder(encode);
             let retstr = text_decoder.decode(Uint8Array.from(ubt).buffer);
             let czero: number;
             do {

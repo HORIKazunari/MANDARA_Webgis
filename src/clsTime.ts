@@ -141,7 +141,7 @@ class Font_Property {
     Back = new BackGround_Box_Property();
     
     Clone(): Font_Property {
-        let d = new Font_Property();
+        const d = new Font_Property();
         Object.assign(d, this);
         d.Color = this.Color.Clone();
         d.FringeColor = this.FringeColor.Clone();
@@ -180,7 +180,7 @@ class BackGround_Box_Property {
     Padding?: number;
     
     Clone(): BackGround_Box_Property {
-        let d = new BackGround_Box_Property();
+        const d = new BackGround_Box_Property();
         Object.assign(d, this);
         d.Tile = this.Tile.Clone();
         d.Line = this.Line.Clone();
@@ -194,7 +194,7 @@ class LineEdge_Connect_Pattern_Data_Info {
     miterLimit = 10;
     
     Clone(): LineEdge_Connect_Pattern_Data_Info {
-        let d = new LineEdge_Connect_Pattern_Data_Info();
+        const d = new LineEdge_Connect_Pattern_Data_Info();
         Object.assign(d, this);
         return d;
     }
@@ -207,7 +207,7 @@ class Line_Property {
     Edge_Connect_Pattern = new LineEdge_Connect_Pattern_Data_Info();
     
     Clone(): Line_Property {
-        let d = new Line_Property();
+        const d = new Line_Property();
         d.BlankF = this.BlankF;
         d.Width = this.Width;
         d.Color = this.Color.Clone();
@@ -226,7 +226,7 @@ class Tile_Property {
     Color = new colorRGBA();
     
     Clone(): Tile_Property {
-        let d = new Tile_Property();
+        const d = new Tile_Property();
         d.BlankF = this.BlankF;
         d.Color = this.Color.Clone();
         return d;
@@ -242,7 +242,7 @@ class Mark_Property {
     WordFont = new Font_Property();
     
     Clone(): Mark_Property {
-        let d = new Mark_Property();
+        const d = new Mark_Property();
         Object.assign(d, this);
         d.Tile = this.Tile.Clone();
         d.Line = this.Line.Clone();
@@ -265,7 +265,7 @@ class Arrow_Data {
     WidthPlus?: number;
     
     Clone(): Arrow_Data {
-        let d = new Arrow_Data();
+        const d = new Arrow_Data();
         Object.assign(d, this);
         return d;
     }
@@ -294,7 +294,7 @@ class Setting_Info {
     LegendBlockmodeWord = "1個あたり";
     
     Clone(): Setting_Info {
-        let d = new Setting_Info();
+        const d = new Setting_Info();
         Object.assign(d, this);
         return d;
     }
@@ -304,7 +304,7 @@ class Setting_Info {
 class clsBase {
     static Arrow() {
 
-        let BArrow = new Arrow_Data();
+        const BArrow = new Arrow_Data();
         BArrow.End_Arrow_F = false;
         BArrow.Start_Arrow_F = false;
         BArrow.ArrowHeadType = enmArrowHeadType.Line;
@@ -323,7 +323,7 @@ class clsBase {
 
     }
     static Line  () {
-        let BaseLine = new Line_Property();
+        const BaseLine = new Line_Property();
         BaseLine.BlankF = false;
         BaseLine.Edge_Connect_Pattern = this.LineEdge();
         BaseLine.Width = 0;
@@ -344,21 +344,21 @@ class clsBase {
         return l;
     }
     static Tile  () {
-        let BaseTile = new Tile_Property();
+        const BaseTile = new Tile_Property();
         BaseTile.BlankF = false;
         BaseTile.Color = new colorRGBA([255, 255, 255]);
         return BaseTile;
     }
     static BlancTile() {
 
-        let BaseTile = new Tile_Property();
+        const BaseTile = new Tile_Property();
         BaseTile.BlankF = true;
         BaseTile.Color = new colorRGBA([255, 255, 255]);
         return BaseTile;
     }
     static PaintTile(col: colorRGBA) {
 
-        let BaseTile = new Tile_Property();
+        const BaseTile = new Tile_Property();
         BaseTile.BlankF = false;
         BaseTile.Color = col;
         return BaseTile;
@@ -427,7 +427,7 @@ class clsBase {
 
     static BlankBackground() {
 
-        let Back = new BackGround_Box_Property();
+        const Back = new BackGround_Box_Property();
         Back.Line.BlankF = true;
         Back.Tile.BlankF = true;
         Back.Round = 1;
@@ -437,7 +437,7 @@ class clsBase {
 
     static WhiteBackground() {
 
-        let Back = new BackGround_Box_Property();
+        const Back = new BackGround_Box_Property();
         Back.Line.BlankF = true;
         Back.Tile.BlankF = false;
         Back.Tile.Color = new colorRGBA([255, 255, 255,200]);
