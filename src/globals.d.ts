@@ -227,17 +227,17 @@ interface IAttrData {
     Get_ObjectNum?: (layer?: number) => number;
     Check_Condition?: (layer?: number, index?: number) => boolean;
     Get_KenObjName?: (layer?: number, index?: number) => string;
-    getSoloMode?: (arg1?: number, arg2?: number) => unknown;
-    setSoloMode?: (arg1: number, arg2?: number, arg3?: unknown) => void;
+    getSoloMode?: (arg1?: number, arg2?: number) => ISoloModeViewSettings;
+    setSoloMode?: (arg1: number, arg2?: number, arg3?: ISoloModeViewSettings) => void;
     Get_DataTitle?: (arg1?: number, arg2?: number, arg3?: boolean) => string;
     Get_SelectedDataTitle?: () => string;
-    nowGraph?: unknown; // strGraph_Data (clsAttrData.tsで定義)
-    nowLabel?: unknown; // strLabel_Data (clsAttrData.tsで定義)
+    nowGraph?: () => any; // strGraph_Data (clsAttrData.tsで定義)
+    nowLabel?: () => any; // strLabel_Data (clsAttrData.tsで定義)
     ResetMPSubLineXY?: () => void;
     ResetObjectPrintedCheckFlag?: () => void;
     check_AutoSoubyou_Enable?: (arg1?: number, arg2?: number) => boolean;
-    layerGraph?: unknown; // strGraphMode_DataSetting_Info (clsAttrData.tsで定義)
-    layerLabel?: unknown; // strLabelMode_Data_info (clsAttrData.tsで定義)
+    layerGraph?: (layerNum?: number) => IGraphMode;
+    layerLabel?: (layerNum?: number) => ILabelMode;
     Check_Screen_In?: (CenterP: point, R?: number) => boolean;
     Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, arg4?: unknown) => void;
     Convert_Zahyo?: (zahyo: number) => void;
@@ -279,11 +279,11 @@ interface IAttrData {
     nowDataSolo?: () => ISoloModeViewSettings;
     nowData?: () => IDataItem;
     nowLayer?: () => ILayerDataInfo;
-    nowSeries?: unknown; // strSeries_Dataset_Info (clsAttrData.tsで定義)
-    nowOverlay?: unknown; // strOverLay_Dataset_Info (clsAttrData.tsで定義)
-    Twocolort?: unknown; // colorRGBA[]
-    Threecolor?: unknown; // colorRGBA[]
-    FourColor?: unknown; // colorRGBA[]
+    nowSeries?: () => ISeriesDatasetInfo;
+    nowOverlay?: () => IOverLayDatasetInfo;
+    Twocolort?: colorRGBA[];
+    Threecolor?: colorRGBA[];
+    FourColor?: colorRGBA[];
     Get_DataNote?: (layer?: number, data?: number) => string;
     Get_Data_Value?: (Layernum?: number, DataNum?: number, Obj?: number, Missing_word?: string) => string | number;
     Get_DataUnit?: (layer?: number, data?: number) => string;
@@ -500,15 +500,46 @@ interface ILayerModeViewSettings {
 
 // グラフモード（拡張版）
 interface IGraphMode {
-    DataSet: any[];
+    DataSet: IGraphDataSet[];
+    SelectedIndex?: number;
     initDataSet?: () => void;
+    [key: string]: any;
+}
+
+// グラフデータセット（拡張版）
+interface IGraphDataSet {
+    Data: IGraphDataItem[];
+    Type?: number;
+    length?: number;
+    [key: string]: any;
+}
+
+// グラフデータ項目（拡張版）
+interface IGraphDataItem {
+    DataNumber: number;
+    Layer?: number;
     [key: string]: any;
 }
 
 // ラベルモード（拡張版）
 interface ILabelMode {
-    DataSet: any[];
+    DataSet: ILabelDataSet[];
+    SelectedIndex?: number;
     initDataSet?: () => void;
+    [key: string]: any;
+}
+
+// ラベルデータセット（拡張版）
+interface ILabelDataSet {
+    Data: ILabelDataItem[];
+    length?: number;
+    [key: string]: any;
+}
+
+// ラベルデータ項目（拡張版）
+interface ILabelDataItem {
+    DataNumber: number;
+    Layer?: number;
     [key: string]: any;
 }
 
