@@ -45,7 +45,7 @@ class strLatLonDegreeMinuteSecond {
     }
 
     toLatLon(): latlon {
-        let result = new latlon(0, 0);
+        const result = new latlon(0, 0);
         result.lat = Math.abs(this.LatitudeDMS.Degree) + this.LatitudeDMS.Minute / 60 + this.LatitudeDMS.Second / 3600;
         if (this.LatitudeDMS.Degree < 0) {
             result.lat = -result.lat;

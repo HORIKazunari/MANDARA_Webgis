@@ -23,7 +23,7 @@ class Object_Succession_Data {
     Time: strYMD = new strYMD();
 
     Clone(): Object_Succession_Data {
-        let d = new Object_Succession_Data();
+        const d = new Object_Succession_Data();
         d.ObjectCode = this.ObjectCode;
         d.Time = this.Time.Clone();
         return d;
@@ -59,7 +59,7 @@ class Object_CenterPoint_Data {
     SETime: Start_End_Time_data = new Start_End_Time_data();
 
     Clone(): Object_CenterPoint_Data {
-        let d = new Object_CenterPoint_Data();
+        const d = new Object_CenterPoint_Data();
         d.Position = this.Position.Clone();
         d.SETime = this.SETime.Clone();
         return d;
@@ -75,7 +75,7 @@ class LineCodeStac_Data {
     Times: Start_End_Time_data[] = [];
 
     Clone(): LineCodeStac_Data {
-        let d = new LineCodeStac_Data();
+        const d = new LineCodeStac_Data();
         d.LineCode = this.LineCode;
         d.NumOfTime = this.NumOfTime;
         d.Times = Generic.ArrayClone(this.Times);
@@ -124,7 +124,7 @@ set AttDataType(value) {
         this.Unit = tu.unit;
     }
     Clone(): strMPObjDefAttData_Info {
-        let d = new strMPObjDefAttData_Info();
+        const d = new strMPObjDefAttData_Info();
         Object.assign(d, this);
         return d;
     }
@@ -168,7 +168,7 @@ class strMPObjDefTimeAttData_Info {
     ExtraValue?: number;
 
     Clone(): strMPObjDefTimeAttData_Info {
-        let d = new strMPObjDefTimeAttData_Info();
+        const d = new strMPObjDefTimeAttData_Info();
         Object.assign(d, this);
         d.attData = this.attData.Clone();
         return d;
@@ -193,7 +193,7 @@ class strObjectGroup_Data {
     UseObjectGroup: boolean[] = [];
 
     Clone(): strObjectGroup_Data {
-    let d = new strObjectGroup_Data();
+    const d = new strObjectGroup_Data();
     Object.assign(d, this);
     d.DefTimeAttSTC = [];
     for (let i in this.DefTimeAttSTC) {
@@ -215,7 +215,7 @@ class strDefTimeAttDataEach_Info {
     Value?: string;
 
     Clone(): strDefTimeAttDataEach_Info {
-        let d = new strDefTimeAttDataEach_Info();
+        const d = new strDefTimeAttDataEach_Info();
         d.Span = this.Span.Clone();
         d.Value = this.Value;
         return d;
@@ -230,7 +230,7 @@ class strDefTimeAttData_Info {
     Data: strDefTimeAttDataEach_Info[] = [];
 
     Clone(): strDefTimeAttData_Info {
-        let d = new strDefTimeAttData_Info();
+        const d = new strDefTimeAttData_Info();
         d.Data = Generic.ArrayClone(this.Data);
         return d;
     }
@@ -319,7 +319,7 @@ class Line_Time_Data {
     SETime: Start_End_Time_data = new Start_End_Time_data();
 
     Clone(): Line_Time_Data {
-        let d = new Line_Time_Data();
+        const d = new Line_Time_Data();
         d.Kind = this.Kind;
         d.SETime = this.SETime.Clone();
         return d;
@@ -562,9 +562,9 @@ class clsMapdata {
         Object_Color.push(new colorRGBA(255, 255, 0));
         Object_Color.push(new colorRGBA(255, 0, 255));
         Object_Color.push(new colorRGBA(200, 200, 200));
-        let v1 = ObkCode % 6;
-        let v2 = Math.floor(ObkCode / 6);
-        let col = new colorRGBA(Object_Color[v1].r - v2 / 50, Object_Color[v1].g - v2 / 50, Object_Color[v1].b - v2 / 50);
+        const v1 = ObkCode % 6;
+        const v2 = Math.floor(ObkCode / 6);
+        const col = new colorRGBA(Object_Color[v1].r - v2 / 50, Object_Color[v1].g - v2 / 50, Object_Color[v1].b - v2 / 50);
         return col;
     }
 

@@ -111,7 +111,7 @@ class clsDraw {
             g.translate(P.x, P.y);
             g.rotate(-(P_Font.Kakudo ?? 0) * Math.PI / 180);
             if (P_Font.FringeF == true) {
-                let w = Math.max(TH * (P_Font.FringeWidth ?? 50) / 100 / 2, 1);
+                const w = Math.max(TH * (P_Font.FringeWidth ?? 50) / 100 / 2, 1);
                 g.lineWidth = w;
                 g.strokeStyle = P_Font.FringeColor?.toRGBA() ?? 'white';
                 g.strokeText(Tx, 0, 0);
@@ -120,7 +120,7 @@ class clsDraw {
             g.restore();
         } else {
             if (P_Font.FringeF == true) {
-                let w = Math.max(TH * (P_Font.FringeWidth ?? 50) / 100 / 2, 1);
+                const w = Math.max(TH * (P_Font.FringeWidth ?? 50) / 100 / 2, 1);
                 g.lineWidth = w;
                 g.strokeStyle = P_Font.FringeColor?.toRGBA() ?? 'white';
                 g.strokeText(Tx, P.x, P.y);
@@ -135,8 +135,8 @@ class clsDraw {
     //指定した幅で文字列を分割して返す
     static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info) {
 
-        let Out_Text=[];
-        let thdata = P_Font.toContextFont!(ScrData);
+        const Out_Text=[];
+        const thdata = P_Font.toContextFont!(ScrData);
         g.font = thdata.font!;
         let FSize;
         let subText = "";
@@ -149,7 +149,7 @@ class clsDraw {
                 Out_Text.push(subText);
                 subText = "";
             } else {
-                let MidText = T.mid(i, 1);
+                const MidText = T.mid(i, 1);
                 FSize = g.measureText(subText + MidText);
                 if (Max_Width > 0) {
                     if (FSize.width > Max_Width) {
@@ -179,9 +179,9 @@ class clsDraw {
 
  
     static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string) {
-        let Pon = Polydata.Pon;
-        let pxy = Polydata.pxy;
-        let nPolyP = Polydata.nPolyP;
+        const Pon = Polydata.Pon;
+        const pxy = Polydata.pxy;
+        const nPolyP = Polydata.nPolyP;
         let n = 0;
         g.beginPath();
         for (let i = 0; i < Pon; i++) {
@@ -199,7 +199,7 @@ class clsDraw {
 
     static ClipPolyPolygon(g: CanvasRenderingContext2D, pxy: point[], AllnPolyP: number[]) {
 
-        let Pon = AllnPolyP.length;
+        const Pon = AllnPolyP.length;
         let n = 0;
         g.beginPath();
         for (let i = 0; i < Pon; i++) {
@@ -231,8 +231,8 @@ class clsDraw {
     static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info) {
 
         if (LinePat != undefined) {
-            let lc: CanvasLineCap[] = ['butt', 'square', 'round'];
-            let lj: CanvasLineJoin[] = ['miter', 'bevel', 'round'];
+            const lc: CanvasLineCap[] = ['butt', 'square', 'round'];
+            const lj: CanvasLineJoin[] = ['miter', 'bevel', 'round'];
             g.lineCap = lc[LinePat.Edge_Connect_Pattern.lineCap] as CanvasLineCap;
             g.lineJoin = lj[LinePat.Edge_Connect_Pattern.lineJoin] as CanvasLineJoin;
             g.miterLimit = LinePat.Edge_Connect_Pattern.miterLimit;
@@ -346,11 +346,11 @@ class clsDrawLine {
     static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info) {
 
 
-        let VecX = OP.x - BeforPoint.x;
-        let VecY = OP.y - BeforPoint.y;
+        const VecX = OP.x - BeforPoint.x;
+        const VecY = OP.y - BeforPoint.y;
 
         //sita:矢印の角度の半分
-        let sita = DArrow.Angle / 2;
+        const sita = DArrow.Angle / 2;
 
         //線の幅を求める
         let LineW = LPat.Width;
@@ -364,20 +364,20 @@ class clsDrawLine {
             a = a * 0.95;
         }
         //c:矢印の頂点から底辺へ垂線の長さ
-        let c = a / Math.sin(sita * Math.PI / 180);
+        const c = a / Math.sin(sita * Math.PI / 180);
         //b:矢印の三角形の長辺の長さ
-        let b = c * Math.cos(sita * Math.PI / 180);
+        const b = c * Math.cos(sita * Math.PI / 180);
 
-        let e2=new point();
-        let tva = Math.sqrt(1 / (VecX ** 2 + VecY ** 2));
+        const e2=new point();
+        const tva = Math.sqrt(1 / (VecX ** 2 + VecY ** 2));
         e2.x = VecX * tva * b;
         e2.y = VecY * tva * b;
 
-        let retV = spatial.Get_Suisen_Vec(VecX, VecY);
-        let V_VecX = retV.rVx;
-        let V_VecY = retV.rVy;
+        const retV = spatial.Get_Suisen_Vec(VecX, VecY);
+        const V_VecX = retV.rVx;
+        const V_VecY = retV.rVy;
 
-        let newP = spatial.Get_Vec_Point(V_VecX, V_VecY, a, false);
+        const newP = spatial.Get_Vec_Point(V_VecX, V_VecY, a, false);
 
         ac.x = OP.x - e2.x;
         ac.y = OP.y - e2.y;
@@ -391,9 +391,9 @@ class clsDrawLine {
 
     static Draw_Sample_LineBox(picBox: HTMLCanvasElement, Lpat: Tile_Property, ScrData: Screen_info) {
 
-        let w = picBox.width;
-        let h = picBox.height;
-        let g = picBox.getContext('2d');
+        const w = picBox.width;
+        const h = picBox.height;
+        const g = picBox.getContext('2d');
         g.fillStyle = "rgb(255, 255, 255)";
         g.fillRect(0, 0, w, h);
         ScrData.SampleBoxFlag = true;
@@ -402,8 +402,8 @@ class clsDrawLine {
             Font.Size = 13;
             clsDraw.print(g, "透明", new point(w / 2, h / 2), Font , enmHorizontalAlignment.Center, enmVerticalAlignment.Center, ScrData);
         } else {
-            let p1 = new point(w * 0.1, h / 2);
-            let p2 = new point(w * 0.9, h / 2);
+            const p1 = new point(w * 0.1, h / 2);
+            const p2 = new point(w * 0.9, h / 2);
             this.Line(g, Lpat, p1, p2, ScrData);
         }
     }

@@ -111,9 +111,9 @@ function setting(locSearch: string) {
 
     frmSettingMode();
     if (locSearch != "") {
-        let locData_v = locSearch.substring(1).split("&");
+        const locData_v = locSearch.substring(1).split("&");
         for (let i = 0; i < locData_v.length; i++) {
-            let datav2 = locData_v[i].split("=");
+            const datav2 = locData_v[i].split("=");
             switch (datav2[0]) {
                 case "file":
                     //最初に読み込むファイルが指定されている
@@ -125,7 +125,7 @@ function setting(locSearch: string) {
     }
 
     function menuClick(pos: point) {
-        let dataExist=(man_Data != enmDataSource.NoData);
+        const dataExist=(man_Data != enmDataSource.NoData);
         switch (man_Data){
             case enmDataSource.NoData:
                 break;
@@ -168,7 +168,7 @@ function setting(locSearch: string) {
     Generic.createNewImageButton(divpanel, "settingWindowBtnConditionInfo", "image/Find_VS.png", 315, 20, 20, 20, function (e: MouseEvent) {
         //属性検索設定ボタン
 
-        let at = state.attrData.TotalData;
+        const at = state.attrData.TotalData;
         let Check_Lay = new Array(at.LV1.Lay_Maxn).fill(false);
         let ST = "";
         switch (at.LV1.Print_Mode_Total) {
