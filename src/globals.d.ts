@@ -495,13 +495,13 @@ interface IDataItem {
 // ソロモード表示設定（拡張版）
 interface ISoloModeViewSettings {
     SoloMode: number;
-    ClassPaintMode: any;
-    MarkSizeMode: any;
-    MarkBlockMode: any;
-    MarkBarMode: any;
-    ClassODMode: any;
+    ClassPaintMode: IClassPaintMode;
+    MarkSizeMode: IMarkSizeMode;
+    MarkBlockMode: IMarkBlockMode;
+    MarkBarMode: IMarkBarMode;
+    ClassODMode: IClassODMode;
     ClassODMD: IClassODMD;
-    ContourMode: any;
+    ContourMode: IContourMode;
     TripMode: any;
     StringMode: any;
     MarkSizeMD: any;
@@ -511,6 +511,79 @@ interface ISoloModeViewSettings {
     MarkTurnMode: any;
     Class_Div: any[];
     Div_Num: number;
+    [key: string]: any;
+}
+
+// クラス塗り分けモード（拡張版）
+interface IClassPaintMode {
+    color1?: colorRGBA;
+    color2?: colorRGBA;
+    color3?: colorRGBA;
+    Color_Mode?: number;
+    Clone?: () => IClassPaintMode;
+    [key: string]: any;
+}
+
+// 記号の大きさモード（拡張版）
+interface IMarkSizeMode {
+    MaxValueMode?: number;
+    MaxValue?: number;
+    Value?: number[];
+    Mark?: Mark_Property;
+    LineShape?: any;
+    Clone?: () => IMarkSizeMode;
+    [key: string]: any;
+}
+
+// 記号の数モード（拡張版）
+interface IMarkBlockMode {
+    Value?: number;
+    ArrangeB?: number;
+    HasuVisible?: boolean;
+    Mark?: Mark_Property;
+    Overlap?: number;
+    LegendBlockModeWord?: string;
+    Clone?: () => IMarkBlockMode;
+    [key: string]: any;
+}
+
+// 記号の棒モード（拡張版）
+interface IMarkBarMode {
+    Width?: number;
+    MaxHeight?: number;
+    MaxValueMode?: number;
+    MaxValue?: number;
+    InnerTile?: Tile_Property;
+    FrameLinePat?: Line_Property;
+    ThreeD?: boolean;
+    ScaleLineInterval?: number;
+    ScaleLineVisible?: boolean;
+    scaleLinePat?: Line_Property;
+    BarShape?: number;
+    Clone?: () => IMarkBarMode;
+    [key: string]: any;
+}
+
+// 線引きモード（拡張版）
+interface IClassODMode {
+    o_Layer?: number;
+    O_object?: number;
+    Dummy_ObjectFlag?: boolean;
+    Arrow?: Arrow_Data;
+    Clone?: () => IClassODMode;
+    [key: string]: any;
+}
+
+// 等値線モード（拡張版）
+interface IContourMode {
+    Interval_Mode?: number;
+    Draw_in_Polygon_F?: boolean;
+    Spline_flag?: boolean;
+    Detailed?: number;
+    Regular?: any;
+    IrregularNum?: number;
+    Irregular?: any[];
+    Clone?: () => IContourMode;
     [key: string]: any;
 }
 
@@ -946,6 +1019,39 @@ declare const enmBarLineMaxMinMode: {
 declare const enmBasePosition: {
     Screen: 0;
     Map: 1;
+};
+
+declare const enmSoloMode_Number: {
+    noMode: -1;
+    ClassPaintMode: 0;
+    MarkSizeMode: 1;
+    MarkBlockMode: 2;
+    ContourMode: 3;
+    ClassHatchMode: 4;
+    ClassMarkMode: 5;
+    ClassODMode: 6;
+    MarkTurnMode: 7;
+    MarkBarMode: 8;
+    StringMode: 9;
+};
+
+declare const enmShape: {
+    NotDeffinition: -1;
+    PointShape: 0;
+    LineShape: 1;
+    PolygonShape: 2;
+};
+
+declare const enmMarkBarShape: {
+    bar: 0;
+    triangle: 1;
+};
+
+declare const enmContourIntervalMode: {
+    RegularInterval: 0;
+    SeparateSettings: 1;
+    ClassPaint: 2;
+    ClassHatch: 3;
 };
 
 declare enum enmCircleMDLegendLine {
