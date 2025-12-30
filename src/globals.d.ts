@@ -358,7 +358,10 @@ interface IAttrData {
     Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;
     Get_DataMin?: (layer?: number, data?: number) => number;
     Get_DataMax?: (layer?: number, data?: number) => number;
-    Get_ClassFrequency?: (layer?: number, data?: number, classNum?: number) => number;
+    Get_ClassFrequency?: (layer?: number, data?: number, classNum?: number) => {
+        ok: boolean;
+        frequency: number[];
+    };
     Get_CenterP?: (layer?: number, object?: number) => point;
     Check_Condition_UMU?: (layer?: number) => boolean;
     Set_DataTitle_to_CheckedListBox?: (CheckedListBox: HTMLElement, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
@@ -1163,6 +1166,7 @@ declare class LineEdge_Connect_Pattern_Data_Info {
     Edge_Pattern?: number; // enmEdge_Pattern
     Join_Pattern?: number; // enmJoinPattern
     MiterLimitValue?: number;
+    Clone?(): LineEdge_Connect_Pattern_Data_Info;
 }
 
 declare class Line_Property {
