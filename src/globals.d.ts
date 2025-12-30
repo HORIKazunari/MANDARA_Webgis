@@ -121,7 +121,10 @@ interface IAttrData {
                 Screen_Margin?: unknown; // IScrMargin
                 getSxSyRect?: (arg1?: rectangle) => rectangle;
                 Get_Length_On_Screen?: (arg1?: number) => number;
-                ScreenMG?: unknown; // ScreenMultiply_Data_Info
+                ScreenMG?: {
+                    Mul?: number;
+                    [key: string]: any;
+                }; // ScreenMultiply_Data_Info
                 Clone?: () => unknown;
                 init?: (sz?: size, margin?: unknown, mapRect?: rectangle, accessoryBase?: number, clearFlag?: boolean) => void;
             };
@@ -299,7 +302,10 @@ interface IAttrData {
         SoubyouLoopAreaCriteria?: number;
         DataSourceType?: number;
         InVisibleObjectBoundaryF?: boolean;
-        ModeValueInScreen_Stac?: unknown[];
+        ModeValueInScreen_Stac?: {
+            setF?: boolean;
+            [key: string]: any;
+        };
         ObjectPrintedCheckFlag?: boolean[];
     };
     LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
@@ -312,7 +318,7 @@ interface IAttrData {
     Draw_Print?: (arg1: CanvasRenderingContext2D, arg2: string, arg3?: point, arg4?: unknown, arg5?: string | number, arg6?: string | number) => void;
     Draw_Mark?: (arg1: CanvasRenderingContext2D, arg2: point, arg3?: unknown, arg4?: unknown) => void;
     Get_DataUnit_With_Kakko?: (arg1?: number, arg2?: number) => string;
-    Get_PrintError?: () => string[];
+    Get_PrintError?: () => { Print_Enable: number; message: string };
     Get_Condition_Info?: (layer?: number) => string;
     Get_Condition_Ok_Num_Info?: (layer?: number) => number;
     Get_ObjectNum?: (layer?: number) => number;
@@ -728,6 +734,7 @@ interface ILabelDataItem {
 interface IMapData {
     Map: IMapInfo;
     LineKind?: any[]; // Line_Pattern配列
+    MPObj?: any[]; // 地図オブジェクト配列
     [key: string]: any;
 }
 
@@ -1559,14 +1566,20 @@ declare const enmDataSource: {
     NoData: number;
     [key: string]: number;
 };
-declare const enmPrint_Enable: unknown;
+declare const enmPrint_Enable: {
+    Printable: number;
+    [key: string]: number;
+};
 declare const enmMarkPrintType: unknown;
 declare const enmDivisionMethod: unknown;
 declare const enmPaintColorSettingModeInfo: {
     SoloColor: number;
     [key: string]: number;
 };
-declare const enmMarkBlockArrange: unknown;
+declare const enmMarkBlockArrange: {
+    Random: number;
+    [key: string]: number;
+};
 declare const enmMarkBarShape: unknown;
 declare const enmMarkSizeValueMode: {
     inDataItem: number;
