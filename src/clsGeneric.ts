@@ -1,4 +1,5 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
+import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator, MenuItem } from './types';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
@@ -2574,7 +2575,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     /**チェックリストボックス */
     static createNewCheckListBox(ParentObj: HTMLElement, ID: string, list: {text: string, checked: boolean}[], x: number, y: number, width: number, height: number, onChange: ((index: number, checked: boolean) => void) | undefined, styleinfo: string) {
-
+        const state = appState();
         let lineH = this.getDivSize("A", undefined, "").height + 3;
         let allh = lineH * list.length;
         let ovy = (allh < height - 2) ? "" : "overflow-y: scroll";
@@ -4049,7 +4050,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     /**最初からドロップダウンされているリストを表示 戻り値はselectedIndex番号 */
     static createNewDropdownSelect(title: string, textList: string[], x: number, y: number, width: number, onChange: (selectedIndex: number) => void) {
-
+        const state = appState();
         let pele=this.set_backDiv("",title,width,100,false,false,undefined,0,true);
         let oneHeight=this.getSpanSize(textList[0],15).height+2;
         let totalHeight=Math.min(8,textList.length)*oneHeight;
@@ -4409,7 +4410,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     /**メッセージ表示 borderFlag:枠を動かせるかどうか*/
     static createMsgBox(title: string, text: string, borderFlag: boolean, width: number = 350, height: number = 400) {
-
+        const state = appState();
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
         const ta = this.createNewTextarea(msgbox, text, "", 10, state.scrMargin.top + 10, 20, 50, "resize:none;width:480px;height:420px;font-size:13px");
         ta.style.width = (width - 20).px();
@@ -4466,6 +4467,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         maxButtonCall: (() => void) | null = null
     ): HTMLElement {
 
+        const state = appState();
         const hiddenWindow = function () {
             const winAny = window as Record<string, any>;
             winAny.setVisibility?.(false) ;
@@ -4629,6 +4631,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if (innerHeight != undefined) {
             h = innerHeight;
         }
+        const state = appState();
         const y = this.getScrollY() + (browserHeight - h) / 2;
         const x = (browserWidth - w) / 2;
         const dup = this.createNewDiv(document.body, idname, "frontDIV", "setting", x, y, w, h, "background-color:#ffffff; border:solid 1px; border-radius: 4px;border-color:#666666;opacity:1", undefined);
@@ -5140,6 +5143,7 @@ export class CheckedListBox {
         onChange: (index: number) => void,
         styleinfo: string = ""
     ) {
+        const state = appState();
         this.width = width;
         this.height = height;
         this.twoStepCheckF = twoStepCheckF;
@@ -5288,6 +5292,7 @@ export class CheckedListBox {
     }
 
     private reNumbering(): void {
+        const state = appState();
         this.allh = this.lineH * this.lBox.length;
         this.w = (this.allh < this.height - 2) ? this.width - 2 : this.width - (state.scrMargin.scrollWidth ?? 0) - 1;
         this.inFrame.style.height = this.allh.px();
@@ -5320,6 +5325,7 @@ export class ListBox {
     private onChange: ((index: number) => void) | null;
 
     constructor(ParentObj: HTMLElement, Class: string, list: string[], x: number | string, y: number | string, width: number, height: number, onChange: ((index: number) => void) | null, styleinfo: string = "") {
+        const state = appState();
         this.width = width;
         this.height = height;
         this.Class = Class;
@@ -5487,6 +5493,7 @@ export class ListBox {
     }
 
     private reNumbering(): void {
+        const state = appState();
         this.allh = this.lineH * this.lBox.length;
         this.w = (this.allh < this.height - 2) ? this.width - 2 : this.width - (state.scrMargin.scrollWidth ?? 0) - 1;
         this.inFrame.style.height = this.allh.px();
@@ -5558,6 +5565,7 @@ export class ListViewTable {
         this.normalXStyleinfo = normalXStyleinfo;
         this.rowselFlag = _rowselFlag;
         this.onclick = onclick;
+        const state = appState();
         this.topDIV = Generic.createNewDiv(ParentObj, gridID, "", gridClass, x, y, width, height, this.frameStyleinfo, undefined);
 
         this.headNum = hdata[0].length;
@@ -5857,6 +5865,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 //DIV要素の移動，拡大縮小
 // @ts-ignore
 (Element.prototype as Record<string, any>)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
+    const state = appState();
     let x: number;
     let y: number;
     let fx: number;

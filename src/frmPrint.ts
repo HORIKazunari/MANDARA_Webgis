@@ -8,7 +8,7 @@ import { clsAccessory } from './clsAccessory';
 // Check_Acc_Result は globals.d.ts で定義済み
 
 function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
-
+    const state = appState();
 
     let MouseDownF: boolean = false;
     let mousePointingSituation: number = mousePointingSituations.up;
@@ -53,7 +53,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     });
 
     function keyOperation(keyCode: number, shiftKey: boolean, ctrlKey: boolean): void {
-
+        const state = appState();
         if (mousePointingSituation !== mousePointingSituations.up) {
             return;
         }
@@ -119,7 +119,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     }
 
     function mdown(e: MouseEvent | TouchEvent) {
-
+        const state = appState();
         e.preventDefault();
         let event;
         if (e.type === "mousedown") {
@@ -136,7 +136,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
 
     function mmove(e: MouseEvent | TouchEvent) {
-
+        const state = appState();
         let event;
         e.preventDefault();
         if (e.type === "mousemove") {
@@ -326,7 +326,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
 
     function mup(e: MouseEvent | TouchEvent) {
-
+        const state = appState();
         
         e.preventDefault();
         let event;
@@ -510,7 +510,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         ]};
                                         mnuAccPopupVisible.push(pmnu);
                                         function showWebMap(data: {caption: string}, e: Event) {
-
+                                            const state = appState();
                                             let p = vs.ScrData.getSRXY(mouseDownPosition);
                                             let xy1=spatial.Get_Reverse_XY(p,state.attrData.TotalData.ViewStyle.Zahyo);   
                                             let xy=spatial.Get_World_IdoKedo(xy1,state.attrData.TotalData.ViewStyle.Zahyo);   
@@ -576,7 +576,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     }
                                     Generic.ceatePopupMenu(mnuAccPopupVisible, new point(event.clientX, event.clientY));
                                     function accVisible(data: {caption: string}, e: Event) {
-
+                                        const state = appState();
                                         switch (data.caption) {
                                             case "凡例設定":
                                                 frmPrintOption(2);
@@ -607,7 +607,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     let popmenu = [{ caption: "直線に戻す", event: odReset }];
                                     Generic.ceatePopupMenu(popmenu, new point(event.clientX, event.clientY));
                                     function odReset() {
-
+                                        const state = appState();
                                         state.attrData.LayerData[Layernum].Remove_OD_Bezier(ato.ObjectPos, ato.Data);
                                         clsPrint.printMapScreen(Frm_Print.picMap);
                                     }
@@ -646,7 +646,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         MouseDownF = false;
 
         function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}>) {
-
+            const state = appState();
             let alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
@@ -785,7 +785,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     let pinchBaseDis: number;
     let pinchPresentDis: number;
     function pinch(event: TouchEvent){
-
+        const state = appState();
         let touches=event.changedTouches;
         let p1=Generic.getCanvasXY(touches[0]);
         let p2=Generic.getCanvasXY(touches[1]);
@@ -793,7 +793,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         pinchBaseDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
     }
     function pinchMove(event: TouchEvent){
-
+        const state = appState();
         let touches=event.changedTouches;
         if(touches.length>1){
             let p1=Generic.getCanvasXY(touches[0]);
@@ -803,12 +803,12 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
     }
     function pinchUp(event: TouchEvent){
-
+        const state = appState();
         let ratio=pinchPresentDis/pinchBaseDis;
         expansionMap(pinchCenter,ratio);
     }
     function onWheel(event: WheelEvent) {
-
+        const state = appState();
         if ((MouseDownF == true)||(state.attrData.TempData.drawing==true)) {
             return;
         }
@@ -830,7 +830,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     }
 
     function expansionMap(cpos: point, ratio: number){
-
+        const state = appState();
         let sd = state.attrData.TotalData.ViewStyle.ScrData;
         let sv = sd.ScrView;
         let Pos = sd.getSRXY(cpos);
@@ -863,7 +863,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**ドラッグで移動中のOD曲線を描く */
     function OD_Line_Print(g: CanvasRenderingContext2D, P: point){
-
+        const state = appState();
 
         let DataNum = state.attrData.TempData.frmPrint_Temp.OD_Drag.Data;
         let ObNum = state.attrData.TempData.frmPrint_Temp.OD_Drag.ObjectPos;
@@ -894,7 +894,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**線モードのラインの移動チェック */
     function LocationODSearch(ScreenP: point) {
-
+        const state = appState();
         let MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         let odc = Near_OD(MapP);
         if (odc != -1) {
@@ -916,7 +916,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**線モードの最寄りラインを求める */
     function Near_OD(MapP: point){
-
+        const state = appState();
         let Near_ODNumber  = -1;
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
@@ -951,7 +951,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         return Near_ODNumber;
 
         function Near_OD_sub(MapP: point, Layernum: number, DataNum: number){
-
+            const state = appState();
             let al=state.attrData.LayerData[Layernum];
             let mod=al.atrData.Data[DataNum].SoloModeViewSettings.ClassODMD;
             let oal=state.attrData.LayerData[mod.o_Layer];
@@ -1006,7 +1006,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**等値線の位置とカーソルチェック */
     function LocationContourSearch(ScreenP: point) {
-
+        const state = appState();
         let MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         let tx4 = ""
         if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal) {
@@ -1037,7 +1037,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
         // 等値線モードが表示されているかチェック
          function Check_Contour_in() {    
-
+             const state = appState();
              switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                  case enmTotalMode_Number.DataViewMode: {
                      let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
@@ -1065,7 +1065,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         // 最寄りの等値線取得
         function Near_Contour(MapP: point) {
-
+            const state = appState();
             let Near_ContourNumber = -1;
             let mind = 5;
             let atc = state.attrData.TempData.ContourMode_Temp;
@@ -1088,7 +1088,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**マウス位置の情報、カーソルを＋に変える場合trueを返す*/
     function LocationSearch(ScreenP: point) {
-
+        const state = appState();
         let MapP  = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         picMapMouseMovePointInformation(ScreenP);
         let L_Print_Mode_Total ;
@@ -1235,7 +1235,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**重ね合わせモードの位置情報 */
     function Get_Object_By_XY_OverLayMode(MapP: point, OverLayIndex: number) {
-
+        const state = appState();
         let tx = "";
         let f = false;
         state.attrData.TempData.frmPrint_Temp.OnObject = [];
@@ -1297,7 +1297,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     /**一番近いオブジェクトを探して数とオブジェクト番号を返す */
     function NearestObject(MapP: point, Layernum: number) {
-
+        const state = appState();
         let OnObject = [];
 
         if (state.attrData.LayerData[Layernum].Type == enmLayerType.Trip) {
@@ -1348,7 +1348,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     //地図上をカーソルが移動した場合に座標情報を表示
     function picMapMouseMovePointInformation(MousePosition: point) {
-
+        const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
         let originalP = vs.ScrData.getSRXY(MousePosition);
         if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)==true){
@@ -1361,7 +1361,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     }
 
     function Check_Acc(ScreenP: point) {
-
+        const state = appState();
         let vs = state.attrData.TotalData.ViewStyle;
         let threed = vs.ScrData.ThreeDMode;
         let ata = state.attrData.TempData.Accessory_Temp;
@@ -1422,13 +1422,13 @@ class frmPrint {
 
     /** コピー画像ウインドウ表示*/
     static copyImageWindow(){
-
+        const state = appState();
         state.frmPrint.savePNG(true)
     }
 
     //画像ファイルに保存
     static savePNG(WindowOutFlag = false) {
-
+        const state = appState();
         let tilecanvas = document.createElement("canvas");
         tilecanvas.width = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width();
         tilecanvas.height = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height();
@@ -1454,7 +1454,7 @@ class frmPrint {
 
     //線種ラインパターン設定
     static linePattern(_data: unknown, e: Event) {
-
+        const state = appState();
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
         Generic.Set_Box_Position_in_Browser(e, backDiv);
 
@@ -1491,20 +1491,20 @@ class frmPrint {
         showLinePattern();
 
         function meshLinePatternClick(e: Event) {
-
+            const state = appState();
             clsLinePatternSet(e, MeshLpat, LinePatternGet);
             function LinePatternGet(Lpat: Line_Property) {
-
+                const state = appState();
                 MeshLpat = Lpat;
                 state.attrData.Draw_Sample_LineBox(e.target, Lpat);
             }
         }
         function mapListchange() {
-
+            const state = appState();
             showLinePattern();
         }
         function buttonOK() {
-
+            const state = appState();
             for (let i = 0; i < MapFileList.length; i++) {
                 let lk = [];
                 for (let j in NewLineKind[i]) {
@@ -1520,7 +1520,7 @@ class frmPrint {
         }
 
         function showLinePattern(){
-
+            const state = appState();
             const LineKindHeight=35;
             while (pnlLineList.lastChild) {
                 pnlLineList.removeChild(pnlLineList.lastChild);
@@ -1537,13 +1537,13 @@ class frmPrint {
                 state.attrData.Draw_Sample_LineBox(lc, lk.Pat);
             }
             function inePatternClick(e: Event){
-
+                const state = appState();
                 const target = e.target as Record<string, number>;
                 if (!target) { return; }
                 let n=target.tag;
                 clsLinePatternSet(e, NewLineKind[Mpindex][n].Pat, LinePatternGet);
                 function LinePatternGet(Lpat: Line_Property) {
-
+                    const state = appState();
                     NewLineKind[Mpindex][n].Pat = Lpat;
                     state.attrData.Draw_Sample_LineBox(target, Lpat);
                 }
@@ -1552,14 +1552,14 @@ class frmPrint {
 }
 
     static windowClose(){
-
+        const state = appState();
         state.propertyWindow.nextVisible=(typeof state.propertyWindow.getVisibility === "function") ? (state.propertyWindow.getVisibility()==true) : false;
         state.propertyWindow.setVisibility?.(false);
         state.frmPrint.propertyWindowClose();
     }
 
     static propertyWindowClose(){
-
+        const state = appState();
         state.propertyWindow.fixed=false;
         state.propertyWindow.pnlProperty?.setVisibility?.(false);
         state.propertyWindow.style.borderWidth='1px';    
@@ -1568,7 +1568,7 @@ class frmPrint {
 
     //プロパティウインドウの表をコピー
     static copyProperty(){
-
+        const state = appState();
         let toptx=state.propertyWindow.pnlProperty.objInfo.innerText+'\n'+'\n';
         let gridtx="";
         let cnode = state.propertyWindow.pnlProperty.childNodes;
@@ -1583,7 +1583,7 @@ class frmPrint {
 
     //プロパティウインドウの固定・解除
     static PropertyFix() {
-
+        const state = appState();
         if (state.propertyWindow.pnlProperty.getVisibility() == true) {
             let f = !state.propertyWindow.fixed;
             if (f == true) {
@@ -1597,7 +1597,7 @@ class frmPrint {
 
     //複数オブジェクトのプロパティ表示
     static ShowOverLayObjectProperty(Layernum: number, dtindex: number, OnObject: strLocationSearchObject[]) {
-
+        const state = appState();
         if ((state.propertyWindow.pnlProperty.getVisibility()==true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal)) {
             let cnode = state.propertyWindow.pnlProperty.childNodes;
             for(let i in cnode){
@@ -1624,7 +1624,7 @@ class frmPrint {
 
     //1オブジェクトのプロパティ表示
     static ShowOneObjectProperty(LayerNum: number, objNumber: number, DataNumber: number, LayerMode: number) {
-
+        const state = appState();
         if ((state.propertyWindow.oObject == objNumber) && (state.propertyWindow.oLayer == LayerNum) && (state.propertyWindow.oData == DataNumber) && (state.propertyWindow.pnlProperty.getVisibility() == true)) {
             return;
         }
@@ -1753,7 +1753,7 @@ class frmPrint {
 }
 
     static set_frmPrint_Window_Size() {
-
+        const state = appState();
         let FpicRect  = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
         const marginSide = state.scrMargin.side ?? 0;
         const marginTop = state.scrMargin.top ?? 0;
@@ -1770,7 +1770,7 @@ class frmPrint {
     }
     
     static resizeMapWindow() {
-
+        const state = appState();
         const mapDIV = Frm_Print.picMap.parentElement as HTMLElement | null;
         if (!mapDIV) { return; }
         const marginSide = state.scrMargin.side ?? 0;
@@ -1794,7 +1794,7 @@ class frmPrint {
         }
     }
     static Init_FrmPrint() {
-
+        const state = appState();
         let ScreenH = Generic.getBrowserHeight();
         let ScreenW = Generic.getBrowserWidth();
     
@@ -1820,7 +1820,7 @@ class frmPrint {
 
     /**連続表示ボタン 次*/
     static seriesNext() {
-
+        const state = appState();
         let ats = state.attrData.TotalData.TotalMode.Series;
         let n = ats.SelectedIndex;
         let atst = state.attrData.TempData.Series_temp;
@@ -1830,7 +1830,7 @@ class frmPrint {
 
     /**連続表示ボタン 前*/
     static seriesBefore() {
-
+        const state = appState();
         let ats = state.attrData.TotalData.TotalMode.Series;
         let n = ats.SelectedIndex;
         let atst = state.attrData.TempData.Series_temp;
@@ -1840,14 +1840,14 @@ class frmPrint {
 
     //全体表示ボタン
     static wholeMapShow() {
-
+        const state = appState();
         state.attrData.TotalData.ViewStyle.ScrData.ScrView = state.attrData.TotalData.ViewStyle.ScrData.MapRectangle.Clone();
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 
     //カーソル位置のオブジェクトを強調
     static PrintCursorObjectLine(g: CanvasRenderingContext2D, Draw_F: boolean) {
-
+        const state = appState();
         let OnObject = state.attrData.TempData.frmPrint_Temp.OnObject;
         let OldObject = state.attrData.TempData.frmPrint_Temp.OldObject;
         if (OnObject.length == 0) {
@@ -1880,7 +1880,7 @@ class frmPrint {
         }
 
         function printSelectedObject(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number) {
-
+            const state = appState();
             const sp = state.attrData.LayerData[Layernum].Shape;
             switch (sp) {
                 case enmShape.PointShape: {
@@ -1916,7 +1916,7 @@ class frmPrint {
                 }
             }
             function drawLines(g: CanvasRenderingContext2D, pxy: point[], w: number, col: colorRGBA) {
-
+                const state = appState();
                 g.lineWidth = w;
                 g.strokeStyle = col.toRGBA();
                 g.beginPath();

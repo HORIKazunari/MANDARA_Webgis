@@ -31,6 +31,7 @@ class Layer_Data_InfoCheck {
 }
 
 function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
+    const state = appState();
     let GridLayerData: GridLayerDataInfo = {
         MapFile: "",
         Type: "",

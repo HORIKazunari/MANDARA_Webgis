@@ -59,6 +59,7 @@ const freqWidth = 50;
 const allW = picClassBoxWidth + txtClassValueWidth + freqWidth+txtClassValueLeftMergin;
 const pnlGraphEachItemHeight=25;
 function setting(locSearch: string) {
+    const state = appState();
 
     let man_Data=enmDataSource.NoData;
     let totalh = 680;

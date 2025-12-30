@@ -1,5 +1,6 @@
 ﻿/// <reference path="globals.d.ts" />
 
+import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
@@ -147,7 +148,6 @@ const enmSeparateClassWords = {
     English: 1
 }
 
-// var enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 }; // globals.d.tsで定義済み
 const enmMesh_Number = {
     mhNonMesh: -1,
     mhFirst: 0,
@@ -203,19 +203,6 @@ class Cross_Line_Data {
 
 // enmGraphMode はglobals.d.tsで定義済み
 
-//属性データのタイプ
-// var enmAttDataType = { // globals.d.tsで定義済み
-//     Normal: 0,
-//     Category: 1,
-//     Strings: 2,
-//     URL: 3,
-//     URL_Name: 4,
-//     Lon: 5,
-//     Lat: 6,
-//     Place: 7,
-//     Arrival: 8,
-//     Departure: 9
-// }
 
 class strURL_Data {
     Name: string = "";
@@ -1764,6 +1751,7 @@ class strViewStyle_Info {
     }
 
     initViewStyle(): void {
+        const state = appState();
     let md = this.Missing_Data;
     md.Print_Flag = true;
     md.Text = "欠損値";
@@ -2639,7 +2627,7 @@ class clsAttrData {
 
     /**ダミーオブジェクトグループの設定をDummyOBGArray[true,false]の配列で返す、trueNumはtrueの数 */
     getDummyObjGroupArray(Layernum: number, shape?: number): {DummyOBGArray: boolean[], trueNum: number} {
-
+        const state = appState();
         let al = state.attrData.LayerData[Layernum];
         let alm = al.MapFileData;
         let DummyObjG = new Array(alm.Map.OBKNum);
@@ -3135,7 +3123,7 @@ class clsAttrData {
     }
 
     Check_Missing_Value(Layernum: number, DataNumber: number, objNumber: number): boolean {
-
+        const state = appState();
         let ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber];
         if ((ad.MissingValueNum == 0) || (ad.MissingF == false)) {
             return false;
@@ -3150,7 +3138,7 @@ class clsAttrData {
 
     /**レイヤ内のURLリンクの最大数を求める */
     Get_MaxURLNum(Layernum: number): number {
-
+        const state = appState();
         let mx=0;
         let al = state.attrData.LayerData[Layernum];
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
@@ -4222,14 +4210,14 @@ class clsAttrData {
 
     /**現在のレイヤのグラフモードを返す */
     layerGraph(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
     }
 
     /**現在のレイヤのグラフモードの選択データセットを返す */
     nowGraph(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const gv=state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         return gv.DataSet[gv.SelectedIndex];
@@ -4237,34 +4225,34 @@ class clsAttrData {
 
     /**現在のレイヤのラベルモードを返す */
     layerLabel(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
     }
     /**現在のレイヤのラベルモードの選択データセットを返す */
     nowLabel(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         return lv.DataSet[lv.SelectedIndex];;
     }
     /**現在の重ね合わせモードのデータセットを返す */
     nowSeries(): unknown {
-
+        const state = appState();
         let series = state.attrData.TotalData.TotalMode.Series;
         return series.DataSet[series.SelectedIndex];
     }
 
     /**現在の重ね合わせモードのデータセットを返す */
     nowOverlay(): unknown {
-
+        const state = appState();
         let over = state.attrData.TotalData.TotalMode.OverLay;
         return over.DataSet[over.SelectedIndex];
     }
 
     /**現在のレイヤの位置を返す */
     nowLayer(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum];
     }
@@ -4272,7 +4260,7 @@ class clsAttrData {
     /**
      * 現在のレイヤ・データ項目の位置を返す */
     nowData(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum];
@@ -4280,7 +4268,7 @@ class clsAttrData {
 
     /**現在のレイヤ・データ項目のSoloModeViewSettings位置を返す */
     nowDataSolo(): unknown {
-
+        const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
@@ -4442,6 +4430,7 @@ class clsAttrData {
     }
     //mdrjファイルから読み込み
     SetDataFromMDRJ(MapDataList: unknown, attrText: string): unknown {
+        const state = appState();
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
@@ -5173,7 +5162,7 @@ class clsAttrData {
 
     //Clipboard,CSVのデータを一行ずつ処理して読み込む
     ReadAttrDataOneLine(STR: string): unknown {
-
+        const state = appState();
         let ObjectErrorMessage = '';
         let lay = -1;
         let LayerReading = new strLayerReadingInfo();
@@ -7651,7 +7640,7 @@ class clsAttrData {
   
     /**連続表示モードのデータセット一覧を取得 */
     getSeriesDataSetName(): string[] {
-
+        const state = appState();
         let series = state.attrData.TotalData.TotalMode.Series;
         let seriesDataSetList = [];
         for (let i = 0; i < series.DataSet.length; i++) {
@@ -7744,7 +7733,7 @@ class clsAttrData {
 
     /**レイヤ名をセレクトボックスに入れる */
     Set_LayerName_to(selbox: unknown, SelectedIndex: number, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
-
+        const state = appState();
         let lst = [];
         let fall=false;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {

@@ -19,7 +19,7 @@ import { Generic } from './clsGeneric';
  * AppState経由でログウィンドウにアクセス
  */
 function logX(data: unknown): void {
-
+    const state = appState();
     
     if (state.logWindow === undefined) {
         state.logWindow = Generic.createNewTextarea(
@@ -47,7 +47,7 @@ function logX(data: unknown): void {
  * アプリケーション初期化関数
  */
 function init(): void {
-
+    const state = appState();
     
     // コンテキストメニュー無効化
     document.body.addEventListener("contextmenu", contextMenuPrevent);
@@ -156,7 +156,7 @@ function init(): void {
 
 
     function FrmprintMenuClick(pos: point): void {
-
+        const state = appState();
         const pwchwck: boolean = (state.propertyWindow.getVisibility?.() === true);
         const popmenu = [
             {caption: "画像", enabled: true, child: [
@@ -177,7 +177,7 @@ function init(): void {
         Generic.ceatePopupMenu(popmenu, pos);
         
         function mdvf(): void {
-
+            const state = appState();
             const v: boolean = !state.attrData.TotalData.ViewStyle.MapLegend.Base.ModeValueInScreenFlag;
             if (v === true) {
                 Generic.alert(undefined, "局地変動モードは、階級区分モード（分割方法が自由設定の場合を除く）、記号の大きさモード、棒の高さモードで反映され、他の表示モードでは変化しません。", undefined);
@@ -187,7 +187,7 @@ function init(): void {
         }
         
         function pwreverse(): void {
-
+            const state = appState();
             if (state.propertyWindow.getVisibility?.() === true) {
                 state.propertyWindow.setVisibility?.(false);
             } else {
@@ -213,7 +213,7 @@ function contextMenuPrevent(e: Event): void {
  * 投影法変換
  */
 function frmPrintProjection(): void {
-
+    const state = appState();
     
     if (state.attrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
         alert("緯度経度座標系ではありません。");
@@ -224,7 +224,7 @@ function frmPrintProjection(): void {
     frmProjectionConvert(av.Zahyo, av.ScrData.MapRectanglem, okButton);
     
     function okButton(newZahyo: Zahyo_info): void {
-
+        const state = appState();
         const centerLon: number = newZahyo.CenterXY.x;
         
         if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
@@ -266,7 +266,7 @@ function frmPrintOptionMenu(): void {
  * データ値表示ボタン
  */
 function dataValueShow(e?: Event): void {
-
+    const state = appState();
     frmPrint_ObjectValue(state.attrData, function(): void { 
         clsPrint.printMapScreen(state.frmPrint.picMap); 
     });
@@ -276,7 +276,7 @@ function dataValueShow(e?: Event): void {
  * 背景画像ボタン
  */
 function backImageButton(): void {
-
+    const state = appState();
     const avt = state.attrData.TotalData.ViewStyle.TileMapView;
     
     if (avt.Visible === true) {
@@ -294,7 +294,7 @@ function backImageButton(): void {
  * 設定画面を前面に
  */
 function settingFront(): void {
-
+    const state = appState();
     
     state.divMain?.style && (state.divMain.style.zIndex = "2");
     state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "2");
@@ -306,7 +306,7 @@ function settingFront(): void {
  * 印刷画面を前面に
  */
 function frmPrintFront(): void {
-
+    const state = appState();
     
     state.divMain?.style && (state.divMain.style.zIndex = "1");
     state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "1");
