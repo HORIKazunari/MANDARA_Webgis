@@ -133,8 +133,8 @@ class clsMeshContour {
                 let fnl = 0;
                 let Pon = 0;
                 let Contf = false;
-                const stxy = new point();
-                const exy = new point();
+                let stxy = new point();
+                let exy = new point();
                 let Reverse_f=false;
                 while (fnl < NL) {
                     let js = 0;

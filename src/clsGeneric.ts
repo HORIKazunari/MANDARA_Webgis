@@ -443,14 +443,14 @@ class spatial {
     /**二つの線分の交点を求める関数。交点がある場合座標、ない場合undefined */
     static Line_Cross_Point(LAP1: point, LAP2: point, LBP1: point, LBP2: point): point | undefined {
 
-        const ax1 = LAP1.x
-        const ay1 = LAP1.y
-        const ax2 = LAP2.x
-        const ay2 = LAP2.y
-        const bx1 = LBP1.x
-        const by1 = LBP1.y
-        const bx2 = LBP2.x
-        const by2 = LBP2.y
+        let ax1 = LAP1.x
+        let ay1 = LAP1.y
+        let ax2 = LAP2.x
+        let ay2 = LAP2.y
+        let bx1 = LBP1.x
+        let by1 = LBP1.y
+        let bx2 = LBP2.x
+        let by2 = LBP2.y
         //２点が同一、または２線が平行の場合は戻る
         if (((ax2 == ax1) && (bx2 == bx1)) || ((ay2 == ay1) && (by2 == by1)) || (
             (ax1 == bx1) && (ay1 == by1)) || ((ax2 == bx1) && (ay2 == by1)) || ((ax1 == bx2) && (ay1 == by2)) || ((ax2 == bx2) && (ay2 == by2))) {

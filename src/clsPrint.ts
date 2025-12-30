@@ -2808,7 +2808,7 @@ console.log(SortSumDataValue)
 
         function Vector_Block_Draw_Block(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number, OP: point, r: number, MK: Mark_Property, Block_n: number, ArrangeB: number, HasuVisible: boolean, Hasu_R: number, Hasu: number, BlockInterval: number) {
             
-            const ap = new point();
+            let ap = new point();
             const RetP = OP.Clone();
             const r2 = spatial.Get_TurnedBox(new size(r, r), MK.WordFont?.Kakudo ?? 0).width;
             switch (ArrangeB) {

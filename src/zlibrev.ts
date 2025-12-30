@@ -470,7 +470,7 @@ goog.base = function(me, opt_methodName, var_args) {
     return caller.superClass_.constructor.apply(me, Array.prototype.slice.call(arguments, 1))
   }
   const args = Array.prototype.slice.call(arguments, 2);
-  const foundCaller = false;
+  let foundCaller = false;
   for(let ctor = me.constructor;ctor;ctor = ctor.superClass_?.constructor) {
     if(ctor.prototype[opt_methodName] === caller) {
       foundCaller = true
@@ -943,9 +943,9 @@ goog.scope(function() {
     let hdist;
     let hclen;
     const hclenOrder = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
-    const litLenLengths;
+    let litLenLengths;
     let litLenCodes;
-    const distLengths;
+    let distLengths;
     let distCodes;
     let treeSymbols;
     let treeLengths;
@@ -1012,9 +1012,9 @@ goog.scope(function() {
     let literal;
     let code;
     let litLenCodes;
-    const litLenLengths;
+    let litLenLengths;
     let distCodes;
-    const distLengths;
+    let distLengths;
     litLenCodes = litLen[0];
     litLenLengths = litLen[1];
     distCodes = dist[0];
@@ -1770,7 +1770,7 @@ goog.scope(function() {
   Zlib.RawInflateStream.BlockType = {UNCOMPRESSED:0, FIXED:1, DYNAMIC:2};
   Zlib.RawInflateStream.Status = {INITIALIZED:0, BLOCK_HEADER_START:1, BLOCK_HEADER_END:2, BLOCK_BODY_START:3, BLOCK_BODY_END:4, DECODE_BLOCK_START:5, DECODE_BLOCK_END:6};
   Zlib.RawInflateStream.prototype.decompress = function(newInput, ip) {
-    const stop = false;
+    let stop = false;
     if(newInput !== void 0) {
       this.input = newInput
     }
@@ -2018,9 +2018,9 @@ goog.scope(function() {
     let hdist;
     let hclen;
     const codeLengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.RawInflateStream.Order.length);
-    const codeLengthsTable;
-    const litlenLengths;
-    const distLengths;
+    let codeLengthsTable;
+    let litlenLengths;
+    let distLengths;
     this.status = Zlib.RawInflateStream.Status.BLOCK_BODY_START;
     this.save_();
     hlit = this.readBits(5) + 257;
@@ -2041,7 +2041,7 @@ goog.scope(function() {
       let code;
       let prev = 0;
       let repeat;
-      const lengthTable;
+      let lengthTable;
       let i;
       let il;
       for(i = 0;i < hclen;++i) {
@@ -2181,9 +2181,9 @@ goog.scope(function() {
   Zlib.RawInflateStream.prototype.expandBuffer = function(opt_param) {
     let buffer;
     let ratio = this.input.length / this.ip + 1 | 0;
-    const maxHuffCode;
+    let maxHuffCode;
     let newSize;
-    const maxInflateSize;
+    let maxInflateSize;
     const input = this.input;
     const output = this.output;
     if(opt_param) {
@@ -2474,10 +2474,10 @@ goog.scope(function() {
     const hdist = this.readBits(5) + 1;
     let hclen = this.readBits(4) + 4;
     const codeLengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.RawInflate.Order.length);
-    const codeLengthsTable;
-    const litlenTable;
-    const distTable;
-    const lengthTable;
+    let codeLengthsTable;
+    let litlenTable;
+    let distTable;
+    let lengthTable;
     let code;
     let prev;
     let repeat;
@@ -2640,9 +2640,9 @@ goog.scope(function() {
   Zlib.RawInflate.prototype.expandBufferAdaptive = function(opt_param) {
     let buffer;
     let ratio = this.input.length / this.ip + 1 | 0;
-    const maxHuffCode;
+    let maxHuffCode;
     let newSize;
-    const maxInflateSize;
+    let maxInflateSize;
     const input = this.input;
     const output = this.output;
     if(opt_param) {
@@ -2890,8 +2890,8 @@ goog.require("Zlib.Adler32");
 goog.require("Zlib.RawInflate");
 goog.scope(function() {
   Zlib.Inflate = function(input, opt_params) {
-    const bufferSize;
-    const bufferType;
+    let bufferSize;
+    let bufferType;
     let cmf;
     let flg;
     this.input = input;
@@ -2927,7 +2927,7 @@ goog.scope(function() {
   Zlib.Inflate.prototype.decompress = function() {
     const input = this.input;
     let buffer;
-    const adler32;
+    let adler32;
     buffer = this.rawinflate.decompress();
     this.ip = this.rawinflate.ip;
     if(this.verify) {
@@ -2993,9 +2993,9 @@ goog.scope(function() {
     let op1;
     let op2;
     let op3;
-    const localFileSize = 0;
-    const centralDirectorySize = 0;
-    const endOfCentralDirectorySize;
+    let localFileSize = 0;
+    let centralDirectorySize = 0;
+    let endOfCentralDirectorySize;
     let offset;
     let needVersion;
     let flags;
@@ -3670,7 +3670,7 @@ goog.scope(function() {
   };
   Zlib.InflateStream.prototype.decompress = function(input) {
     let buffer;
-    const adler32;
+    let adler32;
     if(input !== void 0) {
       if(USE_TYPEDARRAY) {
         const tmp = new Uint8Array(this.input.length + input.length);
