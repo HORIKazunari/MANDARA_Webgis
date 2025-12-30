@@ -108,12 +108,6 @@ class clsSpatialIndexSearch {
         this.XYSize = Math.max(this.XYSize, 2);
         this.MeshIndex = Generic.Array2Dimension(this.XYSize + 1, this.XYSize + 1);
 
-        //すべてnewすると遅いので、addmeshの際にindefinedの場合にnewすることにした
-        //for (var i = 0; i < this.XYSize + 1; i++) {
-        //    for (var j = 0; j < this.XYSize+1; j++) {
-        //        this.MeshIndex[i][j] = new IndexContents_Info();
-        //    }
-        //}
         if (this.RectSetF == false) {
             this.MeshRect.left = this.ObjectXY[0].Point[0].x;
             this.MeshRect.right = this.MeshRect.left;

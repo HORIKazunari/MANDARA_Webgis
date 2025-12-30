@@ -166,7 +166,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     Generic.Set_Box_Position_in_Browser(framepos, colorPickerObj);
 
     //既定色Div
-    for (var i = 0; i <= 55; i++) {
+    for (let i = 0; i <= 55; i++) {
         const colorDivObj = document.createElement('div');
         const style = colorDivObj.style;
         style.position = 'absolute';
@@ -3305,7 +3305,7 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
         Generic.readingIcon("地図ファイル読み込み");
         //readingScreen.open("地図ファイル読み込み");
         Generic.unzipFile(file, unzipOk, unzipError);
-        // var reader = new FileReader();
+        // const reader = new FileReader();
         // reader.readAsText(file, 'utf8');
         function unzipOk(data: {[key: string]: Uint8Array}) {
             //readingScreen.close();
