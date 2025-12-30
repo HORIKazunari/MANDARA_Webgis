@@ -252,8 +252,15 @@ interface IAttrData {
         MapAreaLatLon?: unknown; // latlonbox
         ContourMode_Temp?: unknown;
         DotMap_Temp?: unknown;
-        Series_temp?: unknown;
-        OverLay_Temp?: unknown;
+        Series_temp?: {
+            Koma?: number;
+            title?: string;
+            [key: string]: any;
+        };
+        OverLay_Temp?: {
+            title?: string;
+            [key: string]: any;
+        };
         drawing?: boolean;
         SoubyouLinePointIntervalCriteria?: number;
         SoubyouLoopAreaCriteria?: number;
