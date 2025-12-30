@@ -852,7 +852,11 @@ declare const clsPrint: IClsPrint;
 declare let Frm_Print: IFrmPrint; // 変更される可能性あり
 // propertyWindow: AppStateで管理（削除済み）
 // divmain: AppStateで管理（削除済み）
-declare const TKY2JGD: unknown; // kept temporarily; being migrated to ESM import
+declare const TKY2JGD: {
+    Tokyo97toITRF94: (latlonP: latlon) => latlon;
+    ITRF94toTokyo97: (latlonP: latlon) => latlon;
+    [key: string]: any;
+}; // kept temporarily; being migrated to ESM import
 // tileMapClass: AppStateで管理（削除済み）
 // preReadMapFile: AppStateで管理（削除済み）
 // scrMargin: AppStateで管理（削除済み）
