@@ -1,7 +1,7 @@
 // @ts-nocheck
-/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';var COMPILED = false;
+/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';const COMPILED = false;
 /** revise  2020 ktani*/
-var goog = goog || {};
+const goog = goog || {};
 goog.global = this;
 goog.DEBUG = true;
 goog.LOCALE = "en";
@@ -11,7 +11,7 @@ goog.provide = function(name) {
       throw Error('Namespace "' + name + '" already declared.');
     }
     delete goog.implicitNamespaces_[name];
-    var namespace = name;
+    let namespace = name;
     while(namespace = namespace.substring(0, namespace.lastIndexOf("."))) {
       if(goog.getObjectByName(namespace)) {
         break
@@ -34,12 +34,12 @@ if(!COMPILED) {
   goog.implicitNamespaces_ = {}
 }
 goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
-  var parts = name.split(".");
-  var cur = opt_objectToExportTo || goog.global;
+  let parts = name.split(".");
+  let cur = opt_objectToExportTo || goog.global;
   if(!(parts[0] in cur) && cur.execScript) {
     cur.execScript("var " + parts[0])
   }
-  for(var part;parts.length && (part = parts.shift());) {
+  for(let part;parts.length && (part = parts.shift());) {
     if(!parts.length && goog.isDef(opt_object)) {
       cur[part] = opt_object
     }else {
@@ -52,9 +52,9 @@ goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
   }
 };
 goog.getObjectByName = function(name, opt_obj) {
-  var parts = name.split(".");
-  var cur = opt_obj || goog.global;
-  for(var part;part = parts.shift();) {
+  let parts = name.split(".");
+  let cur = opt_obj || goog.global;
+  for(let part;part = parts.shift();) {
     if(goog.isDefAndNotNull(cur[part])) {
       cur = cur[part]
     }else {
@@ -64,24 +64,24 @@ goog.getObjectByName = function(name, opt_obj) {
   return cur
 };
 goog.globalize = function(obj, opt_global) {
-  var global = opt_global || goog.global;
-  for(var x in obj) {
+  let global = opt_global || goog.global;
+  for(let x in obj) {
     global[x] = obj[x]
   }
 };
 goog.addDependency = function(relPath, provides, requires) {
   if(!COMPILED) {
-    var provide, require;
-    var path = relPath.replace(/\\/g, "/");
-    var deps = goog.dependencies_;
-    for(var i = 0;provide = provides[i];i++) {
+    let provide, require;
+    let path = relPath.replace(/\\/g, "/");
+    let deps = goog.dependencies_;
+    for(let i = 0;provide = provides[i];i++) {
       deps.nameToPath[provide] = path;
       if(!(path in deps.pathToNames)) {
         deps.pathToNames[path] = {}
       }
       deps.pathToNames[path][provide] = true
     }
-    for(var j = 0;require = requires[j];j++) {
+    for(let j = 0;require = requires[j];j++) {
       if(!(path in deps.requires)) {
         deps.requires[path] = {}
       }
@@ -96,14 +96,14 @@ goog.require = function(name) {
       return
     }
     if(goog.ENABLE_DEBUG_LOADER) {
-      var path = goog.getPathFromDeps_(name);
+      let path = goog.getPathFromDeps_(name);
       if(path) {
         goog.included_[path] = true;
         goog.writeScripts_();
         return
       }
     }
-    var errorMessage = "goog.require could not find: " + name;
+    let errorMessage = "goog.require could not find: " + name;
     if(goog.global.console) {
       goog.global.console["error"](errorMessage)
     }
@@ -138,7 +138,7 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
   goog.included_ = {};
   goog.dependencies_ = {pathToNames:{}, nameToPath:{}, requires:{}, visited:{}, written:{}};
   goog.inHtmlDocument_ = function() {
-    var doc = goog.global.document;
+    let doc = goog.global.document;
     return typeof doc != "undefined" && "write" in doc
   };
   goog.findBasePath_ = function() {
@@ -150,12 +150,12 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
         return
       }
     }
-    var doc = goog.global.document;
-    var scripts = doc.getElementsByTagName("script");
-    for(var i = scripts.length - 1;i >= 0;--i) {
-      var src = scripts[i].src;
-      var qmark = src.lastIndexOf("?");
-      var l = qmark == -1 ? src.length : qmark;
+    let doc = goog.global.document;
+    let scripts = doc.getElementsByTagName("script");
+    for(let i = scripts.length - 1;i >= 0;--i) {
+      let src = scripts[i].src;
+      let qmark = src.lastIndexOf("?");
+      let l = qmark == -1 ? src.length : qmark;
       if(src.substr(l - 7, 7) == "base.js") {
         goog.basePath = src.substr(0, l - 7);
         return
@@ -163,14 +163,14 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
     }
   };
   goog.importScript_ = function(src) {
-    var importScript = goog.global.CLOSURE_IMPORT_SCRIPT || goog.writeScriptTag_;
+    let importScript = goog.global.CLOSURE_IMPORT_SCRIPT || goog.writeScriptTag_;
     if(!goog.dependencies_.written[src] && importScript(src)) {
       goog.dependencies_.written[src] = true
     }
   };
   goog.writeScriptTag_ = function(src) {
     if(goog.inHtmlDocument_()) {
-      var doc = goog.global.document;
+      let doc = goog.global.document;
       doc.write('<script type="text/javascript" src="' + src + '"></' + "script>");
       return true
     }else {
@@ -178,9 +178,9 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
     }
   };
   goog.writeScripts_ = function() {
-    var scripts = [];
-    var seenScript = {};
-    var deps = goog.dependencies_;
+    let scripts = [];
+    let seenScript = {};
+    let deps = goog.dependencies_;
     function visitNode(path) {
       if(path in deps.written) {
         return
@@ -194,7 +194,7 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
       }
       deps.visited[path] = true;
       if(path in deps.requires) {
-        for(var requireName in deps.requires[path]) {
+        for(let requireName in deps.requires[path]) {
           if(!goog.isProvided_(requireName)) {
             if(requireName in deps.nameToPath) {
               visitNode(deps.nameToPath[requireName])
@@ -209,12 +209,12 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
         scripts.push(path)
       }
     }
-    for(var path in goog.included_) {
+    for(let path in goog.included_) {
       if(!deps.written[path]) {
         visitNode(path)
       }
     }
-    for(var i = 0;i < scripts.length;i++) {
+    for(let i = 0;i < scripts.length;i++) {
       if(scripts[i]) {
         goog.importScript_(goog.basePath + scripts[i])
       }else {
@@ -235,7 +235,7 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
   }
 }
 goog.typeOf = function(value) {
-  var s = typeof value;
+  let s = typeof value;
   if(s == "object") {
     if(value) {
       if(value instanceof Array) {
@@ -245,7 +245,7 @@ goog.typeOf = function(value) {
           return s
         }
       }
-      var className = Object.prototype.toString.call((value));
+      let className = Object.prototype.toString.call((value));
       if(className == "[object Window]") {
         return"object"
       }
@@ -278,7 +278,7 @@ goog.isArray = function(val) {
   return goog.typeOf(val) == "array"
 };
 goog.isArrayLike = function(val) {
-  var type = goog.typeOf(val);
+  let type = goog.typeOf(val);
   return type == "array" || type == "object" && typeof val.length == "number"
 };
 goog.isDateLike = function(val) {
@@ -297,7 +297,7 @@ goog.isFunction = function(val) {
   return goog.typeOf(val) == "function"
 };
 goog.isObject = function(val) {
-  var type = typeof val;
+  let type = typeof val;
   return type == "object" && val != null || type == "function"
 };
 goog.getUid = function(obj) {
@@ -317,13 +317,13 @@ goog.uidCounter_ = 0;
 goog.getHashCode = goog.getUid;
 goog.removeHashCode = goog.removeUid;
 goog.cloneObject = function(obj) {
-  var type = goog.typeOf(obj);
+  let type = goog.typeOf(obj);
   if(type == "object" || type == "array") {
     if(obj.clone) {
       return obj.clone()
     }
-    var clone = type == "array" ? [] : {};
-    for(var key in obj) {
+    let clone = type == "array" ? [] : {};
+    for(let key in obj) {
       clone[key] = goog.cloneObject(obj[key])
     }
     return clone
@@ -339,9 +339,9 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
     throw new Error;
   }
   if(arguments.length > 2) {
-    var boundArgs = Array.prototype.slice.call(arguments, 2);
+    let boundArgs = Array.prototype.slice.call(arguments, 2);
     return function() {
-      var newArgs = Array.prototype.slice.call(arguments);
+      let newArgs = Array.prototype.slice.call(arguments);
       Array.prototype.unshift.apply(newArgs, boundArgs);
       return fn.apply(selfObj, newArgs)
     }
@@ -360,15 +360,15 @@ goog.bind = function(fn, selfObj, var_args) {
   return goog.bind.apply(null, arguments)
 };
 goog.partial = function(fn, var_args) {
-  var args = Array.prototype.slice.call(arguments, 1);
+  let args = Array.prototype.slice.call(arguments, 1);
   return function() {
-    var newArgs = Array.prototype.slice.call(arguments);
+    let newArgs = Array.prototype.slice.call(arguments);
     newArgs.unshift.apply(newArgs, args);
     return fn.apply(this, newArgs)
   }
 };
 goog.mixin = function(target, source) {
-  for(var x in source) {
+  for(let x in source) {
     target[x] = source[x]
   }
 };
@@ -392,8 +392,8 @@ goog.globalEval = function(script) {
       if(goog.evalWorksForGlobals_) {
         goog.global.eval(script)
       }else {
-        var doc = goog.global.document;
-        var scriptElt = doc.createElement("script");
+        let doc = goog.global.document;
+        let scriptElt = doc.createElement("script");
         scriptElt.type = "text/javascript";
         scriptElt.defer = false;
         scriptElt.appendChild(doc.createTextNode(script));
@@ -409,18 +409,18 @@ goog.evalWorksForGlobals_ = null;
 goog.cssNameMapping_;
 goog.cssNameMappingStyle_;
 goog.getCssName = function(className, opt_modifier) {
-  var getMapping = function(cssName) {
+  let getMapping = function(cssName) {
     return goog.cssNameMapping_[cssName] || cssName
   };
-  var renameByParts = function(cssName) {
-    var parts = cssName.split("-");
-    var mapped = [];
-    for(var i = 0;i < parts.length;i++) {
+  let renameByParts = function(cssName) {
+    let parts = cssName.split("-");
+    let mapped = [];
+    for(let i = 0;i < parts.length;i++) {
       mapped.push(getMapping(parts[i]))
     }
     return mapped.join("-")
   };
-  var rename;
+  let rename;
   if(goog.cssNameMapping_) {
     rename = goog.cssNameMappingStyle_ == "BY_WHOLE" ? getMapping : renameByParts
   }else {
@@ -443,9 +443,9 @@ if(!COMPILED && goog.global.CLOSURE_CSS_NAME_MAPPING) {
   goog.cssNameMapping_ = goog.global.CLOSURE_CSS_NAME_MAPPING
 }
 goog.getMsg = function(str, opt_values) {
-  var values = opt_values || {};
-  for(var key in values) {
-    var value = ("" + values[key]).replace(/\$/g, "$$$$");
+  let values = opt_values || {};
+  for(let key in values) {
+    let value = ("" + values[key]).replace(/\$/g, "$$$$");
     str = str.replace(new RegExp("\\{\\$" + key + "\\}", "gi"), value)
   }
   return str
@@ -465,13 +465,13 @@ goog.inherits = function(childCtor, parentCtor) {
   childCtor.prototype.constructor = childCtor
 };
 goog.base = function(me, opt_methodName, var_args) {
-  var caller = arguments.callee.caller;
+  let caller = arguments.callee.caller;
   if(caller.superClass_) {
     return caller.superClass_.constructor.apply(me, Array.prototype.slice.call(arguments, 1))
   }
-  var args = Array.prototype.slice.call(arguments, 2);
-  var foundCaller = false;
-  for(var ctor = me.constructor;ctor;ctor = ctor.superClass_ && ctor.superClass_.constructor) {
+  let args = Array.prototype.slice.call(arguments, 2);
+  const foundCaller = false;
+  for(let ctor = me.constructor;ctor;ctor = ctor.superClass_ && ctor.superClass_.constructor) {
     if(ctor.prototype[opt_methodName] === caller) {
       foundCaller = true
     }else {
@@ -490,7 +490,7 @@ goog.scope = function(fn) {
   fn.call(goog.global)
 };
 goog.provide("USE_TYPEDARRAY");
-var USE_TYPEDARRAY = typeof Uint8Array !== "undefined" && typeof Uint16Array !== "undefined" && typeof Uint32Array !== "undefined" && typeof DataView !== "undefined";
+const USE_TYPEDARRAY = typeof Uint8Array !== "undefined" && typeof Uint16Array !== "undefined" && typeof Uint32Array !== "undefined" && typeof DataView !== "undefined";
 goog.provide("Zlib.BitStream");
 goog.require("USE_TYPEDARRAY");
 goog.scope(function() {
@@ -508,10 +508,10 @@ goog.scope(function() {
   };
   Zlib.BitStream.DefaultBlockSize = 32768;
   Zlib.BitStream.prototype.expandBuffer = function() {
-    var oldbuf = this.buffer;
-    var i;
-    var il = oldbuf.length;
-    var buffer = new (USE_TYPEDARRAY ? Uint8Array : Array)(il << 1);
+    const oldbuf = this.buffer;
+    let i;
+    let il = oldbuf.length;
+    let buffer = new (USE_TYPEDARRAY ? Uint8Array : Array)(il << 1);
     if(USE_TYPEDARRAY) {
       buffer.set(oldbuf)
     }else {
@@ -522,11 +522,11 @@ goog.scope(function() {
     return this.buffer = buffer
   };
   Zlib.BitStream.prototype.writeBits = function(number, n, reverse) {
-    var buffer = this.buffer;
-    var index = this.index;
-    var bitindex = this.bitindex;
-    var current = buffer[index];
-    var i;
+    let buffer = this.buffer;
+    let index = this.index;
+    let bitindex = this.bitindex;
+    let current = buffer[index];
+    let i;
     function rev32_(n) {
       return Zlib.BitStream.ReverseTable[n & 255] << 24 | Zlib.BitStream.ReverseTable[n >>> 8 & 255] << 16 | Zlib.BitStream.ReverseTable[n >>> 16 & 255] << 8 | Zlib.BitStream.ReverseTable[n >>> 24 & 255]
     }
@@ -555,9 +555,9 @@ goog.scope(function() {
     this.index = index
   };
   Zlib.BitStream.prototype.finish = function() {
-    var buffer = this.buffer;
-    var index = this.index;
-    var output;
+    let buffer = this.buffer;
+    let index = this.index;
+    let output;
     if(this.bitindex > 0) {
       buffer[index] <<= 8 - this.bitindex;
       buffer[index] = Zlib.BitStream.ReverseTable[buffer[index]];
@@ -574,12 +574,12 @@ goog.scope(function() {
   Zlib.BitStream.ReverseTable = function(table) {
     return table
   }(function() {
-    var table = new (USE_TYPEDARRAY ? Uint8Array : Array)(256);
-    var i;
+    let table = new (USE_TYPEDARRAY ? Uint8Array : Array)(256);
+    let i;
     for(i = 0;i < 256;++i) {
       table[i] = function(n) {
-        var r = n;
-        var s = 7;
+        let r = n;
+        let s = 7;
         for(n >>>= 1;n;n >>>= 1) {
           r <<= 1;
           r |= n & 1;
@@ -593,15 +593,15 @@ goog.scope(function() {
 });
 goog.provide("Zlib.CRC32");
 goog.require("USE_TYPEDARRAY");
-var ZLIB_CRC32_COMPACT = false;
+const ZLIB_CRC32_COMPACT = false;
 goog.scope(function() {
   Zlib.CRC32.calc = function(data, pos, length) {
     return Zlib.CRC32.update(data, 0, pos, length)
   };
   Zlib.CRC32.update = function(data, crc, pos, length) {
-    var table = Zlib.CRC32.Table;
-    var i = typeof pos === "number" ? pos : pos = 0;
-    var il = typeof length === "number" ? length : data.length;
+    let table = Zlib.CRC32.Table;
+    let i = typeof pos === "number" ? pos : pos = 0;
+    let il = typeof length === "number" ? length : data.length;
     crc ^= 4294967295;
     for(i = il & 7;i--;++pos) {
       crc = crc >>> 8 ^ table[(crc ^ data[pos]) & 255]
@@ -628,10 +628,10 @@ goog.scope(function() {
   1090812512, 3747672003, 2825379669, 829329135, 1181335161, 3412177804, 3160834842, 628085408, 1382605366, 3423369109, 3138078467, 570562233, 1426400815, 3317316542, 2998733608, 733239954, 1555261956, 3268935591, 3050360625, 752459403, 1541320221, 2607071920, 3965973030, 1969922972, 40735498, 2617837225, 3943577151, 1913087877, 83908371, 2512341634, 3803740692, 2075208622, 213261112, 2463272603, 3855990285, 2094854071, 198958881, 2262029012, 4057260610, 1759359992, 534414190, 2176718541, 4139329115, 
   1873836001, 414664567, 2282248934, 4279200368, 1711684554, 285281116, 2405801727, 4167216745, 1634467795, 376229701, 2685067896, 3608007406, 1308918612, 956543938, 2808555105, 3495958263, 1231636301, 1047427035, 2932959818, 3654703836, 1088359270, 936918E3, 2847714899, 3736837829, 1202900863, 817233897, 3183342108, 3401237130, 1404277552, 615818150, 3134207493, 3453421203, 1423857449, 601450431, 3009837614, 3294710456, 1567103746, 711928724, 3020668471, 3272380065, 1510334235, 755167117];
   Zlib.CRC32.Table = ZLIB_CRC32_COMPACT ? function() {
-    var table = new (USE_TYPEDARRAY ? Uint32Array : Array)(256);
-    var c;
-    var i;
-    var j;
+    let table = new (USE_TYPEDARRAY ? Uint32Array : Array)(256);
+    let c;
+    let i;
+    let j;
     for(i = 0;i < 256;++i) {
       c = i;
       for(j = 0;j < 8;++j) {
@@ -697,7 +697,7 @@ goog.scope(function() {
     return 2 * index + 2
   };
   Zlib.Heap.prototype.push = function(index, value) {
-    var current, parent, heap = this.buffer, swap;
+    let current, parent, heap = this.buffer, swap;
     current = this.length;
     heap[this.length++] = value;
     heap[this.length++] = index;
@@ -718,7 +718,7 @@ goog.scope(function() {
     return this.length
   };
   Zlib.Heap.prototype.pop = function() {
-    var index, value, heap = this.buffer, swap, current, parent;
+    let index, value, heap = this.buffer, swap, current, parent;
     value = heap[0];
     index = heap[1];
     this.length -= 2;
@@ -752,20 +752,20 @@ goog.provide("Zlib.Huffman");
 goog.require("USE_TYPEDARRAY");
 goog.scope(function() {
   Zlib.Huffman.buildHuffmanTable = function(lengths) {
-    var listSize = lengths.length;
-    var maxCodeLength = 0;
-    var minCodeLength = Number.POSITIVE_INFINITY;
-    var size;
-    var table;
-    var bitLength;
-    var code;
-    var skip;
-    var reversed;
-    var rtemp;
-    var i;
-    var il;
-    var j;
-    var value;
+    const listSize = lengths.length;
+    let maxCodeLength = 0;
+    let minCodeLength = Number.POSITIVE_INFINITY;
+    let size;
+    let table;
+    let bitLength;
+    let code;
+    let skip;
+    let reversed;
+    let rtemp;
+    let i;
+    let il;
+    let j;
+    let value;
     for(i = 0, il = listSize;i < il;++i) {
       if(lengths[i] > maxCodeLength) {
         maxCodeLength = lengths[i]
@@ -835,7 +835,7 @@ goog.scope(function() {
   Zlib.RawDeflate.MaxCodeLength = 16;
   Zlib.RawDeflate.HUFMAX = 286;
   Zlib.RawDeflate.FixedHuffmanTable = function() {
-    var table = [], i;
+    let table = [], i;
     for(i = 0;i < 288;i++) {
       switch(true) {
         case i <= 143:
@@ -857,10 +857,10 @@ goog.scope(function() {
     return table
   }();
   Zlib.RawDeflate.prototype.compress = function() {
-    var blockArray;
-    var position;
-    var length;
-    var input = this.input;
+    let blockArray;
+    let position;
+    let length;
+    let input = this.input;
     switch(this.compressionType) {
       case Zlib.RawDeflate.CompressionType.NONE:
         for(position = 0, length = input.length;position < length;) {
@@ -883,14 +883,14 @@ goog.scope(function() {
     return this.output
   };
   Zlib.RawDeflate.prototype.makeNocompressBlock = function(blockArray, isFinalBlock) {
-    var bfinal;
-    var btype;
-    var len;
-    var nlen;
-    var i;
-    var il;
-    var output = this.output;
-    var op = this.op;
+    let bfinal;
+    let btype;
+    let len;
+    let nlen;
+    let i;
+    let il;
+    let output = this.output;
+    let op = this.op;
     if(USE_TYPEDARRAY) {
       output = new Uint8Array(this.output.buffer);
       while(output.length <= op + blockArray.length + 5) {
@@ -922,10 +922,10 @@ goog.scope(function() {
     return output
   };
   Zlib.RawDeflate.prototype.makeFixedHuffmanBlock = function(blockArray, isFinalBlock) {
-    var stream = new Zlib.BitStream(USE_TYPEDARRAY ? new Uint8Array(this.output.buffer) : this.output, this.op);
-    var bfinal;
-    var btype;
-    var data;
+    let stream = new Zlib.BitStream(USE_TYPEDARRAY ? new Uint8Array(this.output.buffer) : this.output, this.op);
+    let bfinal;
+    let btype;
+    let data;
     bfinal = isFinalBlock ? 1 : 0;
     btype = Zlib.RawDeflate.CompressionType.FIXED;
     stream.writeBits(bfinal, 1, true);
@@ -935,26 +935,26 @@ goog.scope(function() {
     return stream.finish()
   };
   Zlib.RawDeflate.prototype.makeDynamicHuffmanBlock = function(blockArray, isFinalBlock) {
-    var stream = new Zlib.BitStream(USE_TYPEDARRAY ? new Uint8Array(this.output.buffer) : this.output, this.op);
-    var bfinal;
-    var btype;
-    var data;
-    var hlit;
-    var hdist;
-    var hclen;
-    var hclenOrder = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
-    var litLenLengths;
-    var litLenCodes;
-    var distLengths;
-    var distCodes;
-    var treeSymbols;
-    var treeLengths;
-    var transLengths = new Array(19);
-    var treeCodes;
-    var code;
-    var bitlen;
-    var i;
-    var il;
+    let stream = new Zlib.BitStream(USE_TYPEDARRAY ? new Uint8Array(this.output.buffer) : this.output, this.op);
+    let bfinal;
+    let btype;
+    let data;
+    let hlit;
+    let hdist;
+    let hclen;
+    let hclenOrder = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+    const litLenLengths;
+    let litLenCodes;
+    const distLengths;
+    let distCodes;
+    let treeSymbols;
+    let treeLengths;
+    let transLengths = new Array(19);
+    let treeCodes;
+    let code;
+    let bitlen;
+    let i;
+    let il;
     bfinal = isFinalBlock ? 1 : 0;
     btype = Zlib.RawDeflate.CompressionType.DYNAMIC;
     stream.writeBits(bfinal, 1, true);
@@ -1007,14 +1007,14 @@ goog.scope(function() {
     return stream.finish()
   };
   Zlib.RawDeflate.prototype.dynamicHuffman = function(dataArray, litLen, dist, stream) {
-    var index;
-    var length;
-    var literal;
-    var code;
-    var litLenCodes;
-    var litLenLengths;
-    var distCodes;
-    var distLengths;
+    let index;
+    let length;
+    let literal;
+    let code;
+    let litLenCodes;
+    const litLenLengths;
+    let distCodes;
+    const distLengths;
     litLenCodes = litLen[0];
     litLenLengths = litLen[1];
     distCodes = dist[0];
@@ -1036,9 +1036,9 @@ goog.scope(function() {
     return stream
   };
   Zlib.RawDeflate.prototype.fixedHuffman = function(dataArray, stream) {
-    var index;
-    var length;
-    var literal;
+    let index;
+    let length;
+    let literal;
     for(index = 0, length = dataArray.length;index < length;index++) {
       literal = dataArray[index];
       Zlib.BitStream.prototype.writeBits.apply(stream, Zlib.RawDeflate.FixedHuffmanTable[literal]);
@@ -1061,9 +1061,9 @@ goog.scope(function() {
   Zlib.RawDeflate.Lz77Match.LengthCodeTable = function(table) {
     return USE_TYPEDARRAY ? new Uint32Array(table) : table
   }(function() {
-    var table = [];
-    var i;
-    var c;
+    let table = [];
+    let i;
+    let c;
     for(i = 3;i <= 258;i++) {
       c = code(i);
       table[i] = c[2] << 24 | c[1] << 16 | c[0]
@@ -1164,7 +1164,7 @@ goog.scope(function() {
     return table
   }());
   Zlib.RawDeflate.Lz77Match.prototype.getDistanceCode_ = function(dist) {
-    var r;
+    let r;
     switch(true) {
       case dist === 1:
         r = [0, dist - 1, 0];
@@ -1262,11 +1262,11 @@ goog.scope(function() {
     return r
   };
   Zlib.RawDeflate.Lz77Match.prototype.toLz77Array = function() {
-    var length = this.length;
-    var dist = this.backwardDistance;
-    var codeArray = [];
-    var pos = 0;
-    var code;
+    let length = this.length;
+    let dist = this.backwardDistance;
+    const codeArray = [];
+    let pos = 0;
+    let code;
     code = Zlib.RawDeflate.Lz77Match.LengthCodeTable[length];
     codeArray[pos++] = code & 65535;
     codeArray[pos++] = code >> 16 & 255;
@@ -1278,23 +1278,23 @@ goog.scope(function() {
     return codeArray
   };
   Zlib.RawDeflate.prototype.lz77 = function(dataArray) {
-    var position;
-    var length;
-    var i;
-    var il;
-    var matchKey;
-    var table = {};
-    var windowSize = Zlib.RawDeflate.WindowSize;
-    var matchList;
-    var longestMatch;
-    var prevMatch;
-    var lz77buf = USE_TYPEDARRAY ? new Uint16Array(dataArray.length * 2) : [];
-    var pos = 0;
-    var skipLength = 0;
-    var freqsLitLen = new (USE_TYPEDARRAY ? Uint32Array : Array)(286);
-    var freqsDist = new (USE_TYPEDARRAY ? Uint32Array : Array)(30);
-    var lazy = this.lazy;
-    var tmp;
+    let position;
+    let length;
+    let i;
+    let il;
+    let matchKey;
+    let table = {};
+    const windowSize = Zlib.RawDeflate.WindowSize;
+    let matchList;
+    let longestMatch;
+    let prevMatch;
+    let lz77buf = USE_TYPEDARRAY ? new Uint16Array(dataArray.length * 2) : [];
+    let pos = 0;
+    let skipLength = 0;
+    let freqsLitLen = new (USE_TYPEDARRAY ? Uint32Array : Array)(286);
+    let freqsDist = new (USE_TYPEDARRAY ? Uint32Array : Array)(30);
+    let lazy = this.lazy;
+    let tmp;
     if(!USE_TYPEDARRAY) {
       for(i = 0;i <= 285;) {
         freqsLitLen[i++] = 0
@@ -1305,9 +1305,9 @@ goog.scope(function() {
     }
     freqsLitLen[256] = 1;
     function writeMatch(match, offset) {
-      var lz77Array = match.toLz77Array();
-      var i;
-      var il;
+      const lz77Array = match.toLz77Array();
+      let i;
+      let il;
       for(i = 0, il = lz77Array.length;i < il;++i) {
         lz77buf[pos++] = lz77Array[i]
       }
@@ -1381,7 +1381,7 @@ goog.scope(function() {
     return(USE_TYPEDARRAY ? lz77buf.subarray(0, pos) : lz77buf)
   };
   Zlib.RawDeflate.prototype.searchLongestMatch_ = function(data, position, matchList) {
-    var match, currentMatch, matchMax = 0, matchLength, i, j, l, dl = data.length;
+    let match, currentMatch, matchMax = 0, matchLength, i, j, l, dl = data.length;
     permatch:for(i = 0, l = matchList.length;i < l;i++) {
       match = matchList[l - i - 1];
       matchLength = Zlib.RawDeflate.Lz77MinLength;
@@ -1407,7 +1407,7 @@ goog.scope(function() {
     return new Zlib.RawDeflate.Lz77Match(matchMax, position - currentMatch)
   };
   Zlib.RawDeflate.prototype.getTreeSymbols_ = function(hlit, litlenLengths, hdist, distLengths) {
-    var src = new (USE_TYPEDARRAY ? Uint32Array : Array)(hlit + hdist), i, j, runLength, l, result = new (USE_TYPEDARRAY ? Uint32Array : Array)(286 + 30), nResult, rpt, freqs = new (USE_TYPEDARRAY ? Uint8Array : Array)(19);
+    let src = new (USE_TYPEDARRAY ? Uint32Array : Array)(hlit + hdist), i, j, runLength, l, result = new (USE_TYPEDARRAY ? Uint32Array : Array)(286 + 30), nResult, rpt, freqs = new (USE_TYPEDARRAY ? Uint8Array : Array)(19);
     j = 0;
     for(i = 0;i < hlit;i++) {
       src[j++] = litlenLengths[i]
@@ -1475,14 +1475,14 @@ goog.scope(function() {
     return{codes:USE_TYPEDARRAY ? result.subarray(0, nResult) : result.slice(0, nResult), freqs:freqs}
   };
   Zlib.RawDeflate.prototype.getLengths_ = function(freqs, limit) {
-    var nSymbols = freqs.length;
-    var heap = new Zlib.Heap(2 * Zlib.RawDeflate.HUFMAX);
-    var length = new (USE_TYPEDARRAY ? Uint8Array : Array)(nSymbols);
-    var nodes;
-    var values;
-    var codeLength;
-    var i;
-    var il;
+    let nSymbols = freqs.length;
+    let heap = new Zlib.Heap(2 * Zlib.RawDeflate.HUFMAX);
+    let length = new (USE_TYPEDARRAY ? Uint8Array : Array)(nSymbols);
+    let nodes;
+    let values;
+    let codeLength;
+    let i;
+    let il;
     if(!USE_TYPEDARRAY) {
       for(i = 0;i < nSymbols;i++) {
         length[i] = 0
@@ -1510,21 +1510,21 @@ goog.scope(function() {
     return length
   };
   Zlib.RawDeflate.prototype.reversePackageMerge_ = function(freqs, symbols, limit) {
-    var minimumCost = new (USE_TYPEDARRAY ? Uint16Array : Array)(limit);
-    var flag = new (USE_TYPEDARRAY ? Uint8Array : Array)(limit);
-    var codeLength = new (USE_TYPEDARRAY ? Uint8Array : Array)(symbols);
-    var value = new Array(limit);
-    var type = new Array(limit);
-    var currentPosition = new Array(limit);
-    var excess = (1 << limit) - symbols;
-    var half = 1 << limit - 1;
-    var i;
-    var j;
-    var t;
-    var weight;
-    var next;
+    let minimumCost = new (USE_TYPEDARRAY ? Uint16Array : Array)(limit);
+    let flag = new (USE_TYPEDARRAY ? Uint8Array : Array)(limit);
+    let codeLength = new (USE_TYPEDARRAY ? Uint8Array : Array)(symbols);
+    let value = new Array(limit);
+    let type = new Array(limit);
+    let currentPosition = new Array(limit);
+    let excess = (1 << limit) - symbols;
+    let half = 1 << limit - 1;
+    let i;
+    let j;
+    let t;
+    let weight;
+    let next;
     function takePackage(j) {
-      var x = type[j][currentPosition[j]];
+      let x = type[j][currentPosition[j]];
       if(x === symbols) {
         takePackage(j + 1);
         takePackage(j + 1)
@@ -1592,7 +1592,7 @@ goog.scope(function() {
     return codeLength
   };
   Zlib.RawDeflate.prototype.getCodesFromLengths_ = function(lengths) {
-    var codes = new (USE_TYPEDARRAY ? Uint16Array : Array)(lengths.length), count = [], startCode = [], code = 0, i, il, j, m;
+    let codes = new (USE_TYPEDARRAY ? Uint16Array : Array)(lengths.length), count = [], startCode = [], code = 0, i, il, j, m;
     for(i = 0, il = lengths.length;i < il;i++) {
       count[lengths[i]] = (count[lengths[i]] | 0) + 1
     }
@@ -1647,20 +1647,20 @@ goog.scope(function() {
   };
   Zlib.Gzip.DefaultBufferSize = 32768;
   Zlib.Gzip.prototype.compress = function() {
-    var flg;
-    var mtime;
-    var crc16;
-    var crc32;
-    var rawdeflate;
-    var c;
-    var i;
-    var il;
-    var output = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.Gzip.DefaultBufferSize);
-    var op = 0;
-    var input = this.input;
-    var ip = this.ip;
-    var filename = this.filename;
-    var comment = this.comment;
+    let flg;
+    let mtime;
+    let crc16;
+    let crc32;
+    let rawdeflate;
+    let c;
+    let i;
+    let il;
+    let output = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.Gzip.DefaultBufferSize);
+    let op = 0;
+    let input = this.input;
+    let ip = this.ip;
+    let filename = this.filename;
+    let comment = this.comment;
     output[op++] = 31;
     output[op++] = 139;
     output[op++] = 8;
@@ -1743,9 +1743,9 @@ goog.scope(function() {
 goog.provide("Zlib.RawInflateStream");
 goog.require("USE_TYPEDARRAY");
 goog.require("Zlib.Huffman");
-var ZLIB_STREAM_RAW_INFLATE_BUFFER_SIZE = 32768;
+const ZLIB_STREAM_RAW_INFLATE_BUFFER_SIZE = 32768;
 goog.scope(function() {
-  var buildHuffmanTable = Zlib.Huffman.buildHuffmanTable;
+  const buildHuffmanTable = Zlib.Huffman.buildHuffmanTable;
   Zlib.RawInflateStream = function(input, ip, opt_buffersize) {
     this.blocks = [];
     this.bufferSize = opt_buffersize ? opt_buffersize : ZLIB_STREAM_RAW_INFLATE_BUFFER_SIZE;
@@ -1770,7 +1770,7 @@ goog.scope(function() {
   Zlib.RawInflateStream.BlockType = {UNCOMPRESSED:0, FIXED:1, DYNAMIC:2};
   Zlib.RawInflateStream.Status = {INITIALIZED:0, BLOCK_HEADER_START:1, BLOCK_HEADER_END:2, BLOCK_BODY_START:3, BLOCK_BODY_END:4, DECODE_BLOCK_START:5, DECODE_BLOCK_END:6};
   Zlib.RawInflateStream.prototype.decompress = function(newInput, ip) {
-    var stop = false;
+    const stop = false;
     if(newInput !== void 0) {
       this.input = newInput
     }
@@ -1856,8 +1856,8 @@ goog.scope(function() {
   Zlib.RawInflateStream.FixedLiteralLengthTable = function(table) {
     return table
   }(function() {
-    var lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(288);
-    var i, il;
+    const lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(288);
+    let i, il;
     for(i = 0, il = lengths.length;i < il;++i) {
       lengths[i] = i <= 143 ? 8 : i <= 255 ? 9 : i <= 279 ? 7 : 8
     }
@@ -1866,15 +1866,15 @@ goog.scope(function() {
   Zlib.RawInflateStream.FixedDistanceTable = function(table) {
     return table
   }(function() {
-    var lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(30);
-    var i, il;
+    const lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(30);
+    let i, il;
     for(i = 0, il = lengths.length;i < il;++i) {
       lengths[i] = 5
     }
     return buildHuffmanTable(lengths)
   }());
   Zlib.RawInflateStream.prototype.readBlockHeader = function() {
-    var hdr;
+    let hdr;
     this.status = Zlib.RawInflateStream.Status.BLOCK_HEADER_START;
     this.save_();
     if((hdr = this.readBits(3)) < 0) {
@@ -1901,11 +1901,11 @@ goog.scope(function() {
     this.status = Zlib.RawInflateStream.Status.BLOCK_HEADER_END
   };
   Zlib.RawInflateStream.prototype.readBits = function(length) {
-    var bitsbuf = this.bitsbuf;
-    var bitsbuflen = this.bitsbuflen;
-    var input = this.input;
-    var ip = this.ip;
-    var octet;
+    let bitsbuf = this.bitsbuf;
+    let bitsbuflen = this.bitsbuflen;
+    let input = this.input;
+    let ip = this.ip;
+    let octet;
     while(bitsbuflen < length) {
       if(input.length <= ip) {
         return-1
@@ -1923,15 +1923,15 @@ goog.scope(function() {
     return octet
   };
   Zlib.RawInflateStream.prototype.readCodeByTable = function(table) {
-    var bitsbuf = this.bitsbuf;
-    var bitsbuflen = this.bitsbuflen;
-    var input = this.input;
-    var ip = this.ip;
-    var codeTable = table[0];
-    var maxCodeLength = table[1];
-    var octet;
-    var codeWithLength;
-    var codeLength;
+    let bitsbuf = this.bitsbuf;
+    let bitsbuflen = this.bitsbuflen;
+    let input = this.input;
+    let ip = this.ip;
+    let codeTable = table[0];
+    let maxCodeLength = table[1];
+    let octet;
+    let codeWithLength;
+    let codeLength;
     while(bitsbuflen < maxCodeLength) {
       if(input.length <= ip) {
         return-1
@@ -1951,10 +1951,10 @@ goog.scope(function() {
     return codeWithLength & 65535
   };
   Zlib.RawInflateStream.prototype.readUncompressedBlockHeader = function() {
-    var len;
-    var nlen;
-    var input = this.input;
-    var ip = this.ip;
+    let len;
+    let nlen;
+    let input = this.input;
+    let ip = this.ip;
     this.status = Zlib.RawInflateStream.Status.BLOCK_BODY_START;
     if(ip + 4 >= input.length) {
       return-1
@@ -1971,11 +1971,11 @@ goog.scope(function() {
     this.status = Zlib.RawInflateStream.Status.BLOCK_BODY_END
   };
   Zlib.RawInflateStream.prototype.parseUncompressedBlock = function() {
-    var input = this.input;
-    var ip = this.ip;
-    var output = this.output;
-    var op = this.op;
-    var len = this.blockLength;
+    let input = this.input;
+    let ip = this.ip;
+    let output = this.output;
+    let op = this.op;
+    let len = this.blockLength;
     this.status = Zlib.RawInflateStream.Status.DECODE_BLOCK_START;
     while(len--) {
       if(op === output.length) {
@@ -2014,13 +2014,13 @@ goog.scope(function() {
     this.bitsbuf = this.bitsbuf_
   };
   Zlib.RawInflateStream.prototype.parseDynamicHuffmanBlock = function() {
-    var hlit;
-    var hdist;
-    var hclen;
-    var codeLengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.RawInflateStream.Order.length);
-    var codeLengthsTable;
-    var litlenLengths;
-    var distLengths;
+    let hlit;
+    let hdist;
+    let hclen;
+    const codeLengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.RawInflateStream.Order.length);
+    const codeLengthsTable;
+    const litlenLengths;
+    const distLengths;
     this.status = Zlib.RawInflateStream.Status.BLOCK_BODY_START;
     this.save_();
     hlit = this.readBits(5) + 257;
@@ -2037,13 +2037,13 @@ goog.scope(function() {
       return-1
     }
     function parseDynamicHuffmanBlockImpl() {
-      var bits;
-      var code;
-      var prev = 0;
-      var repeat;
-      var lengthTable;
-      var i;
-      var il;
+      let bits;
+      let code;
+      let prev = 0;
+      let repeat;
+      const lengthTable;
+      let i;
+      let il;
       for(i = 0;i < hclen;++i) {
         if((bits = this.readBits(3)) < 0) {
           throw new Error("not enough input");
@@ -2102,16 +2102,16 @@ goog.scope(function() {
     return 0
   };
   Zlib.RawInflateStream.prototype.decodeHuffman = function() {
-    var output = this.output;
-    var op = this.op;
-    var code;
-    var ti;
-    var codeDist;
-    var codeLength;
-    var litlen = this.litlenTable;
-    var dist = this.distTable;
-    var olength = output.length;
-    var bits;
+    let output = this.output;
+    let op = this.op;
+    let code;
+    let ti;
+    let codeDist;
+    let codeLength;
+    const litlen = this.litlenTable;
+    let dist = this.distTable;
+    let olength = output.length;
+    let bits;
     this.status = Zlib.RawInflateStream.Status.DECODE_BLOCK_START;
     while(true) {
       this.save_();
@@ -2179,13 +2179,13 @@ goog.scope(function() {
     this.status = Zlib.RawInflateStream.Status.DECODE_BLOCK_END
   };
   Zlib.RawInflateStream.prototype.expandBuffer = function(opt_param) {
-    var buffer;
-    var ratio = this.input.length / this.ip + 1 | 0;
-    var maxHuffCode;
-    var newSize;
-    var maxInflateSize;
-    var input = this.input;
-    var output = this.output;
+    let buffer;
+    let ratio = this.input.length / this.ip + 1 | 0;
+    const maxHuffCode;
+    let newSize;
+    const maxInflateSize;
+    let input = this.input;
+    let output = this.output;
     if(opt_param) {
       if(typeof opt_param.fixRatio === "number") {
         ratio = opt_param.fixRatio
@@ -2211,9 +2211,9 @@ goog.scope(function() {
     return this.output
   };
   Zlib.RawInflateStream.prototype.concatBuffer = function() {
-    var buffer;
-    var op = this.op;
-    var tmp;
+    let buffer;
+    let op = this.op;
+    let tmp;
     if(this.resize) {
       if(USE_TYPEDARRAY) {
         buffer = new Uint8Array(this.output.subarray(this.sp, op))
@@ -2240,9 +2240,9 @@ goog.scope(function() {
 goog.provide("Zlib.RawInflate");
 goog.require("USE_TYPEDARRAY");
 goog.require("Zlib.Huffman");
-var ZLIB_RAW_INFLATE_BUFFER_SIZE = 32768;
+const ZLIB_RAW_INFLATE_BUFFER_SIZE = 32768;
 goog.scope(function() {
-  var buildHuffmanTable = Zlib.Huffman.buildHuffmanTable;
+  const buildHuffmanTable = Zlib.Huffman.buildHuffmanTable;
   Zlib.RawInflate = function(input, opt_params) {
     this.buffer;
     this.blocks = [];
@@ -2314,8 +2314,8 @@ goog.scope(function() {
   Zlib.RawInflate.FixedLiteralLengthTable = function(table) {
     return table
   }(function() {
-    var lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(288);
-    var i, il;
+    const lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(288);
+    let i, il;
     for(i = 0, il = lengths.length;i < il;++i) {
       lengths[i] = i <= 143 ? 8 : i <= 255 ? 9 : i <= 279 ? 7 : 8
     }
@@ -2324,15 +2324,15 @@ goog.scope(function() {
   Zlib.RawInflate.FixedDistanceTable = function(table) {
     return table
   }(function() {
-    var lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(30);
-    var i, il;
+    const lengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(30);
+    let i, il;
     for(i = 0, il = lengths.length;i < il;++i) {
       lengths[i] = 5
     }
     return buildHuffmanTable(lengths)
   }());
   Zlib.RawInflate.prototype.parseBlock = function() {
-    var hdr = this.readBits(3);
+    let hdr = this.readBits(3);
     if(hdr & 1) {
       this.bfinal = true
     }
@@ -2352,12 +2352,12 @@ goog.scope(function() {
     }
   };
   Zlib.RawInflate.prototype.readBits = function(length) {
-    var bitsbuf = this.bitsbuf;
-    var bitsbuflen = this.bitsbuflen;
-    var input = this.input;
-    var ip = this.ip;
-    var inputLength = input.length;
-    var octet;
+    let bitsbuf = this.bitsbuf;
+    let bitsbuflen = this.bitsbuflen;
+    let input = this.input;
+    let ip = this.ip;
+    let inputLength = input.length;
+    let octet;
     while(bitsbuflen < length) {
       if(ip >= inputLength) {
         throw new Error("input buffer is broken");
@@ -2374,15 +2374,15 @@ goog.scope(function() {
     return octet
   };
   Zlib.RawInflate.prototype.readCodeByTable = function(table) {
-    var bitsbuf = this.bitsbuf;
-    var bitsbuflen = this.bitsbuflen;
-    var input = this.input;
-    var ip = this.ip;
-    var inputLength = input.length;
-    var codeTable = table[0];
-    var maxCodeLength = table[1];
-    var codeWithLength;
-    var codeLength;
+    let bitsbuf = this.bitsbuf;
+    let bitsbuflen = this.bitsbuflen;
+    let input = this.input;
+    let ip = this.ip;
+    let inputLength = input.length;
+    let codeTable = table[0];
+    let maxCodeLength = table[1];
+    let codeWithLength;
+    let codeLength;
     while(bitsbuflen < maxCodeLength) {
       if(ip >= inputLength) {
         break
@@ -2401,15 +2401,15 @@ goog.scope(function() {
     return codeWithLength & 65535
   };
   Zlib.RawInflate.prototype.parseUncompressedBlock = function() {
-    var input = this.input;
-    var ip = this.ip;
-    var output = this.output;
-    var op = this.op;
-    var inputLength = input.length;
-    var len;
-    var nlen;
-    var olength = output.length;
-    var preCopy;
+    let input = this.input;
+    let ip = this.ip;
+    let output = this.output;
+    let op = this.op;
+    let inputLength = input.length;
+    let len;
+    let nlen;
+    let olength = output.length;
+    let preCopy;
     this.bitsbuf = 0;
     this.bitsbuflen = 0;
     if(ip + 1 >= inputLength) {
@@ -2470,19 +2470,19 @@ goog.scope(function() {
     this.decodeHuffman(Zlib.RawInflate.FixedLiteralLengthTable, Zlib.RawInflate.FixedDistanceTable)
   };
   Zlib.RawInflate.prototype.parseDynamicHuffmanBlock = function() {
-    var hlit = this.readBits(5) + 257;
-    var hdist = this.readBits(5) + 1;
-    var hclen = this.readBits(4) + 4;
-    var codeLengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.RawInflate.Order.length);
-    var codeLengthsTable;
-    var litlenTable;
-    var distTable;
-    var lengthTable;
-    var code;
-    var prev;
-    var repeat;
-    var i;
-    var il;
+    let hlit = this.readBits(5) + 257;
+    let hdist = this.readBits(5) + 1;
+    let hclen = this.readBits(4) + 4;
+    const codeLengths = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.RawInflate.Order.length);
+    const codeLengthsTable;
+    const litlenTable;
+    const distTable;
+    const lengthTable;
+    let code;
+    let prev;
+    let repeat;
+    let i;
+    let il;
     for(i = 0;i < hclen;++i) {
       codeLengths[Zlib.RawInflate.Order[i]] = this.readBits(3)
     }
@@ -2527,14 +2527,14 @@ goog.scope(function() {
     this.decodeHuffman(litlenTable, distTable)
   };
   Zlib.RawInflate.prototype.decodeHuffman = function(litlen, dist) {
-    var output = this.output;
-    var op = this.op;
+    let output = this.output;
+    let op = this.op;
     this.currentLitlenTable = litlen;
-    var olength = output.length - Zlib.RawInflate.MaxCopyLength;
-    var code;
-    var ti;
-    var codeDist;
-    var codeLength;
+    let olength = output.length - Zlib.RawInflate.MaxCopyLength;
+    let code;
+    let ti;
+    let codeDist;
+    let codeLength;
     while((code = this.readCodeByTable(litlen)) !== 256) {
       if(code < 256) {
         if(op >= olength) {
@@ -2571,14 +2571,14 @@ goog.scope(function() {
     this.op = op
   };
   Zlib.RawInflate.prototype.decodeHuffmanAdaptive = function(litlen, dist) {
-    var output = this.output;
-    var op = this.op;
+    let output = this.output;
+    let op = this.op;
     this.currentLitlenTable = litlen;
-    var olength = output.length;
-    var code;
-    var ti;
-    var codeDist;
-    var codeLength;
+    let olength = output.length;
+    let code;
+    let ti;
+    let codeDist;
+    let codeLength;
     while((code = this.readCodeByTable(litlen)) !== 256) {
       if(code < 256) {
         if(op >= olength) {
@@ -2613,11 +2613,11 @@ goog.scope(function() {
     this.op = op
   };
   Zlib.RawInflate.prototype.expandBuffer = function(opt_param) {
-    var buffer = new (USE_TYPEDARRAY ? Uint8Array : Array)(this.op - Zlib.RawInflate.MaxBackwardLength);
-    var backward = this.op - Zlib.RawInflate.MaxBackwardLength;
-    var i;
-    var il;
-    var output = this.output;
+    let buffer = new (USE_TYPEDARRAY ? Uint8Array : Array)(this.op - Zlib.RawInflate.MaxBackwardLength);
+    let backward = this.op - Zlib.RawInflate.MaxBackwardLength;
+    let i;
+    let il;
+    let output = this.output;
     if(USE_TYPEDARRAY) {
       buffer.set(output.subarray(Zlib.RawInflate.MaxBackwardLength, buffer.length))
     }else {
@@ -2638,13 +2638,13 @@ goog.scope(function() {
     return output
   };
   Zlib.RawInflate.prototype.expandBufferAdaptive = function(opt_param) {
-    var buffer;
-    var ratio = this.input.length / this.ip + 1 | 0;
-    var maxHuffCode;
-    var newSize;
-    var maxInflateSize;
-    var input = this.input;
-    var output = this.output;
+    let buffer;
+    let ratio = this.input.length / this.ip + 1 | 0;
+    const maxHuffCode;
+    let newSize;
+    const maxInflateSize;
+    let input = this.input;
+    let output = this.output;
     if(opt_param) {
       if(typeof opt_param.fixRatio === "number") {
         ratio = opt_param.fixRatio
@@ -2670,16 +2670,16 @@ goog.scope(function() {
     return this.output
   };
   Zlib.RawInflate.prototype.concatBuffer = function() {
-    var pos = 0;
-    var limit = this.totalpos + (this.op - Zlib.RawInflate.MaxBackwardLength);
-    var output = this.output;
-    var blocks = this.blocks;
-    var block;
-    var buffer = new (USE_TYPEDARRAY ? Uint8Array : Array)(limit);
-    var i;
-    var il;
-    var j;
-    var jl;
+    let pos = 0;
+    let limit = this.totalpos + (this.op - Zlib.RawInflate.MaxBackwardLength);
+    let output = this.output;
+    const blocks = this.blocks;
+    let block;
+    let buffer = new (USE_TYPEDARRAY ? Uint8Array : Array)(limit);
+    let i;
+    let il;
+    let j;
+    let jl;
     if(blocks.length === 0) {
       return USE_TYPEDARRAY ? this.output.subarray(Zlib.RawInflate.MaxBackwardLength, this.op) : this.output.slice(Zlib.RawInflate.MaxBackwardLength, this.op)
     }
@@ -2697,8 +2697,8 @@ goog.scope(function() {
     return this.buffer
   };
   Zlib.RawInflate.prototype.concatBufferDynamic = function() {
-    var buffer;
-    var op = this.op;
+    let buffer;
+    let op = this.op;
     if(USE_TYPEDARRAY) {
       if(this.resize) {
         buffer = new Uint8Array(op);
@@ -2736,7 +2736,7 @@ goog.scope(function() {
     return this.member.slice()
   };
   Zlib.Gunzip.prototype.decompress = function() {
-    var il = this.input.length;
+    let il = this.input.length;
     while(this.ip < il) {
       this.decodeMember()
     }
@@ -2744,18 +2744,18 @@ goog.scope(function() {
     return this.concatMember()
   };
   Zlib.Gunzip.prototype.decodeMember = function() {
-    var member = new Zlib.GunzipMember;
-    var isize;
-    var rawinflate;
-    var inflated;
-    var inflen;
-    var c;
-    var ci;
-    var str;
-    var mtime;
-    var crc32;
-    var input = this.input;
-    var ip = this.ip;
+    let member = new Zlib.GunzipMember;
+    let isize;
+    let rawinflate;
+    let inflated;
+    let inflen;
+    let c;
+    let ci;
+    let str;
+    let mtime;
+    let crc32;
+    let input = this.input;
+    let ip = this.ip;
     member.id1 = input[ip++];
     member.id2 = input[ip++];
     if(member.id1 !== 31 || member.id2 !== 139) {
@@ -2817,12 +2817,12 @@ goog.scope(function() {
     return ip + length
   };
   Zlib.Gunzip.prototype.concatMember = function() {
-    var member = this.member;
-    var i;
-    var il;
-    var p = 0;
-    var size = 0;
-    var buffer;
+    let member = this.member;
+    let i;
+    let il;
+    let p = 0;
+    let size = 0;
+    let buffer;
     for(i = 0, il = member.length;i < il;++i) {
       size += member[i].data.length
     }
@@ -2845,9 +2845,9 @@ goog.scope(function() {
 goog.provide("Zlib.Util");
 goog.scope(function() {
   Zlib.Util.stringToByteArray = function(str) {
-    var tmp = str.split("");
-    var i;
-    var il;
+    let tmp = str.split("");
+    let i;
+    let il;
     for(i = 0, il = tmp.length;i < il;i++) {
       tmp[i] = (tmp[i].charCodeAt(0) & 255) >>> 0
     }
@@ -2865,11 +2865,11 @@ goog.scope(function() {
     return Zlib.Adler32.update(1, array)
   };
   Zlib.Adler32.update = function(adler, array) {
-    var s1 = adler & 65535;
-    var s2 = adler >>> 16 & 65535;
-    var len = array.length;
-    var tlen;
-    var i = 0;
+    let s1 = adler & 65535;
+    let s2 = adler >>> 16 & 65535;
+    let len = array.length;
+    let tlen;
+    let i = 0;
     while(len > 0) {
       tlen = len > Zlib.Adler32.OptimizationParameter ? Zlib.Adler32.OptimizationParameter : len;
       len -= tlen;
@@ -2890,10 +2890,10 @@ goog.require("Zlib.Adler32");
 goog.require("Zlib.RawInflate");
 goog.scope(function() {
   Zlib.Inflate = function(input, opt_params) {
-    var bufferSize;
-    var bufferType;
-    var cmf;
-    var flg;
+    const bufferSize;
+    const bufferType;
+    let cmf;
+    let flg;
     this.input = input;
     this.ip = 0;
     this.rawinflate;
@@ -2925,9 +2925,9 @@ goog.scope(function() {
   };
   Zlib.Inflate.BufferType = Zlib.RawInflate.BufferType;
   Zlib.Inflate.prototype.decompress = function() {
-    var input = this.input;
-    var buffer;
-    var adler32;
+    let input = this.input;
+    let buffer;
+    const adler32;
     buffer = this.rawinflate.decompress();
     this.ip = this.rawinflate.ip;
     if(this.verify) {
@@ -2958,10 +2958,10 @@ goog.scope(function() {
   Zlib.Zip.CentralDirectorySignature = [80, 75, 5, 6];
   Zlib.Zip.prototype.addFile = function(input, opt_params) {
     opt_params = opt_params || {};
-    var filename = "" || opt_params["filename"];
-    var compressed;
-    var size = input.length;
-    var crc32 = 0;
+    let filename = "" || opt_params["filename"];
+    let compressed;
+    let size = input.length;
+    let crc32 = 0;
     if(USE_TYPEDARRAY && input instanceof Array) {
       input = new Uint8Array(input)
     }
@@ -2987,36 +2987,36 @@ goog.scope(function() {
     this.password = password
   };
   Zlib.Zip.prototype.compress = function() {
-    var files = this.files;
-    var file;
-    var output;
-    var op1;
-    var op2;
-    var op3;
-    var localFileSize = 0;
-    var centralDirectorySize = 0;
-    var endOfCentralDirectorySize;
-    var offset;
-    var needVersion;
-    var flags;
-    var compressionMethod;
-    var date;
-    var crc32;
-    var size;
-    var plainSize;
-    var filenameLength;
-    var extraFieldLength;
-    var commentLength;
-    var filename;
-    var extraField;
-    var comment;
-    var buffer;
-    var tmp;
-    var key;
-    var i;
-    var il;
-    var j;
-    var jl;
+    const files = this.files;
+    let file;
+    let output;
+    let op1;
+    let op2;
+    let op3;
+    const localFileSize = 0;
+    const centralDirectorySize = 0;
+    const endOfCentralDirectorySize;
+    let offset;
+    let needVersion;
+    let flags;
+    let compressionMethod;
+    let date;
+    let crc32;
+    let size;
+    let plainSize;
+    let filenameLength;
+    let extraFieldLength;
+    let commentLength;
+    let filename;
+    let extraField;
+    let comment;
+    let buffer;
+    let tmp;
+    let key;
+    let i;
+    let il;
+    let j;
+    let jl;
     for(i = 0, il = files.length;i < il;++i) {
       file = files[i];
       filenameLength = file.option["filename"] ? file.option["filename"].length : 0;
@@ -3209,15 +3209,15 @@ goog.scope(function() {
     return output
   };
   Zlib.Zip.prototype.deflateWithOption = function(input, opt_params) {
-    var deflator = new Zlib.RawDeflate(input, opt_params["deflateOption"]);
+    const deflator = new Zlib.RawDeflate(input, opt_params["deflateOption"]);
     return deflator.compress()
   };
   Zlib.Zip.prototype.getByte = function(key) {
-    var tmp = key[2] & 65535 | 2;
+    let tmp = key[2] & 65535 | 2;
     return tmp * (tmp ^ 1) >> 8 & 255
   };
   Zlib.Zip.prototype.encode = function(key, n) {
-    var tmp = this.getByte((key));
+    let tmp = this.getByte((key));
     this.updateKeys((key), n);
     return tmp ^ n
   };
@@ -3227,9 +3227,9 @@ goog.scope(function() {
     key[2] = Zlib.CRC32.single(key[2], key[1] >>> 24)
   };
   Zlib.Zip.prototype.createEncryptionKey = function(password) {
-    var key = [305419896, 591751049, 878082192];
-    var i;
-    var il;
+    let key = [305419896, 591751049, 878082192];
+    let i;
+    let il;
     if(USE_TYPEDARRAY) {
       key = new Uint32Array(key)
     }
@@ -3294,8 +3294,8 @@ goog.scope(function() {
     this.comment
   };
   Zlib.Unzip.FileHeader.prototype.parse = function() {
-    var input = this.input;
-    var ip = this.offset;
+    let input = this.input;
+    let ip = this.offset;
     if(input[ip++] !== Zlib.Unzip.FileHeaderSignature[0] || input[ip++] !== Zlib.Unzip.FileHeaderSignature[1] || input[ip++] !== Zlib.Unzip.FileHeaderSignature[2] || input[ip++] !== Zlib.Unzip.FileHeaderSignature[3]) {
       throw new Error("invalid file header signature");
     }
@@ -3350,8 +3350,8 @@ goog.scope(function() {
   };
   Zlib.Unzip.LocalFileHeader.Flags = Zlib.Zip.Flags;
   Zlib.Unzip.LocalFileHeader.prototype.parse = function() {
-    var input = this.input;
-    var ip = this.offset;
+    let input = this.input;
+    let ip = this.offset;
     if(input[ip++] !== Zlib.Unzip.LocalFileHeaderSignature[0] || input[ip++] !== Zlib.Unzip.LocalFileHeaderSignature[1] || input[ip++] !== Zlib.Unzip.LocalFileHeaderSignature[2] || input[ip++] !== Zlib.Unzip.LocalFileHeaderSignature[3]) {
       throw new Error("invalid local file header signature");
     }
@@ -3384,8 +3384,8 @@ goog.scope(function() {
     this.length = ip - this.offset
   };
   Zlib.Unzip.prototype.searchEndOfCentralDirectoryRecord = function() {
-    var input = this.input;
-    var ip;
+    let input = this.input;
+    let ip;
     for(ip = input.length - 12;ip > 0;--ip) {
       if(input[ip] === Zlib.Unzip.CentralDirectorySignature[0] && input[ip + 1] === Zlib.Unzip.CentralDirectorySignature[1] && input[ip + 2] === Zlib.Unzip.CentralDirectorySignature[2] && input[ip + 3] === Zlib.Unzip.CentralDirectorySignature[3]) {
         this.eocdrOffset = ip;
@@ -3395,8 +3395,8 @@ goog.scope(function() {
     throw new Error("End of Central Directory Record not found");
   };
   Zlib.Unzip.prototype.parseEndOfCentralDirectoryRecord = function() {
-    var input = this.input;
-    var ip;
+    let input = this.input;
+    let ip;
     if(!this.eocdrOffset) {
       this.searchEndOfCentralDirectoryRecord()
     }
@@ -3414,12 +3414,12 @@ goog.scope(function() {
     this.comment = USE_TYPEDARRAY ? input.subarray(ip, ip + this.commentLength) : input.slice(ip, ip + this.commentLength)
   };
   Zlib.Unzip.prototype.parseFileHeader = function() {
-    var filelist = [];
-    var filetable = {};
-    var ip;
-    var fileHeader;
-    var i;
-    var il;
+    let filelist = [];
+    let filetable = {};
+    let ip;
+    let fileHeader;
+    let i;
+    let il;
     if(this.fileHeaderList) {
       return
     }
@@ -3442,16 +3442,16 @@ goog.scope(function() {
   };
   Zlib.Unzip.prototype.getFileData = function(index, opt_params) {
     opt_params = opt_params || {};
-    var input = this.input;
-    var fileHeaderList = this.fileHeaderList;
-    var localFileHeader;
-    var offset;
-    var length;
-    var buffer;
-    var crc32;
-    var key;
-    var i;
-    var il;
+    let input = this.input;
+    let fileHeaderList = this.fileHeaderList;
+    let localFileHeader;
+    let offset;
+    let length;
+    let buffer;
+    let crc32;
+    let key;
+    let i;
+    let il;
     if(!fileHeaderList) {
       this.parseFileHeader()
     }
@@ -3496,10 +3496,10 @@ goog.scope(function() {
     return buffer
   };
   Zlib.Unzip.prototype.getFilenames = function() {
-    var filenameList = [];
-    var i;
-    var il;
-    var fileHeaderList;
+    const filenameList = [];
+    let i;
+    let il;
+    let fileHeaderList;
     if(!this.fileHeaderList) {
       this.parseFileHeader()
     }
@@ -3510,7 +3510,7 @@ goog.scope(function() {
     return filenameList
   };
   Zlib.Unzip.prototype.decompress = function(filename, opt_params) {
-    var index;
+    let index;
     if(!this.filenameToIndex) {
       this.parseFileHeader()
     }
@@ -3547,8 +3547,8 @@ goog.scope(function() {
     this.output = new (USE_TYPEDARRAY ? Uint8Array : Array)(Zlib.Deflate.DefaultBufferSize);
     this.compressionType = Zlib.Deflate.CompressionType.DYNAMIC;
     this.rawDeflate;
-    var rawDeflateOption = {};
-    var prop;
+    const rawDeflateOption = {};
+    let prop;
     if(opt_params || !(opt_params = {})) {
       if(typeof opt_params["compressionType"] === "number") {
         this.compressionType = opt_params["compressionType"]
@@ -3566,18 +3566,18 @@ goog.scope(function() {
     return(new Zlib.Deflate(input, opt_params)).compress()
   };
   Zlib.Deflate.prototype.compress = function() {
-    var cm;
-    var cinfo;
-    var cmf;
-    var flg;
-    var fcheck;
-    var fdict;
-    var flevel;
-    var clevel;
-    var adler;
-    var error = false;
-    var output;
-    var pos = 0;
+    let cm;
+    let cinfo;
+    let cmf;
+    let flg;
+    let fcheck;
+    let fdict;
+    let flevel;
+    let clevel;
+    let adler;
+    let error = false;
+    let output;
+    let pos = 0;
     output = this.output;
     cm = Zlib.CompressionMethod.DEFLATE;
     switch(cm) {
@@ -3637,10 +3637,10 @@ goog.provide("Zlib.exportObject");
 goog.require("Zlib");
 goog.scope(function() {
   Zlib.exportObject = function(enumString, exportKeyValue) {
-    var keys;
-    var key;
-    var i;
-    var il;
+    let keys;
+    let key;
+    let i;
+    let il;
     if(Object.keys) {
       keys = Object.keys(exportKeyValue)
     }else {
@@ -3669,11 +3669,11 @@ goog.scope(function() {
     this.output = this.rawinflate.output
   };
   Zlib.InflateStream.prototype.decompress = function(input) {
-    var buffer;
-    var adler32;
+    let buffer;
+    const adler32;
     if(input !== void 0) {
       if(USE_TYPEDARRAY) {
-        var tmp = new Uint8Array(this.input.length + input.length);
+        let tmp = new Uint8Array(this.input.length + input.length);
         tmp.set(this.input, 0);
         tmp.set(input, this.input.length);
         this.input = tmp
@@ -3694,10 +3694,10 @@ goog.scope(function() {
     return buffer
   };
   Zlib.InflateStream.prototype.readHeader = function() {
-    var ip = this.ip;
-    var input = this.input;
-    var cmf = input[ip++];
-    var flg = input[ip++];
+    let ip = this.ip;
+    let input = this.input;
+    let cmf = input[ip++];
+    let flg = input[ip++];
     if(cmf === void 0 || flg === void 0) {
       return-1
     }
