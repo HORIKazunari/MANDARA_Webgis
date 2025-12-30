@@ -425,6 +425,9 @@ interface IAttrData {
     // MapData関連
     MapData: {
         SetMapFile: (mapFileName: string) => IMapData;
+        SetObject_Name_Search?: (mapFileName: string) => unknown;
+        CheckMapfileExists?: (mapFileName: string) => boolean;
+        AddExistingMapData?: (mapData: unknown, mapFileName: string) => void;
         getAllMapData?: () => unknown;
         [key: string]: any;
     };
@@ -702,6 +705,9 @@ interface IMapInfo {
     ObjectNumber?: number;
     LpNum?: number;
     SCL?: number;
+    Zahyo?: Zahyo_info;
+    Kend?: number;
+    FileName?: string;
     [key: string]: any;
 }
 
@@ -1026,6 +1032,8 @@ declare class Line_Property {
 declare class Tile_Property {
     BlankF: boolean;
     Color: colorRGBA;
+    Width?: number; // Line描画時に使用される場合がある
+    Edge_Connect_Pattern?: any; // Line描画時に使用される場合がある
     Clone(): Tile_Property;
 }
 
@@ -1045,6 +1053,7 @@ type MarkSizeMD = any; // strMarkSize_Data
 type MarkBlockMD = any; // strMarkBlock_Data
 type MapCompass = any; // strMapCompass_Attri
 type color = colorRGBA; // colorRGBAの型エイリアス
+type Color = colorRGBA; // colorRGBA型エイリアス（大文字始まり）
 type Arrow = Arrow_Property; // Arrow_Propertyの型エイリアス
 
 // ==================== 列挙型定義強化 ====================
@@ -1473,7 +1482,11 @@ declare function settingFront(...args: unknown[]): unknown;
 declare const clsSpatialIndexSearch: unknown;
 declare class strFrmCopyObjectName_init_parameter_data { [key: string]: unknown; constructor(...args: unknown[]); }
 declare function frmCopyObjectName(...args: unknown[]): unknown;
-declare class strOverLay_Dataset_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strOverLay_Dataset_Info { 
+    [key: string]: unknown;
+    Clone?: () => strOverLay_Dataset_Info;
+    constructor(...args: unknown[]); 
+}
 declare class strSeries_Dataset_Info { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strCondition_DataSet_Info { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strCondition_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
@@ -1533,6 +1546,7 @@ interface Zahyo_info {
     HeimenTyokkaku_KEI_Number: number;
     Projection: number;
     CenterXY: point;
+    Zahyo?: Zahyo_info; // 自己参照（実装で使用されている場合）
     Clone(): Zahyo_info;
 }
 declare const Zahyo_info: {
