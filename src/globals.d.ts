@@ -95,38 +95,38 @@ interface IAttrData {
                 Base: {
                     ModeValueInScreenFlag: boolean;
                     LegendXY?: point[];
-                    Font?: unknown; // Font_Property
+                    Font?: Font_Property;
                     Visible?: boolean;
-                    Back?: unknown; // BackGround_Box_Property
+                    Back?: BackGround_Box_Property
                     Comma_f?: boolean;
                     Legend_Num?: number;
                 };
-                Line_DummyKind?: unknown; // Line_Property
+                Line_DummyKind?: Line_Property;
                 OverLay_Legend_Title?: string;
                 En_Graph_Pattern?: number;
                 MarkMD?: {
                     CircleMD_CircleMini_F?: boolean;
-                    MultiEnMode_Line?: unknown; // Line_Property
+                    MultiEnMode_Line?: Line_Property;
                     CircleMDLegendLine?: number;
                 };
                 ClassMD?: {
                     SeparateGapSize?: number;
                     ClassMarkFrame_Visible?: boolean;
-                    PaintMode_Line?: unknown; // Line_Property
+                    PaintMode_Line?: Line_Property;
                     FrequencyPrint?: boolean;
                     SeparateClassWords?: number;
                     PaintMode_Method?: number;
                     CategorySeparate_f?: boolean;
                     PaintMode_Width?: number;
-                    ClassBoundaryLine?: unknown; // Line_Property
+                    ClassBoundaryLine?: Line_Property;
                 };
             };
             MapTitle?: {
                 Position: point;
                 Visible?: boolean;
-                Font?: unknown; // Font_Property
+                Font?: Font_Property;
                 Clone?: () => unknown;
-                Back?: unknown; // BackGround_Box_Property
+                Back?: BackGround_Box_Property
             };
             MapScale?: {
                 Position: point;
@@ -134,16 +134,16 @@ interface IAttrData {
                 Clone?: () => unknown;
                 BarDistance?: number;
                 BarKugiriNum?: number;
-                Back?: unknown; // BackGround_Box_Property
+                Back?: BackGround_Box_Property;
                 Unit?: number;
             };
             DataNote?: {
                 Position: point;
                 Visible?: boolean;
-                Font?: unknown; // Font_Property
+                Font?: Font_Property;
                 Clone?: () => unknown;
             };
-            AccessoryGroupBox?: unknown; // BackGround_Box_Property
+            AccessoryGroupBox?: BackGround_Box_Property;
             Zahyo: {
                 Mode: number;
                 Projection: number;
@@ -158,18 +158,18 @@ interface IAttrData {
             Missing_Data?: unknown; // strMissing_set
             SouByou?: unknown; // strSoubyou_Data_Info
             DummyObjectPointMark?: unknown[]; // strDummyObjectPointMark_Info[]
-            Screen_Back?: unknown; // BackGround_Box_Property
+            Screen_Back?: BackGround_Box_Property;
             PointPaint_Order?: number; // enmPointOnjectDrawOrder
             ValueShow?: unknown; // strValueShow_Info
             InVisibleObjectBoundaryF?: boolean;
-            MeshLine?: unknown; // Line_Property
+            MeshLine?: Line_Property;
             SymbolLine?: unknown; // strSymbolLine_Info
             LatLonLine_Print?: {
                 Lat_Interval?: number;
                 Lon_Interval?: number;
-                LPat?: unknown; // Line_Property
-                OuterPat?: unknown; // Line_Property
-                Equator?: unknown; // Line_Property
+                LPat?: Line_Property;
+                OuterPat?: Line_Property;
+                Equator?: Line_Property;
                 Order?: number;
                 Visible?: boolean;
             };
@@ -209,7 +209,7 @@ interface IAttrData {
         ModeValueInScreen_Stac?: unknown[];
         ObjectPrintedCheckFlag?: boolean[];
     };
-    LayerData?: unknown[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
+    LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド
     Get_AllMapLineKind?: () => unknown[];
     Get_LineKindUsedList?: () => unknown[];
@@ -274,8 +274,9 @@ interface IAttrData {
     
     // 追加プロパティ・メソッド
     Print_Mode_Total?: number;
-    nowDataSolo?: unknown; // SoloModeViewSettings (clsAttrData.tsで定義)
-    nowData?: unknown; // strData_Info (clsAttrData.tsで定義)
+    nowDataSolo?: () => ISoloModeViewSettings;
+    nowData?: () => IDataItem;
+    nowLayer?: () => ILayerDataInfo;
     nowSeries?: unknown; // strSeries_Dataset_Info (clsAttrData.tsで定義)
     nowOverlay?: unknown; // strOverLay_Dataset_Info (clsAttrData.tsで定義)
     Twocolort?: unknown; // colorRGBA[]
@@ -354,6 +355,102 @@ interface IAttrData {
     SetMapFile?: (mapFileName: string) => unknown;
     AddPointObjectKindUsed?: (layer?: number, object?: number, arg3?: unknown) => unknown;
     Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
+}
+
+// レイヤーデータ情報（拡張版）
+interface ILayerDataInfo {
+    Name: string;
+    MapFileName: string;
+    MapFileData: any; // clsMapdata
+    MapFileObjectNameSearch: any; // clsObjectNameSearch
+    Shape: number; // enmShape
+    Type: number; // enmLayerType
+    MeshType: number; // enmMesh_Number
+    ReferenceSystem: number; // enmZahyo_System_Info
+    Time: any; // strYMD
+    Comment: string;
+    TripTimeSpan: unknown;
+    TripType: number; // enmTripPositionType
+    atrObject: IObjectInfo;
+    atrData: IAttrDataInfo;
+    Dummy: any[]; // strDummyObjectName_and_Code[]
+    DummyGroup: number[];
+    Print_Mode_Layer: number; // enmLayerMode_Number
+    LayerModeViewSettings: ILayerModeViewSettings;
+    PrtSpatialIndex: any; // clsSpatialIndexSearch
+    ObjectGroupRelatedLine: number[];
+    ODBezier_DataStac: any[]; // ODBezier_Data[]
+}
+
+// オブジェクト情報（拡張版）
+interface IObjectInfo {
+    ObjectNum: number;
+    [key: string]: any;
+}
+
+// 属性データ情報（拡張版）
+interface IAttrDataInfo {
+    Count: number;
+    Data: IDataItem[];
+    SelectedIndex: number;
+    [key: string]: any;
+}
+
+// データ項目（拡張版）
+interface IDataItem {
+    DataType: number;
+    Title: string;
+    Unit: string;
+    Note: string;
+    SoloModeViewSettings: ISoloModeViewSettings;
+    [key: string]: any;
+}
+
+// ソロモード表示設定（拡張版）
+interface ISoloModeViewSettings {
+    SoloMode: number;
+    ClassPaintMode: any;
+    MarkSizeMode: any;
+    MarkBlockMode: any;
+    MarkBarMode: any;
+    ClassODMode: any;
+    ClassODMD: IClassODMD;
+    ContourMode: any;
+    TripMode: any;
+    StringMode: any;
+    MarkSizeMD: any;
+    Class_Div: any[];
+    Div_Num: number;
+    [key: string]: any;
+}
+
+// クラスODモード設定（拡張版）
+interface IClassODMD {
+    Arrow: Arrow_Property;
+    [key: string]: any;
+}
+
+// レイヤーモード表示設定（拡張版）
+interface ILayerModeViewSettings {
+    GraphMode: IGraphMode;
+    LabelMode: ILabelMode;
+    PointLineShape: any;
+    PolygonDummy_ClipSet_F: boolean;
+    [key: string]: any;
+}
+
+// グラフモード（拡張版）
+interface IGraphMode {
+    DataSet: any[];
+    initDataSet?: () => void;
+    [key: string]: any;
+}
+
+// ラベルモード（拡張版）
+interface ILabelMode {
+    DataSet: any[];
+    initDataSet?: () => void;
+    [key: string]: any;
 }
 
 // スクリーンマージン（拡張）
@@ -579,8 +676,64 @@ declare class Edge_Property {
 declare class Screen_info {
     STDWsize: number;
     GSMul: number;
+    SampleBoxFlag: boolean;
     Get_SxSy_With_3D(p: point): point;
+    Get_Length_On_Screen(fontSize: number): number;
     Clone(): Screen_info;
+}
+
+// Font_Property クラス (clsTime.tsで実装)
+declare class Font_Property {
+    Color: colorRGBA;
+    Size?: number;
+    italic: boolean;
+    bold: boolean;
+    Underline: boolean;
+    Name?: string;
+    Kakudo: number;
+    FringeF: boolean;
+    FringeWidth: number;
+    FringeColor: colorRGBA;
+    Back: BackGround_Box_Property;
+    Clone(): Font_Property;
+    toContextFont(ScrData: Screen_info): { font: string | undefined; height: number };
+}
+
+// BackGround_Box_Property クラス (clsTime.tsで実装)
+declare class BackGround_Box_Property {
+    Tile: Tile_Property;
+    Line: Line_Property;
+    Round?: number;
+    Padding?: number;
+    Clone(): BackGround_Box_Property;
+}
+
+// Line_Property クラス (clsTime.tsで実装)
+declare class Line_Property {
+    BlankF: boolean;
+    Width: number;
+    Color: colorRGBA;
+    Edge_Connect_Pattern: any; // LineEdge_Connect_Pattern_Data_Info
+    Clone(): Line_Property;
+    Set_Same_ColorWidth_to_LinePat(Color: colorRGBA, width: number): void;
+}
+
+// Tile_Property クラス (clsTime.tsで実装)
+declare class Tile_Property {
+    BlankF: boolean;
+    Color: colorRGBA;
+    Clone(): Tile_Property;
+}
+
+// Mark_Property クラス (clsTime.tsで実装)
+declare class Mark_Property {
+    PrintMark?: number;
+    ShapeNumber?: number;
+    Tile: Tile_Property;
+    Line: Line_Property;
+    wordmark?: string;
+    WordFont: Font_Property;
+    Clone(): Mark_Property;
 }
 
 // 型エイリアス
