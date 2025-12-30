@@ -1025,6 +1025,7 @@ class clsTileMap {
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
     drawTileMap(g: CanvasRenderingContext2D, TileMap: unknown, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
+        const self = this; // thisコンテキストを保存
         if(this.xhr.length>0){
             for(const i in this.xhr){
                 this.xhr[i].abort();
@@ -1071,11 +1072,11 @@ class clsTileMap {
         return true;
 
         function request(url: string, destRect: rectangle) {
-            const n = xhr.length;
-            xhr[n] = new XMLHttpRequest();
-            xhr[n].open('GET', url, true);
-            xhr[n].responseType = "blob";
-            xhr[n].onerror = function () {
+            const n = self.xhr.length;
+            self.xhr[n] = new XMLHttpRequest();
+            self.xhr[n].open('GET', url, true);
+            self.xhr[n].responseType = "blob";
+            self.xhr[n].onerror = function () {
                 getTileNum++;
                 if (getTileNum == numofTile) {
                     if (typeof afterDrawFunction === 'function') {
@@ -1083,8 +1084,8 @@ class clsTileMap {
                     }
                 }
     }
-            xhr[n].onload = function () {
-                if (xhr[n].status == 200) {
+            self.xhr[n].onload = function () {
+                if (self.xhr[n].status == 200) {
                     const oURL = URL.createObjectURL(this.response);
                     const image = new Image();
                     image.src = oURL;
@@ -1098,7 +1099,7 @@ class clsTileMap {
                             }
                         }
                     };
-                }else if (xhr[n].status == 404) {
+                }else if (self.xhr[n].status == 404) {
                     getTileNum++;
                     if (getTileNum == numofTile) {
                         if (typeof afterDrawFunction === 'function') {
@@ -1109,7 +1110,7 @@ class clsTileMap {
                 }
             };
             try {
-                xhr[n].send(null);
+                self.xhr[n].send(null);
             }
             catch (e) {
                 console.log(e)

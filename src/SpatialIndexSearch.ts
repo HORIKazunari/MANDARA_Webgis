@@ -229,7 +229,7 @@ class clsSpatialIndexSearch {
             } else {
                 //大きさのあるポイントを追加
                 const RBox = new rectangle();
-                exf = this.GetExtraRange_XY(oxy.Point[k], RBox)
+                const exf = this.GetExtraRange_XY(oxy.Point[k], RBox)
                 if (exf == true) {
                     for (let i = RBox.left; i <= RBox.right; i++) {
                         for (let j = RBox.top; j <= RBox.bottom; j++) {

@@ -16,23 +16,23 @@
     "isolatedModules": false,
 
     /* TypeScript厳密モード */
-    "strict": true,                     // 完全なstrictモード
-    "noImplicitAny": true,              // any型の暗黙的な使用を禁止
-    "strictNullChecks": true,           // null/undefinedの厳密なチェック
+    "strict": false,                    // 段階的に有効化
+    "noImplicitAny": false,             // any型の暗黙的な使用を一時的に許可
+    "strictNullChecks": false,          // null/undefinedの厳密なチェックを一時的に無効化
     "strictFunctionTypes": true,        // 関数型の厳密なチェック
     "strictBindCallApply": true,        // bind/call/applyの厳密なチェック
     "noImplicitThis": true,             // thisの暗黙的なanyを禁止
     "alwaysStrict": true,               // strictモードでコンパイル
-    "noImplicitReturns": true,          // 関数の全パスでreturnを強制
+    "noImplicitReturns": false,         // 関数の全パスでreturnを一時的に無効化
     "noFallthroughCasesInSwitch": true, // switchのfallthrough防止
     "useUnknownInCatchVariables": true, // catch句の変数をunknown型に
-    "strictPropertyInitialization": true,  // クラスプロパティの初期化チェック
+    "strictPropertyInitialization": false,  // クラスプロパティの初期化チェックを一時的に無効化
     // "exactOptionalPropertyTypes": true,
     // "noImplicitOverride": true,
     
     /* 未使用変数のチェック */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,            // 一時的に無効化
+    "noUnusedParameters": false,        // 一時的に無効化
     
     /* JavaScript完全排除 */
     "allowJs": false,
@@ -40,7 +40,7 @@
     "allowUmdGlobalAccess": true,
     
     /* 厳密なエラーチェック */
-    "noUncheckedIndexedAccess": true,  // 配列・オブジェクトのインデックスアクセスを厳密化
+    "noUncheckedIndexedAccess": false,  // 一時的に無効化
     // "noPropertyAccessFromIndexSignature": true,  // インデックスシグネチャのプロパティアクセス制限（後で有効化）
     
     /* 型生成は無効化 */

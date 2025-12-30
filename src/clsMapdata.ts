@@ -3212,4 +3212,4 @@ class clsMapdata {
     }
 }
 
-export { clsMapdata };
+export { clsMapdata, Object_NameTimeStac_Data };

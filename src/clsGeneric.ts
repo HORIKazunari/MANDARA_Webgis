@@ -1,6 +1,7 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator, MenuItem } from './types';
+import { Object_NameTimeStac_Data } from './clsMapdata';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
@@ -6336,7 +6337,8 @@ HTMLElement.prototype.btnDisabled = function (f) {
 // @ts-ignore
 (String.prototype as unknown)['repeatString'] = function (num?: number): string {
     const repeatCount = num ?? 0;
-    for (let str = ""; (this.length * repeatCount) > str.length; str += this);
+    let str = "";
+    for (; (this.length * repeatCount) > str.length; str += this);
     return str;
 };
 

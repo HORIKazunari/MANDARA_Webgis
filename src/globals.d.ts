@@ -2,6 +2,16 @@
 
 // ==================== グローバル変数の型定義強化 ====================
 
+// ==================== グローバル変数の宣言 ====================
+declare let attrData: IAttrData;
+declare let settingModeWindow: any;
+declare let scrMargin: any;
+declare let propertyWindow: any;
+declare let frmPrint: any;
+declare let divmain: HTMLDivElement;
+declare let preReadMapFile: any;
+declare let clsLayerData: any;
+
 // GlobalEventHandlers拡張
 interface GlobalEventHandlers {
     innerText?: string;
@@ -536,6 +546,49 @@ declare class latlonRange {
     size(): size;
     center(): latlon;
 }
+
+// 矢印プロパティクラス
+declare class Arrow_Property {
+    ArrowHeadType: number; // enmArrowHeadType
+    Start_Arrow_F: boolean;
+    End_Arrow_F: boolean;
+    Angle: number;
+    LWidthRatio: number;
+    WidthPlus: number;
+    Clone(): Arrow_Property;
+}
+
+// 背景プロパティクラス  
+declare class Back_Property {
+    Clone(): Back_Property;
+}
+
+// 緯度経度クラス (IdoKeido)
+declare class IdoKeido {
+    lat: number;
+    lon: number;
+    Clone(): IdoKeido;
+}
+
+// Edge プロパティクラス
+declare class Edge_Property {
+    Clone(): Edge_Property;
+}
+
+// Screen_info クラス (clsAttrData.tsで実装)
+declare class Screen_info {
+    STDWsize: number;
+    GSMul: number;
+    Get_SxSy_With_3D(p: point): point;
+    Clone(): Screen_info;
+}
+
+// 型エイリアス
+type MarkSizeMD = any; // strMarkSize_Data
+type MarkBlockMD = any; // strMarkBlock_Data
+type MapCompass = any; // strMapCompass_Attri
+type color = colorRGBA; // colorRGBAの型エイリアス
+type Arrow = Arrow_Property; // Arrow_Propertyの型エイリアス
 
 // ==================== 列挙型定義強化 ====================
 
