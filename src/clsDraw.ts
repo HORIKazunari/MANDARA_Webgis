@@ -309,15 +309,15 @@ class clsDrawLine {
         const e3 =new point() ;
         const e4 =new point() ;
         this.Draw_Arrow_Keisan(e3, e2, e4,  P, BeforPoint, LPat, DArrow, false, ScrData);
-        let pxy=[];
+        const pxy=[];
         pxy[0] = ScrData.Get_SxSy_With_3D(e3);
         pxy[1] = ScrData.Get_SxSy_With_3D(P);
         pxy[2] = ScrData.Get_SxSy_With_3D(e4);
 
         switch (DArrow.ArrowHeadType) {
             case enmArrowHeadType.Line: {
-                let lp=LPat.Clone();
-                let LA_Pat = lp.Edge_Connect_Pattern;
+                const lp=LPat.Clone();
+                const LA_Pat = lp.Edge_Connect_Pattern;
                 LA_Pat.MiterLimitValue = 10;
                 LA_Pat.Join_Pattern = enmJoinPattern.Miter;
                 LA_Pat.Edge_Pattern = enmEdge_Pattern.Flat;
@@ -326,7 +326,7 @@ class clsDrawLine {
             }
             case enmArrowHeadType.Fill: {
                 pxy[3] = pxy[0].Clone();
-                let Polydata = { Pon: 1, pxy: pxy, nPolyP:[4] };
+                const Polydata = { Pon: 1, pxy: pxy, nPolyP:[4] };
                 clsDraw.DrawPolyPolygon(g,Polydata, LPat.Color.toRGBA());
                 break;
             }
@@ -398,7 +398,7 @@ class clsDrawLine {
         g.fillRect(0, 0, w, h);
         ScrData.SampleBoxFlag = true;
         if (Lpat.BlankF == true) {
-            let Font =  clsBase.Font();
+            const Font =  clsBase.Font();
             Font.Size = 13;
             clsDraw.print(g, "透明", new point(w / 2, h / 2), Font , enmHorizontalAlignment.Center, enmVerticalAlignment.Center, ScrData);
         } else {
@@ -414,7 +414,7 @@ class clsDrawTile {
     static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property) {
 
         if(T.BlankF==false){
-            let Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
+            const Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
             clsDraw.DrawPolyPolygon(g, Polydata, T.Color.toRGBA())
 
         }
@@ -427,35 +427,35 @@ class clsDrawTile {
         if ((Back.Tile.BlankF == true) && (Back.Line.BlankF == true)) {
             return;
         }
-        let BoundaryRect=_BoundaryRect.Clone();
+        const BoundaryRect=_BoundaryRect.Clone();
         if (Back.Padding != 0) {
-            let w = ScrData.Get_Length_On_Screen(Back.Padding);
+            const w = ScrData.Get_Length_On_Screen(Back.Padding);
             BoundaryRect.inflate(w, w);
         }
         if (Back.Round == 0) {
             this.Draw_Tile_Box(g, BoundaryRect, Back.Line, Back.Tile, Kakudo,  ScrData);
             return;
         }
-        let RoundR = ScrData.Get_Length_On_Screen(Back.Round);
-        let pxy1 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.left + RoundR, BoundaryRect.top + RoundR), RoundR, Math.PI * 2 * 3 / 4, Math.PI * 2, false);
-        let pxy2 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.right - RoundR, BoundaryRect.top + RoundR), RoundR, 0, Math.PI * 2 / 4, false);
-        let pxy3 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.right - RoundR, BoundaryRect.bottom - RoundR), RoundR, Math.PI * 2 / 4, Math.PI, false);
-        let pxy4 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.left + RoundR, BoundaryRect.bottom - RoundR), RoundR, Math.PI, Math.PI * 2 * 3 / 4, false);
-        let cn = pxy1.length + pxy2.length + pxy3.length + pxy4.length + 1;
-        let pxy = pxy1.concat();
+        const RoundR = ScrData.Get_Length_On_Screen(Back.Round);
+        const pxy1 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.left + RoundR, BoundaryRect.top + RoundR), RoundR, Math.PI * 2 * 3 / 4, Math.PI * 2, false);
+        const pxy2 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.right - RoundR, BoundaryRect.top + RoundR), RoundR, 0, Math.PI * 2 / 4, false);
+        const pxy3 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.right - RoundR, BoundaryRect.bottom - RoundR), RoundR, Math.PI * 2 / 4, Math.PI, false);
+        const pxy4 = spatial.Get_Fan_Coordinates(new point(BoundaryRect.left + RoundR, BoundaryRect.bottom - RoundR), RoundR, Math.PI, Math.PI * 2 * 3 / 4, false);
+        const cn = pxy1.length + pxy2.length + pxy3.length + pxy4.length + 1;
+        const pxy = pxy1.concat();
         Array.prototype.push.apply(pxy, pxy2);
         Array.prototype.push.apply(pxy, pxy3);
         Array.prototype.push.apply(pxy, pxy4);
         pxy.push(pxy[0]);
         if (Kakudo != 0) {
-            let cp = BoundaryRect.centerP();
+            const cp = BoundaryRect.centerP();
             for (let i = 0; i < cn; i++) {
                 pxy[i] = spatial.Trans2D(cp, pxy[i], -Kakudo);
             }
         }
 
         if (Back.Tile.BlankF == false) {
-            let Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
+            const Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
             clsDraw.DrawPolyPolygon(g, Polydata, Back.Tile.Color.toRGBA());
         }
         if (Back.Line.BlankF == false) {
@@ -466,9 +466,9 @@ class clsDrawTile {
     //タイル四角形描画
     static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info) {
 
-        let pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
+        const pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
         if (T.BlankF == false) {
-            let Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
+            const Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
             clsDraw.DrawPolyPolygon(g, Polydata, T.Color.toRGBA());
         }
         if (L.BlankF == false) {
@@ -479,10 +479,10 @@ class clsDrawTile {
     //サンプル背景フレーム表示
     static Darw_Sample_BackGroundBox(picBox: HTMLCanvasElement, BG: Back_Property, ScrData: Screen_info) {
 
-        let w = picBox.width;
-        let h = picBox.height;
+        const w = picBox.width;
+        const h = picBox.height;
         const rect = new rectangle(new point(2, 2),new size( w - 4, h - 4));
-        let g = picBox.getContext('2d');
+        const g = picBox.getContext('2d');
         g.fillStyle = "rgb(255, 255, 255)";
         g.fillRect(0, 0, w, h);
         if (BG.Padding != 0) {
@@ -491,7 +491,7 @@ class clsDrawTile {
         }
         ScrData.SampleBoxFlag = true;
         if (BG.Tile.BlankF == true) {
-            let Font = clsBase.Font();
+            const Font = clsBase.Font();
             Font.Size = 13;
             clsDraw.print(g, "透明", new point(w / 2, h / 2), Font, enmHorizontalAlignment.Center, enmVerticalAlignment.Center, ScrData);
         }
@@ -517,7 +517,7 @@ class clsDrawMarkFan {
         //'ポリゴンの場合:ポリゴン数/ポリゴン１の座標数n/X1/Y1/････ポリゴン１の座標数nを-1にすると、多角形近似の円となり、後ろのパラメータは:X/Y/xR/yR
         //'線の場合：座標数/X1/Y1/・・・
 
-        let sr = [];
+        const sr = [];
         sr.push('丸,1,0,0,0,100,100,1,,,,,,,,,,,,,,,,,,,,,,,');
         sr.push('四角,1,1,1,5,-100,-100,100,-100,100,100,-100,100,-100,-100,,,,,,,,,,,,,,,,');
         sr.push('菱形,1,1,1,5,0,-100,-100,0,0,100,100,0,0,-100,,,,,,,,,,,,,,,,');
@@ -583,7 +583,7 @@ class clsDrawMarkFan {
 
         this.mShape = [];
         for (let i = 0; i < sr.length;i++) {
-            let Mark_XY_Split = sr[i].split(",");
+            const Mark_XY_Split = sr[i].split(",");
             const d = new MarkInfo();
             d.name = Mark_XY_Split[0];
             d.stac = [];
@@ -598,7 +598,7 @@ class clsDrawMarkFan {
 
     static getMarkShameNum() {
 
-        let n = this.mShape.length;
+        const n = this.mShape.length;
         return n;
     }
 
@@ -608,12 +608,12 @@ class clsDrawMarkFan {
             case enmMarkPrintType.Mark: {
                 clsDrawTile.Draw_Tile_RoundBox(g, spatial.Get_Rectangle(Position, r), Mark.WordFont.Back, Mark.WordFont.Kakudo, ScrData);
                 let mkn = 0;
-                let mk = this.mShape[Mark.ShapeNumber];
-                let mk_fign = mk.stac[0];
+                const mk = this.mShape[Mark.ShapeNumber];
+                const mk_fign = mk.stac[0];
                 let n = 1;
                 let pdaen = 0;
                 do {
-                    let Shape = mk.stac[n];
+                    const Shape = mk.stac[n];
                     n++;
                     switch (Shape) {
                         case 0: {
@@ -624,25 +624,25 @@ class clsDrawMarkFan {
                                 Circle_Tile = clsBase.Tile();
                                 Circle_Tile.BlankF = true;
                             }
-                            let P2 = Position.Clone();
+                            const P2 = Position.Clone();
                             P2.offset(mk.stac[n] * r / 100, mk.stac[n + 1] * r / 100);
                             this.Draw_DAEN(g, P2, mk.stac[n + 2] * r / 100, mk.stac[n + 3] * r / 100, Mark.WordFont.Kakudo, Mark.Line, Circle_Tile, true, ScrData)
                             n += 5;
                             break;
                         }
                         case 1: {//ポリゴン
-                            let poln = mk.stac[n];
+                            const poln = mk.stac[n];
                             n++;
-                            let pxy = [];
-                            let nPolyP = [];
+                            const pxy = [];
+                            const nPolyP = [];
                             for (let j = 0; j < poln; j++) {
-                                let ln = mk.stac[n];
+                                const ln = mk.stac[n];
                                 let ln2 = 0;
                                 n++;
                                 if (ln == -1) { //円の場合
-                                    let P2 = Position.Clone();
+                                    const P2 = Position.Clone();
                                     P2.offset(mk.stac[n] * r / 100, mk.stac[n + 1] * r / 100);
-                                    let en_xy = this.Get_DAEN_Peri_XY(P2, r * mk.stac[n + 2] / 100, r * mk.stac[n + 3] / 100, Mark.WordFont.Kakudo, ScrData);
+                                    const en_xy = this.Get_DAEN_Peri_XY(P2, r * mk.stac[n + 2] / 100, r * mk.stac[n + 3] / 100, Mark.WordFont.Kakudo, ScrData);
                                     n += 4;
                                     if (en_xy != undefined) {
                                         if ((pdaen % 2) == 1) { //内部円の場合は反転する（中抜けポリゴン）
@@ -671,9 +671,9 @@ class clsDrawMarkFan {
                             break;
                         }
                         case 2: {
-                            let ln = mk.stac[n];
+                            const ln = mk.stac[n];
                             n++;
-                            let pxy = [];
+                            const pxy = [];
                             for (let i = 0; i < ln; i++) {
                                 let p = new point(r * mk.stac[n], r * mk.stac[n + 1]);
                                 p = spatial.Trans2D(p, -Mark.WordFont.Kakudo);
@@ -691,7 +691,7 @@ class clsDrawMarkFan {
                 break;
             }
             case enmMarkPrintType.Word: {
-                let W_Font = Mark.WordFont.Clone();
+                const W_Font = Mark.WordFont.Clone();
                 if (r == 0) { r = 1 }
                 if (ScrData.SampleBoxFlag == false) {
                     W_Font.Size = ScrData.Get_Length_On_BaseMap(r * 2);
@@ -721,7 +721,7 @@ class clsDrawMarkFan {
                 }
             }
 
-            let w = ScrData.Get_Line_Width(L.Width);
+            const w = ScrData.Get_Line_Width(L.Width);
             let incol = T.Color.toRGBA();
             let linecol = L.Color.toRGBA();
             if (T.BlankF == true) {
@@ -734,9 +734,9 @@ class clsDrawMarkFan {
             inf = true;
         } else {
             //円の周の座標を計算する必要あり.
-            let pxy = this.Get_DAEN_Peri_XY(Position, XR, YR, Kakudo, ScrData);
+            const pxy = this.Get_DAEN_Peri_XY(Position, XR, YR, Kakudo, ScrData);
             if (pxy != undefined) {
-                let nPolyn = [pxy.length];
+                const nPolyn = [pxy.length];
                 clsDraw.Draw_Tile_and_Paint_and_Line(g, pxy, nPolyn, 1, T, L, ScrData);
                 inf = true;
             }
@@ -746,12 +746,12 @@ class clsDrawMarkFan {
 
     static Get_DAEN_Peri_XY(Position: point,  XR: number,  YR: number, Kakudo: number,  ScrData: Screen_info) {
 
-        let ST = 1 / ((XR + YR) / 5);
-        let pxy = [];
+        const ST = 1 / ((XR + YR) / 5);
+        const pxy = [];
         let n = 0;
         let ff = false;
         do {
-            let ST2 = n * ST;
+            const ST2 = n * ST;
             let point2 = new point(Math.cos(ST2) * XR, Math.sin(ST2) * YR);
             point2 = spatial.Trans2D(point2, Kakudo);
             point2.y=-point2.y;
@@ -780,9 +780,9 @@ class clsDrawMarkFan {
 
     static Draw_Mark_Sample_Box(picMarkBox: HTMLCanvasElement, MK: Mark_Property, ScrData: Screen_info) {
 
-        let w = picMarkBox.width;
-        let h = picMarkBox.height;
-        let g = picMarkBox.getContext('2d');
+        const w = picMarkBox.width;
+        const h = picMarkBox.height;
+        const g = picMarkBox.getContext('2d');
         g.fillStyle = "rgb(255, 255, 255)";
         g.fillRect(0, 0, w, h);
         this.Mark_Print(g, new point(w / 2, h / 2), Math.min(w, h) * 0.4, MK, ScrData);
@@ -791,7 +791,7 @@ class clsDrawMarkFan {
     static Draw_Fan(g: CanvasRenderingContext2D, centerP: point, r: number, start_p: number, end_p: number, Lpat: Tile_Property, Tile: Tile_Property, ScrData: Screen_info) {
 
 
-        let w = ScrData.Get_Line_Width(Lpat.Width);
+        const w = ScrData.Get_Line_Width(Lpat.Width);
         let InnerColor = Tile.Color.toRGBA();
         let BorderColor = Lpat.Color.toRGBA();
         if (Tile.BlankF == true) {
@@ -823,7 +823,7 @@ class clsSpline {
 
 
         if (ln == 2) {
-            let p = [];
+            const p = [];
             p[0] = ScrData.Get_SxSy_With_3D(Line_XY[0]);
             p[1] = ScrData.Get_SxSy_With_3D(Line_XY[1]);
             return p;
@@ -834,7 +834,7 @@ class clsSpline {
             lpf = true;
         }
         let clf;
-        let SPP = [];
+        const SPP = [];
         if (lpf == true) {
             for (let k = 0; k < ln; k++) {
                 SPP.push(Line_XY[Ls + k].Clone());
@@ -850,11 +850,11 @@ class clsSpline {
             }
             clf = false;
         }
-        let Maxpt = ln;
-        let Kvalue = 3;
-        let mxt = Maxpt - 1 - Kvalue + 2;
+        const Maxpt = ln;
+        const Kvalue = 3;
+        const mxt = Maxpt - 1 - Kvalue + 2;
 
-        let pxy = [];
+        const pxy = [];
         let fa;
         let fa2;
         let n = 0;
@@ -867,7 +867,7 @@ class clsSpline {
         }
         for (let spa = fa; spa <= fa2 + 0.0001; spa += stp) {
             if (spa < fa2) {
-                let p = this.Spline_xy(spa, Kvalue, Maxpt, SPP);
+                const p = this.Spline_xy(spa, Kvalue, Maxpt, SPP);
                 pxy[n] = ScrData.Get_SxSy_With_3D(p);
                 n++;
             }
@@ -892,7 +892,7 @@ class clsSpline {
             lpf = true;
         }
 
-        let SPP = [];
+        const SPP = [];
         for (let k = 0; k < ln; k++) {
             SPP[k] = Line_XY[Ls + k].Clone();
         }
@@ -907,14 +907,14 @@ class clsSpline {
             }
             ln += 3;
         }
-        let clf = true;
+        const clf = true;
 
-        let Maxpt = ln;
-        let Kvalue = 3;
-        let mxt = Maxpt - 1 - Kvalue + 2;
-        let ln2 = Math.floor(mxt / 0.1) + 2;
+        const Maxpt = ln;
+        const Kvalue = 3;
+        const mxt = Maxpt - 1 - Kvalue + 2;
+        const ln2 = Math.floor(mxt / 0.1) + 2;
 
-        let pxy = [];
+        const pxy = [];
         let n = 0;
         let fa;
         let fa2;
@@ -927,7 +927,7 @@ class clsSpline {
         }
         for (let spa = fa; spa <= fa2 + 0.0001; spa += stp) {
             if (spa < fa2) {
-                let p = this.Spline_xy(spa, Kvalue, Maxpt, SPP);
+                const p = this.Spline_xy(spa, Kvalue, Maxpt, SPP);
                 pxy[n] = ScrData.Get_SxSy_With_3D(p);
                 n++;
             }
@@ -941,16 +941,16 @@ class clsSpline {
 
     static Spline_xy(T: number, Kvalue: number, Maxpt: number, pt: point[]) {
 
-        let P = new point();
+        const P = new point();
 
-        let z = Maxpt - 1;
+        const z = Maxpt - 1;
         let Value = 0;
         let ST = parseInt(T) - 2;
         let ET = parseInt(T) + 2;
         if (ST < 0) ST = 0;
         if (ET > z) ET = z;
         for (let i = ST; i <= ET; i++) {
-            let Q = this.Blend(i, Kvalue, T, Kvalue, z);
+            const Q = this.Blend(i, Kvalue, T, Kvalue, z);
             Value += pt[i].x * Q;
         }
         P.x = Value;
@@ -1026,17 +1026,17 @@ class clsTileMap {
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
     drawTileMap(g: CanvasRenderingContext2D, TileMap: unknown, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
         if(this.xhr.length>0){
-            for(let i in this.xhr){
+            for(const i in this.xhr){
                 this.xhr[i].abort();
             }
         }
         this.xhr=[];
-        let iRect = ScrData.ScrRectangle.Clone();
+        const iRect = ScrData.ScrRectangle.Clone();
 
-        let ScrLatLonBox = new latlonbox();
-        let p = spatial.Get_Reverse_XY(new point(iRect.left, iRect.top), MapZahyo);
+        const ScrLatLonBox = new latlonbox();
+        const p = spatial.Get_Reverse_XY(new point(iRect.left, iRect.top), MapZahyo);
         ScrLatLonBox.NorthWest = spatial.Get_World_IdoKedo(p, MapZahyo);
-        let p2 = spatial.Get_Reverse_XY(new point(iRect.right, iRect.bottom), MapZahyo);
+        const p2 = spatial.Get_Reverse_XY(new point(iRect.right, iRect.bottom), MapZahyo);
         ScrLatLonBox.SouthEast = spatial.Get_World_IdoKedo(p2, MapZahyo);
 
         if (ScrLatLonBox.NorthWest.Latitude > 85) {
@@ -1046,8 +1046,8 @@ class clsTileMap {
             ScrLatLonBox.SouthEast.Latitude = -85;
         }
 
-        let ZoomMin = TileMap.opt.minZoom;
-        let ZoomMax = TileMap.opt.maxNativeZoom;
+        const ZoomMin = TileMap.opt.minZoom;
+        const ZoomMax = TileMap.opt.maxNativeZoom;
         let g_num;
 
         let z = ZoomMax;
@@ -1059,41 +1059,41 @@ class clsTileMap {
             //MsgBox("背景画像を表示するにはさらに拡大してください。", MsgBoxStyle.Exclamation)
             return false;
         }
-        let ZoomLevel = z + 1;
-        let tileList_Data = this.Get_TileMap_Image(TileMap, ZoomLevel, ScrLatLonBox, MapZahyo, ScrData);
-        let numofTile = tileList_Data.length;
+        const ZoomLevel = z + 1;
+        const tileList_Data = this.Get_TileMap_Image(TileMap, ZoomLevel, ScrLatLonBox, MapZahyo, ScrData);
+        const numofTile = tileList_Data.length;
         let getTileNum=0;
         for (let i = 0; i < numofTile; i++) {
-            let d = tileList_Data[i];
+            const d = tileList_Data[i];
             request(d.URL, d.ScrPosition);
         }
 
         return true;
 
         function request(url: string, destRect: rectangle) {
-            let n = xhr.length;
+            const n = xhr.length;
             xhr[n] = new XMLHttpRequest();
             xhr[n].open('GET', url, true);
             xhr[n].responseType = "blob";
             xhr[n].onerror = function () {
                 getTileNum++;
                 if (getTileNum == numofTile) {
-                    if (typeof afterDrawFunction == 'function') {
+                    if (typeof afterDrawFunction === 'function') {
                         afterDrawFunction();
                     }
                 }
     }
             xhr[n].onload = function () {
                 if (xhr[n].status == 200) {
-                    let oURL = URL.createObjectURL(this.response);
-                    let image = new Image();
+                    const oURL = URL.createObjectURL(this.response);
+                    const image = new Image();
                     image.src = oURL;
                     image.onload = function () {
                         URL.revokeObjectURL(oURL);
                         g.drawImage(image, 0, 0, 256, 256, destRect.left, destRect.top, destRect.width(), destRect.height());
                         getTileNum++;
                         if (getTileNum == numofTile) {
-                            if (typeof afterDrawFunction == 'function') {
+                            if (typeof afterDrawFunction === 'function') {
                                 afterDrawFunction();
                             }
                         }
@@ -1101,7 +1101,7 @@ class clsTileMap {
                 }else if (xhr[n].status == 404) {
                     getTileNum++;
                     if (getTileNum == numofTile) {
-                        if (typeof afterDrawFunction == 'function') {
+                        if (typeof afterDrawFunction === 'function') {
                             afterDrawFunction();
                         }
                     }
@@ -1133,7 +1133,7 @@ class clsTileMap {
 
     /**既存タイルマップデータをIDで取得 */
     getTileMapDataById(id: number): unknown {
-        for (let i in TileMapData) {
+        for (const i in TileMapData) {
             if (TileMapData[i].opt.id == id) {
                 return TileMapData[i];
             }
@@ -1144,8 +1144,8 @@ class clsTileMap {
 
     /**既存タイルマップの中のタグの一覧を取得 */
     getTileMapTagList(): string[] {
-        let tag=[];
-        for(let i in TileMapData){
+        const tag=[];
+        for(const i in TileMapData){
             tag.push(TileMapData[i].opt.tag);
         }
         return Generic.getArrayContentsList(tag);
@@ -1153,8 +1153,8 @@ class clsTileMap {
 
     /**指定のタグに一致するタイルマップ一覧を取得 */
     getTileMapListByTag(tag: string): unknown[] {
-        let tiles=[];
-        for(let i in TileMapData){
+        const tiles=[];
+        for(const i in TileMapData){
             if(TileMapData[i].opt.tag==tag){
                 tiles.push(TileMapData[i])
             };
@@ -1164,8 +1164,8 @@ class clsTileMap {
 
     /**  解像度と緯度経度範囲で、必要なタイルマップ数を求める*/
     Get_TileMap_Image_Number(ZoomLevel: number, ScrLatLonBox: latlonbox): number {
-        let StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
-        let EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
+        const StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
+        const EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
 
         let w;
         if (StartP.x > EndP.x) {
@@ -1173,7 +1173,7 @@ class clsTileMap {
         } else {
             w = EndP.x - StartP.x + 1
         }
-        let H = EndP.y - StartP.y + 1
+        const H = EndP.y - StartP.y + 1
         return Math.floor(w) * Math.floor(H);
     }
 
@@ -1182,7 +1182,7 @@ class clsTileMap {
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
         }
-        let TileXY = new point();
+        const TileXY = new point();
         TileXY.x = Math.floor((LatLon.lon / 180 + 1) * 2 ** ZoomLevel / 2)
         TileXY.y = Math.floor((-Math.log(Math.tan((45 + LatLon.lat / 2) * Math.PI / 180)) + Math.PI) * 2 ** ZoomLevel / (2 * Math.PI));
         return TileXY;
@@ -1190,21 +1190,21 @@ class clsTileMap {
 
     Get_TileMap_Image(TileMap: unknown, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): unknown {
 
-        let FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
-        let StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
-        let EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
+        const FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
+        const StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
+        const EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
 
         if (FileNum < 0) {
             //地図ファイルの投影法が変更されていた場合などにここになるケースがある
             return [];
         }
-        let tileList_Data = [];
+        const tileList_Data = [];
         for (let x = StartP.x; x <= EndP.x; x++) {
             for (let y = StartP.y; y <= EndP.y; y++) {
                 let xx = x;
                 let yy = y;
-                let ox = xx;
-                let retV = this.check_TileMap_XY(ZoomLevel, xx, yy);
+                const ox = xx;
+                const retV = this.check_TileMap_XY(ZoomLevel, xx, yy);
                 xx = retV.x;
                 yy = retV.y;
                 let ry;
@@ -1214,12 +1214,12 @@ class clsTileMap {
                     ry = yy;
                 }
 
-                let d = new tileList_Data_Info();
+                const d = new tileList_Data_Info();
                 d.LatLonBox = this.Get_TileMap_IdoKedo(ZoomLevel, ox, yy);
-                let NW = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.NorthWest, MapZahyo);
-                let SE = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.SouthEast, MapZahyo);
-                let NWpoint = ScrData.getSxSy(spatial.Get_Converted_XY(NW.toPoint(), MapZahyo));
-                let SEpoint = ScrData.getSxSy(spatial.Get_Converted_XY(SE.toPoint(), MapZahyo));
+                const NW = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.NorthWest, MapZahyo);
+                const SE = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.SouthEast, MapZahyo);
+                const NWpoint = ScrData.getSxSy(spatial.Get_Converted_XY(NW.toPoint(), MapZahyo));
+                const SEpoint = ScrData.getSxSy(spatial.Get_Converted_XY(SE.toPoint(), MapZahyo));
                 d.ScrPosition = new rectangle(NWpoint, new size(SEpoint.x - NWpoint.x, SEpoint.y - NWpoint.y));
                 d.URL = TileMap.href;
                 d.URL = d.URL.replace("{z}", String(ZoomLevel));
@@ -1249,16 +1249,16 @@ class clsTileMap {
 
     /**指定したZoomのタイルマップの緯度経度を求める*/
     Get_TileMap_IdoKedo(ZoomLevel: number, X: number, Y: number): IdoKeido {
-        let nw = new latlon();
+        const nw = new latlon();
         nw.lon = (X / 2 ** ZoomLevel) * 360 - 180;
-        let tx1 = (Y / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
+        const tx1 = (Y / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
         nw.lat = 2 * Math.atan(Math.exp(-tx1)) * 180 / Math.PI - 90;
 
-        let se = new latlon();
+        const se = new latlon();
         se.lon = ((X + 1) / 2 ** ZoomLevel) * 360 - 180;
-        let tx2 = ((Y + 1) / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
+        const tx2 = ((Y + 1) / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
         se.lat = 2 * Math.atan(Math.exp(-tx2)) * 180 / Math.PI - 90;
-        let d = new latlonbox(nw,se);
+        const d = new latlonbox(nw,se);
         return d;
     }
 
@@ -1280,17 +1280,17 @@ class clsTileMap {
     }
     /** 画面左下に著作権表示**/
     PrintCopyright(g: CanvasRenderingContext2D, TileMap: unknown, ScrData: Screen_info): void {
-        let x = 5;
-        let y = ScrData.MapScreen_Scale.bottom - 5;
-        let tx = TileMap.copyright + chrLF + TileMap.opt.id;
+        const x = 5;
+        const y = ScrData.MapScreen_Scale.bottom - 5;
+        const tx = TileMap.copyright + chrLF + TileMap.opt.id;
         clsDraw.print(g, tx, new point(x, y), this.LicenseFontData, enmHorizontalAlignment.Left, enmVerticalAlignment.Bottom, ScrData);
     }
 
     /**既存タイルマップデータを設定 */
     private setTileMapData(): {[key: string]: unknown} {
-        let gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
+        const gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
 
-        let MapTypeArray: Record<string, unknown> = {};
+        const MapTypeArray: Record<string, unknown> = {};
         MapTypeArray['k_cj4'] = {
             href: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
             info:'http://www.gsi.go.jp/common/000058211.pdf',

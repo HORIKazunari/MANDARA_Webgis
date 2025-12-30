@@ -175,7 +175,7 @@ export class clsShapefile {
         let shapeFile: string | undefined;
         let dbfFile: string | undefined;
         let prjFile: string | undefined;
-        for (let file in unZipData) {
+        for (const file in unZipData) {
             const ext = Generic.getExtension(file).toLowerCase();
             if (ext == "shx") { shxFile = file; }
             if (ext == "shp") { 
@@ -198,7 +198,7 @@ export class clsShapefile {
             this.getDbfFile(Uint8Array.from(dbfData).buffer, dbfEncode);
         }
         if (prjFile != undefined) {
-            let prjtx = Generic.utf8ArrayToStr(unZipData[prjFile]);
+            const prjtx = Generic.utf8ArrayToStr(unZipData[prjFile]);
             this.zahyoSettingFlag = this.getPrjFile(prjtx);
         }
         onOK(this.tag);
@@ -272,7 +272,7 @@ export class clsShapefile {
 
         const dv = new DataView(buffer);
 
-        let DataSet = new DBF_Info();
+        const DataSet = new DBF_Info();
 
         DataSet.VerData = dv.getInt8(0); //Ver=3  = VerData And 7 
         DataSet.Year = dv.getInt8(1) //Year-1900
@@ -321,9 +321,9 @@ export class clsShapefile {
         //データベースレコード読み込み
         for (let i = 0; i < DataSet.RecordNumber; i++) {
             pos++;
-            let fdata = [];
+            const fdata = [];
             for (let j = 0; j < DataSet.FieldNumber; j++) {
-                let dt = Get_WCharData_Binary(pos, this.fieldDT[j].Length, encodenumber.toString()).trim();
+                const dt = Get_WCharData_Binary(pos, this.fieldDT[j].Length, encodenumber.toString()).trim();
                 fdata.push(dt);
                 pos += this.fieldDT[j].Length;
             }

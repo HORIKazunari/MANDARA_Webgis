@@ -111,7 +111,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         bairitsu /= 4;
                     }
                 }
-                let ratio = 1 - bairitsu;
+                const ratio = 1 - bairitsu;
                 expansionMap(state.attrData.TotalData.ViewStyle.ScrData.getSXSY_Margin().centerP(), ratio);             
                 break;
             }
@@ -155,9 +155,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 event = (e as TouchEvent).changedTouches[0];
             }
         }
-        let p = Generic.getCanvasXY(event);
-        let vs = state.attrData.TotalData.ViewStyle;
-        let MapPos = vs.ScrData.getSRXY(p);
+        const p = Generic.getCanvasXY(event);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const MapPos = vs.ScrData.getSRXY(p);
         switch (mousePointingSituation) {
             case mousePointingSituations.up: {
                 //ボタンを押さずに移動中
@@ -196,7 +196,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     mousePointingSituation = mousePointingSituations.downAndMove;
                     switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                         case enmPrintMouseMode.Normal: {
-                            let retv = Check_Acc(p);
+                            const retv = Check_Acc(p);
                             state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType = retv.type;
                             if (state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType != Check_Acc_Result.NoAccessory) {
                                 state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.Accessory_Drag;
@@ -214,8 +214,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             case mousePointingSituations.downAndMove: {
                 //マウスダウンとドラッグ開始後
                 if (p.Equals(mousePreviousPosition) == false) {
-                    let vs = state.attrData.TotalData.ViewStyle;
-                    let MouseDownSRxy = vs.ScrData.getSRXY(mouseDownPosition);
+                    const vs = state.attrData.TotalData.ViewStyle;
+                    const MouseDownSRxy = vs.ScrData.getSRXY(mouseDownPosition);
                     const movePx = new point(p.x - mouseDownPosition.x, p.y - mouseDownPosition.y);
                     switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                         case enmPrintMouseMode.RangePrint: {
@@ -226,8 +226,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             //飾りの移動
                             g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
 
-                            let stp=new point(0, 0);
-                            let smode = (vs.ScrData.Accessory_Base == enmBasePosition.Screen);
+                            const stp=new point(0, 0);
+                            const smode = (vs.ScrData.Accessory_Base == enmBasePosition.Screen);
                             if (smode) {
                                 stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width;
                                 stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height;
@@ -341,25 +341,25 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         } else {
              event = (e as TouchEvent).changedTouches[0];
         }
-        let vs = state.attrData.TotalData.ViewStyle;
-        let mouseUpPosition = Generic.getCanvasXY(event);
-        let mouseUpSRXT = vs.ScrData.getSRXY(mouseUpPosition);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const mouseUpPosition = Generic.getCanvasXY(event);
+        const mouseUpSRXT = vs.ScrData.getSRXY(mouseUpPosition);
 
         if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.LabelPoint )){
         //シンボル位置／ラベル位置移動
             if (e.which  == 3) {
             } else {
-                let tmp = state.attrData.TempData;
-                let P = vs.ScrData.getSRXY(mouseDownPosition);
+                const tmp = state.attrData.TempData;
+                const P = vs.ScrData.getSRXY(mouseDownPosition);
 
                 switch (tmp.PrintMouseMode) {
                     case enmPrintMouseMode.SymbolPoint: {
-                        let d = tmp.OnObject[0];
+                        const d = tmp.OnObject[0];
                         state.attrData.LayerData[d.objLayer].atrObject.atrObjectData[d.ObjNumber].Symbol = P;
                         break;
                     }
                     case enmPrintMouseMode.LabelPoint: {
-                        let d = tmp.OnObject[0];
+                        const d = tmp.OnObject[0];
                         state.attrData.LayerData[d.objLayer].atrObject.atrObjectData[d.ObjNumber].Label = P;
                         break;
                     }
@@ -374,9 +374,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
 
         if (mousePointingSituation == mousePointingSituations.downAndMove) {
-            let StartP = vs.ScrData.getSRXY(mouseDownPosition);
-            let EndP = mouseUpSRXT;
-            let mapstep = new point(EndP.x - StartP.x, EndP.y - StartP.y);
+            const StartP = vs.ScrData.getSRXY(mouseDownPosition);
+            const EndP = mouseUpSRXT;
+            const mapstep = new point(EndP.x - StartP.x, EndP.y - StartP.y);
             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                 case enmPrintMouseMode.RangePrint: {
                     break;
@@ -387,14 +387,14 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         let stp = new point(0, 0);
                         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
 
-                            let gr = state.attrData.TempData.Accessory_Temp;
+                            const gr = state.attrData.TempData.Accessory_Temp;
                             const movePx = new point(gr.GroupBox_Rect.left - gr.OriginalGroupBoxRect.left, gr.GroupBox_Rect.top - gr.OriginalGroupBoxRect.top);
                             stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width;
                             stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height;
                         } else {
                             stp = mapstep;
                         }
-                        let ag = vs.AccessoryGroupBox;
+                        const ag = vs.AccessoryGroupBox;
                         if (ag.Title == true) {
                             vs.MapTitle.Position.offset(stp.x, stp.y);
                         }
@@ -418,8 +418,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 }
                 case enmPrintMouseMode.od: {
                     //線モード
-                    let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-                    let odra = state.attrData.TempData.frmPrint_Temp.OD_Drag;
+                    const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                    const odra = state.attrData.TempData.frmPrint_Temp.OD_Drag;
                     state.attrData.LayerData[Layernum].Add_OD_Bezier(odra.ObjectPos, odra.Data, mouseUpSRXT);
                     clsPrint.printMapScreen(Frm_Print.picMap);
                     break;
@@ -437,7 +437,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }else{
             if (e.type != "mouseleave") {
                 //クリックの場合
-                let touchTime = (new Date().getTime()- touchStartTime) / 1000;
+                const touchTime = (new Date().getTime()- touchStartTime) / 1000;
                 let rightButton=false;
                 if((e as MouseEvent).button==2){rightButton=true;}
                 if((e.type === "touchend") && (mousePointingSituation == mousePointingSituations.down)&&(touchTime>0.5)){
@@ -448,10 +448,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     case true: {//右クリック
                         switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                             case enmPrintMouseMode.Normal: {
-                                let retV = Check_Acc(mouseUpPosition);
+                                const retV = Check_Acc(mouseUpPosition);
                                 if (retV.type == Check_Acc_Result.NoAccessory) {
-                                    let av = state.attrData.TotalData.ViewStyle;
-                                    let mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}> = [];
+                                    const av = state.attrData.TotalData.ViewStyle;
+                                    const mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}> = [];
                                     if (av.ScrData.ThreeDMode.Set3D_F == false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
@@ -500,7 +500,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         });
                                     }
                                     if(state.attrData.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido){
-                                        let pmnu={caption: "この地点のWeb地図を表示", enabled: true, child: [
+                                        const pmnu={caption: "この地点のWeb地図を表示", enabled: true, child: [
                                             { caption: "Googleマップ", event: showWebMap },
                                             { caption: "YAHOO!地図", event:  showWebMap},
                                             { caption: "Mapion", event:  showWebMap},
@@ -511,11 +511,11 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         mnuAccPopupVisible.push(pmnu);
                                         function showWebMap(data: {caption: string}, e: Event) {
                                             const state = appState();
-                                            let p = vs.ScrData.getSRXY(mouseDownPosition);
-                                            let xy1=spatial.Get_Reverse_XY(p,state.attrData.TotalData.ViewStyle.Zahyo);   
-                                            let xy=spatial.Get_World_IdoKedo(xy1,state.attrData.TotalData.ViewStyle.Zahyo);   
+                                            const p = vs.ScrData.getSRXY(mouseDownPosition);
+                                            const xy1=spatial.Get_Reverse_XY(p,state.attrData.TotalData.ViewStyle.Zahyo);   
+                                            const xy=spatial.Get_World_IdoKedo(xy1,state.attrData.TotalData.ViewStyle.Zahyo);   
                                             let url="";
-                                            let zm=13;
+                                            const zm=13;
                                             switch (data.caption) {
                                                 case "Googleマップ":
                                                     url="https://www.google.com/maps/search/?api=1&query=" + xy.lat + "," + xy.lon + '&zoom='+zm;
@@ -536,8 +536,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                                     url="http://ktgis.net/kjmapw/kjmapw.html?lat=" + xy.lat + "&lng=" + xy.lon +"&zoom="+zm;
                                                     break;
                                             }
-                                            let x = window.screenX+10;
-                                            let y = window.screenY+10;
+                                            const x = window.screenX+10;
+                                            const y = window.screenY+10;
                                             window.open(url, "_blank", "titlebar=No,status=0,scrollbars=1,resizable=0,width=900,height=700,left="+x+",top="+y);
                                         
                                         }
@@ -547,7 +547,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     }
                                 } else {
                                     //飾り上で右クリックメニュー
-                                    let mnuAccPopupVisible = [];
+                                    const mnuAccPopupVisible = [];
                                     switch (retV.type) {
                                         case Check_Acc_Result.Compass:
                                             mnuAccPopupVisible.push({ caption: "方位非表示", event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap) } });
@@ -600,11 +600,11 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 break;
                             }
                             case enmPrintMouseMode.od: {
-                                let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-                                let ato = state.attrData.TempData.frmPrint_Temp.OD_Drag;
-                                let retV = state.attrData.LayerData[Layernum].Get_OD_Bezier_RefPoint(ato.ObjectPos, ato.Data);
+                                const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                                const ato = state.attrData.TempData.frmPrint_Temp.OD_Drag;
+                                const retV = state.attrData.LayerData[Layernum].Get_OD_Bezier_RefPoint(ato.ObjectPos, ato.Data);
                                 if (retV.ok == true) {
-                                    let popmenu = [{ caption: "直線に戻す", event: odReset }];
+                                    const popmenu = [{ caption: "直線に戻す", event: odReset }];
                                     Generic.ceatePopupMenu(popmenu, new point(event.clientX, event.clientY));
                                     function odReset() {
                                         const state = appState();
@@ -619,7 +619,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     }
                     case false: {//左クリック
                         if ((e.type === "touchend") && (mousePointingSituation == mousePointingSituations.down)) {
-                            let p = Generic.getCanvasXY(event);
+                            const p = Generic.getCanvasXY(event);
                             LocationSearch(p);
                         } else {
                             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
@@ -647,16 +647,16 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
         function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}>) {
             const state = appState();
-            let alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
+            const alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
                     if (state.attrData.TempData.frmPrint_Temp.OnObject.length == 1) {
                         //mnuAccPopupVisible.push({ caption:"図形モードでオブジェクト名・データ値表示", event: function(){}});
-                        let Layernum = state.attrData.TempData.frmPrint_Temp.OnObject[0].objLayer;
-                        let ObjNum = state.attrData.TempData.frmPrint_Temp.OnObject[0].ObjNumber;
-                        let dtIndex = alm.DataIndex;
-                        let al = state.attrData.LayerData[Layernum];
-                        let alo = al.atrObject.atrObjectData[ObjNum];
+                        const Layernum = state.attrData.TempData.frmPrint_Temp.OnObject[0].objLayer;
+                        const ObjNum = state.attrData.TempData.frmPrint_Temp.OnObject[0].ObjNumber;
+                        const dtIndex = alm.DataIndex;
+                        const al = state.attrData.LayerData[Layernum];
+                        const alo = al.atrObject.atrObjectData[ObjNum];
                         let SymbolPosMeuF = false;
                         switch (al.Print_Mode_Layer) {
                             case enmLayerMode_Number.SoloMode: {
@@ -680,8 +680,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 break;
                             }
                             case enmLayerMode_Number.GraphMode: {
-                                let DataItem = al.LayerModeViewSettings.GraphMode.DataSet[dtIndex].Data;
-                                let n = DataItem.length;
+                                const DataItem = al.LayerModeViewSettings.GraphMode.DataSet[dtIndex].Data;
+                                const n = DataItem.length;
                                 let tx = "";
                                 for (let i = 0; i < n; i++) {
                                     tx += state.attrData.Get_DataTitle(Layernum, DataItem[i].DataNumber, false) + ":" +
@@ -695,8 +695,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 break;
                             }
                             case enmLayerMode_Number.LabelMode: {
-                                let DataItem = al.LayerModeViewSettings.LabelMode.DataSet[dtIndex].DataItem;
-                                let n = DataItem.length;
+                                const DataItem = al.LayerModeViewSettings.LabelMode.DataSet[dtIndex].DataItem;
+                                const n = DataItem.length;
                                 let tx = "";
                                 for (let i = 0; i < n; i++) {
                                     tx += state.attrData.Get_DataTitle(Layernum, DataItem[i], false) + ":" +
@@ -725,8 +725,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             if (alo.CenterPoint.Equals(alo.Symbol) == false) {
                                 mnuAccPopupVisible.push({
                                     caption: "記号表示位置を元に戻す", event: function () {
-                                        let on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
-                                        let d = state.attrData.LayerData[on.objLayer].atrObject.atrObjectData[on.ObjNumber];
+                                        const on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
+                                        const d = state.attrData.LayerData[on.objLayer].atrObject.atrObjectData[on.ObjNumber];
                                         d.Symbol = d.CenterPoint;
                                         clsPrint.printMapScreen(Frm_Print.picMap);
                                     }
@@ -748,8 +748,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             if (alo.CenterPoint.Equals(alo.Label) == false) {
                                 mnuAccPopupVisible.push({
                                     caption: "ラベル表示位置を元に戻す", event: function () {
-                                        let on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
-                                        let d = state.attrData.LayerData[on.objLayer].atrObject.atrObjectData[on.ObjNumber];
+                                        const on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
+                                        const d = state.attrData.LayerData[on.objLayer].atrObject.atrObjectData[on.ObjNumber];
                                         d.Label = d.CenterPoint;
                                         clsPrint.printMapScreen(Frm_Print.picMap);
                                     }
@@ -767,7 +767,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         // mnuAccPopupVisible.push({ caption: "-" });
                         // mnuAccPopupVisible.push({caption: "リンクの編集", event: mnuAccPopupVisible_LinkEdit} );
 
-                        let ObjName = Generic.Check_StringLength_And_Cut(state.attrData.Get_KenObjName(Layernum, ObjNum), 20)
+                        const ObjName = Generic.Check_StringLength_And_Cut(state.attrData.Get_KenObjName(Layernum, ObjNum), 20)
                         if (alo.Objectstructure == enmKenCodeObjectstructure.SyntheticObj) {
                             // mnuAccPopupVisible.push({caption: ObjName + "の構成", event: mnuAccPopupVisible_synthetic} );
                         }
@@ -786,25 +786,25 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     let pinchPresentDis: number;
     function pinch(event: TouchEvent){
         const state = appState();
-        let touches=event.changedTouches;
-        let p1=Generic.getCanvasXY(touches[0]);
-        let p2=Generic.getCanvasXY(touches[1]);
+        const touches=event.changedTouches;
+        const p1=Generic.getCanvasXY(touches[0]);
+        const p2=Generic.getCanvasXY(touches[1]);
         pinchCenter=new point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
         pinchBaseDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
     }
     function pinchMove(event: TouchEvent){
         const state = appState();
-        let touches=event.changedTouches;
+        const touches=event.changedTouches;
         if(touches.length>1){
-            let p1=Generic.getCanvasXY(touches[0]);
-            let p2=Generic.getCanvasXY(touches[1]);
+            const p1=Generic.getCanvasXY(touches[0]);
+            const p2=Generic.getCanvasXY(touches[1]);
             pinchCenter=new point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
             pinchPresentDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
         }
     }
     function pinchUp(event: TouchEvent){
         const state = appState();
-        let ratio=pinchPresentDis/pinchBaseDis;
+        const ratio=pinchPresentDis/pinchBaseDis;
         expansionMap(pinchCenter,ratio);
     }
     function onWheel(event: WheelEvent) {
@@ -825,20 +825,20 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         } else {
             ratio = 1 + bairitu * 2;
         }
-        let cpos = Generic.getCanvasXY(event);
+        const cpos = Generic.getCanvasXY(event);
         expansionMap(cpos,ratio);
     }
 
     function expansionMap(cpos: point, ratio: number){
         const state = appState();
-        let sd = state.attrData.TotalData.ViewStyle.ScrData;
-        let sv = sd.ScrView;
-        let Pos = sd.getSRXY(cpos);
-        let h1 = Pos.y - sv.top;
-        let h2 = sv.bottom - Pos.y;
-        let w1 = Pos.x - sv.left;
-        let w2 = sv.right - Pos.x;
-        let rec = new rectangle(Pos.x - w1 / ratio, Pos.x + w2 / ratio, Pos.y - h1 / ratio, Pos.y + h2 / ratio);
+        const sd = state.attrData.TotalData.ViewStyle.ScrData;
+        const sv = sd.ScrView;
+        const Pos = sd.getSRXY(cpos);
+        const h1 = Pos.y - sv.top;
+        const h2 = sv.bottom - Pos.y;
+        const w1 = Pos.x - sv.left;
+        const w2 = sv.right - Pos.x;
+        const rec = new rectangle(Pos.x - w1 / ratio, Pos.x + w2 / ratio, Pos.y - h1 / ratio, Pos.y + h2 / ratio);
         if (Generic.Check_New_ScrView(sd.MapRectangle, rec) == true) {
             state.attrData.TotalData.ViewStyle.ScrData.ScrView = rec;
             callback(elem);
@@ -865,28 +865,28 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     function OD_Line_Print(g: CanvasRenderingContext2D, P: point){
         const state = appState();
 
-        let DataNum = state.attrData.TempData.frmPrint_Temp.OD_Drag.Data;
-        let ObNum = state.attrData.TempData.frmPrint_Temp.OD_Drag.ObjectPos;
-        let Layernum = state.attrData.TotalData.LV1.SelectedLayer
-        let al = state.attrData.LayerData[Layernum];
-        let odmd = al.atrData.Data[DataNum].SoloModeViewSettings.ClassODMD;
-        let oal = state.attrData.LayerData[odmd.o_Layer];
+        const DataNum = state.attrData.TempData.frmPrint_Temp.OD_Drag.Data;
+        const ObNum = state.attrData.TempData.frmPrint_Temp.OD_Drag.ObjectPos;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer
+        const al = state.attrData.LayerData[Layernum];
+        const odmd = al.atrData.Data[DataNum].SoloModeViewSettings.ClassODMD;
+        const oal = state.attrData.LayerData[odmd.o_Layer];
         let OriginP;
 
-        let origin_objn = oal.atrObject.ObjectNum
+        const origin_objn = oal.atrObject.ObjectNum
         if (odmd.O_object > origin_objn) {
             //ダミーオブジェクトが始点の場合
-            let Dob = oal.Dummy[odmd.O_object - origin_objn].code;
+            const Dob = oal.Dummy[odmd.O_object - origin_objn].code;
             OriginP = al.MapFileData.Get_Enable_CenterP(Dob, oal.Time);
         } else {
             OriginP = oal.atrObject.atrObjectData[odmd.O_object].CenterPoint;
         }
-        let DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
-        let poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
+        const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
+        const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
         const splineGet = (clsSpline as unknown).Spline_Get as ((a: number, b: number, pts: unknown, c: number, scr: unknown) => unknown) | undefined;
-        let pxy = splineGet ? splineGet(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData) : poxy;
-        let Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
-        let O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
+        const pxy = splineGet ? splineGet(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData) : poxy;
+        const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
+        const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
         O_LPat.Color=clsBase.ColorRed();
         g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
         state.attrData.Draw_Line(g, O_LPat,  pxy);
@@ -895,10 +895,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     /**線モードのラインの移動チェック */
     function LocationODSearch(ScreenP: point) {
         const state = appState();
-        let MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
-        let odc = Near_OD(MapP);
+        const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const odc = Near_OD(MapP);
         if (odc != -1) {
-            let tx4 = "OD" + state.attrData.Get_KenObjName(state.attrData.TotalData.LV1.SelectedLayer, odc);
+            const tx4 = "OD" + state.attrData.Get_KenObjName(state.attrData.TotalData.LV1.SelectedLayer, odc);
             const label1 = Frm_Print.label1;
             const label2 = Frm_Print.label2;
             const label3 = Frm_Print.label3;
@@ -920,9 +920,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         let Near_ODNumber  = -1;
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
-                let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-                let al = state.attrData.LayerData[Layernum];
-                let DataNum = al.atrData.SelectedIndex;
+                const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                const al = state.attrData.LayerData[Layernum];
+                const DataNum = al.atrData.SelectedIndex;
                 if (al.Print_Mode_Layer == enmLayerMode_Number.SoloMode) {
                     if ((state.attrData.getSoloMode(Layernum, DataNum) == enmSoloMode_Number.ClassODMode) && (
                         al.Shape != enmShape.LineShape) && (al.Type != enmLayerType.Trip)) {
@@ -932,11 +932,11 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 break;
             }
             case enmTotalMode_Number.OverLayMode: {
-                let ovl = state.attrData.TotalData.TotalMode.OverLay.DataSet[state.attrData.TotalData.TotalMode.OverLay.SelectedIndex];
+                const ovl = state.attrData.TotalData.TotalMode.OverLay.DataSet[state.attrData.TotalData.TotalMode.OverLay.SelectedIndex];
                 for (let i = 0; i < ovl.DataItem.length; i++) {
-                    let Layernum = ovl.Layer
-                    let DataNum = ovl.DataNumber
-                    let al = state.attrData.LayerData[Layernum];
+                    const Layernum = ovl.Layer
+                    const DataNum = ovl.DataNumber
+                    const al = state.attrData.LayerData[Layernum];
                     if ((ovl.Print_Mode_Layer == enmLayerMode_Number.SoloMode)&& (ovl.Mode == enmSoloMode_Number.ClassODMode) && (
                         al.Shape != enmShape.LineShape)){
                         Near_ODNumber = Near_OD_sub(MapP, Layernum, DataNum);
@@ -952,41 +952,41 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
         function Near_OD_sub(MapP: point, Layernum: number, DataNum: number){
             const state = appState();
-            let al=state.attrData.LayerData[Layernum];
-            let mod=al.atrData.Data[DataNum].SoloModeViewSettings.ClassODMD;
-            let oal=state.attrData.LayerData[mod.o_Layer];
+            const al=state.attrData.LayerData[Layernum];
+            const mod=al.atrData.Data[DataNum].SoloModeViewSettings.ClassODMD;
+            const oal=state.attrData.LayerData[mod.o_Layer];
             let StartP ;
             let EndP ;
-            let objn  = al.atrObject.ObjectNum;
-            let origin_objn  = oal.atrObject.ObjectNum
+            const objn  = al.atrObject.ObjectNum;
+            const origin_objn  = oal.atrObject.ObjectNum
             if(mod.O_object > origin_objn ){
                 //ダミーオブジェクトが始点の場合
-                let Dob  = oal.Dummy[mod.O_object - origin_objn].code;
+                const Dob  = oal.Dummy[mod.O_object - origin_objn].code;
                 StartP=al.MapFileData.Get_Enable_CenterP(Dob, oal.Time);
             }else{
                 StartP = oal.atrObject.atrObjectData[mod.O_object].CenterPoint;
             }
 
             let mind  = 5;
-            let Category_Array = state.attrData.Get_CategolyArray(Layernum, DataNum);
+            const Category_Array = state.attrData.Get_CategolyArray(Layernum, DataNum);
             let Near_Obj  = -1;
             for (let i = 0; i <  objn ; i++) {
                 EndP = al.atrObject.atrObjectData[i].CenterPoint;
-                let Cate  = Category_Array[i];
+                const Cate  = Category_Array[i];
                 if(Cate != -1 ){
                     let D ;
                     if (((i == mod.O_object) && (Layernum == mod.o_Layer)) || (
                         (al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.BlankF == false) && (
                             state.attrData.Check_Missing_Value(Layernum, DataNum, i) == false))) {
-                        let retV = al.Get_OD_Bezier_RefPoint(i, DataNum);
+                        const retV = al.Get_OD_Bezier_RefPoint(i, DataNum);
                         if (retV.ok == false) {
                              D= spatial.Distance_PointLine2(MapP, StartP, EndP).distance;
                         } else {
-                            let ControlP = retV.RefPoint;
-                            let Refp = Generic.Get_OD_Spline_Point(ControlP, StartP, EndP);
-                            let d1 = spatial.Distance_PointLine2(MapP, StartP, Refp[2]).distance;
-                            let d2 = spatial.Distance_PointLine2(MapP, Refp[1], Refp[2]).distance;
-                            let d3 = spatial.Distance_PointLine2(MapP, EndP, Refp[1]).distance;
+                            const ControlP = retV.RefPoint;
+                            const Refp = Generic.Get_OD_Spline_Point(ControlP, StartP, EndP);
+                            const d1 = spatial.Distance_PointLine2(MapP, StartP, Refp[2]).distance;
+                            const d2 = spatial.Distance_PointLine2(MapP, Refp[1], Refp[2]).distance;
+                            const d3 = spatial.Distance_PointLine2(MapP, EndP, Refp[1]).distance;
                             D = Math.min(d1, d2);
                             D = Math.min(D, d3);
                         }
@@ -1007,15 +1007,15 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     /**等値線の位置とカーソルチェック */
     function LocationContourSearch(ScreenP: point) {
         const state = appState();
-        let MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         let tx4 = ""
         if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal) {
             state.attrData.TempData.frmPrint_Temp.LocationMenuString.ContourStacPos = -1;
             if (Check_Contour_in() == true) {
-                let c = Near_Contour(MapP);
+                const c = Near_Contour(MapP);
                 if (c != -1) {
                     state.attrData.TempData.frmPrint_Temp.LocationMenuString.ContourStacPos = c;
-                    let cdt = state.attrData.TempData.ContourMode_Temp.Contour_Object[c];
+                    const cdt = state.attrData.TempData.ContourMode_Temp.Contour_Object[c];
                     tx4 = "等値線" + cdt.Value.toString() + state.attrData.Get_DataUnit(cdt.Layernum, cdt.DataNum);
                     let conDiv=document.getElementById("contourDataTip");
                     if(conDiv==undefined){
@@ -1029,7 +1029,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
         }
         if(tx4==""){
-            let dv=document.getElementById("contourDataTip")
+            const dv=document.getElementById("contourDataTip")
             if( dv!=undefined){
                 Frm_Print.removeChild(dv);
             }
@@ -1040,9 +1040,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
              const state = appState();
              switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                  case enmTotalMode_Number.DataViewMode: {
-                     let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                     const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
                      if (state.attrData.LayerData[Layernum].atrData.Count > 0) {
-                         let DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+                         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
                          if (state.attrData.getSoloMode(Layernum, DataNum) == enmSoloMode_Number.ContourMode) {
                              return true;
                          }
@@ -1050,10 +1050,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                      break;
                  }
                  case enmTotalMode_Number.OverLayMode: {
-                     let ato = state.attrData.TotalData.TotalMode.OverLay;
-                     let atod = ato.DataSet[ato.SelectedIndex];
+                     const ato = state.attrData.TotalData.TotalMode.OverLay;
+                     const atod = ato.DataSet[ato.SelectedIndex];
                      for (let i = 0; i < atod.DataItem.Count; i++) {
-                         let atodi = atod.DataItem[i];
+                         const atodi = atod.DataItem[i];
                          if ((atodi.Print_Mode_Layer == enmLayerMode_Number.SoloMode) && (atodi.Mode == enmSoloMode_Number.ContourMode)) {
                              return true;
                          }
@@ -1068,13 +1068,13 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             const state = appState();
             let Near_ContourNumber = -1;
             let mind = 5;
-            let atc = state.attrData.TempData.ContourMode_Temp;
+            const atc = state.attrData.TempData.ContourMode_Temp;
             for (let i = 0; i < atc.Contour_All_Number; i++) {
-                let atco = atc.Contour_Object[i];
+                const atco = atc.Contour_Object[i];
                 if ((atco.Flag == true) && (spatial.Check_PointInBox(MapP, 0, atco.Circumscribed_Rectangle) == true)) {
                     for (let j = atco.PointStac; j <= atco.PointStac + atco.NumOfPoint - 2; j++) {
-                        let retV = spatial.Distance_PointLine(MapP.x,MapP.y, atc.Contour_Point[j].x,atc.Contour_Point[j].y, atc.Contour_Point[j + 1].x, atc.Contour_Point[j + 1].y ) ;
-                        let d=retV.distance* state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
+                        const retV = spatial.Distance_PointLine(MapP.x,MapP.y, atc.Contour_Point[j].x,atc.Contour_Point[j].y, atc.Contour_Point[j + 1].x, atc.Contour_Point[j + 1].y ) ;
+                        const d=retV.distance* state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
                         if (d < mind) {
                             mind = d;
                             Near_ContourNumber = i;
@@ -1089,7 +1089,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     /**マウス位置の情報、カーソルを＋に変える場合trueを返す*/
     function LocationSearch(ScreenP: point) {
         const state = appState();
-        let MapP  = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const MapP  = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         picMapMouseMovePointInformation(ScreenP);
         let L_Print_Mode_Total ;
         let L_Layer ;
@@ -1097,19 +1097,19 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         let L_Data ;
         let L_Solomode ;
         if( state.attrData.TotalData.LV1.Print_Mode_Total == enmTotalMode_Number.SeriesMode ){
-            let koma  = state.attrData.TempData.Series_temp.Koma;
-            let n  = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
-            let im= state.attrData.TotalData.TotalMode.Series.DataSet[n].DataItem[koma];
+            const koma  = state.attrData.TempData.Series_temp.Koma;
+            const n  = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
+            const im= state.attrData.TotalData.TotalMode.Series.DataSet[n].DataItem[koma];
                 L_Print_Mode_Total = im.Print_Mode_Total;
                 L_Print_Mode_Layer = im.Print_Mode_Layer;
                 L_Layer = im.Layer;
                 L_Data = im.Data;
                 L_Solomode = im.SoloMode;
         } else {
-            let lv = state.attrData.TotalData.LV1;
+            const lv = state.attrData.TotalData.LV1;
             L_Print_Mode_Total = lv.Print_Mode_Total
             L_Layer = lv.SelectedLayer;
-            let ld = state.attrData.LayerData[L_Layer];
+            const ld = state.attrData.LayerData[L_Layer];
             L_Print_Mode_Layer = ld.Print_Mode_Layer;
             L_Data = ld.atrData.SelectedIndex;
             switch (L_Print_Mode_Total) {
@@ -1145,8 +1145,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             case enmTotalMode_Number.DataViewMode: {
                 //データ表示モード
                 let OnObject: strLocationSearchObject[] = [];
-                let Layernum = L_Layer;
-                let dtindex = L_Data;
+                const Layernum = L_Layer;
+                const dtindex = L_Data;
                 switch (L_Print_Mode_Layer) {
                     case enmLayerMode_Number.SoloMode: {
                         OnObject = NearestObject(MapP, Layernum);
@@ -1196,7 +1196,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 }
                 let tx = "";
                 for (let i = 0; i < OnObject.length; i++) {
-                    let onum = OnObject[i].ObjNumber;
+                    const onum = OnObject[i].ObjNumber;
                     tx += state.attrData.Get_KenObjName(Layernum, onum) + "［" + state.attrData.Get_Data_Value(Layernum, L_Data, onum, "欠損値") + "］"
                     if (i != OnObject.length - 1) {
                         tx += "／"
@@ -1239,13 +1239,13 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         let tx = "";
         let f = false;
         state.attrData.TempData.frmPrint_Temp.OnObject = [];
-        let ato = state.attrData.TotalData.TotalMode.OverLay;
+        const ato = state.attrData.TotalData.TotalMode.OverLay;
         let lblTxt = ""
         for (let i = ato.DataSet[OverLayIndex].DataItem.length - 1; i >= 0; i--) {
-            let d = ato.DataSet[OverLayIndex].DataItem[i];
-            let OnObject = NearestObject(MapP, d.Layer);
+            const d = ato.DataSet[OverLayIndex].DataItem[i];
+            const OnObject = NearestObject(MapP, d.Layer);
             for (let j = 0; j < OnObject.length; j++) {
-                let ObjData = OnObject[j];
+                const ObjData = OnObject[j];
                 lblTxt += "レイヤ：" + state.attrData.Get_LayerName(ObjData.objLayer) + '<br>';
                 lblTxt += "オブジェクト：" + state.attrData.Get_KenObjName(ObjData.objLayer, ObjData.ObjNumber) + '<br>';
                 if (f == true) {
@@ -1273,8 +1273,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
         }
         if (typeof state.propertyWindow.getVisibility === "function" && state.propertyWindow.getVisibility() == true) {
-            let cnode = state.propertyWindow.pnlProperty.childNodes;
-            for (let i in cnode) {
+            const cnode = state.propertyWindow.pnlProperty.childNodes;
+            for (const i in cnode) {
                 if (cnode[i].name == "grid") {
                     state.propertyWindow.pnlProperty.removeChild(cnode[i]);
                     break;
@@ -1298,19 +1298,19 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     /**一番近いオブジェクトを探して数とオブジェクト番号を返す */
     function NearestObject(MapP: point, Layernum: number) {
         const state = appState();
-        let OnObject = [];
+        const OnObject = [];
 
         if (state.attrData.LayerData[Layernum].Type == enmLayerType.Trip) {
 
         } else {
             switch (state.attrData.LayerData[Layernum].Shape) {
                 case (enmShape.PolygonShape): {
-                    let retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetRectIn(MapP.x, MapP.y);
+                    const retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetRectIn(MapP.x, MapP.y);
                     if (retV.number > 0) {
                         for (let i = 0; i < retV.number; i++) {
                             if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] == true) {
                                 if (state.attrData.Check_Point_in_Kencode_OneObject(Layernum, retV.Tags[i], MapP) == true) {
-                                    let ObjData =new strLocationSearchObject(Layernum,retV.Tags[i]) ;
+                                    const ObjData =new strLocationSearchObject(Layernum,retV.Tags[i]) ;
                                     OnObject.push(ObjData);
                                 }
                             }
@@ -1320,7 +1320,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 }
                 default: {
                     let retV;
-                    let mind = 10 / state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
+                    const mind = 10 / state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
                     if (state.attrData.LayerData[Layernum].Shape == enmShape.PointShape) {
                         retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetNearPointNumber(MapP.x, MapP.y, mind);
                     } else {
@@ -1330,7 +1330,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         let serarchNCount = 0;
                         for (let i = 0; i < retV.num; i++) {
                             if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] == true) {
-                                let ObjData = new strLocationSearchObject(Layernum, retV.Tags[i]);
+                                const ObjData = new strLocationSearchObject(Layernum, retV.Tags[i]);
                                 OnObject.push(ObjData);
                                 serarchNCount++;
                                 if (serarchNCount == 5) {//候補は最大で5つ
@@ -1350,10 +1350,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     function picMapMouseMovePointInformation(MousePosition: point) {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
-        let originalP = vs.ScrData.getSRXY(MousePosition);
+        const originalP = vs.ScrData.getSRXY(MousePosition);
         if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)==true){
-            let P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo);
-            let PSt  = Generic.Get_PositionCoordinate_Strings(P, vs.Zahyo);
+            const P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo);
+            const PSt  = Generic.Get_PositionCoordinate_Strings(P, vs.Zahyo);
             Frm_Print.label1.innerHTML=PSt.x + "/" + PSt.y;
         }else{
             Frm_Print.label1.innerHTML="";
@@ -1362,9 +1362,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
 
     function Check_Acc(ScreenP: point) {
         const state = appState();
-        let vs = state.attrData.TotalData.ViewStyle;
-        let threed = vs.ScrData.ThreeDMode;
-        let ata = state.attrData.TempData.Accessory_Temp;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const threed = vs.ScrData.ThreeDMode;
+        const ata = state.attrData.TempData.Accessory_Temp;
         if (vs.MapTitle.Visible == true) {
             if (spatial.Check_PointInBox(ScreenP, vs.MapTitle.Font.Kakudo, ata.MapTitle_Rect) == true) {
                 ata.Push_titleXY = vs.MapTitle.Position.Clone();
@@ -1394,7 +1394,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         //------凡例
         for (let i = ata.Legend_No_Max - 1; i >= 0; i--) {
-            let lg =  ata.MapLegend_W[i];
+            const lg =  ata.MapLegend_W[i];
             if ((vs.MapLegend.Base.Visible == true) || (lg.LineKind_Flag == true) || (lg.PointObject_Flag == true)) {
                 if (spatial.Check_PointInBox(ScreenP, 0, lg.Rect) == true) {
                     ata.Edit_Legend = i;
@@ -1405,8 +1405,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         //------グループボックス
         if ((vs.AccessoryGroupBox.Visible == true) && (vs.ScrData.ThreeDMode.Set3D_F == false)) {
-            let Acc_Rect = ata.GroupBox_Rect.Clone();
-            let pad = state.attrData.Get_PaddingPixcel(vs.AccessoryGroupBox.Back);
+            const Acc_Rect = ata.GroupBox_Rect.Clone();
+            const pad = state.attrData.Get_PaddingPixcel(vs.AccessoryGroupBox.Back);
             Acc_Rect.inflate(pad, pad);
             if (spatial.Check_PointInBox(ScreenP, 0, Acc_Rect) == true) {
                 ata.Push_GroupBoxXY = vs.MapScale.Position.Clone();
@@ -1429,11 +1429,11 @@ class frmPrint {
     //画像ファイルに保存
     static savePNG(WindowOutFlag = false) {
         const state = appState();
-        let tilecanvas = document.createElement("canvas");
+        const tilecanvas = document.createElement("canvas");
         tilecanvas.width = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width();
         tilecanvas.height = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height();
         tilecanvas.style.vivility = false;
-        let tg = tilecanvas.getContext('2d');
+        const tg = tilecanvas.getContext('2d');
         if (!tg) {
             return;
         }
@@ -1444,7 +1444,7 @@ class frmPrint {
             Generic.windowCenterOpen(tilecanvas.toDataURL(), tilecanvas.width, tilecanvas.height, "MANDARA JS");
         } else {
             Generic.prompt(undefined, "画像ファイル名", "mandara.png", function (v: string) {
-                let a = document.createElement('a');
+                const a = document.createElement('a');
                 a.href = tilecanvas.toDataURL();
                 a.download = v;
                 a.click();
@@ -1459,11 +1459,11 @@ class frmPrint {
         Generic.Set_Box_Position_in_Browser(e, backDiv);
 
         Generic.createNewSpan(backDiv, "地図ファイル", "", "", 15, 35, "", "");
-        let NewLineKind: LPatSek_Info[][] = [];
-        let MapFileList = state.attrData.GetMapFileName()
-        let list: Array<{value: string, text: string}> = [];
+        const NewLineKind: LPatSek_Info[][] = [];
+        const MapFileList = state.attrData.GetMapFileName()
+        const list: Array<{value: string, text: string}> = [];
         for (let i = 0; i < MapFileList.length; i++) {
-            let LK = state.attrData.SetMapFile(MapFileList[i]).Get_TotalLineKind();
+            const LK = state.attrData.SetMapFile(MapFileList[i]).Get_TotalLineKind();
             NewLineKind.push(LK);
             list.push({ value: MapFileList[i], text: MapFileList[i] });
         }
@@ -1506,9 +1506,9 @@ class frmPrint {
         function buttonOK() {
             const state = appState();
             for (let i = 0; i < MapFileList.length; i++) {
-                let lk = [];
-                for (let j in NewLineKind[i]) {
-                    let d = new LPatSek_Info();
+                const lk = [];
+                for (const j in NewLineKind[i]) {
+                    const d = new LPatSek_Info();
                     d.Pat = NewLineKind[i][j].Pat.Clone();
                     lk.push(d);
                 }
@@ -1525,14 +1525,14 @@ class frmPrint {
             while (pnlLineList.lastChild) {
                 pnlLineList.removeChild(pnlLineList.lastChild);
             }
-            let Mpindex  = selectDataItem.selectedIndex
-            let lnum  = NewLineKind[Mpindex].length;
+            const Mpindex  = selectDataItem.selectedIndex
+            const lnum  = NewLineKind[Mpindex].length;
             pnlLineList.style.height = (lnum * LineKindHeight + 10).px();
 
             for(let i  = 0 ;i< lnum;i++){
-                let lk=NewLineKind[Mpindex][i];
-                let y=i * LineKindHeight + 3;
-                let lc=Generic.createNewWordDivCanvas(pnlLineList, "",lk.Name,10,y,100,inePatternClick);
+                const lk=NewLineKind[Mpindex][i];
+                const y=i * LineKindHeight + 3;
+                const lc=Generic.createNewWordDivCanvas(pnlLineList, "",lk.Name,10,y,100,inePatternClick);
                 lc.tag=i;
                 state.attrData.Draw_Sample_LineBox(lc, lk.Pat);
             }
@@ -1540,7 +1540,7 @@ class frmPrint {
                 const state = appState();
                 const target = e.target as Record<string, number>;
                 if (!target) { return; }
-                let n=target.tag;
+                const n=target.tag;
                 clsLinePatternSet(e, NewLineKind[Mpindex][n].Pat, LinePatternGet);
                 function LinePatternGet(Lpat: Line_Property) {
                     const state = appState();
@@ -1569,10 +1569,10 @@ class frmPrint {
     //プロパティウインドウの表をコピー
     static copyProperty(){
         const state = appState();
-        let toptx=state.propertyWindow.pnlProperty.objInfo.innerText+'\n'+'\n';
+        const toptx=state.propertyWindow.pnlProperty.objInfo.innerText+'\n'+'\n';
         let gridtx="";
-        let cnode = state.propertyWindow.pnlProperty.childNodes;
-        for(let i in cnode){
+        const cnode = state.propertyWindow.pnlProperty.childNodes;
+        for(const i in cnode){
             if(cnode[i].name=="grid"){
                 gridtx=Generic.getTableValue(cnode[i].table);
                 break;
@@ -1585,7 +1585,7 @@ class frmPrint {
     static PropertyFix() {
         const state = appState();
         if (state.propertyWindow.pnlProperty.getVisibility() == true) {
-            let f = !state.propertyWindow.fixed;
+            const f = !state.propertyWindow.fixed;
             if (f == true) {
                 state.propertyWindow.style.borderWidth = '2px';
             } else {
@@ -1599,8 +1599,8 @@ class frmPrint {
     static ShowOverLayObjectProperty(Layernum: number, dtindex: number, OnObject: strLocationSearchObject[]) {
         const state = appState();
         if ((state.propertyWindow.pnlProperty.getVisibility()==true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal)) {
-            let cnode = state.propertyWindow.pnlProperty.childNodes;
-            for(let i in cnode){
+            const cnode = state.propertyWindow.pnlProperty.childNodes;
+            for(const i in cnode){
                 if(cnode[i].name=="grid"){
                     state.propertyWindow.pnlProperty.removeChild(cnode[i]);
                     break;
@@ -1632,8 +1632,8 @@ class frmPrint {
         let headHeight = 0;
         state.propertyWindow.pnlProperty?.setVisibility?.(true);
 
-        let cnode = state.propertyWindow.pnlProperty.childNodes;
-        for (let i in cnode) {
+        const cnode = state.propertyWindow.pnlProperty.childNodes;
+        for (const i in cnode) {
             if (cnode[i].name == "grid") {
                 state.propertyWindow.pnlProperty.removeChild(cnode[i]);
                 break;
@@ -1645,7 +1645,7 @@ class frmPrint {
                 headTx = "<b>" + state.attrData.Get_KenObjName(LayerNum, objNumber) + "</b><br>";
                 headTx+=state.attrData.getOneObjectPanelLabelString(LayerNum, DataNumber, objNumber, '<br>' + " ");
                 headHeight=90;
-                let n = state.attrData.Get_DataNum(LayerNum);
+                const n = state.attrData.Get_DataNum(LayerNum);
                 data = Generic.Array2Dimension(3, n + 1);
                 data[0][0] = "データ項目";
                 data[1][0] = "値";
@@ -1660,11 +1660,11 @@ class frmPrint {
             case enmLayerMode_Number.GraphMode: {
                 headTx = "<b>" + state.attrData.Get_KenObjName(LayerNum, objNumber) + "</b><br>";
                 headHeight=30;
-                let al=state.attrData.LayerData[LayerNum];
-                let Dset  = al.LayerModeViewSettings.GraphMode.SelectedIndex;
-                let ald=al.LayerModeViewSettings.GraphMode.DataSet[Dset];
-                let DataItem = ald.Data;
-                let n = DataItem.length;
+                const al=state.attrData.LayerData[LayerNum];
+                const Dset  = al.LayerModeViewSettings.GraphMode.SelectedIndex;
+                const ald=al.LayerModeViewSettings.GraphMode.DataSet[Dset];
+                const DataItem = ald.Data;
+                const n = DataItem.length;
                 if (n == 0) {
                     return;
                 }
@@ -1676,10 +1676,10 @@ class frmPrint {
                         data[1][0] = "値(" + state.attrData.Get_DataUnit(LayerNum, DataItem[0].DataNumber) + ")";
                         data[2][0] = "割合(%)";
                         let sum = 0;
-                        let v = [];
+                        const v = [];
                         for (let i = 0; i < n; i++) {
                             data[0][i + 1] = state.attrData.Get_DataTitle(LayerNum, DataItem[i].DataNumber, true);
-                            let val = Number(state.attrData.Get_Data_Value(LayerNum, DataItem[i].DataNumber, objNumber, ""));
+                            const val = Number(state.attrData.Get_Data_Value(LayerNum, DataItem[i].DataNumber, objNumber, ""));
                             data[1][i + 1] = val;
                             v.push(val);
                             sum += val;
@@ -1699,10 +1699,10 @@ class frmPrint {
                         data[0][0] = "データ項目";
                         data[1][0] = "値(" + state.attrData.Get_DataUnit(LayerNum, DataItem[0].DataNumber) + ")";
                         let sum = 0;
-                        let v = [];
+                        const v = [];
                         for (let i = 0; i < n; i++) {
                             data[0][i + 1] = state.attrData.Get_DataTitle(LayerNum, DataItem[i].DataNumber, true);
-                            let val =Number( state.attrData.Get_Data_Value(LayerNum, DataItem[i].DataNumber, objNumber, ""));
+                            const val =Number( state.attrData.Get_Data_Value(LayerNum, DataItem[i].DataNumber, objNumber, ""));
                             data[1][i + 1] = val;
                             v.push(val);
                             sum += val;
@@ -1724,11 +1724,11 @@ class frmPrint {
             case enmLayerMode_Number.LabelMode: {
                 headTx = "<b>" + state.attrData.Get_KenObjName(LayerNum, objNumber) + "</b><br>";
                 headHeight=30;
-                let al=state.attrData.LayerData[LayerNum];
-                let Dset  = al.LayerModeViewSettings.LabelMode.SelectedIndex;
-                let ald=al.LayerModeViewSettings.LabelMode.DataSet[Dset];
-                let DataItem = ald.DataItem;
-                let n = DataItem.length;
+                const al=state.attrData.LayerData[LayerNum];
+                const Dset  = al.LayerModeViewSettings.LabelMode.SelectedIndex;
+                const ald=al.LayerModeViewSettings.LabelMode.DataSet[Dset];
+                const DataItem = ald.DataItem;
+                const n = DataItem.length;
                 data = Generic.Array2Dimension(3, n + 1);
                 data[0][0] = "データ項目";
                 data[1][0] = "値";
@@ -1747,14 +1747,14 @@ class frmPrint {
         state.propertyWindow.oLayer = LayerNum;
         state.propertyWindow.oData = DataNumber;
 
-        let y=state.propertyWindow.pnlProperty.objInfo.offsetHeight;
-        let gd=Generic.createNewGrid(state.propertyWindow.pnlProperty, "", "", "", "", data, 0, y, '100%', state.propertyWindow.pnlProperty.offsetHeight - 70,'100%', "", "font-size:13px", 1, "background-color:#aaffaa;",  "", "", "");
+        const y=state.propertyWindow.pnlProperty.objInfo.offsetHeight;
+        const gd=Generic.createNewGrid(state.propertyWindow.pnlProperty, "", "", "", "", data, 0, y, '100%', state.propertyWindow.pnlProperty.offsetHeight - 70,'100%', "", "font-size:13px", 1, "background-color:#aaffaa;",  "", "", "");
         gd.name="grid";
 }
 
     static set_frmPrint_Window_Size() {
         const state = appState();
-        let FpicRect  = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
+        const FpicRect  = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
         const marginSide = state.scrMargin.side ?? 0;
         const marginTop = state.scrMargin.top ?? 0;
         const marginBottom = state.scrMargin.bottom ?? 0;
@@ -1780,8 +1780,8 @@ class frmPrint {
         Frm_Print.picMap.style.top = marginTop.px();
         Frm_Print.picMap.width = mapDIV.style.width.removePx() - marginSide * 2;
         Frm_Print.picMap.height = mapDIV.style.height.removePx() - marginTop - marginBottom;
-        let p = new point(Frm_Print.style.left.removePx() + state.scrMargin.side, Frm_Print.style.top.removePx() + state.scrMargin.top);
-        let s = new size(Frm_Print.picMap.width, Frm_Print.picMap.height);
+        const p = new point(Frm_Print.style.left.removePx() + state.scrMargin.side, Frm_Print.style.top.removePx() + state.scrMargin.top);
+        const s = new size(Frm_Print.picMap.width, Frm_Print.picMap.height);
         state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
         Generic.moveInnerElement(Frm_Print);
         if(Frm_Print.maxSizeFlag==false){
@@ -1795,8 +1795,8 @@ class frmPrint {
     }
     static Init_FrmPrint() {
         const state = appState();
-        let ScreenH = Generic.getBrowserHeight();
-        let ScreenW = Generic.getBrowserWidth();
+        const ScreenH = Generic.getBrowserHeight();
+        const ScreenW = Generic.getBrowserWidth();
     
         let a = ScreenH * 0.7;
         if (ScreenH > ScreenW) {
@@ -1805,11 +1805,11 @@ class frmPrint {
         const marginSide = state.scrMargin.side ?? 0;
         const marginTop = state.scrMargin.top ?? 0;
         const marginBottom = state.scrMargin.bottom ?? 0;
-        let psw = a + marginSide * 2;
-        let psh = a / 1.41 + marginTop + marginBottom;
+        const psw = a + marginSide * 2;
+        const psh = a / 1.41 + marginTop + marginBottom;
     
-        let p = new point(ScreenW / 2 - psw / 2, ScreenH / 2 - psh / 2);
-        let s = new size(psw, psh);
+        const p = new point(ScreenW / 2 - psw / 2, ScreenH / 2 - psh / 2);
+        const s = new size(psw, psh);
         state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
         Frm_Print.resetMaxButton?.(true);
         if (Frm_Print.label1) Frm_Print.label1.innerHTML="";
@@ -1821,9 +1821,9 @@ class frmPrint {
     /**連続表示ボタン 次*/
     static seriesNext() {
         const state = appState();
-        let ats = state.attrData.TotalData.TotalMode.Series;
-        let n = ats.SelectedIndex;
-        let atst = state.attrData.TempData.Series_temp;
+        const ats = state.attrData.TotalData.TotalMode.Series;
+        const n = ats.SelectedIndex;
+        const atst = state.attrData.TempData.Series_temp;
         atst.Koma = (atst.Koma == ats.DataSet[n].DataItem.length - 1) ? 0 : atst.Koma+1;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
@@ -1831,9 +1831,9 @@ class frmPrint {
     /**連続表示ボタン 前*/
     static seriesBefore() {
         const state = appState();
-        let ats = state.attrData.TotalData.TotalMode.Series;
-        let n = ats.SelectedIndex;
-        let atst = state.attrData.TempData.Series_temp;
+        const ats = state.attrData.TotalData.TotalMode.Series;
+        const n = ats.SelectedIndex;
+        const atst = state.attrData.TempData.Series_temp;
         atst.Koma  = (atst.Koma == 0) ? ats.DataSet[n].DataItem.length - 1 : atst.Koma-1;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
@@ -1848,8 +1848,8 @@ class frmPrint {
     //カーソル位置のオブジェクトを強調
     static PrintCursorObjectLine(g: CanvasRenderingContext2D, Draw_F: boolean) {
         const state = appState();
-        let OnObject = state.attrData.TempData.frmPrint_Temp.OnObject;
-        let OldObject = state.attrData.TempData.frmPrint_Temp.OldObject;
+        const OnObject = state.attrData.TempData.frmPrint_Temp.OnObject;
+        const OldObject = state.attrData.TempData.frmPrint_Temp.OldObject;
         if (OnObject.length == 0) {
             if (OldObject.length > 0) {
                 g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
@@ -1860,8 +1860,8 @@ class frmPrint {
             if ((OnObject.length == OldObject.length) && (Draw_F == false)) {
                 //ちらつき防止のため、描画済みの場合は再描画しない
                 let f = false;
-                for (let i in OnObject) {
-                    for (let j in OldObject) {
+                for (const i in OnObject) {
+                    for (const j in OldObject) {
                         if ((OnObject[i].ObjNumber != OldObject[j].ObjNumber) || (OnObject[i].objLayer != OldObject[j].objLayer)) {
                             f = true;
                             break;
@@ -1875,7 +1875,7 @@ class frmPrint {
         }
         g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
         state.attrData.TempData.frmPrint_Temp.OldObject = Generic.ArrayClone(OnObject);
-        for (let i in OnObject) {
+        for (const i in OnObject) {
             printSelectedObject(g, OnObject[i].objLayer, OnObject[i].ObjNumber);
         }
 
@@ -1884,9 +1884,9 @@ class frmPrint {
             const sp = state.attrData.LayerData[Layernum].Shape;
             switch (sp) {
                 case enmShape.PointShape: {
-                    let CP = state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Symbol;
-                    let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
-                    let Mk = clsBase.Mark();
+                    const CP = state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Symbol;
+                    const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                    const Mk = clsBase.Mark();
                     Mk.Tile.Color = new colorRGBA(255, 0, 150, 150);
                     state.attrData.Draw_Mark(g, OP, 10, Mk)
                     break;
@@ -1899,14 +1899,14 @@ class frmPrint {
                         w = 5;
                     }
                     if (state.attrData.LayerData[Layernum].Type == enmLayerType.Mesh) {
-                        let meshP = Generic.ArrayClone(state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
+                        const meshP = Generic.ArrayClone(state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
                         meshP[4] = meshP[0].Clone();
-                        let pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(5, meshP, false);
+                        const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(5, meshP, false);
                         drawLines(g, pxy, 3, new colorRGBA(255, 0, 150, 200));
                     } else {
-                        let ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, ObjNum);
-                        for (let j in ELine) {
-                            let pxy = clsPrint.Get_PointXY_by_LineCode(Layernum, ELine[j].LineCode, false);
+                        const ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, ObjNum);
+                        for (const j in ELine) {
+                            const pxy = clsPrint.Get_PointXY_by_LineCode(Layernum, ELine[j].LineCode, false);
                             if (pxy != undefined) {
                                 drawLines(g, pxy, w, new colorRGBA(255, 0, 150, 150));
                             }

@@ -12,16 +12,16 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
     const pnlColorPattern = Generic.createNewDiv(colorChart, "", "", "", 10, state.scrMargin.top + 10, 240, 310, "overflow-y: scroll;border:solid 1px;border-color:#666666;", "");
     const pnlPatternList = Generic.createNewDiv(pnlColorPattern, "", "", "", 0, 0, 210, 100, "", "");
 
-    let picw = pnlPatternList.offsetWidth * 0.9;
-    let pich = 25;
-    let topMargin = pich / 2;
-    let leftMargin = picw * 0.05;
-    let colorPat = [];
+    const picw = pnlPatternList.offsetWidth * 0.9;
+    const pich = 25;
+    const topMargin = pich / 2;
+    const leftMargin = picw * 0.05;
+    const colorPat = [];
 
-    let blue = new colorRGBA(0, 65, 255);
-    let red = new colorRGBA(255, 40, 0);
-    let yellow = new colorRGBA(255, 230, 0);
-    let green = new colorRGBA(0, 0x77, 0x10);
+    const blue = new colorRGBA(0, 65, 255);
+    const red = new colorRGBA(255, 40, 0);
+    const yellow = new colorRGBA(255, 230, 0);
+    const green = new colorRGBA(0, 0x77, 0x10);
 
     colorPat.push([clsBase.ColorBlack(), clsBase.ColorWhite()]);
     colorPat.push([blue, clsBase.ColorWhite()]);
@@ -53,9 +53,9 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
     colorPat.push([new colorRGBA(180, 0, 104), red, yellow, clsBase.ColorGreen(), blue, new colorRGBA(0, 0, 50)]);
     colorPat.push([new colorRGBA(180, 0, 104), red, yellow, clsBase.ColorGreen(), new colorRGBA(185, 235, 255), blue, new colorRGBA(0, 0, 50)]);
 
-    let ConvColor: colorRGBA[][] = [];
+    const ConvColor: colorRGBA[][] = [];
     let maxn = colorPat.length;
-    for (let i in colorPat) {
+    for (const i in colorPat) {
         if (colorPat[i].length > ClassN) {
             maxn = parseInt(i);
             break;
@@ -63,31 +63,31 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
     }
     pnlPatternList.style.height = pich * maxn + topMargin * 2;
     for (let i = 0; i < maxn; i++) {
-        let y = pich * i + topMargin;
-        let canvas = Generic.createNewCanvas(pnlPatternList, "", "imgButton", leftMargin, y, picw, pich - 4, selectColor);
+        const y = pich * i + topMargin;
+        const canvas = Generic.createNewCanvas(pnlPatternList, "", "imgButton", leftMargin, y, picw, pich - 4, selectColor);
         canvas.tag = i;
         let ColData = [];// colorRGBA
-        let colcol = []; // colorRGBA
-        for (let j in colorPat[i]) {
+        const colcol = []; // colorRGBA
+        for (const j in colorPat[i]) {
             colcol.push(colorPat[i][j].Clone());
         }
-        let colnum = colorPat[i].length;
+        const colnum = colorPat[i].length;
         switch (colnum) {
             case 2:
                 ColData = Generic.TwoColorGradation(colcol[0], colcol[1], ClassN);
                 break;
             case 3:
-                let cp = Math.floor(ClassN / 2);
+                const cp = Math.floor(ClassN / 2);
                 ColData = Generic.ThreeColorGradation(colcol[0], colcol[1], colcol[2], ClassN, cp);
                 break;
             default:
-                let pos = [];
+                const pos = [];
                 for (let j = 0; j < colnum - 1; j++) {
                     pos.push(Math.floor((j / (colnum - 1)) * ClassN));
                 }
                 pos.push(ClassN - 1);
                 for (let j = 0; j < colnum - 1; j++) {
-                    let tcol = Generic.TwoColorGradation(colcol[j], colcol[j + 1], pos[j + 1] - pos[j] + 1);
+                    const tcol = Generic.TwoColorGradation(colcol[j], colcol[j + 1], pos[j + 1] - pos[j] + 1);
                     for (let k=0;k< tcol.length;k++) {
                         ColData[pos[j] + k] = tcol[k];
                     }
@@ -97,8 +97,8 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
 
         const ctx = canvas.getContext("2d");
         for (let j = 0; j < ClassN; j++) {
-            let left = picw * (j / ClassN);
-            let right = picw * ((j + 1) / ClassN);
+            const left = picw * (j / ClassN);
+            const right = picw * ((j + 1) / ClassN);
             ctx.fillStyle = ColData[j].toRGBA();
             ctx.fillRect(left, 0, right - left, pich-4);
         }
@@ -107,7 +107,7 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
 
     function selectColor(){
         Generic.clear_backDiv();
-        let n=this.tag;
+        const n=this.tag;
         buttonOK(ConvColor[n]);
     }
 }
@@ -131,7 +131,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
      
 
     //要素のサイズ指定 
-    let colPSize = {
+    const colPSize = {
         picW: 35,
         picH: 25,
         picMargin: 5,
@@ -162,7 +162,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
 
     //全体のDiv
     //固定DIV作成
-    let colorPickerObj = Generic.set_backDiv("", "色設定", colPSize.totalWidth, colPSize.totalHeight, true, true, buttonOK, 0.2, true);
+    const colorPickerObj = Generic.set_backDiv("", "色設定", colPSize.totalWidth, colPSize.totalHeight, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(framepos, colorPickerObj);
 
     //既定色Div
@@ -200,7 +200,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
         ocol=clsBase.ColorWhite();
     }
      
-    let rangeObj = document.createElement('input');
+    const rangeObj = document.createElement('input');
     rangeObj.type = 'range';
     rangeObj.min = "0";
     rangeObj.max = "100";
@@ -271,7 +271,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
     Generic.Set_Box_Position_in_Browser(event, backDiv);
 
     const gbMark = Generic.createNewFrame(backDiv, "", "", 15, state.scrMargin.top+5, 245, 60, "表示記号");
-    let mk = mark.Clone();
+    const mk = mark.Clone();
     const MarkPrintType = [{ value: enmMarkPrintType.Mark, text: "既定記号" },
         { value: enmMarkPrintType.Word, text: "文字記号" }];
     Generic.createNewRadioButtonList(gbMark, "MarkPrintType",MarkPrintType, 10, 10,undefined, 18,mk.PrintMark, markPrintTypeChange, "");
@@ -370,30 +370,30 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
     }
     //記号選択ウインドウ
     function clsMarkSelect(event: MouseEvent, okEvent: (markNumber: number) => void, markNumber: number) {
-        let n = clsDrawMarkFan.getMarkShameNum();
-        let turnN = 6;
-        let tp = state.scrMargin.top+5;
-        let left = 15;
-        let size =30;
-        let fwidth = left * 2 + turnN * (size);
-        let fheight =  (Math.ceil(n / turnN)+1) * (size) + 50;
+        const n = clsDrawMarkFan.getMarkShameNum();
+        const turnN = 6;
+        const tp = state.scrMargin.top+5;
+        const left = 15;
+        const size =30;
+        const fwidth = left * 2 + turnN * (size);
+        const fheight =  (Math.ceil(n / turnN)+1) * (size) + 50;
         const backDiv = Generic.set_backDiv("", "記号選択", fwidth, fheight , true, true, buttonOK, 0, true);
         Generic.Set_Box_Position_in_Browser(event, backDiv);
-        let selected = Generic.createNewCanvas(backDiv, "", "grayFrame", left, fheight - 40, size, size,"" , "");
-        let smk = clsBase.Mark();
+        const selected = Generic.createNewCanvas(backDiv, "", "grayFrame", left, fheight - 40, size, size,"" , "");
+        const smk = clsBase.Mark();
         smk.ShapeNumber = markNumber;
         _attrData.Draw_Sample_Mark_Box(selected, smk);
         for (let i = 0; i < n; i++) {
-            let x = left + (i % turnN) * size+1;
-            let y = tp + Math.floor(i / turnN) * size+1;
-            let c = Generic.createNewCanvas(backDiv, String(i), "grayFrame", x, y, size - 2, size - 2, clickMark, "");
+            const x = left + (i % turnN) * size+1;
+            const y = tp + Math.floor(i / turnN) * size+1;
+            const c = Generic.createNewCanvas(backDiv, String(i), "grayFrame", x, y, size - 2, size - 2, clickMark, "");
             c.setAttribute("onmouseover", "this.style.border = '1px solid #ff5500';");
             c.setAttribute("onmouseout", "this.style.border = '1px solid #666666';");
             smk.ShapeNumber = i;
             _attrData.Draw_Sample_Mark_Box(c,  smk);
         }
         function clickMark(this: HTMLCanvasElement, e: MouseEvent) {
-            let n = parseInt((e.target as HTMLElement).id);
+            const n = parseInt((e.target as HTMLElement).id);
             smk.ShapeNumber = n;
             _attrData.Draw_Sample_Mark_Box(selected, smk);
         }
@@ -414,7 +414,7 @@ function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Propert
     const backDiv = Generic.set_backDiv("", "背景フレーム設定", 180, 215, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
 
-    let bk = back.Clone();
+    const bk = back.Clone();
     const innerColorBox = Generic.createNewTileBox(backDiv, "", "背景", back.Tile, 15, state.scrMargin.top+5,undefined,  tileClick);
     const picFrameLine = Generic.createNewWordDivCanvas(backDiv, "", "枠線", 15, 70,undefined, LinePatternClick);
     _attrData.Draw_Sample_LineBox(picFrameLine, bk.Line);
@@ -450,9 +450,9 @@ function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void
     const backDiv = Generic.set_backDiv("", "タイル設定", 170, 140, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
 
-    let newTile = tile.Clone();
+    const newTile = tile.Clone();
     const tileType = [ { value: 1, text: "色" }, { value: 0, text: "透明" }];
-    let v = (newTile.BlankF ? 0 : 1);
+    const v = (newTile.BlankF ? 0 : 1);
     Generic.createNewRadioButtonList(backDiv, "tileType", tileType, 15, state.scrMargin.top+13,undefined, 30,v, tileTypeChange, "");
     const colBox = Generic.createNewColorBox(backDiv, "", "",newTile.Color, 45, state.scrMargin.top+10, undefined);
     tileTypeChange(v);
@@ -509,7 +509,7 @@ function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line:
     }
          
     function buttonOK() {
-        let Lpat = new Line_Property();
+        const Lpat = new Line_Property();
         Lpat.BlankF = tile.BlankF;
         Lpat.Color = tile.Color;
         Lpat.Edge_Connect_Pattern = newEdge;
@@ -529,7 +529,7 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
     const backDiv = Generic.set_backDiv("", "フォント設定", 450, 210, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
 
-    let ft = font.Clone();
+    const ft = font.Clone();
 //    Generic.createNewSpan(backDiv, "フォント名", "", "", 15, 45, "", "");
 //    const name = Generic.createNewInput(backDiv, "text", ft.Name, "", 75, 45, "", "width:100px;text-align: left");
     const name=Generic.createNewWordTextInput(backDiv, "フォント名","",ft.Name,"",15,45,50,100,undefined,"");
@@ -582,10 +582,10 @@ function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
     const backDiv = Generic.set_backDiv("", "内部に表示するデータ", 210, 165, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
 
-    let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-    let DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
-    let data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
-    let md=state.attrData.getSoloMode(Layernum,DataNum);
+    const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+    const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+    const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+    const md=state.attrData.getSoloMode(Layernum,DataNum);
     let mkc: { Flag: boolean; Data: number };
     if (md == enmSoloMode_Number.ClassMarkMode) {
         mkc = data.ClassMarkMD;
@@ -593,10 +593,10 @@ function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
         mkc = data.MarkCommon.Inner_Data;
     }
 
-    let checkbox=Generic.createNewCheckBox(backDiv, "データ値で塗り分ける", "", mkc.Flag, 15, 40,undefined,  undefined,"");
-    let selectDataItem = Generic.createNewWordSelect(backDiv,"データ項目", undefined, -1, "selectLayer", 15, 75,undefined,160,1,  listchange,"", "");
+    const checkbox=Generic.createNewCheckBox(backDiv, "データ値で塗り分ける", "", mkc.Flag, 15, 40,undefined,  undefined,"");
+    const selectDataItem = Generic.createNewWordSelect(backDiv,"データ項目", undefined, -1, "selectLayer", 15, 75,undefined,160,1,  listchange,"", "");
 
-    let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+    const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
     state.attrData.Set_DataTitle_to_cboBox(selectDataItem, LayerNum, mkc.Data, true, true, true, false);
 
     function listchange() {
@@ -604,7 +604,7 @@ function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
     }
 
     function buttonOK() {
-        let n = parseInt(selectDataItem.value);
+        const n = parseInt(selectDataItem.value);
         mkc.Data = n;
         mkc.Flag = checkbox.checked;
         Generic.clear_backDiv();
@@ -613,7 +613,7 @@ function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
 
 //線端・中間点接合設定
 function clsLineEdgePattern(event: MouseEvent, edgePat: Edge_Property, okEvent: (edgePat: Edge_Property) => void) {
-    let newEdge = edgePat.Clone();
+    const newEdge = edgePat.Clone();
     const backDiv = Generic.set_backDiv("", "線端・中間点接合設定", 290, 200, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
     const edgeFrame = Generic.createNewFrame(backDiv, "", "", 15, 40, 100, 110, "線端");
@@ -627,7 +627,7 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: Edge_Property, okEvent: 
     { value: 'bevel', text: "たいら" },
     { value: 'miter', text: "とがった" }];
     Generic.createNewRadioButtonList(jointFrame, "jointPattern", jointList, 15, 15,undefined, 22,newEdge.lineJoin, jointPatternChange);
-    let limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
+    const limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
 
     function jointPatternChange(v: string) {
         newEdge.lineJoin =v;
@@ -645,7 +645,7 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: Edge_Property, okEvent: 
 
 /**矢印設定 */
 function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption: string, End_Arrow_Caption: string, okEvent: (Arrow: Arrow_Property) => void) {
-    let newArrow=Arrow.Clone();
+    const newArrow=Arrow.Clone();
     const backDiv = Generic.set_backDiv("", "矢印設定", 370, 230, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
     const pnlStart_Arrow=Generic.createNewDiv(backDiv,"","","",15,40,100,30,"","");
@@ -681,26 +681,26 @@ function clsSelectData(event: MouseEvent, _attrData: clsAttrData, Layernum: numb
     Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true) {
     const backDiv = Generic.set_backDiv("", "データ項目選択", 230, 330, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
-    let titles = _attrData.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, -1);
+    const titles = _attrData.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, -1);
     if (Array.isArray(PreAstarisk) == true) {
-        for (let n in PreAstarisk) {
-            let i = PreAstarisk[n];
-            let tx=titles[i];
+        for (const n in PreAstarisk) {
+            const i = PreAstarisk[n];
+            const tx=titles[i];
             if (tx.left(1) != "*") {
-                let sp = tx.indexOf(":");
+                const sp = tx.indexOf(":");
                 titles[i] = "*" + titles[i].mid(sp, titles[i].length - sp);
             }
         }
     }
-    let list=[];
-    for(let i in titles){
+    const list=[];
+    for(const i in titles){
         list.push({value:i,text:titles[i]});
     }
-    let select=new CheckedListBox(backDiv,"",list,15,48,203,243,false,undefined);
+    const select=new CheckedListBox(backDiv,"",list,15,48,203,243,false,undefined);
     function buttonOK(){
         Generic.clear_backDiv();
-        if(typeof okEvent=='function'){
-            let retV=select.getChecked();
+        if(typeof okEvent==='function'){
+            const retV=select.getChecked();
             okEvent(retV.checkedStatus, retV.checkedArray);
         }
     }
@@ -710,7 +710,7 @@ function clsSelectData(event: MouseEvent, _attrData: clsAttrData, Layernum: numb
 function frmPrint_ObjectValue(_attrData: clsAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名・データ値表示", 210, 280, true, true, buttonOK, 0.2, true);
 
-    let avs = _attrData.TotalData.ViewStyle.ValueShow.Clone();
+    const avs = _attrData.TotalData.ViewStyle.ValueShow.Clone();
     const objNameFrame = Generic.createNewFrame(backDiv, "", "", 15, 40, 180, 50, "オブジェクト名");
     Generic.createNewCheckBox(objNameFrame, "表示", "", avs.ObjNameVisible, 15, 15,undefined,  function (obj: HTMLInputElement) { avs.ObjNameVisible = obj.checked; }, "");
     Generic.createNewButton(objNameFrame, "フォント", "", 90, 15,
@@ -735,27 +735,27 @@ function frmPrint_ObjectValue(_attrData: clsAttrData, okEvent: () => void) {
 /**背景表示設定 */
 function frmPrint_backImageSet(_attrData: clsAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "背景画像設定", 260, 300, true, true, buttonOK, 0.2, true);
-    let avt = _attrData.TotalData.ViewStyle.TileMapView;
-    let chkVisible = Generic.createNewCheckBox(backDiv, "背景画像を表示", "", avt.Visible, 15, 40,undefined,  undefined, "");
-    let gbTIle = Generic.createNewFrame(backDiv, "", "", 15, 70, 230, 80, "表示地図タイル");
-    let tag = ["国土地理院地図", "国土地理院主題図", "国土地理院空中写真", "国土地理院東日本大震災", "国土地理院災害", "オープンストリートマップ", "人口","今昔マップ", "その他"];
-    let taglist = [];
-    for (let i in tag) {
+    const avt = _attrData.TotalData.ViewStyle.TileMapView;
+    const chkVisible = Generic.createNewCheckBox(backDiv, "背景画像を表示", "", avt.Visible, 15, 40,undefined,  undefined, "");
+    const gbTIle = Generic.createNewFrame(backDiv, "", "", 15, 70, 230, 80, "表示地図タイル");
+    const tag = ["国土地理院地図", "国土地理院主題図", "国土地理院空中写真", "国土地理院東日本大震災", "国土地理院災害", "オープンストリートマップ", "人口","今昔マップ", "その他"];
+    const taglist = [];
+    for (const i in tag) {
         taglist.push({ value: tag[i], text: tag[i] });
     }
-    let finedx = tag.indexOf(avt.TileMapDataSet.opt.tag);
-    let tileTagSelect = Generic.createNewSelect(gbTIle, taglist, finedx, "", 15, 15, false, function () {
+    const finedx = tag.indexOf(avt.TileMapDataSet.opt.tag);
+    const tileTagSelect = Generic.createNewSelect(gbTIle, taglist, finedx, "", 15, 15, false, function () {
         setTileMapListByTag("");
     }, "width:180px", 1, false);
-    let tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false);
+    const tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false);
     setTileMapListByTag(avt.TileMapDataSet.opt.id);
 
-    let gbTIming = Generic.createNewFrame(backDiv, "", "", 15, 170, 120, 70, "描画タイミング");
-    let timing = [{ value: enmDrawTiming.BeforeDataDraw, text: "データ描画前" }, { value: enmDrawTiming.AfterDataDraw, text: "データ描画後" }]
+    const gbTIming = Generic.createNewFrame(backDiv, "", "", 15, 170, 120, 70, "描画タイミング");
+    const timing = [{ value: enmDrawTiming.BeforeDataDraw, text: "データ描画前" }, { value: enmDrawTiming.AfterDataDraw, text: "データ描画後" }]
     Generic.createNewRadioButtonList(gbTIming, "drawTiming", timing, 10, 15,undefined, 25,avt.DrawTiming, undefined, "");
 
-    let gbAlpha = Generic.createNewFrame(backDiv, "", "", 150, 170, 95, 50, "不透明度");
-    let rangeObj = document.createElement('input');
+    const gbAlpha = Generic.createNewFrame(backDiv, "", "", 150, 170, 95, 50, "不透明度");
+    const rangeObj = document.createElement('input');
     rangeObj.type = 'range';
     rangeObj.min = "0";
     rangeObj.max = "100";
@@ -771,11 +771,11 @@ function frmPrint_backImageSet(_attrData: clsAttrData, okEvent: () => void) {
 
     /**タグリストが変更になった場合は子要素リストを変更 */
     function setTileMapListByTag(firstID: string) {
-        let tag = tileTagSelect.getValue();
-        let tlist = state.tileMapClass.getTileMapListByTag(tag);
-        let list = [];
+        const tag = tileTagSelect.getValue();
+        const tlist = state.tileMapClass.getTileMapListByTag(tag);
+        const list = [];
         let seln = 0;
-        for (let i in tlist) {
+        for (const i in tlist) {
             list.push({ value: tlist[i].opt.id, text: tlist[i].opt.id });
             if (tlist[i].opt.id == firstID) {
                 seln = parseInt(i);
@@ -785,7 +785,7 @@ function frmPrint_backImageSet(_attrData: clsAttrData, okEvent: () => void) {
     }
     /**OKボタン */
     function buttonOK() {
-        let d = new strTileMapViewInfo();
+        const d = new strTileMapViewInfo();
         d.Visible = chkVisible.checked;
         d.TileMapDataSet = state.tileMapClass.getTileMapDataById(tileSelect.getValue())
         d.DrawTiming = Generic.getRadioCheckByValue("drawTiming");
@@ -800,7 +800,7 @@ function frmPrint_backImageSet(_attrData: clsAttrData, okEvent: () => void) {
 function graphModeEn_Obi() {
     const backDiv = Generic.set_backDiv("", "円・帯グラフ設定", 350, 300, true, true, buttonOK, 0.2, true);
 
-    let En_Obi=state.attrData.nowGraph().En_Obi.Clone();
+    const En_Obi=state.attrData.nowGraph().En_Obi.Clone();
 
     const gbMaxSize = Generic.createNewFrame(backDiv, "", "", 15, 40, 150, 90, "最大サイズ");
     const maxSizeMode = [{ value: enmGraphMaxSize.Fixed, text: "固定" }, { value: enmGraphMaxSize.Changeable, text: "可変" }]
@@ -818,7 +818,7 @@ function graphModeEn_Obi() {
         function (_obj: HTMLElement, v: number) { En_Obi.MaxValue = v; }, "");
 
     const gbGraphLegendValue = Generic.createNewFrame(backDiv, "", "", 15, 150, 150, 100, "凡例値");
-    let lv = [En_Obi.Value1, En_Obi.Value2, En_Obi.Value3];
+    const lv = [En_Obi.Value1, En_Obi.Value2, En_Obi.Value3];
     for (let i = 0; i < 3; i++) {
         Generic.createNewWordNumberInput(gbGraphLegendValue, "値" + String(i + 1), "",lv[i], "txtGrapgLegendValue" + String(i + 1), 10, i * 30 + 10,undefined, 80,
             function (obj: HTMLElement, v: number) {
@@ -860,7 +860,7 @@ function graphModeEn_Obi() {
 function graphModeOresen_Bou() {
     const backDiv = Generic.set_backDiv("", "折れ線・棒グラフ設定", 370, 330, true, true, buttonOK, 0.2, true);
 
-    let Oresen_Bou = state.attrData.nowGraph().Oresen_Bou.Clone();
+    const Oresen_Bou = state.attrData.nowGraph().Oresen_Bou.Clone();
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 40, 150, 90, "最大サイズ");
      Generic.createNewSizeSelect(gbSize, Oresen_Bou.Size, "","", 30, 15, 40, 3,
         function (_obj: HTMLElement, v: number) { Oresen_Bou.Size = v; }, "");
@@ -922,7 +922,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
         Generic.createNewRadioButtonList(pnlEastWest,"lonEastWest",[{value:0,text:"東経"},{value:1,text:"西経"}],0,5,undefined,20,(LatLon.lon>=0)?0:1,undefined,"");
     }
     if (clsSettingData.Ido_Kedo_Print_Pattern == enmLatLonPrintPattern.DegreeMinuteSecond) {
-        let LatLonDMS = LatLon.toDegreeMinuteSecond();
+        const LatLonDMS = LatLon.toDegreeMinuteSecond();
         Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLonDMS.LatitudeDMS.Degree), "latDBox", 90, 15, undefined, 50, undefined, "");
         Generic.createNewWordNumberInput(pnlLat, "", "分", LatLonDMS.LatitudeDMS.Minute, "latMBox", 170, 15, undefined, 30, undefined, "");
         Generic.createNewWordNumberInput(pnlLat, "", "秒", LatLonDMS.LatitudeDMS.Second, "latSox", 230, 15, undefined, 30, undefined, "");
@@ -936,7 +936,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     }
     function buttonOK(){
         if (clsSettingData.Ido_Kedo_Print_Pattern == enmLatLonPrintPattern.DegreeMinuteSecond) {
-            let dms = new strLatLonDegreeMinuteSecond();
+            const dms = new strLatLonDegreeMinuteSecond();
             dms.LatitudeDMS.Degree = Number(document.getElementById("latDBox").value);
             dms.LatitudeDMS.Minute = Number(document.getElementById("latMBox").value);
             dms.LatitudeDMS.Second = Number(document.getElementById("latSox").value);
@@ -967,17 +967,17 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
 
 /**投影法変換 */
 function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Zahyo: ZahyoInfo) => void) {
-    let Zahyo=_Zahyo.Clone();
+    const Zahyo=_Zahyo.Clone();
     const backDiv = Generic.set_backDiv("", "投影法変換", 425, 300, true, true, buttonOK, 0.2, true);
     const gbPresentProjection=Generic.createNewFrame(backDiv,"","",15,40,200,50,"現在の投影法");
     Generic.createNewDiv( gbPresentProjection,Generic.getStringProjectionEnum(Zahyo.Projection),"","grayFrame",15,15,170,15,"padding:2px;");
     const gbCenterLon=Generic.createNewFrame(backDiv,"","",15,105,200,135,"中央経線の設定");
-    let CenterLonList=[{value:0,text:"変更なし("+Zahyo.CenterXY.x + "度)"},{value:1,text:"地図の中央"},{value:2,text:"指定"}];
+    const CenterLonList=[{value:0,text:"変更なし("+Zahyo.CenterXY.x + "度)"},{value:1,text:"地図の中央"},{value:2,text:"指定"}];
     Generic.createNewRadioButtonList(gbCenterLon,"rdCenter",CenterLonList,10,15,undefined,25,0,undefined,"");
-    let centerInput=Generic.createNewWordNumberInput(gbCenterLon, "", "度", Zahyo.CenterXY.x, "boxCenterLon", 40, 90,undefined, 120,undefined, "");
+    const centerInput=Generic.createNewWordNumberInput(gbCenterLon, "", "度", Zahyo.CenterXY.x, "boxCenterLon", 40, 90,undefined, 120,undefined, "");
 
     const gbProjection=Generic.createNewFrame(backDiv,"","",230,40,180,200,"変換後の投影法");
-    let prjList=[{value:enmProjection_Info.prjMercator,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMercator)},
+    const prjList=[{value:enmProjection_Info.prjMercator,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMercator)},
         {value:enmProjection_Info.prjMiller,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMiller)},
         {value:enmProjection_Info.prjSeikyoEntou,text:Generic.getStringProjectionEnum(enmProjection_Info.prjSeikyoEntou)},
         {value:enmProjection_Info.prjLambertSeisekiEntou,text:Generic.getStringProjectionEnum(enmProjection_Info.prjLambertSeisekiEntou)},
@@ -988,7 +988,7 @@ function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Z
         function(v: number){Zahyo.Projection=v;}, "");
       
     function buttonOK(){
-        let csel=Generic.getRadioCheckByValue("rdCenter");
+        const csel=Generic.getRadioCheckByValue("rdCenter");
         switch (csel) {
             case 0:
                 break;
@@ -1006,11 +1006,11 @@ function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Z
 
 /**方位記号の設定 */
 function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) => void) {
-    let comp=_compass.Clone();
+    const comp=_compass.Clone();
     const backDiv = Generic.set_backDiv("", "方位記号の設定", 280, 270, true, true, buttonOK, 0.2, true);
     Generic.createNewCheckBox(backDiv,"方位記号を表示","",comp.Visible,10,40,undefined, function(obj: HTMLInputElement){comp.Visible=obj.checked;},"");
-    let gbCompMark = Generic.createNewFrame(backDiv, "", "", 10, 70, 110, 110, "方位記号の形状");
-    let cmark=Generic.createNewCanvas(gbCompMark, "", "imgButton", 15, 15, 80, 80, function (e: MouseEvent) {
+    const gbCompMark = Generic.createNewFrame(backDiv, "", "", 10, 70, 110, 110, "方位記号の形状");
+    const cmark=Generic.createNewCanvas(gbCompMark, "", "imgButton", 15, 15, 80, 80, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, comp.Mark, state.attrData);
         function picMarkChange(newMark: Mark_Property) {
             comp.Mark = newMark;
@@ -1019,7 +1019,7 @@ function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) =>
     }, "");
     state.attrData.Draw_Sample_Mark_Box(cmark, comp.Mark);
 
-    let gbCompWord = Generic.createNewFrame(backDiv, "", "", 140, 40, 120, 170, "方位文字");
+    const gbCompWord = Generic.createNewFrame(backDiv, "", "", 140, 40, 120, 170, "方位文字");
     Generic.createNewWordTextInput (gbCompWord,"北","",comp.dirWord.North,"",15,15,undefined,50,function(e: Event){comp.dirWord.North= (e.target as HTMLInputElement).value;},"");
     Generic.createNewWordTextInput (gbCompWord,"南","",comp.dirWord.South,"",15,45,undefined,50,function(e: Event){comp.dirWord.South= (e.target as HTMLInputElement).value;},"");
     Generic.createNewWordTextInput (gbCompWord,"東","",comp.dirWord.East,"",15,75,undefined,50,function(e: Event){comp.dirWord.East= (e.target as HTMLInputElement).value;},"");
@@ -1037,10 +1037,10 @@ function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) =>
 
 /**出力画面のオプション */
 function frmPrintOption(firstTab: number = 0) {
-    let atv=state.attrData.TotalData.ViewStyle.Clone();
-    let sdata=clsSettingData.Clone();
+    const atv=state.attrData.TotalData.ViewStyle.Clone();
+    const sdata=clsSettingData.Clone();
     const backDiv = Generic.set_backDiv("", "オブション", 600, 420, true, true, buttonOK, 0.2, true);
-    let tablist=["全般","背景・描画","凡例設定","欠損値","スケール設定"];
+    const tablist=["全般","背景・描画","凡例設定","欠損値","スケール設定"];
     const tab=Generic.createNewTab(backDiv,tablist,firstTab,15,40,570,330);
 
     /**全般●●●●●●●●●●●●●●●●●●●●● */
@@ -1064,7 +1064,7 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.DataNote.MaxWidth,"",30,190,undefined,40,function (obj: HTMLInputElement, v: number) { atv.DataNote.MaxWidth = v;},"")
     Generic.createNewCheckBox(tab00,"図形表示","",atv.FigureVisible,10,220,undefined, function(obj: HTMLInputElement){atv.FigureVisible=obj.checked;},"");
 
-    let atva=atv.AccessoryGroupBox;
+    const atva=atv.AccessoryGroupBox;
     const tab01 = Generic.createNewFrame(tab.panel[0], "", "", 180, 10, 170, 210, "飾りグループボックス");
     Generic.createNewCheckBox(tab01,"設定する","",atva.Visible,10,15,undefined, function(obj: HTMLInputElement){atva.Visible=obj.checked;},"");
     const accGList=[{text:"凡例",checked:atva.Legend},{text:"タイトル",checked:atva.Title},{text:"方位",checked:atva.Comapss},{text:"スケール",checked:atva.Scale},
@@ -1104,7 +1104,7 @@ function frmPrintOption(firstTab: number = 0) {
     clsDrawTile.Darw_Sample_BackGroundBox(document.getElementById("atvaBack"), atva.Back, atv.ScrData);
 
     const tab03 = Generic.createNewFrame(tab.panel[0], "", "", 180, 235, 170, 50, "幅が「0」のライン幅");
-        let zeroWidthList=[{value:0,text:"0.1ピクセル"},{value:1,text:"0.3ピクセル"},{value:2,text:"0.5ピクセル"},{value:3,text:"0.7ピクセル"},{value:4,text:"0.9ピクセル"}];
+        const zeroWidthList=[{value:0,text:"0.1ピクセル"},{value:1,text:"0.3ピクセル"},{value:2,text:"0.5ピクセル"},{value:3,text:"0.7ピクセル"},{value:4,text:"0.9ピクセル"}];
         Generic.createNewSelect(tab03,zeroWidthList,sdata.MinimumLineWidth,"",30,15,false,
         function(obj: HTMLSelectElement, sel: number, v: number){sdata.MinimumLineWidth=v;},"",1,false);
 
@@ -1122,14 +1122,14 @@ function frmPrintOption(firstTab: number = 0) {
     state.attrData.Draw_Sample_LineBox(document.getElementById("SymbolLine"), atv.SymbolLine.Line);
 
     const ConvScaleValue = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, atv.MapScale.Unit);
-    let def_PointInterval = atv.SouByou.PointInterval * ConvScaleValue;
-    let def_LoopSize = atv.SouByou.LoopSize * ConvScaleValue;
+    const def_PointInterval = atv.SouByou.PointInterval * ConvScaleValue;
+    const def_LoopSize = atv.SouByou.LoopSize * ConvScaleValue;
     const tab04 = Generic.createNewFrame(tab.panel[0], "", "", 365, 95, 190, 190, "総描");
     Generic.createNewCheckBox(tab04,"自動設定","",atv.SouByou.Auto,15,12,100,function(ob: HTMLInputElement){
         atv.SouByou.Auto=ob.checked;
        Generic.setDisabled( soubyouManual,(ob.checked==true));
     },"");
-    let autoLst=[{ value: 1, text: "弱"},{ value: 2, text: "中"},{ value: 3, text: "強"},{ value: 4, text: "最強"}];
+    const autoLst=[{ value: 1, text: "弱"},{ value: 2, text: "中"},{ value: 3, text: "強"},{ value: 4, text: "最強"}];
     const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,tab04,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v: number){
         atv.SouByou.AutoDegree=v;
     },"");
@@ -1191,7 +1191,7 @@ function frmPrintOption(firstTab: number = 0) {
     const tab12 = Generic.createNewFrame(tab.panel[1], "", "", 290, 10, 260, 240, "経緯線");
     Generic.createNewCheckBox(tab12, "表示", "", atv.LatLonLine_Print.Visible, 10, 15,undefined,  function (obj: HTMLInputElement) { atv.LatLonLine_Print.Visible = obj.checked }, "");
     const gbtab12Order = Generic.createNewFrame(tab12, "", "", 10, 45, 80, 60, "表示階層");
-    let latlonOrderList=[{value:enmLatLonLine_Order.Back, text:"背面"},{value:enmLatLonLine_Order.Front, text:"前面"}];
+    const latlonOrderList=[{value:enmLatLonLine_Order.Back, text:"背面"},{value:enmLatLonLine_Order.Front, text:"前面"}];
     Generic.createNewRadioButtonList(gbtab12Order, "latlonOrder", latlonOrderList, 10, 10,undefined, 25, atv.LatLonLine_Print.Order, 
         function (v: number) { atv.LatLonLine_Print.Order = v }, "");
     const gbtab12Lpat = Generic.createNewFrame(tab12, "", "", 110, 8, 140, 100, "ラインパターン");
@@ -1226,14 +1226,14 @@ function frmPrintOption(firstTab: number = 0) {
     const gbtab12Interval = Generic.createNewFrame(tab12, "", "", 10, 120, 170, 100, "間隔");
     const txtLatLonIntData = Generic.createNewDiv(gbtab12Interval, "", "", "grayFrame", 10, 15, 140, 35, "padding:5px;", undefined);
     if (state.attrData.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
-        let retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false);
+        const retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false);
         txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
     }
     Generic.createNewButton(gbtab12Interval, "間隔設定", "", 50, 70, function (lp: MouseEvent) {
         frmLatLonInput(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false, function (lp: latlon) {
             atv.LatLonLine_Print.Lat_Interval = lp.lat;
             atv.LatLonLine_Print.Lon_Interval = lp.lon;
-            let retPS = Generic.Get_LatLon_Strings(lp, false);
+            const retPS = Generic.Get_LatLon_Strings(lp, false);
             txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
         })
     }, "padding-top:0;padding-bottom:0");
@@ -1299,7 +1299,7 @@ function frmPrintOption(firstTab: number = 0) {
     const tabLegendtab13 = Generic.createNewFrame(tabLegend.panel[1], "", "", 10, 145, 260, 50, "面形状階級区分オブジェクト間の境界線");
     Generic.createNewCheckBox(tabLegendtab13, "表示", "", atv.MapLegend.ClassMD.ClassBoundaryLine.Visible, 15, 15,undefined,
      function (obj: HTMLInputElement) { atv.MapLegend.ClassMD.ClassBoundaryLine.Visible = obj.checked }, "");
-    let ClassBoundaryLine = Generic.createNewWordDivCanvas(tabLegendtab13, "", "ラインパターン", 100, 15, 100,
+    const ClassBoundaryLine = Generic.createNewWordDivCanvas(tabLegendtab13, "", "ラインパターン", 100, 15, 100,
         function (e: MouseEvent) {
             clsLinePatternSet(e, atv.MapLegend.ClassMD.ClassBoundaryLine.LPat,
                 function (Lpat: Line_Property) {
@@ -1314,7 +1314,7 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewCheckBox(tabLegend.panel[2],"記号の大きさモードで円の凡例をコンパクトにまとめる","",atv.MapLegend.MarkMD.CircleMD_CircleMini_F,20,20,180,
     function(obj: HTMLInputElement){atv.MapLegend.MarkMD.CircleMD_CircleMini_F=obj.checked;},"")
 
-    let ClasMarkMDMultiEnMode_Lines = Generic.createNewWordDivCanvas(tabLegend.panel[2], "", "記号の大きさモードの円、円・縦帯グラフの際の凡例線", 20, 60, 160,
+    const ClasMarkMDMultiEnMode_Lines = Generic.createNewWordDivCanvas(tabLegend.panel[2], "", "記号の大きさモードの円、円・縦帯グラフの際の凡例線", 20, 60, 160,
         function (e: MouseEvent) {
             clsLinePatternSet(e, atv.MapLegend.MarkMD.MultiEnMode_Line,
                 function (Lpat: Line_Property) {
@@ -1332,19 +1332,19 @@ function frmPrintOption(firstTab: number = 0) {
         function (v: number) { atv.MapLegend.En_Graph_Pattern = v }, "");
 
     /**線種・点ダミー*/
-    let atvl=atv.MapLegend.Line_DummyKind;
+    const atvl=atv.MapLegend.Line_DummyKind;
     Generic.createNewCheckBox(tabLegend.panel[3], "線種の凡例を表示", "", atvl.Line_Visible, 20, 20, 180,
         function (obj: HTMLInputElement) { atvl.Line_Visible = obj.checked; }, "");
-    let lLK = state.attrData.GetAllMapLineKindName();
-    let lLKList = [];
+    const lLK = state.attrData.GetAllMapLineKindName();
+    const lLKList = [];
     for (let i = 0; i < lLK.length; i++) {
-        let cv = (atvl.Line_Visible_Number_STR.mid(i, 1) == "1");
+        const cv = (atvl.Line_Visible_Number_STR.mid(i, 1) == "1");
         lLKList.push({ text: lLK[i], checked: cv });
     }
     Generic.createNewCheckListBox(tabLegend.panel[3], "", lLKList, 20, 45, 150, 150, function (num: number, checked: boolean) {
         atvl.Line_Visible_Number_STR = atvl.Line_Visible_Number_STR.midReplace(num, (checked == true) ? "1" : "0");
     }, "");
-    let MapLegendLine_DummyKind = Generic.createNewWordDivCanvas(tabLegend.panel[3], "", "背景", 190, 45, undefined, function (e: MouseEvent) {
+    const MapLegendLine_DummyKind = Generic.createNewWordDivCanvas(tabLegend.panel[3], "", "背景", 190, 45, undefined, function (e: MouseEvent) {
         clsBackgroundPatternSet(e, atvl.Back, backGet, state.attrData);
         function backGet(back: BackGround_Box_Property) {
             atvl.Back = back;
@@ -1352,7 +1352,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     });
     clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, atvl.Back, atv.ScrData);
-    let gbMapLegendLine = Generic.createNewFrame(tabLegend.panel[3], "", "", 190, 85, 100, 80, "線の描き方");
+    const gbMapLegendLine = Generic.createNewFrame(tabLegend.panel[3], "", "", 190, 85, 100, 80, "線の描き方");
     Generic.createNewRadioButtonList(gbMapLegendLine, "enmCircleMDLegendLine", [{ value: enmCircleMDLegendLine.Zigzag, text: "＼／＼" }, { value: enmCircleMDLegendLine.Straight, text: "───" }], 5, 20, 130, 30, atvl.Line_Pattern,
         function (v: number) { atvl.Line_Pattern = v }, "");
     Generic.createNewCheckBox(tabLegend.panel[3], "点オブジェクトのダミーの凡例を表示", "", atvl.Dummy_Point_Visible, 310, 20, 130,
@@ -1361,16 +1361,16 @@ function frmPrintOption(firstTab: number = 0) {
 
     /**欠損値●●●●●●●●●●●●●●●●●●●●● */
 
-    let atvm = atv.Missing_Data;
+    const atvm = atv.Missing_Data;
     Generic.createNewCheckBox(tab.panel[3], "欠損値を表示", "", atvm.Print_Flag, 20, 20, undefined, function (obj: HTMLInputElement) { atvm.Print_Flag = obj.checked }, "");
-    let gbmPat = Generic.createNewFrame(tab.panel[3], "", "", 30, 50, 500, 200, "欠損値のパターン");
+    const gbmPat = Generic.createNewFrame(tab.panel[3], "", "", 30, 50, 500, 200, "欠損値のパターン");
     Generic.createNewWordTextInput(gbmPat, "欠損値の凡例文字", "", atvm.Text, "", 15, 15, 120, 90, function (e: Event) { atvm.Text = (e.target as HTMLInputElement).value }, "");
     Generic.createNewTileBox(gbmPat, "", "ペイントモードの凡例", atvm.PaintTile, 15, 50, 120,
         function (e: MouseEvent) {
             clsTileSet(e, atvm.PaintTile,
                 function (retTile: Tile_Property) { atvm.PaintTile = retTile });
         });
-    let atvmClassMark = Generic.createNewWordDivCanvas(gbmPat, "", "階級記号モードの凡例記号", 15, 85, 120, function (e: MouseEvent) {
+    const atvmClassMark = Generic.createNewWordDivCanvas(gbmPat, "", "階級記号モードの凡例記号", 15, 85, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.ClassMark, state.attrData);
         function picMarkChange(newMark: Mark_Property) {
             atvm.ClassMark = newMark;
@@ -1378,7 +1378,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmClassMark, atvm.ClassMark);
-    let atvmMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の大きさモードの凡例記号", 15, 120, 120, function (e: MouseEvent) {
+    const atvmMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の大きさモードの凡例記号", 15, 120, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.Mark, state.attrData);
         function picMarkChange(newMark: Mark_Property) {
             atvm.Mark = newMark;
@@ -1386,7 +1386,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmMark, atvm.Mark);
-    let atvmBlockMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の数モードの凡例記号", 15, 155, 120, function (e: MouseEvent) {
+    const atvmBlockMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の数モードの凡例記号", 15, 155, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.BlockMark, state.attrData);
         function picMarkChange(newMark: Mark_Property) {
             atvm.BlockMark = newMark;
@@ -1394,7 +1394,7 @@ function frmPrintOption(firstTab: number = 0) {
         }
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmBlockMark, atvm.BlockMark);
-    let atvmBlockMarkBar = Generic.createNewWordDivCanvas(gbmPat, "", "棒の高さモードの凡例記号", 250, 15, 120, function (e: MouseEvent) {
+    const atvmBlockMarkBar = Generic.createNewWordDivCanvas(gbmPat, "", "棒の高さモードの凡例記号", 250, 15, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.MarkBar, state.attrData);
         function picMarkChange(newMark: Mark_Property) {
             atvm.MarkBar = newMark;
@@ -1403,7 +1403,7 @@ function frmPrintOption(firstTab: number = 0) {
     }, "");
     state.attrData.Draw_Sample_Mark_Box(atvmBlockMarkBar, atvm.MarkBar);
     Generic.createNewWordTextInput(gbmPat, "文字・ラベルモードの凡例文字", "", atvm.Label, "", 250, 50, 120, 90, function (e: Event) { atvm.Label = (e.target as HTMLInputElement).value }, "");
-    let atvmLineShape = Generic.createNewWordDivCanvas(gbmPat, "", "線形状オブジェクトの凡例", 250, 85, 120,
+    const atvmLineShape = Generic.createNewWordDivCanvas(gbmPat, "", "線形状オブジェクトの凡例", 250, 85, 120,
         function (e: MouseEvent) {
             clsLinePatternSet(e, atvm.LineShape,
                 function (Lpat: Line_Property) {
@@ -1414,13 +1414,13 @@ function frmPrintOption(firstTab: number = 0) {
     state.attrData.Draw_Sample_LineBox(atvmLineShape, atvm.LineShape);
 
     /**スケール設定●●●●●●●●●●●●●●●●●●●●● */
-    let atvs = atv.MapScale;
+    const atvs = atv.MapScale;
     Generic.createNewCheckBox(tab.panel[4], "スケールを表示", "", atvs.Visible, 20, 20, undefined, function (obj: HTMLInputElement) { atvs.Visible = obj.checked }, "");
     Generic.createNewButton(tab.panel[4], "フォント", "", 30, 55,
         function (e: MouseEvent) {
             clsFontSet(e, atvs.Font, function (newFont: Font_Property) { atvs.Font = newFont }, state.attrData);
         }, "");
-    let atvsBack = Generic.createNewWordDivCanvas(tab.panel[4], "", "背景", 30, 90, undefined, function (e: MouseEvent) {
+    const atvsBack = Generic.createNewWordDivCanvas(tab.panel[4], "", "背景", 30, 90, undefined, function (e: MouseEvent) {
         clsBackgroundPatternSet(e, atvs.Back, backGet, state.attrData);
         function backGet(back: BackGround_Box_Property) {
             atvs.Back = back;
@@ -1432,14 +1432,14 @@ function frmPrintOption(firstTab: number = 0) {
     const scaleList = Generic.getScaleUnit_for_select();
     Generic.createNewSelect(tab.panel[4], scaleList, atvs.Unit, "", 40, 150, false,
         function (obj: HTMLSelectElement, sel: number, v: number) { atvs.Unit = v }, "",1,false);
-    let gbScaleLength = Generic.createNewFrame(tab.panel[4], "", "", 180, 55, 200, 130, "スケールバーの長さ・間隔");
+    const gbScaleLength = Generic.createNewFrame(tab.panel[4], "", "", 180, 55, 200, 130, "スケールバーの長さ・間隔");
     Generic.createNewCheckBox(gbScaleLength, "スケールバー自動設定", "", atvs.BarAuto, 20, 20, undefined, function (obj: HTMLInputElement) { atvs.BarAuto = obj.checked }, "");
     Generic.createNewWordNumberInput(gbScaleLength, "スケールバーの距離", "", atvs.BarDistance, "", 30, 55, 80, 70, function (obj: HTMLInputElement, v: number) { atvs.BarDistance = v }, "");
     Generic.createNewDiv(gbScaleLength, "スケールバーの区切り数", "", "", 30, 90, 90, undefined, "", "");
     const sclDivList = [{ value: 1, text: "1" }, { value: 2, text: "2" }, { value: 3, text: "3" }, { value: 4, text: "4" }, { value: 5, text: "5" }, { value: 6, text: "6" }];
     Generic.createNewSelect(gbScaleLength, sclDivList, atvs.BarKugiriNum, "", 130, 90, false,
         function (obj: HTMLSelectElement, sel: number, v: number) { atvs.BarKugiriNum = v }, "");
-    let gbScaleType = Generic.createNewFrame(tab.panel[4], "", "", 400, 55, 150, 110, "スケールバーの種類");
+    const gbScaleType = Generic.createNewFrame(tab.panel[4], "", "", 400, 55, 150, 110, "スケールバーの種類");
     Generic.createNewRadioButtonList(gbScaleType, "enmScaleBarPattern", [{ value: enmScaleBarPattern.Thin, text: "通常" }, { value: enmScaleBarPattern.Bold, text: "白黒交互" }, { value: enmScaleBarPattern.Slim, text: "細い" }], 15, 20, undefined, 30, atvs.BarPattern,
         function (v: number) { atvs.BarPattern = v }, "");
 
@@ -1455,25 +1455,25 @@ function frmPrintOption(firstTab: number = 0) {
 /**データ項目設定コピー */
 function frmMainCopyDataSettings(okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "データ項目設定コピー", 560, 400, true, true, buttonOK, 0.2, true);
-    let origin = Generic.createNewFrame(backDiv, "", "", 20, 50, 250, 290, "コピー元");
-    let dest = Generic.createNewFrame(backDiv, "", "", 290, 50, 250, 290, "コピー先");
-    let originLayer = Generic.createNewWordSelect(origin,"レイヤ", undefined, -1, "", 10, 10,70,150,0,  changeOriginLayer,"", "");
-    let destLayer = Generic.createNewWordSelect(dest,"レイヤ", undefined, -1, "", 10, 10,70,150,0,  changeDestLayer,"", "");
-    let originData = Generic.createNewWordSelect(origin,"データ項目", undefined, -1, "", 10, 40,70,150,0,  changeOriginData,"", "");
+    const origin = Generic.createNewFrame(backDiv, "", "", 20, 50, 250, 290, "コピー元");
+    const dest = Generic.createNewFrame(backDiv, "", "", 290, 50, 250, 290, "コピー先");
+    const originLayer = Generic.createNewWordSelect(origin,"レイヤ", undefined, -1, "", 10, 10,70,150,0,  changeOriginLayer,"", "");
+    const destLayer = Generic.createNewWordSelect(dest,"レイヤ", undefined, -1, "", 10, 10,70,150,0,  changeDestLayer,"", "");
+    const originData = Generic.createNewWordSelect(origin,"データ項目", undefined, -1, "", 10, 40,70,150,0,  changeOriginData,"", "");
     Generic.createNewSpan(dest,"データ項目","","",10,40,"",undefined);
-    let destData=new CheckedListBox(dest,"",[],80,40,150,240,false,undefined);
-    let LayerNum=state.attrData.TotalData.LV1.SelectedLayer;
+    const destData=new CheckedListBox(dest,"",[],80,40,150,240,false,undefined);
+    const LayerNum=state.attrData.TotalData.LV1.SelectedLayer;
     state.attrData.Set_LayerName_to(originLayer,LayerNum);
     state.attrData.Set_LayerName_to(destLayer,LayerNum);
-    let al = state.attrData.LayerData[LayerNum].atrData;
+    const al = state.attrData.LayerData[LayerNum].atrData;
     state.attrData.Set_DataTitle_to_cboBox(originData, LayerNum, al.SelectedIndex);
     setDestDataItem();
-    let grCopyMode = Generic.createNewFrame(origin, "", "", 10, 70, 220, 200, "コピーする表示モード");
-    let chkClassMode=Generic.createNewCheckBox(grCopyMode,"階級区分モード","",true,10,20,100,undefined,"");
-    let chkODOriginCopy=Generic.createNewCheckBox(grCopyMode,"線モードの起点オブジェクトもコピー","",true,30,45,130,undefined,"");
-    let chkMarkMode=Generic.createNewCheckBox(grCopyMode,"階級区分モード","",true,10,85,100,undefined,"");
-    let chkODMarkSizeValueCopy=Generic.createNewCheckBox(grCopyMode,"記号の大きさモードの凡例値もコピー","",true,30,110,130,undefined,"");
-    let chkContour=Generic.createNewCheckBox(grCopyMode,"等値線モード","",true,10,155,100,undefined,"");
+    const grCopyMode = Generic.createNewFrame(origin, "", "", 10, 70, 220, 200, "コピーする表示モード");
+    const chkClassMode=Generic.createNewCheckBox(grCopyMode,"階級区分モード","",true,10,20,100,undefined,"");
+    const chkODOriginCopy=Generic.createNewCheckBox(grCopyMode,"線モードの起点オブジェクトもコピー","",true,30,45,130,undefined,"");
+    const chkMarkMode=Generic.createNewCheckBox(grCopyMode,"階級区分モード","",true,10,85,100,undefined,"");
+    const chkODMarkSizeValueCopy=Generic.createNewCheckBox(grCopyMode,"記号の大きさモードの凡例値もコピー","",true,30,110,130,undefined,"");
+    const chkContour=Generic.createNewCheckBox(grCopyMode,"等値線モード","",true,10,155,100,undefined,"");
 
     function changeOriginLayer(obj: HTMLSelectElement, sel: number, v: string) {
         state.attrData.Set_DataTitle_to_cboBox(originData, sel, 0);
@@ -1487,10 +1487,10 @@ function frmMainCopyDataSettings(okEvent: () => void) {
     }
     /**コピー先データ項目の設定 */
     function setDestDataItem(){
-        let dLay=destLayer.selectedIndex;
-        let oLay=originLayer.selectedIndex;
-        let oData=originData.selectedIndex;
-        let Otype  = state.attrData.LayerData[oLay].atrData.Data[oData].DataType;
+        const dLay=destLayer.selectedIndex;
+        const oLay=originLayer.selectedIndex;
+        const oData=originData.selectedIndex;
+        const Otype  = state.attrData.LayerData[oLay].atrData.Data[oData].DataType;
         let astn = -1;
             if( oLay== dLay){
                 astn = oData;
@@ -1501,19 +1501,19 @@ function frmMainCopyDataSettings(okEvent: () => void) {
     function buttonOK(){
         Generic.clear_backDiv();
         
-        let OLayer  = originLayer.selectedIndex;
-        let Dlyaer  = destLayer.selectedIndex;
-        let OData  = originData.selectedIndex;
+        const OLayer  = originLayer.selectedIndex;
+        const Dlyaer  = destLayer.selectedIndex;
+        const OData  = originData.selectedIndex;
 
-        let ClassCopyF  = chkClassMode.checked;
-        let MarkCopyF  = chkMarkMode.checked;
-        let ContourCopyF  = chkContour.checked;
-        let ODOriginCopyF  = chkODOriginCopy.checked;
-        let MarkSizeValueCopyF  = chkODMarkSizeValueCopy.checked;
+        const ClassCopyF  = chkClassMode.checked;
+        const MarkCopyF  = chkMarkMode.checked;
+        const ContourCopyF  = chkContour.checked;
+        const ODOriginCopyF  = chkODOriginCopy.checked;
+        const MarkSizeValueCopyF  = chkODMarkSizeValueCopy.checked;
 
-        let checked=destData.getChecked().checkedArray;
-        for(let i in checked){
-            let n  = checked[i];
+        const checked=destData.getChecked().checkedArray;
+        for(const i in checked){
+            const n  = checked[i];
             state.attrData.Set_Legend(Dlyaer, n, state.attrData.LayerData[OLayer].atrData.Data[OData], ClassCopyF, MarkCopyF, MarkSizeValueCopyF, MarkCopyF,
                                  ContourCopyF, ClassCopyF, ClassCopyF, MarkCopyF,MarkCopyF,  ODOriginCopyF, (Dlyaer == OLayer));
             }
@@ -1525,38 +1525,38 @@ function frmMainCopyDataSettings(okEvent: () => void) {
 function frmMain_SetSeriesMode(okEvent: () => void) {
     let DataItem: SeriesDataItem[] = [];
     const backDiv = Generic.set_backDiv("", "連続表示モードにまとめて設定", 790, 390, true, true, buttonOK, 0.2, true);
-    let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
-    let tablist = ["単独表示", "グラフ表示", "ラベル表示", "重ね合わせ"];
+    const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+    const tablist = ["単独表示", "グラフ表示", "ラベル表示", "重ね合わせ"];
     const tab = Generic.createNewTab(backDiv, tablist, 0, 15, 40, 350, 290);
-    let cboLayerSolo = Generic.createNewWordSelect(tab.panel[0], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setSoloModeDataItem, "", "");
+    const cboLayerSolo = Generic.createNewWordSelect(tab.panel[0], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setSoloModeDataItem, "", "");
     state.attrData.Set_LayerName_to(cboLayerSolo, LayerNum);
-    let layerSoloData = new CheckedListBox(tab.panel[0], "", [], 10, 40, 200, 220,false, undefined);
+    const layerSoloData = new CheckedListBox(tab.panel[0], "", [], 10, 40, 200, 220,false, undefined);
     setSoloModeDataItem();
-    let modeNameList = [{ value: enmSoloMode_Number.ClassPaintMode, text: "" }, { value: enmSoloMode_Number.ClassMarkMode, text: "" }, { value: enmSoloMode_Number.ClassODMode, text: "" }, { value: enmSoloMode_Number.ContourMode, text: "" },
+    const modeNameList = [{ value: enmSoloMode_Number.ClassPaintMode, text: "" }, { value: enmSoloMode_Number.ClassMarkMode, text: "" }, { value: enmSoloMode_Number.ClassODMode, text: "" }, { value: enmSoloMode_Number.ContourMode, text: "" },
     { value: enmSoloMode_Number.MarkSizeMode, text: "" }, { value: enmSoloMode_Number.MarkBlockMode, text: "" }, { value: enmSoloMode_Number.MarkBarMode, text: "" }, { value: enmSoloMode_Number.StringMode, text: "" }];
-    for (let i in modeNameList) {
+    for (const i in modeNameList) {
         modeNameList[i].text = Generic.getSolomodeStrings(modeNameList[i].value);
     }
-    let gbsoloModeSelect = Generic.createNewFrame(tab.panel[0], "", "", 225, 30, 115, 210, "表示モード");
+    const gbsoloModeSelect = Generic.createNewFrame(tab.panel[0], "", "", 225, 30, 115, 210, "表示モード");
     Generic.createNewRadioButtonList(gbsoloModeSelect, "soloModeSelect", modeNameList, 10, 10, undefined, 25, enmSoloMode_Number.ClassPaintMode);
 
-    let cboLayerGraph = Generic.createNewWordSelect(tab.panel[1], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setGraphModeDataItem, "", "");
+    const cboLayerGraph = Generic.createNewWordSelect(tab.panel[1], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setGraphModeDataItem, "", "");
     state.attrData.Set_LayerName_to(cboLayerGraph, LayerNum);
-    let layerGraphData = new CheckedListBox(tab.panel[1], "", [], 50, 40, 200, 220,false, undefined);
+    const layerGraphData = new CheckedListBox(tab.panel[1], "", [], 50, 40, 200, 220,false, undefined);
     setGraphModeDataItem();
 
-    let cboLayerLabel = Generic.createNewWordSelect(tab.panel[2], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setLabelModeDataItem, "", "");
+    const cboLayerLabel = Generic.createNewWordSelect(tab.panel[2], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setLabelModeDataItem, "", "");
     state.attrData.Set_LayerName_to(cboLayerLabel, LayerNum);
-    let layerLabelData = new CheckedListBox(tab.panel[2], "", [], 50, 40, 200, 220,false, undefined);
+    const layerLabelData = new CheckedListBox(tab.panel[2], "", [], 50, 40, 200, 220,false, undefined);
     setLabelModeDataItem();
 
-    let overlayData = new CheckedListBox(tab.panel[3], "", [], 50, 40, 200, 220,false, undefined);
+    const overlayData = new CheckedListBox(tab.panel[3], "", [], 50, 40, 200, 220,false, undefined);
     setOverlayModeDataItem();
 
     Generic.createNewImageButton(backDiv, "", "image/112_RightArrowLong_Grey_24x24_72.png", 385, 180, 30, 30, btnSet_Click, "");
 
     //右側
-    let gbdestSeries = Generic.createNewFrame(backDiv, "", "", 440, 40, 330, 290, "設定先連続表示データセット");
+    const gbdestSeries = Generic.createNewFrame(backDiv, "", "", 440, 40, 330, 290, "設定先連続表示データセット");
     Generic.createNewRadioButtonList(gbdestSeries, "rbSeriesDataSet", [{ value: 0, text: "既存データセット" }, { value: 1, text: "新しいデータセット" }], 10, 20, undefined, 45,
         0, function (value: number) {
             switch(value){
@@ -1572,23 +1572,23 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
          }
         , "");
-    let seriesHdata = Generic.Array2Dimension(4, 1);
+    const seriesHdata = Generic.Array2Dimension(4, 1);
     seriesHdata[0][0] = "順番";
     seriesHdata[1][0] = "レイヤ";
     seriesHdata[2][0] = "データ";
     seriesHdata[3][0] = "表示モード";
-    let slborderStyle = "border:solid 1px;background-Color:#ffffff"
-    let seriesListView = new ListViewTable(gbdestSeries, "", "", "", seriesHdata, [], 10, 110, 300, 170, slborderStyle, "font-size:13px;",
+    const slborderStyle = "border:solid 1px;background-Color:#ffffff"
+    const seriesListView = new ListViewTable(gbdestSeries, "", "", "", seriesHdata, [], 10, 110, 300, 170, slborderStyle, "font-size:13px;",
         "background-Color:#dddddd;text-align:center", "", ["width:10%"], ["text-align:center"], true, undefined);
 
-    let txtNewDataSet = Generic.createNewWordTextInput(gbdestSeries, "タイトル", "", "", "", 40, 85, undefined, 200, undefined, "");
-    let selectDataset = Generic.createNewSelect(gbdestSeries, state.attrData.getSeriesDataSetName(), 0, "", 40, 40, false, copyExsistAttrDataItem, "width:185px", 1, false);
+    const txtNewDataSet = Generic.createNewWordTextInput(gbdestSeries, "タイトル", "", "", "", 40, 85, undefined, 200, undefined, "");
+    const selectDataset = Generic.createNewSelect(gbdestSeries, state.attrData.getSeriesDataSetName(), 0, "", 40, 40, false, copyExsistAttrDataItem, "width:185px", 1, false);
     copyExsistAttrDataItem();
 
     function copyExsistAttrDataItem() {
         DataItem = [];
-        let n = selectDataset.selectedIndex;
-        let asd = state.attrData.TotalData.TotalMode.Series.DataSet[n];
+        const n = selectDataset.selectedIndex;
+        const asd = state.attrData.TotalData.TotalMode.Series.DataSet[n];
         DataItem = Generic.ArrayClone(asd.DataItem);
         SetListView();
     }
@@ -1596,14 +1596,14 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         let emes = "";
         switch (tab.selectedIndex) {
             case 0: {
-                let checked = layerSoloData.getChecked().checkedArray;
+                const checked = layerSoloData.getChecked().checkedArray;
                 if (checked.length == 0) {
                     return;
                 }
-                let LayerNum = cboLayerSolo.selectedIndex;
+                const LayerNum = cboLayerSolo.selectedIndex;
                 for (let i = 0; i < checked.length; i++) {
-                    let n = checked[i];
-                    let dt = new strSeries_DataSet_Item_Info();
+                    const n = checked[i];
+                    const dt = new strSeries_DataSet_Item_Info();
                     dt.Data = n;
                     dt.Layer = LayerNum;
                     dt.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
@@ -1618,14 +1618,14 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
                 break;
             }
             case 1: {
-                let checked = layerGraphData.getChecked().checkedArray;
+                const checked = layerGraphData.getChecked().checkedArray;
                 if (checked.length == 0) {
                     return;
                 }
-                let LayerNum = cboLayerGraph.selectedIndex;
+                const LayerNum = cboLayerGraph.selectedIndex;
                 for (let i = 0; i < checked.length; i++) {
-                    let n = checked[i];
-                    let dt = new strSeries_DataSet_Item_Info();
+                    const n = checked[i];
+                    const dt = new strSeries_DataSet_Item_Info();
                     dt.Data = n;
                     dt.Layer = LayerNum;
                     dt.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
@@ -1635,14 +1635,14 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
                 break;
             }
             case 2: {
-                let checked = layerLabelData.getChecked().checkedArray;
+                const checked = layerLabelData.getChecked().checkedArray;
                 if (checked.length == 0) {
                     return;
                 }
-                let LayerNum = cboLayerLabel.selectedIndex;
+                const LayerNum = cboLayerLabel.selectedIndex;
                 for (let i = 0; i < checked.length; i++) {
-                    let n = checked[i];
-                    let dt = new strSeries_DataSet_Item_Info();
+                    const n = checked[i];
+                    const dt = new strSeries_DataSet_Item_Info();
                     dt.Data = n;
                     dt.Layer = LayerNum;
                     dt.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
@@ -1652,13 +1652,13 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
                 break;
             }
             case 3: {
-                let checked = overlayData.getChecked().checkedArray;
+                const checked = overlayData.getChecked().checkedArray;
                 if (checked.length == 0) {
                     return;
                 }
                 for (let i = 0; i < checked.length; i++) {
-                    let n = checked[i];
-                    let dt = new strSeries_DataSet_Item_Info();
+                    const n = checked[i];
+                    const dt = new strSeries_DataSet_Item_Info();
                     dt.Data = n;
                     dt.Print_Mode_Total = enmTotalMode_Number.OverLayMode;
                     DataItem.push(dt);
@@ -1676,9 +1676,9 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         state.attrData.SeriesMode_to_ListViewData(seriesListView, DataItem);
     }
     function setGraphModeDataItem(){
-        let lay = cboLayerGraph.selectedIndex;
-        let titles = state.attrData.getGraphTitle(lay);
-        let list = [];
+        const lay = cboLayerGraph.selectedIndex;
+        const titles = state.attrData.getGraphTitle(lay);
+        const list = [];
         for (let i = 0; i < titles.length; i++) {
             list.push({ checked: false, text: titles[i].text });
         }
@@ -1686,9 +1686,9 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         layerGraphData.addList(list, 0);
     }
     function setLabelModeDataItem(){
-        let lay = cboLayerLabel.selectedIndex;
-        let titles = state.attrData.getLabelTitle(lay);
-        let list = [];
+        const lay = cboLayerLabel.selectedIndex;
+        const titles = state.attrData.getLabelTitle(lay);
+        const list = [];
         for (let i = 0; i < titles.length; i++) {
             list.push({ checked: false, text: titles[i].text });
         }
@@ -1697,8 +1697,8 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     } 
 
     function setOverlayModeDataItem(){
-        let titles = state.attrData.getOverlayTitle();
-        let list = [];
+        const titles = state.attrData.getOverlayTitle();
+        const list = [];
         for (let i = 0; i < titles.length; i++) {
             list.push({ checked: false, text: titles[i].text });
         }
@@ -1707,17 +1707,17 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     }
 
     function setSoloModeDataItem() {
-        let lay = cboLayerSolo.selectedIndex;
+        const lay = cboLayerSolo.selectedIndex;
         state.attrData.Set_DataTitle_to_CheckedListBox(layerSoloData,lay,false,true, true, true, true,-1);
     }
     function buttonOK() {
-        let v=Generic.getRadioCheckByValue("rbSeriesDataSet");
-        let as=state.attrData.TotalData.TotalMode.Series;
+        const v=Generic.getRadioCheckByValue("rbSeriesDataSet");
+        const as=state.attrData.TotalData.TotalMode.Series;
         let sel;
         switch(v){
             case 0: {
                  sel = selectDataset.selectedIndex;
-                let dt =as.DataSet[sel];
+                const dt =as.DataSet[sel];
                 dt.SelectedIndex = 0;
                 dt.DataItem=[];
                 dt.DataItem =Generic.ArrayClone( DataItem);
@@ -1726,7 +1726,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
             case 1: {
                 sel=as.DataSet.length
-                let dt =new strSeries_Dataset_Info();
+                const dt =new strSeries_Dataset_Info();
                 dt.title = txtNewDataSet.value;
                 dt.SelectedIndex = 0;
                 dt.DataItem = Generic.ArrayClone( DataItem);
@@ -1742,10 +1742,10 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
 /**記号表示位置等操作 */
 function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     const backDiv = Generic.set_backDiv("", "記号表示位置等操作", 450, 365, true, true, buttonOK, 0.2, true);
-    let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-    let Objn = state.attrData.Get_ObjectNum(Layernum);
-    let al = state.attrData.LayerData[Layernum];
-    let lst = [{ value: 0, text: "代表点を属性データとして取得" },
+    const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+    const Objn = state.attrData.Get_ObjectNum(Layernum);
+    const al = state.attrData.LayerData[Layernum];
+    const lst = [{ value: 0, text: "代表点を属性データとして取得" },
     { value: 1, text: "記号表示位置を属性データとして取得" },
     { value: 2, text: "属性データを記号表示位置に設定" },
     { value: 3, text: "重心を記号表示位置に設定" },
@@ -1763,8 +1763,8 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     const cboLonData = Generic.createNewWordSelect(gbDataSelect, "経度", [], 0, "", 10, 20, 30, 140, 0, undefined, "", "", true);
     const cboLatData = Generic.createNewWordSelect(gbDataSelect, "緯度", [], 0, "", 10, 50, 30, 140, 0, undefined, "", "", true);
     gbDataSelect.setVisibility(false);
-    let titles = state.attrData.getDataTitleName(Layernum, true, true, false, false, undefined);
-    let items = [{value:0,text:"変更なし"}];
+    const titles = state.attrData.getDataTitleName(Layernum, true, true, false, false, undefined);
+    const items = [{value:0,text:"変更なし"}];
     for (let i = 0; i < titles.length; i++) {
         items.push({ value: (i+1), text: titles[i] });
     }
@@ -1791,7 +1791,7 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
         }
     }
     function buttonOK() {
-        let mode = Generic.getRadioCheckByValue("markPositionOperation");
+        const mode = Generic.getRadioCheckByValue("markPositionOperation");
         switch (mode) {
             case 0: //代表点を属性データとして取得
             case 1: //記号表示位置を属性データとして取得
@@ -1802,31 +1802,31 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
             }
             case 2: //属性データを記号表示位置に設定
             case 7: {//属性データをラベル表示位置に設定
-                let lat = cboLatData.selectedIndex -1;
-                let lon = cboLonData.selectedIndex - 1;
+                const lat = cboLatData.selectedIndex -1;
+                const lon = cboLonData.selectedIndex - 1;
                 if ((lat == -1) && (lon == -1)) {
                     Generic.alert(undefined, "選択されていません。");
                     return;
                 }
                 if (lat != -1) {
-                    let ald = al.atrData.Data[lat];
+                    const ald = al.atrData.Data[lat];
                     if ((ald.Statistics.Max > 90) || (ald.Statistics.Min < -90)) {
                         Generic.alert(undefined, ald.Title + "の最大値・最小値が90/-90を超えています。");
                         return;
                     }
                 }
                 if (lon != -1) {
-                    let ald = al.atrData.Data[lon];
+                    const ald = al.atrData.Data[lon];
                     if ((ald.Statistics.Max > 180) || (ald.Statistics.Min < -180)) {
                         Generic.alert(undefined, ald.Title + "の最大値・最小値が180/-180を超えています。");
                         return;
                     }
                 }
 
-                let OriPos = [];
-                let zahyo = state.attrData.TotalData.ViewStyle.Zahyo;
+                const OriPos = [];
+                const zahyo = state.attrData.TotalData.ViewStyle.Zahyo;
                 for (let i = 0; i < Objn; i++) {
-                    let alo = al.atrObject.atrObjectData[i];
+                    const alo = al.atrObject.atrObjectData[i];
                     switch (mode) {
                         case 7:
                             OriPos[i] = spatial.Get_Reverse_XY(alo.Label, zahyo);
@@ -1838,22 +1838,22 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
                 }
 
                 if (lat != -1) {
-                    let Data = state.attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lat);
+                    const Data = state.attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lat);
                     for (let i = 0; i < Data.length; i++) {
                         OriPos[Data[i].ObjLocation].y = Number(Data[i].DataValue);
                     }
                 }
 
                 if (lon != -1) {
-                    let Data = state.attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lon);
+                    const Data = state.attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lon);
                     for (let i = 0; i < Data.length; i++) {
                         OriPos[Data[i].ObjLocation].x = Number(Data[i].DataValue);
                     }
                 }
 
                 for (let i = 0; i < Objn; i++) {
-                    let alo = al.atrObject.atrObjectData[i];
-                    let P = spatial.Get_Converted_XY(OriPos[i], zahyo);
+                    const alo = al.atrObject.atrObjectData[i];
+                    const P = spatial.Get_Converted_XY(OriPos[i], zahyo);
                     switch (mode) {
                         case 7:
                             alo.Label = P;
@@ -1896,7 +1896,7 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
             case 3://重心を記号表示位置に設定
             case 8: {//重心をラベル表示位置に設定
                 for (let i = 0; i < Objn; i++) {
-                    let retV = state.attrData.Get_ObjectGravityPoint(Layernum, i);
+                    const retV = state.attrData.Get_ObjectGravityPoint(Layernum, i);
                     if (retV.ok == true) {
                         if (mode == 3) {
                             al.atrObject.atrObjectData[i].Symbol = retV.gpoint;
@@ -1932,12 +1932,12 @@ function frmMain_ConditionSettings(okEvent: () => void){
     const backDiv = Generic.set_backDiv("", "属性検索設定", 305, 370, true, true, buttonOK, 0.2, true);
     Generic.createNewSpan(backDiv,"条件設定","","",15,40,"",undefined);
     Generic.createNewButton(backDiv,"設定変更","",15,275,function(){
-        let n  = clbList.selectedIndex;
+        const n  = clbList.selectedIndex;
         if (n == -1){
             Generic.createMsgBox("","条件設定を選択して下さい。",false);
             return;
         }
-        let ConItem = state.attrData.TotalData.Condition[n];
+        const ConItem = state.attrData.TotalData.Condition[n];
         frmMain_ConditionSettingSub(ConItem,btnOK);
         function btnOK(Con: strCondition_DataSet_Info){
             state.attrData.TotalData.Condition[n] = Con;
@@ -1946,15 +1946,15 @@ function frmMain_ConditionSettings(okEvent: () => void){
         }
     },"width:80px");
     Generic.createNewButton(backDiv,"追加","",110,275,function(){
-        let cttl=[];
+        const cttl=[];
         for(let  i = 0 ;i< state.attrData.TotalData.Condition.length;i++){
             cttl[i] = state.attrData.TotalData.Condition[i].Name;
         }
-        let ConItem = new strCondition_DataSet_Info();
+        const ConItem = new strCondition_DataSet_Info();
         ConItem.Layer = DefoLay;
         ConItem.Name = Generic.Get_New_Numbering_Strings("属性検索条件", cttl);
         ConItem.Condition_Class =[];// New List(Of clsAttrData.strCondition_Data_Info)
-        let cdt = new strCondition_Data_Info();
+        const cdt = new strCondition_Data_Info();
         cdt.And_OR = enmConditionAnd_Or._And;
         cdt.Condition = [];// List(Of clsAttrData.strCondition_Limitation_Info)
         ConItem.Condition_Class.push(cdt);
@@ -1966,7 +1966,7 @@ function frmMain_ConditionSettings(okEvent: () => void){
         }
     }, "width:80px");
     Generic.createNewButton(backDiv, "削除", "", 205, 275, function (e: MouseEvent) { 
-        let n  = clbList.selectedIndex;
+        const n  = clbList.selectedIndex;
         if (n == -1){
             Generic.alert(new point(e.clientX, e.clientY),"条件設定を選択して下さい。");
             return;
@@ -1974,10 +1974,10 @@ function frmMain_ConditionSettings(okEvent: () => void){
         state.attrData.TotalData.Condition.splice(n, 1);
         clbList.removeList(n,1);
     }, "width:80px");
-    let chkInvisibleObjectBoundary = Generic.createNewCheckBox(backDiv, "非表示面オブジェクトの境界線を描画", "", state.attrData.TotalData.ViewStyle.InVisibleObjectBoundaryF, 15, 305, 200, undefined, "");
+    const chkInvisibleObjectBoundary = Generic.createNewCheckBox(backDiv, "非表示面オブジェクトの境界線を描画", "", state.attrData.TotalData.ViewStyle.InVisibleObjectBoundaryF, 15, 305, 200, undefined, "");
     Generic.createNewButton(backDiv, "該当条件チェック", "", 15, 335, function () { 
         for(let i = 0;i<clbList.length;i++){
-            let cdt  = state.attrData.TotalData.Condition[i];
+            const cdt  = state.attrData.TotalData.Condition[i];
             cdt.Enabled = clbList.getCheckedStatus(i);
         }
         let tx  = "";
@@ -1988,19 +1988,19 @@ function frmMain_ConditionSettings(okEvent: () => void){
 
     }, "");
 
-    let DefoLay = state.attrData.TotalData.LV1.SelectedLayer;
+    const DefoLay = state.attrData.TotalData.LV1.SelectedLayer;
 
-    let atc = state.attrData.TotalData.Condition;
-    let list = [];
+    const atc = state.attrData.TotalData.Condition;
+    const list = [];
     for (let i = 0; i < atc.length; i++) {
-        let tx = "【" + state.attrData.LayerData[atc[i].Layer].Name + "】" + atc[i].Name;
+        const tx = "【" + state.attrData.LayerData[atc[i].Layer].Name + "】" + atc[i].Name;
         list.push({ checked: atc[i].Enabled, text: tx });
     }
-    let clbList = new CheckedListBox(backDiv, "", list, 15, 65, 270, 200, true, undefined);
+    const clbList = new CheckedListBox(backDiv, "", list, 15, 65, 270, 200, true, undefined);
 
     function buttonOK() {
         Generic.clear_backDiv();
-        let checkv=clbList.getChecked().checkedStatus;
+        const checkv=clbList.getChecked().checkedStatus;
         for (let i = 0; i < atc.length; i++) {
             atc[i].Enabled=checkv[i];
         }
@@ -2013,17 +2013,17 @@ function frmMain_ConditionSettings(okEvent: () => void){
 function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEvent: (ConItem: strCondition_DataSet_Info) => void) {
 
     const backDiv = Generic.set_backDiv("", "属性検索条件設定", 450, 540, true, true, buttonOK, 0.2, true);
-    let ConItem = _ConItem.Clone();
-    let LayerNum = ConItem.Layer;//state.attrData.TotalData.LV1.SelectedLayer;
-    let grTop = Generic.createNewFrame(backDiv, "", "", 15, 40, 400, 90, "");
-    let cboLayerLabel = Generic.createNewWordSelect(grTop, "レイヤ", undefined, -1, "", 15, 10, 60, 150, 0, changeLayer, "", "");
+    const ConItem = _ConItem.Clone();
+    const LayerNum = ConItem.Layer;//state.attrData.TotalData.LV1.SelectedLayer;
+    const grTop = Generic.createNewFrame(backDiv, "", "", 15, 40, 400, 90, "");
+    const cboLayerLabel = Generic.createNewWordSelect(grTop, "レイヤ", undefined, -1, "", 15, 10, 60, 150, 0, changeLayer, "", "");
     state.attrData.Set_LayerName_to(cboLayerLabel, LayerNum);
-    let txtTitle = Generic.createNewWordTextInput(grTop, "タイトル", "", ConItem.Name, "", 15, 50, 60, 160, undefined, "text-align:left");
+    const txtTitle = Generic.createNewWordTextInput(grTop, "タイトル", "", ConItem.Name, "", 15, 50, 60, 160, undefined, "text-align:left");
 
-    let cboStep = Generic.createNewWordSelect(backDiv, "段階", undefined, -1, "", 15, 140, 40, 80, 0, changeStep, "", "");
+    const cboStep = Generic.createNewWordSelect(backDiv, "段階", undefined, -1, "", 15, 140, 40, 80, 0, changeStep, "", "");
     Generic.createNewButton(backDiv, "段階追加", "", 170, 140, function () {
-        let n = cboStep.options.length;
-        let cdt = new strCondition_Data_Info();
+        const n = cboStep.options.length;
+        const cdt = new strCondition_Data_Info();
         cdt.And_OR = enmConditionAnd_Or._And;
         cdt.Condition = [];
         ConItem.Condition_Class.push(cdt);
@@ -2034,7 +2034,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
             Generic.alert(new point(e.clientX, e.clientY),"これ以上削除できません。");
             return;
         }
-        let n = cboStep.selectedIndex;
+        const n = cboStep.selectedIndex;
         Generic.confirm(new point(e.clientX, e.clientY), cboStep.options[n].text + "を削除します。", function () {
             let newn;
             if (n == cboStep.options.length - 1) {
@@ -2049,23 +2049,23 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     }, "");
     setStep(0);
 
-    let grPanel = Generic.createNewFrame(backDiv, "", "", 15, 175, 400, 315, "");
-    let overHdata = Generic.Array2Dimension(3, 1);
+    const grPanel = Generic.createNewFrame(backDiv, "", "", 15, 175, 400, 315, "");
+    const overHdata = Generic.Array2Dimension(3, 1);
     overHdata[0][0] = "データ項目";
     overHdata[1][0] = "条件値";
     overHdata[2][0] = "条件";
-    let borderStyle = "border:solid 1px;background-Color:#ffffff";
-    let ListView = new ListViewTable(grPanel, "", "", "", overHdata, [], 10, 10, 290, 165, borderStyle, "font-size:13px;",
+    const borderStyle = "border:solid 1px;background-Color:#ffffff";
+    const ListView = new ListViewTable(grPanel, "", "", "", overHdata, [], 10, 10, 290, 165, borderStyle, "font-size:13px;",
         "background-Color:#dddddd;text-align:center", "", ["", "", "width:30%"], ["", "", "width:30%"], true, undefined);
 
-    let grAndOr = Generic.createNewFrame(grPanel, "", "", 310, 10, 75, 65, "");
+    const grAndOr = Generic.createNewFrame(grPanel, "", "", 310, 10, 75, 65, "");
     Generic.createNewRadioButtonList(grAndOr, "rdoAndOr", [{ value: enmConditionAnd_Or._And, text: "AND" }, { value: enmConditionAnd_Or.Or, text: "OR" }], 15, 10, undefined, 30, 0, undefined, "");
     Generic.createNewButton(grPanel, "項目削除", "", 310, 90, function (e: MouseEvent) {
-        let n = cboStep.selectedIndex;
+        const n = cboStep.selectedIndex;
         if (ListView.getRowNumber() == 0) {
             return;
         }
-        let selRow = ListView.selectedRow;
+        const selRow = ListView.selectedRow;
         if (selRow == -1) {
             Generic.alert(new point(e.clientX, e.clientY),"項目を選択して下さい。");
         } else {
@@ -2077,13 +2077,13 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         }
     }, "");
 
-    let newSettings = Generic.createNewFrame(grPanel, "", "", 10, 185, 380, 110, "新規設定");
-    let cboData = Generic.createNewWordSelect(newSettings, "データ項目", undefined, -1, "", 15, 15, 60, 160, 0,
+    const newSettings = Generic.createNewFrame(grPanel, "", "", 10, 185, 380, 110, "新規設定");
+    const cboData = Generic.createNewWordSelect(newSettings, "データ項目", undefined, -1, "", 15, 15, 60, 160, 0,
         function (obj: HTMLSelectElement, sel: number, v: number) {
             unitSpan.innerHTML = state.attrData.Get_DataUnit(cboLayerLabel.selectedIndex, sel);
         }, "", "");
-    let txtValue = Generic.createNewWordTextInput(newSettings, "条件値", "", "", "", 15, 45, 60, 150, undefined, "text-align:left");
-    let unitSpan = Generic.createNewSpan(newSettings, "", "", "", 235, 45, "", undefined)
+    const txtValue = Generic.createNewWordTextInput(newSettings, "条件値", "", "", "", 15, 45, 60, 150, undefined, "text-align:left");
+    const unitSpan = Generic.createNewSpan(newSettings, "", "", "", 235, 45, "", undefined)
     changeLayer(0,LayerNum, 0);
     ListViewSet();
 
@@ -2091,14 +2091,14 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     { value: enmCondition.Equal, text: '' }, { value: enmCondition.GreaterEqual, text: '' }, { value: enmCondition.Greater, text: '' },
     { value: enmCondition.NotEqual, text: '' }, { value: enmCondition.Include, text: '' }, { value: enmCondition.Exclude, text: '' },
     { value: enmCondition.Head, text: '' }, { value: enmCondition.Foot, text: '' }];
-    for (let i in condList) {
-        let tx = Generic.getConditionString(condList[i].value);
+    for (const i in condList) {
+        const tx = Generic.getConditionString(condList[i].value);
         condList[i].text = tx;
     }
-    let cboCondition = Generic.createNewWordSelect(newSettings, "条件", condList, enmCondition.Equal, "", 15, 75, 60, 100, 0, undefined, "", "");
+    const cboCondition = Generic.createNewWordSelect(newSettings, "条件", condList, enmCondition.Equal, "", 15, 75, 60, 100, 0, undefined, "", "");
     Generic.createNewButton(newSettings, "項目追加", "", 300, 75, function (e: MouseEvent) {
-        let n = cboStep.selectedIndex;
-        let Lim = new strCondition_Limitation_Info();
+        const n = cboStep.selectedIndex;
+        const Lim = new strCondition_Limitation_Info();
         Lim.Data = cboData.selectedIndex;
         Lim.Val = txtValue.value;
         Lim.Condition = cboCondition.getValue();
@@ -2125,11 +2125,11 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     }
 
     function ListViewSet() {
-        let n = cboStep.selectedIndex;
+        const n = cboStep.selectedIndex;
         ListView.clear();
         for (let i = 0; i < ConItem.Condition_Class[n].Condition.length; i++) {
-            let ItemData = new Array(3);
-            let cd = ConItem.Condition_Class[n].Condition[i];
+            const ItemData = new Array(3);
+            const cd = ConItem.Condition_Class[n].Condition[i];
             ItemData[0] = state.attrData.Get_DataTitle(ConItem.Layer, cd.Data, false)
             ItemData[1]=cd.Val;
             ItemData[2]=Generic.getConditionString(cd.Condition);
@@ -2138,7 +2138,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     }
 
     function setStep(select: number) {
-        let lst = [];
+        const lst = [];
         for (let i=0;i<ConItem.Condition_Class.length;i++) {
             lst.push({ value: i, text: "段階" + String(i + 1) });
         }
@@ -2156,11 +2156,11 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
 /**面積・周長取得 */
 function frmMain_AreaPeripheri(okEvent: () => void){
     const backDiv = Generic.set_backDiv("", "面積・周長取得", 195, 200, true, true, buttonOK, 0.2, true);
-    let atv=state.attrData.TotalData.ViewStyle.MapScale;
+    const atv=state.attrData.TotalData.ViewStyle.MapScale;
     Generic.createNewRadioButtonList(backDiv, "rbAreaOrPeri", [{ value: 0, text: "オブジェクト面積取得" }, { value: 1, text: "オブジェクト周長取得" }], 15, 50, undefined, 30, 0, undefined, "");
     const scaleList = Generic.getScaleUnit_for_select();
-    let scaleUnit=Generic.createNewWordSelect(backDiv,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
-    let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+    const scaleUnit=Generic.createNewWordSelect(backDiv,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
+    const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
     switch (state.attrData.LayerData[LayerNum].Shape) {
         case enmShape.PolygonShape: {
             Generic.enableRadioByValue("rbAreaOrPeri",0,true);
@@ -2181,20 +2181,20 @@ function frmMain_AreaPeripheri(okEvent: () => void){
         }
     }
     function buttonOK(e: MouseEvent) {
-        let n = state.attrData.Get_ObjectNum(LayerNum);
-        let Data_Val_STR = new Array(n);
+        const n = state.attrData.Get_ObjectNum(LayerNum);
+        const Data_Val_STR = new Array(n);
         let Title = "";
-        let note = "";
-        let MisF = false;
-        let ScaleUnit = scaleUnit.getValue();
-        let ScaleRatio = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, ScaleUnit);
-        let SUnit = Generic.getScaleUnitStrings(undefined,ScaleUnit);
+        const note = "";
+        const MisF = false;
+        const ScaleUnit = scaleUnit.getValue();
+        const ScaleRatio = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, ScaleUnit);
+        const SUnit = Generic.getScaleUnitStrings(undefined,ScaleUnit);
         let Unit = "";
-        let rv = Generic.getRadioCheckByValue("rbAreaOrPeri");
+        const rv = Generic.getRadioCheckByValue("rbAreaOrPeri");
         switch (rv) {
             case 0: {
                 for (let i = 0; i < n; i++) {
-                    let v =Number((state.attrData.GetObjMenseki(LayerNum, i).menseki * (ScaleRatio ** 2)).toFixed(6));
+                    const v =Number((state.attrData.GetObjMenseki(LayerNum, i).menseki * (ScaleRatio ** 2)).toFixed(6));
                     Data_Val_STR[i] = v;
                 }
                 Title = "計測面積";
@@ -2203,7 +2203,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
             }
             case 1: {
                 for (let i = 0; i < n; i++) {
-                    let v =Number(( state.attrData.Get_ObjectLength(LayerNum, i) * ScaleRatio).toFixed(6));
+                    const v =Number(( state.attrData.Get_ObjectLength(LayerNum, i) * ScaleRatio).toFixed(6));
                     Data_Val_STR[i] = v;
                 }
                 Title = "計測周長";
@@ -2223,7 +2223,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
 }
 
 function frmMain_Culc(okEvent: () => void) {
-    let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+    const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
     const backDiv = Generic.set_backDiv("", "データ計算", 430, 490, true, true, buttonOK, 0.2, true);
     const rdList = [{ value: 0, text: "足し算" }, { value: 1, text: "引き算" }, { value: 2, text: "かけ算" }, { value: 3, text: "割り算" }, { value: 4, text: "増減率(%)" }, { value: 5, text: "密度" }];
     const rdYplus = [110, 55, 55, 90, 55]
@@ -2272,39 +2272,39 @@ function frmMain_Culc(okEvent: () => void) {
     Generic.enableRadioByValue("dataCulMethod",5, (state.attrData.LayerData[LayerNum].Shape == enmShape.PolygonShape));
 
     function buttonOK(e: MouseEvent) {
-        let n = state.attrData.Get_ObjectNum(LayerNum)
-        let Data_Val_STR = new Array(n);
+        const n = state.attrData.Get_ObjectNum(LayerNum)
+        const Data_Val_STR = new Array(n);
         let Title = "";
 
         let note = "";
         let MisF = false;
         let Unit = "";
 
-        let mode = Generic.getRadioCheckByValue("dataCulMethod");
+        const mode = Generic.getRadioCheckByValue("dataCulMethod");
         switch (mode) {
             case 0: {
-                let retV = sumDataItem.getChecked();
-                let seln = retV.checkedArray.length;
+                const retV = sumDataItem.getChecked();
+                const seln = retV.checkedArray.length;
                 if (seln == 0) {
                     Generic.alert(undefined, "加算するデータを選択して下さい。");
                     return;
                 }
-                let plusVal = Number(txtPlusInput.value);
+                const plusVal = Number(txtPlusInput.value);
 
-                let sumv = new Array(n);
-                let sumf = new Array(n);
+                const sumv = new Array(n);
+                const sumf = new Array(n);
                 sumv.fill(0);
                 sumv.fill(false);
                 Title = ""
                 for (let i = 0; i < seln; i++) {
-                    let dt = retV.checkedArray[i];
+                    const dt = retV.checkedArray[i];
                     Unit = state.attrData.Get_DataUnit(LayerNum, dt);
                     Title += state.attrData.Get_DataTitle(LayerNum, dt, false);
                     if (i != seln - 1) {
                         Title += "＋";
                     }
-                    let v = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt);
-                    let mis = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt);
+                    const v = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt);
+                    const mis = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt);
                     for (let j = 0; j < n; j++) {
                         if (mis[j] == false) {
                             sumv[j] += v[j];
@@ -2328,24 +2328,24 @@ function frmMain_Culc(okEvent: () => void) {
                 break;
             }
             case 1: {
-                let dt1 = cboDif1.selectedIndex;
-                let dt2 = cboDif2.selectedIndex - 1;
+                const dt1 = cboDif1.selectedIndex;
+                const dt2 = cboDif2.selectedIndex - 1;
                 if ((dt1 == -1) || (dt2 == -2)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
-                let inputValue = Number(txtMinusInput.value);
+                const inputValue = Number(txtMinusInput.value);
                 if (dt2 == -1) {
                     if (inputValue == 0) {
                         Generic.alert(undefined, "数値を入力して下さい。");
                         return;
                     }
                 }
-                let v1 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt1);
-                let mis1 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt1);
-                let retV = setDataArray(LayerNum, dt2, inputValue);
-                let v2 = retV.dataArray;
-                let mis2 = retV.misArray;
+                const v1 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt1);
+                const mis1 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt1);
+                const retV = setDataArray(LayerNum, dt2, inputValue);
+                const v2 = retV.dataArray;
+                const mis2 = retV.misArray;
                 for (let i = 0; i < n; i++) {
                     if ((mis1[i] == true) || (mis2[i] == true)) {
                         Data_Val_STR[i] = "";
@@ -2371,24 +2371,24 @@ function frmMain_Culc(okEvent: () => void) {
                 break;
             }
             case 2: {
-                let dt1 = cboMulti1.selectedIndex;
-                let dt2 = cboMulti2.selectedIndex - 1;
+                const dt1 = cboMulti1.selectedIndex;
+                const dt2 = cboMulti2.selectedIndex - 1;
                 if ((dt1 == -1) || (dt2 == -2)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
-                let inputValue = Number(txtMultiInput.value);
+                const inputValue = Number(txtMultiInput.value);
                 if (dt2 == -1) {
                     if (inputValue == 0) {
                         Generic.alert(undefined, "数値を入力して下さい。");
                         return;
                     }
                 }
-                let v1 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt1);
-                let mis1 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt1);
-                let retV = setDataArray(LayerNum, dt2, inputValue);;
-                let v2 = retV.dataArray;
-                let mis2 = retV.misArray;
+                const v1 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt1);
+                const mis1 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt1);
+                const retV = setDataArray(LayerNum, dt2, inputValue);;
+                const v2 = retV.dataArray;
+                const mis2 = retV.misArray;
 
                 for (let i = 0; i < n; i++) {
                     if ((mis1[i] == true) || (mis2[i] == true)) {
@@ -2414,20 +2414,20 @@ function frmMain_Culc(okEvent: () => void) {
                 break;
             }
             case 5: {
-                let dt = cboDensityData.selectedIndex;
+                const dt = cboDensityData.selectedIndex;
                 if (dt == -1) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
-                let v = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt);
-                let mis = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt);
+                const v = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt);
+                const mis = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt);
                 for (let i = 0; i < n; i++) {
-                    let area = state.attrData.GetObjMenseki(LayerNum, i)
+                    const area = state.attrData.GetObjMenseki(LayerNum, i)
                     if ((area.menseki == 0) || (mis[i] == true)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
-                        let dv = v[i] / area.menseki;
+                        const dv = v[i] / area.menseki;
                         Data_Val_STR[i] ==String(Number(Generic.Figure_Using(dv, state.attrData.LayerData[LayerNum].atrData.Data[dt].Statistics.AfterDecimalNum + 1)));
                     }
                 }
@@ -2437,8 +2437,8 @@ function frmMain_Culc(okEvent: () => void) {
                 break;
             }
             case 3: {
-                let dt1 = cbonumeratorData.selectedIndex - 1;
-                let dt2 = cboDenominatorData.selectedIndex - 1;
+                const dt1 = cbonumeratorData.selectedIndex - 1;
+                const dt2 = cboDenominatorData.selectedIndex - 1;
                 if ((dt1 == -2) || (dt2 == -2)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
@@ -2447,24 +2447,24 @@ function frmMain_Culc(okEvent: () => void) {
                     Generic.alert(undefined, "数値同士ではできません。");
                     return;
                 }
-                let inputValue1 = Number(txtnumeratorData.value);
-                let inputValue2 = Number(txtDenominatorDataBox.value);
+                const inputValue1 = Number(txtnumeratorData.value);
+                const inputValue2 = Number(txtDenominatorDataBox.value);
 
                 if (((dt1 == -1) && (inputValue1 == 0)) || ((dt2 == -1) && (inputValue2 == 0))) {
                     Generic.alert(undefined, "数値を設定して下さい");
                     return;
                 }
 
-                let retV = setDataArray(LayerNum, dt1, inputValue1);
-                let v1 = retV.dataArray;
-                let mis1 = retV.misArray;
-                let retV2 = setDataArray(LayerNum, dt2, inputValue2);
-                let v2 = retV2.dataArray;
-                let mis2 = retV2.misArray;
+                const retV = setDataArray(LayerNum, dt1, inputValue1);
+                const v1 = retV.dataArray;
+                const mis1 = retV.misArray;
+                const retV2 = setDataArray(LayerNum, dt2, inputValue2);
+                const v2 = retV2.dataArray;
+                const mis2 = retV2.misArray;
 
-                let per = chkPercent.checked;
+                const per = chkPercent.checked;
                 let keta;
-                let ad = state.attrData.LayerData[LayerNum].atrData;
+                const ad = state.attrData.LayerData[LayerNum].atrData;
                 let dt1AfterDecimalNum;
                 let dt2AfterDecimalNum;
                 let dt1BeforeDecimalNum;
@@ -2473,7 +2473,7 @@ function frmMain_Culc(okEvent: () => void) {
                     dt1AfterDecimalNum = ad.Data[dt1].Statistics.AfterDecimalNum;
                     dt1BeforeDecimalNum = ad.Data[dt1].Statistics.BeforeDecimalNum;
                 } else {
-                    let deci = Generic.Figure_Arrange(inputValue1);
+                    const deci = Generic.Figure_Arrange(inputValue1);
                     dt1BeforeDecimalNum = deci.BeforeDecimal;
                     dt1AfterDecimalNum = deci.AfterDecimal;
                 }
@@ -2481,7 +2481,7 @@ function frmMain_Culc(okEvent: () => void) {
                     dt2AfterDecimalNum = ad.Data[dt2].Statistics.AfterDecimalNum;
                     dt2BeforeDecimalNum = ad.Data[dt2].Statistics.BeforeDecimalNum;
                 } else {
-                    let deci = Generic.Figure_Arrange(inputValue2);
+                    const deci = Generic.Figure_Arrange(inputValue2);
                     dt2BeforeDecimalNum = deci.BeforeDecimal;
                     dt2AfterDecimalNum = deci.AfterDecimal;
                 }
@@ -2535,22 +2535,22 @@ function frmMain_Culc(okEvent: () => void) {
                 break;
             }
             case 4: {
-                let dt1 = cboStartData.selectedIndex;
-                let dt2 = cboEndData.selectedIndex;
+                const dt1 = cboStartData.selectedIndex;
+                const dt2 = cboEndData.selectedIndex;
                 if ((dt1 == -1) || (dt2 == -1)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
-                let v1 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt1);
-                let mis1 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt1);
-                let v2 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt2);
-                let mis2 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt2);
+                const v1 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt1);
+                const mis1 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt1);
+                const v2 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt2);
+                const mis2 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt2);
                 for (let i = 0; i < n; i++) {
                     if ((mis1[i] == true) || (mis2[i] == true) || (v1[i] == 0)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
-                        let dv = (v2[i] - v1[i]) / v1[i] * 100;
+                        const dv = (v2[i] - v1[i]) / v1[i] * 100;
                         Data_Val_STR[i] = String(Number(Generic.Figure_Using(dv, 3)));
                     }
                 }
@@ -2575,7 +2575,7 @@ function frmMain_Culc(okEvent: () => void) {
                 dataArray = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, data);
                 misArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, data);
             } else {
-                let objn = state.attrData.LayerData[LayerNum].atrObject.ObjectNum;
+                const objn = state.attrData.LayerData[LayerNum].atrObject.ObjectNum;
                 dataArray = new Array(objn);
                 misArray = new Array(objn);
                 dataArray.fill(inputValue);
@@ -2588,13 +2588,13 @@ function frmMain_Culc(okEvent: () => void) {
 
 /**距離測定 */
 function frmMain_GetDistance(okEvent: () => void){
-    let DisType = {
+    const DisType = {
         Point : 0,
         LayerObject : 1,
         LayerDummy : 2,
         MapObject : 3
     }
-    let pos_info: unknown =function () {
+    const pos_info: unknown =function () {
         this.xy =new point();
         this.type ;// DisType
         this.lay ;// Integer
@@ -2602,13 +2602,13 @@ function frmMain_GetDistance(okEvent: () => void){
         this.MapFile ;//  String
         this.Time ;//  strYMD
     }
-    let LayerNum=state.attrData.TotalData.LV1.SelectedLayer;
+    const LayerNum=state.attrData.TotalData.LV1.SelectedLayer;
     const backDiv = Generic.set_backDiv("", "距離測定", 450, 310, true, true, buttonOK, 0.2, true);
     Generic.createNewSpan(backDiv,"距離の取得元","","",15,40,"",undefined);
-    let lbList= new ListBox(backDiv, "", [], 15, 65, 175, 135,undefined, "");
+    const lbList= new ListBox(backDiv, "", [], 15, 65, 175, 135,undefined, "");
     Generic.createNewSpan(backDiv,"距離の取得元","","",15,40,"",undefined);
     Generic.createNewButton(backDiv, "消去", "", 15, 205, function () {
-        let n=lbList.selectedIndex;
+        const n=lbList.selectedIndex;
         if(n!=-1){
             lbList.removeList(n, 1);
         }
@@ -2619,9 +2619,9 @@ function frmMain_GetDistance(okEvent: () => void){
     const btnLlatlon=Generic.createNewButton(backDiv, "緯度経度で指定", "", 15, 235, 
     function (e: MouseEvent) {
         frmLatLonInput(new latlon(0,0), true, function (lp: latlon) {
-            let s=Generic.Get_LatLon_Strings(lp, true);
-            let tx=s.x + "/" + s.y;
-            let posd =new  pos_info();
+            const s=Generic.Get_LatLon_Strings(lp, true);
+            const tx=s.x + "/" + s.y;
+            const posd =new  pos_info();
             posd.xy = lp.toPoint();
             posd.type = DisType.Point;
             lbList.addList([{text:tx,value:posd}],lbList.length);
@@ -2630,10 +2630,10 @@ function frmMain_GetDistance(okEvent: () => void){
     btnLlatlon.disabled  = (state.attrData.TotalData.ViewStyle.Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido);
     Generic.createNewButton(backDiv, "レイヤ内オブジェクトから追加", "", 15, 260, function () {
         frmMain_LayeObjectSelect(true,LayerNum,undefined,function(Lay: number,DummyF: boolean,sel: number[]){
-            let pos=[];
-            for(let i in sel){
+            const pos=[];
+            for(const i in sel){
                 let tx  = "";
-                let posd = new pos_info();
+                const posd = new pos_info();
                 if (Lay != LayerNum) {
                     tx = state.attrData.LayerData[Lay].Name + ":"
                 }
@@ -2643,7 +2643,7 @@ function frmMain_GetDistance(okEvent: () => void){
                     posd.lay = Lay;
                     posd.objpos = sel[i];
                 } else {
-                    let ld = state.attrData.LayerData[Lay].Dummy[sel[i]];
+                    const ld = state.attrData.LayerData[Lay].Dummy[sel[i]];
                     tx += ld.Name;
                     posd.type = DisType.LayerDummy;
                     posd.lay = Lay;
@@ -2661,24 +2661,24 @@ function frmMain_GetDistance(okEvent: () => void){
     Generic.createNewRadioButtonList(gbDistance, "rbDisGet", rbDisGet, 10, 30, 150, 50, 0,undefined);
     const scaleList = Generic.getScaleUnit_for_select();
     const atv=state.attrData.TotalData.ViewStyle.MapScale;
-    let scaleUnit=Generic.createNewWordSelect(gbDistance,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
+    const scaleUnit=Generic.createNewWordSelect(gbDistance,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
 
     function buttonOK(e: MouseEvent) {
-        let n = lbList.length;
+        const n = lbList.length;
         if (n == 0) {
             Generic.alert(new point(e.clientX, e.clientY), "距離の取得元がありません。");
             return;
         }
-        let objn = state.attrData.LayerData[LayerNum].atrObject.ObjectNum;
-        let dis = Generic.Array2Dimension(n, objn);
+        const objn = state.attrData.LayerData[LayerNum].atrObject.ObjectNum;
+        const dis = Generic.Array2Dimension(n, objn);
         let allD=0;
-        let pos = lbList.getAllValue();
+        const pos = lbList.getAllValue();
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < objn; j++) {
                 let d;
                 switch (pos[i].type) {
                     case DisType.Point: {
-                        let P = spatial.Get_Converted_XY(pos[i].xy, state.attrData.TotalData.ViewStyle.Zahyo);
+                        const P = spatial.Get_Converted_XY(pos[i].xy, state.attrData.TotalData.ViewStyle.Zahyo);
                         d = state.attrData.Distance_Kencode_Point(LayerNum, j, P);
                         break;
                     }
@@ -2687,7 +2687,7 @@ function frmMain_GetDistance(okEvent: () => void){
                         break;
                     }
                     case DisType.LayerDummy: {
-                        let L = state.attrData.LayerData[LayerNum];
+                        const L = state.attrData.LayerData[LayerNum];
                         if((L.Type==enmLayerType.DefPoint)||(L.Type==enmLayerType.Mesh)){
                             d = L.MapFileData.Distance_ObjectCenterP(L.atrObject.atrObjectData[j].CenterPoint, pos[i].objpos, L.Time);
                         }else{
@@ -2704,10 +2704,10 @@ function frmMain_GetDistance(okEvent: () => void){
                 allD += d;
             }
         }
-        let Unit = scaleUnit.getValue();
-        let ScaleRatio = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, Unit);
-        let lbText = lbList.getAllText();
-        let rv = Generic.getRadioCheckByValue("rbDisGet");
+        const Unit = scaleUnit.getValue();
+        const ScaleRatio = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, Unit);
+        const lbText = lbList.getAllText();
+        const rv = Generic.getRadioCheckByValue("rbDisGet");
         switch (rv) {
             case 0: {
                 //最小距離取得
@@ -2719,8 +2719,8 @@ function frmMain_GetDistance(okEvent: () => void){
                         tx = retV.title;
                         unt = retV.unit;
                         Note = retV.note;
-                        let Min_Dis = [];
-                        let Min_Dis_ObjName = [];
+                        const Min_Dis = [];
+                        const Min_Dis_ObjName = [];
                         for (let i = 0; i < objn; i++) {
                             Min_Dis[i] = allD;
                             Min_Dis_ObjName[i] = "";
@@ -2739,7 +2739,7 @@ function frmMain_GetDistance(okEvent: () => void){
                         }
 
                         state.attrData.Add_One_Data_Value(LayerNum, "最も近い地点／オブジェクト", "CAT", "距離測定機能で作成", Min_Dis_ObjName, false);
-                        let Data_Val_STR = [];
+                        const Data_Val_STR = [];
                         for (let i = 0; i < objn; i++) {
                             Data_Val_STR[i] = Number((Min_Dis[i] * ScaleRatio).toFixed(6));
                         }                        
@@ -2753,7 +2753,7 @@ function frmMain_GetDistance(okEvent: () => void){
             case 1: {
                 //全ての距離取得
                 for (let j = 0; j < n; j++) {
-                    let Data_Val_STR = [];
+                    const Data_Val_STR = [];
                     for (let i = 0; i < objn; i++) {
                         Data_Val_STR[i] = Number((dis[j][i] * ScaleRatio).toFixed(6));
                     }
@@ -2769,18 +2769,18 @@ function frmMain_GetDistance(okEvent: () => void){
 /**レイヤ内オブジェクト選択（一つ）defDummyF:初期値がダミーオブジェクトを表示 */
 function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: number, DefSelectObjectNumber: number,defDummyF: boolean, okEvent: (LayerNum: number, SelectObjcetNo: number, DummySelectF: boolean) => void) {
     const backDiv = Generic.set_backDiv("", "レイヤ内オブジェクト選択", 230, 170, true, true, buttonOK, 0.2, true);
-    let selectLayer = Generic.createNewWordSelect(backDiv, "レイヤ", undefined, DefLayerNum, "", 15, 40, 40, 150, 0, changeLayer, "");
+    const selectLayer = Generic.createNewWordSelect(backDiv, "レイヤ", undefined, DefLayerNum, "", 15, 40, 40, 150, 0, changeLayer, "");
     state.attrData.Set_LayerName_to(selectLayer, DefLayerNum, true, true, true, true);
 
-    let lstObject = Generic.createNewSelect(backDiv, [], -1, "", 15, 70, false, undefined, "width:200px;", 1, false);
+    const lstObject = Generic.createNewSelect(backDiv, [], -1, "", 15, 70, false, undefined, "width:200px;", 1, false);
 
-    let chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", (defDummyF & Dummy_Select_EnableF), 15, 105, undefined, changeLayer, "");
+    const chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", (defDummyF & Dummy_Select_EnableF), 15, 105, undefined, changeLayer, "");
  
     changeLayer(DefSelectObjectNumber);
 
     function changeLayer(v: Event | number) {
         v=(v==undefined)?0:v;
-        let L = selectLayer.selectedIndex;
+        const L = selectLayer.selectedIndex;
         if(chkDumyObjectSelect.checked==true){
             state.attrData.Set_DummyObjectName_to_selectBox(lstObject,L,v);
         }else{
@@ -2788,9 +2788,9 @@ function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: 
         }
     }
     function buttonOK() {
-        let L = selectLayer.selectedIndex;
-        let Dummy_SelectF = chkDumyObjectSelect.checked;
-        let selObj = lstObject.selectedIndex;
+        const L = selectLayer.selectedIndex;
+        const Dummy_SelectF = chkDumyObjectSelect.checked;
+        const selObj = lstObject.selectedIndex;
         if(selObj==-1){
             Generic.alert(undefined,"オブジェクトが選択されていません。");
             return;
@@ -2805,16 +2805,16 @@ function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: 
 /**レイヤ内オブジェクト選択（複数） */
 function frmMain_LayeObjectSelect(Dummy_Select_EnableF: boolean, DefLayerNum: number, DefSelectObjectNumber: number[] | undefined, okEvent: (LayerNum: number, DummyF: boolean, SelectObjcetNo: number[]) => void) {
     const backDiv = Generic.set_backDiv("", "レイヤ内オブジェクト選択", 270, 300, true, true, buttonOK, 0.2, true);
-    let selectLayer = Generic.createNewWordSelect(backDiv, "レイヤ", undefined, DefLayerNum, "", 15, 40, 40, 200, 0, changeLayer, "");
+    const selectLayer = Generic.createNewWordSelect(backDiv, "レイヤ", undefined, DefLayerNum, "", 15, 40, 40, 200, 0, changeLayer, "");
     state.attrData.Set_LayerName_to(selectLayer, state.attrData.TotalData.LV1.SelectedLayer);
-    let lbObject = new CheckedListBox(backDiv, "", [], 15, 65, 240, 170, false, undefined);
-    let chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", false, 15, 240, undefined, changeLayer, "");
+    const lbObject = new CheckedListBox(backDiv, "", [], 15, 65, 240, 170, false, undefined);
+    const chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", false, 15, 240, undefined, changeLayer, "");
     state.attrData.Set_ObjectName_to_checkedListBox(lbObject, DefLayerNum, DefSelectObjectNumber);
 
     chkDumyObjectSelect.disabled=!Dummy_Select_EnableF;
 
     function changeLayer() {
-        let L = selectLayer.selectedIndex;
+        const L = selectLayer.selectedIndex;
         if (chkDumyObjectSelect.checked == true) {
             state.attrData.Set_DummyObjectName_to_checkedListBox(lbObject, L, undefined);
         } else {
@@ -2822,9 +2822,9 @@ function frmMain_LayeObjectSelect(Dummy_Select_EnableF: boolean, DefLayerNum: nu
         }
     }
     function buttonOK() {
-        let L = selectLayer.selectedIndex;
-        let Dummy_SelectF = chkDumyObjectSelect.checked;
-        let checkv = lbObject.getChecked().checkedArray;
+        const L = selectLayer.selectedIndex;
+        const Dummy_SelectF = chkDumyObjectSelect.checked;
+        const checkv = lbObject.getChecked().checkedArray;
         Generic.clear_backDiv();
         okEvent(L, Dummy_SelectF, checkv);
     }
@@ -2834,14 +2834,14 @@ function frmMain_LayeObjectSelect(Dummy_Select_EnableF: boolean, DefLayerNum: nu
 function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, CancefFlag: boolean, LabelStr: string, okEvent: (retV: {title: string, unit: string, note: string}) => void) {
     const backDiv = Generic.set_backDiv("", "追加データ項目のタイトル設定", 395, 210, true, CancefFlag, buttonOK, 0.2, true);
     Generic.createNewDiv(backDiv, LabelStr, "", "", 15, 40, 320, 30, "", undefined);
-    let ttlBox = Generic.createNewWordTextInput(backDiv, "タイトル", "", TTL, "", 15, 70, 50, 250, undefined, "");
-    let unitBox = Generic.createNewWordTextInput(backDiv, "単位", "", UNT, "", 15, 100, 50, 250, undefined, "");
-    let noteBox = Generic.createNewWordTextInput(backDiv, "注", "", Note, "", 15, 130, 50, 250, undefined, "");
+    const ttlBox = Generic.createNewWordTextInput(backDiv, "タイトル", "", TTL, "", 15, 70, 50, 250, undefined, "");
+    const unitBox = Generic.createNewWordTextInput(backDiv, "単位", "", UNT, "", 15, 100, 50, 250, undefined, "");
+    const noteBox = Generic.createNewWordTextInput(backDiv, "注", "", Note, "", 15, 130, 50, 250, undefined, "");
     if ((UNT.toUpperCase() == "CAT") || (UNT.toUpperCase() == "STR")) {
         ttlBox.disabled = true;
     }
     function buttonOK(e: MouseEvent) {
-        let retV = { title: ttlBox.value, unit: unitBox.value, note: noteBox.value };
+        const retV = { title: ttlBox.value, unit: unitBox.value, note: noteBox.value };
         if (retV.title == "") {
             Generic.alert(new point(e.clientX, e.clientY), "タイトルを設定してください。");
             return;
@@ -2889,7 +2889,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             chkObjNameOut.disabled = (v == bufMode.ParentObject);
             registDiv.setVisibility((v != bufMode.ParentObject));
     });
-    let txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", "", "", 40, 130, undefined, 100, 
+    const txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", "", "", 40, 130, undefined, 100, 
         function(){Generic.checkRadioByValue("rbSearchMethod",bufMode.Distance);
         chkObjectCount.disabled = false;
         chkObjNameOut.disabled = false;
@@ -2897,7 +2897,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
      },"");
     const scaleList = Generic.getScaleUnit_for_select();
     const atv = state.attrData.TotalData.ViewStyle.MapScale;
-    let scaleUnit = Generic.createNewWordSelect(gbMethod, "取得単位", scaleList, atv.Unit, "", 80, 155, 55, 60, 0, undefined, "", "", false);
+    const scaleUnit = Generic.createNewWordSelect(gbMethod, "取得単位", scaleList, atv.Unit, "", 80, 155, 55, 60, 0, undefined, "", "", false);
     const chkConditionUse = Generic.createNewCheckBox(gbLayerMethod, "表示オブジェクト限定・属性検索の条件設定を使用する", "", false, 15, 280, 190, undefined, "");
 
     const gbOutout = Generic.createNewFrame(backDiv, "", "", 255, 40, 250, 320, "出力項目");
@@ -2935,23 +2935,23 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     setDataList();
 
     function setDataList(){
-        let L=cboHandledLayer.selectedIndex;
-        let n=Generic.getRadioCheckByValue("rbSearchMethod");
+        const L=cboHandledLayer.selectedIndex;
+        const n=Generic.getRadioCheckByValue("rbSearchMethod");
         state.attrData.Set_DataTitle_to_CheckedListBox(selectDataItem, L, false, true, true, true, (n==bufMode.ParentObject));
     }
 
     function checkError(e: MouseEvent) {
         let ef = false;
         let efm = "";
-        let L2 = cboHandledLayer.selectedIndex;
-        let rd = Generic.getRadioCheckByValue("rbSearchMethod");
+        const L2 = cboHandledLayer.selectedIndex;
+        const rd = Generic.getRadioCheckByValue("rbSearchMethod");
         if ((rd == bufMode.Distance) || (rd == bufMode.ObjectInPolygon)) {
             if ((chkObjNameOut.checked == false) && (chkObjectCount.checked == false) && (chkObjectData.checked == false)){
                 efm += "出力項目を指定してください。\n";
                 ef = true;
             }
         }
-        let Dis = Number(txtBuffer.value);
+        const Dis = Number(txtBuffer.value);
         if ((Dis <= 0) && (rd == bufMode.Distance)) {
             efm += "バッファ距離を指定してください。\n";
             ef = true
@@ -2981,16 +2981,16 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     }
     function Buffering(){
 
-        let L1  = LayerNum;
-        let L2  = cboHandledLayer.selectedIndex;
-        let ObjnL1  = state.attrData.Get_ObjectNum(L1);
-        let ObjnL2  = state.attrData.Get_ObjectNum(L2);
-        let Buf2_Obj_Str=[];
+        const L1  = LayerNum;
+        const L2  = cboHandledLayer.selectedIndex;
+        const ObjnL1  = state.attrData.Get_ObjectNum(L1);
+        const ObjnL2  = state.attrData.Get_ObjectNum(L2);
+        const Buf2_Obj_Str=[];
 
-        let BufferMode =Generic.getRadioCheckByValue("rbSearchMethod");
+        const BufferMode =Generic.getRadioCheckByValue("rbSearchMethod");
         let F_ObjectCount; 
-        let ObjCount_STR=[];
-        let ObjName_STR=[];
+        const ObjCount_STR=[];
+        const ObjName_STR=[];
         if((chkObjectCount.checked == true)&&(chkObjectCount.disabled == false) ){
             F_ObjectCount = true;
         }else{
@@ -3007,7 +3007,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let F_ObjectData ;
         let RegistMode;
         let AggData: number[] = [];
-        let Inner_Object_Num: number[] = [];
+        const Inner_Object_Num: number[] = [];
         let Shukei_V;
         let Add_Data: number[] = [];
         if(chkObjectData.checked == true ){
@@ -3018,7 +3018,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             let PlusDataNum  = 0;
             for(let i=0 ;i<  Rdn ;i++){
                 if((state.attrData.Get_DataType(L2, Add_Data[i]) == enmAttDataType.Category)&&((BufferMode == bufMode.Distance)||(BufferMode == bufMode.ObjectInPolygon)) ){
-                    let pn  = state.attrData.Get_DivNum(L2, Add_Data[i]);
+                    const pn  = state.attrData.Get_DivNum(L2, Add_Data[i]);
                     PlusDataNum += pn + 1;
                 }else{
                      PlusDataNum ++;
@@ -3030,26 +3030,26 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         }
 
         //----main
-        let bufUnit  = scaleUnit.getValue();
-        let ScaleRatio  = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, bufUnit);
-        let Dis  = Number(txtBuffer.value);
-        let chkConF  = chkConditionUse.checked;
+        const bufUnit  = scaleUnit.getValue();
+        const ScaleRatio  = Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, bufUnit);
+        const Dis  = Number(txtBuffer.value);
+        const chkConF  = chkConditionUse.checked;
 
         for (let i = 0; i < ObjnL1; i++) {  //現在のレイヤのオブジェクトの数
             let BFN = 0
-            let InObjNameList = [];
+            const InObjNameList = [];
             if (F_ObjectData == true) {
                 AggData = [];
                 for (let k = 0; k < Rdn; k++) {
-                    let dt=Add_Data[k];
+                    const dt=Add_Data[k];
                     if ((state.attrData.Get_DataType(L2, dt) == enmAttDataType.Category) && ((BufferMode == bufMode.Distance) || (BufferMode == bufMode.ObjectInPolygon))) {
-                        let cdata = new category_data();
-                        let pn = state.attrData.Get_DivNum(L2, dt);
+                        const cdata = new category_data();
+                        const pn = state.attrData.Get_DivNum(L2, dt);
                         cdata.CateCount.length = pn;
                         cdata.CateCount.fill(0);
                         AggData.push(cdata);
                     } else {
-                        let ndata = new normal_data();
+                        const ndata = new normal_data();
                         ndata.max = state.attrData.LayerData[L2].atrData.Data[dt].Statistics.Min;
                         ndata.min = state.attrData.LayerData[L2].atrData.Data[dt].Statistics.Max;;
                         AggData.push(ndata);
@@ -3072,7 +3072,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                     switch (BufferMode) {
                         case bufMode.Distance: {
                             //オブジェクト間の距離測定
-                            let D = state.attrData.Distance_Kencode_Object(i, j, L1, L2);
+                            const D = state.attrData.Distance_Kencode_Object(i, j, L1, L2);
                             if (D <= Dis / ScaleRatio) {
                                 f = true;
                             } else {
@@ -3082,7 +3082,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                         }
                         case bufMode.ObjectInPolygon: {
                             //オブジェクトの内外判定
-                            let OP = state.attrData.Get_CenterP(L2, j);
+                            const OP = state.attrData.Get_CenterP(L2, j);
                             f = state.attrData.Check_Point_in_Kencode_OneObject(L1, i, OP);
                             break;
                         }
@@ -3105,8 +3105,8 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                                     //データの集計
                                     for (let k = 0; k < Rdn; k++) {
                                         if (state.attrData.Get_DataType(L2, Add_Data[k]) == enmAttDataType.Category) {
-                                            let ct = state.attrData.Get_Categoly(L2, Add_Data[k], j)
-                                            let cdata = AggData[k];
+                                            const ct = state.attrData.Get_Categoly(L2, Add_Data[k], j)
+                                            const cdata = AggData[k];
                                             if (ct != -1) {
                                                 cdata.CateCount[ct]++;
                                             } else {
@@ -3114,8 +3114,8 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                                             }
                                         } else {
                                             if (state.attrData.Check_Missing_Value(L2, Add_Data[k], j) == false) {
-                                                let V = Number(state.attrData.Get_Data_Value(L2, Add_Data[k], j, ""));
-                                                let nd = AggData[k];
+                                                const V = Number(state.attrData.Get_Data_Value(L2, Add_Data[k], j, ""));
+                                                const nd = AggData[k];
                                                 nd.add += V;
                                                 nd.add2 += V ** 2;
                                                 if (V < nd.min) {
@@ -3160,7 +3160,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                 let n  = 0;
                 for(let k  = 0  ;k< Rdn ;k++){
                     if(state.attrData.Get_DataType(L2, Add_Data[k]) == enmAttDataType.Category ){
-                        let cdata  = AggData[k];
+                        const cdata  = AggData[k];
                         for(let k2  = 0  ;k2< cdata.CateCount.length ;k2++){
                             Shukei_V[n][i]= cdata.CateCount[k2].toString();
                             n ++;
@@ -3170,7 +3170,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                             //含まれるオブジェクトがない場合は欠損値
                             Shukei_V[n][i] = undefined;
                         }else{
-                            let nd =AggData[k];
+                            const nd =AggData[k];
                             let V ;
                             switch( RegistMode){
                                 case registMode.average:
@@ -3236,7 +3236,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             let UNT;
             let n = 0;
             for (let i = 0; i < Rdn; i++) {
-                let k = Add_Data[i]
+                const k = Add_Data[i]
                 TTL = state.attrData.LayerData[L2].Name + "：" + state.attrData.Get_DataTitle(L2, k, false);
                 UNT = state.attrData.Get_DataUnit(L2, k);
                 if (BufferMode == bufMode.Distance) {
@@ -3244,8 +3244,8 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                 }
                 if ((BufferMode == bufMode.Distance) || (BufferMode == bufMode.ObjectInPolygon)) {
                     if (state.attrData.Get_DataType(L2, k) == enmAttDataType.Category) {
-                        let PData = state.attrData.LayerData[L2].atrData.Data[k];
-                        let Class_div = PData.SoloModeViewSettings.Class_Div;
+                        const PData = state.attrData.LayerData[L2].atrData.Data[k];
+                        const Class_div = PData.SoloModeViewSettings.Class_Div;
                         let ctn = state.attrData.Get_DivNum(L2, k);
                         if (state.attrData.Get_DataMissingNum(L2, k) != 0) {
                             ctn++;
@@ -3257,8 +3257,8 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                             } else {
                                 fu = Class_div[j].Value;
                             }
-                            let TTL2 = TTL + "：" + fu;
-                            let Data_Val_STR = [];
+                            const TTL2 = TTL + "：" + fu;
+                            const Data_Val_STR = [];
                             for (let k2 = 0; k2 < ObjnL1; k2++) {
                                 Data_Val_STR.push(Shukei_V[n + j][k2]);
                             }
@@ -3267,7 +3267,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                         n += state.attrData.Get_DivNum(L2, k) + 1;
                     } else {
                         TTL += "：" + cboRegistMode.getText();
-                        let Data_Val_STR = [];
+                        const Data_Val_STR = [];
                         for (let j = 0; j < ObjnL1; j++) {
                             Data_Val_STR.push(Shukei_V[n][j]);
                         }
@@ -3278,7 +3278,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                         n++;
                     }
                 } else {
-                    let Data_Val_STR = [];
+                    const Data_Val_STR = [];
                     for (let j = 0; j < ObjnL1; j++) {
                         Data_Val_STR.push(Shukei_V[i][j]);
                     }
@@ -3300,7 +3300,7 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
 
     Generic.createNewButton(bbox, "MANDARA提供地図ファイル追加", "", 15, 40, addMandaraMapOn, "");
 
-    let getFile = function (file: File) {   
+    const getFile = function (file: File) {   
         //地図ファイル読み込み（ボタン、ドロップ共通）
         Generic.readingIcon("地図ファイル読み込み");
         //readingScreen.open("地図ファイル読み込み");
@@ -3311,7 +3311,7 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
             //readingScreen.close();
             Generic.clear_backDiv();
             Generic.clear_backDiv();
-            let key = Object.keys(data)[0];
+            const key = Object.keys(data)[0];
             call(JSON.parse(Generic.utf8ArrayToStr(data[key])), file.name);
         }
         function unzipError(err: Error) {
@@ -3351,7 +3351,7 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
     }, false);
 
     function addMandaraMapOn(e: MouseEvent){
-        let popmenu = [{ caption: "JAPAN.mpfj", event: mapRead1 },
+        const popmenu = [{ caption: "JAPAN.mpfj", event: mapRead1 },
         { caption: "日本緯度経度.mpfj", event: mapRead1 },
         { caption: "WORLD.mpfj", event: mapRead1 },
         { caption: "日本市町村緯度経度.mpfj", event: mapRead2 },
@@ -3364,13 +3364,13 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
         Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
         
         function mapRead1(obj: {caption: string}) {
-            let fup = obj.caption.toUpperCase();
+            const fup = obj.caption.toUpperCase();
             Generic.clear_backDiv();
             call(state.preReadMapFile[fup], fup);
         }
         function mapRead2(obj: {caption: string}) {
             let serverFile = "";
-            let fup = obj.caption.toUpperCase();
+            const fup = obj.caption.toUpperCase();
             if (state.preReadMapFile[fup]) {
                 Generic.clear_backDiv();
                 call(state.preReadMapFile[fup], fup);
@@ -3419,7 +3419,7 @@ class strFrmCopyObjectName_init_parameter_data {
 
 /**オブジェクト名コピー */
 function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
-    let condidateInfo: unknown =function(){
+    const condidateInfo: unknown =function(){
         this.ObjCode;
         this.TimeStac;
     }
@@ -3440,27 +3440,27 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
     const cbPolygonShapeEdit = Generic.createNewCheckBox(gbShape, "面", "", initParapeter.polygonShapeChecked, 110, 15, 30, change, "");
     gbShape.disabled = !initParapeter.ShapeChangeEnabled;
     Generic.createNewSpan(backDiv, "オブジェクトグループ", "", "", 10, 180, "", undefined);
-    let lObjGList = [];
+    const lObjGList = [];
     for (let i = 0; i < MapData.Map.OBKNum; i++) {
         lObjGList.push({ text: MapData.ObjectKind[i].Name, checked: initParapeter.ObjectGroupChecked[i] });
     }
-    let lstObjGroup=new CheckedListBox(backDiv, "", lObjGList, 20, 200, 160, 110,false, change, "");
+    const lstObjGroup=new CheckedListBox(backDiv, "", lObjGList, 20, 200, 160, 110,false, change, "");
     lstObjGroup.disabled=!initParapeter.ObjectGroupEnabled;
     Generic.createNewSpan(backDiv, "時期限定", "", "", 10, 330, "", "");
     const dbdtpTime = Generic.createNewInput(backDiv, "date", initParapeter.Time.toInputDate(), "", 20, 350, "", "width:140px");
     dbdtpTime.disabled = !initParapeter.TimeChangeEnabled;
-    let btnSearch=Generic.createNewButton(backDiv, "検索", "", 190, 60, change, "width:50px");
+    const btnSearch=Generic.createNewButton(backDiv, "検索", "", 190, 60, change, "width:50px");
     Generic.createNewSpan(backDiv, "検索結果", "", "", 195, 100, "", "");
-    let lbList = new CheckedListBox(backDiv, "", [], 195, 120, 210, 240, false, undefined,"");
+    const lbList = new CheckedListBox(backDiv, "", [], 195, 120, 210, 240, false, undefined,"");
     Generic.createNewButton(backDiv, "コピー", "", 220, 375, copy, "width:100px");
 
     let candidateObject: unknown[] =[];// List(Of condidateInfo)
 
     function change(){
 
-        let SelF=new Array(MapData.Map.Kend).fill(false); 
+        const SelF=new Array(MapData.Map.Kend).fill(false); 
 
-        let tx0  = objNameBox.value;
+        const tx0  = objNameBox.value;
         let tx  = "";
         for (let i = 0; i < tx0.length; i++) {
             switch (tx0.charCodeAt(i)) {
@@ -3474,25 +3474,25 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
             }
         }
         objNameBox.value = tx;
-        let retComp=Generic.ObjName_Kanji_Compatible(tx);
+        const retComp=Generic.ObjName_Kanji_Compatible(tx);
         tx = retComp.newObjname;
-        let ChkShapeBoxSelected=new Array(2); 
+        const ChkShapeBoxSelected=new Array(2); 
 
         ChkShapeBoxSelected[enmShape.PointShape] = cbPointShapeEdit.checked;
         ChkShapeBoxSelected[enmShape.LineShape] = cbLineShapeEdit.checked;
         ChkShapeBoxSelected[enmShape.PolygonShape] = cbPolygonShapeEdit.checked;
 
         candidateObject = [];
-        let Time  = clsTime.GetFromInputDate(dbdtpTime.value);
+        const Time  = clsTime.GetFromInputDate(dbdtpTime.value);
         for(let Smode  = 0 ;Smode<= 1;Smode++){
             for (let i = 0; i < MapData.Map.Kend; i++) {
-                let mpObj = MapData.MPObj[i];
+                const mpObj = MapData.MPObj[i];
                 if ((SelF[i] == false) && (lstObjGroup.getCheckedStatus(mpObj.Kind) == true) && (ChkShapeBoxSelected[mpObj.Shape] == true)) {
-                    let f = false;
+                    const f = false;
                     for (let j = 0; j < mpObj.NumOfNameTime; j++) {
-                        let mpobjN = mpObj.NameTimeSTC[j];
+                        const mpobjN = mpObj.NameTimeSTC[j];
                         if (clsTime.checkDurationIn(mpobjN.SETime, Time) == true) {
-                            let objComp = mpobjN.NamesList.concat();
+                            const objComp = mpobjN.NamesList.concat();
                             for (let k = 0; k < mpobjN.NamesList.length; k++) {
                                 objComp[k] = Generic.ObjName_Kanji_Compatible(objComp[k]).newObjname;
                             }
@@ -3515,7 +3515,7 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
                             }
                             if (okf == true) {
                                 SelF[i] = true;
-                                let obj = new condidateInfo();
+                                const obj = new condidateInfo();
                                 obj.ObjCode = i;
                                 obj.TimeStac = j;
                                 candidateObject.push(obj);
@@ -3526,19 +3526,19 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
             }
         }
         lbList.removeAll();
-        let n  = candidateObject.length;
+        const n  = candidateObject.length;
         if(n == 0 ){
-            let msgText = "検索条件に当てはまるオブジェクトは見つかりませんでした。"
+            const msgText = "検索条件に当てはまるオブジェクトは見つかりませんでした。"
             Generic.alert(undefined,msgText);
         }else{
-            let Values =[];
+            const Values =[];
             
             for(let i  = 0;i<n ;i++){
-                let oname  = MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[0];
+                const oname  = MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[0];
                 Values.push(oname);
             }
             for(let i  = 0;i<n ;i++){
-                let mn= MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac];
+                const mn= MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac];
                 lbList.addList([{ text: mn.connectNames(), checked: true }], lbList.length);
             }
         }
@@ -3546,10 +3546,10 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
 
     function copy(e: Event){
         let maxOname=0;
-        let copyObjname=[];
+        const copyObjname=[];
         for (let i = 0; i < MapData.Map.OBKNum; i++) {
             if (lstObjGroup.getCheckedStatus(i) == true) {
-                let onl=MapData.ObjectKind[i].ObjectNameList;
+                const onl=MapData.ObjectKind[i].ObjectNameList;
                 maxOname = Math.max(maxOname, onl.length);
                 for (let j = 0; j < onl.length; j++) {
                     if (copyObjname[j] == undefined) {
@@ -3560,7 +3560,7 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
                 }
             }
         }
-        let popmenu =[];
+        const popmenu =[];
         for(let i=0;i<maxOname;i++){
             popmenu.push({ caption: copyObjname[i],value:i, event: copyMode });
         }
@@ -3582,14 +3582,14 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
 /**ダミーオブジェクトの設定 */
 function frmPrint_DummyObjectGroup(){
 
-    let Dummy: unknown[] = [];//strDummyObjectInfo
-    let DummyOBGroup: unknown[] = [];
-    let MapFileList = state.attrData.GetMapFileName();
-    let PolygonDummy_ClipSet_F: unknown[] = [];
-    let DummyObjectPointMark: { [key: string]: unknown[] } = {};//strDummyObjectPointMark_Info
+    const Dummy: unknown[] = [];//strDummyObjectInfo
+    const DummyOBGroup: unknown[] = [];
+    const MapFileList = state.attrData.GetMapFileName();
+    const PolygonDummy_ClipSet_F: unknown[] = [];
+    const DummyObjectPointMark: { [key: string]: unknown[] } = {};//strDummyObjectPointMark_Info
     let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
     for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
-        let al = state.attrData.LayerData[i];
+        const al = state.attrData.LayerData[i];
         Dummy[i] = Generic.ArrayClone(al.Dummy);
         DummyOBGroup[i] = state.attrData.getDummyObjGroupArray(i).DummyOBGArray;
         PolygonDummy_ClipSet_F[i] = al.LayerModeViewSettings.PolygonDummy_ClipSet_F
@@ -3597,25 +3597,25 @@ function frmPrint_DummyObjectGroup(){
 
     const backDiv = Generic.set_backDiv("", "ダミーオブジェクト・グループ変更", 650, 430, true, true, buttonOK, 0.2, true, true);
     const gbDummyFrame=Generic.createNewFrame(backDiv,"","",15,40,400,370,"ダミーオブジェクト・グループ");
-    let selLayer = Generic.createNewWordSelect(gbDummyFrame,"レイヤ", undefined, -1, "", 10, 30,50,150,0,  setDummyObjectList,"", "");
+    const selLayer = Generic.createNewWordSelect(gbDummyFrame,"レイヤ", undefined, -1, "", 10, 30,50,150,0,  setDummyObjectList,"", "");
     state.attrData.Set_LayerName_to(selLayer,LayerNum);
 
-    let gbDummyList = Generic.createNewFrame(gbDummyFrame, "", "", 10, 70, 195, 275, "ダミーオブジェクト");
+    const gbDummyList = Generic.createNewFrame(gbDummyFrame, "", "", 10, 70, 195, 275, "ダミーオブジェクト");
     lstDummyItem = new ListBox(gbDummyList, "", [], 10, 15, 165, 125, undefined, "");
     Generic.createNewButton(gbDummyList, "削除", "", 115, 150,
         function () {
-            let n = lstDummyItem.selectedIndex;
+            const n = lstDummyItem.selectedIndex;
             if (n != -1) {
                 Dummy[selLayer.selectedIndex].splice(n, 1);
                 lstDummyItem.removeList(n, 1);
             }
         }, "width:60px");
-    let txtDummy = Generic.createNewInput(gbDummyList, "text", "", "", 10, 185, undefined, "width:100px");
+    const txtDummy = Generic.createNewInput(gbDummyList, "text", "", "", 10, 185, undefined, "width:100px");
     txtDummy.addEventListener('keydown',txtKeyDown) ;
      function txtKeyDown (e: KeyboardEvent) {if (e.keyCode == 13) { btnAdd.click(); } }
-    let btnAdd=Generic.createNewButton(gbDummyList, "追加", "", 115, 180,
+    const btnAdd=Generic.createNewButton(gbDummyList, "追加", "", 115, 180,
         function (e: MouseEvent) {
-            let tx = txtDummy.value;
+            const tx = txtDummy.value;
             if (tx == "") {
                 txtDummy.removeEventListener('keydown',txtKeyDown) ;
                 Generic.alert(undefined, "オブジェクト名を入力して下さい。",function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
@@ -3629,14 +3629,14 @@ function frmPrint_DummyObjectGroup(){
 
         }, "width:60px");
     Generic.createNewButton(gbDummyList, "オブジェクト名コピーパネル", "", 10, 210, function (e: MouseEvent) {
-        let mp=state.attrData.LayerData[LayerNum].MapFileData;
-        let init_para = new strFrmCopyObjectName_init_parameter_data();
+        const mp=state.attrData.LayerData[LayerNum].MapFileData;
+        const init_para = new strFrmCopyObjectName_init_parameter_data();
         init_para.Time = state.attrData.LayerData[LayerNum].Time;
         init_para.ObjectGroupChecked.length = mp.Map.OBKNum;
         init_para.ObjectGroupChecked.fill(true);
         init_para.TimeChangeEnabled = false;
         frmCopyObjectName(mp,init_para,function (copyData: string) {
-            let str=copyData.split("\n");
+            const str=copyData.split("\n");
             AddDummyObject(str);
         })
     }, "width:170px;font-size:11px");
@@ -3644,10 +3644,10 @@ function frmPrint_DummyObjectGroup(){
         document.body.removeEventListener("contextmenu",contextMenuPrevent);
         Generic.outerPaste(function(val: string){
             document.body.addEventListener("contextmenu",contextMenuPrevent);
-            let strlst=val.split("\n");
-            let oveCheck=Generic.getArrayContentsList(strlst);
-            let str=[];
-            for(let i in oveCheck){
+            const strlst=val.split("\n");
+            const oveCheck=Generic.getArrayContentsList(strlst);
+            const str=[];
+            for(const i in oveCheck){
                 str.push(oveCheck[i].value);
             }
             AddDummyObject(str);
@@ -3658,8 +3658,8 @@ function frmPrint_DummyObjectGroup(){
 
      }, "width:170px;");
 
-    let gbDummyOBGList = Generic.createNewFrame(gbDummyFrame, "", "", 215, 70, 175, 150, "ダミーオブジェクトグループ");
-    let chklDummyGroup=new CheckedListBox(gbDummyOBGList, "", [], 10, 15,150, 130, false,function(){
+    const gbDummyOBGList = Generic.createNewFrame(gbDummyFrame, "", "", 215, 70, 175, 150, "ダミーオブジェクトグループ");
+    const chklDummyGroup=new CheckedListBox(gbDummyOBGList, "", [], 10, 15,150, 130, false,function(){
         DummyOBGroup[LayerNum] = chklDummyGroup.getChecked().checkedStatus;
     },"");
 
@@ -3669,8 +3669,8 @@ function frmPrint_DummyObjectGroup(){
     },"");
     const chkDummy_Size=Generic.createNewCheckBox(gbDummyFrame,"ダミーオブジェクトを画面領域の計算対象に含む","",state.attrData.TotalData.ViewStyle.Dummy_Size_Flag,215,300,150,function(){},"");
 
-    let gbPointMark=Generic.createNewFrame(backDiv, "", "", 425, 40, 205, 300, "点オブジェクトの記号設定");
-    let list = [];
+    const gbPointMark=Generic.createNewFrame(backDiv, "", "", 425, 40, 205, 300, "点オブジェクトの記号設定");
+    const list = [];
     for (let i = 0; i < MapFileList.length; i++) {
         list.push({ value: MapFileList[i], text: MapFileList[i] });
     }
@@ -3680,31 +3680,31 @@ function frmPrint_DummyObjectGroup(){
 
     setDummyObjectList();
     
-    let ado=state.attrData.TotalData.ViewStyle.DummyObjectPointMark;
-    for(let key in ado){
+    const ado=state.attrData.TotalData.ViewStyle.DummyObjectPointMark;
+    for(const key in ado){
         DummyObjectPointMark[key]=[];
-        for (let j in ado[key]){
+        for (const j in ado[key]){
             DummyObjectPointMark[key].push(ado[key][j].Clone());
         }
     }
     showPointMark();
 
     function showPointMark() {
-        let lineHeight = 30;
+        const lineHeight = 30;
         let DOPMark = DummyObjectPointMark[selMapFIle.getText()];
         if(DOPMark==undefined){
             DOPMark=[];
         }
-        let DOPnum = DOPMark.length;
+        const DOPnum = DOPMark.length;
         pnlPointMarkList.style.height = (DOPnum * lineHeight + 10).px();
         for (let i = 0; i < DOPnum; i++) {
-            let lk = DOPMark[i];
-            let y = i * lineHeight + 3;
-            let lc = Generic.createNewWordDivCanvas(pnlPointMarkList, "", lk.ObjectKindName, 10, y, 100, inePatternClick);
+            const lk = DOPMark[i];
+            const y = i * lineHeight + 3;
+            const lc = Generic.createNewWordDivCanvas(pnlPointMarkList, "", lk.ObjectKindName, 10, y, 100, inePatternClick);
             lc.tag = i;
             state.attrData.Draw_Sample_Mark_Box(lc, DOPMark[i].mark);
             function inePatternClick(e: MouseEvent) {
-                let n = e.target.tag;
+                const n = e.target.tag;
                 clsMarkSet(e, function (newMark: Mark) {
                     DOPMark[n].mark = newMark;
                     state.attrData.Draw_Sample_Mark_Box(lc, newMark);
@@ -3716,11 +3716,11 @@ function frmPrint_DummyObjectGroup(){
     function AddDummyObject(str: string[]){
         let emes  = "";
         let emesUsed  = "";
-        let OKCodeName = [] //strDummyObjectName_and_Code)
-        for (let i in str) {
-            let objName = str[i];
+        const OKCodeName = [] //strDummyObjectName_and_Code)
+        for (const i in str) {
+            const objName = str[i];
             if (objName != "") {
-                let code = state.attrData.Get_ObjectCode_from_ObjName(LayerNum, objName);
+                const code = state.attrData.Get_ObjectCode_from_ObjName(LayerNum, objName);
                 if (code == -1) {
                     emes += "/" + objName;
                 } else {
@@ -3733,7 +3733,7 @@ function frmPrint_DummyObjectGroup(){
                         }
                     }
                     if (f == true) {
-                        let d = new strDummyObjectName_and_Code();
+                        const d = new strDummyObjectName_and_Code();
                         d.code = code;
                         d.Name = objName;
                         OKCodeName.push(d);
@@ -3762,7 +3762,7 @@ function frmPrint_DummyObjectGroup(){
         for (let i = 0; i < Dummy[LayerNum].length; i++) {
             lstDummyItem.add({ text: Dummy[LayerNum][i].Name, value: Dummy[LayerNum][i].code });
         }
-        let alm = state.attrData.LayerData[LayerNum].MapFileData;
+        const alm = state.attrData.LayerData[LayerNum].MapFileData;
         for (let i = 0; i < alm.Map.OBKNum; i++) {
             chklDummyGroup.add({ text: alm.ObjectKind[i].Name, value: i, checked: DummyOBGroup[LayerNum][i] });
         }
@@ -3772,14 +3772,14 @@ function frmPrint_DummyObjectGroup(){
     function buttonOK() {
         Generic.clear_backDiv();
         for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
-            let al = state.attrData.LayerData[i];
+            const al = state.attrData.LayerData[i];
             al.Dummy = Generic.ArrayClone(Dummy[i]);
             al.DummyGroup=Generic.Get_Specified_Value_Array(DummyOBGroup[i],true);
             al.LayerModeViewSettings.PolygonDummy_ClipSet_F = PolygonDummy_ClipSet_F[i];
         }
-        let ado=state.attrData.TotalData.ViewStyle.DummyObjectPointMark;
-        for(let key in DummyObjectPointMark){
-            for (let j in DummyObjectPointMark[key]){
+        const ado=state.attrData.TotalData.ViewStyle.DummyObjectPointMark;
+        for(const key in DummyObjectPointMark){
+            for (const j in DummyObjectPointMark[key]){
                 ado[key][j]=DummyObjectPointMark[key][j];
             }
         }

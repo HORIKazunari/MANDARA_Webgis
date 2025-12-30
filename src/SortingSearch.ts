@@ -42,7 +42,7 @@ export class clsSortingSearch {
     
     SameValue_Array(SameValueArray: number[]) {
         /// <summary>データ中の同じ値が含まれているケースを配列で返す</summary>
-        let n = this.Get_Same_value(SameValueArray);
+        const n = this.Get_Same_value(SameValueArray);
         return n;
     }
     

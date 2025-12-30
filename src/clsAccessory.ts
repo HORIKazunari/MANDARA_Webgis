@@ -12,7 +12,7 @@ export class clsAccessory {
         const LFont  = av.MapLegend.Base.Font;
         const LPC = state.attrData.Get_AllMapLineKind();
         const LineKind_Used = state.attrData.Get_LineKindUsedList();
-        let Use_Line_Number=[]; 
+        const Use_Line_Number=[]; 
         for(let i  = 0 ;i< LPC.length ;i++){
             if((LineKind_Used[i] == true)&&(av.MapLegend.Line_DummyKind.Line_Visible_Number_STR.mid(i, 1) == "1" )){
                 Use_Line_Number.push(i);
@@ -32,7 +32,7 @@ export class clsAccessory {
         HeadBoxSize.width = Xsize;
         HeadBoxSize.height = Ysize;
 
-        let C_Rect  = new rectangle(ALP, HeadBoxSize);
+        const C_Rect  = new rectangle(ALP, HeadBoxSize);
         if(SizeGetOnlyF == true ){
             return false;
         }
@@ -47,7 +47,7 @@ export class clsAccessory {
                     const x3  = C_Rect.left + state.attrData.Radius(16, 1, 1)
                     switch( av.MapLegend.Line_DummyKind.Line_Pattern){
                         case enmCircleMDLegendLine.Zigzag:{
-                            let pxy=[];
+                            const pxy=[];
                             for(let j  = 0 ; j<=3;j++){
                                 pxy.push(new point(C_Rect.left + state.attrData.Radius(4.5, 1, 1) * j, Y + UH / 4 + UH / 2 * (j % 2)));
                             }
@@ -75,9 +75,9 @@ export class clsAccessory {
         let mxw1 = 0;
         let mxw2 = 0;
         let Ys = 0;
-        for (let i in state.attrData.TempData.PointObjectKindUsedStack) {
-            let pok = state.attrData.TempData.PointObjectKindUsedStack[i];
-            let w1 = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
+        for (const i in state.attrData.TempData.PointObjectKindUsedStack) {
+            const pok = state.attrData.TempData.PointObjectKindUsedStack[i];
+            const w1 = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
             mxw1 = Math.max(mxw1, w1);
             mxw2 = Math.max(mxw2, g.measureText(pok.ObjectKindName).width);
             Ys += Math.max(UH, w1);
@@ -90,13 +90,13 @@ export class clsAccessory {
         if (SizeGetOnlyF == true) {
             return false;
         }
-        let C_Rect = new rectangle(ALP, HeadBoxSize);
+        const C_Rect = new rectangle(ALP, HeadBoxSize);
         if (state.attrData.Check_Screen_In(C_Rect) == false) {
             return false;
         }
         state.attrData.Draw_Tile_RoundBox(g, C_Rect, av.MapLegend.Line_DummyKind.Back, 0);
         Ys = 0;
-        for (let i in state.attrData.TempData.PointObjectKindUsedStack) {
+        for (const i in state.attrData.TempData.PointObjectKindUsedStack) {
             const pok = state.attrData.TempData.PointObjectKindUsedStack[i];
             const r = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
             const s = Math.max(r, UH);
@@ -121,13 +121,13 @@ export class clsAccessory {
         const state = appState();
 
 
-        let av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle;
         if (av.ScrData.ThreeDMode.Set3D_F == true) {
             return;
         }
-        let MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon;
-        let iiv = av.LatLonLine_Print.Lat_Interval;
-        let s1 = Math.floor(MapIdoKedoRect.top / iiv) ;
+        const MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon;
+        const iiv = av.LatLonLine_Print.Lat_Interval;
+        const s1 = Math.floor(MapIdoKedoRect.top / iiv) ;
         let Start_Ido = iiv * s1;
         let End_Ido = iiv * Math.floor(MapIdoKedoRect.bottom / iiv) + iiv;
         let mer85f = false;
@@ -141,7 +141,7 @@ export class clsAccessory {
             }
         }
 
-        let ikv = av.LatLonLine_Print.Lon_Interval;
+        const ikv = av.LatLonLine_Print.Lon_Interval;
         let s2;
         if (ikv > 2) {
             if (MapIdoKedoRect.left > 0) {
@@ -153,7 +153,7 @@ export class clsAccessory {
             s2 = (MapIdoKedoRect.left > 0) ? Math.floor(MapIdoKedoRect.left / ikv) : Math.ceil(MapIdoKedoRect.left / ikv); 
         }
 
-        let Start_Kedo = ikv * s2;
+        const Start_Kedo = ikv * s2;
         let End_kedo;
         if (ikv > 2) {
             End_kedo = Math.round(MapIdoKedoRect.right / ikv) * ikv;
@@ -179,7 +179,7 @@ export class clsAccessory {
             }
         }
         for (let i = 0; i < idon; i++) {
-            let Ido = Start_Ido + i * iiv;
+            const Ido = Start_Ido + i * iiv;
             switch (av.Zahyo.Projection) {
                 case enmProjection_Info.prjSanson:
                 case enmProjection_Info.prjSeikyoEntou:
@@ -188,10 +188,10 @@ export class clsAccessory {
                 case enmProjection_Info.prjLambertSeisekiEntou:
                 case enmProjection_Info.prjMollweide:
                 case enmProjection_Info.prjEckert4: {
-                    let P1 = spatial.Get_Converted_XY(new point(Start_Kedo, Ido), av.Zahyo);
-                    let P2 = spatial.Get_Converted_XY(new point(End_kedo, Ido), av.Zahyo);
-                    let PC1 = av.ScrData.getSxSy(P1);
-                    let PC2 = av.ScrData.getSxSy(P2);
+                    const P1 = spatial.Get_Converted_XY(new point(Start_Kedo, Ido), av.Zahyo);
+                    const P2 = spatial.Get_Converted_XY(new point(End_kedo, Ido), av.Zahyo);
+                    const PC1 = av.ScrData.getSxSy(P1);
+                    const PC2 = av.ScrData.getSxSy(P2);
                     let lpt = av.LatLonLine_Print.LPat
                     if ((i == 0) || (i == idon - 1)) {
                         if ((Ido == End_Ido) || (i == 0)) {
@@ -208,10 +208,10 @@ export class clsAccessory {
         }
         if (av.Zahyo.Projection == enmProjection_Info.prjMercator) {
             if (End_Ido == 85) {
-                let P1 = spatial.Get_Converted_XY(new point(Start_Kedo, End_Ido), av.Zahyo);
-                let P2 = spatial.Get_Converted_XY(new point(End_kedo, End_Ido), av.Zahyo);
-                let PC1 = av.ScrData.getSxSy(P1);
-                let PC2 = av.ScrData.getSxSy(P2);
+                const P1 = spatial.Get_Converted_XY(new point(Start_Kedo, End_Ido), av.Zahyo);
+                const P2 = spatial.Get_Converted_XY(new point(End_kedo, End_Ido), av.Zahyo);
+                const PC1 = av.ScrData.getSxSy(P1);
+                const PC2 = av.ScrData.getSxSy(P2);
                 clsDrawLine.Line?.(g, av.LatLonLine_Print.OuterPat, PC1, PC2, av.ScrData);
             }
         }
@@ -231,7 +231,7 @@ export class clsAccessory {
             }
         }
         for (let i = 0; i < kedon; i++) {
-            let Kedo = Start_Kedo + i * ikv;
+            const Kedo = Start_Kedo + i * ikv;
             let lpt = av.LatLonLine_Print.LPat;
             if ((i == 0) || (i == kedon - 1)) {
                 lpt = av.LatLonLine_Print.OuterPat;
@@ -241,35 +241,35 @@ export class clsAccessory {
                 case enmProjection_Info.prjSanson:
                 case enmProjection_Info.prjMollweide:
                 case enmProjection_Info.prjEckert4: {
-                    let P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
-                    let P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
-                    let PC1 = av.ScrData.getSxSy(P1);
-                    let PC2 = av.ScrData.getSxSy(P2);
+                    const P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
+                    const P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
+                    const PC1 = av.ScrData.getSxSy(P1);
+                    const PC2 = av.ScrData.getSxSy(P2);
                     if ((PC1.x == PC2.x) && (End_Ido * Start_Ido >= 0)) {
                         clsDrawLine.Line?.(g, av.LatLonLine_Print.LPat, PC1, PC2, av.ScrData);
                     } else if (End_Ido * Start_Ido >= 0) {
                         //赤道を挟まない場合
-                        let w = Math.abs(PC2.x - PC1.x);
-                        let H = End_Ido - Start_Ido;
-                        let pxy = [];
+                        const w = Math.abs(PC2.x - PC1.x);
+                        const H = End_Ido - Start_Ido;
+                        const pxy = [];
                         for (let j = 0; j <= w; j++) {
-                            let PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / w)), av.Zahyo);
+                            const PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / w)), av.Zahyo);
                             pxy.push(av.ScrData.getSxSy(PP1));
                         }
                         clsDrawLine.Line?.(g, lpt, pxy, av.ScrData, false);
                     } else {
                         //赤道を挟む場合
-                        let P3 = spatial.Get_Converted_XY(new point(Kedo, 0), av.Zahyo);
-                        let PC3 = av.ScrData.getSxSy(P3);
-                        let w = Math.abs(PC1.x - PC3.x);
-                        let w2 = Math.abs(PC2.x - PC3.x);
+                        const P3 = spatial.Get_Converted_XY(new point(Kedo, 0), av.Zahyo);
+                        const PC3 = av.ScrData.getSxSy(P3);
+                        const w = Math.abs(PC1.x - PC3.x);
+                        const w2 = Math.abs(PC2.x - PC3.x);
                         if (w + w2 == 0) {
                             clsDrawLine.Line?.(g, lpt, [PC1, PC2], av.ScrData);
                         } else {
-                            let H = Math.abs(Start_Ido) + End_Ido
-                            let pxy = [];
+                            const H = Math.abs(Start_Ido) + End_Ido
+                            const pxy = [];
                             for (let j = 0; j <= w + w2; j++) {
-                                let PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / (w + w2))), av.Zahyo);
+                                const PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / (w + w2))), av.Zahyo);
                                 pxy.push(av.ScrData.getSxSy(PP1));
                             }
                             clsDrawLine.Line?.(g, lpt, pxy, av.ScrData, null);
@@ -284,13 +284,13 @@ export class clsAccessory {
                     let PC1;
                     let PC2;
                     if (av.Zahyo.Projection == enmProjection_Info.prjMercator) {
-                        let P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
-                        let P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
+                        const P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
+                        const P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
                         PC1 = av.ScrData.getSxSy(P1);
                         PC2 = av.ScrData.getSxSy(P2);
                     } else {
-                        let P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
-                        let P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
+                        const P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
+                        const P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
                         PC1 = av.ScrData.getSxSy(P1);
                         PC2 = av.ScrData.getSxSy(P2);
                     }
@@ -304,22 +304,22 @@ export class clsAccessory {
 
     static Legend_print(g: CanvasRenderingContext2D, Legend_No: number, SizeGetOnlyF: boolean) {
         const state = appState();
-        let LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[Legend_No];
-        let vs = state.attrData.TotalData.ViewStyle;
+        const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[Legend_No];
+        const vs = state.attrData.TotalData.ViewStyle;
         if ((vs.MapLegend.Base.Visible == false) && (
             LegendW.LineKind_Flag == false) && (LegendW.PointObject_Flag == false)) {
             return;
         }
         let ALP;
-        let P_Legend = vs.MapLegend;
+        const P_Legend = vs.MapLegend;
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
-            let p = P_Legend.Base.LegendXY[Legend_No];
+            const p = P_Legend.Base.LegendXY[Legend_No];
             ALP = vs.ScrData.getSxSy(vs.ScrData.getSRXYfromRatio(p));
         } else {
-            let p = P_Legend.Base.LegendXY[Legend_No];
+            const p = P_Legend.Base.LegendXY[Legend_No];
             ALP = vs.ScrData.getSxSy(p);
         }
-        let LFont = P_Legend.Base.Font;
+        const LFont = P_Legend.Base.Font;
 
         let BoxSize= new size(0, 0);
         let TX = "";
@@ -334,7 +334,7 @@ export class clsAccessory {
                 TX = ""
                 screen_in = this.Draw_PointObject(g, ALP, BoxSize, SizeGetOnlyF);
             } else {
-                let Layn2 = LegendW.Layn;
+                const Layn2 = LegendW.Layn;
                 switch (LegendW.Print_Mode_Layer) {
                     case enmLayerMode_Number.LabelMode:   //ラベルは凡例無し
                         break;
@@ -352,19 +352,19 @@ export class clsAccessory {
                         }
                         break;
                     case enmLayerMode_Number.SoloMode:{
-                        let datn2 = LegendW.DatN;
-                        let UTX = state.attrData.Get_DataUnit_With_Kakko(Layn2, datn2);
+                        const datn2 = LegendW.DatN;
+                        const UTX = state.attrData.Get_DataUnit_With_Kakko(Layn2, datn2);
                         BoxSize = new size(0, 0);
                         if (P_Legend.OverLay_Legend_Title.Print_f == true) {
                             TX = LegendW.title;
                             if (TX != "") {
-                                let mx_w = state.attrData.Get_Length_On_Screen(P_Legend.OverLay_Legend_Title.MaxWidth);
-                                let Out_Title = clsDraw.TextCut_for_print(g, TX, LFont, true, mx_w, vs.ScrData);
-                                let t_Line_n = Out_Title.Out_Text.length;
-                                let Tx_H = Out_Title.Height;
+                                const mx_w = state.attrData.Get_Length_On_Screen(P_Legend.OverLay_Legend_Title.MaxWidth);
+                                const Out_Title = clsDraw.TextCut_for_print(g, TX, LFont, true, mx_w, vs.ScrData);
+                                const t_Line_n = Out_Title.Out_Text.length;
+                                const Tx_H = Out_Title.Height;
                                 let TX2 = "";
                                 BoxSize.width = 0;
-                                let thdata = LFont.toContextFont(vs.ScrData);
+                                const thdata = LFont.toContextFont(vs.ScrData);
                                 g.font = thdata.font;
                                 for (let i = 0; i < t_Line_n; i++) {
                                     BoxSize.width = Math.max(BoxSize.width, g.measureText(Out_Title.Out_Text[i]).width);
@@ -399,7 +399,7 @@ export class clsAccessory {
                                 screen_in = this.Draw_StringMode(g, ALP, BoxSize, UTX, Layn2, datn2, SizeGetOnlyF);
                                 break;
                             case enmSoloMode_Number.ContourMode:
-                                let PushMisF = vs.Missing_Data.Print_Flag;
+                                const PushMisF = vs.Missing_Data.Print_Flag;
                                 //等値線モードの場合は欠損値の凡例を表示しない
                                 vs.Missing_Data.Print_Flag = false;
                                 switch (state.attrData.LayerData[Layn2].atrData.Data[datn2].SoloModeViewSettings.ContourMD.Interval_Mode) {
@@ -426,7 +426,7 @@ export class clsAccessory {
         }
         if (SizeGetOnlyF == true) {
             LegendW.Rect = new rectangle(ALP, BoxSize);
-            let padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag == true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
+            const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag == true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
             LegendW.Rect.inflate(padw, padw);
             return;
         }
@@ -443,56 +443,56 @@ export class clsAccessory {
         if (state.attrData.TotalData.ViewStyle.DataNote.Visible == false) {
             return;
         }
-        let NT = this.getPrintNote(g);
+        const NT = this.getPrintNote(g);
         state.attrData.Draw_Print(g, NT.note, NT.rect.topLeft(), state.attrData.TotalData.ViewStyle.DataNote.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
     static getPrintNote(g: CanvasRenderingContext2D) {
         const state = appState();
 
         let nt="";
-        let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case (enmTotalMode_Number.DataViewMode): {
-                let al = state.attrData.LayerData[Layernum];
+                const al = state.attrData.LayerData[Layernum];
                 switch (al.Print_Mode_Layer) {
                     case (enmLayerMode_Number.SoloMode): {
-                        let DataNum = al.atrData.SelectedIndex;
+                        const DataNum = al.atrData.SelectedIndex;
                         nt = al.atrData.Data[DataNum].Note;
                         break;
                     }
                     case (enmLayerMode_Number.GraphMode): {
-                        let gm = al.LayerModeViewSettings.GraphMode;
-                        let n = gm.DataSet[gm.SelectedIndex].length;
+                        const gm = al.LayerModeViewSettings.GraphMode;
+                        const n = gm.DataSet[gm.SelectedIndex].length;
                         if (n > 0) {
-                            let NoteD = [];
+                            const NoteD = [];
                             for (let i = 0; i < n; i++) {
-                                let txObj = state.attrData.Get_DataNote(Layernum, gm.DataSet[gm.SelectedIndex].Data[i].DataNumber);
-                                let tx = txObj.note;
+                                const txObj = state.attrData.Get_DataNote(Layernum, gm.DataSet[gm.SelectedIndex].Data[i].DataNumber);
+                                const tx = txObj.note;
                                 if (tx != "") {
                                     NoteD.push(tx);
                                 }
                             }
                             if (NoteD.length != 0) {
-                                let NoteD2 = Generic.Remove_Same_String(NoteD);
+                                const NoteD2 = Generic.Remove_Same_String(NoteD);
                                 nt = NoteD2.join(chrLF);
                             }
                         }
                         break;
                     }
                     case (enmLayerMode_Number.LabelMode): {
-                        let lm = al.LayerModeViewSettings.LabelMode;
-                        let n = lm.DataSet[lm.SelectedIndex].length;
+                        const lm = al.LayerModeViewSettings.LabelMode;
+                        const n = lm.DataSet[lm.SelectedIndex].length;
                         if (n > 0) {
-                            let NoteD = [];
+                            const NoteD = [];
                             for (let i = 0; i < n; i++) {
-                                let txObj = state.attrData.Get_DataNote(Layernum, lm.DataSet[lm.SelectedIndex].Data[i].DataNumber);
-                                let tx = txObj.note;
+                                const txObj = state.attrData.Get_DataNote(Layernum, lm.DataSet[lm.SelectedIndex].Data[i].DataNumber);
+                                const tx = txObj.note;
                                 if (tx != "") {
                                     NoteD.push(tx);
                                 }
                             }
                             if (NoteD.length != 0) {
-                                let NoteD2 = Generic.Remove_Same_String(NoteD);
+                                const NoteD2 = Generic.Remove_Same_String(NoteD);
                                 nt = NoteD2.join('\n');
                             }
                         }
@@ -502,7 +502,7 @@ export class clsAccessory {
                 break;
             }
             case (enmTotalMode_Number.OverLayMode): {
-                let ov = state.attrData.TotalData.TotalMode.OverLay;
+                const ov = state.attrData.TotalData.TotalMode.OverLay;
                 nt = ov.DataSet[ov.SelectedIndex].Note;
                 break;
             }
@@ -514,25 +514,25 @@ export class clsAccessory {
         if (nt == "") {
             return { note:"",rect:new rectangle(0,0,0,0)}
         }
-        let P_Note= state.attrData.TotalData.ViewStyle.DataNote.Clone();
-        let vs = state.attrData.TotalData.ViewStyle;
+        const P_Note= state.attrData.TotalData.ViewStyle.DataNote.Clone();
+        const vs = state.attrData.TotalData.ViewStyle;
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
             P_Note.Position = vs.ScrData.getSRXYfromRatio(P_Note.Position);
         }
-        let atx = nt;
-        let xw = state.attrData.Get_Length_On_Screen(P_Note.MaxWidth);
+        const atx = nt;
+        const xw = state.attrData.Get_Length_On_Screen(P_Note.MaxWidth);
 
-        let txp = clsDraw.TextCut_for_print(g, atx, P_Note.Font, true, xw, vs.ScrData);
-        let d_an2 = txp.Out_Text;
+        const txp = clsDraw.TextCut_for_print(g, atx, P_Note.Font, true, xw, vs.ScrData);
+        const d_an2 = txp.Out_Text;
         let yw = txp.Height;
-        let RealW = txp.RealWidth;
+        const RealW = txp.RealWidth;
         let outTx =  d_an2[0];
         for (let i = 1; i < d_an2.length; i++) {
             outTx += chrLF + d_an2[i];
         }
         yw *= d_an2.length;
-        let tP = state.attrData.TotalData.ViewStyle.ScrData.getSxSy(P_Note.Position);
-        let Rect = new rectangle(new point(tP.x - RealW / 2, tP.y - yw / 2), new size(RealW, yw));
+        const tP = state.attrData.TotalData.ViewStyle.ScrData.getSxSy(P_Note.Position);
+        const Rect = new rectangle(new point(tP.x - RealW / 2, tP.y - yw / 2), new size(RealW, yw));
         return {
             note: outTx, rect: Rect
         }
@@ -542,18 +542,18 @@ export class clsAccessory {
     static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont = vs.MapLegend.Base.Font;
-        let TH = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont = vs.MapLegend.Base.Font;
+        const TH = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
 
-        let EN_TP = clsBase.Tile();
+        const EN_TP = clsBase.Tile();
 
-        let gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
-        let UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
-        let n = gData.Data.length;
+        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
+        const UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
+        const n = gData.Data.length;
         let size2 = HeadBoxSize;
-        let Value = [gData.En_Obi.Value1, gData.En_Obi.Value2, gData.En_Obi.Value3];
+        const Value = [gData.En_Obi.Value1, gData.En_Obi.Value2, gData.En_Obi.Value3];
         let rmaxw;
         if (gData.En_Obi.EnSizeMode == enmGraphMaxSize.Changeable) {
             //サイズ可変型の場合
@@ -569,24 +569,24 @@ export class clsAccessory {
 
         let UnderW = 0;
         let UnderH = 0;
-        let xposi = [];// enmHorizontalAlignment
-        let yposi = [];// enmVerticalAlignment
-        let WordP = [];
+        const xposi = [];// enmHorizontalAlignment
+        const yposi = [];// enmVerticalAlignment
+        const WordP = [];
         //rep=0の時は大きさを計算、rep1で実際の描画
         for (let rep = 0; rep <= 1; rep++) {
             size2 = HeadBoxSize.Clone();
             if (gData.En_Obi.EnSizeMode == enmGraphMaxSize.Changeable) {
-                let p = ALP.Clone();
+                const p = ALP.Clone();
                 p.offset(UnderW / 2 - rmaxw, 0);
                 size2=this.OverCircle_Print(g, p, gData.En_Obi.MaxValue, Value, UnitTx, gData.En_Obi.EnSize, gData.En_Obi.BoaderLine, EN_TP,  (rep == 1));
             }
 
             if (rep == 0) {
                 for (let i = 0; i < n; i++) {
-                    let a = gData.Data[i].DataNumber;
-                    let CeR = Math.PI * 2 * ((i + 0.5) / n);
-                    let p = new point(Math.sin(CeR) * rmaxw * 1.3, Math.cos(CeR) * rmaxw * 1.3);
-                    let w = g.measureText(state.attrData.Get_DataTitle(Layn2, a, false)).width;
+                    const a = gData.Data[i].DataNumber;
+                    const CeR = Math.PI * 2 * ((i + 0.5) / n);
+                    const p = new point(Math.sin(CeR) * rmaxw * 1.3, Math.cos(CeR) * rmaxw * 1.3);
+                    const w = g.measureText(state.attrData.Get_DataTitle(Layn2, a, false)).width;
                     let n2 = (i + 0.5) / n;
                     if (n2 < 0.5) {
                         xposi[i] = enmHorizontalAlignment.Left;
@@ -615,13 +615,13 @@ export class clsAccessory {
                 UnderH = Ysmax - Ysmin;
             } else {
                 for (let i = 0; i < n; i++) {
-                    let sr = Math.PI * 2 * (i / n);
-                    let Er = Math.PI * 2 * ((i + 1) / n);
-                    let a = gData.Data[i].DataNumber;
-                    let fp = ALP.Clone();
+                    const sr = Math.PI * 2 * (i / n);
+                    const Er = Math.PI * 2 * ((i + 1) / n);
+                    const a = gData.Data[i].DataNumber;
+                    const fp = ALP.Clone();
                     fp.offset(-Xsmin, size2.height + TH / 2 + UnderH / 2);
                     state.attrData.Draw_Fan(g, fp, rmaxw, sr, Er, gData.En_Obi.BoaderLine, gData.Data[i].Tile);
-                    let p = WordP[i].Clone();
+                    const p = WordP[i].Clone();
                     p.offset(ALP.x - Xsmin, ALP.y + size2.height + TH / 2 + UnderH / 2);
                     state.attrData.Draw_Print(g, state.attrData.Get_DataTitle(Layn2, a, false), p, LFont, xposi[i], yposi[i]);
                 }
@@ -636,7 +636,7 @@ export class clsAccessory {
                 return false;
             }
 
-            let C_Rect = new rectangle(ALP, size2);
+            const C_Rect = new rectangle(ALP, size2);
             if (state.attrData.Check_Screen_In(C_Rect) == false) {
                 return false;
             }
@@ -655,9 +655,9 @@ export class clsAccessory {
     /**グラフ表示モードの円・帯グラフ */
     static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean) {
         const state = appState();
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont = vs.MapLegend.Base.Font;
-        let TH = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont = vs.MapLegend.Base.Font;
+        const TH = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
 
         if (vs.MapLegend.Base.Visible == false) {
@@ -670,14 +670,14 @@ export class clsAccessory {
             return this.Draw_Multi_Engraph_Pattern1(g, ALP, HeadBoxSize, Layn2, DataSet_Num, SizeGetOnlyF);
         }
 
-        let TilePat = clsBase.Tile();
+        const TilePat = clsBase.Tile();
         TilePat.Color = new colorRGBA(210, 210, 210, 255);
 
-        let gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
+        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
 
-        let UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
-        let n = gData.Data.length;
-        let Value = [gData.En_Obi.Value1, gData.En_Obi.Value2, gData.En_Obi.Value3];
+        const UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
+        const n = gData.Data.length;
+        const Value = [gData.En_Obi.Value1, gData.En_Obi.Value2, gData.En_Obi.Value3];
         Value.sort(function (a, b) { return b - a; });
         let LegendVn = 0;
         for (let i = 0;i< Value.length; i++) {
@@ -694,32 +694,32 @@ export class clsAccessory {
                 //サイズ可変型の場合
                 switch (state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num].GraphMode) {
                     case enmGraphMode.PieGraph: {
-                        let EN_TP = clsBase.Tile();
+                        const EN_TP = clsBase.Tile();
                         EN_TP.Color = clsBase.ColorWhite();
                         size2=this.OverCircle_Print(g, ALP, gData.En_Obi.MaxValue, Value, UnitTx, gData.En_Obi.EnSize, gData.En_Obi.BoaderLine, EN_TP,  (rep == 1));
                         break;
                     }
                     case enmGraphMode.StackedBarGraph: {
                         let ysize2 = HeadBoxSize.height;
-                        let r1 = state.attrData.Get_Length_On_Screen(gData.En_Obi.EnSize);
-                        let y3 = HeadBoxSize.height + r1 + TH / 2;
+                        const r1 = state.attrData.Get_Length_On_Screen(gData.En_Obi.EnSize);
+                        const y3 = HeadBoxSize.height + r1 + TH / 2;
                         for (let i = 0; i < LegendVn; i++) {
-                            let V = Value[i];
-                            let r = state.attrData.Radius(gData.En_Obi.EnSize, V, gData.En_Obi.MaxValue) * 2;
-                            let r2 = r * gData.En_Obi.AspectRatio;
+                            const V = Value[i];
+                            const r = state.attrData.Radius(gData.En_Obi.EnSize, V, gData.En_Obi.MaxValue) * 2;
+                            const r2 = r * gData.En_Obi.AspectRatio;
                             if (gData.En_Obi.StackedBarDirection == enmStackedBarChart_Direction.Horizontal) {
                                 if (rep == 1) {
                                     state.attrData.Draw_Tile_Box(g, new rectangle(new point(ALP.x, ALP.y + ysize2), new size(r + 1, r2 + 1)), gData.En_Obi.BoaderLine, TilePat, 0);
                                 }
                                 ysize2 += r2 * 1.1;
-                                let VL = this.UNIT_P(g, new point(ALP.x + TH / 2, ALP.y + ysize2), V, UnitTx, i, (rep == 1));
+                                const VL = this.UNIT_P(g, new point(ALP.x + TH / 2, ALP.y + ysize2), V, UnitTx, i, (rep == 1));
                                 ysize2 += TH * 1.5;
                                 size2.width = Math.max(size2.width, TH / 2 + VL);
                             } else {
-                                let tateObiXY=new point(ALP.x + r1 * gData.En_Obi.AspectRatio,ALP.y + TH / 2 + r1 - r);
-                                let tateObiMojiXY=new point( ALP.x + r1 * gData.En_Obi.AspectRatio + TH * 1.5,tateObiXY.y);
+                                const tateObiXY=new point(ALP.x + r1 * gData.En_Obi.AspectRatio,ALP.y + TH / 2 + r1 - r);
+                                const tateObiMojiXY=new point( ALP.x + r1 * gData.En_Obi.AspectRatio + TH * 1.5,tateObiXY.y);
                                 let VL;
-                                let rect = new rectangle(new point(tateObiXY.x - r2 - 1, tateObiXY.y), new size(r2 + 1, r - 1));
+                                const rect = new rectangle(new point(tateObiXY.x - r2 - 1, tateObiXY.y), new size(r2 + 1, r - 1));
                                 state.attrData.Draw_Tile_Box(g, rect, gData.En_Obi.BoaderLine, TilePat, 0);
                                 if (tateObiXY.y >= ALP.y + TH * i + TH / 2) {
                                     VL = this.UNIT_P(g, new point(tateObiMojiXY.x, tateObiMojiXY.y - TH / 2), V, UnitTx, i, (rep == 1));
@@ -728,9 +728,9 @@ export class clsAccessory {
                                     }
                                 } else {
                                     VL = this.UNIT_P(g, tateObiMojiXY, V, UnitTx, i, (rep == 1));
-                                    let lx2 = tateObiXY.x + (tateObiMojiXY.x - tateObiXY.x) * (LegendVn + 1 - i) / (LegendVn + 1);
+                                    const lx2 = tateObiXY.x + (tateObiMojiXY.x - tateObiXY.x) * (LegendVn + 1 - i) / (LegendVn + 1);
                                     if (rep == 1) {
-                                        let amd = state.attrData.TotalData.ViewStyle.MapLegend.MarkMD;
+                                        const amd = state.attrData.TotalData.ViewStyle.MapLegend.MarkMD;
                                         state.attrData.Draw_Line(g, amd.MultiEnMode_Line, tateObiXY, new point(lx2, tateObiXY.y));
                                         state.attrData.Draw_Line(g, amd.MultiEnMode_Line, new point(lx2, tateObiXY.y), new point(lx2, tateObiMojiXY.y + TH / 2));
                                         state.attrData.Draw_Line(g, amd.MultiEnMode_Line,new point( lx2, tateObiMojiXY.y + TH / 2),new point( tateObiMojiXY.x, tateObiMojiXY.y + TH / 2));
@@ -750,7 +750,7 @@ export class clsAccessory {
             let UnderW=0;
             //size2.height += TH / 2
             for (let i = 0; i < n; i++) {
-                let a = gData.Data[i].DataNumber;
+                const a = gData.Data[i].DataNumber;
                 UnderW = Math.max(UnderW, g.measureText(state.attrData.Get_DataTitle(Layn2, a, false)).width);
                 switch (gData.GraphMode) {
                     case enmGraphMode.PieGraph: {
@@ -783,7 +783,7 @@ export class clsAccessory {
                 HeadBoxSize.height = size2.height;
                 return false;
             }
-            let C_Rect = new rectangle(ALP, size2);
+            const C_Rect = new rectangle(ALP, size2);
             if (state.attrData.Check_Screen_In(C_Rect) == false) {
                 return false;
             }
@@ -804,29 +804,29 @@ export class clsAccessory {
         if (state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible == false) {
             return false
         }
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont = vs.MapLegend.Base.Font.Clone();
-        let TH = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont = vs.MapLegend.Base.Font.Clone();
+        const TH = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
 
 
-        let gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
-        let DataN = gData.Data.length;
+        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
+        const DataN = gData.Data.length;
 
 
         let DataTitleHeight = 0;
-        let UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
+        const UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
         for (let i = 0; i < DataN; i++) {
             DataTitleHeight = Math.max(DataTitleHeight, g.measureText(state.attrData.Get_DataTitle(Layn2, gData.Data[i].DataNumber, false)).width);
         }
-        let ww = state.attrData.Get_Length_On_Screen(gData.Oresen_Bou.Size);
-        let wh = ww / gData.Oresen_Bou.AspectRatio;
+        const ww = state.attrData.Get_Length_On_Screen(gData.Oresen_Bou.Size);
+        const wh = ww / gData.Oresen_Bou.AspectRatio;
         let VL = this.UNIT_P(g, new point(0, 0), gData.Oresen_Bou.yMax, UnitTx, 0, false);
         let xsize2 = Math.max(HeadBoxSize.width, ww + VL);
         VL = this.UNIT_P(g, new point(0, 0), gData.Oresen_Bou.ymin, UnitTx, 1, false);
         xsize2 = Math.max(xsize2, ww + VL);
-        let ysize2 = HeadBoxSize.height + TH / 2 + wh + TH / 4 + DataTitleHeight;
-        let C_Rect = new rectangle(ALP, new size(xsize2, ysize2));
+        const ysize2 = HeadBoxSize.height + TH / 2 + wh + TH / 4 + DataTitleHeight;
+        const C_Rect = new rectangle(ALP, new size(xsize2, ysize2));
         if (SizeGetOnlyF == true) {
             HeadBoxSize.width = xsize2;
             HeadBoxSize.height = ysize2;
@@ -843,24 +843,24 @@ export class clsAccessory {
         //折れ線グラフの枠
 
         let stx;
-        let Ymax = gData.Oresen_Bou.YMax;
-        let Ymin = gData.Oresen_Bou.Ymin;
-        let ST = gData.Oresen_Bou.Ystep;
+        const Ymax = gData.Oresen_Bou.YMax;
+        const Ymin = gData.Oresen_Bou.Ymin;
+        const ST = gData.Oresen_Bou.Ystep;
         if (gData.GraphMode == enmGraphMode.LineGraph) {
             stx = ww / (DataN + 1);
         } else {
             stx = ww / (DataN + 2);
         }
-        let GraphRect = new rectangle(new point(ALP.x, ALP.y + HeadBoxSize.height + TH / 2), new size(ww, wh));
+        const GraphRect = new rectangle(new point(ALP.x, ALP.y + HeadBoxSize.height + TH / 2), new size(ww, wh));
         state.attrData.Draw_Tile_Box(g, GraphRect, gData.Oresen_Bou.BorderLine, gData.Oresen_Bou.BackgroundTile, 0);
 
         //枠の目盛り
-        let Zero_Line = clsBase.Line();
+        const Zero_Line = clsBase.Line();
         Zero_Line.Color = gData.Oresen_Bou.BorderLine.Color.Clone();
         for (let j = Ymin; j <= Ymax; j += ST) {
             if ((j != Ymin) && (j != Ymax)) {
-                let H = 1 - (j - Ymin) / (Ymax - Ymin);
-                let yy = HeadBoxSize.height + TH / 2 + wh * H;
+                const H = 1 - (j - Ymin) / (Ymax - Ymin);
+                const yy = HeadBoxSize.height + TH / 2 + wh * H;
                 state.attrData.Draw_Line(g, Zero_Line,new point( ALP.x, ALP.y + yy),new point( ALP.x + stx / 2 + 1, ALP.y + yy));
                 state.attrData.Draw_Line(g, Zero_Line,new point(  ALP.x + ww, ALP.y + yy),new point(  ALP.x + ww - stx / 2 - 1, ALP.y + yy));
             }
@@ -869,8 +869,8 @@ export class clsAccessory {
         let zpf = false;
         let zy;
         if ((Ymin < 0) && (Ymax > 0)) {
-            let H = 1 - (-Ymin) / (Ymax - Ymin);
-            let yy = HeadBoxSize.height + TH / 2 + wh * H;
+            const H = 1 - (-Ymin) / (Ymax - Ymin);
+            const yy = HeadBoxSize.height + TH / 2 + wh * H;
             g.setLineDash([5,3]);
             state.attrData.Draw_Line(g, Zero_Line,new point( ALP.x, ALP.y + yy),new point( ALP.x + ww + 1, ALP.y + yy));
             g.setLineDash([]);
@@ -879,7 +879,7 @@ export class clsAccessory {
         }
 
         g.save();
-        let RectC = GraphRect.Clone();
+        const RectC = GraphRect.Clone();
         RectC.inflate(1, 1);
         g.rect(RectC.left, RectC.top, RectC.width(), RectC.height());
         g.clip();
@@ -888,9 +888,9 @@ export class clsAccessory {
             let flx1;
             let fly2;
             for (let j = 0; j < DataN; j++) {
-                let a = gData.Data[j].DataNumber;
-                let H = 1 - (state.attrData.LayerData[Layn2].atrData.Data[a].Statistics.Ave - Ymin) / (Ymax - Ymin);
-                let yy = HeadBoxSize.height + wh * H + TH / 2;
+                const a = gData.Data[j].DataNumber;
+                const H = 1 - (state.attrData.LayerData[Layn2].atrData.Data[a].Statistics.Ave - Ymin) / (Ymax - Ymin);
+                const yy = HeadBoxSize.height + wh * H + TH / 2;
                 if (j == 0) {
                     flx1 = ALP.x + fsx;
                     fly2 = ALP.y + yy;
@@ -905,10 +905,10 @@ export class clsAccessory {
         } else {
             let fsx = stx; //棒グラフ
             for (let j = 0; j < DataN; j++) {
-                let a = gData.Data[j].DataNumber;
-                let H = 1 - (state.attrData.LayerData[Layn2].atrData.Data[a].Statistics.Ave - Ymin) / (Ymax - Ymin);
-                let yy = HeadBoxSize.height + wh * H + TH / 2;
-                let yy2 = HeadBoxSize.height + TH / 2 + (wh * (1 - (-Ymin) / (Ymax - Ymin)));
+                const a = gData.Data[j].DataNumber;
+                const H = 1 - (state.attrData.LayerData[Layn2].atrData.Data[a].Statistics.Ave - Ymin) / (Ymax - Ymin);
+                const yy = HeadBoxSize.height + wh * H + TH / 2;
+                const yy2 = HeadBoxSize.height + TH / 2 + (wh * (1 - (-Ymin) / (Ymax - Ymin)));
                 state.attrData.Draw_Tile_Box(g, new rectangle(new point(ALP.x + fsx, ALP.y + yy), new size(stx, yy2 - yy)), gData.Oresen_Bou.Line, gData.Data[j].Tile, 0);
                 fsx += stx;
             }
@@ -929,9 +929,9 @@ export class clsAccessory {
         let xstacu = 0;
         for (let i = 0; i < DataN; i++) {
             if (xstacu <= stx * i) {
-                let ttl = state.attrData.Get_DataTitle(Layn2, gData.Data[i].DataNumber, false);
-                let H = g.measureText(ttl).width;
-                let p = new point(ALP.x + stx * i + stx, ALP.y + HeadBoxSize.height + H / 2);
+                const ttl = state.attrData.Get_DataTitle(Layn2, gData.Data[i].DataNumber, false);
+                const H = g.measureText(ttl).width;
+                const p = new point(ALP.x + stx * i + stx, ALP.y + HeadBoxSize.height + H / 2);
                 switch (gData.GraphMode) {
                     case enmGraphMode.LineGraph:
                     case enmGraphMode.BarGraph:
@@ -949,26 +949,26 @@ export class clsAccessory {
     static Draw_MarkBlockMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean){
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2];
-        let MkCommon  = PData.SoloModeViewSettings.MarkCommon;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const MkCommon  = PData.SoloModeViewSettings.MarkCommon;
 
-        let LFont  = vs.MapLegend.Base.Font;
-        let UH  = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const LFont  = vs.MapLegend.Base.Font;
+        const UH  = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
 
-        let B_Md  = PData.SoloModeViewSettings.MarkBlockMD;
+        const B_Md  = PData.SoloModeViewSettings.MarkBlockMD;
 
         let size2  = HeadBoxSize.Clone();
 
         let r  = state.attrData.Radius(B_Md.Mark.WordFont.Size, 1, 1);
         r=spatial.Get_TurnedBox(new size(r, r), B_Md.Mark.WordFont.Kakudo).width;
         let in1  = "1個あたり";//clsSettings.Data.LegendBlockmodeWord;
-        let LegendWord  = B_Md.LegendBlockModeWord;
+        const LegendWord  = B_Md.LegendBlockModeWord;
         if(LegendWord != "" ){
             in1 = LegendWord;
         }
-        let in2  = "　" + String(Generic.Figure_Using_Solo(B_Md.Value, vs.MapLegend.Base.Comma_f)) + UnitTx;
+        const in2  = "　" + String(Generic.Figure_Using_Solo(B_Md.Value, vs.MapLegend.Base.Comma_f)) + UnitTx;
         let leftMargin  = r * 2.5;
         if(B_Md.ArrangeB == enmMarkBlockArrange.Random ){
             leftMargin = UH;
@@ -976,13 +976,13 @@ export class clsAccessory {
         size2.width = Math.max(size2.width, g.measureText(in1).width + leftMargin);
         size2.width = Math.max(size2.width, g.measureText(in2).width + leftMargin);
         size2.height += Math.max(r * 2.1, UH * 2);
-        let MinusWord = this.getLegendMinusWord(MkCommon.LegendMinusWord);
-        let PlusWord = this.getLegendPlusWord(MkCommon.LegendPlusWord);
+        const MinusWord = this.getLegendMinusWord(MkCommon.LegendMinusWord);
+        const PlusWord = this.getLegendPlusWord(MkCommon.LegendPlusWord);
 
         if(PData.Statistics.Min < 0 ){
-            let pmw  = Math.max(g.measureText(PlusWord).width, g.measureText(MinusWord).width);
+            const pmw  = Math.max(g.measureText(PlusWord).width, g.measureText(MinusWord).width);
             size2.width = Math.max(size2.width, r * 2.5 + pmw);
-            let yy  = Math.max(r * 2, UH);
+            const yy  = Math.max(r * 2, UH);
             size2.height *= 1.5;
             size2.height += yy * 2;
         }
@@ -994,7 +994,7 @@ export class clsAccessory {
             HeadBoxSize.height = size2.height;
             return false;
         }
-        let C_Rect  = new rectangle(ALP, size2);
+        const C_Rect  = new rectangle(ALP, size2);
         if(state.attrData.Check_Screen_In(C_Rect) == false ){
             return false;
         }
@@ -1004,23 +1004,23 @@ export class clsAccessory {
         this.LegendBoxBack(g, C_Rect);
 
         size2 = HeadBoxSize.Clone();
-        let ax  = r * 1.1;
-        let ay  = HeadBoxSize.height + r * 1.1;
-        let MKP  = ALP.Clone();
-        let MKR  = state.attrData.Radius(B_Md.Mark.WordFont.Size, 1, 1);
+        const ax  = r * 1.1;
+        const ay  = HeadBoxSize.height + r * 1.1;
+        const MKP  = ALP.Clone();
+        const MKR  = state.attrData.Radius(B_Md.Mark.WordFont.Size, 1, 1);
         if(B_Md.ArrangeB == enmMarkBlockArrange.Random ){
-            let rp=[];
+            const rp=[];
             rp.push(new point(0.3,0.2));
             rp.push(new point(0.74,0.25));
             rp.push(new point(0.58,0.48));
             rp.push(new point(0.28,0.75));
             rp.push(new point(0.7,0.72));
             g.fillStyle=B_Md.Mark.Tile.Color.toRGBA();
-            for(let i in rp){
-                let p =new point();
+            for(const i in rp){
+                const p =new point();
                 p.x = rp[i].x * UH;
                 p.y = rp[i].y * UH;
-                let np  = MKP.Clone();
+                const np  = MKP.Clone();
                 np.offset(p);
                 if(MKR != 0 ){
                     state.attrData.Draw_Mark(g, np, MKR, B_Md.Mark);
@@ -1032,10 +1032,10 @@ export class clsAccessory {
             MKP.offset(ax, ay);
             state.attrData.Draw_Mark(g, MKP, MKR, B_Md.Mark);
         }
-        let DP1  = ALP.Clone();
+        const DP1  = ALP.Clone();
         size2 = HeadBoxSize.Clone();
         DP1.offset(leftMargin, size2.height);
-        let DP2  = DP1.Clone();
+        const DP2  = DP1.Clone();
         DP2.offset(0, UH);
         state.attrData.Draw_Print(g, in1, DP1, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
         state.attrData.Draw_Print(g, in2, DP2, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -1043,20 +1043,20 @@ export class clsAccessory {
         size2.width = Math.max(size2.width, g.measureText(in2 ).width);
         size2.height += Math.max(r * 2.1, UH * 2);
         if(PData.Statistics.Min < 0 ){
-            let yy  = Math.max(r * 2, UH);
+            const yy  = Math.max(r * 2, UH);
             size2.height *= 1.5;
-            let pP  = ALP.Clone();
+            const pP  = ALP.Clone();
             pP.offset(ax, size2.height);
             state.attrData.Draw_Mark(g, pP, MKR, B_Md.Mark);
-            let mP  = ALP.Clone();
+            const mP  = ALP.Clone();
             mP.offset(ax, size2.height + yy);
-            let PushMK = B_Md.Mark.Clone();
+            const PushMK = B_Md.Mark.Clone();
             PushMK.Tile = MkCommon.MinusTile;
             state.attrData.Draw_Mark(g, mP, MKR, PushMK);
 
-            let tP1 = ALP.Clone();
+            const tP1 = ALP.Clone();
             tP1.offset(r * 2.5, size2.height - UH / 2);
-            let tP2  = tP1.Clone();
+            const tP2  = tP1.Clone();
             tP2.offset(0, yy);
             state.attrData.Draw_Print(g, PlusWord, tP1, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
             state.attrData.Draw_Print(g, MinusWord, tP2, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -1064,14 +1064,14 @@ export class clsAccessory {
             size2.height += yy * 2;
         }
         if ((PData.MissingValueNum > 0) && (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag == true)) {
-            let r2 = state.attrData.Radius(vs.Missing_Data.BlockMark.WordFont.Size, 1, 1);
-            let myy = Math.max(r2, UH / 2);
-            let mp = ALP.Clone();
+            const r2 = state.attrData.Radius(vs.Missing_Data.BlockMark.WordFont.Size, 1, 1);
+            const myy = Math.max(r2, UH / 2);
+            const mp = ALP.Clone();
             mp.offset(ax, size2.height + myy + UH * 0.5);
             state.attrData.Draw_Mark(g, mp, r2, vs.Missing_Data.BlockMark);
             size2.height += UH * 0.5 + myy * 2;
 
-            let tp = new point(ALP.x + r * 2.5, mp.y);
+            const tp = new point(ALP.x + r * 2.5, mp.y);
             state.attrData.Draw_Print(g, vs.Missing_Data.Text, tp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
         }
         return true;
@@ -1081,17 +1081,17 @@ export class clsAccessory {
     static Draw_MarkBarMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let md = vs.Missing_Data;
-        let LFont = vs.MapLegend.Base.Font;
-        let UH = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const vs = state.attrData.TotalData.ViewStyle;
+        const md = vs.Missing_Data;
+        const LFont = vs.MapLegend.Base.Font;
+        const UH = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
+        const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
         g.font = LFont.toContextFont(vs.ScrData).font;
 
-        let Bar_Md = PData.SoloModeViewSettings.MarkBarMD;
+        const Bar_Md = PData.SoloModeViewSettings.MarkBarMD;
 
-        let UnitHeight = UH;
-        let BarSize = new size();
+        const UnitHeight = UH;
+        const BarSize = new size();
         BarSize.height = state.attrData.Get_Length_On_Screen(Bar_Md.MaxHeight)
         BarSize.width = state.attrData.Get_Length_On_Screen(Bar_Md.Width)
         let maxv;
@@ -1107,14 +1107,14 @@ export class clsAccessory {
             printVal = (Math.floor(maxv / Bar_Md.ScaleLineInterval) * Bar_Md.ScaleLineInterval)
         }
 
-        let val = printVal.toString();
-        let printvalP = BarSize.height - printVal / maxv * BarSize.height;
+        const val = printVal.toString();
+        const printvalP = BarSize.height - printVal / maxv * BarSize.height;
         let barareaPlusH = 0;
         if (printvalP < UH / 2) {
             barareaPlusH = UH / 2 - printvalP;
         }
 
-        let BarAreaSize = BarSize.Clone();
+        const BarAreaSize = BarSize.Clone();
         if (Bar_Md.ThreeD == true) {
             BarAreaSize.width += BarAreaSize.width / 3;
             if (barareaPlusH < BarAreaSize.width / 3) {
@@ -1125,10 +1125,10 @@ export class clsAccessory {
         BarAreaSize.width += state.attrData.Get_Length_On_Screen(4);
         BarAreaSize.height += UnitHeight;
 
-        let tickw = state.attrData.Get_Length_On_Screen(0.3)
-        let wordw = g.measureText(val).width;
+        const tickw = state.attrData.Get_Length_On_Screen(0.3)
+        const wordw = g.measureText(val).width;
 
-        let FigSize = new size();
+        const FigSize = new size();
         FigSize.width = BarAreaSize.width + wordw + tickw;
         FigSize.width = Math.max(FigSize.width, g.measureText(UnitTx).width)
         FigSize.width = Math.max(FigSize.width, HeadBoxSize.width);
@@ -1144,25 +1144,25 @@ export class clsAccessory {
             return false;
         }
 
-        let C_Rect = new rectangle(ALP, FigSize);
+        const C_Rect = new rectangle(ALP, FigSize);
         if (state.attrData.Check_Screen_In(C_Rect) == false) {
             return false;
         }
 
         this.LegendBoxBack(g, C_Rect);
-        let TopP = ALP.Clone();
+        const TopP = ALP.Clone();
         TopP.y += HeadBoxSize.height;
-        let zerop = new point(ALP.x + wordw + tickw, TopP.y + BarAreaSize.height);
+        const zerop = new point(ALP.x + wordw + tickw, TopP.y + BarAreaSize.height);
 
-        let retV = clsPrint.MarkBarRectPrint(new point(zerop.x + state.attrData.Get_Length_On_Screen(2) + BarSize.width / 2, zerop.y), BarSize.width, BarSize.height, Bar_Md.ThreeD)
-        let poly = retV.UpperPoly;
-        let poly2 = retV.RightPoly;
-        let barrect = retV.CenterRect;
-        let Tile = Bar_Md.InnerTile.Clone();
-        let OP  = new point(zerop.x + state.attrData.Get_Length_On_Screen(2) + BarSize.width / 2, zerop.y);
+        const retV = clsPrint.MarkBarRectPrint(new point(zerop.x + state.attrData.Get_Length_On_Screen(2) + BarSize.width / 2, zerop.y), BarSize.width, BarSize.height, Bar_Md.ThreeD)
+        const poly = retV.UpperPoly;
+        const poly2 = retV.RightPoly;
+        const barrect = retV.CenterRect;
+        const Tile = Bar_Md.InnerTile.Clone();
+        const OP  = new point(zerop.x + state.attrData.Get_Length_On_Screen(2) + BarSize.width / 2, zerop.y);
         switch (Bar_Md.BarShape){
             case enmMarkBarShape.triangle: {
-                let tri = [];
+                const tri = [];
                 tri.push(new point(OP.x - BarSize.width / 2, OP.y));
                 tri.push(new point(OP.x + BarSize.width / 2, OP.y));
                 tri.push(new point(OP.x, OP.y - BarSize.height));
@@ -1173,19 +1173,19 @@ export class clsAccessory {
             }
             case enmMarkBarShape.bar: {
                 if (Bar_Md.ThreeD == true) {
-                    let Ptile = Tile.Clone();
+                    const Ptile = Tile.Clone();
                     Ptile.Color = Generic.GetColorArrange(Tile.Color, 100);
                     state.attrData.Draw_Poly_Inner(g, poly, [5], Ptile);
                     state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly);
 
-                    let Ptile2 = Tile.Clone();
+                    const Ptile2 = Tile.Clone();
                     Ptile2.Color = Generic.GetColorArrange(Tile.Color, -100);
                     state.attrData.Draw_Poly_Inner(g, poly2, [5], Ptile2);
                     state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly2);
                 }
                 state.attrData.Draw_Tile_Box(g, barrect, Bar_Md.FrameLinePat, Tile, 0);
                 for (let v = 0; v < maxv; v += Bar_Md.ScaleLineInterval) {
-                    let h = v / maxv * BarSize.height;
+                    const h = v / maxv * BarSize.height;
                     state.attrData.Draw_Line(g, clsBase.Line(), new point(zerop.x, zerop.y - h), new point(zerop.x - tickw, zerop.y - h));
                     if (Bar_Md.ScaleLineVisible == true) {
                         state.attrData.Draw_Line(g, Bar_Md.scaleLinePat, new point(barrect.left, zerop.y - h), new point(barrect.right, zerop.y - h));
@@ -1205,8 +1205,8 @@ export class clsAccessory {
         state.attrData.Draw_Print(g, val, new point(zerop.x - tickw, zerop.y - printVal / maxv * BarSize.height), LFont, enmHorizontalAlignment.Right, enmVerticalAlignment.Center);
         TopP.y += BarAreaSize.height + UH / 2 + HeadBoxSize.height;
         if ((PData.MissingValueNum > 0) && (md.Print_Flag == true)) {
-            let r2 = state.attrData.Radius(md.MarkBar.WordFont.Size, 1, 1);
-            let mp = TopP;
+            const r2 = state.attrData.Radius(md.MarkBar.WordFont.Size, 1, 1);
+            const mp = TopP;
             mp.offset(r2 + UH, r2 + UH);
             state.attrData.Draw_Mark(g, mp, r2, md.MarkBar);
             mp.offset(r2 * 1.5, 0);
@@ -1219,45 +1219,45 @@ export class clsAccessory {
     static Draw_MarkSizeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let md = vs.Missing_Data;
-        let LFont = vs.MapLegend.Base.Font;
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
-        let UH = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const md = vs.Missing_Data;
+        const LFont = vs.MapLegend.Base.Font;
+        const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const UH = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
 
-        let Legend_Val = this.Get_CircleModeLegendValue(Layn2, datn2);
-        let LegendVn = Legend_Val.length;
-        let MkCommon = PData.SoloModeViewSettings.MarkCommon;
+        const Legend_Val = this.Get_CircleModeLegendValue(Layn2, datn2);
+        const LegendVn = Legend_Val.length;
+        const MkCommon = PData.SoloModeViewSettings.MarkCommon;
 
-        let MinusWord = this.getLegendMinusWord(MkCommon.LegendMinusWord);
-        let PlusWord = this. getLegendPlusWord(MkCommon.LegendPlusWord);
+        const MinusWord = this.getLegendMinusWord(MkCommon.LegendMinusWord);
+        const PlusWord = this. getLegendPlusWord(MkCommon.LegendPlusWord);
 
-        let LayerShape = state.attrData.LayerData[Layn2].Shape;
+        const LayerShape = state.attrData.LayerData[Layn2].Shape;
         let RMAXV;
-        let msmd = PData.SoloModeViewSettings.MarkSizeMD;
-        let msmdm = msmd.Mark;
+        const msmd = PData.SoloModeViewSettings.MarkSizeMD;
+        const msmdm = msmd.Mark;
         if (msmd.MaxValueMode == enmMarkSizeValueMode.inDataItem) {
             RMAXV = Math.max(Math.abs(state.attrData.Get_DataMax(Layn2, datn2)), Math.abs(state.attrData.Get_DataMin(Layn2, datn2)));
         } else {
             RMAXV = msmd.MaxValue;
         }
         let shapexs;
-        let xs = HeadBoxSize.width;
+        const xs = HeadBoxSize.width;
         let Ys = HeadBoxSize.height;
         let ys2 = HeadBoxSize.height;
         let WordsX;
         if (LayerShape == enmShape.LineShape) {
             shapexs = state.attrData.Get_Length_On_Screen(8);
         } else {
-            let maxr = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[0], RMAXV);
-            let tr=spatial.Get_TurnedBox(new size(maxr, maxr), msmdm.WordFont.Kakudo);
+            const maxr = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[0], RMAXV);
+            const tr=spatial.Get_TurnedBox(new size(maxr, maxr), msmdm.WordFont.Kakudo);
             shapexs = 2 * tr.width;
         }
         let AllXs;
         if ((LayerShape != enmShape.LineShape) && (msmdm.PrintMark == 0) && (msmdm.ShapeNumber == 0) && (vs.MapLegend.MarkMD.CircleMD_CircleMini_F == true)) {
             //円の大きさでコンパクトの場合の縦横
-            let cs=this.OverCircle_Print(g, new point(ALP.x, ALP.y + Ys), RMAXV, Legend_Val, UnitTx, msmdm.WordFont.Size, msmdm.Line, msmdm.Tile,  false);
+            const cs=this.OverCircle_Print(g, new point(ALP.x, ALP.y + Ys), RMAXV, Legend_Val, UnitTx, msmdm.WordFont.Size, msmdm.Line, msmdm.Tile,  false);
             AllXs = Math.max(xs, cs.width);
             Ys += cs.height;
         } else {
@@ -1276,11 +1276,11 @@ export class clsAccessory {
             //凡例記号の高さ加算
             for (let i = 0; i < LegendVn;i++) {
                 if (LayerShape == enmShape.LineShape) {
-                    let r = state.attrData.Get_Length_On_Screen(Legend_Val[i] / RMAXV * msmd.LineShape.LineWidth);
+                    const r = state.attrData.Get_Length_On_Screen(Legend_Val[i] / RMAXV * msmd.LineShape.LineWidth);
                     Ys += Math.max(r + UH / 2, UH * 1.5);
                 } else {
-                    let r = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[i], RMAXV);
-                    let tr =spatial.Get_TurnedBox(new size(r, r), msmdm.WordFont.Kakudo);
+                    const r = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[i], RMAXV);
+                    const tr =spatial.Get_TurnedBox(new size(r, r), msmdm.WordFont.Kakudo);
                     Ys += Math.max(tr.height * 2 + UH / 2, UH);
                 }
                 
@@ -1289,12 +1289,12 @@ export class clsAccessory {
         if ((PData.Statistics.Min < 0) && ((MkCommon.Inner_Data.Flag == false) || (MkCommon.Inner_Data.Mode == enmInner_Data_Info_Mode.ClassHatch))) {
             //正の数負の数の幅計算
             Ys += UH;
-            let pmw = Math.max(g.measureText(PlusWord).width, g.measureText(MinusWord).width);
+            const pmw = Math.max(g.measureText(PlusWord).width, g.measureText(MinusWord).width);
 
             switch (LayerShape) {
                 case (enmShape.PolygonShape, enmShape.PointShape): {
                     Ys += UH * 2;
-                    let r = UH / 2;
+                    const r = UH / 2;
                     AllXs = Math.max(AllXs, r * 2 + r * 1.5 + pmw);
                     break;
                 }
@@ -1307,7 +1307,7 @@ export class clsAccessory {
         }
         if ((PData.MissingValueNum > 0) && (md.Print_Flag == true)) {
             //欠損値の凡例計算
-            let MKR = state.attrData.Radius(md.Mark.WordFont.Size, 1, 1)
+            const MKR = state.attrData.Radius(md.Mark.WordFont.Size, 1, 1)
             switch (LayerShape) {
                 case (enmShape.PolygonShape):
                 case (enmShape.PointShape): {
@@ -1328,7 +1328,7 @@ export class clsAccessory {
         if (SizeGetOnlyF == true) {
             return false;
         }
-        let C_Rect = new rectangle(ALP, HeadBoxSize);
+        const C_Rect = new rectangle(ALP, HeadBoxSize);
         if (state.attrData.Check_Screen_In(C_Rect) == false) {
             return false;
         }
@@ -1338,7 +1338,7 @@ export class clsAccessory {
         let cyplus;
         if ((LayerShape != enmShape.LineShape) && ((msmdm.PrintMark == 0) && (msmdm.ShapeNumber == 0))&& (
             vs.MapLegend.MarkMD.CircleMD_CircleMini_F == true)) {
-            let cs=this.OverCircle_Print(g, new point(ALP.x, ALP.y + ys2), RMAXV, Legend_Val, UnitTx, msmdm.WordFont.Size, msmdm.Line, msmdm.Tile,  true);
+            const cs=this.OverCircle_Print(g, new point(ALP.x, ALP.y + ys2), RMAXV, Legend_Val, UnitTx, msmdm.WordFont.Size, msmdm.Line, msmdm.Tile,  true);
             ys2 += cs.height;
         }else {
             let HL = shapexs / 2;
@@ -1349,20 +1349,20 @@ export class clsAccessory {
                     r = Legend_Val[i] / RMAXV * msmd.LineShape.LineWidth;
                 } else {
                     r = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[i], RMAXV);
-                    let tr = spatial.Get_TurnedBox(new size(r, r), msmdm.WordFont.Kakudo);
+                    const tr = spatial.Get_TurnedBox(new size(r, r), msmdm.WordFont.Kakudo);
                     r = tr.height;
                 }
                  cyplus = Math.max(r, UH / 2);
                 switch (LayerShape) {
                     case (enmShape.PolygonShape):
                     case (enmShape.PointShape): {
-                        let MKP = new point(ALP.x + HL, ALP.y + ys2 + cyplus);
-                        let MKR = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[i], RMAXV);
+                        const MKP = new point(ALP.x + HL, ALP.y + ys2 + cyplus);
+                        const MKR = state.attrData.Radius(msmdm.WordFont.Size, Legend_Val[i], RMAXV);
                         state.attrData.Draw_Mark(g, MKP, MKR, msmdm);
                         break;
                     }
                     case (enmShape.LineShape): {
-                        let Line_Pat = clsBase.Line();
+                        const Line_Pat = clsBase.Line();
                         Line_Pat.Set_Same_ColorWidth_to_LinePat?.(msmd.LineShape.Color, r);
                         Line_Pat.Edge_Connect_Pattern = msmdm.Line.Edge_Connect_Pattern;
                         const P1 = new point(ALP.x + r, ALP.y + ys2 + cyplus);
@@ -1385,18 +1385,18 @@ export class clsAccessory {
 
         if ((PData.Statistics.Min < 0) && (MkCommon.Inner_Data.Flag == false) || ((MkCommon.Inner_Data.Mode == enmInner_Data_Info_Mode.ClassHatch))) {
             ys2 += UH;
-            let r = UH / 2.2;
+            const r = UH / 2.2;
             switch (LayerShape) {
                 case (enmShape.PolygonShape):
                 case (enmShape.PointShape): {
                     const P = new point(ALP.x + r, ALP.y + ys2)
                     state.attrData.Draw_Mark(g, P, r, msmdm)
                     P.y = ALP.y + ys2 + UH
-                    let PushMark = msmdm.Clone();
+                    const PushMark = msmdm.Clone();
                     PushMark.Tile = MkCommon.MinusTile;
                     state.attrData.Draw_Mark(g, P, r, PushMark);
-                    let p2 = new point(P.x + r * 1.5, ALP.y + ys2 - UH / 2);
-                    let p3 = p2.Clone();
+                    const p2 = new point(P.x + r * 1.5, ALP.y + ys2 - UH / 2);
+                    const p3 = p2.Clone();
                     p3.y += UH;
                     state.attrData.Draw_Print(g, PlusWord, p2, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
                     state.attrData.Draw_Print(g, MinusWord, p3, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -1404,17 +1404,17 @@ export class clsAccessory {
                     break;
                 }
                 case (enmShape.LineShape): {
-                    let Lpat = clsBase.Line();
+                    const Lpat = clsBase.Line();
                     Lpat.Set_Same_ColorWidth_to_LinePat?.(MkCommon.MinusTile.Line.Color, LFont.Size / 5);
-                    let p1 = new point(ALP.x + r, ALP.y + ys2);
-                    let p2 = new point(ALP.x + shapexs - r, ALP.y + ys2);
+                    const p1 = new point(ALP.x + r, ALP.y + ys2);
+                    const p2 = new point(ALP.x + shapexs - r, ALP.y + ys2);
                     state.attrData.Draw_Line(g, Lpat, p1, p2);
-                    let p3 = new point(ALP.x + r, ALP.y + ys2 + r * 2.5);
-                    let p4 = new point(ALP.x + shapexs - r, ALP.y + ys2 + r * 2.5);
+                    const p3 = new point(ALP.x + r, ALP.y + ys2 + r * 2.5);
+                    const p4 = new point(ALP.x + shapexs - r, ALP.y + ys2 + r * 2.5);
                     Lpat.Set_Same_ColorWidth_to_LinePat?.(MkCommon.MinusTile.Line.Color, LFont.Size / 5);
                     state.attrData.Draw_Line(g, Lpat, p3, p4);
-                    let p5 = new point(ALP.x + shapexs, ALP.y + ys2 - UH / 2);
-                    let p6 = new point(ALP.x + shapexs, ALP.y + ys2 - UH / 2 + r * 2.5);
+                    const p5 = new point(ALP.x + shapexs, ALP.y + ys2 - UH / 2);
+                    const p6 = new point(ALP.x + shapexs, ALP.y + ys2 - UH / 2 + r * 2.5);
                     state.attrData.Draw_Print(g, PlusWord, p5, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
                     state.attrData.Draw_Print(g, MinusWord, p6, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
                     ys2 += UH * 2;
@@ -1427,19 +1427,19 @@ export class clsAccessory {
             switch (LayerShape) {
                 case (enmShape.PolygonShape):
                 case (enmShape.PointShape):{
-                    let MKR = state.attrData.Radius(md.Mark.WordFont.Size, 1, 1);
-                    let yy = Math.max(MKR, UH / 2);
-                    let p = new point(ALP.x + MKR, ALP.y + ys2 + yy + UH * 0.5);
+                    const MKR = state.attrData.Radius(md.Mark.WordFont.Size, 1, 1);
+                    const yy = Math.max(MKR, UH / 2);
+                    const p = new point(ALP.x + MKR, ALP.y + ys2 + yy + UH * 0.5);
                     state.attrData.Draw_Mark(g, p, MKR, md.Mark);
                     ys2 += UH * 0.5 + yy * 2;
-                    let p2 = new point(p.x + MKR * 2, p.y);
+                    const p2 = new point(p.x + MKR * 2, p.y);
                     state.attrData.Draw_Print(g, md.Text, p2, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                     break;
                 }
                 case (enmShape.LineShape): {
                     if (md.LineShape.BlankF==false) {
                         let r;
-                        let MaxLW = state.attrData.Get_Length_On_Screen(md.LineShape.Width)
+                        const MaxLW = state.attrData.Get_Length_On_Screen(md.LineShape.Width)
                         if (md.LineShape.Edge_Connect_Pattern.Edge_Pattern == 2) {
                             r = 0;
                         } else {
@@ -1448,7 +1448,7 @@ export class clsAccessory {
                         const P1 = new point(ALP.x + r, ALP.y + ys2 + Math.max(UH, MaxLW));
                         const P2 = new point(ALP.x + shapexs - r, P1.y);
                         state.attrData.Draw_Line(g, md.LineShape, P1, P2);
-                        let P3 = new point(ALP.x + shapexs, P1.y);
+                        const P3 = new point(ALP.x + shapexs, P1.y);
                         state.attrData.Draw_Print(g, md.Text, P3, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                     }
                 }
@@ -1477,15 +1477,15 @@ export class clsAccessory {
     static Get_CircleModeLegendValue(Layernum: number, DataNum: number) {
         const state = appState();
 
-        let lval = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.MarkSizeMD.Value;
-        let ST = new clsSortingSearch();
+        const lval = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.MarkSizeMD.Value;
+        const ST = new clsSortingSearch();
         for (let i = 0; i < lval.length; i++) {
             if (lval[i] > 0) {
                 ST.Add(lval[i]);
             }
         }
         ST.AddEnd();
-        let lev = [];
+        const lev = [];
         for (let i = 0; i < ST.NumofData(); i++) {
             lev.push(ST.DataPositionRevValue(i));
         }
@@ -1496,7 +1496,7 @@ export class clsAccessory {
     static OverCircle_Print(g: CanvasRenderingContext2D, pos: point, RMAX: number, va: number[], UnitTx: string, EN_Size: number, LP: Tile_Property, tp: Tile_Property, Print_Flag: boolean) {
         const state = appState();
 
-        let MP = new Mark_Property();
+        const MP = new Mark_Property();
         MP.PrintMark = enmMarkPrintType.Mark;
         MP.ShapeNumber = 0
         MP.Tile = tp.Clone();
@@ -1504,16 +1504,16 @@ export class clsAccessory {
         MP.WordFont.Back.Tile.BlankF = true;
         MP.WordFont.Back.Line.BlankF = true;
         MP.WordFont.Back.Round = 0;
-        let TH = state.attrData.Get_Length_On_Screen(state.attrData.TotalData.ViewStyle.MapLegend.Base.Font.Size);
-        let rx = state.attrData.Radius(EN_Size, va[0], RMAX) * 1.1;
+        const TH = state.attrData.Get_Length_On_Screen(state.attrData.TotalData.ViewStyle.MapLegend.Base.Font.Size);
+        const rx = state.attrData.Radius(EN_Size, va[0], RMAX) * 1.1;
         let xss = 0;
         let yss = 0;
-        let x2 = rx * 3;
+        const x2 = rx * 3;
         let OLY2 = pos.y;
         let cy = 0;
         for (let i = 0; i < va.length; i++) {
             if (va[i] > 0) {
-                let r = state.attrData.Radius(EN_Size, va[i], RMAX);
+                const r = state.attrData.Radius(EN_Size, va[i], RMAX);
                 cy = rx * 2 - r + TH / 2;
                 if (Print_Flag == true) {
                     state.attrData.Draw_Mark(g, new point(pos.x + rx, pos.y + cy), r, MP);
@@ -1521,18 +1521,18 @@ export class clsAccessory {
                 if (i == 0) {
                     yss = cy - r - TH / 2;
                 }
-                let lx1 = pos.x + rx;
-                let lx2 = pos.x + rx * 2.7 - i * (rx * 2.9 - rx) / 10;
-                let LX3 = lx2 + rx * 0.2 + i * (rx * 2.9 - rx) / 10;
-                let ly1 = pos.y + cy - r;
+                const lx1 = pos.x + rx;
+                const lx2 = pos.x + rx * 2.7 - i * (rx * 2.9 - rx) / 10;
+                const LX3 = lx2 + rx * 0.2 + i * (rx * 2.9 - rx) / 10;
+                const ly1 = pos.y + cy - r;
                 let ly2 = ly1;
                 if (ly2 < OLY2) {
                     ly2 = OLY2;
                 }
-                let VL = this.UNIT_P(g, new point(pos.x + x2, ly2 - TH / 2), va[i], UnitTx, i, Print_Flag);
+                const VL = this.UNIT_P(g, new point(pos.x + x2, ly2 - TH / 2), va[i], UnitTx, i, Print_Flag);
                 xss = Math.max(xss, x2 + VL);
                 if (Print_Flag == true) {
-                    let mmd = state.attrData.TotalData.ViewStyle.MapLegend.MarkMD;
+                    const mmd = state.attrData.TotalData.ViewStyle.MapLegend.MarkMD;
                     state.attrData.Draw_Line(g, mmd.MultiEnMode_Line, new point(lx1, ly1), new point(lx2, ly1));
                     state.attrData.Draw_Line(g, mmd.MultiEnMode_Line, new point(lx2, ly1), new point(lx2, ly2));
                     state.attrData.Draw_Line(g, mmd.MultiEnMode_Line, new point(lx2, ly2), new point(LX3, ly2));
@@ -1541,14 +1541,14 @@ export class clsAccessory {
                 OLY2 = ly2 + TH;
             }
         }
-        let Ys = Math.max(yss, cy + rx);
+        const Ys = Math.max(yss, cy + rx);
         return new size(xss, Ys);
     }
 
     static UNIT_P(g: CanvasRenderingContext2D, pos: point, V: number, UnitTx: string, i: number, print_f: boolean) {
         const state = appState();
 
-        let vsm = state.attrData.TotalData.ViewStyle.MapLegend;
+        const vsm = state.attrData.TotalData.ViewStyle.MapLegend;
         let vv = Generic.Figure_Using_Solo(V, vsm.Base.Comma_f);
         if(i == 0 ){
             vv += UnitTx;
@@ -1556,9 +1556,9 @@ export class clsAccessory {
         if(print_f ==true ){
             state.attrData.Draw_Print(g, vv, pos, vsm.Base.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
         }
-        let LFont = vsm.Base.Font;
+        const LFont = vsm.Base.Font;
         g.font = LFont.toContextFont(state.attrData.TotalData.ViewStyle.ScrData).font;
-        let w = g.measureText(vv).width;
+        const w = g.measureText(vv).width;
         return w;
     }
 
@@ -1566,16 +1566,16 @@ export class clsAccessory {
     static Draw_StringMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont = vs.MapLegend.Base.Font;
-        let UH = state.attrData.Get_Length_On_Screen(LFont.Size);
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont = vs.MapLegend.Base.Font;
+        const UH = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
 
-        let Unx = state.attrData.Get_DataUnit_With_Kakko(Layn2, datn2);
+        const Unx = state.attrData.Get_DataUnit_With_Kakko(Layn2, datn2);
         if( Unx == "" ){
             return false;
         }
-        let size2 = HeadBoxSize.Clone();
+        const size2 = HeadBoxSize.Clone();
         size2.width = Math.max(size2.width, g.measureText(Unx).width);
         size2.height += UH;
         if( SizeGetOnlyF == true ){
@@ -1583,12 +1583,12 @@ export class clsAccessory {
             HeadBoxSize.height = size2.height;
             return false;
         }
-        let C_Rect = new rectangle(ALP, size2);
+        const C_Rect = new rectangle(ALP, size2);
         if( state.attrData.Check_Screen_In(C_Rect) == false ){
             return false;
         }
         this.LegendBoxBack(g,  C_Rect);
-        let tP = ALP.Clone();
+        const tP = ALP.Clone();
         tP.y += UH;
         state.attrData.Draw_Print(g, Unx, tP, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top)
         return true;
@@ -1598,32 +1598,32 @@ export class clsAccessory {
     static Draw_ClassMarkMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont = vs.MapLegend.Base.Font;
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
-        let sv = PData.SoloModeViewSettings;
-        let Div_Num = sv.Div_Num;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont = vs.MapLegend.Base.Font;
+        const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const sv = PData.SoloModeViewSettings;
+        const Div_Num = sv.Div_Num;
 
-        let retv = this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,false);
-        let ww = retv.ww;
-        let hh = retv.hh;
-        let hu = retv.hu;
-        let bxw = retv.bxw;
-        let byh = retv.byh;
-        let vn = retv.vn ?? 0;
-        let sujiW = retv.sujiW;
-        let freqW = retv.freqW;
-        let LL = retv.LL;
-        let RR = retv.RR;
-        let inBox = new size(bxw, 0);
+        const retv = this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,false);
+        const ww = retv.ww;
+        const hh = retv.hh;
+        const hu = retv.hu;
+        const bxw = retv.bxw;
+        const byh = retv.byh;
+        const vn = retv.vn ?? 0;
+        const sujiW = retv.sujiW;
+        const freqW = retv.freqW;
+        const LL = retv.LL;
+        const RR = retv.RR;
+        const inBox = new size(bxw, 0);
         let acumy=0;
-        let ysize=[];
+        const ysize=[];
         for (let i = 0; i < Div_Num; i++) {
-            let cm = sv.Class_Div[i].ClassMark;
+            const cm = sv.Class_Div[i].ClassMark;
             let w2;
             let h2;
             if (cm.PrintMark == 1) {
-                let fnt = cm.WordFont.toContextFont(state.attrData.TotalData.ViewStyle.ScrData);
+                const fnt = cm.WordFont.toContextFont(state.attrData.TotalData.ViewStyle.ScrData);
                 g.font = fnt.font;
                 w2 = g.measureText(cm.wordmark).width + byh * 0.5;
                 h2 = fnt.height;
@@ -1631,7 +1631,7 @@ export class clsAccessory {
                 w2 = state.attrData.Radius(cm.WordFont.Size, 1, 1) * 2 + byh * 0.5;
                 h2 = w2;
             }
-            let turnedSize = spatial.Get_TurnedBox(new size(w2, h2), cm.WordFont.Kakudo);
+            const turnedSize = spatial.Get_TurnedBox(new size(w2, h2), cm.WordFont.Kakudo);
             inBox.width = Math.max(inBox.width, turnedSize.width);
             ysize[i] = Math.max(h2, byh);
             acumy += ysize[i];
@@ -1646,7 +1646,7 @@ export class clsAccessory {
         let ysize2 = HeadBoxSize.height + acumy + hu + (Div_Num - 1) * bxwy;
         inBox.height = ysize2;
         if ((PData.MissingValueNum > 0) && (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag == true)) {
-            let vm = state.attrData.TotalData.ViewStyle.Missing_Data;
+            const vm = state.attrData.TotalData.ViewStyle.Missing_Data;
             let H;
             if (vm.ClassMark.PrintMark == enmMarkPrintType.Word) {
                 H = state.attrData.Get_Length_On_Screen(vm.ClassMark.WordFont.Size);
@@ -1659,7 +1659,7 @@ export class clsAccessory {
             HeadBoxSize.height = ysize2;
             return false;
         }
-        let C_Rect = new rectangle(ALP, new size(HeadBoxSize.width, ysize2));
+        const C_Rect = new rectangle(ALP, new size(HeadBoxSize.width, ysize2));
         if (state.attrData.Check_Screen_In(C_Rect) == false) {
             return false;
         }
@@ -1669,15 +1669,15 @@ export class clsAccessory {
         acumy = 0
         for (let i = 0; i < Div_Num; i++) {
 
-            let rect = new rectangle(new point(ALP.x, ALP.y + acumy  + hu + HeadBoxSize.height),
+            const rect = new rectangle(new point(ALP.x, ALP.y + acumy  + hu + HeadBoxSize.height),
                 new size(inBox.width + 1, ysize[i] + 1));
             if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.ClassMarkFrame_Visible == true) {
-                let TilePat = clsBase.Tile();
+                const TilePat = clsBase.Tile();
                 TilePat.Color = new colorRGBA(255, 255, 255, 255);
                 state.attrData.Draw_Tile_Box(g, rect, state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Line, TilePat, 0);
             }
-            let r = state.attrData.Radius(sv.Class_Div[i].ClassMark.WordFont.Size, 1, 1);
-            let p = new point(ALP.x + inBox.width / 2, ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height);
+            const r = state.attrData.Radius(sv.Class_Div[i].ClassMark.WordFont.Size, 1, 1);
+            const p = new point(ALP.x + inBox.width / 2, ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height);
             state.attrData.Draw_Mark(g, p, r, sv.Class_Div[i].ClassMark);
             acumy += ysize[i] + bxwy;
         }
@@ -1692,15 +1692,15 @@ export class clsAccessory {
                 } else {
                     fu = this.Get_SeparateClassWords( sv.Class_Div, i, Div_Num, LL, RR);
                 }
-                let p = new point(ALP.x + inBox.width + ww / 2, ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height);
+                const p = new point(ALP.x + inBox.width + ww / 2, ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height);
                 state.attrData.Draw_Print(g, fu, p, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                 acumy += ysize[i] + bxwy;
             }
         } else {
             acumy = 0;
             for (let i = 0; i < Div_Num - 1; i++) {
-                let fu= Generic.Figure_Using3(sv.Class_Div[i].Value, LL, RR, state.attrData.TotalData.ViewStyle.MapLegend.Base.Comma_f);
-                let p = new point(ALP.x + inBox.width + ww / 2, ALP.y + acumy + ysize[i] + hu + HeadBoxSize.height);
+                const fu= Generic.Figure_Using3(sv.Class_Div[i].Value, LL, RR, state.attrData.TotalData.ViewStyle.MapLegend.Base.Comma_f);
+                const p = new point(ALP.x + inBox.width + ww / 2, ALP.y + acumy + ysize[i] + hu + HeadBoxSize.height);
                 state.attrData.Draw_Print(g, fu, p, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                 acumy += ysize[i] + bxwy;
             }
@@ -1713,7 +1713,7 @@ export class clsAccessory {
             if (retFV.ok == true) {
                 acumy = 0;
                 for (let i = 0; i < retFV.frequency.length; i++) {
-                    let cwp = new point();
+                    const cwp = new point();
                     cwp.y = ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height;
                     cwp.x = ALP.x + inBox.width + ww / 2 + sujiW;
                     state.attrData.Draw_Print(g, "(" + retFV.frequency[i].toString() + ")", cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
@@ -1723,18 +1723,18 @@ export class clsAccessory {
         }
 
         if ((PData.MissingValueNum > 0) && (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag == true)) {
-            let vm = state.attrData.TotalData.ViewStyle.Missing_Data;
+            const vm = state.attrData.TotalData.ViewStyle.Missing_Data;
             let H;
             if (vm.ClassMark.PrintMark == enmMarkPrintType.Word) {
                 H = state.attrData.Get_Length_On_Screen(vm.ClassMark.WordFont.Size);
             } else {
                 H = state.attrData.Radius(vm.ClassMark.WordFont.Size, 1, 1) * 2 ;
             }
-            let y2 = ALP.y + inBox.height + byh / 2 + HeadBoxSize.height;
+            const y2 = ALP.y + inBox.height + byh / 2 + HeadBoxSize.height;
             if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.ClassMarkFrame_Visible == true) {
-                let TilePat = clsBase.Tile();
+                const TilePat = clsBase.Tile();
                 TilePat.Color = clsBase.ColorWhite();
-                let rect = new rectangle(new point(ALP.x, y2), new size(inBox.width + 1, H + 1));
+                const rect = new rectangle(new point(ALP.x, y2), new size(inBox.width + 1, H + 1));
                 state.attrData.Draw_Tile_Box(g, rect,  state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Line, TilePat,0);
             }
             let p = new point(ALP.x + inBox.width / 2, y2 + H / 2);
@@ -1742,7 +1742,7 @@ export class clsAccessory {
             p = new point(ALP.x + inBox.width + ww / 2, y2 + H / 2);
             state.attrData.Draw_Print(g, vm.Text, p, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
             if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.FrequencyPrint == true) {
-                let cwp = new point();
+                const cwp = new point();
                 cwp.y = p.y;
                 cwp.x = ALP.x + inBox.width + ww / 2 + sujiW;
                 state.attrData.Draw_Print(g, "(" + retFV.missFreq.toString() + ")", cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
@@ -1758,21 +1758,21 @@ export class clsAccessory {
     static Draw_ClassODModeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2];
-        let Class_div = PData.SoloModeViewSettings.Class_Div;
+        const PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const Class_div = PData.SoloModeViewSettings.Class_Div;
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont  = vs.MapLegend.Base.Font;
-        let UH  = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
-        let Div_Num  = PData.SoloModeViewSettings.Div_Num;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont  = vs.MapLegend.Base.Font;
+        const UH  = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
+        const Div_Num  = PData.SoloModeViewSettings.Div_Num;
         let LL  = 1;
         let RR  = 0;
         if(PData.DataType != enmAttDataType.Category ){
             for (let i = 0; i < Div_Num - 1;i++){
-                let a  = Class_div[i].Value;
-                let deci =Generic.Figure_Arrange(a);
+                const a  = Class_div[i].Value;
+                const deci =Generic.Figure_Arrange(a);
                 let L = deci.BeforeDecimal;
-                let r = deci.AfterDecimal;
+                const r = deci.AfterDecimal;
                 if ( L== 0) { L = 1 }
                 if(a < 0 ){ L += 1}
                 LL = Math.max(LL, L);
@@ -1784,21 +1784,21 @@ export class clsAccessory {
         for (let i = 0; i < Div_Num ;i++){
             rm = Math.max(Class_div[i].ODLinePat.Width, rm);
         }
-        let x2  = state.attrData.Get_Length_On_Screen(8);
-        let Xsepa  = state.attrData.Get_Length_On_Screen(2);
-        let ysize2  = HeadBoxSize.height;
+        const x2  = state.attrData.Get_Length_On_Screen(8);
+        const Xsepa  = state.attrData.Get_Length_On_Screen(2);
+        const ysize2  = HeadBoxSize.height;
         //---
         let xs  = 0;
         if(UnitTx != "" ){
             HeadBoxSize.height += UH;
         }
-        let thdata = LFont.toContextFont(vs.ScrData);
+        const thdata = LFont.toContextFont(vs.ScrData);
         g.font = thdata.font;
         for (let i = 0; i < Div_Num; i++) {
-            let cvi = Class_div[i];
+            const cvi = Class_div[i];
             if (cvi.ODLinePat.BlankF== false) {
-                let LW = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width)
-                let H = Math.max(UH, LW)
+                const LW = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width)
+                const H = Math.max(UH, LW)
                 let r;
                 if (cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern =='butt' ) {
                     r = state.attrData.Radius(rm, 0, rm);
@@ -1816,18 +1816,18 @@ export class clsAccessory {
             }
         }
         
-        let misv = vs.Missing_Data;
+        const misv = vs.Missing_Data;
         if ((PData.MissingValueNum > 0) && (misv.Print_Flag == true) && (misv.LineShape.BlankF==false) && (
             state.attrData.LayerData[Layn2].Shape == enmShape.LineShape)) {
             xs = Math.max(xs, g.measureText(misv.Text).width);
-            let LW = state.attrData.Get_Length_On_Screen(misv.LineShape.Width);
+            const LW = state.attrData.Get_Length_On_Screen(misv.LineShape.Width);
             HeadBoxSize.height += Math.max(UH, LW) * 1.5;
         }
 
         let FreqW  = 0;
         let freq=[]; 
         if(vs.MapLegend.ClassMD.FrequencyPrint == true ){
-            let retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
+            const retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
             freq=retV.frequency;
             if(retV.ok == true) {
                 for (let i = 0; i < retV.frequency.length;i++){
@@ -1840,7 +1840,7 @@ export class clsAccessory {
         if(SizeGetOnlyF == true ){
             return false;
         }
-        let C_Rect  = new rectangle(ALP, HeadBoxSize);
+        const C_Rect  = new rectangle(ALP, HeadBoxSize);
         if(state.attrData.Check_Screen_In(C_Rect) == false ){
             return false;
         }
@@ -1858,11 +1858,11 @@ export class clsAccessory {
             HeadBoxSize.height += UH;
         }
         for (let i = 0; i < Div_Num ;i++){
-            let cvi =  Class_div[i];
+            const cvi =  Class_div[i];
                 if(cvi.ODLinePat.BlankF== false ){
-                    let LW  = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width);
-                    let H  = Math.max(UH, LW);
-                    let Y  = HeadBoxSize.height + UH / 2;
+                    const LW  = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width);
+                    const H  = Math.max(UH, LW);
+                    const Y  = HeadBoxSize.height + UH / 2;
                     let r ;
                     if(cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern == enmEdge_Pattern.Flat ){
                         r = 0;
@@ -1878,7 +1878,7 @@ export class clsAccessory {
                     }
                     state.attrData.Draw_Print(g, fu, new point(ALP.x + x2 + Xsepa, ALP.y + Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                     if(vs.MapLegend.ClassMD.FrequencyPrint == true ){
-                        let cwp =new point(ALP.x + x2 + Xsepa + xs,ALP.y + HeadBoxSize.height + UH / 2);
+                        const cwp =new point(ALP.x + x2 + Xsepa + xs,ALP.y + HeadBoxSize.height + UH / 2);
                         state.attrData.Draw_Print(g, "(" + freq[i].toString() + ")", cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                     }
                     HeadBoxSize.height += H * 1.5;
@@ -1890,14 +1890,14 @@ export class clsAccessory {
         
             if((PData.MissingValueNum > 0)&&(misv.Print_Flag == true)&&(misv.LineShape.BlankF==false )&&(
                 state.attrData.LayerData[Layn2].Shape == enmShape.LineShape) ){
-                let LW  = state.attrData.Get_Length_On_Screen(misv.LineShape.Width);
+                const LW  = state.attrData.Get_Length_On_Screen(misv.LineShape.Width);
                 let r ;
                 if(misv.LineShape.Edge_Connect_Pattern.Edge_Pattern == enmEdge_Pattern.Flat ){
                     r = 0;
                 }else{
                     r = LW / 2;
                 }
-                let Y  = HeadBoxSize.height + Math.max(UH, LW) * 1.5;
+                const Y  = HeadBoxSize.height + Math.max(UH, LW) * 1.5;
                 state.attrData.Draw_Line(g, misv.LineShape, new point(ALP.x + r, ALP.y + Y), new point(ALP.x + x2 - r, ALP.y + Y));
                 state.attrData.Draw_Print(g, misv.Text, new point(ALP.x + x2 + Xsepa, ALP.y + Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                 HeadBoxSize.height = Y;
@@ -1914,7 +1914,7 @@ export class clsAccessory {
         let HifunSTR ;
         let MoreSTR ;
         let MiddleSTR ;
-        let vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle;
         switch( vs.MapLegend.ClassMD.SeparateClassWords){
             case enmSeparateClassWords.Japanese:
                 UnderSTR = "未満";
@@ -1931,7 +1931,7 @@ export class clsAccessory {
             }
 
         let fu;
-        let comma_f = vs.MapLegend.Base.Comma_f;
+        const comma_f = vs.MapLegend.Base.Comma_f;
         switch (checkN) {
             case 0:
                 fu = Generic.Figure_Using3(Class_div[checkN].Value, LL, RR, comma_f) + MoreSTR;
@@ -1955,25 +1955,25 @@ export class clsAccessory {
     static Draw_ClassPaint_LineShape(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2]
+        const PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2]
 
-        let PointLayerMark  = state.attrData.LayerData[Layn2].LayerModeViewSettings.PointLineShape;
+        const PointLayerMark  = state.attrData.LayerData[Layn2].LayerModeViewSettings.PointLineShape;
 
-        let dvn  = PData.SoloModeViewSettings.Div_Num
-        let LinePush=[];
+        const dvn  = PData.SoloModeViewSettings.Div_Num
+        const LinePush=[];
         for (let i = 0; i < dvn;i++){
             LinePush[i] = PData.SoloModeViewSettings.Class_Div[i].ODLinePat.Clone();
         }
 
         for (let i = 0; i < dvn ;i++){
-            let cd= PData.SoloModeViewSettings.Class_Div[i];
+            const cd= PData.SoloModeViewSettings.Class_Div[i];
             cd.ODLinePat = clsBase.Line();
             cd.ODLinePat.Color=cd.PaintColor.Clone();
             cd.ODLinePat.Width=PointLayerMark.LineWidth;
             cd.ODLinePat.Edge_Connect_Pattern = PointLayerMark.LineEdge.Clone();
         }
 
-        let screen_in_f  = this.Draw_ClassODModeMode(g,  ALP, HeadBoxSize, UnitTx, Layn2, datn2, SizeGetOnlyF);
+        const screen_in_f  = this.Draw_ClassODModeMode(g,  ALP, HeadBoxSize, UnitTx, Layn2, datn2, SizeGetOnlyF);
 
         for (let i = 0; i < dvn;i++){
             PData.SoloModeViewSettings.Class_Div[i].ODLinePat = LinePush[i].Clone();
@@ -1984,22 +1984,22 @@ export class clsAccessory {
     static Draw_ClassPaintHatchMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LFont = vs.MapLegend.Base.Font;
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LFont = vs.MapLegend.Base.Font;
+        const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
 
-        let retv=this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,true);
-        let ww = retv.ww;
-        let hu = retv.hu;
-        let bxw = retv.bxw;
+        const retv=this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,true);
+        const ww = retv.ww;
+        const hu = retv.hu;
+        const bxw = retv.bxw;
         let byh = retv.byh;
-        let vn = retv.vn ?? 0;
-        let sujiW = retv.sujiW;
-        let freqW = retv.freqW;
-        let LL = retv.LL;
-        let RR = retv.RR;
+        const vn = retv.vn ?? 0;
+        const sujiW = retv.sujiW;
+        const freqW = retv.freqW;
+        const LL = retv.LL;
+        const RR = retv.RR;
         HeadBoxSize.width = Math.max(HeadBoxSize.width, bxw + ww / 2 + sujiW + freqW);
-        let fbyh = byh;
+        const fbyh = byh;
         if (this.GetClassMethod(Layn2, datn2,true) == enmClassMode_Meshod.Separated) {
             byh = byh * (vs.MapLegend.ClassMD.SeparateGapSize + 1);
         }
@@ -2013,7 +2013,7 @@ export class clsAccessory {
             HeadBoxSize.height = ysize2;
             return false;
         }
-        let C_Rect = new rectangle(ALP, new size(HeadBoxSize.width, ysize2));
+        const C_Rect = new rectangle(ALP, new size(HeadBoxSize.width, ysize2));
 
         if (state.attrData.Check_Screen_In(C_Rect) == false) {
             return false;
@@ -2021,14 +2021,14 @@ export class clsAccessory {
         //ここまで範囲調べ、以降描画
         this.LegendBoxBack(g,  C_Rect);
 
-        let P = ALP.Clone();
+        const P = ALP.Clone();
         P.offset(bxw, HeadBoxSize.height);
         state.attrData.Draw_Print(g, UnitTx, P, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
-        let ClassBoxLine = vs.MapLegend.ClassMD.PaintMode_Line;
+        const ClassBoxLine = vs.MapLegend.ClassMD.PaintMode_Line;
 
         for (let i = 0; i < PData.SoloModeViewSettings.Div_Num; i++) {
-            let PaintBox = new rectangle(new point(ALP.x, ALP.y + i * byh + hu + HeadBoxSize.height), new size(bxw + 1, fbyh));
-            let TilePat = clsBase.Tile();
+            const PaintBox = new rectangle(new point(ALP.x, ALP.y + i * byh + hu + HeadBoxSize.height), new size(bxw + 1, fbyh));
+            const TilePat = clsBase.Tile();
             TilePat.Color = PData.SoloModeViewSettings.Class_Div[i].PaintColor;
             state.attrData.Draw_Tile_Box(g, PaintBox, ClassBoxLine, TilePat, 0);
         }
@@ -2041,14 +2041,14 @@ export class clsAccessory {
                 } else {
                     fu = this.Get_SeparateClassWords(PData.SoloModeViewSettings.Class_Div, i, PData.SoloModeViewSettings.Div_Num, LL, RR);
                 }
-                let cwp = ALP.Clone();;
+                const cwp = ALP.Clone();;
                 cwp.offset(bxw + ww / 2, i * byh + hu + HeadBoxSize.height);
                 state.attrData.Draw_Print(g, fu, cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
             }
         } else {
             for (let i = 0; i <= PData.SoloModeViewSettings.Div_Num - 2; i++) {
-                let fu = Generic.Figure_Using3(PData.SoloModeViewSettings.Class_Div[i].Value, LL, RR, vs.MapLegend.Base.Comma_f);
-                let cwp = ALP.Clone();
+                const fu = Generic.Figure_Using3(PData.SoloModeViewSettings.Class_Div[i].Value, LL, RR, vs.MapLegend.Base.Comma_f);
+                const cwp = ALP.Clone();
                 cwp.offset(bxw + ww / 2, (i + 0.5) * byh + hu + HeadBoxSize.height);
                 state.attrData.Draw_Print(g, fu, cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
             }
@@ -2059,7 +2059,7 @@ export class clsAccessory {
             retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
             if (retV.ok == true) {
                 for (let i = 0; i < retV.frequency.length; i++) {
-                    let cwp = new point();
+                    const cwp = new point();
                     cwp.y = ALP.y + i * byh + hu + HeadBoxSize.height;
                     cwp.x = ALP.x + bxw + ww / 2 + sujiW;
                     state.attrData.Draw_Print(g, "(" + retV.frequency[i].toString() + ")", cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -2070,14 +2070,14 @@ export class clsAccessory {
         if ((PData.MissingValueNum > 0) && (vs.Missing_Data.Print_Flag == true) && (
             state.attrData.LayerData[Layn2].Type != enmLayerType.Trip)) {
             //欠損値
-            let MissRect = new rectangle(new point(ALP.x, ALP.y + (PData.SoloModeViewSettings.Div_Num + 0.5) * byh + hu + HeadBoxSize.height), new size(bxw, fbyh));
-            let am = vs.Missing_Data;
+            const MissRect = new rectangle(new point(ALP.x, ALP.y + (PData.SoloModeViewSettings.Div_Num + 0.5) * byh + hu + HeadBoxSize.height), new size(bxw, fbyh));
+            const am = vs.Missing_Data;
             state.attrData.Draw_Tile_Box(g, MissRect, ClassBoxLine, am.PaintTile, 0);
-            let mistxp = new point(ALP.x + bxw + ww / 2, MissRect.top);
+            const mistxp = new point(ALP.x + bxw + ww / 2, MissRect.top);
             state.attrData.Draw_Print(g, am.Text, mistxp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
 
             if (vs.MapLegend.ClassMD.FrequencyPrint == true) {
-                let cwp = new point();
+                const cwp = new point();
                 cwp.y = MissRect.top;
                 cwp.x = ALP.x + bxw + ww / 2 + sujiW;
                 state.attrData.Draw_Print(g, "(" + String(retV.missFreq)+ ")", cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -2096,7 +2096,7 @@ export class clsAccessory {
         const state = appState();
 
         let CMethod = state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Method;
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
         if ((PData.DataType == enmAttDataType.Category == true) && (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.CategorySeparate_f == true) && (CategorySeparate_f_Enable == true)) {
             CMethod = enmClassMode_Meshod.Separated;
         }
@@ -2113,30 +2113,30 @@ export class clsAccessory {
         let byh;
         let vn;
         let sujiW=0;
-        let freqW=0;
+        const freqW=0;
         let LL = 1;
         let RR = 0;
-        let PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
-        let Class_div = PData.SoloModeViewSettings.Class_Div;
-        let vs = state.attrData.TotalData.ViewStyle;
+        const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
+        const Class_div = PData.SoloModeViewSettings.Class_Div;
+        const vs = state.attrData.TotalData.ViewStyle;
         let n = 1;
         if (PData.DataType == enmAttDataType.Category) {
             n = 0;
         }
-        let Div_Num = PData.SoloModeViewSettings.Div_Num;
+        const Div_Num = PData.SoloModeViewSettings.Div_Num;
         for (let i = 0; i <= (Div_Num -1- n); i++) {
-            let a = Class_div[i].Value;
-            let deci =Generic.Figure_Arrange(a);
+            const a = Class_div[i].Value;
+            const deci =Generic.Figure_Arrange(a);
             let L = deci.BeforeDecimal;
-            let r = deci.AfterDecimal;
+            const r = deci.AfterDecimal;
             if ( L== 0) { L = 1 }
             if (a < 0) { L++ }
             LL = Math.max(LL, L);
             RR = Math.max(RR, r);
         }
 
-        let LFont = vs.MapLegend.Base.Font;
-        let H = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
+        const LFont = vs.MapLegend.Base.Font;
+        const H = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
         if (H == 0) {
             return {
                 ww: ww,
@@ -2165,7 +2165,7 @@ export class clsAccessory {
             sujiW = Math.max(sujiW, g.measureText(vs.Missing_Data.Text).width);
         }
 
-        let CMethod = this.GetClassMethod(Layn2, datn2, CategorySeparate_f_Enable);
+        const CMethod = this.GetClassMethod(Layn2, datn2, CategorySeparate_f_Enable);
         if (PData.DataType == enmAttDataType.Category) {
             vn = Div_Num - 1;
         } else {
@@ -2200,10 +2200,10 @@ export class clsAccessory {
 
         let FreqW = 0;
         if (vs.MapLegend.ClassMD.FrequencyPrint == true) {
-            let retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
+            const retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
             if (retV.ok == true) {
                 for (let j = 0; j < retV.frequency.length; j++) {
-                    let fq="(" + String(retV.frequency[j]) + ")";
+                    const fq="(" + String(retV.frequency[j]) + ")";
                     FreqW = Math.max(FreqW, g.measureText(fq).width);
                 }
             }
@@ -2228,11 +2228,11 @@ export class clsAccessory {
     static Title_Print(g: CanvasRenderingContext2D) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle;
         if (vs.MapTitle.Visible == false) {
             return;
         }
-        let TI = this.getPrintTitle(g);
+        const TI = this.getPrintTitle(g);
         state.attrData.Draw_Print(g, TI.title, TI.rect.topLeft(), vs.MapTitle.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
 
@@ -2240,24 +2240,24 @@ export class clsAccessory {
         const state = appState();
 
         let tt;
-        let vs = state.attrData.TotalData.ViewStyle;
-        let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case (enmTotalMode_Number.DataViewMode): {
-                let al = state.attrData.LayerData[Layernum];
+                const al = state.attrData.LayerData[Layernum];
                 switch (al.Print_Mode_Layer) {
                     case (enmLayerMode_Number.SoloMode): {
-                        let DataNum = al.atrData.SelectedIndex;
+                        const DataNum = al.atrData.SelectedIndex;
                         tt = al.atrData.Data[DataNum].Title;
                         break;
                     }
                     case (enmLayerMode_Number.GraphMode): {
-                        let gm = al.LayerModeViewSettings.GraphMode;
+                        const gm = al.LayerModeViewSettings.GraphMode;
                         tt = gm.DataSet[gm.SelectedIndex].title;
                         break;
                     }
                     case (enmLayerMode_Number.LabelMode): {
-                        let lm = al.LayerModeViewSettings.LabelMode;
+                        const lm = al.LayerModeViewSettings.LabelMode;
                         tt = lm.DataSet[lm.SelectedIndex].title;
                         break;
                     }
@@ -2265,7 +2265,7 @@ export class clsAccessory {
                 break;
             }
             case (enmTotalMode_Number.OverLayMode): {
-                let ov = state.attrData.TotalData.TotalMode.OverLay;
+                const ov = state.attrData.TotalData.TotalMode.OverLay;
                 tt = ov.DataSet[ov.SelectedIndex].title;
                 break;
             }
@@ -2274,17 +2274,17 @@ export class clsAccessory {
                 break;
             }
         }
-        let P_Title = vs.MapTitle.Clone();
+        const P_Title = vs.MapTitle.Clone();
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
             P_Title.Position = vs.ScrData.getSRXYfromRatio(P_Title.Position);
         }
-        let atx = tt;
-        let xw = state.attrData.Get_Length_On_Screen(P_Title.MaxWidth);
+        const atx = tt;
+        const xw = state.attrData.Get_Length_On_Screen(P_Title.MaxWidth);
         
-        let txp  = clsDraw.TextCut_for_print(g, atx, P_Title.Font, true, xw,vs.ScrData);
-        let d_an2 = txp.Out_Text;
+        const txp  = clsDraw.TextCut_for_print(g, atx, P_Title.Font, true, xw,vs.ScrData);
+        const d_an2 = txp.Out_Text;
         let yw = txp.Height;
-        let RealW = txp.RealWidth;
+        const RealW = txp.RealWidth;
         let outTx = "";
         if (d_an2.length > 0) {
             outTx = d_an2[0];
@@ -2293,8 +2293,8 @@ export class clsAccessory {
             outTx += chrLF + d_an2[i];
         }
         yw *= d_an2.length;
-        let tP = vs.ScrData.getSxSy(P_Title.Position);
-        let Rect = new rectangle(new point(tP.x - RealW / 2, tP.y - yw / 2), new size(RealW, yw));
+        const tP = vs.ScrData.getSxSy(P_Title.Position);
+        const Rect = new rectangle(new point(tP.x - RealW / 2, tP.y - yw / 2), new size(RealW, yw));
         return {
             title: outTx, rect: Rect
         }
@@ -2304,32 +2304,32 @@ export class clsAccessory {
     static Compass_print(g: CanvasRenderingContext2D) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let threed  = vs.ScrData.ThreeDMode;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const threed  = vs.ScrData.ThreeDMode;
         if ((vs.AttMapCompass.Visible ==false)||(threed.Set3D_F ==true)&&((threed.Pitch != 0)||(threed.Head !=0)) ){
             return;
         }
-        let P_Comp = vs.AttMapCompass.Clone();
+        const P_Comp = vs.AttMapCompass.Clone();
         if(vs.ScrData.Accessory_Base == enmBasePosition.Screen ){
             P_Comp.Position = vs.ScrData.getSRXYfromRatio(P_Comp.Position);
         }
 
-        let fmap = state.attrData.SetMapFile("");
+        const fmap = state.attrData.SetMapFile("");
         let CompD = fmap.Map.MapCompass.Mark.WordFont.Kakudo;
         if(threed.Set3D_F ==true ){
             CompD -= threed.Bank;
         }
         P_Comp.Mark.WordFont.Kakudo = CompD;
-        let r = state.attrData.Radius(P_Comp.Mark.WordFont.Size, 1, 1);
-        let centerP = state.attrData.TotalData.ViewStyle.ScrData.getSxSy(P_Comp.Position);
-        let checkRect = new rectangle(new point(centerP.x - r, centerP.y - r), new size(r * 2, r * 2));
+        const r = state.attrData.Radius(P_Comp.Mark.WordFont.Size, 1, 1);
+        const centerP = state.attrData.TotalData.ViewStyle.ScrData.getSxSy(P_Comp.Position);
+        const checkRect = new rectangle(new point(centerP.x - r, centerP.y - r), new size(r * 2, r * 2));
         if(state.attrData.Check_Screen_In(checkRect) ==true ){
             state.attrData.Draw_Mark(g, centerP, r, P_Comp.Mark);
-            let ww = state.attrData.Get_Length_On_Screen(P_Comp.Font.Size) * 0.7;
-            let PlusFont = P_Comp.Font.Clone();
+            const ww = state.attrData.Get_Length_On_Screen(P_Comp.Font.Size) * 0.7;
+            const PlusFont = P_Comp.Font.Clone();
             PlusFont.Kakudo += P_Comp.Mark.WordFont.Kakudo;
             for (let i = 0; i <= 3; i++) {
-                let wpos = centerP.Clone();
+                const wpos = centerP.Clone();
                 wpos.offset(Math.cos((i * 90 + 90 + CompD) * Math.PI / 180) * (r + ww),
                     -Math.sin((i * 90 + 90 + CompD) * Math.PI / 180) * (r + ww));
                 let CmpassWord;
@@ -2359,29 +2359,29 @@ export class clsAccessory {
     static Scale_Print(g: CanvasRenderingContext2D) {
         const state = appState();
 
-        let scdata = this.getScaleSub(g);
-        let C_Rect = scdata.rect;
+        const scdata = this.getScaleSub(g);
+        const C_Rect = scdata.rect;
         if (C_Rect.width() == 0) {
             return;
         }
-        let P_Scl = scdata.P_Scl;
-        let SCST = scdata.SCST;
-        let scaleMax = scdata.scaleMax;
-        let sxy = scdata.sxy;
-        let zeroW = scdata.zeroW;
-        let ScaleLength = scdata.ScaleLength;
-        let ScaleMaxW = scdata.ScaleMaxW;
+        const P_Scl = scdata.P_Scl;
+        const SCST = scdata.SCST;
+        const scaleMax = scdata.scaleMax;
+        const sxy = scdata.sxy;
+        const zeroW = scdata.zeroW;
+        const ScaleLength = scdata.ScaleLength;
+        const ScaleMaxW = scdata.ScaleMaxW;
 
         if (state.attrData.Check_Screen_In(C_Rect) == true) {
-            let H = state.attrData.Get_Length_On_Screen(P_Scl.Font.Size);
+            const H = state.attrData.Get_Length_On_Screen(P_Scl.Font.Size);
             state.attrData.Draw_Tile_RoundBox(g, C_Rect, state.attrData.TotalData.ViewStyle.MapScale.Back, 0);
-            let TilePat = clsBase.Tile();
+            const TilePat = clsBase.Tile();
             TilePat.Color = P_Scl.Font.Color.Clone();
-            let LPat = clsBase.Line();
+            const LPat = clsBase.Line();
             LPat.Color = P_Scl.Font.Color;
             switch (P_Scl.BarPattern) {
                 case (enmScaleBarPattern.Thin): {
-                    let rec = new rectangle(new point(sxy.x + zeroW, sxy.y + H * 1.4), new size(ScaleLength, H * 0.15));
+                    const rec = new rectangle(new point(sxy.x + zeroW, sxy.y + H * 1.4), new size(ScaleLength, H * 0.15));
                     state.attrData.Draw_Tile_Box(g, rec,  LPat, TilePat,0);
                     LPat.Color = P_Scl.Font.Color.Clone();
                     LPat.Width = 0.3;
@@ -2405,7 +2405,7 @@ export class clsAccessory {
                     break;
                 }
                 case (enmScaleBarPattern.Bold): {
-                    let TilePat2 = TilePat.Clone?.() ?? TilePat;
+                    const TilePat2 = TilePat.Clone?.() ?? TilePat;
                     TilePat2.Color = new colorRGBA(255, 255, 255, 255);
                     for (let i = 1; i <= SCST; i++) {
                         let TilePat3;
@@ -2414,7 +2414,7 @@ export class clsAccessory {
                         } else {
                             TilePat3 = TilePat2.Clone?.() ?? TilePat2;
                         }
-                        let Rect1 = new rectangle(new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H),new size( ScaleLength / SCST, H * 0.5 - 1));
+                        const Rect1 = new rectangle(new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H),new size( ScaleLength / SCST, H * 0.5 - 1));
                         state.attrData.Draw_Tile_Box(g, Rect1, LPat, TilePat3, 0);
                     }
                     break;
@@ -2422,8 +2422,8 @@ export class clsAccessory {
         }
 
             state.attrData.Draw_Print(g, "0", sxy, P_Scl.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
-            let tx = Generic.getScaleUnitStrings(scaleMax, P_Scl.Unit);
-            let p = new point(sxy.x + ScaleLength + zeroW - ScaleMaxW, sxy.y);
+            const tx = Generic.getScaleUnitStrings(scaleMax, P_Scl.Unit);
+            const p = new point(sxy.x + ScaleLength + zeroW - ScaleMaxW, sxy.y);
             state.attrData.Draw_Print(g, tx, p, P_Scl.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
         }
 
@@ -2432,29 +2432,29 @@ export class clsAccessory {
     static getScaleSub(g: CanvasRenderingContext2D) {
         const state = appState();
 
-        let retV = {
+        const retV = {
              SCST :0,  scaleMax :'',
              sxy :new point(),  P_Scl :new strScale_Attri(),
             zeroW: 0, ScaleLength: 0, ScaleMaxW: 0,
             rect: new rectangle()
         }
-        let vs =  state.attrData.TotalData.ViewStyle;
-        let threed = vs.ScrData.ThreeDMode;
+        const vs =  state.attrData.TotalData.ViewStyle;
+        const threed = vs.ScrData.ThreeDMode;
         if ((vs.MapScale.Visible == false) || ((threed.Set3D_F == true) && ((threed.Pitch != 0) || (threed.Head != 0)))) {
             return retV;
         } 
-        let P_Scl = vs.MapScale.Clone();
+        const P_Scl = vs.MapScale.Clone();
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
             P_Scl.Position = vs.ScrData.getSRXYfromRatio(P_Scl.Position);
 
         }
-        let Map = state.attrData.SetMapFile("").Map;
-        let SCT = [0, 2, 2, 3, 4, 2, 3, 2, 4, 3, 2];
+        const Map = state.attrData.SetMapFile("").Map;
+        const SCT = [0, 2, 2, 3, 4, 2, 3, 2, 4, 3, 2];
         retV.SCST = 0;
         let SCM = 0;
         let MapScaleBairitu;
         if (P_Scl.BarAuto == true) {
-            let xw = vs.ScrData.ScrView.width();
+            const xw = vs.ScrData.ScrView.width();
             MapScaleBairitu = spatial.Get_Scale_Baititu_IdoKedo(P_Scl.Position, Map.Zahyo);
             MapScaleBairitu /= Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, P_Scl.Unit);
             let i = 5;
@@ -2480,20 +2480,20 @@ export class clsAccessory {
                 return retV;
             }
             let a;
-            let b = 10 ** (LNum - 1);
+            const b = 10 ** (LNum - 1);
             if (SCM >= 1) {
                 SCM = Math.floor(SCM / b) * b;
                 a = Math.floor(SCM / b).toString();
                 if ((Number(a) == 3) || (Number(a) == 5) || (Number(a) == 7) || (Number(a) == 9)) {
-                    let aNum = Number(a) + 1;
+                    const aNum = Number(a) + 1;
                     a = aNum.toString();
                     SCM = aNum * b;
                 }
             } else {
-                let scmStr = String(SCM);
-                let leftPart = scmStr.substring(0, 2);
+                const scmStr = String(SCM);
+                const leftPart = scmStr.substring(0, 2);
                 SCM = parseFloat(leftPart + L);
-                let aChar = String(SCM).charAt(String(SCM).length - 1);
+                const aChar = String(SCM).charAt(String(SCM).length - 1);
                 let aNum = parseInt(aChar, 10);
                 if ((aNum == 3) || (aNum == 5) || (aNum == 7) || (aNum == 9)) {
                     aNum += 1;
@@ -2522,15 +2522,15 @@ export class clsAccessory {
             retV.ScaleLength = SCM * MapScaleBairitu * vs.ScrData.ScreenMG.Mul;
         }
 
-        let H = state.attrData.Get_Length_On_Screen(P_Scl.Font.Size)
+        const H = state.attrData.Get_Length_On_Screen(P_Scl.Font.Size)
         if (H > 0) {
             g.font = P_Scl.Font.toContextFont(vs.ScrData).font;
             retV.zeroW = g.measureText("0").width / 2;
             retV.ScaleMaxW = g.measureText(retV.scaleMax).width / 2;
-            let ww2 = g.measureText(Generic.getScaleUnitStrings(P_Scl.Unit)).width;
+            const ww2 = g.measureText(Generic.getScaleUnitStrings(P_Scl.Unit)).width;
 
-            let mw = (retV.ScaleLength + retV.zeroW + retV.ScaleMaxW + ww2);
-            let mh = H * 1.5;
+            const mw = (retV.ScaleLength + retV.zeroW + retV.ScaleMaxW + ww2);
+            const mh = H * 1.5;
             retV.rect = new rectangle(new point(retV.sxy.x - mh / 4, retV.sxy.y- mh / 4), new size(mw + mh / 2, mh + mh / 2));
         }
         retV.P_Scl = P_Scl;
@@ -2541,14 +2541,14 @@ export class clsAccessory {
     static GetCompassRect(g: CanvasRenderingContext2D) {
         const state = appState();
 
-        let vs = state.attrData.TotalData.ViewStyle;
-        let P_Comp = vs.AttMapCompass;
+        const vs = state.attrData.TotalData.ViewStyle;
+        const P_Comp = vs.AttMapCompass;
         let pp = P_Comp.Position.Clone();
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
             pp = vs.ScrData.getSRXYfromRatio(P_Comp.Position);
         }
-        let r = state.attrData.Radius(P_Comp.Mark.WordFont.Size, 1, 1);
-        let cp = vs.ScrData.getSxSy(pp);
+        const r = state.attrData.Radius(P_Comp.Mark.WordFont.Size, 1, 1);
+        const cp = vs.ScrData.getSxSy(pp);
         cp.offset(-r, -r);
         return new rectangle(cp, new size(r * 2, r * 2));
     }
@@ -2556,21 +2556,21 @@ export class clsAccessory {
     //タイトルの外接四角形領域取得
     static GetTitleRect(g: CanvasRenderingContext2D) {
         const state = appState();
-        let v = this.getPrintTitle(g);
+        const v = this.getPrintTitle(g);
         return v.rect;
     }
 
     //注の外接四角形領域取得
     static GetNoteRect(g: CanvasRenderingContext2D) {
         const state = appState();
-        let v = this.getPrintNote(g);
+        const v = this.getPrintNote(g);
         return v.rect;
     }
 
     //スケールの外接四角形領域取得
     static GetScaleRect(g: CanvasRenderingContext2D) {
         const state = appState();
-        let v = this.getScaleSub(g);
+        const v = this.getScaleSub(g);
         return v.rect;
     }
 }

@@ -43,7 +43,7 @@ class Object_NameTimeStac_Data {
     }
 
     Clone(): Object_NameTimeStac_Data {
-        let o = new Object_NameTimeStac_Data();
+        const o = new Object_NameTimeStac_Data();
         o.SETime = this.SETime.Clone();
         o.NamesList = Generic.ArrayShallowCopy(this.NamesList);
         return o;
@@ -119,7 +119,7 @@ constructor() {
  * @type {*}
  */
 set AttDataType(value) {
-        let tu = Generic.SetTitleUnit_from_AttDataType(value, this.Title, this.Unit);
+        const tu = Generic.SetTitleUnit_from_AttDataType(value, this.Title, this.Unit);
         this.Title = tu.title;
         this.Unit = tu.unit;
     }
@@ -196,7 +196,7 @@ class strObjectGroup_Data {
     const d = new strObjectGroup_Data();
     Object.assign(d, this);
     d.DefTimeAttSTC = [];
-    for (let i in this.DefTimeAttSTC) {
+    for (const i in this.DefTimeAttSTC) {
         d.DefTimeAttSTC[i] = this.DefTimeAttSTC[i].Clone();
     }
     d.ObjectNameList = this.ObjectNameList.slice();
@@ -256,7 +256,7 @@ class strObj_Data {
     LineCodeSTC: LineCodeStac_Data[] = [];
 
     Clone(): strObj_Data {
-    let d=new strObj_Data();
+    const d=new strObj_Data();
     Object.assign(d, this);
     d.Circumscribed_Rectangle=this.Circumscribed_Rectangle.Clone();
     d.DefTimeAttValue=Generic.ArrayClone(this.DefTimeAttValue);
@@ -279,7 +279,7 @@ class dirWord_Data {
     South: string = "";
 
     Clone(): dirWord_Data {
-    let w = new dirWord_Data();
+    const w = new dirWord_Data();
     w.East = this.East;
     w.West = this.West;
     w.North = this.North;
@@ -300,7 +300,7 @@ class strCompass_Attri {
     Font: Font_Property = new Font_Property();
 
     Clone(): strCompass_Attri {
-    let cp = new strCompass_Attri();
+    const cp = new strCompass_Attri();
     cp.Visible = this.Visible;
     cp.Position = this.Position.Clone();
     cp.Mark = this.Mark.Clone();
@@ -351,7 +351,7 @@ class strLine_Data {
     PointSTC: point[] = [];
 
     Clone(): strLine_Data {
-        let d = new strLine_Data();
+        const d = new strLine_Data();
         Object.assign(d, this);
         d.Circumscribed_Rectangle = this.Circumscribed_Rectangle.Clone();
         d.PointSTC = Generic.ArrayClone(this.PointSTC);
@@ -374,7 +374,7 @@ class EnableMPLine_Data {
     }
 
     Clone(): EnableMPLine_Data {
-        let d = new EnableMPLine_Data();
+        const d = new EnableMPLine_Data();
         Object.assign(d, this);
         return d;
     }
@@ -391,7 +391,7 @@ class Zahyo_info {
     CenterXY: point = new point();
 
     Clone(): Zahyo_info {
-        let d = new Zahyo_info();
+        const d = new Zahyo_info();
         Object.assign(d, this);
         d.CenterXY = this.CenterXY.Clone();
         return d;
@@ -428,7 +428,7 @@ class strLKOjectGroup_Info {
     Pattern: Line_Property = new Line_Property();
 
     Clone(): strLKOjectGroup_Info {
-        let d = new strLKOjectGroup_Info();
+        const d = new strLKOjectGroup_Info();
         Object.assign(d, this);
         d.Pattern = this.Pattern.Clone();
         return d;
@@ -489,7 +489,7 @@ class clsMapdata {
         this.MPObj = [];
         this.LineKind = [];
         this.MPLine = [];
-        let m = new strMap_data();
+        const m = new strMap_data();
         m.FileName = "";
         m.FullPath = "";
         m.MPVersion = 11;
@@ -512,8 +512,8 @@ class clsMapdata {
 
     //初期属性データ項目を追加（時間属性設定なし）
     Add_one_DefAttDataSet(OBKNum: number, title: string, Unit: string, Note: string) {
-        let ok = this.ObjectKind[OBKNum];
-        let def = new strMPObjDefTimeAttData_Info();
+        const ok = this.ObjectKind[OBKNum];
+        const def = new strMPObjDefTimeAttData_Info();
         def.attData.Title = title;
         def.attData.Unit = Unit;
         def.attData.Note = Note;
@@ -523,7 +523,7 @@ class clsMapdata {
 
     //方位記号の初期値設定
     init_Compass_First() {
-        let mc = this.Map.MapCompass;
+        const mc = this.Map.MapCompass;
         mc.dirWord.North = "";
         mc.dirWord.East = "";
         mc.dirWord.West = "";
@@ -540,8 +540,8 @@ class clsMapdata {
     }
 
     Get_Compass_Position_First_Position() {
-        let mc = this.Map.Circumscribed_Rectangle;
-        let pxy = new point();
+        const mc = this.Map.Circumscribed_Rectangle;
+        const pxy = new point();
         pxy.x = mc.left + (mc.right - mc.left) / 20;
         pxy.y = mc.top + (mc.bottom - mc.top) / 20;
         return pxy;
@@ -556,7 +556,7 @@ class clsMapdata {
     }
     //オブジェクトグループの代表点の色の初期値を決める（一つずつ）
     Set_First_ObjectKind_Color_Solo(ObkCode: number) {
-        let Object_Color = [];
+        const Object_Color = [];
         Object_Color.push(new colorRGBA(0, 255, 0));
         Object_Color.push(new colorRGBA(0, 255, 255));
         Object_Color.push(new colorRGBA(255, 255, 0));
@@ -570,11 +570,11 @@ class clsMapdata {
 
     //ラインの初期化
     Init_One_Line(LineKindNumber: number) {
-        let line = new strLine_Data();
+        const line = new strLine_Data();
         line.Number = -1;
         line.NumOfPoint = 0;
         line.NumOfTime = 1;
-        let lt = new Line_Time_Data();
+        const lt = new Line_Time_Data();
         lt.Kind = LineKindNumber;
         lt.SETime = clsTime.GetNullStartEndYMD();
         line.LineTimeSTC.push(lt);
@@ -583,7 +583,7 @@ class clsMapdata {
 
     //初期化したオブジェクトを返す
     Init_One_Object(ObjectKindNumber: number) {
-        let Obj = new strObj_Data();
+        const Obj = new strObj_Data();
         Obj.Number = -1;
         Obj.NumOfNameTime = 1;
         Obj.NumOfCenterP = 1;
@@ -591,19 +591,19 @@ class clsMapdata {
         Obj.NumOfSuc = 0;
         Obj.Shape = enmShape.PointShape;
         Obj.Kind = ObjectKindNumber;
-        let ok = this.ObjectKind[ObjectKindNumber];
+        const ok = this.ObjectKind[ObjectKindNumber];
         if (ok.DefTimeAttDataNum > 0) {
             Obj.DefTimeAttValu = [];
             for (let i = 0; i < ok.DefTimeAttDataNum; i++) {
                 Obj.DefTimeAttValue.push([]);
             }
         }
-        let NL = new Object_NameTimeStac_Data();
+        const NL = new Object_NameTimeStac_Data();
         NL.NamesList.length = ok.ObjectNameNum;
         NL.NamesList.fill("");
         NL.SETime = clsTime.GetNullStartEndYMD();
         Obj.NameTimeSTC.push(NL);
-        let cp = new Object_CenterPoint_Data();
+        const cp = new Object_CenterPoint_Data();
         cp.SETime = clsTime.GetNullStartEndYMD();
         Obj.CenterPSTC.push(cp);
         return Obj;
@@ -624,7 +624,7 @@ class clsMapdata {
 
     //ライン登録
     Save_Line(EditingLine: strLine_Data, checkRelatedLineFlag: boolean, checkRelatedObjectShapeFlag: boolean, checkLineMaxMinFlag: boolean) {
-        let SEpoint = [];
+        const SEpoint = [];
         let newf;
         SEpoint.push(EditingLine.PointSTC[0].Clone());
         SEpoint.push(EditingLine.PointSTC[EditingLine.NumOfPoint-1].Clone());
@@ -647,7 +647,7 @@ class clsMapdata {
         if ((newf == false) && (checkRelatedObjectShapeFlag == true)) {
             //当該ラインを使用するオブジェクトの形状チェック
             for (let i = 0; i < this.Map.Kend; i++) {
-                let ob = this.MPObj[i];
+                const ob = this.MPObj[i];
                 for (let j = 0; j < ob.NumOfLine; j++) {
                     if (ob.LineCodeSTC[j].LineCode == EditingLine.Number) {
                         ob.Shape = this.Check_Obj_Shape_AllTime(ob);
@@ -664,9 +664,9 @@ class clsMapdata {
 
     //指定した起終点の座標のラインを検索し、結節関係をチェックする
     Check_Related_Line(SEpoint: point[], exCode: number) {
-        let n = SEpoint.length;
+        const n = SEpoint.length;
         for (let i = 0; i < this.Map.ALIN; i++) {
-            let ml = this.MPLine[i];
+            const ml = this.MPLine[i];
             if ((i != exCode) && (ml.NumOfPoint > 0)) {
                 let f = false;
                 for (let j = 0; j < n; j++) {
@@ -679,7 +679,7 @@ class clsMapdata {
                     }
                 }
                 if (f == true) {
-                    let ct = this.Check_Line_Connect(ml, exCode);
+                    const ct = this.Check_Line_Connect(ml, exCode);
                     if (ct != ml.Connect) {
                         ml.Connect = ct;
                     }
@@ -691,7 +691,7 @@ class clsMapdata {
     //指定したラインの他ラインとの接続状況を返す
     //exclude_codeで、比較対象からはずすラインを指定できる
     Check_Line_Connect(Line: strLine_Data, exclusion_code = -1) {
-        let ck = this.Check_Line_Connect_Detail(Line, exclusion_code);
+        const ck = this.Check_Line_Connect_Detail(Line, exclusion_code);
         switch (ck) {
             case 0:
                 return enmLineConnect.no;
@@ -715,8 +715,8 @@ class clsMapdata {
             return 0;
         }
 
-        let XY1 = Line.PointSTC[0];
-        let XY2 = Line.PointSTC[Line.NumOfPoint - 1];
+        const XY1 = Line.PointSTC[0];
+        const XY2 = Line.PointSTC[Line.NumOfPoint - 1];
 
         if (XY1.Equals(XY2) == true) {
             return 4;
@@ -725,11 +725,11 @@ class clsMapdata {
         let ret_v = 0;
         for (let i = 0; i < this.Map.ALIN; i++) {
             if ((i != exclusion_code) && (i != Line.Number)) {
-                let ml = this.MPLine[i];
-                let n = ml.NumOfPoint;
+                const ml = this.MPLine[i];
+                const n = ml.NumOfPoint;
                 if (n > 0) {
-                    let pxy1 = ml.PointSTC[0];
-                    let pxy2 = ml.PointSTC[n - 1];
+                    const pxy1 = ml.PointSTC[0];
+                    const pxy2 = ml.PointSTC[n - 1];
                     if ((pxy1.Equals(XY1) == true) || (pxy2.Equals(XY1) == true)) {
                         ret_v = (ret_v) || (1);
                     }
@@ -756,7 +756,7 @@ class clsMapdata {
     Set_TotalLineKind(LPC: unknown[]) { //LPatSek_Info
         let n = 0;
         for (let i = 0; i < this.Map.LpNum; i++) {
-            let lk = this.LineKind[i];
+            const lk = this.LineKind[i];
             for (let j = 0; j < lk.NumofObjectGroup; j++) {
                 lk.ObjGroup[j].Pattern = LPC[n].Pat.Clone();
                 n += 1
@@ -766,7 +766,7 @@ class clsMapdata {
 
     //指定したオブジェクトグループのオブジェクトを抽出して配列に取得(時間指定)
     Get_Objects_by_Group(ObjGroup: number, Time: number) {
-        let Get_Objects = [];
+        const Get_Objects = [];
         for (let i = 0; i < this.Map.Kend; i++) {
             if (this.MPObj[i].Kind == ObjGroup) {
                 if (this.CheckEnableObject(this.MPObj[i], Time) == true) {
@@ -779,7 +779,7 @@ class clsMapdata {
 
     //地図データを指定の座標モードに変換 
     Convert_ZahyoMode(newMapZahyo: Zahyo_info) {
-        let m = this.Map;
+        const m = this.Map;
         m.MapCompass.Position = spatial.Get_Reverse_and_Convert_XY(m.MapCompass.Position, m.Zahyo, newMapZahyo);
 
         for (let i = 0; i < m.ALIN; i++) {
@@ -802,7 +802,7 @@ class clsMapdata {
     //地図ファイルの外接四角形を計算して返す
     Get_Mapfile_Rectangle() {
         let MapRec;
-        let m = this.Map;
+        const m = this.Map;
         if (this.Map.ALIN > 0) {
             MapRec = new rectangle(this.MPLine[0].PointSTC[0]);
             for (let i = 0; i < m.ALIN; i++) {
@@ -821,7 +821,7 @@ class clsMapdata {
 
     //全てのオブジェクトの大きさを求める
     Check_All_Obj_MaxMin() {
-        let m = this.Map;
+        const m = this.Map;
         for (let i = 0; i < m.Kend; i++) {
             this.Check_Obj_Maxmin(this.MPObj[i], false);
         }
@@ -843,7 +843,7 @@ class clsMapdata {
             LoopF = false;
         }
 
-        let Push_point = new Array(FirstPointNum);
+        const Push_point = new Array(FirstPointNum);
         let ts = FirstPointNum;
         let n = 0;
         let Cng_f;
@@ -902,7 +902,7 @@ class clsMapdata {
     }
 
     Get_OneLineKind_Parameter(LineKindName: string, LPat: Line_Property, LMesh: boolean) {
-        let Lkind = new LineKind_Data();
+        const Lkind = new LineKind_Data();
         Lkind.ObjGroup = [];
         Lkind.ObjGroup.push(new strLKOjectGroup_Info());
         Lkind.Name = LineKindName;
@@ -914,7 +914,7 @@ class clsMapdata {
 
     //オブジェクトグループの追加
     Add_OneObjectGroup_Parameter(Name: string, Shape: number, Mesh: boolean, type: number) {
-        let Okind = this.Get_OneObjectGroup_Parameter(Name, Shape, this.Map.OBKNum, this.Map.LpNum, Mesh, type);
+        const Okind = this.Get_OneObjectGroup_Parameter(Name, Shape, this.Map.OBKNum, this.Map.LpNum, Mesh, type);
         this.ObjectKind.push(Okind);
         for (let i = 0; i < this.Map.OBKNum; i++) {
             if (this.ObjectKind[i].ObjectType == enmObjectGoupType_Data.AggregationObject) {
@@ -926,7 +926,7 @@ class clsMapdata {
 
     //新規オブジェクトグループパラメータの取得
     Get_OneObjectGroup_Parameter(Name: string, Shape: number, ObkNum: number, LpNum: number, Mesh: boolean, type: number) {
-        let Okind = new strObjectGroup_Data();
+        const Okind = new strObjectGroup_Data();
         Okind.Color = clsBase.ColorWhite();//マップエディタがないので設定不要
         Okind.Mesh = Mesh;
         Okind.Name = Name;
@@ -951,7 +951,7 @@ class clsMapdata {
         this.Map.Circumscribed_Rectangle.bottom = -this.Map.Circumscribed_Rectangle.bottom;
 
         for (let i = 0; i < this.Map.ALIN; i++) {
-            let mp = this.MPLine[i];
+            const mp = this.MPLine[i];
             for (let j = 0; j < mp.NumOfPoint; j++) {
                 mp.PointSTC[j].y = -mp.PointSTC[j].y;
                 mp.Circumscribed_Rectangle.top = -mp.Circumscribed_Rectangle.top;
@@ -960,7 +960,7 @@ class clsMapdata {
         }
 
         for (let i = 0; i < this.Map.Kend; i++) {
-            let mo = this.MPObj[i];
+            const mo = this.MPObj[i];
             for (let j = 0; j < mo.NumOfCenterP; j++) {
                 mo.CenterPSTC[j].Position.y = -mo.CenterPSTC[j].Position.y;
                 mo.Circumscribed_Rectangle.top = -mo.Circumscribed_Rectangle.top;
@@ -971,19 +971,19 @@ class clsMapdata {
 
     //座標値が緯度経度そのままの地図データを、投影変換後の座標に変換する
     MapLatLon_Zahyo_convert() {
-        let XY_Rect = this.Get_Mapfile_Rectangle();
+        const XY_Rect = this.Get_Mapfile_Rectangle();
         this.Map.SCL = 1;
         this.Map.SCL_U = enmScaleUnit.kilometer;
         this.Map.Zahyo.CenterXY = XY_Rect.centerP();
         for (let i = 0; i < this.Map.ALIN; i++) {
-            let ml = this.MPLine[i];
+            const ml = this.MPLine[i];
             for (let j = 0; j < ml.NumOfPoint; j++) {
                 ml.PointSTC[j] = spatial.Get_Converted_XY(ml.PointSTC[j], this.Map.Zahyo);
             }
             this.Check_Line_Maxmin(i, false);
         }
         for (let i = 0; i < this.Map.Kend; i++) {
-            let mo = this.MPObj[i];
+            const mo = this.MPObj[i];
             let CP;
             switch (mo.Shape) {
                 case enmShape.PointShape:
@@ -994,7 +994,7 @@ class clsMapdata {
                     CP = this.GetObjGraviityXY(mo, clsTime.GetNullYMD());
                     break;
                 case enmShape.LineShape:
-                    let ml = this.MPLine[mo.LineCodeSTC[0].LineCode];
+                    const ml = this.MPLine[mo.LineCodeSTC[0].LineCode];
                     CP = ml.PointSTC[Math.floor(ml.NumOfPoint / 2)];
                     break;
             }
@@ -1006,7 +1006,7 @@ class clsMapdata {
 
     GetObjectGravity_All() {
         for (let i = 0; i < this.Map.Kend; i++) {
-            let mo = this.MPObj[i];
+            const mo = this.MPObj[i];
             switch (mo.Shape) {
                 case enmShape.PolygonShape:
                     let CP;
@@ -1025,25 +1025,25 @@ class clsMapdata {
         }
 
         let GPoint = new point();
-        let retV: unknown = this.Menseki(ObjData,  L_Time);
-        let xy2=retV.gpoint;
+        const retV: unknown = this.Menseki(ObjData,  L_Time);
+        const xy2=retV.gpoint;
         if (retV.menseki == -1) {
             return false;
         } else if (retV.menseki == 0) {
             GPoint = xy2.Clone();
         } else {
             //重心がオブジェクト内部に収まるかチェック
-            let ELine = this.Get_EnableMPLine(ObjData, L_Time);;
-            let Fringe_Line = [];
+            const ELine = this.Get_EnableMPLine(ObjData, L_Time);;
+            const Fringe_Line = [];
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
             }
-            let retV: unknown = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
+            const retV: unknown = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
             if (retV.ok == true) {
                 GPoint = xy2.Clone();
             } else {
                 //入らない場合
-                let Cross_x=retV.CrossPoint_X;
+                const Cross_x=retV.CrossPoint_X;
                 let crn=Cross_x.length;
                 if (crn < 2) {
                     GPoint = this.MPLine[Fringe_Line[0]].PointSTC[0];
@@ -1056,7 +1056,7 @@ class clsMapdata {
                 }
                 if (crn >= 4) {
                     for (let i = 2; i <= crn - 1; i += 2) {
-                        let mw2 = Cross_x[i + 1] - Cross_x[i];
+                        const mw2 = Cross_x[i + 1] - Cross_x[i];
                         if (mw2 > mw) {
                             mw = mw2;
                             mww = i;
@@ -1071,10 +1071,10 @@ class clsMapdata {
     }
 
     Check_Obj_Maxmin(ObjData: strObj_Data, MapRectCheckF: boolean) {
-        let oldObjRect = ObjData.Circumscribed_Rectangle;
+        const oldObjRect = ObjData.Circumscribed_Rectangle;
         let Obj_rect = new rectangle();
         for (let i = 0; i < ObjData.NumOfCenterP; i++) {
-            let p = ObjData.CenterPSTC[i].Position;
+            const p = ObjData.CenterPSTC[i].Position;
             if (i == 0) {
                 Obj_rect = new rectangle(p);
             } else {
@@ -1088,9 +1088,9 @@ class clsMapdata {
                 }
             }
         } else {
-            let AggObs = this.Get_MpObj_used_AggregateObject(ObjData, clsTime.GetNullYMD());
+            const AggObs = this.Get_MpObj_used_AggregateObject(ObjData, clsTime.GetNullYMD());
             for (let i = 0; i < AggObs.length; i++) {
-                let m = this.MPObj[AggObs[i]];
+                const m = this.MPObj[AggObs[i]];
                 if (this.ObjectKind[m.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
                     Obj_rect = spatial.getCircumscribedRectangle(m.Circumscribed_Rectangle, Obj_rect);
                 }
@@ -1115,7 +1115,7 @@ class clsMapdata {
     }
 
     Checl_All_Line_Maxmin() {
-        let m = this.Map;
+        const m = this.Map;
         for (let i = 0; i < m.ALIN; i++) {
             this.Check_Line_Maxmin(i, false);
         }
@@ -1123,7 +1123,7 @@ class clsMapdata {
 
     //指定したラインコードの外接四角形を求める
     Check_Line_Maxmin(Lcode: number, MapRectCheckF: boolean) {
-        let oldRect = this.MPLine[Lcode].Circumscribed_Rectangle;
+        const oldRect = this.MPLine[Lcode].Circumscribed_Rectangle;
         this.MPLine[Lcode].Circumscribed_Rectangle = spatial.getCircumscribedRectangle(this.MPLine[Lcode].PointSTC);
         if (MapRectCheckF == true) {
             this.Check_MapCircumscribedRectangle(oldRect, this.MPLine[Lcode].Circumscribed_Rectangle);
@@ -1196,23 +1196,23 @@ class clsMapdata {
 
     //指定したオブジェクトの境界線を面領域を描くような順番に並べ替える
     Boundary_Arrange(ObjData_objNum: number, Time: number) {
-        let ELine = this.Get_EnableMPLine(ObjData_objNum, Time)
-        let boundArrange = this.Boundary_Arrange_Sub(ELine);
+        const ELine = this.Get_EnableMPLine(ObjData_objNum, Time)
+        const boundArrange = this.Boundary_Arrange_Sub(ELine);
         return boundArrange;
     }
 
     //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
     Boundary_Arrange_Sub(ELine: unknown[]): boundArrangeData {
         let boundArrange = new boundArrangeData();
-        let NL = ELine.length;
+        const NL = ELine.length;
         if (NL == 0) {
             boundArrange.Pon = 0;
             return boundArrange;
         }
-        let spxy = [];
-        let epxy = [];
+        const spxy = [];
+        const epxy = [];
         for (let i = 0; i < NL; i++) {
-            let LineNO = ELine[i].LineCode;
+            const LineNO = ELine[i].LineCode;
             spxy.push(this.MPLine[LineNO].PointSTC[0]);
             epxy.push(this.MPLine[LineNO].PointSTC[this.MPLine[LineNO].NumOfPoint - 1]);
         }
@@ -1225,15 +1225,15 @@ class clsMapdata {
 
     //指定したラインコードがループでない場合は－１、ループの場合は面積を返す
     Get_LoopLine_Menseki(L_Code: number) {
-        let ml = this.MPLine[L_Code];
+        const ml = this.MPLine[L_Code];
         let men;
-        let PN = ml.NumOfPoint;
+        const PN = ml.NumOfPoint;
         if (PN == 0) {
             return -1;
         }
-        let PE = PN - 1;
+        const PE = PN - 1;
         if (ml.PointSTC[PE].Equals(ml.PointSTC[0]) == true) {
-            let pxy =Generic.ArrayClone( ml.PointSTC);
+            const pxy =Generic.ArrayClone( ml.PointSTC);
             pxy.push(ml.PointSTC[1].Clone());
             men = spatial.Get_Hairetu_Menseki(pxy, this.Map);
         } else {
@@ -1244,7 +1244,7 @@ class clsMapdata {
 
     //指定したオブジェクトの面積を重心付きで返す
     Menseki(ObjData: strObj_Data,  L_Time: number) {
-        let badata = this.Boundary_Arrange(ObjData, L_Time);
+        const badata = this.Boundary_Arrange(ObjData, L_Time);
         if (badata.Pon <= 0) {
             return -1;
         } else {
@@ -1253,13 +1253,13 @@ class clsMapdata {
     }
 
     Menseki_sub2(badata: boundArrangeData) {
-        let Pon = badata.Pon;
-        let Arrange_LineCode = badata.Arrange_LineCode;
-        let Fringe = badata.Fringe;
-        let mens = new Array(Pon);
+        const Pon = badata.Pon;
+        const Arrange_LineCode = badata.Arrange_LineCode;
+        const Fringe = badata.Fringe;
+        const mens = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
-            let LXY2: unknown[] = [];
-            let n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
+            const LXY2: unknown[] = [];
+            const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
             (LXY2 as unknown[]).push((LXY2 as unknown[])[1]);
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map);
         }
@@ -1267,8 +1267,8 @@ class clsMapdata {
         if (Pon == 1) {
             m = mens[0]
         } else {
-            let TotalInOut: number[] = [];
-            let In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
+            const TotalInOut: number[] = [];
+            const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             for (let i = 0; i < Pon; i++) {
                 if ((TotalInOut[i] % 2) == 1) {
@@ -1288,22 +1288,22 @@ class clsMapdata {
         //     return this.Menseki_sub2(GXY);
         // }
         let GXY=new point();
-        let Pon = badata.Pon;
-        let Arrange_LineCode = badata.Arrange_LineCode;
-        let Fringe = badata.Fringe;
-        let mens = new Array(Pon);
-        let gp = new Array(Pon);
+        const Pon = badata.Pon;
+        const Arrange_LineCode = badata.Arrange_LineCode;
+        const Fringe = badata.Fringe;
+        const mens = new Array(Pon);
+        const gp = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
 
-            let LXY2: unknown[] = [];
-            let n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
+            const LXY2: unknown[] = [];
+            const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
             (LXY2 as unknown[]).push((LXY2 as unknown[])[1]);
             let w = 0;
             if (n2 > 2) {
                 //重心の位置を求める
-                let wsw = new Array(n2 - 1);
-                let a = LXY2[0].x;
-                let b = LXY2[0].y;
+                const wsw = new Array(n2 - 1);
+                const a = LXY2[0].x;
+                const b = LXY2[0].y;
                 for (let j = 0; j < n2 - 1; j++) {
                     wsw[j] = (LXY2[j].x - a) * (LXY2[j + 1].y - b) - (LXY2[j + 1].x - a) * (LXY2[j].y - b);
                     w += wsw[j];
@@ -1340,8 +1340,8 @@ class clsMapdata {
             m = mens[0]
             GXY = gp[0];
         } else {
-            let TotalInOut: number[] = [];
-            let In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
+            const TotalInOut: number[] = [];
+            const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             let sm = 0;
             for (let i = 0; i < Pon; i++) {
@@ -1364,16 +1364,16 @@ class clsMapdata {
     //ある地点がオブジェクトの外接四角形に入るかどうかを調べ、さらに面オブジェクトの中かどうかを調べる
     Check_Point_in_OneObject(Obj_ObjNumber: number | strObj_Data, x: number, y: number, LAY_Time: number) {
         let obj;
-        if ((typeof Obj_ObjNumber) == 'number') {
+        if ((typeof Obj_ObjNumber) === 'number') {
             obj = this.MPObj[Obj_ObjNumber];
         } else {
             obj = Obj_ObjNumber;
         }
 
-        let Fringe_Line = [];
-        let f = this.Check_Point_in_oneObject_Box(obj, x, y);
+        const Fringe_Line = [];
+        const f = this.Check_Point_in_oneObject_Box(obj, x, y);
         if (f == true) {
-            let ELine = this.Get_EnableMPLine(obj, LAY_Time);
+            const ELine = this.Get_EnableMPLine(obj, LAY_Time);
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
             }
@@ -1386,7 +1386,7 @@ class clsMapdata {
     //ある地点がオブジェクトの外接四角形に入るかどうかを調べる
     Check_Point_in_oneObject_Box(Obj_ObjNumber: number, x: number, y: number) {
         let obj;
-        if ((typeof Obj_ObjNumber) == 'number') {
+        if ((typeof Obj_ObjNumber) === 'number') {
             obj = this.MPObj[Obj_ObjNumber];
         } else {
             obj = Obj_ObjNumber;
@@ -1402,47 +1402,47 @@ class clsMapdata {
 
     //一つのオブジェクト内のポリゴンの包含関係を返す
     Object_Polygon_InOut(badata: boundArrangeData, TotalInOutNum: number[]) {
-        let Polygon_Num = badata.Pon;
-        let Arrange_LineCode = badata.Arrange_LineCode;
-        let Fringe = badata.Fringe;
+        const Polygon_Num = badata.Pon;
+        const Arrange_LineCode = badata.Arrange_LineCode;
+        const Fringe = badata.Fringe;
 
-        let SIndex = new clsSpatialIndexSearch(SpatialPointType.SPIRect, false, undefined, undefined);
+        const SIndex = new clsSpatialIndexSearch(SpatialPointType.SPIRect, false, undefined, undefined);
 
         TotalInOutNum.length=Polygon_Num;
         TotalInOutNum.fill(0);
-        let InOut = Generic.Array2Dimension(Polygon_Num, Polygon_Num);
+        const InOut = Generic.Array2Dimension(Polygon_Num, Polygon_Num);
 
         for (let i = 0; i < Polygon_Num; i++) {
             let PRect = this.MPLine[Fringe[Arrange_LineCode[i][0]].code].Circumscribed_Rectangle;
             for (let j = 1; j < Arrange_LineCode[i][1]; j++) {
-                let ML = this.MPLine[Fringe[Arrange_LineCode[i][0] + j].code];
+                const ML = this.MPLine[Fringe[Arrange_LineCode[i][0] + j].code];
                 PRect = spatial.getCircumscribedRectangle(ML.Circumscribed_Rectangle, PRect);
             }
             SIndex.AddRect(PRect, i);
         }
         SIndex.AddEnd();
         for (let i = 0; i < Polygon_Num; i++) {
-            let ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
-            let X = ML.PointSTC[0].x;
-            let Y = ML.PointSTC[0].y;
-            let retRin: unknown = SIndex.GetRectIn(X, Y);
-            let n=retRin.number;
-            let Onum =retRin.ObStac;
-            let Otags=retRin.Tags;
+            const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
+            const X = ML.PointSTC[0].x;
+            const Y = ML.PointSTC[0].y;
+            const retRin: unknown = SIndex.GetRectIn(X, Y);
+            const n=retRin.number;
+            const Onum =retRin.ObStac;
+            const Otags=retRin.Tags;
 
             for (let j = 0; j < n; j++) {
-                let LCD = Otags[j];
+                const LCD = Otags[j];
                 if (LCD != i) {
-                    let Fringe_Line = [];
+                    const Fringe_Line = [];
                     for (let k = 0; k < Arrange_LineCode[LCD][1]; k++) {
                         Fringe_Line.push(Fringe[Arrange_LineCode[LCD][0] + k].code);
                     }
-                    let retV = this.Check_Point_in_Polygon_LineCode(X, Y, Fringe_Line);
+                    const retV = this.Check_Point_in_Polygon_LineCode(X, Y, Fringe_Line);
                     if (retV.ok == true) {
-                        let ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
-                        let x2 = ML.PointSTC[1].x;
-                        let y2 = ML.PointSTC[1].y;
-                        let retV2 = this.Check_Point_in_Polygon_LineCode(x2, y2, Fringe_Line);
+                        const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
+                        const x2 = ML.PointSTC[1].x;
+                        const y2 = ML.PointSTC[1].y;
+                        const retV2 = this.Check_Point_in_Polygon_LineCode(x2, y2, Fringe_Line);
                         if (retV2.ok == true) {
                             //iがjの中に含まれる場合は(i,j)を1に
                             InOut[i][LCD] = 1;
@@ -1457,11 +1457,11 @@ class clsMapdata {
 
     /** 周辺ラインと指定した地点のX軸上の交点を求め、その地点数を返す。ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/ 
     Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: Fringe_Line_Info[]) {
-        let P = new point(x, y);
-        let CheckLine = [];
+        const P = new point(x, y);
+        const CheckLine = [];
 
         for (let j = 0; j < Fringe_Line.length; j++) {
-            let m = this.MPLine[Fringe_Line[j]];
+            const m = this.MPLine[Fringe_Line[j]];
             //調査地点のY座標を含むラインのみを選択
             if ((m.Circumscribed_Rectangle.top <= y) && (y <= m.Circumscribed_Rectangle.bottom)) {
                 CheckLine.push(m.PointSTC);
@@ -1481,13 +1481,13 @@ class clsMapdata {
         //2:世界測地系の緯度経度
         //3:元々の座標系の座標で取得
 
-        let Pnum = this.Get_Object_Polygon_Points(Num, Arrange_LineCode, Fringe);
+        const Pnum = this.Get_Object_Polygon_Points(Num, Arrange_LineCode, Fringe);
         poxy.length = 0;
         let n = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
-            let XYS: unknown[] = [];
-            let Fr = Fringe[Arrange_LineCode[Num][0] + i];
-            let PN = this.Get_Coords_by_LineCode(Fr.code, Get_Coords_Data, Fr.Direction, XYS, getStep);
+            const XYS: unknown[] = [];
+            const Fr = Fringe[Arrange_LineCode[Num][0] + i];
+            const PN = this.Get_Coords_by_LineCode(Fr.code, Get_Coords_Data, Fr.Direction, XYS, getStep);
             for (let j = 0; j < PN; j++) {
                 if ((n == 0) || (Equal_XY_Get_F == true)) {
                     poxy.push( XYS[j]);
@@ -1508,7 +1508,7 @@ class clsMapdata {
     Get_Object_Polygon_Points(Num: number, Arrange_LineCode: number[][], Fringe: Fringe_Line_Info[]) {
         let Pnum = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
-            let L = Fringe[Arrange_LineCode[Num][0] + i].code;
+            const L = Fringe[Arrange_LineCode[Num][0] + i].code;
             Pnum += this.MPLine[L].NumOfPoint;
         }
         return Pnum;
@@ -1520,7 +1520,7 @@ class clsMapdata {
         let fs;
         let fe;
         let fst;
-        let ML = this.MPLine[LCode];
+        const ML = this.MPLine[LCode];
         if ((getStep + 1 >= ML.NumOfPoint) && (ML.PointSTC[0].Equals(ML.PointSTC[ML.NumOfPoint - 1]) == true)) {
             //ループで2地点となって点になるのをふせぐ
             getStep = 1;
@@ -1590,11 +1590,11 @@ class clsMapdata {
 
         let LCode: unknown[] = [];
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
-            let AggObs = this.Get_MpObj_used_AggregateObject(ObjData, Time);
+            const AggObs = this.Get_MpObj_used_AggregateObject(ObjData, Time);
             for (let i = 0; i < AggObs.length; i++) {
-                let lc = AggObs[i];
+                const lc = AggObs[i];
                 if (this.ObjectKind[this.MPObj[lc].Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
-                    let E_LCode = this.Get_EnableMPLine_Normal(this.MPObj[lc], Time);
+                    const E_LCode = this.Get_EnableMPLine_Normal(this.MPObj[lc], Time);
                     LCode = LCode.concat(E_LCode);
                 }
             }
@@ -1616,7 +1616,7 @@ class clsMapdata {
     //集成オブジェクトを構成する元のオブジェクト番号を取得、再帰処理を行う
     Get_MpObj_used_AggregateObject_Sub(ObjData: strObj_Data, Time: number) {
         for (let i = 0; i < ObjData.NumOfLine; i++) {
-            let lc = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time)
+            const lc = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time)
             if (lc != -1) {
                 if (this.CheckEnableObject(this.MPObj[lc], Time) == true) {
                     this.Enable_MPObjStac.push(lc);
@@ -1660,11 +1660,11 @@ class clsMapdata {
 
     //指定したオブジェクトで、指定した時間に利用できるライン番号を戻し、その要素を返す
     Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: clsTime) {
-        let Enable_LCode = [];
+        const Enable_LCode = [];
         if (Time.nullFlag() == true) {
             for (let i = 0; i < ObjData.NumOfLine; i++) {
-                let ls = ObjData.LineCodeSTC[i];
-                let d = new EnableMPLine_Data();
+                const ls = ObjData.LineCodeSTC[i];
+                const d = new EnableMPLine_Data();
                 d.LineCode = ls.LineCode;
                 d.Kind = this.MPLine[ls.LineCode].LineTimeSTC[0].Kind;
                 Enable_LCode.push(d);
@@ -1677,7 +1677,7 @@ class clsMapdata {
         }
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             let L_K, f;
-            let L_Code = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time);
+            const L_Code = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time);
             if (L_Code != -1) {
                 L_K = this.Check_Enable_Line(this.MPLine[L_Code], Time);
                 if (L_K != -1) {
@@ -1686,13 +1686,13 @@ class clsMapdata {
                 if (f == true) {
                     if (this.Map.Time_Mode == true) {
                         if (this.ObjectKind[ObjData.Kind].UseLineType[L_K] == true) {
-                            let d = new EnableMPLine_Data();
+                            const d = new EnableMPLine_Data();
                             d.LineCode = L_Code;
                             d.Kind = L_K;
                             Enable_LCode.push(d);
                         }
                     } else {
-                        let d = new EnableMPLine_Data();
+                        const d = new EnableMPLine_Data();
                         d.LineCode = L_Code;
                         d.Kind = L_K;
                         Enable_LCode.push(d);
@@ -1728,11 +1728,11 @@ class clsMapdata {
 
     //線種で、オブジェクトグループ連動型も一つとして数えて情報を返す
     Get_TotalLineKind() {
-        let LPC = [];
+        const LPC = [];
         for (let i = 0; i < this.Map.LpNum; i++) {
-            let lk = this.LineKind[i];
+            const lk = this.LineKind[i];
             for (let j = 0; j < lk.NumofObjectGroup; j++) {
-                let LP = new LPatSek_Info();
+                const LP = new LPatSek_Info();
                 LP.Pat = lk.ObjGroup[j].Pattern;
                 LP.LKind = i;
                 LP.LkindPatNum = j;
@@ -1753,8 +1753,8 @@ class clsMapdata {
     }
     //オブジェクトの初期属性データ取得。時期がはずれてデータが取得できない場合はundefined
     Get_DefTimeAttrValue(ObjCode: number, defNumber: number, Time: clsTime) {
-        let ob = this.MPObj[ObjCode];
-        let ogp = ob.Kind;
+        const ob = this.MPObj[ObjCode];
+        const ogp = ob.Kind;
         let Value;
         if (this.Map.Time_Mode == false) {
             return ob.DefTimeAttValue[defNumber].Data[0].Value;
@@ -1762,8 +1762,8 @@ class clsMapdata {
             if (Time.nullFlag() == true) {
                 return undefined;
             }
-            let dev = ob.DefTimeAttValue[defNumber];
-            let n = dev.Data.length;
+            const dev = ob.DefTimeAttValue[defNumber];
+            const n = dev.Data.length;
 
             if (n == 0) {
                 return undefined;
@@ -1785,10 +1785,10 @@ class clsMapdata {
                             break;
                         case enmDefPointAttDataExtraValue.NearestValue:
                             //一番近い値
-                            let ff = true;
+                            const ff = true;
                             let minDay;
                             for (let i = 0; i < n; i++) {
-                                let daten = Math.abs(clsTime.getDifference(dev.Data[i].Span.StartTime, Time));
+                                const daten = Math.abs(clsTime.getDifference(dev.Data[i].Span.StartTime, Time));
                                 if (ff == true) {
                                     minDay = daten;
                                     Value = dev.Data[i].Value;
@@ -1805,16 +1805,16 @@ class clsMapdata {
                         case enmDefPointAttDataExtraValue.interpolation_NearestValue:
                             //間に挟まれた場合は按分
                             for (let i = 0; i < n - 1; i++) {
-                                let span = new Start_End_Time_data();
+                                const span = new Start_End_Time_data();
                                 span.StartTime = dev.Data[i].Span.StartTime;
                                 span.EndTime = dev.Data[i + 1].Span.StartTime;
                                 if (clsTime.checkDurationIn(span, Time) == true) {
-                                    let v1 = Number(dev.Data[i].Value.replace(",", ""));
-                                    let v2 = Number(dev.Data[i + 1].Value.replace(",", ""));
-                                    let vsa = v2 - v1;
-                                    let daten1 = Math.abs(clsTime.getDifference(span.StartTime, Time));
-                                    let daten2 = Math.abs(clsTime.getDifference(span.StartTime, span.EndTime));
-                                    let v3 = v1 + vsa * (daten1 / daten2);
+                                    const v1 = Number(dev.Data[i].Value.replace(",", ""));
+                                    const v2 = Number(dev.Data[i + 1].Value.replace(",", ""));
+                                    const vsa = v2 - v1;
+                                    const daten1 = Math.abs(clsTime.getDifference(span.StartTime, Time));
+                                    const daten2 = Math.abs(clsTime.getDifference(span.StartTime, span.EndTime));
+                                    const v3 = v1 + vsa * (daten1 / daten2);
                                     if(isNaN(v3)){console.log(ob,ObjCode, defNumber,dev.Data[i].Value , dev.Data[i+1].Value)}
                                     return String(v3);
                                 }
@@ -1830,8 +1830,8 @@ class clsMapdata {
                                     if (dev.Data[0].Span.StartTime.nullFlag() == true) {
                                         return dev.Data[0].Value;
                                     } else {
-                                        let d1 = Math.abs(clsTime.getDifference(dev.Data[0].Span.StartTime, Time));
-                                        let d2 = Math.abs(clsTime.getDifference(dev.Data[n - 1].Span.StartTime, Time));
+                                        const d1 = Math.abs(clsTime.getDifference(dev.Data[0].Span.StartTime, Time));
+                                        const d2 = Math.abs(clsTime.getDifference(dev.Data[n - 1].Span.StartTime, Time));
                                         if (d1 < d2) {
                                             return dev.Data[0].Value;
                                         } else {
@@ -1893,7 +1893,7 @@ class clsMapdata {
             //一方が線オブジェクトの場合
             d = this.Get_Distance_Between_ObjectLine_and_Point(O_Code1, Time1, CP);
         } else {
-            let P1 = this.Get_Enable_CenterP(O_Code1, Time1);
+            const P1 = this.Get_Enable_CenterP(O_Code1, Time1);
             if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 d = spatial.Distance_Ido_Kedo_XY_Point(CP, P1, this.Map.Zahyo);
             } else {
@@ -1905,7 +1905,7 @@ class clsMapdata {
 
     /**オブジェクトの線とある地点との距離を求める */
     Get_Distance_Between_ObjectLine_and_Point(Ocode: number,  Time: clsTime,  P: point){
-        let ELine=this.Get_EnableMPLine(this.MPObj[Ocode], Time);
+        const ELine=this.Get_EnableMPLine(this.MPObj[Ocode], Time);
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
 
@@ -1913,12 +1913,12 @@ class clsMapdata {
         let mind;
         let f = false;
         for (let i = 0; i < LCode.length; i++) {
-            let lc = LCode[i].LineCode;
-            let ml = this.MPLine[lc];
-            let ln = ml.NumOfPoint;
+            const lc = LCode[i].LineCode;
+            const ml = this.MPLine[lc];
+            const ln = ml.NumOfPoint;
             for (let j = 0; j < ln - 1; j++) {
                 let nearP;
-                let DD = spatial.Distance_PointLine2(P, ml.PointSTC[j], ml.PointSTC[j + 1]);
+                const DD = spatial.Distance_PointLine2(P, ml.PointSTC[j], ml.PointSTC[j + 1]);
                 let dist = DD.distance;
                 if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     dist = spatial.Distance_Ido_Kedo_XY(P, DD.nearP, this.Map.Zahyo)
@@ -1944,9 +1944,9 @@ class clsMapdata {
     /**ライン中の同一座標の連続を削除 */
     DeleteSamePoints_inLine(Linenum: number) {
 
-        let ml = this.MPLine[Linenum];
+        const ml = this.MPLine[Linenum];
         if (ml.NumOfPoint > 0) {
-            let ReMovePoint = [];
+            const ReMovePoint = [];
             ReMovePoint[0] = ml.PointSTC[0].Clone();
             for (let j = 1; j < ml.NumOfPoint; j++) {
                 if (ml.PointSTC[j - 1].Equals(ml.PointSTC[j]) != true) {
@@ -1971,19 +1971,19 @@ class clsMapdata {
         }
         let Result = false;
         TopologyLineList.sort(function (a: number, b: number) { return a - b; })
-        for (let i in TopologyLineList) {
+        for (const i in TopologyLineList) {
             this.DeleteSamePoints_inLine(TopologyLineList[i]);
         }
 
         let icount = 0;
         do {
-            let i = TopologyLineList[icount];
+            const i = TopologyLineList[icount];
             let jcount = icount + 1;
             while (jcount < TopologyLineList.length) {
-                let j = TopologyLineList[jcount];
+                const j = TopologyLineList[jcount];
                 let f;
                 do {
-                    let ODALIN1 = this.Map.ALIN;
+                    const ODALIN1 = this.Map.ALIN;
                     f = this.TopologyStructure_Two_SameLine(i, j);
                     if (f == true) {
                         if (ODALIN1 > this.Map.ALIN) {
@@ -2016,8 +2016,8 @@ class clsMapdata {
     /**二つの線ラインの共通部分を抽出して、位相構造化する。共通部分があればtrueを返す */
     TopologyStructure_Two_SameLine(LCode1: number, LCode2: number) {
 
-        let mLine1 = this.MPLine[LCode1];
-        let mLine2 = this.MPLine[LCode2];
+        const mLine1 = this.MPLine[LCode1];
+        const mLine2 = this.MPLine[LCode2];
         if (spatial.Compare_Two_Rectangle_Position_Inflated(mLine1.Circumscribed_Rectangle, mLine2.Circumscribed_Rectangle, 0.0001) == cstRectangle_Cross.cstOuter) {
             //ラインが重ならない場合
             return false;
@@ -2037,10 +2037,10 @@ class clsMapdata {
         if (this.Check_Points_Of_Two_Lines(LCode1, LCode2) == true) {
             //全く同じラインだった場合
             for (let i = 0; i < this.Map.Kend; i++) {
-                let mo = this.MPObj[i];
+                const mo = this.MPObj[i];
                 if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
                     for (let j = 0; j < mo.NumOfLine; j++) {
-                        let mol = mo.LineCodeSTC[j];
+                        const mol = mo.LineCodeSTC[j];
                         if (mol.LineCode == LCode2) {
                             mol.LineCode = LCode1;
                         }
@@ -2051,20 +2051,20 @@ class clsMapdata {
             return true;
         }
 
-        let TwoRect = spatial.Get_Rectangle_Union(mLine1.Circumscribed_Rectangle, mLine2.Circumscribed_Rectangle);
-        let PNum1 = mLine1.NumOfPoint;
-        let XYstac1 = mLine1.PointSTC;
-        let PNum2 = mLine2.NumOfPoint;
-        let XYstac2 = mLine2.PointSTC;
+        const TwoRect = spatial.Get_Rectangle_Union(mLine1.Circumscribed_Rectangle, mLine2.Circumscribed_Rectangle);
+        const PNum1 = mLine1.NumOfPoint;
+        const XYstac1 = mLine1.PointSTC;
+        const PNum2 = mLine2.NumOfPoint;
+        const XYstac2 = mLine2.PointSTC;
 
         //    最初に座標が一致するポイントを取得
-        let PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false, TwoRect);
+        const PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false, TwoRect);
         PointIndex.AddSinglePoint_Array(PNum2, XYstac2, -1);
         PointIndex.AddEnd();
 
         let f = false;
         for (let i = 0; i < PNum1; i++) {
-            let retV = PointIndex.GetSamePointNumber(XYstac1[i].x, XYstac1[i].y);
+            const retV = PointIndex.GetSamePointNumber(XYstac1[i].x, XYstac1[i].y);
             if (retV.ObjectNumber != -1) {
                 f = this.TopologyStructure_Two_SameLine_Check(LCode1, LCode2, PNum1, PNum2, i, retV.ObjectNumber, XYstac1, XYstac2);
                 if (f == true) {
@@ -2077,10 +2077,10 @@ class clsMapdata {
 
     TopologyStructure_Two_SameLine_Check(LCode1: number, LCode2: number, PNum1: number, PNum2: number, S1: number, s2: number, XYstac1: point[], XYstac2: point[]) {
 
-        let NewPnum1: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
-        let NewPnum2: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
+        const NewPnum1: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
+        const NewPnum2: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
         let JointPnum;
-        let NewXYstacJoint = [];
+        const NewXYstacJoint = [];
         let jp;
 
         let Start1, Start2
@@ -2096,7 +2096,7 @@ class clsMapdata {
             naH2 = naH1;
         }
 
-        let Loop1F = XYstac1[0].Equals(XYstac1[PNum1 - 1]);
+        const Loop1F = XYstac1[0].Equals(XYstac1[PNum1 - 1]);
         if ((S1 == 0) && (Loop1F == true)) {
             let j;
             let nRev1;
@@ -2138,7 +2138,7 @@ class clsMapdata {
                     nRev1 = this.TopologyStructure_Two_SameLine_sub(PNum1 - 1, s2, -1, jp, PNum1, PNum2, XYstac1, XYstac2);
                     Start1 = naH1 - 1;
 
-                    let Len1 = naH1 + nRev1 - 1;
+                    const Len1 = naH1 + nRev1 - 1;
                     this.TopologyStructure_Two_SameLine_Cutsub(Start1, -Len1, PNum1, NewPnum1, XYstac1);
                     Start2 = s2 + naH2 + 1;
                     let Len2 = Len1;
@@ -2232,7 +2232,7 @@ class clsMapdata {
     private TopologyStructure_Two_SameLine_Cutsub(Start_JointPoint: number, JointNum: number, OldPNum: number, NewPnum: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] },
         OldXY: point[]) {
 
-        let LoopF = OldXY[0].Equals(OldXY[OldPNum - 1]);
+        const LoopF = OldXY[0].Equals(OldXY[OldPNum - 1]);
         NewPnum.B = -1;
         if (LoopF == true) {
             //線がループの場合
@@ -2339,8 +2339,8 @@ class clsMapdata {
 
         let i = S1;
         let j = s2;
-        let Loop1F = XYstac1[0].Equals(XYstac1[PNum1 - 1]);
-        let Loop2F = XYstac2[0].Equals(XYstac2[PNum2 - 1]);
+        const Loop1F = XYstac1[0].Equals(XYstac1[PNum1 - 1]);
+        const Loop2F = XYstac2[0].Equals(XYstac2[PNum2 - 1]);
         let n = 0;
         while (XYstac1[i].Equals(XYstac2[j]) == true) {
             i += ip;
@@ -2381,18 +2381,18 @@ class clsMapdata {
 
     /**ラインがループの場合trueを返す */
     Check_Line_Loop(LCode: number){
-        let ml = this.MPLine[LCode];
+        const ml = this.MPLine[LCode];
         return ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]);
     }
 
     Check_Points_Of_Two_Lines(LC1: number, LC2: number) {
-        let mLine1 = this.MPLine[LC1];
-        let mLine2 = this.MPLine[LC2];
-        let PNum1 = mLine1.NumOfPoint;
-        let PNum2 = mLine2.NumOfPoint;
+        const mLine1 = this.MPLine[LC1];
+        const mLine2 = this.MPLine[LC2];
+        const PNum1 = mLine1.NumOfPoint;
+        const PNum2 = mLine2.NumOfPoint;
         let f2 = false;
         if (PNum1 == PNum2) {
-            let f = mLine1.Circumscribed_Rectangle.Equals(mLine2.Circumscribed_Rectangle);
+            const f = mLine1.Circumscribed_Rectangle.Equals(mLine2.Circumscribed_Rectangle);
             if (f == true) {
                 if ((this.Check_Line_Loop(LC1) == true) && (this.Check_Line_Loop(LC2) == true)) {
                     //ループの場合
@@ -2465,9 +2465,9 @@ class clsMapdata {
      * ラインの削除 Chack_Object_Shape_F:削除するラインを使用するオブジェクトの形状をチェックする場合true
      */
     Erase_Line(EraseLineCode: number, Chack_Object_Shape_F: boolean) {
-        let LCode = [EraseLineCode];
-        let SEpoint = [];
-        let ml = this.MPLine[EraseLineCode];
+        const LCode = [EraseLineCode];
+        const SEpoint = [];
+        const ml = this.MPLine[EraseLineCode];
         SEpoint[0] = ml.PointSTC[0].Clone();
         SEpoint[1] = ml.PointSTC[ml.NumOfPoint - 1].Clone();
         this.Erase_MultiLine(1, LCode, true, Chack_Object_Shape_F, true);
@@ -2483,8 +2483,8 @@ class clsMapdata {
     // <returns>実際に削除したライン番号の配列</returns>
     Erase_MultiLine(LNum: number, LCode: number[], UsedLine_Delete_F: boolean, Check_ObjectShape_F: boolean, MapRectCheckF: boolean) {
 
-        let C_Mpline = [];
-        let RealDeleteLineCode = [];
+        const C_Mpline = [];
+        const RealDeleteLineCode = [];
         for (let i = 0; i < LNum; i++) {
             C_Mpline[LCode[i]] = -1;
         }
@@ -2516,7 +2516,7 @@ class clsMapdata {
         }
 
         for (let i = 0; i < this.Map.Kend; i++) {
-            let mo = this.MPObj[i];
+            const mo = this.MPObj[i];
             if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
                 n = 0;
                 for (let j = 0; j < mo.NumOfLine; j++) {
@@ -2562,12 +2562,12 @@ class clsMapdata {
             return this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD, CutPoint);
         }
 
-        let OT = []; // As Start_End_Time_data
+        const OT = []; // As Start_End_Time_data
 
-        let SHP = [];
+        const SHP = [];
         let SHN = 0;
 
-        let obtn = ObjData.NumOfNameTime;
+        const obtn = ObjData.NumOfNameTime;
         for (let i = 0; i < obtn; i++) {
             OT[i] = ObjData.NameTimeSTC[i].SETime.Clone();
         }
@@ -2583,28 +2583,28 @@ class clsMapdata {
             }
         }
 
-        let TimeSort = new clsSortingSearch();
+        const TimeSort = new clsSortingSearch();
         for (let i = 0; i < ObjData.NumOfLine; i++) {
-            let ols = ObjData.LineCodeSTC[i];
+            const ols = ObjData.LineCodeSTC[i];
             for (let j = 0; j < ols.NumOfTime; j++) {
                 TimeSort.Add(clsTime.YMDtoValue(ols.Times[j].StartTime));
                 TimeSort.Add(clsTime.YMDtoValue(ols.Times[j].EndTime));
             }
-            let olsl = this.MPLine[ols.LineCode];
+            const olsl = this.MPLine[ols.LineCode];
             for (let j = 0; j < olsl.NumOfTime; j++) {
-                let olsls = olsl.LineTimeSTC[j];
+                const olsls = olsl.LineTimeSTC[j];
                 TimeSort.Add(clsTime.YMDtoValue(olsls.SETime.StartTime));
                 TimeSort.Add(clsTime.YMDtoValue(olsls.SETime.EndTime));
             }
         }
         TimeSort.AddEnd()
 
-        let n = TimeSort.NumofData();
-        let GT: strYMD[] = [];
+        const n = TimeSort.NumofData();
+        const GT: strYMD[] = [];
         let n2 = 0
         for (let i = 0; i < n; i++) {
-            let v = TimeSort.DataPositionValue_Integer[i];
-            let T = clsTime.GetYMDfromValue(v);
+            const v = TimeSort.DataPositionValue_Integer[i];
+            const T = clsTime.GetYMDfromValue(v);
             if ((T as Record<string, boolean>).nullFlag == false) {
                 if (n2 == 0) {
                     if (OT[0].StartTithis.nullFlag == true) {
@@ -2644,7 +2644,7 @@ class clsMapdata {
             SHN = 1;
         }
 
-        let SHF = new Array(SHN);
+        const SHF = new Array(SHN);
         SHF.fill(0);
         for (let i = 0; i < SHN; i++) {
             SHF[SHP[i]]++;
@@ -2670,7 +2670,7 @@ class clsMapdata {
     Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: clsTime, CutPoint: point) {
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
             //集成オブジェクトタイプの場合
-            let OBShape = new Array(3);
+            const OBShape = new Array(3);
             OBShape.fill(0);
             for (let i = 0; i < ObjData.NumOfLine; i++) {
                 OBShape[this.MPObj[ObjData.LineCodeSTC[i].LineCode].Shape]++;
@@ -2685,7 +2685,7 @@ class clsMapdata {
             }
         } else {
             //通常のオブジェクトタイプの場合
-            let polyn = this.Check_PolyShape_PolygonNum(ObjData, L_Time, CutPoint);
+            const polyn = this.Check_PolyShape_PolygonNum(ObjData, L_Time, CutPoint);
             switch (polyn) {
                 case -1:
                     return enmShape.PointShape;
@@ -2707,7 +2707,7 @@ class clsMapdata {
     // <remarks></remarks>
     Check_PolyShape_PolygonNum( ObjData: unknown ,  L_Time: number ,  CutPoint: unknown  = undefined) {
 
-        let ELine  = this.Get_EnableMPLine( ObjData, L_Time);
+        const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;
         if(NL == 0 ){
             return -1;
@@ -2717,7 +2717,7 @@ class clsMapdata {
             return 0;
         }
 
-        let Fringe=[];
+        const Fringe=[];
         for(let i  = 0;i<NL;i++){
             Fringe[i] = ELine[i].LineCode;
         }
@@ -2728,7 +2728,7 @@ class clsMapdata {
         let k  = 0;
 
         for(let i  = 0;i<NL;i++){
-            let ml= this.MPLine[Fringe[i]];
+            const ml= this.MPLine[Fringe[i]];
                 stxy = ml.PointSTC[0];
                 exy = ml.PointSTC[ml.NumOfPoint - 1];
             
@@ -2747,14 +2747,14 @@ class clsMapdata {
         let Contf  = false;
         for(let i  = 0;i<NL;i++){
             if(Contf == false ){
-                let ml= this.MPLine[Fringe[i]];
+                const ml= this.MPLine[Fringe[i]];
                     stxy = ml.PointSTC[0].Clone();
                     exy = ml.PointSTC[ml.NumOfPoint - 1].Clone();
                 
             }
             Contf = false
             for (let j = i + 1; j < NL; j++) {
-                let ml = this.MPLine[Fringe[j]];
+                const ml = this.MPLine[Fringe[j]];
                 if (ml.PointSTC[0].Equals(exy) == true) {
                     exy = ml.PointSTC[ml.NumOfPoint - 1].Clone();
                     Contf = true;
@@ -2781,24 +2781,24 @@ class clsMapdata {
     }
 
     Check_ALl_Line_Connect() {
-        let PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false);
+        const PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false);
         for (let i = 0; i < Map.ALIN; i++) {
-            let ml = this.MPLine[i];
+            const ml = this.MPLine[i];
             if (ml.NumOfPoint > 0) {
                 PointIndex.AddDoublePoint(ml.PointSTC[0], ml.PointSTC[ml.NumOfPoint - 1], i);
             }
         }
         PointIndex.AddEnd();
         for (let i = 0; i < Map.ALIN; i++) {
-            let ml = this.MPLine[i];
+            const ml = this.MPLine[i];
             if (ml.NumOfPoint > 0) {
                 if (ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]) == true) {
                     ml.Connect = 3;
                 } else {
                     ml.Connect = 0;
                     for (let j = 0; j < 1; j++) {
-                        let SamePointData: Record<string, unknown> = {};
-                        let n = PointIndex.GetSamePointNumberArray(ml.PointSTC[j * (ml.NumOfPoint - 1)].x, ml.PointSTC[j * (ml.NumOfPoint - 1)].y, SamePointData)
+                        const SamePointData: Record<string, unknown> = {};
+                        const n = PointIndex.GetSamePointNumberArray(ml.PointSTC[j * (ml.NumOfPoint - 1)].x, ml.PointSTC[j * (ml.NumOfPoint - 1)].y, SamePointData)
                         for (let k = 0; k < n; k++) {
                             if (SamePointData.ObjectNumber[k] != i) {
                                 ml.Connect++;
@@ -2813,7 +2813,7 @@ class clsMapdata {
     //指定した時間のオブジェクトの代表点を取得、取得できない場合はundefinedを返す
     Get_Enable_CenterP(ObjInfo: strObj_Data, Time: clsTime) {
         let ObjData;
-        if (typeof ObjInfo == 'number') {
+        if (typeof ObjInfo === 'number') {
             ObjData = this.MPObj[ObjInfo];
         } else {
             ObjData = ObjInfo;
@@ -2832,14 +2832,14 @@ class clsMapdata {
 
     /**位相構造化したラインを使用するオブジェクトの修正 */
     Topology_Line_Object_Shori(Search_LineCode: number, Add_LineCode: number) {
-        let Add_LineCode_Stac = [];
+        const Add_LineCode_Stac = [];
         Add_LineCode_Stac[0] = Add_LineCode;
         this.Object_LineCode_Add(Search_LineCode, 1, Add_LineCode_Stac);
     }
 
     /**切断したラインを使用するオブジェクトの修正 */
     Cut_Line_Object_Shori(Search_LineCode: number, ODALIN: number, num: number){
-        let Add_LineCode = [];
+        const Add_LineCode = [];
         for (let i = 0; i < num; i++) {
             Add_LineCode[i] = ODALIN + i;
         }
@@ -2848,9 +2848,9 @@ class clsMapdata {
     /**切断したラインを使用するオブジェクトの修正 */
     Object_LineCode_Add(Search_LineCode: number, AddLineNum: number, Add_LineCode: number[]){
         for (let i = 0; i < this.Map.Kend; i++) {
-            let mo = this.MPObj[i];
+            const mo = this.MPObj[i];
             if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
-                let n = mo.NumOfLine;
+                const n = mo.NumOfLine;
                 for (let j = 0; j < n; j++) {
                     if (mo.LineCodeSTC[j].LineCode == Search_LineCode) {
                         this.Move_LineCodeStac(i, n + AddLineNum, n);
@@ -2867,8 +2867,8 @@ class clsMapdata {
 
     /**オブジェクト番号のラインコードスタック数を変更する */
     Move_LineCodeStac(ObjNum: number, New_NumOfLine: number, Old_NumOfLine: number) {
-        let mo = this.MPObj[ObjNum];
-        let dif = New_NumOfLine - Old_NumOfLine;
+        const mo = this.MPObj[ObjNum];
+        const dif = New_NumOfLine - Old_NumOfLine;
         mo.NumOfLine = mo.NumOfLine + dif;
 
         if (dif != 0) {
@@ -2891,7 +2891,7 @@ class clsMapdata {
     //ObjData:strObj_Dataまたはオブジェクト番号
     Get_Enable_ObjectName(ObjInfo: number | strObj_Data, Time: clsTime, NoDataLastGetF: boolean) {
     let ObjData;
-    if (typeof ObjInfo == 'number') {
+    if (typeof ObjInfo === 'number') {
         ObjData = this.MPObj[ObjInfo];
     } else {
         ObjData = ObjInfo;
@@ -2921,7 +2921,7 @@ class clsMapdata {
     /** JSON地図ファイル(mdrmjFlag:trueはmdrmjファイル内の地図データ)読み込み */
     openJsonMapData(JsonData: unknown, mdrmjFlag: boolean = false) {
     this.init_MapData();
-    let m = new strMap_data();
+    const m = new strMap_data();
     m.FileName = JsonData.Map.FileName;
     m.FullPath = JsonData.Map.FullPath;
     m.MPVersion = JsonData.Map.MPVersion;
@@ -2951,7 +2951,7 @@ class clsMapdata {
     // m.MapCompass.Font = this.cnvJsonFont(JsonData.Map.MapCompass.Font, mdrmjFlag);
     this.Map = m;
     for (let i = 0; i < m.OBKNum; i++) {
-        let ok = new strObjectGroup_Data();
+        const ok = new strObjectGroup_Data();
         ok.ObjectType = JsonData.ObjectKind[i].ObjectType;
         ok.Name = JsonData.ObjectKind[i].Name;
         ok.Shape = JsonData.ObjectKind[i].Shape;
@@ -2964,7 +2964,7 @@ class clsMapdata {
         ok.UseLineType = JsonData.ObjectKind[i].UseLineType;
         ok.UseObjectGroup = JsonData.ObjectKind[i].UseObjectGroup;
         for (let j = 0; j < ok.DefTimeAttDataNum; j++) {
-            let da = new strMPObjDefTimeAttData_Info();
+            const da = new strMPObjDefTimeAttData_Info();
             da.Type = JsonData.ObjectKind[i].DefTimeAttSTC[j].Type;
             da.attData.Title = JsonData.ObjectKind[i].DefTimeAttSTC[j].attData.Title;
             da.attData.Unit = JsonData.ObjectKind[i].DefTimeAttSTC[j].attData.Unit;
@@ -2976,7 +2976,7 @@ class clsMapdata {
         this.ObjectKind[i] = ok;
     }
     for (let i = 0; i < m.LpNum; i++) {
-        let lk = new LineKind_Data();
+        const lk = new LineKind_Data();
         lk.Name = JsonData.LineKind[i].Name;
         lk.NumofObjectGroup = JsonData.LineKind[i].NumofObjectGroup;
         lk.Mesh = JsonData.LineKind[i].Mesh;
@@ -2990,7 +2990,7 @@ class clsMapdata {
     }
 
     for (let i = 0; i < m.ALIN; i++) {
-        let ml = new strLine_Data();
+        const ml = new strLine_Data();
         ml.Number = JsonData.MPLine[i].Number;
         ml.NumOfPoint = JsonData.MPLine[i].NumOfPoint;
         ml.Connect = JsonData.MPLine[i].Connect;
@@ -3009,8 +3009,8 @@ class clsMapdata {
         this.MPLine[i] = ml;
     }
     for (let i = 0; i < m.Kend; i++) {
-        let o = new strObj_Data();
-        let s = JsonData.MPObj[i];
+        const o = new strObj_Data();
+        const s = JsonData.MPObj[i];
         o.Number = s.Number;
         o.Kind = s.Kind;
         o.Shape = s.Shape;
@@ -3021,7 +3021,7 @@ class clsMapdata {
         o.Circumscribed_Rectangle = this.cnvJsonRect(s.Circumscribed_Rectangle, mdrmjFlag);
         if (s.DefTimeAttValue != null) {
             for (let j = 0; j < s.DefTimeAttValue.length; j++) {
-                let d = new strDefTimeAttData_Info();
+                const d = new strDefTimeAttData_Info();
                 if (s.DefTimeAttValue[j].Data != null) {
                     for (let k = 0; k < s.DefTimeAttValue[j].Data.length; k++) {
                         d.Data[k] = new strDefTimeAttDataEach_Info();
@@ -3065,7 +3065,7 @@ class clsMapdata {
 }
 
     private cnvJsonstrYMD(json: unknown) {
-        let nt = new strYMD();
+        const nt = new strYMD();
         Object.assign(nt,json);
         // nt.Year = json.Year;
         // nt.Month = json.Month
@@ -3074,14 +3074,14 @@ class clsMapdata {
     }
 
     private cnvJsonStart_End_Time_data(json: unknown) {
-        let nt = new Start_End_Time_data();
+        const nt = new Start_End_Time_data();
         nt.StartTime = this.cnvJsonstrYMD(json.StartTime);
         nt.EndTime = this.cnvJsonstrYMD(json.EndTime);
         return nt;
     }
 
     private cnvJsonFont(jsonf: unknown, mdrmjFlag: boolean) {
-        let newf = new Font_Property();
+        const newf = new Font_Property();
         if (mdrmjFlag == false) {
             newf.Color = this.cnvJsonColor(jsonf.Body.Color);
             newf.Size = jsonf.Body.Size;
@@ -3112,7 +3112,7 @@ class clsMapdata {
 
 
     private cnvJsonRect(jsonr: unknown, mdrmjFlag: boolean) {
-        let newr = new rectangle();
+        const newr = new rectangle();
         if (mdrmjFlag == false) {
             newr.left = jsonr.Left;
             newr.right = jsonr.Right;
@@ -3125,7 +3125,7 @@ class clsMapdata {
     }
 
     private cnvJsonColor(jsonc: unknown) {
-        let newc = new colorRGBA();
+        const newc = new colorRGBA();
         Object.assign(newc,jsonc);
         // newc.a = jsonc.a;
         // newc.r = jsonc.r;
@@ -3135,7 +3135,7 @@ class clsMapdata {
     }
 
     private cnvJsonPoint(jsonp: unknown, mdrmjFlag: boolean) {
-        let newp = new point();
+        const newp = new point();
         if (mdrmjFlag == false) {
             newp.x = jsonp.X;
             newp.y = jsonp.Y;
@@ -3147,7 +3147,7 @@ class clsMapdata {
     }
 
     private cnvJsonBackGround_Box_Property(json: unknown, mdrmjFlag: boolean = false) {
-        let nt = new BackGround_Box_Property();
+        const nt = new BackGround_Box_Property();
         nt.Tile = this.cnvJsonTile_Property(json.Tile, mdrmjFlag);
         nt.Line = this.cnvJsonLine_Property(json.Line, mdrmjFlag);
         nt.Round = json.Round;
@@ -3155,7 +3155,7 @@ class clsMapdata {
         return nt
     }
     private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: unknown, mdrmjFlag: boolean) {
-        let nt = new LineEdge_Connect_Pattern_Data_Info();
+        const nt = new LineEdge_Connect_Pattern_Data_Info();
         if (mdrmjFlag == false) {
             const lc = ['round', 'square','butt' ];
             const lj = [  'round','bevel','miter'];
@@ -3168,7 +3168,7 @@ class clsMapdata {
         return nt;
     }
     private cnvJsonLine_Property(json: unknown, mdrmjFlag: boolean) {
-        let nt = new Line_Property();
+        const nt = new Line_Property();
         if (mdrmjFlag == false) {
             nt.Width = json.BasicLine.SolidLine.Width;
             nt.Color = this.cnvJsonColor(json.BasicLine.SolidLine.Color);
@@ -3189,7 +3189,7 @@ class clsMapdata {
     }
 
     private cnvJsonTile_Property(json: unknown, mdrmjFlag: boolean) {
-        let nt = new Tile_Property();
+        const nt = new Tile_Property();
         if (mdrmjFlag == false) {
             nt.BlankF = (json.TileCode == 7);
             nt.Color = this.cnvJsonColor(json.Line.BasicLine.SolidLine.Color);
@@ -3201,7 +3201,7 @@ class clsMapdata {
     }
 
     private cnvJsonMark_Property(json: unknown, mdrmjFlag: boolean = false) {
-        let nt = new Mark_Property();
+        const nt = new Mark_Property();
         nt.PrintMark = json.PrintMark;
         nt.ShapeNumber = json.ShapeNumber;
         nt.Tile = this.cnvJsonTile_Property(json.Tile, mdrmjFlag);

@@ -58,9 +58,9 @@ class clsPrint {
     static setData(picMap: HTMLCanvasElement){
         const state = appState();
         state.attrData.TotalData.ViewStyle.ScrData.OutputDevide = enmOutputDevice.Screen;
-        let atp=state.attrData.TempData;
+        const atp=state.attrData.TempData;
         atp.ContourMode_Temp.ContourDataResetF = true;
-        let dv = document.getElementById("contourDataTip")
+        const dv = document.getElementById("contourDataTip")
         if (dv != undefined) {
             state.frmPrint.removeChild(dv);
         }
@@ -76,8 +76,8 @@ class clsPrint {
     }
     static printMapScreen(picMap: HTMLCanvasElement) {
         const state = appState();
-        let avs=state.attrData.TotalData.ViewStyle.ScrData;
-        let g = picMap.getContext('2d');
+        const avs=state.attrData.TotalData.ViewStyle.ScrData;
+        const g = picMap.getContext('2d');
         if (!g) return;
         
         g.save();
@@ -99,27 +99,27 @@ class clsPrint {
         const state = appState();
         state.attrData.TempData.ContourMode_Temp.ContourDataResetF = true;
         state.attrData.TempData.DotMap_Temp.DotMapTempResetF = true;
-        let n = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
-        let koma = state.attrData.TempData.Series_temp.Koma;
-        let atsd = state.attrData.TotalData.TotalMode.Series.DataSet[n];
+        const n = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
+        const koma = state.attrData.TempData.Series_temp.Koma;
+        const atsd = state.attrData.TotalData.TotalMode.Series.DataSet[n];
         if (atsd.DataItem.length == 0) {
             return;
         }
-        let atsdi = atsd.DataItem[koma];
+        const atsdi = atsd.DataItem[koma];
         state.attrData.TotalData.LV1.Print_Mode_Total = atsdi.Print_Mode_Total;
         let ttl;
-        let al = state.attrData.LayerData[atsdi.Layer];
+        const al = state.attrData.LayerData[atsdi.Layer];
         switch (atsdi.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
-                let o_p_m_l = al.Print_Mode_Layer;
-                let O_L = state.attrData.TotalData.LV1.SelectedLayer;
+                const o_p_m_l = al.Print_Mode_Layer;
+                const O_L = state.attrData.TotalData.LV1.SelectedLayer;
                 al.Print_Mode_Layer = atsdi.Print_Mode_Layer;
                 state.attrData.TotalData.LV1.SelectedLayer = atsdi.Layer;
                 switch (atsdi.Print_Mode_Layer) {
                     case enmLayerMode_Number.SoloMode: {
-                        let O_L_Datn = al.atrData.SelectedIndex;
+                        const O_L_Datn = al.atrData.SelectedIndex;
                         al.atrData.SelectedIndex = atsdi.Data;
-                        let md = state.attrData.getSoloMode(atsdi.Layer, atsdi.Data);
+                        const md = state.attrData.getSoloMode(atsdi.Layer, atsdi.Data);
                         state.attrData.setSoloMode(atsdi.Layer, atsdi.Data,atsdi.SoloMode); 
                         this.printMap(g);
                         ttl = state.attrData.Get_DataTitle(atsdi.Layer, atsdi.Data, false);
@@ -128,7 +128,7 @@ class clsPrint {
                         break;
                     }
                     case enmLayerMode_Number.GraphMode: {
-                        let o_m_d = al.LayerModeViewSettings.GraphMode.SelectedIndex;
+                        const o_m_d = al.LayerModeViewSettings.GraphMode.SelectedIndex;
                         al.LayerModeViewSettings.GraphMode.SelectedIndex = atsdi.Data;
                         this.printMap(g);
                         ttl = al.LayerModeViewSettings.GraphMode.DataSet[atsdi.Data].title;
@@ -136,7 +136,7 @@ class clsPrint {
                         break;
                     }
                     case enmLayerMode_Number.LabelMode: {
-                        let o_m_d = al.LayerModeViewSettings.LabelMode.SelectedIndex;
+                        const o_m_d = al.LayerModeViewSettings.LabelMode.SelectedIndex;
                         al.LayerModeViewSettings.LabelMode.SelectedIndex = atsdi.Data;
                         this.printMap(g);
                         ttl = al.LayerModeViewSettings.LabelMode.DataSet[atsdi.Data].title;
@@ -152,7 +152,7 @@ class clsPrint {
                 break;
             }
             case enmTotalMode_Number.OverLayMode: {
-                let O_O = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
+                const O_O = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
                 state.attrData.TotalData.TotalMode.OverLay.SelectedIndex = atsdi.Data;
                 this.printMap(g);
                 ttl = state.attrData.TotalData.TotalMode.OverLay.DataSet[atsdi.Data].title;
@@ -168,7 +168,7 @@ class clsPrint {
         const state = appState();
         state.attrData.TotalData.ViewStyle.ScrData.Set_PictureBox_and_CulculateMul(state.frmPrint.picMap)
         state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = false;
-        let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         let ca;
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
@@ -193,7 +193,7 @@ class clsPrint {
             }
             case enmTotalMode_Number.OverLayMode: {
                 state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = true;
-                let ov = state.attrData.TotalData.TotalMode.OverLay;
+                const ov = state.attrData.TotalData.TotalMode.OverLay;
                 ca = ov.DataSet[ov.SelectedIndex].title;
                 break;
             }
@@ -204,19 +204,19 @@ class clsPrint {
 
     static showMap(g: CanvasRenderingContext2D) {
         const state = appState();
-        let av=state.attrData.TotalData.ViewStyle;
-        let avs=av.ScrData;
+        const av=state.attrData.TotalData.ViewStyle;
+        const avs=av.ScrData;
         state.attrData.TempData.drawing=true;
         avs.SampleBoxFlag = false;
         state.attrData.ResetMPSubLineXY();
         state.attrData.ResetObjectPrintedCheckFlag();
         g.globalCompositeOperation = "source-over";
-        let avb = av.SouByou;
+        const avb = av.SouByou;
         if ((avb.Auto == true) || ((avb.ThinningPrint_F == true) && (avb.PointInterval != 0)) || ((avb.LoopAreaF == true) || (avb.LoopSize != 0))) {
             state.attrData.check_AutoSoubyou_Enable();
         }
         if (avb.Auto == true) {
-            let avss = av.ScrData.ScrRectangle;
+            const avss = av.ScrData.ScrRectangle;
             //ラインのポイント自動間引き用に画面の対角線の距離を取得（座標系設定ありの場合）
             let D;
             if (state.attrData.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
@@ -232,7 +232,7 @@ class clsPrint {
         g.beginPath();
         if(avs.Screen_Margin.ClipF == true) {//地図領域クリッピング
             g.save();
-            let marginRect = avs.getSXSY_Margin();
+            const marginRect = avs.getSXSY_Margin();
             g.rect(marginRect.left,marginRect.top,marginRect.width(),marginRect.height());
             g.clip("evenodd");
 
@@ -244,10 +244,10 @@ class clsPrint {
         } else {
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
-                    let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                    const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
                     switch (state.attrData.LayerData[Layernum].Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode: {
-                            let DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+                            const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
                             switch (state.attrData.getSoloMode(Layernum, DataNum)) {
                                 case enmSoloMode_Number.ClassPaintMode: {
                                     this.PrintClassPaintMode(g, Layernum, DataNum);
@@ -317,7 +317,7 @@ class clsPrint {
             g.restore();
         }
         let tilecanvas: HTMLCanvasElement | null = null;
-        let avt = av.TileMapView;
+        const avt = av.TileMapView;
         if ((avt.Visible == true) && (avs.ThreeDMode.Set3D_F == false)) {
             //背景画像を表示
             if (avt.DrawTiming == enmDrawTiming.BeforeDataDraw) {
@@ -331,7 +331,7 @@ class clsPrint {
             tilecanvas.width = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width();
             tilecanvas.height = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height(); 
             tilecanvas.style.vivility=false;
-            let tilecanvasg = tilecanvas.getContext('2d');
+            const tilecanvasg = tilecanvas.getContext('2d');
             state.tileMapClass.drawTileMap(tilecanvasg, avt.TileMapDataSet, av.Zahyo, avs, 2, tileMapAcc);
         } else {
             //背景画像を表示しない
@@ -394,9 +394,9 @@ class clsPrint {
     /** 最後に画面枠線を描く*/
     static Screen_BackLine(g: CanvasRenderingContext2D){
         const state = appState();
-        let av=state.attrData.TotalData.ViewStyle.ScrData;
-        let rect  = av.getSxSyRect(av.ScrRectangle);
-        let sv=state.attrData.TotalData.ViewStyle.Screen_Back;
+        const av=state.attrData.TotalData.ViewStyle.ScrData;
+        const rect  = av.getSxSyRect(av.ScrRectangle);
+        const sv=state.attrData.TotalData.ViewStyle.Screen_Back;
         let penw  = av.Get_Length_On_Screen(sv.ScreenFrameLine.Width) % 2;
         penw = (penw==0) ? 1:penw;
         rect.inflate(-penw, -penw);
@@ -407,10 +407,10 @@ class clsPrint {
     static ClippingRegion_ObjectBoundary_set(g: CanvasRenderingContext2D, Layers: number[], RealObjClip_f: boolean, DummyClip_F: boolean) {
         const state = appState();
         let f = false;
-        let Allpxy = [];
-        let AllnPolyP = [];
+        const Allpxy = [];
+        const AllnPolyP = [];
         for (let i = 0; i < Layers.length; i++) {
-            let badata = this.ContourPolygonRegion(Layers[i], RealObjClip_f, DummyClip_F);
+            const badata = this.ContourPolygonRegion(Layers[i], RealObjClip_f, DummyClip_F);
             if (badata.Pon && badata.Pon > 0) {
                 let plusP=0;
                 for (let j = 0; j < badata.Pon; j++) {
@@ -432,13 +432,13 @@ class clsPrint {
     /**等値線モード他の背後のポリゴンのクリッピングリージョン作成、ポリゴン数を返す */
     static ContourPolygonRegion(Layernum: number, RealObjClip_f: boolean, DummyClip_F: boolean): PolydataInfo {
         const state = appState();
-        let MultiObj = [];
-        let al = state.attrData.LayerData[Layernum];
+        const MultiObj = [];
+        const al = state.attrData.LayerData[Layernum];
 
-        let LT = al.Time;
+        const LT = al.Time;
         let Dummy_F;
         if ((al.Shape == enmShape.PolygonShape) && (RealObjClip_f == true) && (al.Type == enmLayerType.Normal)) {
-            let ObjN = al.atrObject.ObjectNum;
+            const ObjN = al.atrObject.ObjectNum;
             for (let i = 0; i < ObjN; i++) {
                 if (state.attrData.Check_screen_Kencode_In(Layernum, i) == true) {
                     MultiObj.push(i);
@@ -447,14 +447,14 @@ class clsPrint {
             Dummy_F = false;
         } else if (DummyClip_F == true) {
             for (let i = 0; i < al.Dummy.length; i++) {
-                let c = al.Dummy[i].code
+                const c = al.Dummy[i].code
                 if ((al.MapFileData.MPObj[c].Shape == enmShape.PolygonShape) && (state.attrData.Check_Screen_Objcode_In(Layernum, c) == true)) {
                     MultiObj.push(c);
                 }
             }
-            let dobgRet = state.attrData.getDummyObjGroupArray(Layernum,enmShape.PolygonShape);
+            const dobgRet = state.attrData.getDummyObjGroupArray(Layernum,enmShape.PolygonShape);
             if (dobgRet.trueNum > 0) {
-                let alm = al.MapFileData;
+                const alm = al.MapFileData;
                 for (let j = 0; j < alm.Map.Kend; j++) {
                     if ((dobgRet.DummyOBGArray[alm.MPObj[j].Kind] == true) && (alm.MPObj[j].Shape == enmShape.PolygonShape)) {
                         if (alm.CheckEnableObject(alm.MPObj[j], LT) == true) {
@@ -476,28 +476,28 @@ class clsPrint {
 /**スクリーン、地図領域背景色 */
     static Screen_Area_Back(g: CanvasRenderingContext2D){
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
-        let Scrrect  = av.ScrData.getSxSyRect(av.ScrData.ScrRectangle);
+        const av = state.attrData.TotalData.ViewStyle;
+        const Scrrect  = av.ScrData.getSxSyRect(av.ScrData.ScrRectangle);
         state.attrData.Draw_Tile_Box(g, Scrrect, clsBase.BlankLine(), av.Screen_Back.ScreenAreaBack, 0);
-        let marginRect  = av.ScrData.getSXSY_Margin();
+        const marginRect  = av.ScrData.getSXSY_Margin();
         state.attrData.Draw_Tile_Box(g, marginRect, clsBase.BlankLine(), av.Screen_Back.MapAreaBack, 0);
     }
 
     /**経緯線（背面表示）とオブジェクト内部色設定 */
     static Screen_Back_ObjectInner_Set(g: CanvasRenderingContext2D){
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle;
         if((av.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order == enmLatLonLine_Order.Back) && (av.LatLonLine_Print.Visible == true)) {
            clsAccessory.LatLonLine_Print(g);
         }
         if(av.Screen_Back.ObjectInner.BlankF == false) {
-            let lv1 = state.attrData.TotalData.LV1;
+            const lv1 = state.attrData.TotalData.LV1;
             if(lv1.Print_Mode_Total == enmTotalMode_Number.DataViewMode) {
                 this.Screen_Back_Set_Paint(g, lv1.SelectedLayer);
             } else {
-                let n = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
-                let OvLay = [];
-                let ds = state.attrData.TotalData.TotalMode.OverLay.DataSet[n];
+                const n = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
+                const OvLay = [];
+                const ds = state.attrData.TotalData.TotalMode.OverLay.DataSet[n];
                 for (let i = 0; i < ds.DataItem.length; i++) {
                     for (let j = 0; j < ds.DataItem.length; j++) {
                         OvLay[ds.DataItem[j].Layer] = true;
@@ -515,11 +515,11 @@ class clsPrint {
     /**オブジェクト内部の背景塗りつぶし*/
     static Screen_Back_Set_Paint(g: CanvasRenderingContext2D, Layernum: number){
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
+        const al = state.attrData.LayerData[Layernum];
 
         let MultiObj = [];
         for (let i = 0; i < al.Dummy.length; i++) {
-            let c = al.Dummy[i].code;
+            const c = al.Dummy[i].code;
             if ((al.MapFileData.MPObj[c].Shape == enmShape.PolygonShape) && (
                 state.attrData.Check_Screen_Objcode_In(Layernum, c) == true)) {
                 MultiObj.push(c);
@@ -527,9 +527,9 @@ class clsPrint {
         }
         if (al.DummyGroup.length > 0) {
             for (let i = 0; i < al.DummyGroup.length; i++) {
-                let ok = al.DummyGroup[i];
+                const ok = al.DummyGroup[i];
                 if (al.MapFileData.ObjectKind[ok].Shape = enmShape.PolygonShape) {
-                    let temp = al.MapFileData.Get_Objects_by_Group(ok, al.Time);
+                    const temp = al.MapFileData.Get_Objects_by_Group(ok, al.Time);
                     for (let j = 0; j < temp.length; j++) {
                         if (state.attrData.Check_Screen_Objcode_In(Layernum, temp[j]) == true) {
                             MultiObj.push(temp[j]);
@@ -560,11 +560,11 @@ class clsPrint {
     /**複数オブジェクトにまとめて色塗り */
     static PaintMultiPolygonObject(g: CanvasRenderingContext2D, Layernum: number, MultiObj: number[], TI: Tile_Property, Dummy_F: boolean){
         const state = appState();
-        let MbjN=MultiObj.length;
+        const MbjN=MultiObj.length;
         if((MbjN == 0)||(TI.BlankF == true) ){
             return;
         }
-        let Polydata  = this.Get_Multi_Object_Boundary(Layernum, MultiObj, Dummy_F);
+        const Polydata  = this.Get_Multi_Object_Boundary(Layernum, MultiObj, Dummy_F);
         if(Polydata?.Pon && Polydata.Pon > 0 && TI.Color){
             clsDraw.DrawPolyPolygon(g, Polydata, TI.Color.toRGBA());
         }
@@ -573,13 +573,13 @@ class clsPrint {
     /**ポリゴンオブジェクトの周囲の線の座標を取得 */
     static Get_Multi_Object_Boundary(Layernum: number, ObjCode: number[], Dummy_F: boolean) {
         const state = appState();
-        let ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, ObjCode, Dummy_F);
+        const ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, ObjCode, Dummy_F);
 
-        let boundArrange = state.attrData.LayerData[Layernum].MapFileData.Boundary_Arrange_Sub(ELine);
+        const boundArrange = state.attrData.LayerData[Layernum].MapFileData.Boundary_Arrange_Sub(ELine);
         if (boundArrange.Pon <= 0) {
             return undefined;
         } else {
-            let Polydata = this.Get_Boundary_XY(Layernum, boundArrange);
+            const Polydata = this.Get_Boundary_XY(Layernum, boundArrange);
             return Polydata;
         }
     }
@@ -587,8 +587,8 @@ class clsPrint {
     /** 指定された複数のオブジェクトの外側のラインコードを取得*/
     static Gey_Multi_Object_OuterLineCode(Layernum: number, ObjCode: number[], Dummy_F: boolean) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let ALineN = al.MapFileData.Map.ALIN;
+        const al = state.attrData.LayerData[Layernum];
+        const ALineN = al.MapFileData.Map.ALIN;
         const Use_Line = new Array(ALineN);
         Use_Line.fill(0);
         for (let i = 0; i < ObjCode.length; i++) {
@@ -602,10 +602,10 @@ class clsPrint {
                 Use_Line[badata.Fringe[j].code]++;
             }
         }
-        let ELine = [];
+        const ELine = [];
         for (let i = 0; i < ALineN; i++) {
             if (Use_Line[i] % 2 == 1) {
-                let d = new EnableMPLine_Data(i, -1);
+                const d = new EnableMPLine_Data(i, -1);
                 d.LineCode = i;
                 ELine.push(d);
             }
@@ -616,18 +616,18 @@ class clsPrint {
     /**階級区分モードの表示順序と表示の可否を返す */
     static getDrawOrder_and_ShowF_ClassMode(LayerNum: number, DataNum: number, Category_Array: number[], D_Order: number[], ShowF: boolean[]) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LayerShape = al.Shape;
-        let Objn = al.atrObject.ObjectNum;
+        const al = state.attrData.LayerData[LayerNum];
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LayerShape = al.Shape;
+        const Objn = al.atrObject.ObjectNum;
         let DrawOrderByValue;
         if ((LayerShape == enmShape.PointShape) || (LayerShape == enmShape.LineShape)||(state.attrData.getSoloMode(LayerNum, DataNum)==enmSoloMode_Number.ClassMarkMode)) {
             DrawOrderByValue = this.ClassMode_Point_Shape_DrawOrder(LayerNum, DataNum);
         }
-        let Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
+        const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
 
-        let PointLayerMark = al.LayerModeViewSettings.PointLineShape.PointMark;
-        let pointR = state.attrData.Radius(PointLayerMark.WordFont.Size, 1, 1);
+        const PointLayerMark = al.LayerModeViewSettings.PointLineShape.PointMark;
+        const pointR = state.attrData.Radius(PointLayerMark.WordFont.Size, 1, 1);
         for (let i = 0; i < Objn; i++) {
             let dod;
             if ((LayerShape == enmShape.PointShape) || (LayerShape == enmShape.LineShape)||(state.attrData.getSoloMode(LayerNum, DataNum)==enmSoloMode_Number.ClassMarkMode)) {
@@ -658,8 +658,8 @@ class clsPrint {
             if ((state.attrData.Check_Condition(LayerNum, dod) == true) && ((Missing_DataArray[dod] == false) || (vs.Missing_Data.Print_Flag == true))) {
                 switch (LayerShape) {
                     case enmShape.PointShape:{
-                        let CP = al.atrObject.atrObjectData[dod].Symbol;
-                        let OP = vs.ScrData.Get_SxSy_With_3D(CP);
+                        const CP = al.atrObject.atrObjectData[dod].Symbol;
+                        const OP = vs.ScrData.Get_SxSy_With_3D(CP);
                         ShowF[dod] = state.attrData.Check_Screen_In(OP, pointR);
                         break;
                     }
@@ -695,10 +695,10 @@ class clsPrint {
             return;
         }
 
-        let al = state.attrData.LayerData[LayerNum];
-        let Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
-        let MV_Array = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
-        let Objn = al.atrObject.ObjectNum;
+        const al = state.attrData.LayerData[LayerNum];
+        const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
+        const MV_Array = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
+        const Objn = al.atrObject.ObjectNum;
         let inObjN = 0;
         let Add = 0;
         let Add2 = 0;
@@ -706,14 +706,14 @@ class clsPrint {
         let AfterDecimal = 0;
         const inObjectList = new Array(Objn);
 
-        let ald = al.atrData.Data[DataNum];
-        let alds = ald.SoloModeViewSettings;
+        const ald = al.atrData.Data[DataNum];
+        const alds = ald.SoloModeViewSettings;
         let maxV = ald.Statistics.Min;
         let minV = ald.Statistics.Max;
-        let div_num = ald.SoloModeViewSettings.Div_Num;
-        let divMethos = ald.SoloModeViewSettings.Div_Method;
+        const div_num = ald.SoloModeViewSettings.Div_Num;
+        const divMethos = ald.SoloModeViewSettings.Div_Method;
 
-        let atm = state.attrData.TempData.ModeValueInScreen_Stac;
+        const atm = state.attrData.TempData.ModeValueInScreen_Stac;
         atm.LayerNum = LayerNum;
         atm.DataNum = DataNum;
         atm.divValue = new Array(div_num);
@@ -726,24 +726,24 @@ class clsPrint {
         atm.MarkBar_MaxValue = alds.MarkBarMD.MaxValue;
 
 
-        let SortV = new clsSortingSearch();
+        const SortV = new clsSortingSearch();
         for (let i = 0; i < Objn; i++) {
             if ((ShowF[i] == true) && (Missing_DataArray[i] == false)) {
-                let v = MV_Array[i];
+                const v = MV_Array[i];
                 SortV.Add(v);
                 inObjectList[inObjN] = i;
                 Add += v;
                 Add2 += +v * v;
                 maxV = Math.max(maxV, v);
                 minV = Math.min(minV, v);
-                let retv = Generic.Figure_Arrange(v);
+                const retv = Generic.Figure_Arrange(v);
                 BeforeDecimal = Math.max(BeforeDecimal, retv.BeforeDecimal);
                 AfterDecimal = Math.max(AfterDecimal, retv.AfterDecimal);
                 inObjN++;
             }
         }
         SortV.AddEnd();
-        let md = state.attrData.getSoloMode(LayerNum, DataNum);
+        const md = state.attrData.getSoloMode(LayerNum, DataNum);
         switch (md) {
             case enmSoloMode_Number.ClassPaintMode:
             case enmSoloMode_Number.ClassMarkMode:
@@ -753,16 +753,16 @@ class clsPrint {
                         return;
                     }
                 }
-                let Ave = Add / inObjN;
-                let sa = maxV - minV;
-                let STD = Math.sqrt(Add2 / inObjN - Ave * Ave);
-                let Div_Value = [];
+                const Ave = Add / inObjN;
+                const sa = maxV - minV;
+                const STD = Math.sqrt(Add2 / inObjN - Ave * Ave);
+                const Div_Value = [];
                 switch (divMethos) {
                     case enmDivisionMethod.Free:
                         return;
                         break;
                     case enmDivisionMethod.Quantile: { //分位数
-                        let divvStp = SortV.NumofData() / div_num;
+                        const divvStp = SortV.NumofData() / div_num;
                         let i = 0;
                         let divv = divvStp;
                         do {
@@ -774,7 +774,7 @@ class clsPrint {
                     }
                     case enmDivisionMethod.AreaQuantile: {
                         //面積分位数
-                        let Mense = [];
+                        const Mense = [];
                         let AddMense = 0
                         for (let i = 0; i < inObjN; i++) {
                             Mense[i] = state.attrData.GetObjMenseki(LayerNum, inObjectList[i]);
@@ -783,10 +783,10 @@ class clsPrint {
                         let n = 0;
 
                         let Addv = 0;
-                        let divvStp = AddMense / div_num;
+                        const divvStp = AddMense / div_num;
                         let divv = divvStp;
                         for (let i = 0; i < SortV.NumofData(); i++) {
-                            let j = SortV.DataPositionRev(i);
+                            const j = SortV.DataPositionRev(i);
                             Addv += Mense[j];
                             if (Addv >= divv) {
                                 Div_Value[n] = SortV.DataPositionRevValue(i);
@@ -812,7 +812,7 @@ class clsPrint {
                         break;
                     }
                     case enmDivisionMethod.EqualInterval: { //等間隔
-                        let a = sa / div_num;
+                        const a = sa / div_num;
                         for (let i = 0; i < div_num; i++) {
                             Div_Value[i] = maxV - a * (i + 1);
                         }
@@ -845,9 +845,9 @@ class clsPrint {
 
     static Restore_InScreenObjectData(){
         const state = appState();
-        let atc = state.attrData.TempData.ModeValueInScreen_Stac;
-        let al = state.attrData.LayerData[atc.LayerNum];
-        let ald = al.atrData.Data[atc.DataNum].SoloModeViewSettings;
+        const atc = state.attrData.TempData.ModeValueInScreen_Stac;
+        const al = state.attrData.LayerData[atc.LayerNum];
+        const ald = al.atrData.Data[atc.DataNum].SoloModeViewSettings;
         for (let i = 0; i < atc.divValue.length; i++) {
             ald.Class_Div[i].Value = atc.divValue[i];
         }
@@ -861,21 +861,21 @@ class clsPrint {
     /**  記号モードの表示順序と表示の可否を返す*/
     static getDrawOrder_and_ShowF_MarkMode(LayerNum: number, DataNum: number, mode: number, D_Order: number[], ShowF: boolean[], ObjP: point[], Missing_DataArray: boolean[], MV_Array: number[]) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let vs = state.attrData.TotalData.ViewStyle;
-        let LayerShape = al.Shape;
-        let Objn = al.atrObject.ObjectNum;
-        let Missing_DataArraySub = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
+        const al = state.attrData.LayerData[LayerNum];
+        const vs = state.attrData.TotalData.ViewStyle;
+        const LayerShape = al.Shape;
+        const Objn = al.atrObject.ObjectNum;
+        const Missing_DataArraySub = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
         for (let i = 0; i < Missing_DataArraySub.length; i++) {
             Missing_DataArray[i] = Missing_DataArraySub[i];
         }
-        let MK_Order = new clsSortingSearch();
-        let MV_ArraySub = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
+        const MK_Order = new clsSortingSearch();
+        const MV_ArraySub = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
         for (let i = 0; i < MV_ArraySub.length; i++) {
             MV_Array[i] = MV_ArraySub[i];
         }
         for (let i = 0; i < Objn; i++) {
-            let CP = al.atrObject.atrObjectData[i].Symbol;
+            const CP = al.atrObject.atrObjectData[i].Symbol;
             ObjP[i] = vs.ScrData.Get_SxSy_With_3D(CP);
         }
         switch (mode) {
@@ -905,9 +905,9 @@ class clsPrint {
                 break;
             case enmSoloMode_Number.MarkBarMode:
                 misR = state.attrData.Radius(vs.Missing_Data.MarkBar.WordFont.Size, 1, 1);
-                let alm = al.atrData.Data[DataNum].SoloModeViewSettings.MarkBarMD;
-                let w = state.attrData.Get_Length_On_Screen(alm.Width);
-                let h = state.attrData.Get_Length_On_Screen(alm.MaxHeight);
+                const alm = al.atrData.Data[DataNum].SoloModeViewSettings.MarkBarMD;
+                const w = state.attrData.Get_Length_On_Screen(alm.Width);
+                const h = state.attrData.Get_Length_On_Screen(alm.MaxHeight);
                 let wThree = 0;
                 if (alm.ThreeD == true) {
                     wThree = Math.floor(w / 3);
@@ -952,7 +952,7 @@ class clsPrint {
                                     scinf = state.attrData.Check_Screen_In(ObjP[dod], misR)
                                 } else {
                                     if (MV_Array[dod] != 0) {
-                                        let r = state.attrData.Radius(normR, Math.abs(MV_Array[dod]), maxv)
+                                        const r = state.attrData.Radius(normR, Math.abs(MV_Array[dod]), maxv)
                                         ObjP[dod] = this.getOverlayMarkPosition(ObjP[dod], r)
                                         scinf = state.attrData.Check_Screen_In(ObjP[dod], r);
                                     }
@@ -969,7 +969,7 @@ class clsPrint {
                                 scinf = state.attrData.Check_Screen_In(ObjP[dod], misR)
                             } else {
                                 if (normSize) {
-                                    let rect = new rectangle(new point(ObjP[dod].x - normSize.width / 2, ObjP[dod].y - normSize.height), normSize);
+                                    const rect = new rectangle(new point(ObjP[dod].x - normSize.width / 2, ObjP[dod].y - normSize.height), normSize);
                                     scinf = state.attrData.Check_Screen_In(rect);
                                 }
                             }
@@ -1000,8 +1000,8 @@ class clsPrint {
     /**記号の大きさ、階級記号、記号の回転モードの重ね合わせの際の記号表示位置の移動*/
     static getOverlayMarkPosition(OP: point, r: number) {
         const state = appState();
-        let newP = OP.Clone();
-        let ato = state.attrData.TempData.OverLay_Temp;
+        const newP = OP.Clone();
+        const ato = state.attrData.TempData.OverLay_Temp;
         if ((ato.OverLay_Printing_Flag == true) && (state.attrData.TotalData.TotalMode.OverLay.MarkModePosFixFlag == false)) {
             if (ato.OverLay_EMode_N >= 2) {
                 newP.x += ((ato.OverLay_EMode_Now % 2) * 2 - 1) * r;
@@ -1017,14 +1017,14 @@ class clsPrint {
     /**経緯線（前面表示）と地図領域の枠線 */
     static Screen_MapAreaLine(g: CanvasRenderingContext2D){
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle;
         if((av.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order == enmLatLonLine_Order.Front) && (av.LatLonLine_Print.Visible == true)) {
             clsAccessory.LatLonLine_Print(g);
         }
 
-        let Lpat = av.Screen_Back.MapAreaFrameLine;
+        const Lpat = av.Screen_Back.MapAreaFrameLine;
         if(Lpat.BlankF == false) {
-            let marginRect = av.ScrData.getSXSY_Margin();
+            const marginRect = av.ScrData.getSXSY_Margin();
             let penw = parseInt(av.ScrData.Get_Length_On_Screen(Lpat.Width).toString()) / 2;
             if(penw == 0) {
                 penw = 1;
@@ -1037,27 +1037,27 @@ class clsPrint {
     //飾りの外接四角形をまとめて記録
     static GetAccessoryRectangles(g: CanvasRenderingContext2D) {
         const state = appState();
-        let at = state.attrData.TempData.Accessory_Temp;
-        let av = state.attrData.TotalData.ViewStyle;
+        const at = state.attrData.TempData.Accessory_Temp;
+        const av = state.attrData.TotalData.ViewStyle;
         if(av.AttMapCompass.Visible == true) {
             at.MapCompass_Rect = clsAccessory.GetCompassRect(g);
         }
         if(av.MapTitle.Visible == true) {
             at.MapTitle_Rect = clsAccessory.GetTitleRect(g);
-            let padw = state.attrData.Get_PaddingPixcel(av.MapTitle.Font.Back);
+            const padw = state.attrData.Get_PaddingPixcel(av.MapTitle.Font.Back);
             at.MapTitle_Rect.inflate(padw, padw);
         }
 
         if(av.DataNote.Visible == true) {
             at.DataNote_Rect = clsAccessory.GetNoteRect(g);
             if(at.DataNote_Rect.width() != 0) {
-                let padw = state.attrData.Get_PaddingPixcel(av.DataNote.Font.Back);
+                const padw = state.attrData.Get_PaddingPixcel(av.DataNote.Font.Back);
                 at.DataNote_Rect.inflate(padw, padw);
             }
         }
 
         if(av.MapScale.Visible == true) {
-            let padw = state.attrData.Get_PaddingPixcel(av.MapScale.Back);
+            const padw = state.attrData.Get_PaddingPixcel(av.MapScale.Back);
             at.MapScale_Rect = clsAccessory.GetScaleRect(g);
             at.MapScale_Rect.inflate(padw, padw);
         }
@@ -1067,9 +1067,9 @@ class clsPrint {
             }
         }
 
-        let Agb = av.AccessoryGroupBox;
+        const Agb = av.AccessoryGroupBox;
         if(Agb.Visible == true) {
-            let Rects = [];
+            const Rects = [];
                if((Agb.Title == true) && (at.MapTitle_Rect.width() != 0)&&(av.MapTitle.Visible ==true )){
                    Rects.push( at.MapTitle_Rect);
             }
@@ -1116,7 +1116,7 @@ class clsPrint {
         if(InnerData.Flag == false) {
             return undefined;
         }
-        let mlw = new Legend2_Atri();
+        const mlw = new Legend2_Atri();
         mlw.DatN = Datanum !== undefined ? Datanum : InnerData.Data;
         mlw.Layn = Layernum;
         mlw.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
@@ -1127,7 +1127,7 @@ class clsPrint {
     static Legend_Data_Set() {
         const state = appState();
         let n = 0;
-        let at = state.attrData.TempData;
+        const at = state.attrData.TempData;
         if(state.attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index != -1) {
 
             at.Accessory_Temp.MapLegend_W.length = at.OverLay_Temp.Always_Ove_DataStac.length;
@@ -1135,16 +1135,16 @@ class clsPrint {
                 n=this.Legend_Data_Set_Over_sub(at.OverLay_Temp.Always_Ove_DataStac[i], n);
             }
         } else {
-            let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-            let Datanum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const Datanum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
             at.Accessory_Temp.MapLegend_W.length = 1;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode:
-                    let atw = new Legend2_Atri();
+                    const atw = new Legend2_Atri();
                     switch (state.attrData.LayerData[Layernum].Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode:
                             //単独・グラフモードの凡例設定
-                            let att_Data = state.attrData.LayerData[Layernum].atrData.Data[Datanum];
+                            const att_Data = state.attrData.LayerData[Layernum].atrData.Data[Datanum];
                             atw.DatN = Datanum;
                             atw.Layn = Layernum;
                             atw.Print_Mode_Layer = state.attrData.LayerData[Layernum].Print_Mode_Layer;
@@ -1156,7 +1156,7 @@ class clsPrint {
                                 case enmSoloMode_Number.MarkTurnMode:
                                 case enmSoloMode_Number.MarkBarMode:
                                 case enmSoloMode_Number.StringMode: {
-                                    let lwl=this.Legend_Mark_Mode_Inner_Data_set(att_Data.SoloModeViewSettings.MarkCommon.Inner_Data, Layernum, Datanum);
+                                    const lwl=this.Legend_Mark_Mode_Inner_Data_set(att_Data.SoloModeViewSettings.MarkCommon.Inner_Data, Layernum, Datanum);
                                     if(lwl != undefined) {
                                         atw.title = state.attrData.Get_DataTitle(Layernum, Datanum, false);
                                         at.Accessory_Temp.MapLegend_W[1] = lwl;
@@ -1165,7 +1165,7 @@ class clsPrint {
                                     break;
                                 }
                                 case enmSoloMode_Number.ClassMarkMode: {
-                                    let lwl = this.Legend_Mark_Mode_Inner_Data_set(state.attrData.LayerData[Layernum].atrData.Data[Datanum].SoloModeViewSettings.ClassMarkMD,
+                                    const lwl = this.Legend_Mark_Mode_Inner_Data_set(state.attrData.LayerData[Layernum].atrData.Data[Datanum].SoloModeViewSettings.ClassMarkMD,
                                         Layernum, Datanum);
                                     if(lwl != undefined) {
                                         atw.title = state.attrData.Get_DataTitle(Layernum, Datanum, false);
@@ -1199,8 +1199,8 @@ class clsPrint {
                     break;
                 case enmTotalMode_Number.OverLayMode:
                     //重ね合わせモード凡例の設定
-                    let ato = state.attrData.TotalData.TotalMode.OverLay;
-                    let atod = ato.DataSet[ato.SelectedIndex];
+                    const ato = state.attrData.TotalData.TotalMode.OverLay;
+                    const atod = ato.DataSet[ato.SelectedIndex];
                     at.Accessory_Temp.MapLegend_W.length = atod.DataItem.length;
                     for (let i = 0; i < atod.DataItem.length; i++) {
                         n = this.Legend_Data_Set_Over_sub(atod.DataItem[i], n);
@@ -1209,22 +1209,22 @@ class clsPrint {
             }
         }
 
-        let av = state.attrData.TotalData.ViewStyle;
-        let am = av.MapLegend;
+        const av = state.attrData.TotalData.ViewStyle;
+        const am = av.MapLegend;
         for (let i = 0; i < n; i++) {
-            let atw = at.Accessory_Temp.MapLegend_W[i];
+            const atw = at.Accessory_Temp.MapLegend_W[i];
             atw.LineKind_Flag = false;
             atw.PointObject_Flag = false;
         }
         if(am.Line_DummyKind.Line_Visible == true) {
-            let atw=new Legend2_Atri(); 
+            const atw=new Legend2_Atri(); 
             atw.LineKind_Flag = true;
             atw.PointObject_Flag = false;
             at.Accessory_Temp.MapLegend_W[n]=atw;
             n++;
         }
         if(am.Line_DummyKind.Dummy_Point_Visible == true) {
-            let atw=new Legend2_Atri(); 
+            const atw=new Legend2_Atri(); 
             atw.LineKind_Flag = false;
             atw.PointObject_Flag = true;
             at.Accessory_Temp.MapLegend_W[n]=atw;
@@ -1232,12 +1232,12 @@ class clsPrint {
         }
 
         if(n > am.Base.Legend_Num) {
-            let oldn= am.Base.Legend_Num;
+            const oldn= am.Base.Legend_Num;
             am.Base.Legend_Num = n
             am.Base.LegendXY.length = n;
             for (let i = oldn; i < n; i++) {
-                let avs = av.ScrData;
-                let amb = am.Base;
+                const avs = av.ScrData;
+                const amb = am.Base;
                 if(avs.Accessory_Base == enmBasePosition.Screen) {
                     amb.LegendXY[i] = amb.LegendXY[i - 1].Clone();
                     amb.LegendXY[i].offset(0.05, 0.05);
@@ -1248,8 +1248,8 @@ class clsPrint {
                         amb.LegendXY[i].y = amb.LegendXY[i - 1].y;
                     }
                 } else {
-                    let Mprect = avs.MapRectangle;
-                    let ScrRect = avs.ScrRectangle;
+                    const Mprect = avs.MapRectangle;
+                    const ScrRect = avs.ScrRectangle;
                     amb.LegendXY[i] = amb.LegendXY[i - 1].Clone();
                     amb.LegendXY[i].offset(Mprect.width() * 0.05, Mprect.height() * 0.05);
                     if(amb.LegendXY[i].x > ScrRect.right) {
@@ -1268,13 +1268,13 @@ class clsPrint {
     static Legend_Data_Set_Over_sub(Over_D: Legend2_Atri, orn: number) {
         const state = appState();
         let n = orn;
-        let L = Over_D.Layer;
+        const L = Over_D.Layer;
         switch (Over_D.Print_Mode_Layer) {
             case enmLayerMode_Number.SoloMode: {
-                let dt = Over_D.DataNumber;
+                const dt = Over_D.DataNumber;
                 if (Over_D.Legend_Print_Flag == true) {
-                    let OVerData = state.attrData.LayerData[L].atrData.Data[dt];
-                    let atm = new Legend2_Atri();
+                    const OVerData = state.attrData.LayerData[L].atrData.Data[dt];
+                    const atm = new Legend2_Atri();
                     atm.DatN = Over_D.DataNumber;
                     atm.Layn = L;
                     atm.title = state.attrData.Get_DataTitle(L, dt, false);
@@ -1313,7 +1313,7 @@ class clsPrint {
             }
             case enmLayerMode_Number.GraphMode: {
                 if (Over_D.Legend_Print_Flag == true) {
-                    let atm2 = new Legend2_Atri();;
+                    const atm2 = new Legend2_Atri();;
                     atm2.DatN = Over_D.DataNumber;
                     atm2.Layn = L;
                     atm2.GraphMode = state.attrData.LayerData[L].LayerModeViewSettings.GraphMode.DataSet[atm2.DatN].GraphMode;
@@ -1335,14 +1335,14 @@ class clsPrint {
     /**重ね合わせ表示モード */
     static Print_OverLay(g: CanvasRenderingContext2D, DataSet: number) {
         const state = appState();
-        let aot = state.attrData.TempData.OverLay_Temp;
+        const aot = state.attrData.TempData.OverLay_Temp;
         aot.OverLay_Printing_Flag = true;
-        let aod = state.attrData.TotalData.TotalMode.OverLay.DataSet[DataSet];
-        let Num = aod.DataItem.length;
+        const aod = state.attrData.TotalData.TotalMode.OverLay.DataSet[DataSet];
+        const Num = aod.DataItem.length;
 
         for (let i = 0; i < Num; i++) {
             aot.Printing_Number = i;
-            let aodd = aod.DataItem[i];
+            const aodd = aod.DataItem[i];
             if(aodd.Print_Mode_Layer == enmLayerMode_Number.SoloMode){
                 let Equal_Mode_N=0;
                 for (let j = 0; j < Num; j++) {
@@ -1350,7 +1350,7 @@ class clsPrint {
                         aot.OverLay_EMode_Now = Equal_Mode_N;
                         Equal_Mode_N++;
                     } else {
-                        let ovDataj = aod.DataItem[j];
+                        const ovDataj = aod.DataItem[j];
                         if ((ovDataj.Print_Mode_Layer == enmLayerMode_Number.SoloMode) && (
                             ovDataj.Layer == aodd.Layer) && (ovDataj.Mode == aodd.Mode)) {
                             Equal_Mode_N++;
@@ -1424,18 +1424,18 @@ class clsPrint {
     /**常時重ね合わせが設定してある場合  */
     static OverLay_Plus_Print(g: CanvasRenderingContext2D) {
         const state = appState();
-        let ato = state.attrData.TotalData.TotalMode.OverLay;
-        let tmpo=state.attrData.TempData.OverLay_Temp;
-        let n = ato.Always_Overlay_Index;
+        const ato = state.attrData.TotalData.TotalMode.OverLay;
+        const tmpo=state.attrData.TempData.OverLay_Temp;
+        const n = ato.Always_Overlay_Index;
         tmpo.Always_Ove_DataStac = [];//]strOverLay_DataSet_Item_Info)
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
                 tmpo.Always_Ove_DataStac=Generic.ArrayClone(ato.DataSet[n].DataItem);
-                let Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-                let al = state.attrData.LayerData[Layernum];
+                const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                const al = state.attrData.LayerData[Layernum];
                 if (al.Print_Mode_Layer == enmLayerMode_Number.SoloMode) {
-                    let DataNum = al.atrData.SelectedIndex
-                    let d = new strOverLay_DataSet_Item_Info();
+                    const DataNum = al.atrData.SelectedIndex
+                    const d = new strOverLay_DataSet_Item_Info();
                     d.DataNumber = DataNum;
                     d.Layer = Layernum;
                     d.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
@@ -1443,7 +1443,7 @@ class clsPrint {
                     d.Legend_Print_Flag = true;
                     tmpo.Always_Ove_DataStac.push(d);
                 } else {
-                    let d = new strOverLay_DataSet_Item_Info();
+                    const d = new strOverLay_DataSet_Item_Info();
                     d.Layer = Layernum;
                     d.DataNumber = al.LayerModeViewSettings.GraphMode.SelectedIndex;
                     d.Print_Mode_Layer = al.Print_Mode_Layer;
@@ -1453,7 +1453,7 @@ class clsPrint {
                 break;
             }
             case enmTotalMode_Number.OverLayMode: {
-                let n_now = ato.SelectedIndex
+                const n_now = ato.SelectedIndex
                 tmpo.Always_Ove_DataStac=Generic.ArrayClone(ato.DataSet[n].DataItem);
                 if (n != n_now) {
                     tmpo.Always_Ove_DataStac=tmpo.Always_Ove_DataStac.concat(Generic.ArrayClone(ato.DataSet[n_now].DataItem));
@@ -1463,7 +1463,7 @@ class clsPrint {
             }
         }
 
-        let d2 = state.attrData.Sort_OverLay_Data_Sub(tmpo.Always_Ove_DataStac)
+        const d2 = state.attrData.Sort_OverLay_Data_Sub(tmpo.Always_Ove_DataStac)
         tmpo.OverLay_Printing_Flag = true;
         for (let i = 0; i < d2.length; i++) {
             tmpo.Printing_Number = i;
@@ -1474,7 +1474,7 @@ class clsPrint {
                         tmpo.OverLay_EMode_Now = Equal_Mode_N;
                         Equal_Mode_N++;
                     } else {
-                        let ovDataj = d2[j];
+                        const ovDataj = d2[j];
                         if ((ovDataj.Print_Mode_Layer == enmLayerMode_Number.SoloMode) && (
                             ovDataj.Layer == d2[i].Layer) && (ovDataj.Mode == d2[i].Mode)) {
                             Equal_Mode_N++;
@@ -1491,7 +1491,7 @@ class clsPrint {
     /**グラフモード */
     static PrintGraphMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number){
         const state = appState();
-        let selGraph = state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode.DataSet[DataSet];
+        const selGraph = state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode.DataSet[DataSet];
         switch (selGraph.GraphMode) {
             case enmGraphMode.PieGraph:
             case enmGraphMode.StackedBarGraph:
@@ -1507,8 +1507,8 @@ class clsPrint {
     /**円グラフまたは帯グラフモード */
     static PrintGraph_Pie_StackdBarMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let selGraph = al.LayerModeViewSettings.GraphMode.DataSet[DataSet];
+        const al = state.attrData.LayerData[Layernum];
+        const selGraph = al.LayerModeViewSettings.GraphMode.DataSet[DataSet];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [Layernum], false, true);
@@ -1516,13 +1516,13 @@ class clsPrint {
         this.Vector_Object_Boundary(g, Layernum)
         this.Vector_Dummy_Boundary(g, Layernum, true, true);
         this.Vector_Connect_CenterP_To_SymbolPoint(g, Layernum);
-        let obn = al.atrObject.ObjectNum;
+        const obn = al.atrObject.ObjectNum;
 
-        let en_sort = new clsSortingSearch();
+        const en_sort = new clsSortingSearch();
         for (let i = 0; i < obn; i++) {
             let env = 0;
             for (let j = 0; j < selGraph.Data.length; j++) {
-                let Datan = selGraph.Data[j].DataNumber
+                const Datan = selGraph.Data[j].DataNumber
                 if (state.attrData.Check_Missing_Value(Layernum, Datan, i) == true) {
                     env = 0;//欠損値を含む場合は０にして表示しない
                     break;
@@ -1534,16 +1534,16 @@ class clsPrint {
         }
         en_sort.AddEnd();
 
-        let RMAXVAL = selGraph.En_Obi.MaxValue;
+        const RMAXVAL = selGraph.En_Obi.MaxValue;
 
         for (let i = obn - 1; i >= 0; i--) {
-            let SortObjPos = en_sort.DataPosition(i);
-            let SortSumDataValue = en_sort.DataPositionValue(i);
+            const SortObjPos = en_sort.DataPosition(i);
+            const SortSumDataValue = en_sort.DataPositionValue(i);
 console.log(SortSumDataValue)
             if ((SortSumDataValue != 0) && (state.attrData.Check_Condition(Layernum, SortObjPos) == true)) {
 
-                let CP = al.atrObject.atrObjectData[SortObjPos].Symbol;
-                let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const CP = al.atrObject.atrObjectData[SortObjPos].Symbol;
+                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
 
                 state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][SortObjPos] = true;
                 switch (selGraph.GraphMode) {
@@ -1559,12 +1559,12 @@ console.log(SortSumDataValue)
                             if (state.attrData.Check_Screen_In(OP, r) == true) {
                                 let acum = 0
                                 for (let j = 0; j < selGraph.Data.length; j++) {
-                                    let Datan = selGraph.Data[j].DataNumber
+                                    const Datan = selGraph.Data[j].DataNumber
                                     if (state.attrData.Check_Missing_Value(Layernum, Datan, SortObjPos) == false) {
-                                        let H =Number( state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "")) / SortSumDataValue;
+                                        const H =Number( state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "")) / SortSumDataValue;
                                         console.log(H);
                                         if (Math.abs(H - 1) <= 0.00001) {
-                                            let Circle_Mark = new Mark_Property();
+                                            const Circle_Mark = new Mark_Property();
                                             Circle_Mark.PrintMark = enmMarkPrintType.Mark;
                                             Circle_Mark.WordFont.Back.Tile = clsBase.BlancTile();
                                             Circle_Mark.WordFont.Back.Line = clsBase.BlankLine();
@@ -1574,8 +1574,8 @@ console.log(SortSumDataValue)
                                             state.attrData.Draw_Mark(g, OP, r, Circle_Mark);
                                         } else {
                                             if (H != 0) {
-                                                let start_p = acum;
-                                                let end_p = start_p + 2 * Math.PI * H;
+                                                const start_p = acum;
+                                                const end_p = start_p + 2 * Math.PI * H;
                                                 state.attrData.Draw_Fan(g, OP, r, start_p, end_p, selGraph.En_Obi.BoaderLine, selGraph.Data[j].Tile);
                                                 acum = end_p;
                                             }
@@ -1604,13 +1604,13 @@ console.log(SortSumDataValue)
                             xw = r / 2;
                             yw = r2 / 2;
                         }
-                        let C_Rect = new rectangle(new point(OP.x - xw, OP.y - yw), new size(xw * 2, yw * 2));
+                        const C_Rect = new rectangle(new point(OP.x - xw, OP.y - yw), new size(xw * 2, yw * 2));
                         if (state.attrData.Check_Screen_In(C_Rect) == true) {
                             let E = 0;
                             for (let j = 0; j < selGraph.Data.length; j++) {
-                                let Datan = selGraph.Data[j].DataNumber;
+                                const Datan = selGraph.Data[j].DataNumber;
                                 if (state.attrData.Check_Missing_Value(Layernum, Datan, SortObjPos) == false) {
-                                    let H = state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "") / SortSumDataValue;
+                                    const H = state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "") / SortSumDataValue;
                                     let Rect;
                                     switch (selGraph.En_Obi.StackedBarDirection) {
                                         case enmStackedBarChart_Direction.Vertical:
@@ -1638,8 +1638,8 @@ console.log(SortSumDataValue)
     /**棒グラフまたは折れ線グラフ */
     static PrintGraph_Line_BarMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let selGraph = al.LayerModeViewSettings.GraphMode.DataSet[DataSet];
+        const al = state.attrData.LayerData[Layernum];
+        const selGraph = al.LayerModeViewSettings.GraphMode.DataSet[DataSet];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [Layernum], false, true);
@@ -1648,14 +1648,14 @@ console.log(SortSumDataValue)
         this.Vector_Dummy_Boundary(g, Layernum, true, true);
         this.Vector_Connect_CenterP_To_SymbolPoint(g, Layernum);
 
-        let obn = al.atrObject.ObjectNum;
+        const obn = al.atrObject.ObjectNum;
 
         let OverLay_With_Bou = false;
         let OverLay_Refference_Multi;
         if ((state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag == true) && (selGraph.GraphMode == enmGraphMode.LineGraph)) {
-            let ato = state.attrData.TotalData.TotalMode.OverLay;
+            const ato = state.attrData.TotalData.TotalMode.OverLay;
             for (let i = 0; i < state.attrData.TempData.OverLay_Temp.Printing_Number; i++) {
-                let atod = ato.DataSet[ato.SelectedIndex].DataItem[i];
+                const atod = ato.DataSet[ato.SelectedIndex].DataItem[i];
                 if ((atod.Layer == Layernum) && (atod.Print_Mode_Layer == enmLayerMode_Number.GraphMode)) {
                      OverLay_Refference_Multi =  state.attrData.LayerData[atod.Layer].LayerModeViewSettings.GraphMode.DataSet[atod.DataNumber];
                     if (OverLay_Refference_Multi.GraphMode == enmGraphMode.BarGraph) {
@@ -1665,9 +1665,9 @@ console.log(SortSumDataValue)
             }
         }
 
-        let YMax = selGraph.Oresen_Bou.YMax;
-        let Ymin = selGraph.Oresen_Bou.Ymin;
-        let ST = selGraph.Oresen_Bou.Ystep;
+        const YMax = selGraph.Oresen_Bou.YMax;
+        const Ymin = selGraph.Oresen_Bou.Ymin;
+        const ST = selGraph.Oresen_Bou.Ystep;
         let a;
         let ww;
         let wh;
@@ -1686,7 +1686,7 @@ console.log(SortSumDataValue)
             a = 1;
         }
 
-        let stx = ww / (selGraph.Data.length + a);
+        const stx = ww / (selGraph.Data.length + a);
         for (let i = 0; i < obn; i++) {
             if (state.attrData.Check_Condition(Layernum, i) == true) {
                 let dataMaxV;
@@ -1699,9 +1699,9 @@ console.log(SortSumDataValue)
                 }else{
                     let fif=true;
                     for (let j = 0; j < selGraph.Data.length; j++) {
-                        let Datan = selGraph.Data[j].DataNumber;
+                        const Datan = selGraph.Data[j].DataNumber;
                         if (state.attrData.Check_Missing_Value(Layernum, Datan, i) == false) {
-                            let v = state.attrData.Get_Data_Value(Layernum, Datan, i, "");
+                            const v = state.attrData.Get_Data_Value(Layernum, Datan, i, "");
                             if (fif == true) {
                                 dataMaxV = v;
                                 dataMinV = v;
@@ -1729,15 +1729,15 @@ console.log(SortSumDataValue)
                                 }
                             break;
                     }
-                    let dataMaxH=Math.abs( (dataMaxV- dataMinV) / (YMax - Ymin));
+                    const dataMaxH=Math.abs( (dataMaxV- dataMinV) / (YMax - Ymin));
                      wrh = wh * dataMaxH;
                 }
 
-                let CP = al.atrObject.atrObjectData[i].Symbol;
-                let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const CP = al.atrObject.atrObjectData[i].Symbol;
+                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                 state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][i] = true;
                 OP.offset(-ww / 2, -wrh / 2);
-                let Rect = new rectangle(OP, new size(ww, wrh));
+                const Rect = new rectangle(OP, new size(ww, wrh));
                 if (state.attrData.Check_Screen_In(Rect) == true) {
                     if (OverLay_With_Bou == false) {
                         state.attrData.Draw_Tile_Box(g, Rect, clsBase.BlankLine(), selGraph.Oresen_Bou.BackgroundTile, 0);
@@ -1747,12 +1747,12 @@ console.log(SortSumDataValue)
                             state.attrData.Draw_Line(g, selGraph.Oresen_Bou.BorderLine, Rect.bottomLeft(), Rect.topLeft());
                             state.attrData.Draw_Line(g, selGraph.Oresen_Bou.BorderLine, Rect.bottomLeft(), Rect.bottomRight());
                         }
-                        let Zero_Line = clsBase.Line();
+                        const Zero_Line = clsBase.Line();
                         Zero_Line.Color = selGraph.Oresen_Bou.BorderLine.Color.Clone();
                         for (let wakuj = Ymin; wakuj <= dataMaxV; wakuj += ST) {
                             if (wakuj >= dataMinV) {
-                                let H = 1- (wakuj - dataMinV) / (dataMaxV- dataMinV);
-                                let yy = OP.y + wrh * H;
+                                const H = 1- (wakuj - dataMinV) / (dataMaxV- dataMinV);
+                                const yy = OP.y + wrh * H;
                                 state.attrData.Draw_Line(g, Zero_Line, new point(OP.x, yy), new point(OP.x + ww / 15, yy));
                                 if (selGraph.Oresen_Bou.FrameAxe == enmBarChartFrameAxePattern.Whole) {
                                     state.attrData.Draw_Line(g, Zero_Line, new point(OP.x + ww, yy), new point(OP.x + ww - ww / 15, yy));
@@ -1761,17 +1761,17 @@ console.log(SortSumDataValue)
                         }
                     }
                     if ((Ymin < 0) && (YMax > 0)) {
-                        let Zero_Line = clsBase.Line();
+                        const Zero_Line = clsBase.Line();
                         Zero_Line.Color = selGraph.Oresen_Bou.BorderLine.Color.Clone();
-                        let H = 1 - (-dataMinV) / (dataMaxV- dataMinV);
-                        let yy = OP.y + wrh * H;
+                        const H = 1 - (-dataMinV) / (dataMaxV- dataMinV);
+                        const yy = OP.y + wrh * H;
                         g.setLineDash([5,3]);
                         state.attrData.Draw_Line(g, Zero_Line, new point(OP.x, yy), new point(OP.x + ww, yy));
                         g.setLineDash([]);
                     }
 
                     g.save();
-                    let RectC = Rect;
+                    const RectC = Rect;
                     RectC.inflate(1, 1)
                     g.moveTo(RectC.left,RectC.top);
                     g.lineTo(RectC.right,RectC.top);
@@ -1787,10 +1787,10 @@ console.log(SortSumDataValue)
                             let fsx = OP.x + stx;
                             let ff = true;
                             for (let j = 0; j < selGraph.Data.length; j++) {
-                                let Datan = selGraph.Data[j].DataNumber;
+                                const Datan = selGraph.Data[j].DataNumber;
                                 if (state.attrData.Check_Missing_Value(Layernum, Datan, i) == false) {
-                                    let H = 1 - (state.attrData.Get_Data_Value(Layernum, Datan, i, "") - dataMinV) / (dataMaxV- dataMinV);
-                                    let yy = OP.y + wrh * H;
+                                    const H = 1 - (state.attrData.Get_Data_Value(Layernum, Datan, i, "") - dataMinV) / (dataMaxV- dataMinV);
+                                    const yy = OP.y + wrh * H;
                                     if (ff == true) {
                                         flx1 = fsx;
                                         fly1 = yy;
@@ -1808,12 +1808,12 @@ console.log(SortSumDataValue)
                         case enmGraphMode.BarGraph: { //棒グラフ
                             let fsx = OP.x + stx;
                             for (let j = 0; j < selGraph.Data.length; j++) {
-                                let Datan = selGraph.Data[j].DataNumber;
+                                const Datan = selGraph.Data[j].DataNumber;
                                 if (state.attrData.Check_Missing_Value(Layernum, Datan, i) == false) {
-                                    let H = 1 - (state.attrData.Get_Data_Value(Layernum, Datan, i, "")- dataMinV) / (dataMaxV- dataMinV);
-                                    let yy = OP.y + wrh * H;
-                                    let yy2 = OP.y + (wrh * (1 - (-dataMinV) / (dataMaxV- dataMinV)));
-                                    let barRect = new rectangle(fsx, fsx + stx, yy, yy2);
+                                    const H = 1 - (state.attrData.Get_Data_Value(Layernum, Datan, i, "")- dataMinV) / (dataMaxV- dataMinV);
+                                    const yy = OP.y + wrh * H;
+                                    const yy2 = OP.y + (wrh * (1 - (-dataMinV) / (dataMaxV- dataMinV)));
+                                    const barRect = new rectangle(fsx, fsx + stx, yy, yy2);
                                     state.attrData.Draw_Tile_Box(g, barRect, selGraph.Oresen_Bou.Line, selGraph.Data[j].Tile, 0);
                                 }
                                 fsx += stx;
@@ -1834,7 +1834,7 @@ console.log(SortSumDataValue)
     /**ラベルモード */
     static PrintLabelMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
+        const al = state.attrData.LayerData[Layernum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [Layernum], false, true);
@@ -1842,34 +1842,34 @@ console.log(SortSumDataValue)
         this.Vector_Object_Boundary(g, Layernum)
         this.Vector_Dummy_Boundary(g, Layernum, true, true);
 
-        let attLbl = al.LayerModeViewSettings.LabelMode.DataSet[DataSet];
-        let LabelMark = attLbl.Location_Mark;
+        const attLbl = al.LayerModeViewSettings.LabelMode.DataSet[DataSet];
+        const LabelMark = attLbl.Location_Mark;
 
 
-        let LocMarkFlag = attLbl.Location_Mark_Flag;
-        let mark_r = state.attrData.Radius(attLbl.Location_Mark.WordFont.Size, 1, 1);
+        const LocMarkFlag = attLbl.Location_Mark_Flag;
+        const mark_r = state.attrData.Radius(attLbl.Location_Mark.WordFont.Size, 1, 1);
 
 
-        let obn = al.atrObject.ObjectNum;
-        let XY = []
+        const obn = al.atrObject.ObjectNum;
+        const XY = []
         for (let i = 0; i < obn; i++) {
-            let CP = al.atrObject.atrObjectData[i].Label;
+            const CP = al.atrObject.atrObjectData[i].Label;
             XY.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP));
         }
 
-        let Data_n = attLbl.DataItem.length;
-        let BoxWidth = state.attrData.Get_Length_On_Screen(attLbl.Width);
+        const Data_n = attLbl.DataItem.length;
+        const BoxWidth = state.attrData.Get_Length_On_Screen(attLbl.Width);
 
         //ラベルを表示
         for (let i = 0; i < obn; i++) {
             if (state.attrData.Check_Condition(Layernum, i) == true) {
                 let D_TxHeight = 0;
-                let D_Word_Cut: string[] = [];
+                const D_Word_Cut: string[] = [];
                 if (Data_n > 0) {
 
                     for (let j = 0; j < Data_n; j++) {
                         let wo2 = "";
-                        let DataNum = attLbl.DataItem[j];
+                        const DataNum = attLbl.DataItem[j];
                         if (attLbl.DataName_Print_Flag == true) {
                             wo2 = state.attrData.Get_DataTitle(Layernum, DataNum, false) + "："
                         }
@@ -1882,7 +1882,7 @@ console.log(SortSumDataValue)
                         } else {
                             switch (state.attrData.Get_DataType(Layernum, DataNum)) {
                                 case enmAttDataType.Normal:
-                                    let V = state.attrData.Get_Data_Value(Layernum, DataNum, i, "");
+                                    const V = state.attrData.Get_Data_Value(Layernum, DataNum, i, "");
                                     wo2 += Generic.Figure_Using_Solo(V, state.attrData.TotalData.ViewStyle.MapLegend.Base.Comma_f);
                                     if (attLbl.DataValue_Unit_Flag == true) {
                                         wo2 += state.attrData.Get_DataUnit(Layernum, DataNum);
@@ -1893,7 +1893,7 @@ console.log(SortSumDataValue)
                                     break;
 
                             }
-                            let retV = clsDraw.TextCut_for_print(g, wo2,
+                            const retV = clsDraw.TextCut_for_print(g, wo2,
                                 attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
                             Array.prototype.push.apply(D_Word_Cut, retV.Out_Text);
                             D_TxHeight = retV.Height;
@@ -1906,7 +1906,7 @@ console.log(SortSumDataValue)
                     let O_Word_Cut: string[] = [];
                     let O_TxHeight = 0;
                     if (attLbl.ObjectName_Print_Flag == true) {
-                        let retV = clsDraw.TextCut_for_print(g, state.attrData.Get_KenObjName(Layernum, i),
+                        const retV = clsDraw.TextCut_for_print(g, state.attrData.Get_KenObjName(Layernum, i),
                             attLbl.ObjectName_Font, attLbl.ObjectName_Turn_Flag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
                         O_Word_Cut = retV.Out_Text;
                         O_TxHeight = retV.Height;
@@ -1914,12 +1914,12 @@ console.log(SortSumDataValue)
 
                     state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][i] = true;
 
-                    let TH = D_TxHeight * D_Word_Cut.length + O_TxHeight * O_Word_Cut.length;
+                    const TH = D_TxHeight * D_Word_Cut.length + O_TxHeight * O_Word_Cut.length;
                     const AP = new point();
                     const BP = new point();
                     AP.x = XY[i].x - BoxWidth / 2;
                     BP.x = AP.x + BoxWidth;
-                    let scx = XY[i].x;
+                    const scx = XY[i].x;
 
                     AP.y = (attLbl.Location_Mark_Flag == true) ? XY[i].y : XY[i].y - TH / 2;
                     if (state.attrData.Check_Screen_In(new rectangle(AP, new size(BoxWidth * 2, TH * 2))) == true) {
@@ -1929,7 +1929,7 @@ console.log(SortSumDataValue)
                             y2 += mark_r * 4;
                         }
                         if (attLbl.ObjectName_Print_Flag == true) {
-                            let Rect = new rectangle(AP.x - 1, BP.x, AP.y + y2 - 1, AP.y + y2 + O_TxHeight * O_Word_Cut.length);
+                            const Rect = new rectangle(AP.x - 1, BP.x, AP.y + y2 - 1, AP.y + y2 + O_TxHeight * O_Word_Cut.length);
                             state.attrData.Draw_Tile_Box(g, Rect, attLbl.BorderLine, attLbl.BorderObjectTile, 0);
                             for (let j = 0; j < O_Word_Cut.length; j++) {
                                 state.attrData.Draw_Print(g, O_Word_Cut[j], new point(scx, AP.y + y2), attLbl.ObjectName_Font, enmHorizontalAlignment.Center, enmVerticalAlignment.Top);
@@ -1939,7 +1939,7 @@ console.log(SortSumDataValue)
                         }
 
                         if (attLbl.DataValue_Print_Flag == true) {
-                            let Rect = new rectangle(AP.x - 1, BP.x, AP.y + y2 - 1, AP.y + y2 + D_TxHeight * D_Word_Cut.length);
+                            const Rect = new rectangle(AP.x - 1, BP.x, AP.y + y2 - 1, AP.y + y2 + D_TxHeight * D_Word_Cut.length);
                             state.attrData.Draw_Tile_Box(g, Rect, attLbl.BorderLine, attLbl.BorderDataTile, 0);
                             for (let j = 0; j < D_Word_Cut.length; j++) {
                                 state.attrData.Draw_Print(g, D_Word_Cut[j], new point(scx, AP.y + y2), attLbl.DataValue_Font, enmHorizontalAlignment.Center, enmVerticalAlignment.Top);
@@ -1965,30 +1965,30 @@ console.log(SortSumDataValue)
     /**等値線モード */
     static PrintContourMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
-        let cont=state.attrData.TempData.ContourMode_Temp;
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
+        const cont=state.attrData.TempData.ContourMode_Temp;
         if(cont.ContourDataResetF == true ){
             //等値線用メッシュデータを作成する
             this.ContourMeshIndexSet( LayerNum, DataNum);
         }
-        let Missing_DataArray  = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
+        const Missing_DataArray  = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
         for(let i=0;i< al.atrObject.ObjectNum ;i++){
             if(Missing_DataArray[i] == false ){
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][i] = true;
             }
         }
 
-        let C_md  = ad.SoloModeViewSettings.ContourMD;
+        const C_md  = ad.SoloModeViewSettings.ContourMD;
 
         //等値線間隔と値を取得
-        let retConV = this.GetContourIntervalValue(LayerNum, DataNum);
-        let hn = retConV.hn;
-        let Contour_High_M = retConV.Contour_High_M;
-        let C_Line_Pat = retConV.C_Line_Pat;
+        const retConV = this.GetContourIntervalValue(LayerNum, DataNum);
+        const hn = retConV.hn;
+        const Contour_High_M = retConV.Contour_High_M;
+        const C_Line_Pat = retConV.C_Line_Pat;
         //メッシュから等高線を抜き出す
-        let Pre_CStac: contourLineStacInfo[] = [];// clsMeshContour.ContourLineStacInfo
-        let ln  = cont.ContourMesh.Execute_Mesh(hn, Contour_High_M, Pre_CStac);
+        const Pre_CStac: contourLineStacInfo[] = [];// clsMeshContour.ContourLineStacInfo
+        const ln  = cont.ContourMesh.Execute_Mesh(hn, Contour_High_M, Pre_CStac);
 
         if(ln == 0 ){
             Generic.alert(undefined,"該当する等値線が取得できませんでした。<br>下限値・上限値を変更してください。");
@@ -2012,7 +2012,7 @@ console.log(SortSumDataValue)
                 this.Vector_Dummy_Boundary(g,  LayerNum, true, true);
             }
         }
-        let ST = (C_md.Detailed <= 2) ? 0.4 : 0.2;
+        const ST = (C_md.Detailed <= 2) ? 0.4 : 0.2;
 
         if(C_md.Draw_in_Polygon_F == true ){
             //ポリゴン内部のみ描画
@@ -2022,14 +2022,14 @@ console.log(SortSumDataValue)
 
         if (C_md.Interval_Mode == enmContourIntervalMode.ClassPaint) {
             //ペイントモードで塗りつぶす
-            let Frame_AllPoint = [];
-            let FrameStac = Generic.Array2Dimension(4, 2, 0);
-            let Frame_AllLineStac = [];
+            const Frame_AllPoint = [];
+            const FrameStac = Generic.Array2Dimension(4, 2, 0);
+            const Frame_AllLineStac = [];
             let FrameAllLineN = 0;
             for (let i = 0; i <= 3; i++) {
-                let Frame_LineStac: number[] = [];
-                let Frame_Point: point[] = [];
-                let FrameLineN = cont.ContourMesh.Execute_FrameGet(i, hn, Contour_High_M, Frame_LineStac, Frame_Point);
+                const Frame_LineStac: number[] = [];
+                const Frame_Point: point[] = [];
+                const FrameLineN = cont.ContourMesh.Execute_FrameGet(i, hn, Contour_High_M, Frame_LineStac, Frame_Point);
                 FrameStac[i][0] = FrameAllLineN;
                 FrameStac[i][1] = FrameLineN;
                 for (let j = 0; j < FrameLineN; j++) {
@@ -2039,23 +2039,23 @@ console.log(SortSumDataValue)
                 FrameAllLineN += FrameLineN;
             }
 
-            let HnPolygon = [];// VecContourStac_Info
+            const HnPolygon = [];// VecContourStac_Info
             for (let i = 0; i <= hn; i++) {
-                let d = new VecContourStac_Info();
+                const d = new VecContourStac_Info();
                 HnPolygon.push(d);
             }
             for (let i = 0; i < ln; i++) {
-                let n = Pre_CStac[i].ContourNumber;
+                const n = Pre_CStac[i].ContourNumber;
                 for (let j = 0; j <= 1; j++) {
-                    let d = HnPolygon[n + j];
+                    const d = HnPolygon[n + j];
                     d.cStac.push(i);
                     d.CNum++;
                 }
             }
             for (let i = 0; i <= 3; i++) {
                 for (let j = 0; j <= FrameStac[i][1] - 2; j++) {
-                    let n = Frame_AllLineStac[FrameStac[i][0] + j];
-                    let d = HnPolygon[n + 1];
+                    const n = Frame_AllLineStac[FrameStac[i][0] + j];
+                    const d = HnPolygon[n + 1];
                     d.FStac.push(FrameStac[i][0] + j);
                     d.fnum++;
                 }
@@ -2070,9 +2070,9 @@ console.log(SortSumDataValue)
         }
 
         for (let i = 0; i < ln; i++) {
-            let Con_Obj_Code = i + cont.Contour_All_Number;
-            let pci=Pre_CStac[i];
-            let d = new strContour_Line_property();
+            const Con_Obj_Code = i + cont.Contour_All_Number;
+            const pci=Pre_CStac[i];
+            const d = new strContour_Line_property();
             d.Layernum = LayerNum
             d.DataNum = DataNum
             d.PointStac = cont.Contour_All_Point;
@@ -2118,28 +2118,28 @@ console.log(SortSumDataValue)
     static ContourPolyBoundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number,
         Pcon: number, hn: number, Interval_Mode: number, HnPolygon: VecContourStac_Info, Pre_CStac: contourLineStacInfo[], Frame_AllPoint: point[], Spline_flag: boolean, SplineT: number) {
         const state = appState();
-        let spxy = [];
-        let epxy = [];
-        let NL= HnPolygon.CNum + HnPolygon.fnum;
+        const spxy = [];
+        const epxy = [];
+        const NL= HnPolygon.CNum + HnPolygon.fnum;
         for (let j = 0; j < HnPolygon.CNum; j++) {
-            let hc=HnPolygon.cStac[j];
-            let n = Pre_CStac[hc].NumOfPoint;
+            const hc=HnPolygon.cStac[j];
+            const n = Pre_CStac[hc].NumOfPoint;
             spxy.push(Pre_CStac[hc].points[0].Clone());
             epxy.push(Pre_CStac[hc].points[n - 1].Clone());
         }
         for (let j = 0; j < HnPolygon.fnum; j++) {
-            let hc=HnPolygon.FStac[j];
+            const hc=HnPolygon.FStac[j];
             spxy.push(Frame_AllPoint[hc].Clone());
             epxy.push(Frame_AllPoint[hc + 1].Clone());
         }
 
-        let boundArrange = spatial.BoundaryArrangeGeneral(NL, spxy, epxy);
+        const boundArrange = spatial.BoundaryArrangeGeneral(NL, spxy, epxy);
         if (boundArrange.Pon == 0) {
             return;
         }
-        let Arrange_LineCode = boundArrange.Arrange_LineCode;
-        let Fringe = boundArrange.Fringe;
-        let nPolyP = [];
+        const Arrange_LineCode = boundArrange.Arrange_LineCode;
+        const Fringe = boundArrange.Fringe;
+        const nPolyP = [];
         // let p = 0;
         // for (let i = 0; i < Fringe.length; i++) {
         //     if (Fringe[i].code < HnPolygon.CNum) {
@@ -2148,7 +2148,7 @@ console.log(SortSumDataValue)
         //         p += 2;
         //     }
         // }
-        let pxy=[];
+        const pxy=[];
         let ponpon = 0
         for (let i = 0; i < boundArrange.Pon; i++) {
             let np2 = 0;
@@ -2159,13 +2159,13 @@ console.log(SortSumDataValue)
                 } else {
                     revf = true;
                 }
-                let L = Fringe[Arrange_LineCode[i][0] + j].code;
+                const L = Fringe[Arrange_LineCode[i][0] + j].code;
                 if (L < HnPolygon.CNum) {
-                    let hc=HnPolygon.cStac[L];
+                    const hc=HnPolygon.cStac[L];
                     let n = Pre_CStac[hc].NumOfPoint;
                     if (Spline_flag == true && clsSpline.Spline_Get) {
-                        let pxytemp = clsSpline.Spline_Get(0, n, Pre_CStac[hc].points, SplineT, state.attrData.TotalData.ViewStyle.ScrData);
-                        let spn=pxytemp.length;
+                        const pxytemp = clsSpline.Spline_Get(0, n, Pre_CStac[hc].points, SplineT, state.attrData.TotalData.ViewStyle.ScrData);
+                        const spn=pxytemp.length;
                         if (revf == false) {
                             for (let k = 0; k < spn; k++) {
                                 pxy.push(pxytemp[k]);
@@ -2204,8 +2204,8 @@ console.log(SortSumDataValue)
         }
         switch (Interval_Mode) {
             case enmContourIntervalMode.ClassPaint:
-                let col = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[(hn as number) - (Pcon as number)].PaintColor.toRGBA();
-                let poly = new PolydataInfo();   
+                const col = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[(hn as number) - (Pcon as number)].PaintColor.toRGBA();
+                const poly = new PolydataInfo();   
                 poly.Pon=ponpon;
                 poly.pxy=pxy;
                 poly.nPolyP=nPolyP;
@@ -2217,19 +2217,19 @@ console.log(SortSumDataValue)
     
     static ContourMeshIndexSet(Layernum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let ad = al.atrData.Data[DataNum];
-        let vs = state.attrData.TotalData.ViewStyle.ScrData;
+        const al = state.attrData.LayerData[Layernum];
+        const ad = al.atrData.Data[DataNum];
+        const vs = state.attrData.TotalData.ViewStyle.ScrData;
 
-        let mw = vs.MapRectangle.width();
-        let mh = vs.MapRectangle.height();
-        let ObjN = al.atrObject.ObjectNum;
-        let StdWSize = 10; // vs.STDWsize; // Property not available, using default
+        const mw = vs.MapRectangle.width();
+        const mh = vs.MapRectangle.height();
+        const ObjN = al.atrObject.ObjectNum;
+        const StdWSize = 10; // vs.STDWsize; // Property not available, using default
         let md = Math.sqrt(15 * mw * mh / ObjN);
         md = Math.min(md, StdWSize * 0.05);
-        let F_Meshx = parseInt((mw / md).toString());
-        let F_Meshy = parseInt((mh / md).toString());
-        let F_Mesh: number[][][] = Generic.Array2Dimension(F_Meshx + 1, F_Meshy + 1);
+        const F_Meshx = parseInt((mw / md).toString());
+        const F_Meshy = parseInt((mh / md).toString());
+        const F_Mesh: number[][][] = Generic.Array2Dimension(F_Meshx + 1, F_Meshy + 1);
         for (let j = 0; j <= F_Meshx; j++) {
             for (let k = 0; k <= F_Meshy; k++) {
                 F_Mesh[j][k] = new Array(2);
@@ -2239,15 +2239,15 @@ console.log(SortSumDataValue)
         }
 
         let nn = 0;
-        let Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(Layernum, DataNum);
-        let F_Mesh_In: number[] = new Array(ObjN).fill(0);
+        const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(Layernum, DataNum);
+        const F_Mesh_In: number[] = new Array(ObjN).fill(0);
 
         for (let i = 0; i < ObjN; i++) {
 
             if (Missing_DataArray[i] == false) {
-                let cp = al.atrObject.atrObjectData[i].CenterPoint;
-                let X = parseInt(((cp.x - vs.MapRectangle.left) / md).toString());;
-                let Y = parseInt(((cp.y - vs.MapRectangle.top) / md).toString());
+                const cp = al.atrObject.atrObjectData[i].CenterPoint;
+                const X = parseInt(((cp.x - vs.MapRectangle.left) / md).toString());;
+                const Y = parseInt(((cp.y - vs.MapRectangle.top) / md).toString());
                 F_Mesh[X][Y][0]++;
                 for (let j = 0; j <= F_Meshx; j++) {
                     for (let k = 0; k <= F_Meshy; k++) {
@@ -2288,21 +2288,21 @@ console.log(SortSumDataValue)
         }
         if (!md2) return;
         
-        let D_Meshx = parseInt((mw / md2).toString());
-        let D_Meshy = parseInt((mh / md2).toString());
-        let cont = state.attrData.TempData.ContourMode_Temp;
+        const D_Meshx = parseInt((mw / md2).toString());
+        const D_Meshy = parseInt((mh / md2).toString());
+        const cont = state.attrData.TempData.ContourMode_Temp;
         cont.Contour_All_Number = 0;
         cont.Contour_All_Point = 0;
         cont.Contour_Point=[];
         cont.ContourMesh = new clsMeshContour(D_Meshx + 1, D_Meshy + 1, md2 * D_Meshx, md2 * D_Meshy, vs.MapRectangle.left, vs.MapRectangle.top);
         cont.ContourDataResetF = false;
 
-        let DataValue = state.attrData.Get_Data_Cell_Array_With_MissingValue(Layernum, DataNum);
+        const DataValue = state.attrData.Get_Data_Cell_Array_With_MissingValue(Layernum, DataNum);
         for (let i = 0; i <= D_Meshx; i++) {
             for (let j = 0; j <= D_Meshy; j++) {
-                let P = vs.MapRectangle.topLeft();
+                const P = vs.MapRectangle.topLeft();
                 P.offset(i * md2, j * md2);
-                let v = this.ContourMesh_Value(Layernum, DataNum, DataValue, P, md, F_Mesh, F_Mesh_In);
+                const v = this.ContourMesh_Value(Layernum, DataNum, DataValue, P, md, F_Mesh, F_Mesh_In);
                 cont.ContourMesh.SetMeshValue(i, j, v);
             }
         }
@@ -2311,23 +2311,23 @@ console.log(SortSumDataValue)
 
     static ContourMesh_Value(Layernum: number, DataNum: number, DataValue: number[], P: point, md: number, F_Mesh: number[][][], F_Mesh_In: number[]) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let ad = al.atrData.Data[DataNum];
-        let vs = state.attrData.TotalData.ViewStyle.ScrData;
-        let xx = parseInt(((P.x - vs.MapRectangle.left) / md).toString());
-        let yy = parseInt(((P.y - vs.MapRectangle.top) / md).toString());
-        let F_Mesh_W = F_Mesh.length-1;
-        let F_Mesh_H = F_Mesh[0].length-1;
-        let O_Code: number[] = [];
-        let O_Distance: number[] = [];
+        const al = state.attrData.LayerData[Layernum];
+        const ad = al.atrData.Data[DataNum];
+        const vs = state.attrData.TotalData.ViewStyle.ScrData;
+        const xx = parseInt(((P.x - vs.MapRectangle.left) / md).toString());
+        const yy = parseInt(((P.y - vs.MapRectangle.top) / md).toString());
+        const F_Mesh_W = F_Mesh.length-1;
+        const F_Mesh_H = F_Mesh[0].length-1;
+        const O_Code: number[] = [];
+        const O_Distance: number[] = [];
         let n = 0;
         let c = 0;
         let cend = 3;
 
         //メッシュ点周辺のオブジェクトを検索する
-        let AngleSort = new clsSortingSearch();
-        let dir_num = Generic.Array2Dimension(3, 3, 0);
-        let dir_c = Generic.Array2Dimension(3, 3, false);
+        const AngleSort = new clsSortingSearch();
+        const dir_num = Generic.Array2Dimension(3, 3, 0);
+        const dir_c = Generic.Array2Dimension(3, 3, false);
         do {
             let enf=false;
             do {
@@ -2335,7 +2335,7 @@ console.log(SortSumDataValue)
                 let kk = 0
                 for (let i = xx - c; i <= xx + c; i++) {
                     if ((0 <= i) && (i <= F_Mesh_W)) {
-                        let qx = Math.sign(i - xx) + 1;
+                        const qx = Math.sign(i - xx) + 1;
                         for (let i2 = 0; i2 <= 1; i2++) {
                             let j;
                             switch (i2) {
@@ -2347,22 +2347,22 @@ console.log(SortSumDataValue)
                                     break;
                             }
                             if (j !== undefined && (0 <= j) && (j <= F_Mesh_H)) {
-                                let qy = Math.sign(j - yy) + 1;
+                                const qy = Math.sign(j - yy) + 1;
                                 const meshCell: number[] | undefined = F_Mesh[i]?.[j];
                                 if (!meshCell || (dir_c[qx][qy] == true) || (meshCell[0] == 0)) {
                                 } else {
                                     dir_num[qx][qy] += meshCell[0];
                                     for (let k = 0; k < meshCell[0]; k++) {
-                                        let O_cd = F_Mesh_In[k + meshCell[1]];
-                                        let P3 = al.atrObject.atrObjectData[O_cd].CenterPoint;
+                                        const O_cd = F_Mesh_In[k + meshCell[1]];
+                                        const P3 = al.atrObject.atrObjectData[O_cd].CenterPoint;
                                         if (P.Equals(P3) == true) {
                                             return DataValue[O_cd];
                                         }
-                                        let d = Math.sqrt((P3.x - P.x) ** 2 + (P3.y - P.y) ** 2);
+                                        const d = Math.sqrt((P3.x - P.x) ** 2 + (P3.y - P.y) ** 2);
                                         O_Distance.push(d);
                                         O_Code.push(O_cd);
-                                        let si = (P3.y - P.y) / d;
-                                        let co = (P3.x - P.x) / d;
+                                        const si = (P3.y - P.y) / d;
+                                        const co = (P3.x - P.x) / d;
                                         AngleSort.Add(Generic.Angle(si, co));
                                         n++;
                                     }
@@ -2428,7 +2428,7 @@ console.log(SortSumDataValue)
 
 
         //30度以内に近接し、ある程度離れている点は、近い方を選択する
-        let alimit = 25 * (3 - Math.max(ad.SoloModeViewSettings.ContourMD.Detailed - 1, 0)) + 30;
+        const alimit = 25 * (3 - Math.max(ad.SoloModeViewSettings.ContourMD.Detailed - 1, 0)) + 30;
 
         const O_Distance_NoUseF = new Array(n).fill(false);
         let nn = n;
@@ -2436,8 +2436,8 @@ console.log(SortSumDataValue)
         let fai = 0;
         let ffa = fa;
         for (let i = 0; i < n; i++) {
-            let So_fai = AngleSort.DataPosition(fai);
-            let So_i = AngleSort.DataPosition(i);
+            const So_fai = AngleSort.DataPosition(fai);
+            const So_i = AngleSort.DataPosition(i);
             if ((AngleSort.DataPositionValue(i) - fa < alimit) && (AngleSort.DataPositionValue(i) - ffa < alimit) &&
                 (Math.abs(O_Distance[So_fai] - O_Distance[So_i]) > 0.1)) {
                 if (O_Distance[So_fai]  < O_Distance[So_i]) {
@@ -2488,16 +2488,16 @@ console.log(SortSumDataValue)
 
     static GetContourIntervalValue(Layernum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let ad = al.atrData.Data[DataNum];
-        let Contour_High_M = [];
-        let C_Line_Pat = [];//Line_Property
-        let c_md = ad.SoloModeViewSettings.ContourMD;
+        const al = state.attrData.LayerData[Layernum];
+        const ad = al.atrData.Data[DataNum];
+        const Contour_High_M = [];
+        const C_Line_Pat = [];//Line_Property
+        const c_md = ad.SoloModeViewSettings.ContourMD;
 
         let hn = 0;
         switch (c_md.Interval_Mode) {
             case enmContourIntervalMode.RegularInterval: {
-                let c_mdr = c_md.Regular;
+                const c_mdr = c_md.Regular;
                 hn = parseInt(((c_mdr.top - c_mdr.bottom) / c_mdr.Interval).toString()) + 1;
                 let n = 0;
                 let V = c_mdr.bottom;
@@ -2553,8 +2553,8 @@ console.log(SortSumDataValue)
     ////文字モード
     static PrintStringMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [LayerNum], false, true);
@@ -2563,32 +2563,32 @@ console.log(SortSumDataValue)
             this.Vector_Object_Boundary(g, LayerNum);
         }
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
-        let Missing_DataArray = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
-        let InnerDT = ad.SoloModeViewSettings.MarkCommon.Inner_Data;
+        const Missing_DataArray = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
+        const InnerDT = ad.SoloModeViewSettings.MarkCommon.Inner_Data;
         let Category_Array_Inner = [];
         if(InnerDT.Flag == true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
-        let smd = ad.SoloModeViewSettings.StringMD;
-        let H = state.attrData.Get_Length_On_Screen(smd.Font.Size);
-        let Font = smd.Font.Clone();
-        let xw = state.attrData.Get_Length_On_Screen(smd.maxWidth);
-        let turnF = smd.WordTurnF;
+        const smd = ad.SoloModeViewSettings.StringMD;
+        const H = state.attrData.Get_Length_On_Screen(smd.Font.Size);
+        const Font = smd.Font.Clone();
+        const xw = state.attrData.Get_Length_On_Screen(smd.maxWidth);
+        const turnF = smd.WordTurnF;
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             if((state.attrData.Check_Condition(LayerNum, i) == true) && (
                 (Missing_DataArray[i] == false) || (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag == true))) {
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][i] = true;
-                let tx = state.attrData.Get_Data_Value(LayerNum, DataNum, i, state.attrData.TotalData.ViewStyle.Missing_Data.Label);
-                let CP = al.atrObject.atrObjectData[i].Label;
-                let LP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
-                let atx = tx;
-                let d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData)
+                const tx = state.attrData.Get_Data_Value(LayerNum, DataNum, i, state.attrData.TotalData.ViewStyle.Missing_Data.Label);
+                const CP = al.atrObject.atrObjectData[i].Label;
+                const LP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const atx = tx;
+                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData)
                 let outTx = d_an2.Out_Text[0];
                 for (let j = 1; j<d_an2.Out_Text.length; j++) {
                     outTx += "\n" + d_an2.Out_Text[j];
                 }
                 d_an2.Height *= d_an2.Out_Text.length;
-                let rect = new rectangle(new point(LP.x - d_an2.RealWidth / 2, LP.y - d_an2.Height / 2), new size(d_an2.RealWidth, d_an2.Height));
+                const rect = new rectangle(new point(LP.x - d_an2.RealWidth / 2, LP.y - d_an2.Height / 2), new size(d_an2.RealWidth, d_an2.Height));
                 if(InnerDT.Flag == true) {
                     Font.Color = state.attrData.Get_InnerTile(InnerDT, LayerNum, Category_Array_Inner[i]).Color;
                 }
@@ -2603,8 +2603,8 @@ console.log(SortSumDataValue)
     /**棒の高さモード */
     static PrintMarkBarMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [LayerNum], false, true);
@@ -2614,33 +2614,33 @@ console.log(SortSumDataValue)
         }
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
         this.Vector_Connect_CenterP_To_SymbolPoint(g, LayerNum);
-        let MkCommon = ad.SoloModeViewSettings.MarkCommon;
-        let InnerDT = MkCommon.Inner_Data;
+        const MkCommon = ad.SoloModeViewSettings.MarkCommon;
+        const InnerDT = MkCommon.Inner_Data;
         let Category_Array_Inner = [];
         if(InnerDT.Flag == true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
-        let mbmd = ad.SoloModeViewSettings.MarkBarMD;
-        let Objn = state.attrData.LayerData[LayerNum].atrObject.ObjectNum;
+        const mbmd = ad.SoloModeViewSettings.MarkBarMD;
+        const Objn = state.attrData.LayerData[LayerNum].atrObject.ObjectNum;
 
         //表示順序と表示の可否
-        let D_Order: number[] = [];
-        let ShowF: boolean[] = [];
-        let MV_Array: number[] = [];
-        let Missing_DataArray: boolean[] = [];
-        let ObjP: point[] = [];
+        const D_Order: number[] = [];
+        const ShowF: boolean[] = [];
+        const MV_Array: number[] = [];
+        const Missing_DataArray: boolean[] = [];
+        const ObjP: point[] = [];
         this.getDrawOrder_and_ShowF_MarkMode(LayerNum, DataNum, enmSoloMode_Number.MarkBarMode, D_Order, ShowF, ObjP, Missing_DataArray, MV_Array);
 
-        let w = state.attrData.Get_Length_On_Screen(mbmd.Width);
+        const w = state.attrData.Get_Length_On_Screen(mbmd.Width);
         for (let i = 0; i < Objn; i++) {
-            let num = D_Order[i];
-            let MV = MV_Array[num];
+            const num = D_Order[i];
+            const MV = MV_Array[num];
             if(ShowF[num] == true){
-                let OP = ObjP[num];
+                const OP = ObjP[num];
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][num] = true;
                 if(Missing_DataArray[num] == true) {
-                    let MK = state.attrData.TotalData.ViewStyle.Missing_Data.MarkBar;
-                    let r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
+                    const MK = state.attrData.TotalData.ViewStyle.Missing_Data.MarkBar;
+                    const r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
                     state.attrData.Draw_Mark(g, OP, r, MK);
                 } else {
                     let maxv;
@@ -2649,8 +2649,8 @@ console.log(SortSumDataValue)
                     } else {
                         maxv = mbmd.MaxValue;
                     }
-                    let h = state.attrData.Get_Length_On_Screen(mbmd.MaxHeight) * MV / maxv;
-                    let retV = this.MarkBarRectPrint(OP, w, h, mbmd.ThreeD);
+                    const h = state.attrData.Get_Length_On_Screen(mbmd.MaxHeight) * MV / maxv;
+                    const retV = this.MarkBarRectPrint(OP, w, h, mbmd.ThreeD);
                     let Tile;
                     if (MkCommon.Inner_Data.Flag == true) {
                         Tile = state.attrData.Get_InnerTile(MkCommon.Inner_Data, LayerNum, Category_Array_Inner[num]).Clone();
@@ -2659,7 +2659,7 @@ console.log(SortSumDataValue)
                     }
                     switch (mbmd.BarShape){
                         case enmMarkBarShape.triangle:{
-                            let tri = [];
+                            const tri = [];
                             tri.push(new point(OP.x - w / 2, OP.y));
                             tri.push(new point(OP.x + w / 2, OP.y));
                             tri.push(new point(OP.x, OP.y - h));
@@ -2670,12 +2670,12 @@ console.log(SortSumDataValue)
                         }
                         case enmMarkBarShape.bar:{
                             if (mbmd.ThreeD == true) {
-                                let Ptile = Tile.Clone();
+                                const Ptile = Tile.Clone();
                                 Ptile.Color = Generic.GetColorArrange(Tile.Color, 100);
                                 state.attrData.Draw_Poly_Inner(g, retV.UpperPoly, [5], Ptile);
                                 state.attrData.Draw_Line(g, mbmd.FrameLinePat, retV.UpperPoly)
         
-                                let Ptile2 = Tile.Clone();
+                                const Ptile2 = Tile.Clone();
                                 Ptile2.Color = Generic.GetColorArrange(Tile.Color, -100);
                                 state.attrData.Draw_Poly_Inner(g, retV.RightPoly, [5], Ptile2)
                                 state.attrData.Draw_Line(g, mbmd.FrameLinePat, retV.RightPoly)
@@ -2683,7 +2683,7 @@ console.log(SortSumDataValue)
                             state.attrData.Draw_Tile_Box(g, retV.CenterRect, mbmd.FrameLinePat, Tile, 0);
                             if (mbmd.ScaleLineVisible == true) {
                                 for (let v = mbmd.ScaleLineInterval; v < MV; v += mbmd.ScaleLineInterval) {
-                                    let ypos = retV.CenterRect.bottom - state.attrData.Get_Length_On_Screen(mbmd.MaxHeight) * v / maxv;
+                                    const ypos = retV.CenterRect.bottom - state.attrData.Get_Length_On_Screen(mbmd.MaxHeight) * v / maxv;
                                     state.attrData.Draw_Line(g, mbmd.scaleLinePat, new point(retV.CenterRect.left, ypos), new point(retV.CenterRect.right, ypos));
                                 }
                                 state.attrData.Draw_Tile_Box(g, retV.CenterRect, mbmd.FrameLinePat, clsBase.BlancTile(), 0);
@@ -2691,7 +2691,7 @@ console.log(SortSumDataValue)
                                     break;
                         }
                     }
-                    let OVP = new point(retV.CenterRect.left + retV.CenterRect.width() / 2, retV.CenterRect.bottom);
+                    const OVP = new point(retV.CenterRect.left + retV.CenterRect.width() / 2, retV.CenterRect.bottom);
                     this.ObjectValue_and_Name_Print(g, OVP, enmVerticalAlignment.Top, LayerNum, DataNum, num);
                 }
             }
@@ -2703,11 +2703,11 @@ console.log(SortSumDataValue)
 
     static MarkBarRectPrint(Pos: point, w: number, h: number, threeD: boolean) {
         const state = appState();
-        let CenterRect= new rectangle(new point(Pos.x - w / 2, Pos.y - h), new size(w, h));
-        let UpperPoly=[];
-        let RightPoly=[];
-        let TheeDS = parseInt((w / 3).toString());
-        let rectAll = CenterRect.Clone();
+        const CenterRect= new rectangle(new point(Pos.x - w / 2, Pos.y - h), new size(w, h));
+        const UpperPoly=[];
+        const RightPoly=[];
+        const TheeDS = parseInt((w / 3).toString());
+        const rectAll = CenterRect.Clone();
         if(threeD == true) {
             rectAll.top -= TheeDS;
             rectAll.right += TheeDS;
@@ -2734,8 +2734,8 @@ console.log(SortSumDataValue)
         if(state.attrData.TempData.DotMap_Temp.DotMapTempResetF == true) {
             state.attrData.TempData.DotMap_Temp.DotMapPoint = {};// New Dictionary(Of Integer, PointF())
         }
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [LayerNum], false, true);
@@ -2745,15 +2745,15 @@ console.log(SortSumDataValue)
         }
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
         this.Vector_Connect_CenterP_To_SymbolPoint(g, LayerNum);
-        let MV_Array = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
-        let Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
-        let MkCommon = ad.SoloModeViewSettings.MarkCommon;
-        let InnerDT = MkCommon.Inner_Data;
+        const MV_Array = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
+        const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
+        const MkCommon = ad.SoloModeViewSettings.MarkCommon;
+        const InnerDT = MkCommon.Inner_Data;
         let Category_Array_Inner = [];
         if(InnerDT.Flag == true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
-        let mbmd = ad.SoloModeViewSettings.MarkBlockMD;
+        const mbmd = ad.SoloModeViewSettings.MarkBlockMD;
         let BlockInterval;
         switch (mbmd.Overlap) {
             case 0:
@@ -2772,21 +2772,21 @@ console.log(SortSumDataValue)
                 BlockInterval = 0.25;
                 break;
         }
-        let r = state.attrData.Radius(mbmd.Mark.WordFont.Size, 1, 1);
+        const r = state.attrData.Radius(mbmd.Mark.WordFont.Size, 1, 1);
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             if((state.attrData.Check_Condition(LayerNum, i) == true) && (
                 (Missing_DataArray[i] == false) || (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag == true))) {
-                let MV = MV_Array[i];
-                let Block_n = parseInt((Math.abs(MV) / mbmd.Value).toString());
-                let Hasu = Math.abs(MV) - (mbmd.Value * Block_n);
-                let Hasu_R = state.attrData.Radius(mbmd.Mark.WordFont.Size, Hasu, mbmd.Value);
-                let CP = al.atrObject.atrObjectData[i].Symbol;
-                let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const MV = MV_Array[i];
+                const Block_n = parseInt((Math.abs(MV) / mbmd.Value).toString());
+                const Hasu = Math.abs(MV) - (mbmd.Value * Block_n);
+                const Hasu_R = state.attrData.Radius(mbmd.Mark.WordFont.Size, Hasu, mbmd.Value);
+                const CP = al.atrObject.atrObjectData[i].Symbol;
+                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][i] = true;
                 if(Missing_DataArray[i] == true) {
                     Vector_Block_Draw_Block(g, LayerNum, i, OP, r, state.attrData.TotalData.ViewStyle.Missing_Data.BlockMark, 1, enmMarkBlockArrange.Block, false, 0, 0, 1);
                 } else {
-                    let MK = mbmd.Mark.Clone();
+                    const MK = mbmd.Mark.Clone();
                     if(MkCommon.Inner_Data.Flag == true) {
                         MK.Tile = state.attrData.Get_InnerTile(MkCommon.Inner_Data, LayerNum, Category_Array_Inner[i]);
                         MK.WordFont.Color = MK.Tile.Line.Color;
@@ -2796,7 +2796,7 @@ console.log(SortSumDataValue)
                         }
                     }
 
-                    let valPos = Vector_Block_Draw_Block(g, LayerNum, i, OP, r, MK, Block_n, mbmd.ArrangeB, mbmd.HasuVisible, Hasu_R, Hasu, BlockInterval ?? 0);
+                    const valPos = Vector_Block_Draw_Block(g, LayerNum, i, OP, r, MK, Block_n, mbmd.ArrangeB, mbmd.HasuVisible, Hasu_R, Hasu, BlockInterval ?? 0);
                     if (valPos) this.ObjectValue_and_Name_Print(g,  valPos, enmVerticalAlignment.Top, LayerNum, DataNum, i);
                 }
             }
@@ -2809,11 +2809,11 @@ console.log(SortSumDataValue)
         function Vector_Block_Draw_Block(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number, OP: point, r: number, MK: Mark_Property, Block_n: number, ArrangeB: number, HasuVisible: boolean, Hasu_R: number, Hasu: number, BlockInterval: number) {
             
             const ap = new point();
-            let RetP = OP.Clone();
-            let r2 = spatial.Get_TurnedBox(new size(r, r), MK.WordFont?.Kakudo ?? 0).width;
+            const RetP = OP.Clone();
+            const r2 = spatial.Get_TurnedBox(new size(r, r), MK.WordFont?.Kakudo ?? 0).width;
             switch (ArrangeB) {
                 case enmMarkBlockArrange.Block: {
-                    let Q = Math.sqrt(Block_n);
+                    const Q = Math.sqrt(Block_n);
                     let qx;
                     let qy;
                     if(Q != parseInt(Q.toString())) {
@@ -2889,15 +2889,15 @@ console.log(SortSumDataValue)
                 }
                 case enmMarkBlockArrange.Random: {
                     if(r == 0 && MK.Tile.Line?.Color) {
-                        let brush = MK.Tile.Line.Color.toRGBA();
+                        const brush = MK.Tile.Line.Color.toRGBA();
                         g.fillStyle = brush;
                     }
                     if((state.attrData.TempData.DotMap_Temp.DotMapTempResetF == true) || (state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum] == undefined)) {
-                        let onP = [];
+                        const onP = [];
                         for (let j = 0; j < Block_n; j++) {
-                            let area = state.attrData.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
+                            const area = state.attrData.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
                             let inf = false
-                            let p = new point();
+                            const p = new point();
                             do {
                                 p.x = Math.random() * area.width() + area.left;
                                 p.y = Math.random() * area.height() + area.top;
@@ -2913,7 +2913,7 @@ console.log(SortSumDataValue)
                         }
                         state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum] = onP;
                     } else {
-                        let pOn = state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum];
+                        const pOn = state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum];
                         for (let j = 0; j < Block_n; j++) {
                             ap = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(pOn[j])
                             if(r != 0) {
@@ -2942,7 +2942,7 @@ console.log(SortSumDataValue)
                 }
             }
             function Vector_Block_Arrange_OverLay_Block(ap: point, r: number, ArrangeB: number, Q = 0) {
-                let ot = state.attrData.TempData.OverLay_Temp;
+                const ot = state.attrData.TempData.OverLay_Temp;
                 if((ot.OverLay_EMode_N >= 2) && (ot.OverLay_Printing_Flag == true)) {
                     switch (ArrangeB) {
                         case enmMarkBlockArrange.Block: {
@@ -2974,10 +2974,10 @@ console.log(SortSumDataValue)
     //記号の大きさモード
     static PrintMarkSizeMode(g: CanvasRenderingContext2D,  LayerNum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
-        let vs=state.attrData.TotalData.ViewStyle;
-        let avvs=vs.ValueShow;
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
+        const vs=state.attrData.TotalData.ViewStyle;
+        const avvs=vs.ValueShow;
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.ClippingRegion_ObjectBoundary_set(g, [LayerNum], false, true);
@@ -2986,26 +2986,26 @@ console.log(SortSumDataValue)
             this.Vector_Object_Boundary(g,  LayerNum);
         }
         this.Vector_Dummy_Boundary(g,  LayerNum, true, true);
-        let MkCommon = ad.SoloModeViewSettings.MarkCommon;
-        let InnerDT = MkCommon.Inner_Data;
+        const MkCommon = ad.SoloModeViewSettings.MarkCommon;
+        const InnerDT = MkCommon.Inner_Data;
         let Category_Array_Inner = [];
         if(InnerDT.Flag == true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
-        let msmd = ad.SoloModeViewSettings.MarkSizeMD;
+        const msmd = ad.SoloModeViewSettings.MarkSizeMD;
 
         //表示順序と表示の可否
-        let D_Order: number[] = [];
-        let ShowF: boolean[] = [];
-        let MV_Array: number[] = [];
-        let Missing_DataArray: boolean[] = [];
-        let ObjP: point[] = [];
+        const D_Order: number[] = [];
+        const ShowF: boolean[] = [];
+        const MV_Array: number[] = [];
+        const Missing_DataArray: boolean[] = [];
+        const ObjP: point[] = [];
         this.getDrawOrder_and_ShowF_MarkMode(LayerNum, DataNum, enmSoloMode_Number.MarkSizeMode, D_Order, ShowF, ObjP, Missing_DataArray, MV_Array);
 
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
-            let kpos = D_Order[i];
-            let MV = MV_Array[kpos];
-            let MK = msmd.Mark.Clone();
+            const kpos = D_Order[i];
+            const MV = MV_Array[kpos];
+            const MK = msmd.Mark.Clone();
             if (ShowF[kpos] == true) {
                 if (InnerDT.Flag == true) {
                     MK.Tile = state.attrData.Get_InnerTile(InnerDT, LayerNum, Category_Array_Inner[kpos]);
@@ -3016,12 +3016,12 @@ console.log(SortSumDataValue)
                         MK.WordFont.Color = MkCommon.MinusTile.Color;
                     }
                 }
-                let r = this.PrintMarkSizeMode_Draw(g, LayerNum, DataNum, kpos, ObjP[kpos], MK, MV, Missing_DataArray[kpos]);
+                const r = this.PrintMarkSizeMode_Draw(g, LayerNum, DataNum, kpos, ObjP[kpos], MK, MV, Missing_DataArray[kpos]);
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][kpos] = true;
                 if ((avvs.ObjNameVisible == true) || (avvs.ValueVisible == true)) {
-                    let name = state.attrData.Get_KenObjName(LayerNum, kpos);
-                    let V = state.attrData.Get_Data_Value(LayerNum, DataNum, kpos, "欠損値");
-                    let OP = ObjP[kpos];
+                    const name = state.attrData.Get_KenObjName(LayerNum, kpos);
+                    const V = state.attrData.Get_Data_Value(LayerNum, DataNum, kpos, "欠損値");
+                    const OP = ObjP[kpos];
                     let xs = 0;
                     if (avvs.ObjNameVisible == true) {
                         g.font = avvs.ObjNameFont.toContextFont(vs.ScrData);
@@ -3035,7 +3035,7 @@ console.log(SortSumDataValue)
                     if ((xs < r * 2) || (al.Shape == enmShape.LineShape)) {
                         this.ObjectValue_and_Name_Print(g, OP, enmVerticalAlignment.Center, LayerNum, DataNum, kpos);
                     } else {
-                        let OVP = OP.Clone();
+                        const OVP = OP.Clone();
                         OVP.y += r;;
                         this.ObjectValue_and_Name_Print(g, OVP, enmVerticalAlignment.Top, LayerNum, DataNum, kpos);
                     }
@@ -3050,12 +3050,12 @@ console.log(SortSumDataValue)
     
     static PrintMarkSizeMode_Draw(g: CanvasRenderingContext2D, Layernum: number, DataNum: number, kpos: number, pos: point, MK: Mark_Property, MV: number, MisF: boolean) {
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let ad = al.atrData.Data[DataNum];
-        let vs=state.attrData.TotalData.ViewStyle;
+        const al = state.attrData.LayerData[Layernum];
+        const ad = al.atrData.Data[DataNum];
+        const vs=state.attrData.TotalData.ViewStyle;
 
-        let mmv = ad.SoloModeViewSettings.MarkSizeMD;
-        let InnerDT = ad.SoloModeViewSettings.MarkCommon.Inner_Data;
+        const mmv = ad.SoloModeViewSettings.MarkSizeMD;
+        const InnerDT = ad.SoloModeViewSettings.MarkCommon.Inner_Data;
         let maxv;
         if(mmv.MaxValueMode == enmMarkSizeValueMode.inDataItem) {
             maxv = Math.max(Math.abs(state.attrData.Get_DataMax(Layernum, DataNum)), Math.abs(state.attrData.Get_DataMin(Layernum, DataNum)));
@@ -3079,12 +3079,12 @@ console.log(SortSumDataValue)
             case enmShape.LineShape:
                 if(state.attrData.Check_screen_Kencode_In(Layernum, kpos) == true) {
                     state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][kpos] = true;
-                    let LineSize = Math.abs(MV) / maxv * mmv.LineShape.LineWidth;
-                    let ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, kpos);
+                    const LineSize = Math.abs(MV) / maxv * mmv.LineShape.LineWidth;
+                    const ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, kpos);
                     for (let j = 0; j < ELine.length; j++) {
-                        let mpl = al.MapFileData.MPLine[ELine[j].LineCode];
-                        let np= mpl.NumOfPoint;
-                        let pxy = vs.ScrData.Get_SxSy_With_3D(np, mpl.PointSTC, false);
+                        const mpl = al.MapFileData.MPLine[ELine[j].LineCode];
+                        const np= mpl.NumOfPoint;
+                        const pxy = vs.ScrData.Get_SxSy_With_3D(np, mpl.PointSTC, false);
 
                         let LineShapeLine;
                         if(MisF == true) {
@@ -3108,10 +3108,10 @@ console.log(SortSumDataValue)
     /**線モード */
     static PrintClassODMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let Category_Array = state.attrData.Get_CategolyArray(LayerNum, DataNum);
-        let DrawOrderByValue = this.ClassMode_Point_Shape_DrawOrder(LayerNum, DataNum);
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
+        const Category_Array = state.attrData.Get_CategolyArray(LayerNum, DataNum);
+        const DrawOrderByValue = this.ClassMode_Point_Shape_DrawOrder(LayerNum, DataNum);
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.Vector_Dummy_Boundary(g, LayerNum, true, false);
@@ -3120,16 +3120,16 @@ console.log(SortSumDataValue)
 
         this.Vector_Object_Boundary(g, LayerNum);
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
-        let OD_MD = ad.SoloModeViewSettings.ClassODMD;
+        const OD_MD = ad.SoloModeViewSettings.ClassODMD;
 
-        let adobl=state.attrData.LayerData[OD_MD.o_Layer];
+        const adobl=state.attrData.LayerData[OD_MD.o_Layer];
         let StartFP;
         if(OD_MD.Dummy_ObjectFlag == true) {
             StartFP=al.MapFileData.Get_Enable_CenterP(adobl.Dummy[OD_MD.O_object].code, adobl.Time);
         } else {
             StartFP = adobl.atrObject.atrObjectData[OD_MD.O_object].CenterPoint;
         }
-        let StartP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(StartFP);
+        const StartP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(StartFP);
 
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             let DrawOrder;
@@ -3145,20 +3145,20 @@ console.log(SortSumDataValue)
                     break;
             }
             if((state.attrData.Check_Condition(LayerNum, DrawOrder) == true) && (Category_Array[DrawOrder] != -1) && (DrawOrder != OD_MD.O_object)) {
-                let colpos = Category_Array[DrawOrder];
+                const colpos = Category_Array[DrawOrder];
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][DrawOrder] = true;
-                let DestFP = al.atrObject.atrObjectData[DrawOrder].CenterPoint;
+                const DestFP = al.atrObject.atrObjectData[DrawOrder].CenterPoint;
                 let DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(DestFP);
-                let C_Rect = spatial.getCircumscribedRectangle(DestP, StartP);
+                const C_Rect = spatial.getCircumscribedRectangle(DestP, StartP);
                 if((state.attrData.Check_Screen_In(C_Rect) == true) && (DestFP.Equals(StartFP) == false)) {
-                    let ODLinePat = ad.SoloModeViewSettings.Class_Div[colpos].ODLinePat;
+                    const ODLinePat = ad.SoloModeViewSettings.Class_Div[colpos].ODLinePat;
                     if(ODLinePat.BlankF == false) {
-                        let retV = al.Get_OD_Bezier_RefPoint(DrawOrder, DataNum);
-                        let SplineRefP=retV.RefPoint;
+                        const retV = al.Get_OD_Bezier_RefPoint(DrawOrder, DataNum);
+                        const SplineRefP=retV.RefPoint;
                         if(retV.ok == false) {
                             //曲線近似でない場合
                             if((OD_MD.Arrow.End_Arrow_F == true) && (OD_MD.Arrow.ArrowHeadType == enmArrowHeadType.Fill) && clsDrawLine.Check_Draw_Arrow_Line) {
-                                let Cp = clsDrawLine.Check_Draw_Arrow_Line( DestFP, StartFP, DestFP, StartFP, ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
+                                const Cp = clsDrawLine.Check_Draw_Arrow_Line( DestFP, StartFP, DestFP, StartFP, ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
                                 if(Cp !=undefined) {
                                     DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Cp);
                                 }
@@ -3169,12 +3169,12 @@ console.log(SortSumDataValue)
                             }
                         } else {
                             //曲線近似の場合
-                            let Refp = Generic.Get_OD_Spline_Point(SplineRefP, StartFP, DestFP);
+                            const Refp = Generic.Get_OD_Spline_Point(SplineRefP, StartFP, DestFP);
                             
                             if((OD_MD.Arrow.End_Arrow_F == true) && (OD_MD.Arrow.ArrowHeadType == enmArrowHeadType.Fill)) {
                                 //塗りつぶしの矢印付き
                                 if (clsDrawLine.Check_Draw_Arrow_Line) {
-                                    let Cp = clsDrawLine.Check_Draw_Arrow_Line(DestFP, Refp[1], Refp[1], Refp[0], ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
+                                    const Cp = clsDrawLine.Check_Draw_Arrow_Line(DestFP, Refp[1], Refp[1], Refp[0], ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
                                     if (Cp != undefined) {
                                         Refp[0] = Cp;
                                     } else {
@@ -3182,9 +3182,9 @@ console.log(SortSumDataValue)
                                     }
                                 }
                             }
-                            let ln = 4;
+                            const ln = 4;
                             if (clsSpline.Spline_Get) {
-                                let pxy = clsSpline.Spline_Get(0, ln, Refp, 0.05, state.attrData.TotalData.ViewStyle.ScrData);
+                                const pxy = clsSpline.Spline_Get(0, ln, Refp, 0.05, state.attrData.TotalData.ViewStyle.ScrData);
                                 state.attrData.Draw_Line(g, ODLinePat, pxy);
                             }
 
@@ -3204,8 +3204,8 @@ console.log(SortSumDataValue)
     /**階級区分モードの線形状オブジェクトの線モード */
     static PrintClassLineShapeSENMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             this.Vector_Dummy_Boundary(g, LayerNum, true, false);
@@ -3213,18 +3213,18 @@ console.log(SortSumDataValue)
         }
 
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
-        let Category_Array: number[] = [];
-        let ShowF: boolean[] = [];
-        let D_Order: number[] = [];
+        const Category_Array: number[] = [];
+        const ShowF: boolean[] = [];
+        const D_Order: number[] = [];
         this.getDrawOrder_and_ShowF_ClassMode(LayerNum, DataNum, Category_Array, D_Order, ShowF);
 
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
-            let DrawOrder=D_Order[i];
+            const DrawOrder=D_Order[i];
             if(ShowF[DrawOrder]== true) {
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][DrawOrder] = true;
-                let colpos = Category_Array[DrawOrder];
+                const colpos = Category_Array[DrawOrder];
                 if(state.attrData.Check_screen_Kencode_In(LayerNum, DrawOrder) == true) {
-                    let ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
+                    const ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
                     let LineShapeLine;
                     if(colpos == -1) {
                         LineShapeLine = state.attrData.TotalData.ViewStyle.Missing_Data.LineShape;
@@ -3232,7 +3232,7 @@ console.log(SortSumDataValue)
                         LineShapeLine = ad.SoloModeViewSettings.Class_Div[colpos].ODLinePat;
                     }
                     for (let j = 0; j <ELine.length; j++) {
-                        let pxy = this.Get_PointXY_by_LineCode(LayerNum, ELine[j].LineCode, false);
+                        const pxy = this.Get_PointXY_by_LineCode(LayerNum, ELine[j].LineCode, false);
                         state.attrData.Draw_Line(g, LineShapeLine, pxy);
                     }
                 }
@@ -3247,8 +3247,8 @@ console.log(SortSumDataValue)
     //階級記号モード
     static PrintClassMarkMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let al= state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
+        const al= state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
         if(al.Shape == enmShape.PolygonShape) {
             this.Vector_Object_Boundary(g, LayerNum);
             this.Class_Category_Boundary(g, LayerNum, DataNum);
@@ -3256,21 +3256,21 @@ console.log(SortSumDataValue)
         this.Vector_Dummy_Boundary(g, LayerNum, true, true)
         this.Vector_Connect_CenterP_To_SymbolPoint(g, LayerNum);
 
-        let Category_Array: number[] = [];
-        let ShowF: boolean[] = [];
-        let D_Order: number[] = [];
+        const Category_Array: number[] = [];
+        const ShowF: boolean[] = [];
+        const D_Order: number[] = [];
         this.getDrawOrder_and_ShowF_ClassMode(LayerNum, DataNum, Category_Array, D_Order, ShowF);
-        let InnerDT = ad.SoloModeViewSettings.ClassMarkMD;
+        const InnerDT = ad.SoloModeViewSettings.ClassMarkMD;
         let Category_Array_Inner;
         if(InnerDT.Flag == true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
 
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
-            let DrawOrder = D_Order[i];
+            const DrawOrder = D_Order[i];
             if (ShowF[DrawOrder] == true) {
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][DrawOrder] =true;
-                let colpos = Category_Array[DrawOrder];
+                const colpos = Category_Array[DrawOrder];
                 let MK;
                 if(colpos == -1) {
                     MK = state.attrData.TotalData.ViewStyle.Missing_Data.ClassMark.Clone();
@@ -3281,11 +3281,11 @@ console.log(SortSumDataValue)
                     MK.Tile = state.attrData.Get_InnerTile(InnerDT, LayerNum, Category_Array_Inner[DrawOrder]);
                     MK.WordFont.Color = MK.Tile.Color.Clone();
                 }
-                let CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
-                let vs = state.attrData.TotalData.ViewStyle.ScrData;
+                const CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
+                const vs = state.attrData.TotalData.ViewStyle.ScrData;
                 let OP = vs.Get_SxSy_With_3D(CP);
-                let r = 5; // vs.Radius(MK.WordFont.Size, 1, 1); // Property not available1, 1); // Property not available
-                let ot = state.attrData.TempData.OverLay_Temp;
+                const r = 5; // vs.Radius(MK.WordFont.Size, 1, 1); // Property not available1, 1); // Property not available
+                const ot = state.attrData.TempData.OverLay_Temp;
                 OP = this.getOverlayMarkPosition(OP, r);
                 // if(ot.OverLay_Printing_Flag == true) {
                 //     if(ot.OverLay_EMode_N >= 2) {
@@ -3300,7 +3300,7 @@ console.log(SortSumDataValue)
                 //     }
                 // }
                 state.attrData.Draw_Mark(g, OP, r, MK);
-                let OVP = OP.Clone();
+                const OVP = OP.Clone();
                 OVP.y += r;
                 this.ObjectValue_and_Name_Print(g,  OVP, enmVerticalAlignment.Top, LayerNum, DataNum, DrawOrder);
             }
@@ -3312,15 +3312,15 @@ console.log(SortSumDataValue)
     //ペイントモード
     static PrintClassPaintMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
-        let al = state.attrData.LayerData[LayerNum];
-        let ad = al.atrData.Data[DataNum];
-        let LayerShape = al.Shape;
+        const al = state.attrData.LayerData[LayerNum];
+        const ad = al.atrData.Data[DataNum];
+        const LayerShape = al.Shape;
         if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F == true) {
             g.save();
             if (LayerShape != enmShape.PolygonShape) {
                 this.Vector_Dummy_Boundary(g, LayerNum, true, false);
             }
-            let f2=this.ClippingRegion_ObjectBoundary_set(g, [LayerNum], false, true);
+            const f2=this.ClippingRegion_ObjectBoundary_set(g, [LayerNum], false, true);
             if (LayerShape != enmShape.PolygonShape) {
                 this.Vector_Object_Boundary(g, LayerNum);
                 this.Vector_Dummy_Boundary(g, LayerNum, (f2==false), true);
@@ -3331,9 +3331,9 @@ console.log(SortSumDataValue)
                 this.Vector_Dummy_Boundary(g, LayerNum, true, true);
             }
         }
-        let Category_Array: number[] = [];
-        let ShowF: boolean[] = [];
-        let D_Order: number[] = [];
+        const Category_Array: number[] = [];
+        const ShowF: boolean[] = [];
+        const D_Order: number[] = [];
         this.getDrawOrder_and_ShowF_ClassMode(LayerNum, DataNum, Category_Array, D_Order, ShowF);
 
 
@@ -3345,16 +3345,16 @@ console.log(SortSumDataValue)
             pointR = 5; // state.attrData.TotalData.ViewStyle.ScrData.Radius(PointLayerMark.WordFont.Size, 1, 1); // Property not available
         }
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
-            let DrawOrder = D_Order[i];
+            const DrawOrder = D_Order[i];
             if (ShowF[DrawOrder] == true) {
-                let colpos = Category_Array[DrawOrder];
+                const colpos = Category_Array[DrawOrder];
                 let col = new colorRGBA();
                 if (colpos != -1) {
                     col = ad.SoloModeViewSettings.Class_Div[colpos].PaintColor;
                 }
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][DrawOrder] = true;
-                let CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
-                let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
+                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                 switch (LayerShape) {
                     case enmShape.PointShape: {
                         PointLayerMark = al.LayerModeViewSettings.PointLineShape.PointMark.Clone();
@@ -3366,13 +3366,13 @@ console.log(SortSumDataValue)
                             PointLayerMark.WordFont.Color = col;
                         }
                         state.attrData.Draw_Mark(g, OP, pointR, PointLayerMark);
-                        let OVP = OP.Clone();
+                        const OVP = OP.Clone();
                         OVP.y += pointR;
                         this.ObjectValue_and_Name_Print(g, OVP, enmVerticalAlignment.Top, LayerNum, DataNum, DrawOrder);
                         break;
                     }
                     case enmShape.LineShape: {
-                        let penw = al.LayerModeViewSettings.PointLineShape.LineWidth;
+                        const penw = al.LayerModeViewSettings.PointLineShape.LineWidth;
                         let LineShapeLine;
                         if (colpos == -1) {
                             LineShapeLine = state.attrData.TotalData.ViewStyle.Missing_Data.LineShape.Clone();
@@ -3384,12 +3384,12 @@ console.log(SortSumDataValue)
                         LineShapeLine.Edge_Connect_Pattern = al.LayerModeViewSettings.PointLineShape.LineEdge;
 
                         if (al.Type == enmLayerType.Mesh) {
-                            let pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(al.atrObject.atrObjectData[DrawOrder].MeshPoint);
+                            const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(al.atrObject.atrObjectData[DrawOrder].MeshPoint);
                             state.attrData.Draw_Line(g, LineShapeLine, pxy);
                         } else {
-                            let ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
+                            const ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
                             for (let j = 0; j < ELine.length; j++) {
-                                let pxy = this.Get_PointXY_by_LineCode(LayerNum, ELine[j].LineCode, false);
+                                const pxy = this.Get_PointXY_by_LineCode(LayerNum, ELine[j].LineCode, false);
                                 state.attrData.Draw_Line(g, LineShapeLine, pxy);
                             }
                         }
@@ -3397,7 +3397,7 @@ console.log(SortSumDataValue)
                     }
                     case enmShape.PolygonShape: {
                         if (colpos == -1) {
-                            let mistile=state.attrData.TotalData.ViewStyle.Missing_Data.PaintTile;
+                            const mistile=state.attrData.TotalData.ViewStyle.Missing_Data.PaintTile;
                             if(mistile.BlankF==false){
                                 this.PaintOnePolygonObject(g, LayerNum, DrawOrder, mistile.Color);
                             }
@@ -3413,10 +3413,10 @@ console.log(SortSumDataValue)
            this.Vector_Object_Boundary(g,  LayerNum);
             this.Class_Category_Boundary(g, LayerNum, DataNum);
             for (let i = 0; i < al.atrObject.ObjectNum; i++) {
-                let DrawOrder = D_Order[i];
+                const DrawOrder = D_Order[i];
                 if (ShowF[DrawOrder] == true) {
-                    let CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
-                    let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                    const CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
+                    const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                         this.ObjectValue_and_Name_Print(g, OP, enmVerticalAlignment.Center, LayerNum, DataNum, DrawOrder);
                 }
             }
@@ -3432,24 +3432,24 @@ console.log(SortSumDataValue)
     /**階級区分ごとの境界線 */
     static Class_Category_Boundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number){
         const state = appState();
-        let al = state.attrData.LayerData[Layernum];
-        let ad = al.atrData.Data[DataNum];
-        let av = state.attrData.TotalData.ViewStyle;
+        const al = state.attrData.LayerData[Layernum];
+        const ad = al.atrData.Data[DataNum];
+        const av = state.attrData.TotalData.ViewStyle;
         if ((av.MapLegend.ClassMD.ClassBoundaryLine.Visible == false) || (al.Type == enmLayerType.Mesh)) {
             return;
         }
 
-        let Alin = al.MapFileData.Map.ALIN;
-        let objN = al.atrObject.ObjectNum;
+        const Alin = al.MapFileData.Map.ALIN;
+        const objN = al.atrObject.ObjectNum;
         const StacLine = new Array(Alin).fill(0);
         let sti = 0;
         if ((av.Missing_Data.Print_Flag == true) && (ad.MissingValueNum != 0)) {
             sti = -1;
         }
 
-        let Category_Array = state.attrData.Get_CategolyArray(Layernum, DataNum);
+        const Category_Array = state.attrData.Get_CategolyArray(Layernum, DataNum);
         for (let i = sti; i < ad.SoloModeViewSettings.Div_Num; i++) {
-            let MultiObj = [];
+            const MultiObj = [];
             for (let j = 0; j < objN; j++) {
                 if (Category_Array[j] == i) {
                     if ((state.attrData.Check_Condition(Layernum, j) == true) && (
@@ -3461,7 +3461,7 @@ console.log(SortSumDataValue)
                 }
             }
             if (MultiObj.length > 0) {
-                let ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, MultiObj, false);
+                const ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, MultiObj, false);
                 for (let j = 0; j < ELine.length; j++) {
                     StacLine[ELine[j].LineCode]++;
                 }
@@ -3470,7 +3470,7 @@ console.log(SortSumDataValue)
 
         for (let i = 0; i < Alin; i++) {
             if (StacLine[i] == 2) {
-                let pxy = this.Get_PointXY_by_LineCode(Layernum, i,false);
+                const pxy = this.Get_PointXY_by_LineCode(Layernum, i,false);
                 state.attrData.Draw_Line(g, av.MapLegend.ClassMD.ClassBoundaryLine.LPat, pxy);
             }
         }
@@ -3478,7 +3478,7 @@ console.log(SortSumDataValue)
 
     static Vector_Object_Boundary(g: CanvasRenderingContext2D,  Layernum: number) {
         const state = appState();
-        let ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum];
         if((ad.Shape == enmShape.LineShape)||(ad.Shape == enmShape.PointShape)|| (ad.Type == enmLayerType.Trip)) {
 
         } else {
@@ -3504,7 +3504,7 @@ console.log(SortSumDataValue)
     static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, Dummy_F: boolean) {
         const state = appState();
         let ELine = []// clsMapData.EnableMPLine_Data
-        let ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum];
         let pxy = [];// Point
         if(false) { // Dummy_F == true
             if(!(false)) { // state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) == false
@@ -3525,17 +3525,17 @@ console.log(SortSumDataValue)
                 ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code);
             }
         }
-        let MPFileNapa = ad.MapFileName;
+        const MPFileNapa = ad.MapFileName;
         for (let j = 0; j < ELine.length; j++) {
-            let lc = ELine[j].LineCode;
-            let lcc = ELine[j].Kind;
+            const lc = ELine[j].LineCode;
+            const lcc = ELine[j].Kind;
             let PatNum = ad.ObjectGroupRelatedLine[lc];
             if(PatNum == undefined) {
                 PatNum = 0;
             }
-            let Lpat = {BlankF: false, Pattern: {}}; // ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern; // Property not available
+            const Lpat = {BlankF: false, Pattern: {}}; // ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern; // Property not available
             if((Lpat.BlankF==false) && (state.attrData.getMpLineDrawn(MPFileNapa, lc) != true)) {
-                let pxy = this.Get_PointXY_by_LineCode(Layernum, lc, false);
+                const pxy = this.Get_PointXY_by_LineCode(Layernum, lc, false);
                 if(pxy != undefined) {
                     state.attrData.Draw_Line(g, Lpat, pxy);
                     state.attrData.setMpLineDrawn(MPFileNapa, lc, true);
@@ -3548,7 +3548,7 @@ console.log(SortSumDataValue)
 
     static PaintOnePolygonObject(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number, ocol: colorRGBA) {
 
-        let Polydata = this.Get_OnePolygonObject_Boundary( Layernum, ObjNum, false);
+        const Polydata = this.Get_OnePolygonObject_Boundary( Layernum, ObjNum, false);
         if(Polydata?.Pon && Polydata.Pon > 0) {
             clsDraw.DrawPolyPolygon(g, Polydata, ocol.toRGBA());
             return true;
@@ -3560,20 +3560,20 @@ console.log(SortSumDataValue)
     /**代表点と記号表示位置を線で結ぶ */
     static Vector_Connect_CenterP_To_SymbolPoint(g: CanvasRenderingContext2D, Layernum: number) {
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle;
         if (av.SymbolLine.Visible == false) {
             return;
         }
         if ((state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag == true) && (state.attrData.TempData.OverLay_Temp.OverLay_EMode_N >= 2)) {
             return;
         }
-        let al = state.attrData.LayerData[Layernum];
+        const al = state.attrData.LayerData[Layernum];
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
-            let cp = al.atrObject.atrObjectData[i].CenterPoint;
-            let sp = al.atrObject.atrObjectData[i].Symbol;
+            const cp = al.atrObject.atrObjectData[i].CenterPoint;
+            const sp = al.atrObject.atrObjectData[i].Symbol;
             if (cp.Equals(sp) == false) {
-                let cp2 = av.ScrData.Get_SxSy_With_3D(cp);
-                let sp2 = av.ScrData.Get_SxSy_With_3D(sp);
+                const cp2 = av.ScrData.Get_SxSy_With_3D(cp);
+                const sp2 = av.ScrData.Get_SxSy_With_3D(sp);
                 state.attrData.Draw_Line(g, av.SymbolLine.Line, cp2, sp2);
             }
         }
@@ -3584,7 +3584,7 @@ console.log(SortSumDataValue)
     static ClassMode_Point_Shape_DrawOrder( LayerNum: number, DataNum: number) {
         const state = appState();
         let en_sort = [];
-        let s=new clsSortingSearch();
+        const s=new clsSortingSearch();
         if(state.attrData.TotalData.ViewStyle.PointPaint_Order != enmPointOnjectDrawOrder.ObjectOrder) {
             en_sort = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
             s.AddRange(en_sort);
@@ -3594,13 +3594,13 @@ console.log(SortSumDataValue)
 
     static Get_OnePolygonObject_Boundary( Layernum: number, O_ObjNum_Code: number, Dummy_F: boolean) {
         const state = appState();
-        let ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum];
         let Polydata = new PolydataInfo();
         let badata = new boundArrangeData();        
         if(Dummy_F == false) {
             if(state.attrData.LayerData[Layernum].Type == enmLayerType.Mesh) {
-                let pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint);
-                let nPolyP = [];
+                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint);
+                const nPolyP = [];
                 nPolyP[0] = pxy.length;
                 if(pxy.length >= 4) {
                     //メッシュオブジェクトで計算誤差による白抜けが入るのを防ぐ処置
@@ -3630,14 +3630,14 @@ console.log(SortSumDataValue)
     //指定されたラインをポリゴン化したXY座標を返す
     static Get_Boundary_XY(Layernum: number, badata: boundArrangeData) {
         const state = appState();
-        let poly = new PolydataInfo();
+        const poly = new PolydataInfo();
 
         let Pon = badata.Pon ?? 0;
-        let Arrange_LineCode: number[][] = badata.Arrange_LineCode;
-        let Fringe = badata.Fringe;
+        const Arrange_LineCode: number[][] = badata.Arrange_LineCode;
+        const Fringe = badata.Fringe;
 
-        let nPolyP = [];
-        let pxy = [];
+        const nPolyP = [];
+        const pxy = [];
         for (let i = 0; i < Pon; i++) {
             let pxytemp = [];
             let np2 = 0;
@@ -3649,14 +3649,14 @@ console.log(SortSumDataValue)
                 } else {
                     revf = true;
                 }
-                let L = Fringe[Arrange_LineCode[i][0] + j].code ?? 0;
+                const L = Fringe[Arrange_LineCode[i][0] + j].code ?? 0;
                 pxytemp = this.Get_PointXY_by_LineCode(Layernum, L, revf);
                 if ((pxytemp == undefined) && (Arrange_LineCode[i][1] == 1)) {
                     Pon--;
                     f = false;
                 } else {
                     //座標配列をコピーする
-                    let ntp = pxytemp.length;
+                    const ntp = pxytemp.length;
                     for (let k = 0; k < ntp; k++) {
                         pxy.push(pxytemp[k].Clone());
                     }
@@ -3677,12 +3677,12 @@ console.log(SortSumDataValue)
     //指定したラインコードの座標を変換して取得
     static Get_PointXY_by_LineCode(Layernum: number, LCode: number, ReverseGetF: boolean) {
         const state = appState();
-        let ad = state.attrData.LayerData[Layernum];
-        let av = state.attrData.TotalData.ViewStyle;
-        let at=state.attrData.TempData;
-        let mpfilename = ad.MapFileName;
+        const ad = state.attrData.LayerData[Layernum];
+        const av = state.attrData.TotalData.ViewStyle;
+        const at=state.attrData.TempData;
+        const mpfilename = ad.MapFileName;
         if((av.SouByou.Auto==true) || (av.SouByou.LoopAreaF == true)&&(av.SouByou.LoopSize != 0)) {
-           let men = 0; // at.SoubyouLoopLineArea[Layernum][LCode]; // Property not available
+           const men = 0; // at.SoubyouLoopLineArea[Layernum][LCode]; // Property not available
            if(men >0) {
                let Check_S;
                if(av.SouByou.Auto==true){
@@ -3715,7 +3715,7 @@ console.log(SortSumDataValue)
 
             if (state.attrData.TotalData.ViewStyle.SouByou.Spline_F == true) {
                 if (ReverseGetF == true) {
-                    let spxy2 = [];
+                    const spxy2 = [];
                     for (let i = 0; i < np; i++) {
                         spxy2.push(spxy[np - 1 - i].Clone());
                     }
@@ -3737,8 +3737,8 @@ console.log(SortSumDataValue)
         if ((state.attrData.TotalData.ViewStyle.ValueShow.ValueVisible == true) || (state.attrData.TotalData.ViewStyle.ValueShow.ObjNameVisible == true)) {
             for (let i = 0; i < state.attrData.LayerData[Layernum].atrObject.ObjectNum; i++) {
                 if (state.attrData.Check_Condition(Layernum, i) == true) {
-                    let CP = state.attrData.LayerData[Layernum].atrObject.atrObjectData[i].Symbol;
-                    let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                    const CP = state.attrData.LayerData[Layernum].atrObject.atrObjectData[i].Symbol;
+                    const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                     this.ObjectValue_and_Name_Print(g, OP, enmVerticalAlignment.Center, Layernum, DataNum, i);
                 }
             }
@@ -3748,12 +3748,12 @@ console.log(SortSumDataValue)
     /**データ値／オブジェクト名表示 */
     static ObjectValue_and_Name_Print(g: CanvasRenderingContext2D, Pos: point, VerticalAlignment: enmVerticalAlignment, Layernum: number, DataNum: number, ObjectNumber: number) {
         const state = appState();
-        let avv = state.attrData.TotalData.ViewStyle.ValueShow;
+        const avv = state.attrData.TotalData.ViewStyle.ValueShow;
         switch (VerticalAlignment) {
             case enmVerticalAlignment.Top: {
-                let pos2 = Pos.Clone();
+                const pos2 = Pos.Clone();
                 if (avv.ObjNameVisible == true) {
-                    let name = state.attrData.Get_KenObjName(Layernum, ObjectNumber);
+                    const name = state.attrData.Get_KenObjName(Layernum, ObjectNumber);
                     state.attrData.Draw_Print(g, name, Pos, avv.ObjNameFont, enmHorizontalAlignment.Center, enmVerticalAlignment.Top);
                     pos2.y += state.attrData.Get_Length_On_Screen(avv.ObjNameFont.Size);
                 }
@@ -3774,7 +3774,7 @@ console.log(SortSumDataValue)
                     if (avv.ValueVisible == true) {
                         opos = enmVerticalAlignment.Bottom;
                     }
-                    let name = state.attrData.Get_KenObjName(Layernum, ObjectNumber);
+                    const name = state.attrData.Get_KenObjName(Layernum, ObjectNumber);
                     state.attrData.Draw_Print(g, name, Pos, avv.ObjNameFont, enmHorizontalAlignment.Center, opos);
                 }
                 if (avv.ValueVisible == true) {
@@ -3798,7 +3798,7 @@ console.log(SortSumDataValue)
     //ダミーオブジェクト・ダミーオブジェクトグループを描画
     static Vector_Dummy_Boundary(g: CanvasRenderingContext2D, Layernum: number, Polygon_F: boolean, nonPolygon_F: boolean) {
         const state = appState();
-        let ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum];
         if(ad.DummyGroup.length > 0) {
             if(Polygon_F == true) {
                 this.Vector_DummyGroup_Draw(g,  enmShape.PolygonShape, Layernum);
@@ -3810,8 +3810,8 @@ console.log(SortSumDataValue)
             }
         }
         for (let i = 0; i < ad.Dummy.length; i++) {
-            let c = ad.Dummy[i].code;
-            let mc = ad.MapFileData.MPObj[c];
+            const c = ad.Dummy[i].code;
+            const mc = ad.MapFileData.MPObj[c];
             if((mc.Shape == enmShape.PolygonShape) && (Polygon_F == true) || (mc.Shape != enmShape.PolygonShape) && (nonPolygon_F == true)){
                 this.Vector_Dummy_Draw(g, c, Layernum);
             }
@@ -3820,12 +3820,12 @@ console.log(SortSumDataValue)
     //ダミーオブジェクトグループの描画。描画順は設定したグループ順
     static Vector_DummyGroup_Draw(g: CanvasRenderingContext2D, SHP: number, Layernum: number) {
         const state = appState();
-        let ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum];
         for (let i = 0; i < ad.DummyGroup.length; i++) {
-            let ok = ad.DummyGroup[i];
+            const ok = ad.DummyGroup[i];
             if(ad.MapFileData.ObjectKind[ok].Shape == SHP) {
-                let temp = ad.MapFileData.Get_Objects_by_Group(ok, ad.Time);
-                for (let j in temp) {
+                const temp = ad.MapFileData.Get_Objects_by_Group(ok, ad.Time);
+                for (const j in temp) {
                     this.Vector_Dummy_Draw(g,  temp[j], Layernum);
                 }
             }
@@ -3836,13 +3836,13 @@ console.log(SortSumDataValue)
     static Vector_Dummy_Draw(g: CanvasRenderingContext2D, code: number, Layernum: number) {
         const state = appState();
         if(state.attrData.Check_Screen_Objcode_In(Layernum, code) == true) {
-            let ad = state.attrData.LayerData[Layernum];
+            const ad = state.attrData.LayerData[Layernum];
             if(ad.MapFileData.MPObj[code].Shape == enmShape.PointShape) {
-                let ok = ad.MapFileData.MPObj[code].Kind;
-                let CP = ad.MapFileData.Get_Enable_CenterP(code, ad.Time);
-                let OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
-                let MK = this.getPointDummyMark(ad.MapFileName, ad.MapFileData.ObjectKind[ok].Name);
-                let r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
+                const ok = ad.MapFileData.MPObj[code].Kind;
+                const CP = ad.MapFileData.Get_Enable_CenterP(code, ad.Time);
+                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const MK = this.getPointDummyMark(ad.MapFileName, ad.MapFileData.ObjectKind[ok].Name);
+                const r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
                 state.attrData.Draw_Mark(g, OP, r, MK);
                 if(state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Dummy_Point_Visible == true) {
                     state.attrData.AddPointObjectKindUsed(ad.MapFileName, ok, MK);
@@ -3856,8 +3856,8 @@ console.log(SortSumDataValue)
     //ダミー点オブジェクトの記号取得
     static getPointDummyMark(MapFIleName: string, ObjectGroupName: string) {
         const state = appState();
-        let av = state.attrData.TotalData.ViewStyle;
-        let obk = av.DummyObjectPointMark[MapFIleName];
+        const av = state.attrData.TotalData.ViewStyle;
+        const obk = av.DummyObjectPointMark[MapFIleName];
         for (let i = 0; i < obk.length; i++) {
             if (obk[i].ObjectKindName == ObjectGroupName) {
                 return obk[i].mark;

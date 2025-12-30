@@ -105,7 +105,7 @@ class clsMeshContour {
                 const rect = this.Quad_MeshData[this.PCell[i]].Position as rectangle;
                 for (let j = rect.left; j <= rect.right; j++) {
                     for (let k2 = rect.top; k2 <= rect.bottom; k2++) {
-                        if(typeof this.Mesh[j][k2] != 'undefined') {
+                        if(typeof this.Mesh[j][k2] !== 'undefined') {
                             this.Mesh_Sub(con, this.Mesh, j, k2, k, High, High_CN);
                         }
                     }
@@ -587,7 +587,7 @@ class clsMeshContour {
                     }
                 }
                 //親空間レベルの最大／最小値を設定
-                let n = SP2 + Math.floor(i / 4);
+                const n = SP2 + Math.floor(i / 4);
                 this.Quad_MeshData[n] = new Quad_Mesh_Info(null, mxv ?? 0, mnv ?? 0, f);
                 this.Quad_MeshData[n].Position = n;
                 this.Quad_MeshData[n].LackF = f;

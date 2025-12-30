@@ -315,7 +315,7 @@ class clsBase {
     }
 
     static LineEdge  () {
-        let base = new LineEdge_Connect_Pattern_Data_Info()
+        const base = new LineEdge_Connect_Pattern_Data_Info()
         base.lineCap = "round";
         base.lineJoin = "round";
         base.miterLimit = 10;
@@ -332,14 +332,14 @@ class clsBase {
     }
 
     static BlankLine  () {
-        let l = this.Line();
+        const l = this.Line();
         l.BlankF = true;
         return l;
     }
 
 
     static BoldLine  () {
-        let l = this.Line();
+        const l = this.Line();
         l.Width = 0.3;
         return l;
     }
@@ -365,7 +365,7 @@ class clsBase {
     }
 
     static Font  () {
-        let Base = new Font_Property();
+        const Base = new Font_Property();
         Base.Size = 4;
         Base.Color = new colorRGBA([0, 0, 0]);
         Base.italic = false;
@@ -387,7 +387,7 @@ class clsBase {
     }
 
     static Mark  () {
-        let BMark = new Mark_Property();
+        const BMark = new Mark_Property();
         BMark.PrintMark = enmMarkPrintType.Mark;
         BMark.ShapeNumber=0; //Short
         BMark.Tile = this.Tile();
