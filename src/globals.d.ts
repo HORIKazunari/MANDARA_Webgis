@@ -55,6 +55,7 @@ interface Function {
     evtChange_Data?: any;
     evtChange_FixedXS?: any;
     evtChange_FixedYS?: any;
+    evtChange_Layer?: (arg1?: boolean, arg2?: boolean, arg3?: boolean) => void;
 }
 
 // ChildNode拡張（name等）
@@ -170,6 +171,7 @@ interface IAttrData {
             MapScale?: {
                 Position: point;
                 Visible?: boolean;
+                Font?: Font_Property;
                 Clone?: () => {
                     Position: point;
                     Visible?: boolean;
@@ -177,6 +179,7 @@ interface IAttrData {
                     BarKugiriNum?: number;
                     Back?: BackGround_Box_Property;
                     Unit?: number;
+                    Font?: Font_Property;
                 };
                 BarDistance?: number;
                 BarKugiriNum?: number;
@@ -220,11 +223,24 @@ interface IAttrData {
                 LineShape: Line_Property;
                 Clone?: () => unknown;
             };
-            SouByou?: unknown; // strSoubyou_Data_Info
+            SouByou?: {
+                Auto?: boolean;
+                ThinningPrint_F?: boolean;
+                PointInterval?: number;
+                LoopAreaF?: boolean;
+                LoopSize?: number;
+                [key: string]: any;
+            }; // strSoubyou_Data_Info
             DummyObjectPointMark?: unknown[]; // strDummyObjectPointMark_Info[]
             Screen_Back?: BackGround_Box_Property;
             PointPaint_Order?: number; // enmPointOnjectDrawOrder
-            ValueShow?: unknown; // strValueShow_Info
+            ValueShow?: {
+                ObjNameVisible?: boolean;
+                ValueVisible?: boolean;
+                ObjNameFont?: Font_Property;
+                ValueFont?: Font_Property;
+                [key: string]: any;
+            }; // strValueShow_Info
             InVisibleObjectBoundaryF?: boolean;
             MeshLine?: Line_Property;
             SymbolLine?: unknown; // strSymbolLine_Info
@@ -261,8 +277,14 @@ interface IAttrData {
         PrintMouseMode?: number;
         PointObjectKindUsedStack?: unknown[];
         MapAreaLatLon?: unknown; // latlonbox
-        ContourMode_Temp?: unknown;
-        DotMap_Temp?: unknown;
+        ContourMode_Temp?: {
+            Contour_Point?: unknown;
+            [key: string]: any;
+        };
+        DotMap_Temp?: {
+            DotMapTempResetF?: boolean;
+            [key: string]: any;
+        };
         Series_temp?: {
             Koma?: number;
             title?: string;
@@ -1527,12 +1549,18 @@ declare const enmDivisionMethod: unknown;
 declare const enmPaintColorSettingModeInfo: unknown;
 declare const enmMarkBlockArrange: unknown;
 declare const enmMarkBarShape: unknown;
-declare const enmMarkSizeValueMode: unknown;
+declare const enmMarkSizeValueMode: {
+    inDataItem: number;
+    [key: string]: number;
+};
 declare const enmContourIntervalMode: unknown;
 declare const enmBarLineMaxMinMode: unknown;
 declare const enmMarkMaxValueType: unknown;
 declare const enmInner_Data_Info_Mode: unknown;
-declare const enmClassMode_Meshod: unknown;
+declare const enmClassMode_Meshod: {
+    Separated: number;
+    [key: string]: number;
+};
 declare const enmEdge_Pattern: unknown;
 declare const enmSeparateClassWords: unknown;
 declare const enmScaleBarPattern: unknown;
