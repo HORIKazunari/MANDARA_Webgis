@@ -47,15 +47,17 @@ interface IAttrData {
         TotalMode?: {
             OverLay?: {
                 SelectedIndex?: number;
-                DataSet?: unknown[]; // strOverLay_Dataset_Info[] (clsAttrData.tsで定義)
+                DataSet: IOverLayDatasetInfo[];
                 Always_Overlay_Index?: number;
                 MarkModePosFixFlag?: boolean;
                 AddDataSet?: (data?: unknown) => void;
+                initDataSet?: () => void;
             };
             Series?: {
                 SelectedIndex?: number;
-                DataSet?: unknown[]; // strSeries_Dataset_Info[] (clsAttrData.tsで定義)
+                DataSet: ISeriesDatasetInfo[];
                 AddDataSet?: (data?: unknown) => void;
+                initDataSet?: () => void;
             };
         };
         ViewStyle: {
@@ -374,6 +376,39 @@ interface IMapLegendW {
     LineKind_Flag: boolean;
     PointObject_Flag: boolean;
     OverLay_Printing_Flag?: boolean;
+    [key: string]: any;
+}
+
+// OverLay DataSet情報（拡張版）
+interface IOverLayDatasetInfo {
+    title: string;
+    DataItem: IOverLayDataItem;
+    initData?: () => void;
+    [key: string]: any;
+}
+
+// OverLay DataItem（拡張版）
+interface IOverLayDataItem {
+    Count: number;
+    [index: number]: IOverLayDataItemElement;
+    Clone?: () => IOverLayDataItem;
+    [key: string]: any;
+}
+
+// OverLay DataItem要素（拡張版）
+interface IOverLayDataItemElement {
+    Layer: number;
+    DataNumber: number;
+    Print_Mode_Layer: number;
+    Clone?: () => IOverLayDataItemElement;
+    [key: string]: any;
+}
+
+// Series DataSet情報（拡張版）
+interface ISeriesDatasetInfo {
+    title: string;
+    DataItem: any;
+    initData?: () => void;
     [key: string]: any;
 }
 
