@@ -191,7 +191,7 @@ interface IAttrData {
             LocationMenuString?: string;
             MultiObjects?: unknown[];
         };
-        Accessory_Temp?: unknown;
+        Accessory_Temp?: IAccessoryTemp;
         OnObject?: unknown;
         MouseDownF?: boolean;
         PrintMouseMode?: number;
@@ -357,6 +357,26 @@ interface IAttrData {
     Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
 }
 
+// Accessory_Temp（拡張版）
+interface IAccessoryTemp {
+    MapLegend_W: IMapLegendW[];
+    [key: string]: any;
+}
+
+// MapLegend_W（拡張版）
+interface IMapLegendW {
+    Layn: number;
+    DatN: number;
+    Print_Mode_Layer: number; // enmLayerMode_Number
+    SoloMode: number;
+    GraphMode: number;
+    title: string;
+    LineKind_Flag: boolean;
+    PointObject_Flag: boolean;
+    OverLay_Printing_Flag?: boolean;
+    [key: string]: any;
+}
+
 // レイヤーデータ情報（拡張版）
 interface ILayerDataInfo {
     Name: string;
@@ -419,6 +439,10 @@ interface ISoloModeViewSettings {
     TripMode: any;
     StringMode: any;
     MarkSizeMD: any;
+    MarkBlockMD: any;
+    MarkBarMD: any;
+    ClassMarkMode: any;
+    MarkTurnMode: any;
     Class_Div: any[];
     Div_Num: number;
     [key: string]: any;
@@ -517,13 +541,52 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
     setVisibility?: (visible: boolean) => void;
 }
 
+// Generic ユーティリティクラス（拡張）
+interface IGeneric {
+    alert: (event: Event | undefined, message: string) => void;
+    prompt: (event: Event, title: string, defaultValue: string, callback: (value: string) => void) => void;
+    confirm: (event: Event, message: string, callback: (confirmed: boolean) => void) => void;
+    createNewDiv: (parent: HTMLElement, id: string, className: string, innerHTML: string, left: number, top: number, width: number, height: number, style: string, tooltip: string | undefined) => HTMLDivElement;
+    createNewButton: (parent: HTMLElement, text: string, className: string, left: number, top: number, onClick: (e: Event) => void, style: string) => HTMLButtonElement;
+    createNewSpan: (parent: HTMLElement, text: string, className: string, innerHTML: string, left: number, top: number, style: string, tooltip: string | undefined) => HTMLSpanElement;
+    createNewFrame: (parent: HTMLElement, id: string, className: string, left: number, top: number, width: number, height: number, title: string) => HTMLDivElement;
+    createNewCheckBox: (parent: HTMLElement, text: string, className: string, checked: boolean, left: number, top: number, tooltip: string | undefined, onChange: (element: HTMLInputElement) => void, style: string) => HTMLInputElement;
+    createNewRadioButtonList: (parent: HTMLElement, name: string, items: any[], left: number, top: number, tooltip: string | undefined, itemHeight: number, selectedValue: any, onChange: (value: number) => void, style: string) => void;
+    createNewWordNumberInput: (parent: HTMLElement, label: string, unit: string, value: number, className: string, left: number, top: number, tooltip: string | undefined, inputWidth: number, onChange: (element: HTMLElement, value: number) => void, style: string) => HTMLInputElement;
+    set_backDiv: (id: string, title: string, width: number, height: number, modal: boolean, closeButton: boolean, okButton: (() => void) | number, opacity: number, draggable: boolean, resizable?: boolean) => HTMLDivElement;
+    getBrowserWidth: () => number;
+    getBrowserHeight: () => number;
+    copyText: (text: string) => void;
+    Set_Box_Position_in_Browser: (event: Event, element: HTMLElement) => void;
+    Array2Dimension: (array: any[], dimensions: number[]) => any;
+    Array2Clone: (array: any[]) => any[];
+    ceatePopupMenu: (menu: any, position: point) => void;
+    [key: string]: any;
+}
+
+// clsPrint クラス（拡張）
+interface IClsPrint {
+    printMapScreen: (canvas: HTMLCanvasElement) => void;
+    [key: string]: any;
+}
+
+// clsDraw クラス（拡張）
+interface IClsDraw {
+    print: (g: CanvasRenderingContext2D, text: string, position: point, font: Font_Property, hAlign: number, vAlign: number, scrData: Screen_info) => void;
+    DrawText2: (g: CanvasRenderingContext2D, position: point, text: string, font: Font_Property, scrData: Screen_info) => void;
+    Line: (g: CanvasRenderingContext2D, linePat: Tile_Property, arg3: point | point[], arg4?: point | Screen_info, arg5?: Screen_info) => void;
+    Draw_Tile_and_Paint_and_Line: (g: CanvasRenderingContext2D, points: point[], nPolyP: number[], polyNum: number, tile: Tile_Property, linePat: Tile_Property, scrData: Screen_info) => void;
+    Arrow: (g: CanvasRenderingContext2D, point: point, beforePoint: point, linePat: Tile_Property, arrow: Arrow_Property, scrData: Screen_info) => void;
+    [key: string]: any;
+}
+
 // 強化されたグローバル変数宣言
 // attrData: AppStateで管理（削除済み）
-declare const Generic: unknown; // kept temporarily; being migrated to ESM import
+declare const Generic: IGeneric;
 declare const clsSettingData: unknown;
 declare const clsTime: unknown;
-declare const clsDraw: unknown;
-declare const clsPrint: unknown;
+declare const clsDraw: IClsDraw;
+declare const clsPrint: IClsPrint;
 // frmPrint: AppStateで管理（削除済み）
 declare let Frm_Print: IFrmPrint; // 変更される可能性あり
 // propertyWindow: AppStateで管理（削除済み）
