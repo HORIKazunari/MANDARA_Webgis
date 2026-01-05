@@ -317,9 +317,9 @@ export class gridControl {
     height: number;
     
     // クラスプロパティ（元のコンストラクタ内ローカル変数）
-    private Grid_Property: JsonValue[] = [];
+    private Grid_Property: Grid_Info[] = [];
     private Grid_Total: Grid_Total_Info = new Grid_Total_Info();
-    private UndoArray: JsonValue[] = [];
+    private UndoArray: Array<Undo_InputCopyPasteClearInfo | Undo_ChangeRowHeight | Undo_ChangeColumnWidth | Undo_InsertRows | Undo_InsertColumns | Undo_DeleteRows | Undo_DeleteColumns> = [];
     private TimerObj: number | undefined = undefined;
     private TimerVX: number = 0;
     private TimerVY: number = 0;
@@ -338,7 +338,15 @@ export class gridControl {
     private GY: number = 0;
     private touchStartTime: number = 0;
     private base: HTMLDivElement;
-    private tabbase: Record<string, unknown> = {};
+    private tabbase: {
+        frame?: HTMLDivElement;
+        tab?: HTMLElement[];
+        tabListBase?: HTMLDivElement;
+        moveDiv?: HTMLDivElement;
+        moveLeft?: HTMLDivElement;
+        moveRight?: HTMLDivElement;
+        selectedIndex?: number;
+    } = {};
     private picGrid: HTMLDivElement;
     private vScroll!: scrollBar;
     private hScroll!: scrollBar;
@@ -1767,7 +1775,7 @@ export class gridControl {
     }
 
     /**レイヤ追加（内部） */
-    Insert_Layer = (LayName: string, lay: number, OriginalLayerNumber: number, xs: number, ys: number, OperationEnable: boolean) => {
+    Insert_Layer = (LayName: string, lay: number, OriginalLayerNumber: number, xs: number, ys: number, OperationEnable: Grid_Operation_enable_info) => {
         this.Grid_Total.LayerNum++;
         this.tabMake();
         if (this.Grid_Total.LayerNum != 1) {
@@ -4045,7 +4053,7 @@ class scrollBar {
         y: number,
         size: number,
         length: number,
-        type: string,
+        type: number,
         _maxValue: number,
         _areaRange: number,
         largeChange: number,

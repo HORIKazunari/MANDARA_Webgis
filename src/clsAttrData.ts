@@ -6,7 +6,7 @@ import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata } from './clsMapdata';
 import type { strLayerInfo } from './clsWindow';
-import type { JsonObject } from './types';
+import type { JsonObject, JsonValue } from './types';
 
 
 // size クラスは globals.d.ts で定義済み
@@ -191,14 +191,10 @@ const enmProjection_Info = {
 }
 // enmZahyo_mode_info はglobals.d.tsで定義済み
 // cstRectangle_Cross は globals.d.ts で定義済み
-interface Cross_Line_Data {
-    BeforPoint: point;
-    Point: point;
-}
 
 class Cross_Line_Data {
-    BeforPoint?: point;
-    Point?: point;
+    BeforPoint: point = new point();
+    Point: point = new point();
 }
 // enmShape はglobals.d.tsで定義済み
 
