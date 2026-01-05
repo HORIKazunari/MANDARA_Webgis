@@ -248,7 +248,7 @@ class strObject_Info {
     NumOfSyntheticObj: number = 0;
     atrObjectData: strObject_Data_Info[] = [];
     MPSyntheticObj: strSynthetic_Object_Data[] = [];
-    TripObjData: JsonValue[] = [];
+    TripObjData: TripObjData[] = [];
 }
 
 //合成オブジェクト名とコード（属性データ）
@@ -1475,6 +1475,25 @@ interface FigureData {
     NumOfPoint?: number; // Line Data用（点数）
     Position?: point; // Circle/Point Data用
     [key: string]: any; // その他のプロパティ
+}
+
+// 有効な地図ラインの型（LineCodeプロパティを持つ）
+interface EnableMPLine {
+    LineCode: number;
+    [key: string]: any;
+}
+
+// トリップオブジェクトデータの型
+interface TripObjData {
+    TripPersonName: string;
+    TripPersonCode: number;
+    [key: string]: any;
+}
+
+// 座標系の結果型
+interface ZahyoResult {
+    ok: boolean;
+    emes?: string;
 }
 
 //属性データ全体に関わるデータ（属性データ）
@@ -4630,21 +4649,22 @@ class clsAttrData {
         function cnvAccessoryGroupBox(oa: JsonValue){
             const d=new strAccessoryGroupBox_Info();
             Object.assign(d, oa);
-            d.Back=cnvBackGround_Box_Property(oa.Back);
+            d.Back=cnvBackGround_Box_Property((oa as any).Back);
             return d;
         }
 
         function cnvLayerData(oldLay: JsonValue) {
+            const oLay = oldLay as any; // 型アサーション
             const ld = new strLayerDataInfo();
-            ld.Name = oldLay.Name;
-            ld.MapFileName = oldLay.MapFileName;
-            ld.Shape = oldLay.Shape;
-            ld.Type = oldLay.Type;
-            ld.MeshType = oldLay.MeshType;
-            ld.ReferenceSystem = oldLay.ReferenceSystem;
-            ld.Time = cnvTime(oldLay.Time);
-            ld.Comment = oldLay.Comment;
-            ld.Print_Mode_Layer = oldLay.Print_Mode_Layer;
+            ld.Name = oLay.Name;
+            ld.MapFileName = oLay.MapFileName;
+            ld.Shape = oLay.Shape;
+            ld.Type = oLay.Type;
+            ld.MeshType = oLay.MeshType;
+            ld.ReferenceSystem = oLay.ReferenceSystem;
+            ld.Time = cnvTime(oLay.Time);
+            ld.Comment = oLay.Comment;
+            ld.Print_Mode_Layer = oLay.Print_Mode_Layer;
 
             const lda = ld.atrObject;// オブジェクトの情報
             lda.ObjectNum = oldLay.atrObject.ObjectNum;
@@ -6372,14 +6392,14 @@ class clsAttrData {
 
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
-    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): JsonValue[] {
+    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): EnableMPLine[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
             case enmKenCodeObjectstructure.MapObj:
                 const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
-                return this.LayerData[Layernum].MapFileData.Get_EnableMPLine(O_Code, this.LayerData[Layernum].Time);
+                return this.LayerData[Layernum].MapFileData.Get_EnableMPLine(O_Code, this.LayerData[Layernum].Time) as EnableMPLine[];
                 break;
             case enmKenCodeObjectstructure.SyntheticObj:
-                return this.Get_EnableMPLine_SyntheticObject(Layernum, ObjNum);
+                return this.Get_EnableMPLine_SyntheticObject(Layernum, ObjNum) as EnableMPLine[];
                 break;
         }
     }
@@ -7464,7 +7484,7 @@ class clsAttrData {
     }
 
     //欠損値を除いた配列でデータ項目の値を取得
-    Get_Data_Cell_Array_Without_MissingValue(LayerNum: number, DataNum: number): JsonValue[] {
+    Get_Data_Cell_Array_Without_MissingValue(LayerNum: number, DataNum: number): strObjLocation_and_Data_info[] | undefined {
         const ObjNum = this.LayerData[LayerNum].atrObject.ObjectNum;
         const DT = [];
         const LD = this.LayerData[LayerNum].atrData.Data[DataNum];
@@ -8172,7 +8192,7 @@ class clsAttrMapData {
     }
 
 
-    EqualizeZahyoMode(Zahyo: JsonValue): JsonValue {
+    EqualizeZahyoMode(Zahyo: JsonValue): ZahyoResult {
         //読み込んだ地図ファイルの投影法等座標設定を同じにする
         let f = true;
         let emes = "";
