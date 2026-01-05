@@ -857,6 +857,9 @@ class strLabel_Data {
     DataValue_TurnFlag: boolean = false; //Boolean
     DataValue_Print_Flag: boolean = false; //Boolean
     DataName_Print_Flag: boolean = false; //Boolean
+    ObjectName_Font: Font_Property = new Font_Property();
+    ObjectName_Turn_Flag: boolean = false; //Boolean
+    ObjectName_Print_Flag: boolean = false; //Boolean
     BorderObjectTile: Tile_Property = new Tile_Property();
     BorderDataTile: Tile_Property = new Tile_Property();
     BorderLine: Line_Property = new Line_Property();
@@ -1252,6 +1255,17 @@ class strOverLay_Dataset_Info {
         this.DataItem = [];// strOverLay_DataSet_Item_Info
         this.Note = "";
     }
+    
+    Clone(): strOverLay_Dataset_Info {
+        const d = new strOverLay_Dataset_Info();
+        Object.assign(d, this);
+        d.DataItem = this.DataItem.map(item => {
+            const newItem = new strOverLay_DataSet_Item_Info();
+            Object.assign(newItem, item);
+            return newItem;
+        });
+        return d;
+    }
 }
 
 // 重ね合わせモード全体のデータ
@@ -1454,13 +1468,21 @@ class strCondition_DataSet_Info {
     }
 }
 
+// 図形データの基本型（FigureStacで使用される図形オブジェクト）
+interface FigureData {
+    StringPos?: point[]; // Word Data用
+    Points?: point[]; // Line/Point Data用
+    NumOfPoint?: number; // Line Data用（点数）
+    Position?: point; // Circle/Point Data用
+    [key: string]: any; // その他のプロパティ
+}
 
 //属性データ全体に関わるデータ（属性データ）
 class Total_Data_Info {
     LV1: strBasic_Data = new strBasic_Data();
     TotalMode: strTotalMode_Info = new strTotalMode_Info();
     ViewStyle: strViewStyle_Info = new strViewStyle_Info();
-    FigureStac: JsonValue[] = [];
+    FigureStac: FigureData[] = [];
     Condition: strCondition_DataSet_Info[] = [];//strCondition_DataSet_Info
 
     initTotalData(): void {
@@ -2785,7 +2807,7 @@ class clsAttrData {
                                     }
                                 }
                             }
-                            if(gdata.length <= 1 ){
+                            if(gdata.Data.length <= 1 ){
                                 mes += "選択データが足りません。" + '\n';
                                 LV1E = true;
                             }
@@ -2934,7 +2956,7 @@ class clsAttrData {
     const it = InsertData.TotalData;
     //条件設定の変換
     for (let i = 0; i < it.Condition.length; i++) {
-        const d = it.Condition.Item[i].Clone();
+        const d = it.Condition[i].Clone();
         d.Layer += LayerPlus;
         //it.Condition.Item[i] = d;
         this.TotalData.Condition.push(d);

@@ -4459,7 +4459,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         height: number,
         visibilieF: boolean,
         menuMarkF: boolean,
-        menuCall: (() => void) | null,
+        menuCall: ((pos: point) => void) | null,
         XmarkF: boolean,
         XmarkCall: (() => void) | null,
         footer_Flag: boolean,

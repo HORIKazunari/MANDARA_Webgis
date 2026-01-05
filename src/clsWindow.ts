@@ -1200,18 +1200,20 @@ function setting(locSearch: string) {
         Generic.createMsgBox("統計値表示", txt,true);
     }
     //レイヤの変更
-    function changeLayer(obj: HTMLSelectElement, sel: number, v: string) {
-        attrData.TotalData.LV1.SelectedLayer =sel;
+    function changeLayer(obj: HTMLSelectElement, sel: number | number[], v: string = "") {
+        const selNum = Array.isArray(sel) ? sel[0] : sel;
+        attrData.TotalData.LV1.SelectedLayer = selNum;
         setDataItemList();
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
-    function changeDataItem(obj: HTMLSelectElement, sel: number, v: string) {
+    function changeDataItem(obj: HTMLSelectElement, sel: number | number[], v: string = "") {
+        const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = attrData.TotalData.LV1.SelectedLayer;
-        attrData.LayerData[LayerNum].atrData.SelectedIndex = sel;
+        attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
         for (const k in enmSoloMode_Number) {
             const n = (enmSoloMode_Number as Record<string, number>)[k];
-            SetPicPnlSoloDataEnabled(n, LayerNum, sel);
+            SetPicPnlSoloDataEnabled(n, LayerNum, selNum);
         }
         setDataMode();
         setSettingSoloModeWindow();
@@ -4029,7 +4031,7 @@ function readData(okCall: () => void) {
 }
 
 //シェープファイル読み込み
-function openShapeFile(okCall: (() => void) | undefined): void{
+function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void{
     let shapeFiles: { [key: string]: JsonObject } = {};//clsShapefile
     const mapList: Record<string, unknown> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
@@ -4314,12 +4316,12 @@ function openShapeFile(okCall: (() => void) | undefined): void{
             mdata.push(mapList[i]);
         }
         Generic.clear_backDiv();
-        okCall(mdata, LayerData);
+        if (okCall) okCall(mdata as any, LayerData as any);
     }
 }
 
 /** 白地図・初期属性データ表示 */
-function mapViewer(okCall: (() => void) | undefined): void {
+function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void {
     const mapList: Record<string, unknown> = {};
     const LayerData: JsonValue[] = []; //strLayerInfo
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
@@ -4575,7 +4577,7 @@ function mapViewer(okCall: (() => void) | undefined): void {
             mdata.push(mapList[i]);
         }
         Generic.clear_backDiv();
-        okCall(mdata, LayerData);
+        if (okCall) okCall(mdata as any, LayerData as any);
 
     }
 }

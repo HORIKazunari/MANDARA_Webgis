@@ -4,6 +4,14 @@
 // リストアイテムの型定義（select要素やListBoxで使用）
 type ListItem = { value: string | number; text: string };
 
+// メニューアイテムの型定義（ポップアップメニューで使用）
+interface MenuItem {
+    caption: string;
+    event?: () => void;
+    enabled?: boolean;
+    child?: MenuItem[];
+}
+
 // ==================== グローバル変数の型定義強化 ====================
 
 // ==================== グローバル変数の宣言 ====================
@@ -65,6 +73,8 @@ interface HTMLElement {
     word?: HTMLElement; // カスタム子要素への参照
     checked?: boolean; // チェックボックス等
     onchange?: ((e: Event) => void) | null; // changeイベントハンドラ
+    selected?: boolean; // 選択状態（カスタム要素）
+    tooltip?: string; // ツールチップテキスト
 }
 
 // Function拡張（イベントハンドラデータ保持用）
@@ -860,7 +870,19 @@ interface IClsDraw {
 // 強化されたグローバル変数宣言
 // attrData: AppStateで管理（削除済み）
 declare const Generic: IGeneric;
-declare const clsSettingData: unknown;
+declare const clsSettingData: {
+    MinimumLineWidth: number;
+    SetFont: string;
+    ObjectName_Word_Compatible: string;
+    KatakanaCheck: boolean;
+    SinKyuCharacter: boolean;
+    Ido_Kedo_Print_Pattern: number;
+    LegendPlusWord: string;
+    LegendMinusWord: string;
+    LegendBlockmodeWord: string;
+    Clone(): any;
+    [key: string]: any;
+};
 declare const clsTime: unknown;
 declare const clsDraw: IClsDraw;
 declare const clsPrint: IClsPrint;
