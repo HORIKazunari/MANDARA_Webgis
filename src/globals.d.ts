@@ -760,7 +760,14 @@ interface ILabelDataItem {
 // マップデータ（拡張版）
 interface IMapData {
     Map: IMapInfo;
-    LineKind?: JsonValue[]; // Line_Pattern配列
+    LineKind?: Array<{
+        Name: string;
+        NumofObjectGroup: number;
+        ObjGroup: strLKOjectGroup_Info[];
+        Mesh?: number;
+        Clone?: () => any;
+        [key: string]: any;
+    }>; // LineKind_Data配列
     MPObj?: JsonValue[]; // 地図オブジェクト配列
     [key: string]: JsonValue;
 }

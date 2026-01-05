@@ -3283,7 +3283,7 @@ class clsAttrData {
         if ((MarkSizeF == true) || (MarkBlockF == true) || (StringModeF == true) || (MarkBarF == true)) {
             const alm = ls.MarkCommon;
             if (copyMarkCommonInnerDataF == true) {
-                ls.Inner_Data = O_Data.SoloModeViewSettings.MarkCommon.Inner_Data;
+                alm.Inner_Data = O_Data.SoloModeViewSettings.MarkCommon.Inner_Data;
             }
             alm.LegendMinusWord = O_Data.SoloModeViewSettings.MarkCommon.LegendMinusWord;
             alm.LegendPlusWord = O_Data.SoloModeViewSettings.MarkCommon.LegendPlusWord;
