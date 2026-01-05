@@ -12,7 +12,9 @@ import type {
   LinePattern, 
   Color, 
   Font, 
-  Edge 
+  Edge,
+  JsonValue,
+  JsonObject
 } from './types';
 
 // Helper for DOM access with legacy extensions
@@ -4028,8 +4030,7 @@ function readData(okCall: () => void) {
 
 //シェープファイル読み込み
 function openShapeFile(okCall: (() => void) | undefined): void{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let shapeFiles: { [key: string]: any } = {};//clsShapefile
+    let shapeFiles: { [key: string]: JsonObject } = {};//clsShapefile
     const mapList: Record<string, unknown> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
@@ -4286,10 +4287,8 @@ function openShapeFile(okCall: (() => void) | undefined): void{
     }
     function buttonOK() {
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const mapList: { [key: string]: any } = {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const LayerData: any[] = []; //strLayerInfo
+        const mapList: { [key: string]: JsonObject } = {};
+        const LayerData: JsonValue[] = []; //strLayerInfo
         const prj = parseInt(cboProjection?.getValue ? cboProjection.getValue() : "0");
         for (const i in shapeFiles) {
             const sfile = shapeFiles[i];
@@ -4322,8 +4321,7 @@ function openShapeFile(okCall: (() => void) | undefined): void{
 /** 白地図・初期属性データ表示 */
 function mapViewer(okCall: (() => void) | undefined): void {
     const mapList: Record<string, unknown> = {};
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const LayerData: any[] = []; //strLayerInfo
+    const LayerData: JsonValue[] = []; //strLayerInfo
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
 
     const fileFrame=Generic.createNewFrame(bbox, "file", "", 15, scrMargin.top+5, 450, 100, "地図ファイル");
@@ -4516,8 +4514,7 @@ function mapViewer(okCall: (() => void) | undefined): void {
     }
 
     //レイヤのオブジェクトグループ変更
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function objGListChange(obj: HTMLElement, checkList: any, checkArray: number[]) {
+    function objGListChange(obj: HTMLElement, checkList: JsonValue, checkArray: number[]) {
         const n = layerList.selectedIndex;
         LayerData[n].UseObjectKind.fill(false);
         for (let i = 0; i < checkArray.length; i++) {

@@ -279,7 +279,7 @@ interface IAttrData {
         OnObject?: unknown;
         MouseDownF?: boolean;
         PrintMouseMode?: number;
-        PointObjectKindUsedStack?: unknown[];
+        PointObjectKindUsedStack?: strDummyObjectPointMark_Info[];
         MapAreaLatLon?: unknown; // latlonbox
         ContourMode_Temp?: {
             Contour_Point?: point[];
@@ -311,7 +311,7 @@ interface IAttrData {
     };
     LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド
-    Get_AllMapLineKind?: () => unknown[];
+    Get_AllMapLineKind?: () => LPatSek_Info[];
     Get_LineKindUsedList?: () => unknown[];
     Get_Length_On_Screen?: (arg1?: number) => number;
     Radius?: (size?: number, arg2?: number, arg3?: number) => number;
@@ -431,7 +431,7 @@ interface IAttrData {
     Get_MPSubLineXY?: (layer?: number, lineCode?: number, arg3?: unknown) => point[];
     Set_MPSubLineXY?: (layer?: number, lineCode?: number, points?: point[], reverse?: boolean) => void;
     GetAllMapLineKindName?: () => string[];
-    Get_AllMapLineKind?: () => unknown[];
+    Get_AllMapLineKind?: () => LPatSek_Info[];
     getDataTitleName?: (Layernum: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => string[];
     Get_Data_Cell_Array_Without_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
     Set_DummyObjectName_to_checkedListBox?: (element: HTMLElement, layerNum?: number, selectedObject?: number) => void;
@@ -1504,6 +1504,11 @@ declare function frmCompassSettings(...args: unknown[]): unknown;
 declare class clsSpline { static Spline_Get?: (...args: unknown[]) => unknown; }
 declare class strLocationSearchObject { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class LPatSek_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strDummyObjectPointMark_Info { 
+    ObjectKindName: string;
+    Mark: Mark_Property;
+    Clone(): strDummyObjectPointMark_Info;
+}
 declare class strCondition_Limitation_Info { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strDummyObjectName_and_Code { [key: string]: unknown; constructor(...args: unknown[]); }
 declare class strOverLay_DataSet_Item_Info { [key: string]: unknown; constructor(...args: unknown[]); }
@@ -1563,9 +1568,7 @@ declare class clsFontSet { [key: string]: unknown; constructor(...args: unknown[
 declare function clsFontSet(...args: unknown[]): unknown;
 declare function clsDrawTileSample(...args: unknown[]): unknown;
 declare const enmBasePosition: unknown;
-declare const enmSoloMode_Number: unknown;
 declare const enmKenCodeObjectstructure: unknown;
-declare const enmLayerMode_Number: unknown;
 declare const enmObjectGoupType_Data: unknown;
 declare const enmCondition: unknown;
 declare const enmDataSource: {

@@ -18,7 +18,9 @@ import { Generic } from './clsGeneric';
  * ログ出力関数
  * AppState経由でログウィンドウにアクセス
  */
-function logX(data: unknown): void {
+import type { JsonValue } from './types';
+
+function logX(data: JsonValue): void {
     const state = appState();
     
     if (state.logWindow === undefined) {

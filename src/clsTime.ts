@@ -3,6 +3,7 @@
 /// <reference path="main.ts" />
 /// <reference path="clsMapdata.ts" />
 import { appState } from './core/AppState';
+import type { JsonValue } from './types';
 
 class clsTime  {
     static GetNullYMD  () {
@@ -287,7 +288,7 @@ class Setting_Info {
     Compass_Mark = 11;
     Compass_Mark_Size = 8;
     default_Projection = enmProjection_Info.prjMercator;
-    MDRFileHistory?: unknown;
+    MDRFileHistory?: JsonValue;
     BackImageSpeed = 3;
     LegendMinusWord = "負の値";
     LegendPlusWord = "正の値";

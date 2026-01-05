@@ -31,9 +31,18 @@ export type Nullable<T> = T | null;
 export type Optional<T> = T | undefined;
 
 /**
+ * JSON値型
+ * JSONとして表現可能な全ての値の型
+ */
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonArray = JsonValue[];
+export type JsonObject = { [key: string]: JsonValue };
+export type JsonValue = JsonPrimitive | JsonArray | JsonObject;
+
+/**
  * 汎用辞書型
  */
-export type Dictionary<T = unknown> = Record<string, T>;
+export type Dictionary<T = JsonValue> = Record<string, T>;
 
 // ==================== アプリケーション固有型 ====================
 
@@ -95,7 +104,7 @@ export interface LayerInfo {
   id: string | number;
   name: string;
   visible: boolean;
-  data?: unknown;
+  data?: JsonValue;
 }
 
 /**
@@ -105,14 +114,14 @@ export interface AppSettings {
   font?: string;
   fontSize?: number;
   theme?: string;
-  [key: string]: unknown;
+  [key: string]: JsonValue;
 }
 
 /**
  * データ読み込み結果型
  * 非同期処理の結果を統一的に扱うための型
  */
-export interface DataLoadResult<T = unknown> {
+export interface DataLoadResult<T = JsonValue> {
   success: boolean;
   data?: T;
   error?: Error | string;
@@ -208,7 +217,7 @@ export type ColorValue = string; // CSS color string
 export interface TileConfig {
   pattern?: string;
   color?: ColorValue;
-  [key: string]: unknown;
+  [key: string]: JsonValue;
 }
 
 /**
@@ -218,7 +227,7 @@ export interface MarkConfig {
   type?: string;
   size?: number;
   color?: ColorValue;
-  [key: string]: unknown;
+  [key: string]: JsonValue;
 }
 
 /**
@@ -228,7 +237,7 @@ export interface LinePattern {
   type?: string;
   width?: number;
   color?: ColorValue;
-  [key: string]: unknown;
+  [key: string]: JsonValue;
 }
 
 /**
@@ -237,7 +246,7 @@ export interface LinePattern {
 export interface ArrowConfig {
   start?: string;
   end?: string;
-  [key: string]: unknown;
+  [key: string]: JsonValue;
 }
 
 /**
@@ -253,14 +262,14 @@ export type SoloMode = number;
 /**
  * コールバック関数型（汎用）
  */
-export type CallbackFunction = (...args: unknown[]) => void;
-export type ValueCallback<T = unknown> = (value: T) => void;
-export type ObjectValueCallback = (obj: HTMLElement, value: unknown) => void;
+export type CallbackFunction = (...args: JsonValue[]) => void;
+export type ValueCallback<T = JsonValue> = (value: T) => void;
+export type ObjectValueCallback = (obj: HTMLElement, value: JsonValue) => void;
 
 /**
  * マーク型
  */
-export type Mark = unknown; // 具体的な型定義が必要な場合は後で詳細化
+export type Mark = JsonObject; // マーク設定を表すオブジェクト
 
 /**
  * タイル型

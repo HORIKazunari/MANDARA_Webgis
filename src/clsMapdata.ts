@@ -5,6 +5,7 @@ import { clsTime } from './clsTime';
 import { clsSortingSearch } from './SortingSearch';
 import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
+import type { JsonObject } from './types';
 
 /** Description placeholder */
 class Hennyu_Data {
@@ -441,7 +442,7 @@ class strLKOjectGroup_Info {
 /**
  * Description placeholder
  */
-class LPatSek_Info {
+export class LPatSek_Info {
     LKind?: number;
     LkindPatNum?: number;
     Name?: string;
@@ -477,7 +478,7 @@ class clsMapdata {
     MPLine: strLine_Data[] = [];
     DefTimeAttSTC: strMPObjDefTimeAttData_Info[] = [];
     NoDataFlag: boolean = false;
-    private Enable_MPObjStac: unknown[] = []; // EnableMPOBJ_Data未定義
+    private Enable_MPObjStac: JsonValue[] = []; // EnableMPOBJ_Data未定義
 
     constructor() {
         this.Map = new strMap_data();
@@ -753,7 +754,7 @@ class clsMapdata {
     }
 
     //Get_TotalLineKindのラインパターンを地図データの線種に設定する
-    Set_TotalLineKind(LPC: unknown[]) { //LPatSek_Info
+    Set_TotalLineKind(LPC: Array<JsonObject>) { //LPatSek_Info
         let n = 0;
         for (let i = 0; i < this.Map.LpNum; i++) {
             const lk = this.LineKind[i];
@@ -1025,7 +1026,7 @@ class clsMapdata {
         }
 
         let GPoint = new point();
-        const retV: unknown = this.Menseki(ObjData,  L_Time);
+        const retV: JsonValue = this.Menseki(ObjData,  L_Time);
         const xy2=retV.gpoint;
         if (retV.menseki == -1) {
             return false;
@@ -1038,7 +1039,7 @@ class clsMapdata {
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
             }
-            const retV: unknown = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
+            const retV: JsonValue = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
             if (retV.ok == true) {
                 GPoint = xy2.Clone();
             } else {
@@ -1202,7 +1203,7 @@ class clsMapdata {
     }
 
     //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange_Sub(ELine: unknown[]): boundArrangeData {
+    Boundary_Arrange_Sub(ELine: Array<JsonObject>): boundArrangeData {
         let boundArrange = new boundArrangeData();
         const NL = ELine.length;
         if (NL == 0) {
@@ -1258,9 +1259,9 @@ class clsMapdata {
         const Fringe = badata.Fringe;
         const mens = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
-            const LXY2: unknown[] = [];
+            const LXY2: JsonValue[] = [];
             const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
-            (LXY2 as unknown[]).push((LXY2 as unknown[])[1]);
+            (LXY2 as JsonValue[]).push((LXY2 as JsonValue[])[1]);
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map);
         }
         let m;
@@ -1295,9 +1296,9 @@ class clsMapdata {
         const gp = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
 
-            const LXY2: unknown[] = [];
+            const LXY2: JsonValue[] = [];
             const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
-            (LXY2 as unknown[]).push((LXY2 as unknown[])[1]);
+            (LXY2 as JsonValue[]).push((LXY2 as JsonValue[])[1]);
             let w = 0;
             if (n2 > 2) {
                 //重心の位置を求める
@@ -1425,7 +1426,7 @@ class clsMapdata {
             const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
             const X = ML.PointSTC[0].x;
             const Y = ML.PointSTC[0].y;
-            const retRin: unknown = SIndex.GetRectIn(X, Y);
+            const retRin: JsonValue = SIndex.GetRectIn(X, Y);
             const n=retRin.number;
             const Onum =retRin.ObStac;
             const Otags=retRin.Tags;
@@ -1485,7 +1486,7 @@ class clsMapdata {
         poxy.length = 0;
         let n = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
-            const XYS: unknown[] = [];
+            const XYS: JsonValue[] = [];
             const Fr = Fringe[Arrange_LineCode[Num][0] + i];
             const PN = this.Get_Coords_by_LineCode(Fr.code, Get_Coords_Data, Fr.Direction, XYS, getStep);
             for (let j = 0; j < PN; j++) {
@@ -1588,7 +1589,7 @@ class clsMapdata {
             ObjData = ObjData_objNum;
         }
 
-        let LCode: unknown[] = [];
+        let LCode: JsonValue[] = [];
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
             const AggObs = this.Get_MpObj_used_AggregateObject(ObjData, Time);
             for (let i = 0; i < AggObs.length; i++) {
@@ -1727,8 +1728,8 @@ class clsMapdata {
     }
 
     //線種で、オブジェクトグループ連動型も一つとして数えて情報を返す
-    Get_TotalLineKind() {
-        const LPC = [];
+    Get_TotalLineKind(): LPatSek_Info[] {
+        const LPC: LPatSek_Info[] = [];
         for (let i = 0; i < this.Map.LpNum; i++) {
             const lk = this.LineKind[i];
             for (let j = 0; j < lk.NumofObjectGroup; j++) {
@@ -2705,7 +2706,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標（戻り値）</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_PolyShape_PolygonNum( ObjData: unknown ,  L_Time: number ,  CutPoint: unknown  = undefined) {
+    Check_PolyShape_PolygonNum( ObjData: JsonObject ,  L_Time: number ,  CutPoint: JsonObject | undefined  = undefined) {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;
@@ -2919,7 +2920,7 @@ class clsMapdata {
 }
 
     /** JSON地図ファイル(mdrmjFlag:trueはmdrmjファイル内の地図データ)読み込み */
-    openJsonMapData(JsonData: unknown, mdrmjFlag: boolean = false) {
+    openJsonMapData(JsonData: JsonObject, mdrmjFlag: boolean = false) {
     this.init_MapData();
     const m = new strMap_data();
     m.FileName = JsonData.Map.FileName;
@@ -3064,7 +3065,7 @@ class clsMapdata {
     }
 }
 
-    private cnvJsonstrYMD(json: unknown) {
+    private cnvJsonstrYMD(json: JsonValue) {
         const nt = new strYMD();
         Object.assign(nt,json);
         // nt.Year = json.Year;
@@ -3073,14 +3074,14 @@ class clsMapdata {
         return nt;
     }
 
-    private cnvJsonStart_End_Time_data(json: unknown) {
+    private cnvJsonStart_End_Time_data(json: JsonValue) {
         const nt = new Start_End_Time_data();
         nt.StartTime = this.cnvJsonstrYMD(json.StartTime);
         nt.EndTime = this.cnvJsonstrYMD(json.EndTime);
         return nt;
     }
 
-    private cnvJsonFont(jsonf: unknown, mdrmjFlag: boolean) {
+    private cnvJsonFont(jsonf: JsonObject, mdrmjFlag: boolean) {
         const newf = new Font_Property();
         if (mdrmjFlag == false) {
             newf.Color = this.cnvJsonColor(jsonf.Body.Color);
@@ -3111,7 +3112,7 @@ class clsMapdata {
     }
 
 
-    private cnvJsonRect(jsonr: unknown, mdrmjFlag: boolean) {
+    private cnvJsonRect(jsonr: JsonObject, mdrmjFlag: boolean) {
         const newr = new rectangle();
         if (mdrmjFlag == false) {
             newr.left = jsonr.Left;
@@ -3124,7 +3125,7 @@ class clsMapdata {
         return newr;
     }
 
-    private cnvJsonColor(jsonc: unknown) {
+    private cnvJsonColor(jsonc: JsonValue) {
         const newc = new colorRGBA();
         Object.assign(newc,jsonc);
         // newc.a = jsonc.a;
@@ -3134,7 +3135,7 @@ class clsMapdata {
         return newc;
     }
 
-    private cnvJsonPoint(jsonp: unknown, mdrmjFlag: boolean) {
+    private cnvJsonPoint(jsonp: JsonObject, mdrmjFlag: boolean) {
         const newp = new point();
         if (mdrmjFlag == false) {
             newp.x = jsonp.X;
@@ -3146,7 +3147,7 @@ class clsMapdata {
         return newp;
     }
 
-    private cnvJsonBackGround_Box_Property(json: unknown, mdrmjFlag: boolean = false) {
+    private cnvJsonBackGround_Box_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new BackGround_Box_Property();
         nt.Tile = this.cnvJsonTile_Property(json.Tile, mdrmjFlag);
         nt.Line = this.cnvJsonLine_Property(json.Line, mdrmjFlag);
@@ -3154,7 +3155,7 @@ class clsMapdata {
         nt.Padding = json.Padding;
         return nt
     }
-    private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: unknown, mdrmjFlag: boolean) {
+    private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new LineEdge_Connect_Pattern_Data_Info();
         if (mdrmjFlag == false) {
             const lc = ['round', 'square','butt' ];
@@ -3167,7 +3168,7 @@ class clsMapdata {
         }
         return nt;
     }
-    private cnvJsonLine_Property(json: unknown, mdrmjFlag: boolean) {
+    private cnvJsonLine_Property(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new Line_Property();
         if (mdrmjFlag == false) {
             nt.Width = json.BasicLine.SolidLine.Width;
@@ -3188,7 +3189,7 @@ class clsMapdata {
         return nt;
     }
 
-    private cnvJsonTile_Property(json: unknown, mdrmjFlag: boolean) {
+    private cnvJsonTile_Property(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new Tile_Property();
         if (mdrmjFlag == false) {
             nt.BlankF = (json.TileCode == 7);
@@ -3200,7 +3201,7 @@ class clsMapdata {
         return nt;
     }
 
-    private cnvJsonMark_Property(json: unknown, mdrmjFlag: boolean = false) {
+    private cnvJsonMark_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new Mark_Property();
         nt.PrintMark = json.PrintMark;
         nt.ShapeNumber = json.ShapeNumber;

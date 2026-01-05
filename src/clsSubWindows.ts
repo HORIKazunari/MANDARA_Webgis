@@ -1,7 +1,7 @@
 ﻿// @ts-nocheck
 import { appState } from './core/AppState';
 import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
-import type { Color, Mark, LinePattern, Font, Tile } from './types';
+import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
 // JavaScript source code
 
@@ -259,7 +259,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     }
 }
 
-function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: unknown): void {
+function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: JsonValue): void {
     /// <signature>
     /// <summary>記号選択</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -2594,7 +2594,7 @@ function frmMain_GetDistance(okEvent: () => void){
         LayerDummy : 2,
         MapObject : 3
     }
-    const pos_info: unknown =function () {
+    const pos_info: JsonObject =function () {
         this.xy =new point();
         this.type ;// DisType
         this.lay ;// Integer
@@ -2853,13 +2853,13 @@ function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, Canc
 
 /**空間検索 */
 function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
-    const normal_data: unknown = function () {
+    const normal_data: JsonObject = function () {
         this.add = 0;
         this.add2 = 0;
         this.max = 0;
         this.min = 0;
     }
-    const category_data: unknown = function () {
+    const category_data: JsonObject = function () {
         this.CateCount = [];
     }
     const bufMode = {
@@ -3293,7 +3293,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
 
 
 /**地図ファイルを開く */
-function openMapFile(call: (data: unknown, filename?: string) => void) {
+function openMapFile(call: (data: JsonValue, filename?: string) => void) {
 
     //地図ファイルを開く
     const bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true,"", 0.2,false);
@@ -3407,7 +3407,7 @@ function openMapFile(call: (data: unknown, filename?: string) => void) {
 
 class strFrmCopyObjectName_init_parameter_data {
     ObjName: string = "";
-    Time: unknown = clsTime.GetNullYMD();
+    Time: JsonValue = clsTime.GetNullYMD();
     TimeChangeEnabled: boolean = true;
     pointShapeChecked: boolean = true;
     lineShapeChecked: boolean = true;
@@ -3418,8 +3418,8 @@ class strFrmCopyObjectName_init_parameter_data {
 }
 
 /**オブジェクト名コピー */
-function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
-    const condidateInfo: unknown =function(){
+function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
+    const condidateInfo: JsonObject =function(){
         this.ObjCode;
         this.TimeStac;
     }
@@ -3454,7 +3454,7 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
     const lbList = new CheckedListBox(backDiv, "", [], 195, 120, 210, 240, false, undefined,"");
     Generic.createNewButton(backDiv, "コピー", "", 220, 375, copy, "width:100px");
 
-    let candidateObject: unknown[] =[];// List(Of condidateInfo)
+    let candidateObject: JsonValue[] =[];// List(Of condidateInfo)
 
     function change(){
 
@@ -3582,11 +3582,11 @@ function frmCopyObjectName(MapData: unknown, initParapeter: strFrmCopyObjectName
 /**ダミーオブジェクトの設定 */
 function frmPrint_DummyObjectGroup(){
 
-    const Dummy: unknown[] = [];//strDummyObjectInfo
-    const DummyOBGroup: unknown[] = [];
+    const Dummy: JsonValue[] = [];//strDummyObjectInfo
+    const DummyOBGroup: JsonValue[] = [];
     const MapFileList = state.attrData.GetMapFileName();
-    const PolygonDummy_ClipSet_F: unknown[] = [];
-    const DummyObjectPointMark: { [key: string]: unknown[] } = {};//strDummyObjectPointMark_Info
+    const PolygonDummy_ClipSet_F: JsonValue[] = [];
+    const DummyObjectPointMark: { [key: string]: JsonValue } = {};//strDummyObjectPointMark_Info
     let LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
     for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
         const al = state.attrData.LayerData[i];

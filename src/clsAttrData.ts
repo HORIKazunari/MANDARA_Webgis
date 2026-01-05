@@ -6,6 +6,7 @@ import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata } from './clsMapdata';
 import type { strLayerInfo } from './clsWindow';
+import type { JsonObject } from './types';
 
 
 // size クラスは globals.d.ts で定義済み
@@ -251,7 +252,7 @@ class strObject_Info {
     NumOfSyntheticObj: number = 0;
     atrObjectData: strObject_Data_Info[] = [];
     MPSyntheticObj: strSynthetic_Object_Data[] = [];
-    TripObjData: unknown[] = [];
+    TripObjData: JsonValue[] = [];
 }
 
 //合成オブジェクト名とコード（属性データ）
@@ -345,7 +346,7 @@ const enmDrawTiming={
 class strTileMapViewInfo {
     Visible: boolean = false;
     AlphaValue: number = 1;
-    TileMapDataSet: unknown = {};
+    TileMapDataSet: JsonObject = {};
     DrawTiming: number = 0;
 
     Clone(): strTileMapViewInfo {
@@ -358,7 +359,7 @@ class strTileMapViewInfo {
 
 /**取得する個別タイル 旧Watchize_Data_Info*/
 class tileList_Data_Info {
-    LatLonBox: unknown = undefined;
+    LatLonBox: JsonObject | undefined = undefined;
     ScrPosition: rectangle = new rectangle();
     URL: string = "";
 }
@@ -1085,7 +1086,7 @@ class strLayerDataInfo {
     ReferenceSystem: number = 0; // enmZahyo_System_Info
     Time: strYMD = new strYMD();
     Comment: string = ""; // String
-    TripTimeSpan: unknown = undefined; // TripTimeSpan_Info (未定義のため暫定的にunknown)
+    TripTimeSpan: JsonObject | undefined = undefined; // TripTimeSpan_Info (未定義のため暫定的にJsonObject)
     TripType: number = 0; // enmTripPositionType
     // オブジェクトの情報
     atrObject: strObject_Info = new strObject_Info();
@@ -1188,7 +1189,7 @@ interface strScreen_Setting_Data_Info {
     MapScale: strScale_Attri;
     MapTitle: strTitle_Attri;
     DataNote: strNote_Attri;
-    AttMapCompass: unknown;//strCompass_Attri (未定義)
+    AttMapCompass: JsonObject | undefined;//strCompass_Attri (未定義)
     MapLegend: strLegend_Attri;
     ThreeDMode: strThreeDMode_Set;
     Clone(): strScreen_Setting_Data_Info;
@@ -1463,7 +1464,7 @@ class Total_Data_Info {
     LV1: strBasic_Data = new strBasic_Data();
     TotalMode: strTotalMode_Info = new strTotalMode_Info();
     ViewStyle: strViewStyle_Info = new strViewStyle_Info();
-    FigureStac: unknown[] = [];
+    FigureStac: JsonValue[] = [];
     Condition: strCondition_DataSet_Info[] = [];//strCondition_DataSet_Info
 
     initTotalData(): void {
@@ -1475,14 +1476,14 @@ class Total_Data_Info {
     }
 }
 
-class strDummyObjectPointMark_Info {
+export class strDummyObjectPointMark_Info {
     ObjectKindName: string = ""; //String
-    mark: Mark_Property = new Mark_Property(); //Mark_Property
+    Mark: Mark_Property = new Mark_Property(); //Mark_Property
     
     Clone(): strDummyObjectPointMark_Info {
         const d = new strDummyObjectPointMark_Info();
         d.ObjectKindName = this.ObjectKindName;
-        d.mark = this.mark.Clone();
+        d.Mark = this.Mark.Clone();
         return d;
     }
 }
@@ -1700,7 +1701,7 @@ class strViewStyle_Info {
     Missing_Data: strMissing_set = new strMissing_set();
     Screen_Back: strScreen_Back_data = new strScreen_Back_data();
     SymbolLine: strSymbol_Lien_Data = new strSymbol_Lien_Data();
-    Trip_Line: unknown; // strTrip_Line_Data (未定義)
+    Trip_Line: JsonObject | undefined; // strTrip_Line_Data (未定義)
     PointPaint_Order: number = 0; // enmPointOnjectDrawOrder
     Dummy_Size_Flag: boolean = false;
     MeshLine: Line_Property = new Line_Property();
@@ -2465,26 +2466,26 @@ class strTempLocationMenuString {
 class frmPrint_temp_info {
     OnObject: strLocationSearchObject[] = [];
     OldObject: strLocationSearchObject[] = [];
-    PrintMouseMode: unknown; // enmPrintMouseMode (未定義)
-    MultiObjectSelectSub: unknown; // enmMultiObjectSelecModesSub (未定義)
+    PrintMouseMode: number | undefined; // enmPrintMouseMode (未定義)
+    MultiObjectSelectSub: number | undefined; // enmMultiObjectSelecModesSub (未定義)
     MultiObjectSelectShowFlag: boolean = false;
     MultiObjects: number[] = [];
-    FigMode: unknown; // strFigureMode (未定義)
-    mouseAccesoryDragType: unknown; // Check_Acc_Result (未定義)
+    FigMode: JsonObject | undefined; // strFigureMode (未定義)
+    mouseAccesoryDragType: JsonObject | undefined; // Check_Acc_Result (未定義)
     OD_Drag: ODBezier_Data = new ODBezier_Data();
     MouseDownF: boolean = false;
     LocationMenuString: strTempLocationMenuString = new strTempLocationMenuString();
     RightButtonClickF: boolean = false;
     SymbolPointFirstMessage: boolean = false;
     LabelPointFirstMessage: boolean = false;
-    Menu_Enable: unknown; // menu_Ename_Info (未定義)
+    Menu_Enable: JsonObject | undefined; // menu_Ename_Info (未定義)
     PointDistanceArea: point[] = [];
-    image: unknown; //出力画面の保存 (未定義)
+    image: JsonValue | undefined; //出力画面の保存 (未定義)
 }
 
 class DotMapTemp_Info {
     DotMapTempResetF: boolean | undefined; // Boolean
-    DotMapPoint: unknown[] = []; // Dictionary(Of Integer, PointF()) (未定義)
+    DotMapPoint: { [key: number]: JsonValue } = {}; // Dictionary(Of Integer, PointF()) (未定義)
 }
 
 class strSeries_Temporaly_Data_Info {
@@ -2494,7 +2495,7 @@ class strSeries_Temporaly_Data_Info {
 }
 class ContourModeTemp_Temporaly_Data_Info {
     ContourDataResetF: boolean | undefined; //Boolean
-    ContourMesh: unknown; //clsMeshContour (未定義)
+    ContourMesh: JsonObject | undefined; //clsMeshContour (未定義)
     Contour_Object: strContour_Line_property[] = [];
     Contour_Point: point[] = [];
     Contour_All_Number: number | undefined; //Integer '描いた等値線の全体数
@@ -2506,30 +2507,30 @@ class ModeValueInScreen_Stac_Info {
     LayerNum: number | undefined; // Integer
     DataNum: number | undefined; // Integer
     divValue: number[] = []; // Double
-    MarkSize_MaxValueMode: unknown; // enmMarkSizeValueMode (未定義)
+    MarkSize_MaxValueMode: number | undefined; // enmMarkSizeValueMode (未定義)
     MarkSize_MaxValue: number | undefined; // Double
-    MarkBar_MaxValueMode: unknown; // enmMarkSizeValueMode (未定義)
+    MarkBar_MaxValueMode: number | undefined; // enmMarkSizeValueMode (未定義)
     MarkBar_MaxValue: number | undefined; // Double
 }
 class strTem {
     Series_temp: strSeries_Temporaly_Data_Info = new strSeries_Temporaly_Data_Info();
     OverLay_Temp: Overlay_Temporaly_Data_Info = new Overlay_Temporaly_Data_Info();
     ContourMode_Temp: ContourModeTemp_Temporaly_Data_Info = new ContourModeTemp_Temporaly_Data_Info();
-    Trip_Temp: unknown; //TripModeTemp_DataInfo (未定義)
+    Trip_Temp: JsonObject | undefined; //TripModeTemp_DataInfo (未定義)
     Accessory_Temp: AccessoryTemp_Infp = new AccessoryTemp_Infp();
     frmPrint_Temp: frmPrint_temp_info = new frmPrint_temp_info();
     FigurePrinted: boolean[] = []; //Boolean
     ObjectPrintedCheckFlag: boolean[] = []; //Boolean
-    PointObjectKindUsedStack: unknown[] = []; //strObjectKindUsed_Info[] (未定義)
+    PointObjectKindUsedStack: JsonValue[] = []; //strObjectKindUsed_Info[] (未定義)
     drawing: boolean | undefined; //boolean描画中
     DotMap_Temp: DotMapTemp_Info = new DotMapTemp_Info();
     ModeValueInScreen_Stac: ModeValueInScreen_Stac_Info = new ModeValueInScreen_Stac_Info();
     // 地図の緯度経度の領域
-    MapAreaLatLon: unknown; //RectangleF (未定義)
+    MapAreaLatLon: JsonObject | undefined; //RectangleF (未定義)
     SoubyouLayerEnable: boolean[] = []; //Boolean
-    SoubyouLoopLineArea: unknown[] = []; //(未定義)
-    SoubyouLoopAreaCriteria: unknown; //(未定義)
-    SoubyouLinePointIntervalCriteria: unknown; //(未定義)
+    SoubyouLoopLineArea: JsonValue[] = []; //(未定義)
+    SoubyouLoopAreaCriteria: JsonValue | undefined; //(未定義)
+    SoubyouLinePointIntervalCriteria: JsonValue | undefined; //(未定義)
 }
 
 
@@ -2561,7 +2562,7 @@ class strLayerReadingInfo {
     Note: string[] = [];
     ObjectDataStac: strObject_Data_Info[] = [];
     Dummy_Temp: strDummyObjectName_and_Code[] = [];
-    Dummy_OBKTemp: unknown[] = []; // (未定義)
+    Dummy_OBKTemp: JsonValue[] = []; // (未定義)
     Comment_Temp: string = "";
 
     //レイヤの初期化。タイプはNormal形状はNotDefinition
@@ -2582,7 +2583,7 @@ class strLayerReadingInfo {
         this.MeshType = enmMesh_Number.mhNonMesh;
     }
 }
-const strSaveLinePat_Info: unknown =function(){
+const strSaveLinePat_Info: JsonObject =function(){
     this. MapNum ;// Integer
     this. MapFileName=[];//  As String
     this. LpatNumByMapfile=[];//  As Integer
@@ -2594,10 +2595,16 @@ class clsAttrData {
     TempData: strTem;
     LayerData: strLayerDataInfo[];
     TotalData: Total_Data_Info;
-    MapData: unknown; // clsAttrMapData
+    MapData: clsAttrMapData;
     MPSubLine: strGetLinePointAPI_Info;
     LineKindUse: boolean[];
-    private defaultColor: unknown;
+    private defaultColor: {
+        paintMode: colorRGBA[];
+        markColorTrance: colorRGBA;
+        markColor: colorRGBA;
+        markBarColor: colorRGBA;
+        minusColor: colorRGBA;
+    };
 
     constructor() {
         this.defaultColor = {}
@@ -3479,7 +3486,7 @@ class clsAttrData {
     }
 
     //レイヤ・データ・オブジェクトを指定して値を取得
-    Get_Data_Value(Layernum: number, DataNum: number, Obj: number, Missing_word: string): unknown {
+    Get_Data_Value(Layernum: number, DataNum: number, Obj: number, Missing_word: string): string | number {
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         const v = ad.Value[Obj];
         if (ad.MissingF == false) {
@@ -3590,14 +3597,14 @@ class clsAttrData {
         this.MapData.RemoveMapData(MapFileName);
     }
     //既存地図ファイル追加
-    AddExistingMapData(MData: unknown, MapFileName: string): void {
+    AddExistingMapData(MData: clsMapdata, MapFileName: string): void {
         if (this.MapData == undefined) {
             this.MapData = new clsAttrMapData();
         }
         this.MapData.AddExistingMapData(MData, MapFileName);
     }
     //同じ名前の地図ファイルが存在する場合、別名をつけて返す
-    getUniqueMapFileName(checkMfile: unknown): string {
+    getUniqueMapFileName(checkMfile: string): string {
         const ExtMfile = this.GetMapFileName();
         if (ExtMfile.indexOf(checkMfile) == -1) {
             return checkMfile;
@@ -3610,7 +3617,7 @@ class clsAttrData {
         }
     }
     //地図デーセットをセットする 空白の場合、最初に読み込まれた地図
-    SetMapFile(MapFileName: string): unknown {
+    SetMapFile(MapFileName: string): clsMapdata | undefined {
         return this.MapData.SetMapFile(MapFileName);
     }
 
@@ -3725,7 +3732,7 @@ class clsAttrData {
             this.Change_Acc_Position_by_Accessory_Base_Set_Screen()
         }
     }
-    Boundary_Kencode_Arrange(Layernum: number, ObjNum: number): unknown {
+    Boundary_Kencode_Arrange(Layernum: number, ObjNum: number): boundArrangeData {
         const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
         let badata = new boundArrangeData();
 
@@ -3770,7 +3777,7 @@ class clsAttrData {
     }
 
     //変換した座標を計算済み座標に登録
-    Set_MPSubLineXY(MapFileName: string, LineCode: number, XY: unknown, ReverseF: boolean): void {
+    Set_MPSubLineXY(MapFileName: string, LineCode: number, XY: point[], ReverseF: boolean): void {
         const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         const LP = new strGetLinePointAPI_Info();
         LP.GetF = true;
@@ -3788,7 +3795,7 @@ class clsAttrData {
         }
     }
 
-    getMpLineDrawn(MapFileName: string, LineCode: number): unknown {
+    getMpLineDrawn(MapFileName: string, LineCode: number): boolean | undefined {
         const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         if (LinePoint[LineCode] == undefined) {
             return undefined;
@@ -3796,7 +3803,7 @@ class clsAttrData {
             return this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn;
         }
     }
-    setMpLineDrawn(MapFileName: string, LineCode: number, value: unknown): void {
+    setMpLineDrawn(MapFileName: string, LineCode: number, value: boolean): void {
          this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn = value;
     }
 
@@ -3806,7 +3813,7 @@ class clsAttrData {
         const n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         return this.LineKindUse[n];
     }
-    setLineKindUseChecked(MapFileName: string, lineKindNum: number, PatternNum: number, value: unknown): void {
+    setLineKindUseChecked(MapFileName: string, lineKindNum: number, PatternNum: number, value: boolean): void {
         const n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         this.LineKindUse[n] = value;
     }
@@ -3817,7 +3824,7 @@ class clsAttrData {
     }
 
     //地図データの保存してある計算済み座標を取得する
-    Get_MPSubLineXY(MapFileName: string, LineCode: number, ReverseF: boolean): unknown {
+    Get_MPSubLineXY(MapFileName: string, LineCode: number, ReverseF: boolean): point[] {
         let xy = [];
         const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         const MPSubLinePointXY = LinePoint[LineCode];
@@ -3858,7 +3865,7 @@ class clsAttrData {
     }
 
     //**点ダミーオブジェクトの凡例表示用に記録する */
-    AddPointObjectKindUsed(MapFilename: string, ObjKindNumber: number, MK: unknown): void {
+    AddPointObjectKindUsed(MapFilename: string, ObjKindNumber: number, MK: Mark_Property): void {
         for(const i in this.TempData.PointObjectKindUsedStack){
             const Ob=this.TempData.PointObjectKindUsedStack[i];
             if(( Ob.MapFileName== MapFilename )&&( Ob.ObjectKindNumber == ObjKindNumber) ){
@@ -3985,11 +3992,11 @@ class clsAttrData {
     }
 
     /**レイヤの地図ファイルのオブジェクト番号からオブジェクトの外周を取得 */
-    Get_Object_Circumscribed_Rectangle(Layernum: number, ObjCode: number): unknown {
+    Get_Object_Circumscribed_Rectangle(Layernum: number, ObjCode: number): rectangle {
         return this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
     }
     //レイヤのオブジェクト位置からオブジェクトの外周を取得
-    Get_Kencode_Object_Circumscribed_Rectangle(Layernum: number, ObjNum: number): unknown {
+    Get_Kencode_Object_Circumscribed_Rectangle(Layernum: number, ObjNum: number): rectangle {
         const LD = this.LayerData[Layernum];
         switch (LD.Type) {
             case enmLayerType.Mesh: {
@@ -4030,7 +4037,7 @@ class clsAttrData {
                 for (let i = 0; i < PointObjG[key].length; i++) {
                     const dd = new strDummyObjectPointMark_Info();
                     dd.ObjectKindName = PointObjG[key];
-                    dd.mark = clsBase.Mark();
+                    dd.Mark = clsBase.Mark();
                     d.push(dd);
                 }
                 vs.DummyObjectPointMark[key] = d;
@@ -4039,17 +4046,17 @@ class clsAttrData {
     }
 
     //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
-    GetAllPointObjectGroup(): unknown {
+    GetAllPointObjectGroup(): { [key: string]: string[] } {
         return this.MapData.GetAllPointObjectGroup();
     }
 
     /**読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す */
-    Get_AllMapLineKind(): unknown {
+    Get_AllMapLineKind(): LPatSek_Info[] {
         return this.MapData.GetAllMapLineKind();
     }
 
     /**読み込んだ地図ファイルの全線種名（オブジェクト連動型を含む）一覧を返す */
-    GetAllMapLineKindName(): unknown {
+    GetAllMapLineKindName(): string[] {
         return this.MapData.GetAllMapLineKindName();
     }
     //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
@@ -4209,14 +4216,14 @@ class clsAttrData {
     }
 
     /**現在のレイヤのグラフモードを返す */
-    layerGraph(): unknown {
+    layerGraph(): IGraphMode {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
     }
 
     /**現在のレイヤのグラフモードの選択データセットを返す */
-    nowGraph(): unknown {
+    nowGraph(): IGraphDataSet {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const gv=state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
@@ -4224,34 +4231,34 @@ class clsAttrData {
     }
 
     /**現在のレイヤのラベルモードを返す */
-    layerLabel(): unknown {
+    layerLabel(): ILabelMode {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
     }
     /**現在のレイヤのラベルモードの選択データセットを返す */
-    nowLabel(): unknown {
+    nowLabel(): ILabelDataSet {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         return lv.DataSet[lv.SelectedIndex];;
     }
     /**現在の重ね合わせモードのデータセットを返す */
-    nowSeries(): unknown {
+    nowSeries(): ISeriesDatasetInfo {
         const state = appState();
         const series = state.attrData.TotalData.TotalMode.Series;
         return series.DataSet[series.SelectedIndex];
     }
 
     /**現在の重ね合わせモードのデータセットを返す */
-    nowOverlay(): unknown {
+    nowOverlay(): IOverLayDatasetInfo {
         const state = appState();
         const over = state.attrData.TotalData.TotalMode.OverLay;
         return over.DataSet[over.SelectedIndex];
     }
 
     /**現在のレイヤの位置を返す */
-    nowLayer(): unknown {
+    nowLayer(): ILayerDataInfo {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum];
@@ -4259,7 +4266,7 @@ class clsAttrData {
 
     /**
      * 現在のレイヤ・データ項目の位置を返す */
-    nowData(): unknown {
+    nowData(): IDataItem {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
@@ -4267,7 +4274,7 @@ class clsAttrData {
     }
 
     /**現在のレイヤ・データ項目のSoloModeViewSettings位置を返す */
-    nowDataSolo(): unknown {
+    nowDataSolo(): ISoloModeViewSettings {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const DataNum = this.LayerData[Layernum].atrData.SelectedIndex;
@@ -4275,12 +4282,12 @@ class clsAttrData {
     }
 
     //単独表示モードのモードを取得
-    getSoloMode(LayerNum: number, DataNum: number): unknown {
-        return this.LayerData[LayerNum].atrData.Data[DataNum].ModeData;
+    getSoloMode(LayerNum: number, DataNum: number): ISoloModeViewSettings {
+        return this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings;
     }
 
-    setSoloMode(LayerNum: number, DataNum: number, mode: unknown): void {
-        this.LayerData[LayerNum].atrData.Data[DataNum].ModeData = mode;
+    setSoloMode(LayerNum: number, DataNum: number, mode: ISoloModeViewSettings): void {
+        this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings = mode;
     }
 
     //データの緯度経度の領域を返す
@@ -4389,7 +4396,7 @@ class clsAttrData {
         return LLRect;
     }
 
-    getLinelatLon(mapdata: unknown, LineNumber: number, rect: rectangle): rectangle {
+    getLinelatLon(mapdata: clsMapdata, LineNumber: number, rect: rectangle): rectangle {
         const ml=mapdata.MPLine[LineNumber];
         const LP=[];
         for (let i = 0; i <  ml.NumOfPoint;i++){
@@ -4400,7 +4407,7 @@ class clsAttrData {
         return newRect;
     }
     //MANDARAファイルデータを開く
-    OpenNewMandaraFile(MapDataList: unknown, attrText: string, filename: string, ext: string): unknown {
+    OpenNewMandaraFile(MapDataList: clsMapdata[], attrText: string, filename: string, ext: string): { ok: boolean; emes: string } {
         let retv;
         if (ext == "clipboard") {
             retv = this.SetDataFromClipBoard(MapDataList, attrText)
@@ -4429,7 +4436,7 @@ class clsAttrData {
         return retv;
     }
     //mdrjファイルから読み込み
-    SetDataFromMDRJ(MapDataList: unknown, attrText: string): unknown {
+    SetDataFromMDRJ(MapDataList: clsMapdata[], attrText: string): JsonObject {
         const state = appState();
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
@@ -4480,7 +4487,7 @@ class clsAttrData {
         const oldDOG = oldvs.DummyObjectPointMark;
         for (const key in oldDOG) {
             const d = oldDOG[key];
-            const nd: unknown[] = [];
+            const nd: JsonValue[] = [];
             for (let i = 0; i < d.length; i++) {
                 const dd = new strDummyObjectPointMark_Info();
                 dd.ObjectKindName = d.ObjectKindName;
@@ -4602,14 +4609,14 @@ class clsAttrData {
         return { ok: true, emes: ObjectErrorMessage };
 
         //-----------------
-        function cnvAccessoryGroupBox(oa: unknown){
+        function cnvAccessoryGroupBox(oa: JsonValue){
             const d=new strAccessoryGroupBox_Info();
             Object.assign(d, oa);
             d.Back=cnvBackGround_Box_Property(oa.Back);
             return d;
         }
 
-        function cnvLayerData(oldLay: unknown) {
+        function cnvLayerData(oldLay: JsonValue) {
             const ld = new strLayerDataInfo();
             ld.Name = oldLay.Name;
             ld.MapFileName = oldLay.MapFileName;
@@ -4821,21 +4828,21 @@ class clsAttrData {
             return ld;
         }
 
-        function cnvArrow(oa: unknown) {
+        function cnvArrow(oa: JsonValue) {
             const a = new Arrow_Data();
             Object.assign(oa);
             return a;
         }
-        function cnvStart_End_Time_data(ot: unknown) {
+        function cnvStart_End_Time_data(ot: JsonValue) {
             const nt = new Start_End_Time_data();
             nt.StartTime = new strYMD(ot.StartTime);
             nt.EndTime = new strYMD(ot.EndTime);
             return nt;
         }
-        function cnvTime(oldT: unknown) {
+        function cnvTime(oldT: JsonValue) {
             return new strYMD(oldT.Year, oldT.Month, oldT.Day);
         }
-        function cnvTotalmode(oldTM: unknown) {
+        function cnvTotalmode(oldTM: JsonValue) {
             const otmo = oldTM.OverLay;
             const tm = new strTotalMode_Info();
             const tmo = tm.OverLay;
@@ -4872,8 +4879,8 @@ class clsAttrData {
             return tm;
         }
 
-        function cnvCondition(oldC: unknown) {
-            const cd = [];
+        function cnvCondition(oldC: Array<JsonObject>) {
+            const cd: strCondition_DataSet_Info[] = [];
             for (let i = 0; i < oldC.length; i++) {
                 const od = oldC[i];
                 const d = new strCondition_DataSet_Info();
@@ -4895,13 +4902,13 @@ class clsAttrData {
             }
             return cd;
         }
-        function cnvTileMapView(oldTV: unknown){
+        function cnvTileMapView(oldTV: JsonValue){
             const tm = new strTileMapViewInfo();
             Object.assign(tm, oldTV);
             return tm;
         }
 
-        function cnvSouByou(oldSB: unknown) {
+        function cnvSouByou(oldSB: JsonValue) {
             const sb = new strSouByou_Info();
             Object.assign(sb, oldSB);
             if (sb.Auto==undefined){
@@ -4911,7 +4918,7 @@ class clsAttrData {
             return sb;
         }
 
-        function cnvValueShow(oldvs: unknown) {
+        function cnvValueShow(oldvs: JsonValue) {
             const sv = new strValueShow_Info();
             Object.assign(sv, oldvs);
             if (sv.DecimalNumber == undefined) {
@@ -4925,30 +4932,31 @@ class clsAttrData {
             return sv;
         }
 
-        function cnvScreen_Setting(oldSS: unknown) {
-            const ss = [];
+        function cnvScreen_Setting(oldSS: Array<JsonObject>) {
+            const ss: strScreen_Setting_Data_Info[] = [];
             for (let i = 0; i < oldSS.length; i++) {
+                const oldItem = oldSS[i];
                 const s = new strScreen_Setting_Data_Info();
-                s.title = oldSS.Title;
-                s.frmPrint_FormSize = cnvRectgle(oldSS.frmPrint_FormSize);
-                s.ScrView = cnvRectgle(oldSS.ScrView);
+                s.title = oldItem.Title;
+                s.frmPrint_FormSize = cnvRectgle(oldItem.frmPrint_FormSize);
+                s.ScrView = cnvRectgle(oldItem.ScrView);
                 s.Screen_Margin = new ScreenMargin();
-                s.Screen_Margin.ClipF = oldSS.Screen_Margin.ClipF;
-                s.Screen_Margin.rect = cnvRectgle(oldSS.Screen_Margin.rect);
-                s.Accessory_Base = oldSS.Accessory_Base;
-                s.MapScale = cnvMapSCL(oldSS.MapScale);
-                s.MapTitle = cnvMapTitle(oldSS.MapTitle);
-                s.DataNote = cnvDataNode(oldvs.DataNote);
-                s.AttMapCompass = cnvCompass(oldvs.AttMapCompass);
-                s.MapLegend = cnvMapLegend(oldvs.MapLegend);
+                s.Screen_Margin.ClipF = oldItem.Screen_Margin.ClipF;
+                s.Screen_Margin.rect = cnvRectgle(oldItem.Screen_Margin.rect);
+                s.Accessory_Base = oldItem.Accessory_Base;
+                s.MapScale = cnvMapSCL(oldItem.MapScale);
+                s.MapTitle = cnvMapTitle(oldItem.MapTitle);
+                s.DataNote = cnvDataNode(oldItem.DataNote);
+                s.AttMapCompass = cnvCompass(oldItem.AttMapCompass);
+                s.MapLegend = cnvMapLegend(oldItem.MapLegend);
                 s.ThreeDMode = new strThreeDMode_Set();
-                Object.assign(s.ThreeDMode, oldSS.ThreeDMode);
+                Object.assign(s.ThreeDMode, oldItem.ThreeDMode);
                 ss.push(s);
             }
             return ss;
         }
 
-        function cnvDataNode(oldDN: unknown) {
+        function cnvDataNode(oldDN: JsonValue) {
             const dn = new strNote_Attri();
             dn.Visible = oldDN.Visible;
             dn.Position = cnvPoint(oldDN.Position);
@@ -4957,7 +4965,7 @@ class clsAttrData {
             return dn;
         }
 
-        function cnvScreen_Back(oldsb: unknown) {
+        function cnvScreen_Back(oldsb: JsonValue) {
             const sb = new strScreen_Back_data();
             sb.MapAreaFrameLine = cnvLineProperty(oldsb.MapAreaFrameLine);
             sb.ScreenFrameLine = cnvLineProperty(oldsb.ScreenFrameLine);
@@ -4966,7 +4974,7 @@ class clsAttrData {
             sb.ObjectInner = cnvTileProperty(oldsb.ObjectInner);
             return sb;
         }
-        function cnvMissingData(oldM: unknown) {
+        function cnvMissingData(oldM: JsonValue) {
             const m = new strMissing_set();
             m.Print_Flag = oldM.Print_Flag;
             m.Text = oldM.Text;
@@ -4979,7 +4987,7 @@ class clsAttrData {
             m.LineShape = cnvLineProperty(oldM.LineShape);
             return m;
         }
-        function cnvMapTitle(oldTtl: unknown) {
+        function cnvMapTitle(oldTtl: JsonValue) {
             const ttl = new strTitle_Attri();
             ttl.Visible = oldTtl.Visible;
             ttl.Position = cnvPoint(oldTtl.Position);
@@ -4987,7 +4995,7 @@ class clsAttrData {
             ttl.Font = cnvFontProperty(oldTtl.Font);
             return ttl;
         }
-        function cnvMapSCL(olsSCL: unknown) {
+        function cnvMapSCL(olsSCL: JsonValue) {
             const scl = new strScale_Attri();
             scl.Visible = olsSCL.Visible;
             scl.Position = cnvPoint(olsSCL.Position);
@@ -5000,7 +5008,7 @@ class clsAttrData {
             scl.Unit = olsSCL.Unit;
             return scl;
         }
-        function cnvMapLegend(oldML: unknown) {
+        function cnvMapLegend(oldML: JsonValue) {
             const MapLegend = new strLegend_Attri();
             const mlb = MapLegend.Base;
             mlb.Back = cnvBackGround_Box_Property(oldML.Base.Back);
@@ -5048,14 +5056,14 @@ class clsAttrData {
             return MapLegend;
         }
 
-        function cnvPoint(oldP: unknown) {
+        function cnvPoint(oldP: JsonValue) {
             return new point(oldP.x, oldP.y);
         }
-        function cnvRectgle(orect: unknown) {
+        function cnvRectgle(orect: JsonValue) {
             const rec = new rectangle(orect.left, orect.right, orect.top, orect.bottom);
             return rec;
         }
-        function cnvCompass(ovsc: unknown) {
+        function cnvCompass(ovsc: JsonValue) {
             const vsc = new strCompass_Attri();
             vsc.dirWord.East = ovsc.dirWord.East;
             vsc.dirWord.West = ovsc.dirWord.West;
@@ -5068,7 +5076,7 @@ class clsAttrData {
             vsc.Position.y = ovsc.Position.y;
             return vsc;
         }
-        function cnvMarkProperty(oldMK: unknown) {
+        function cnvMarkProperty(oldMK: JsonValue) {
             const mk = new Mark_Property();
             mk.PrintMark = oldMK.PrintMark;
             mk.ShapeNumber = oldMK.ShapeNumber;
@@ -5078,7 +5086,7 @@ class clsAttrData {
             mk.WordFont = cnvFontProperty(oldMK.WordFont);
             return mk;
         }
-        function cnvFontProperty(oldFont: unknown) {
+        function cnvFontProperty(oldFont: JsonValue) {
             const fnt = new Font_Property();
             fnt.Color = cnvColorProperty(oldFont.Color);
             fnt.Size = oldFont.Size;
@@ -5106,7 +5114,7 @@ class clsAttrData {
             }
             return fnt;
         }
-        function cnvBackGround_Box_Property(oldBK: unknown) {
+        function cnvBackGround_Box_Property(oldBK: JsonValue) {
             const bk = new BackGround_Box_Property();
             bk.Tile = cnvTileProperty(oldBK.Tile)
             bk.Line = cnvLineProperty(oldBK.Line);
@@ -5114,11 +5122,11 @@ class clsAttrData {
             bk.Padding = oldBK.Padding;
             return bk;
         }
-        function cnvColorProperty(oldColor: unknown) {
+        function cnvColorProperty(oldColor: JsonValue) {
             const col = new colorRGBA();
             return Object.assign(col, oldColor);
         }
-        function cnvLineProperty(oldLine: unknown) {
+        function cnvLineProperty(oldLine: JsonValue) {
             const line = new Line_Property();
             line.BlankF = oldLine.BlankF;
             line.Width = oldLine.Width;
@@ -5126,11 +5134,11 @@ class clsAttrData {
             line.Edge_Connect_Pattern = cnvLineEdgeProperty(oldLine.Edge_Connect_Pattern);
             return line;
         }
-        function cnvLineEdgeProperty(oldLineEdsge: unknown) {
+        function cnvLineEdgeProperty(oldLineEdsge: JsonValue) {
             const ledge = new LineEdge_Connect_Pattern_Data_Info();
             return Object.assign(ledge, oldLineEdsge);
         }
-        function cnvTileProperty(oldTile: unknown) {
+        function cnvTileProperty(oldTile: JsonValue) {
             const tile = new Tile_Property();
             tile.BlankF = oldTile.BlankF;
             tile.Color = cnvColorProperty(oldTile.Color);
@@ -5139,7 +5147,7 @@ class clsAttrData {
 }
 
     //クリップボードから読み込み
-    SetDataFromClipBoard(MapDataList: unknown, attrText: string): unknown {
+    SetDataFromClipBoard(MapDataList: clsMapdata[], attrText: string): JsonObject {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
@@ -5161,7 +5169,7 @@ class clsAttrData {
     }
 
     //Clipboard,CSVのデータを一行ずつ処理して読み込む
-    ReadAttrDataOneLine(STR: string): unknown {
+    ReadAttrDataOneLine(STR: string): JsonObject {
         const state = appState();
         let ObjectErrorMessage = '';
         let lay = -1;
@@ -5583,7 +5591,7 @@ class clsAttrData {
     }
 
     /**オブジェクトからオブジェクトコードを返す。見つからない場合は-1を返す Timeは地図ファイル指定の場合     */
-    Get_ObjectCode_from_ObjName(Layernum_MapfileName: unknown, ObjName: string, Time: number): number {
+    Get_ObjectCode_from_ObjName(Layernum_MapfileName: JsonValue, ObjName: string, Time: number): number {
         if(typeof(Layernum_MapfileName)==="string"){//地図ファイル指定
             const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
             return MapFileObjectNameSearch.Get_KenToCode(ObjName, Time);
@@ -5595,7 +5603,7 @@ class clsAttrData {
 
 
     //文字列からデータに変換
-    Set_Data_from_String(LayerReading: unknown, TotalMissing: unknown): unknown {
+    Set_Data_from_String(LayerReading: JsonValue, TotalMissing: JsonValue): JsonValue {
         let E_Mes = "";
         const MapFileData = this.MapData.SetMapFile(LayerReading.MapFile);
         const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile);
@@ -5789,7 +5797,7 @@ class clsAttrData {
 
 
     //レイヤ単位で文字列配列に入れたデータを設定する
-    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string, UNT: string, DTMissing: string, Note: string, DN_Str: string): unknown {
+    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string, UNT: string, DTMissing: string, Note: string, DN_Str: string): void {
         let ErrorMes = "";
         const L = this.LayerData[Layernum];
         const ObjNum = L.atrObject.ObjectNum;
@@ -6346,7 +6354,7 @@ class clsAttrData {
 
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
-    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): unknown[] {
+    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): JsonValue[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
             case enmKenCodeObjectstructure.MapObj:
                 const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
@@ -6358,7 +6366,7 @@ class clsAttrData {
         }
     }
     //合成オブジェクトの外周線を返す
-    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): unknown[] {
+    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): JsonValue[] {
         const LD = this.LayerData[Layernum];
         const SO_Code = LD.atrObject.atrObjectData[ObjNum].MpObjCode;
         const Time = LD.Time;
@@ -6525,7 +6533,7 @@ class clsAttrData {
     }
 
     /**指定レイヤの条件設定情報を文字列で出力 */
-    Get_Condition_Info(Layernum: number): unknown {
+    Get_Condition_Info(Layernum: number): JsonObject {
         let ST1 = "表示オブジェクト限定:"
 
         if (this.Check_ObjectLimitation(Layernum) == true) {
@@ -6598,7 +6606,7 @@ class clsAttrData {
     }
 
     //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数えて文字列で出力
-    Get_Condition_Ok_Num_Info(Layernum: number): unknown {
+    Get_Condition_Ok_Num_Info(Layernum: number): JsonObject {
         let T = this.Get_Layer_Name(Layernum,false);
         T += "全オブジェクト数:"+ this.Get_ObjectNum(Layernum).toString()  + '\n';
         T += "条件に適合するオブジェクト数:" + this.Get_Condition_Ok_Num(Layernum).toString() +  '\n' + '\n';
@@ -6747,10 +6755,10 @@ class clsAttrData {
 
 
     //データ項目のデータを配列で取得、欠損値は最小値-1に、カテゴリーデータの場合はカテゴリーの位置
-    Get_Data_Cell_Array_With_MissingValue(Layernum: number, DataNum: number): unknown[] {
+    Get_Data_Cell_Array_With_MissingValue(Layernum: number, DataNum: number): JsonValue[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
-        let DT: unknown[] = [];
+        let DT: JsonValue[] = [];
         if (ad.EnableValueNum == 0) {
             return DT;
         }
@@ -6774,7 +6782,7 @@ class clsAttrData {
     }
 
     //データ項目のデータが欠損値だった場合にTRUEが入る配列を返す
-    Get_Missing_Value_DataArray(Layernum: number, DataNum: number): unknown[] {
+    Get_Missing_Value_DataArray(Layernum: number, DataNum: number): JsonValue[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let dt =[];
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
@@ -7127,7 +7135,7 @@ class clsAttrData {
     }
 
     //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
-    Get_InnerTile(InnerData: unknown, Layernum: number, CategoryPos: number): unknown {
+    Get_InnerTile(InnerData: JsonValue, Layernum: number, CategoryPos: number): JsonValue {
         let t;
         if (CategoryPos == -1) {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
@@ -7193,7 +7201,7 @@ class clsAttrData {
     }
 
     //複数グラデーション
-    FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: unknown, col: unknown): void {
+    FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: JsonValue, col: JsonValue): void {
         let ColData = [];// colorARGB
 
         if (Color_cng_n == GradationPoint4) { return; }
@@ -7438,7 +7446,7 @@ class clsAttrData {
     }
 
     //欠損値を除いた配列でデータ項目の値を取得
-    Get_Data_Cell_Array_Without_MissingValue(LayerNum: number, DataNum: number): unknown[] {
+    Get_Data_Cell_Array_Without_MissingValue(LayerNum: number, DataNum: number): JsonValue[] {
         const ObjNum = this.LayerData[LayerNum].atrObject.ObjectNum;
         const DT = [];
         const LD = this.LayerData[LayerNum].atrData.Data[DataNum];
@@ -7466,7 +7474,7 @@ class clsAttrData {
         }
     }
 
-    Get_DataType(Layernum: number, DataNum: number): unknown {
+    Get_DataType(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].DataType;
 
     }
@@ -7474,7 +7482,7 @@ class clsAttrData {
         return this.LayerData[Layernum].atrData.Data[DataNum].Note;
     }
 
-    Set_DataTitle_to_CheckedListBox(CheckedListBox: unknown, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
+    Set_DataTitle_to_CheckedListBox(CheckedListBox: HTMLElement, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const list = [];
         for(const i in titles){
@@ -7485,7 +7493,7 @@ class clsAttrData {
     }
 
 
-    Set_DataTitle_to_cboBox(cbox: unknown, Layernum: number, SelectedIndex: number, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
+    Set_DataTitle_to_cboBox(cbox: HTMLElement, Layernum: number, SelectedIndex: number, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const items = [];
         for (let i = 0; i < titles.length; i++) {
@@ -7654,9 +7662,9 @@ class clsAttrData {
     }
 
     /** 連続表示モードのデータセットをリストビューに入れる*/
-    SeriesMode_to_ListViewData(seriesListView: unknown, DataSetItem: unknown): void {
+    SeriesMode_to_ListViewData(seriesListView: HTMLElement, DataSetItem: JsonValue): void {
         seriesListView.clear();
-        const seriesData: unknown[] = [4];
+        const seriesData: JsonValue[] = [4];
         for (let i = 0; i < DataSetItem.length; i++) {
             const di = DataSetItem[i];
             seriesData[0] = Number((i + 1).toString());
@@ -7703,7 +7711,7 @@ class clsAttrData {
         }
 
     }
-    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: number, LayerSystem: number, comment: string, ObjectNum: number, ObjData: unknown): void {
+    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: number, LayerSystem: number, comment: string, ObjectNum: number, ObjData: JsonValue): void {
         //レイヤの追加
         const NewL = new strLayerDataInfo();
         if (LayerMapFile == "") {
@@ -7732,7 +7740,7 @@ class clsAttrData {
     }
 
     /**レイヤ名をセレクトボックスに入れる */
-    Set_LayerName_to(selbox: unknown, SelectedIndex: number, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
+    Set_LayerName_to(selbox: HTMLElement, SelectedIndex: number, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
         const state = appState();
         const lst = [];
         let fall=false;
@@ -7767,7 +7775,7 @@ class clsAttrData {
 
     
     /**セレクトボックスにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    Set_ObjectName_to_selectBox(selbox: unknown, Layernum: number, SelectedObject: number): void {
+    Set_ObjectName_to_selectBox(selbox: HTMLElement, Layernum: number, SelectedObject: number): void {
         const objList=[];
         selbox.removeAll();
         const L = this.LayerData[Layernum].atrObject;
@@ -7780,7 +7788,7 @@ class clsAttrData {
         }
     }
     /**セレクトボックスにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    Set_DummyObjectName_to_selectBox(selbox: unknown, Layernum: number, SelectedObject: number): void {
+    Set_DummyObjectName_to_selectBox(selbox: HTMLElement, Layernum: number, SelectedObject: number): void {
         const objList = [];
         selbox.removeAll();
         const L = this.LayerData[Layernum].Dummy
@@ -7794,7 +7802,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    Set_ObjectName_to_checkedListBox(lbox: unknown, Layernum: number, SelectedObjects: unknown): void {
+    Set_ObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects: JsonValue): void {
         const objList=[];
         lbox.removeAll();
         const L = this.LayerData[Layernum].atrObject;
@@ -7809,7 +7817,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    Set_DummyObjectName_to_checkedListBox(lbox: unknown, Layernum: number, SelectedObjects: unknown): void {
+    Set_DummyObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects: JsonValue): void {
         const objList=[];
         lbox.removeAll();
         const L=this.LayerData[Layernum].Dummy
@@ -7832,7 +7840,7 @@ class clsAttrData {
     /**オブジェクトと座標の距離 */
     Distance_Kencode_Point(Layernum: number, Obj: number, Point: point): number {
         const L = this.LayerData[Layernum];
-        let v: unknown;
+        let v: JsonValue;
         if (L.Shape == enmShape.LineShape) {
             v = this.Get_Distance_Kencode_Between_ObjectLine_and_Point(Layernum, Obj, Point);
         } else {
@@ -7919,7 +7927,7 @@ class clsAttrData {
     }
 
     /**オブジェクトを削除（移動レイヤ、移動主体定義レイヤ、合成オブジェクト使用レイヤは削除不可 LayerDelNum:レイヤごとの削除数の配列。削除しない場合は0,ObjectDeleteCheck:オブジェクトの数だけの配列で、削除する場合Trueを、全レイヤ分Listに格納） */
-    DeleteObjects(LayerDelNum: number, ObjectDeleteCheck: unknown): void {
+    DeleteObjects(LayerDelNum: number, ObjectDeleteCheck: JsonValue): void {
         //線モードの起点オブジェクトをチェックするために新旧対応リスト作成
         const LayMax=this.TotalData.LV1.Lay_Maxn;
         const ConvObj = [];
@@ -8091,17 +8099,17 @@ class clsAttrMapData {
     private strAttrMap = class {
         FileName: string | undefined; //String
         FullPath: string | undefined; //String
-        Mapdata: unknown; //clsMapData
+        Mapdata: clsMapdata; //clsMapData
     };
     private Prestage_MapFileName: string = "";
-    private attrMapData: Record<string, unknown> = {}; //  clsMapData
-    private Object_Name_Search: Record<string, unknown> = {}; //clsObjectNameSearch
+    private attrMapData: Record<string, clsMapdata> = {}; //  clsMapData
+    private Object_Name_Search: Record<string, clsSortingSearch> = {}; //clsObjectNameSearch
 
-    getAllMapData(): unknown[] {
+    getAllMapData(): clsMapdata[] {
         return this.attrMapData;
     }
 
-    AddExistingMapData(MapData: unknown, MapFileName: string): void {
+    AddExistingMapData(MapData: clsMapdata, MapFileName: string): void {
         const key = MapFileName.toUpperCase();
         this.attrMapData[key] = MapData;
         this.Object_Name_Search[key] = new clsObjectNameSearch(MapData, true);
@@ -8109,7 +8117,7 @@ class clsAttrMapData {
             this.Prestage_MapFileName = key;
         }
     }
-    SetMapFile(MapFileName: string): unknown {
+    SetMapFile(MapFileName: string): clsMapdata | undefined {
         if (MapFileName == "") {
             return this.attrMapData[this.Prestage_MapFileName];
         } else {
@@ -8117,7 +8125,7 @@ class clsAttrMapData {
             return this.attrMapData[MapFileName.toUpperCase()];
         }
     }
-    SetObject_Name_Search(MapFileName: string): unknown {
+    SetObject_Name_Search(MapFileName: string): clsSortingSearch | undefined {
         if (MapFileName == "") {
             return this.Object_Name_Search[this.Prestage_MapFileName];
         } else {
@@ -8146,7 +8154,7 @@ class clsAttrMapData {
     }
 
 
-    EqualizeZahyoMode(Zahyo: unknown): unknown {
+    EqualizeZahyoMode(Zahyo: JsonValue): JsonValue {
         //読み込んだ地図ファイルの投影法等座標設定を同じにする
         let f = true;
         let emes = "";
@@ -8172,8 +8180,8 @@ class clsAttrMapData {
     }
 
     //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
-    GetAllPointObjectGroup(): unknown[] {
-        const AllPOBJG: { [key: string]: unknown[] } = {};
+    GetAllPointObjectGroup(): { [key: string]: string[] } {
+        const AllPOBJG: { [key: string]: string[] } = {};
         for (const key in this.attrMapData) {
             const cmap = this.attrMapData[key];
             const PointObk = [];
@@ -8190,7 +8198,7 @@ class clsAttrMapData {
     }
 
     //地図ファイル名、線種、グループで、線種位置番号を求める
-    GetLineKindPosition(MapFileName: string, lineKindNum: number, PatternNum: number): unknown {
+    GetLineKindPosition(MapFileName: string, lineKindNum: number, PatternNum: number): number {
         let n = 0;
         for (const key in this.attrMapData) {
             const cmap = this.attrMapData[key];
@@ -8211,12 +8219,12 @@ class clsAttrMapData {
         return this.Prestage_MapFileName;
     }
     //最初の地図ファイル名の座標プロパティ取得
-    GetPrestigeZahyoMode(): unknown {
+    GetPrestigeZahyoMode(): Zahyo_info {
         return this.attrMapData[this.Prestage_MapFileName].Map.Zahyo;
     }
 
     /** 読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す*/
-    GetAllMapLineKind(): unknown[] {
+    GetAllMapLineKind(): LPatSek_Info[] {
         const LKind = [];
         for (const key in this.attrMapData) {
             const LK = this.attrMapData[key].Get_TotalLineKind();
@@ -8240,7 +8248,7 @@ class clsAttrMapData {
     }
 
     //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
-    GetAllMapLineKindNum(): number[] {
+    GetAllMapLineKindNum(): number {
         let n = 0;
         for (const key in this.attrMapData) {
             n += this.attrMapData[key].Get_TotalLineKind_Num();
@@ -8267,8 +8275,8 @@ class clsAttrMapData {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 class clsObjectNameSearch {
-    private Object_Name_Search: unknown;
-    private Object_Name_Stac_for_Search_O_Code: unknown[];
+    private Object_Name_Search: JsonObject;
+    private Object_Name_Stac_for_Search_O_Code: JsonValue[];
     private checkObjectNameKanjiCompatibleFF: boolean;
 
     ObjNameAndTime_Info = class {
@@ -8276,7 +8284,7 @@ class clsObjectNameSearch {
         SETime: Start_End_Time_data = new Start_End_Time_data();
     };
 
-    constructor(MapData: unknown, CheckKanjiCompatibleFlag: boolean) {
+    constructor(MapData: clsMapdata, CheckKanjiCompatibleFlag: boolean) {
         //オブジェクト名検索用クラス
         this.Object_Name_Search = new clsSortingSearch();
         this.Object_Name_Stac_for_Search_O_Code = []; //ObjNameAndTime_Info
@@ -8308,11 +8316,11 @@ class clsObjectNameSearch {
         this.Object_Name_Search.AddEnd();
     }
 
-    Object_Name_Stac(Pos: number): unknown {
+    Object_Name_Stac(Pos: number): JsonValue {
         return this.Object_Name_Stac_for_Search_O_Code[Pos];
     }
 
-    DataPositionValue(Pos: number): unknown {
+    DataPositionValue(Pos: number): JsonValue {
         return (this.Object_Name_Search.DataPositionValue as unknown[])[Pos];
     }
 
@@ -8320,7 +8328,7 @@ class clsObjectNameSearch {
         return this.Object_Name_Search.NumofData();
     }
 
-    DataPosition(num: number): unknown {
+    DataPosition(num: number): JsonValue {
         return this.Object_Name_Search.DataPosition(num);
     }
 

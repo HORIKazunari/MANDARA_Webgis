@@ -1,5 +1,6 @@
 ﻿import { appState } from './core/AppState';
 import { clsAccessory } from './clsAccessory';
+import type { JsonValue } from './types';
 
 // mousePointingSituations は globals.d.ts で定義済み
 
@@ -451,7 +452,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 const retV = Check_Acc(mouseUpPosition);
                                 if (retV.type == Check_Acc_Result.NoAccessory) {
                                     const av = state.attrData.TotalData.ViewStyle;
-                                    const mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}> = [];
+                                    const mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: JsonValue[]}> = [];
                                     if (av.ScrData.ThreeDMode.Set3D_F == false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
@@ -645,7 +646,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         MouseDownF = false;
 
-        function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: unknown[]}>) {
+        function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: JsonValue[]}>) {
             const state = appState();
             const alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
@@ -760,7 +761,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             mnuAccPopupVisible.push({ caption: "-" })
                         }
                         for (let i = 0; i < alo.HyperLinkNum; i++) {
-                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: unknown, e: Event){
+                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: JsonValue, e: Event){
                                 window.open(data.tag, '_blank');
                             },tag:alo.HyperLink[i].Address} );
                         }
@@ -883,7 +884,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const splineGet = (clsSpline as unknown).Spline_Get as ((a: number, b: number, pts: unknown, c: number, scr: unknown) => unknown) | undefined;
+        const splineGet = (clsSpline as JsonValue).Spline_Get as ((a: number, b: number, pts: JsonValue, c: number, scr: JsonValue) => JsonValue) | undefined;
         const pxy = splineGet ? splineGet(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData) : poxy;
         const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
@@ -1453,7 +1454,7 @@ class frmPrint {
     }
 
     //線種ラインパターン設定
-    static linePattern(_data: unknown, e: Event) {
+    static linePattern(_data: JsonValue, e: Event) {
         const state = appState();
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
         Generic.Set_Box_Position_in_Browser(e, backDiv);

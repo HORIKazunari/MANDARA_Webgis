@@ -1,6 +1,7 @@
 import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
 import { gridControl } from './clsGridControl';
+import type { JsonObject } from './types';
 
 type LayerTypeValue = (typeof enmLayerType)[keyof typeof enmLayerType];
 type ShapeValue = (typeof enmShape)[keyof typeof enmShape];
@@ -1798,7 +1799,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
 
     function btnAddMapfile() {
         openMapFile(getFile);
-        function getFile(jsonMapData: unknown, filename: string) {
+        function getFile(jsonMapData: JsonObject | undefined, filename: string) {
             if (jsonMapData == undefined) {
                 Generic.alert(undefined, "読み込めませんでした。");
                 return;
@@ -1875,7 +1876,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         }
 
         openMapFile(getFile);
-        function getFile(jsonMapData: unknown, filename: string) {
+        function getFile(jsonMapData: JsonObject | undefined, filename: string) {
             if (jsonMapData == undefined) {
                 Generic.alert(undefined, "読み込めませんでした。");
                 return;

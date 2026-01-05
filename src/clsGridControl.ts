@@ -1,6 +1,7 @@
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /**　グリッドコントロール用の内部クラス（外部に移動） */
 import { appState } from './core/AppState';
+import type { JsonValue } from './types';
 
 export {};
 
@@ -316,11 +317,9 @@ export class gridControl {
     height: number;
     
     // クラスプロパティ（元のコンストラクタ内ローカル変数）
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private Grid_Property: any[] = [];
+    private Grid_Property: JsonValue[] = [];
     private Grid_Total: Grid_Total_Info = new Grid_Total_Info();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private UndoArray: any[] = [];
+    private UndoArray: JsonValue[] = [];
     private TimerObj: number | undefined = undefined;
     private TimerVX: number = 0;
     private TimerVY: number = 0;
@@ -1203,8 +1202,7 @@ export class gridControl {
     getLayerData(LayerNum: number, key: string) {
         return this.Grid_Property[LayerNum].LayerData[key];
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setLayerData(LayerNum: number, key: string, value: any) {
+    setLayerData(LayerNum: number, key: string, value: JsonValue) {
         this.Grid_Property[LayerNum].LayerData[key] = value;
     }
 
@@ -1571,8 +1569,7 @@ export class gridControl {
     }
 
     /**テキストボックス、コンボボックスを指定した位置のセルのサイズに合わせる */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Get_Object_to_Cell_Size = (X: number, Y: number, Obj: any) => {
+    Get_Object_to_Cell_Size = (X: number, Y: number, Obj: JsonValue) => {
         let w, H;
         let n;
         const GP = this.Grid_Property[this.Grid_Total.Layer];
@@ -1643,8 +1640,7 @@ export class gridControl {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Print_Data = (STT: any, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
+    Print_Data = (STT: JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
         if(STT==undefined){return;}
         if (!this.ctx) return;
         
@@ -4015,8 +4011,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         this.UndoArray.pop();
         this.Print_Grid_Data();
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    SetGrid_UndoData = (Layer: number,rect: rectangle,GridData: any) => {
+    SetGrid_UndoData = (Layer: number,rect: rectangle,GridData: JsonValue) => {
         let  SN  = 0;
         const cst = GridData.split("\t");
         for (let i = rect.top; i <= rect.bottom; i++) {

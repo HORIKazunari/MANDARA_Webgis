@@ -1,6 +1,7 @@
 ﻿// JavaScript source code
 import { Generic } from './clsGeneric';
 import { Screen_info } from './clsAttrData';
+import type { JsonObject, JsonValue } from './types';
 
 class clsDraw {
 
@@ -502,7 +503,7 @@ class clsDrawTile {
 
 class MarkInfo {
     name?: string;
-    stac?: unknown;
+    stac?: JsonValue;
 }
 
 class clsDrawMarkFan {
@@ -1013,7 +1014,7 @@ class clsSpline {
 
 class clsTileMap {
     private xhr: XMLHttpRequest[] = [];
-    private TileMapData: {[key: string]: unknown};
+    private TileMapData: {[key: string]: JsonObject};
     private LicenseFontData: Font_Property;
 
     constructor() {
@@ -1024,7 +1025,7 @@ class clsTileMap {
     }
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
-    drawTileMap(g: CanvasRenderingContext2D, TileMap: unknown, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
+    drawTileMap(g: CanvasRenderingContext2D, TileMap: JsonObject, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
         const self = this; // thisコンテキストを保存
         if(this.xhr.length>0){
             for(const i in this.xhr){
@@ -1128,12 +1129,12 @@ class clsTileMap {
     }
 
     /**既存タイルマップデータをキーで取得 */
-    getTileMapData(dataName: string): unknown {
+    getTileMapData(dataName: string): JsonObject | undefined {
         return TileMapData[dataName];
     }
 
     /**既存タイルマップデータをIDで取得 */
-    getTileMapDataById(id: number): unknown {
+    getTileMapDataById(id: number): JsonObject | undefined {
         for (const i in TileMapData) {
             if (TileMapData[i].opt.id == id) {
                 return TileMapData[i];
@@ -1153,7 +1154,7 @@ class clsTileMap {
     }
 
     /**指定のタグに一致するタイルマップ一覧を取得 */
-    getTileMapListByTag(tag: string): unknown[] {
+    getTileMapListByTag(tag: string): JsonObject[] {
         const tiles=[];
         for(const i in TileMapData){
             if(TileMapData[i].opt.tag==tag){
@@ -1179,7 +1180,7 @@ class clsTileMap {
     }
 
     /**緯度経度とズームレベルからタイルマップのXYを求める*/
-    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): unknown {
+    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): JsonValue {
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
         }
@@ -1189,7 +1190,7 @@ class clsTileMap {
         return TileXY;
     }
 
-    Get_TileMap_Image(TileMap: unknown, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): unknown {
+    Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): JsonObject {
 
         const FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
         const StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
@@ -1280,7 +1281,7 @@ class clsTileMap {
         return { x: X, y: Y };
     }
     /** 画面左下に著作権表示**/
-    PrintCopyright(g: CanvasRenderingContext2D, TileMap: unknown, ScrData: Screen_info): void {
+    PrintCopyright(g: CanvasRenderingContext2D, TileMap: JsonObject, ScrData: Screen_info): void {
         const x = 5;
         const y = ScrData.MapScreen_Scale.bottom - 5;
         const tx = TileMap.copyright + chrLF + TileMap.opt.id;
@@ -1288,7 +1289,7 @@ class clsTileMap {
     }
 
     /**既存タイルマップデータを設定 */
-    private setTileMapData(): {[key: string]: unknown} {
+    private setTileMapData(): {[key: string]: JsonObject} {
         const gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
 
         const MapTypeArray: Record<string, unknown> = {};
