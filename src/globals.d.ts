@@ -343,7 +343,7 @@ interface IAttrData {
     Radius?: (size?: number, arg2?: number, arg3?: number) => number;
     Draw_Line?: (arg1: CanvasRenderingContext2D, arg2: Line_Property, arg3?: point[], arg4?: Screen_info) => void;
     Draw_Print?: (arg1: CanvasRenderingContext2D, arg2: string, arg3?: point, arg4?: Font_Property, arg5?: string | number, arg6?: string | number) => void;
-    Draw_Mark?: (arg1: CanvasRenderingContext2D, arg2: point, arg3?: Mark_Property, arg4?: Screen_info) => void;
+    Draw_Mark?: (g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property) => void;
     Get_DataUnit_With_Kakko?: (arg1?: number, arg2?: number) => string;
     Get_PrintError?: () => { Print_Enable: number; message: string };
     Get_Condition_Info?: (layer?: number) => string;
@@ -362,7 +362,7 @@ interface IAttrData {
     check_AutoSoubyou_Enable?: (arg1?: number, arg2?: number) => boolean;
     layerGraph?: (layerNum?: number) => IGraphMode;
     layerLabel?: (layerNum?: number) => ILabelMode;
-    Check_Screen_In?: (CenterP: point, R?: number) => boolean;
+    Check_Screen_In?: (CenterP: point | rectangle, R?: number) => boolean;
     Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, scrData?: Screen_info) => void;
     Convert_Zahyo?: (zahyo: number) => void;
     GetMapFileName?: () => string[];

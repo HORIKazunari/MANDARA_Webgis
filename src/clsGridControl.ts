@@ -186,10 +186,10 @@ class Grid_Operation_enable_info {
 
 class Grid_Info {
     OriginalLayerNumber: number = 0;
-    Grid_Text: string[][] = [];
-    FixedObjectName: string[] = [];
-    FixedDataItem: string[] = [];
-    FixedUpperLeft: string[] = [];
+    Grid_Text: GridTextColor_Info[][] = [];
+    FixedObjectName: GridTextColor_Info[][] = [];
+    FixedDataItem: GridTextColor_Info[][] = [];
+    FixedUpperLeft: FixedUpperLeft_Info[][] = [];
     Ope: Grid_Operation_enable_info = new Grid_Operation_enable_info();
 
     LayerName: string = "";

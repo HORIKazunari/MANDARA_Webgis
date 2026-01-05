@@ -1744,8 +1744,8 @@ console.log(SortSumDataValue)
                         if (selGraph.Oresen_Bou.FrameAxe == enmBarChartFrameAxePattern.Whole) {
                             state.attrData.Draw_Tile_Box(g, Rect, selGraph.Oresen_Bou.BorderLine, clsBase.BlancTile(), 0);
                         } else {
-                            state.attrData.Draw_Line(g, selGraph.Oresen_Bou.BorderLine, Rect.bottomLeft(), Rect.topLeft());
-                            state.attrData.Draw_Line(g, selGraph.Oresen_Bou.BorderLine, Rect.bottomLeft(), Rect.bottomRight());
+                            state.attrData.Draw_Line(g, selGraph.Oresen_Bou.BorderLine, [Rect.bottomLeft(), Rect.topLeft()]);
+                            state.attrData.Draw_Line(g, selGraph.Oresen_Bou.BorderLine, [Rect.bottomLeft(), Rect.bottomRight()]);
                         }
                         const Zero_Line = clsBase.Line();
                         Zero_Line.Color = selGraph.Oresen_Bou.BorderLine.Color.Clone();
@@ -1753,9 +1753,9 @@ console.log(SortSumDataValue)
                             if (wakuj >= dataMinV) {
                                 const H = 1- (wakuj - dataMinV) / (dataMaxV- dataMinV);
                                 const yy = OP.y + wrh * H;
-                                state.attrData.Draw_Line(g, Zero_Line, new point(OP.x, yy), new point(OP.x + ww / 15, yy));
+                                state.attrData.Draw_Line(g, Zero_Line, [new point(OP.x, yy), new point(OP.x + ww / 15, yy)]);
                                 if (selGraph.Oresen_Bou.FrameAxe == enmBarChartFrameAxePattern.Whole) {
-                                    state.attrData.Draw_Line(g, Zero_Line, new point(OP.x + ww, yy), new point(OP.x + ww - ww / 15, yy));
+                                    state.attrData.Draw_Line(g, Zero_Line, [new point(OP.x + ww, yy), new point(OP.x + ww - ww / 15, yy)]);
                                 }
                             }
                         }
@@ -1766,7 +1766,7 @@ console.log(SortSumDataValue)
                         const H = 1 - (-dataMinV) / (dataMaxV- dataMinV);
                         const yy = OP.y + wrh * H;
                         g.setLineDash([5,3]);
-                        state.attrData.Draw_Line(g, Zero_Line, new point(OP.x, yy), new point(OP.x + ww, yy));
+                        state.attrData.Draw_Line(g, Zero_Line, [new point(OP.x, yy), new point(OP.x + ww, yy)]);
                         g.setLineDash([]);
                     }
 
@@ -1796,7 +1796,7 @@ console.log(SortSumDataValue)
                                         fly1 = yy;
                                         ff = false;
                                     } else {
-                                        state.attrData.Draw_Line(g, selGraph.Oresen_Bou.Line, new point(flx1, fly1), new point(fsx, yy));
+                                        state.attrData.Draw_Line(g, selGraph.Oresen_Bou.Line, [new point(flx1, fly1), new point(fsx, yy)]);
                                         flx1 = fsx;
                                         fly1 = yy;
                                     }
@@ -2684,7 +2684,7 @@ console.log(SortSumDataValue)
                             if (mbmd.ScaleLineVisible == true) {
                                 for (let v = mbmd.ScaleLineInterval; v < MV; v += mbmd.ScaleLineInterval) {
                                     const ypos = retV.CenterRect.bottom - state.attrData.Get_Length_On_Screen(mbmd.MaxHeight) * v / maxv;
-                                    state.attrData.Draw_Line(g, mbmd.scaleLinePat, new point(retV.CenterRect.left, ypos), new point(retV.CenterRect.right, ypos));
+                                    state.attrData.Draw_Line(g, mbmd.scaleLinePat, [new point(retV.CenterRect.left, ypos), new point(retV.CenterRect.right, ypos)]);
                                 }
                                 state.attrData.Draw_Tile_Box(g, retV.CenterRect, mbmd.FrameLinePat, clsBase.BlancTile(), 0);
                             }
@@ -3163,7 +3163,7 @@ console.log(SortSumDataValue)
                                     DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Cp);
                                 }
                             }
-                            state.attrData.Draw_Line(g, ODLinePat, StartP, DestP);
+                            state.attrData.Draw_Line(g, ODLinePat, [StartP, DestP]);
                             if(OD_MD.Arrow.End_Arrow_F == true) {
                                 state.attrData.Draw_Arrow(g, DestFP, StartFP, ODLinePat, OD_MD.Arrow);
                             }
@@ -3574,7 +3574,7 @@ console.log(SortSumDataValue)
             if (cp.Equals(sp) == false) {
                 const cp2 = av.ScrData.Get_SxSy_With_3D(cp);
                 const sp2 = av.ScrData.Get_SxSy_With_3D(sp);
-                state.attrData.Draw_Line(g, av.SymbolLine.Line, cp2, sp2);
+                state.attrData.Draw_Line(g, av.SymbolLine.Line, [cp2, sp2]);
             }
         }
     }

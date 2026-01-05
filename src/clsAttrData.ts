@@ -1188,7 +1188,7 @@ interface strScreen_Setting_Data_Info {
     MapScale: strScale_Attri;
     MapTitle: strTitle_Attri;
     DataNote: strNote_Attri;
-    AttMapCompass: JsonObject | undefined;//strCompass_Attri (未定義)
+    AttMapCompass: strCompass_Attri;
     MapLegend: strLegend_Attri;
     ThreeDMode: strThreeDMode_Set;
     Clone(): strScreen_Setting_Data_Info;
@@ -2242,15 +2242,15 @@ class Screen_info {
             meshP[2] = new point(p1.right, p1.bottom);
             meshP[3] = new point(p1.left, p1.bottom);
             const pxy = this.Get_SxSy_With_3D(4, meshP, false);
-            let minx = pxy(0).x;
-            let maxx = pxy(0).x;
-            let miny = pxy(0).y;
-            let maxy = pxy(0).y;
+            let minx = pxy[0].x;
+            let maxx = pxy[0].x;
+            let miny = pxy[0].y;
+            let maxy = pxy[0].y;
             for (let i = 1; i < pxy.length; i++) {
-                minx = Math.min(minx, pxy(i).x)
-                maxx = Math.max(maxx, pxy(i).x)
-                miny = Math.min(miny, pxy(i).y)
-                maxy = Math.max(maxy, pxy(i).y)
+                minx = Math.min(minx, pxy[i].x)
+                maxx = Math.max(maxx, pxy[i].x)
+                miny = Math.min(miny, pxy[i].y)
+                maxy = Math.max(maxy, pxy[i].y)
             }
             const ret = new rectangle(minx, maxx, miny, maxy);
             return ret;
@@ -6476,7 +6476,7 @@ class clsAttrData {
     }
 
     //指定の画面座標の中心点と半径の領域が画面に入る場合はtrue
-    Check_Screen_In(CenterP: point, R: number): boolean {
+    Check_Screen_In(CenterP: point | rectangle, R?: number): boolean {
         if ((CenterP instanceof rectangle) == true){
             if (spatial.Compare_Two_Rectangle_Position(CenterP, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) != cstRectangle_Cross.cstOuter) {
                 return true;
@@ -6484,7 +6484,8 @@ class clsAttrData {
             return false;
         }
         } else {
-            const C_Rect = new rectangle(new point(CenterP.x - R, CenterP.y - R), new size(R * 2, R * 2));
+            const R_val = R ?? 0;
+            const C_Rect = new rectangle(new point(CenterP.x - R_val, CenterP.y - R_val), new size(R_val * 2, R_val * 2));
             if (spatial.Compare_Two_Rectangle_Position(C_Rect, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) != cstRectangle_Cross.cstOuter) {
                 return true;
             } else {

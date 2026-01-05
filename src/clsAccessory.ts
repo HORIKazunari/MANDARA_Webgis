@@ -55,7 +55,7 @@ export class clsAccessory {
                             break;
                         }
                         case enmCircleMDLegendLine.Straight:
-                            state.attrData.Draw_Line(g, lk.Pat, new point(C_Rect.left, Y + UH / 2), new point(C_Rect.left + state.attrData.Radius(4.5, 1, 1) * 3, Y + UH / 2));
+                            state.attrData.Draw_Line(g, lk.Pat, [new point(C_Rect.left, Y + UH / 2), new point(C_Rect.left + state.attrData.Radius(4.5, 1, 1) * 3, Y + UH / 2)]);
                             break;
                         }
                     state.attrData.Draw_Print(g, lk.Name, new point(x3, Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -731,9 +731,9 @@ export class clsAccessory {
                                     const lx2 = tateObiXY.x + (tateObiMojiXY.x - tateObiXY.x) * (LegendVn + 1 - i) / (LegendVn + 1);
                                     if (rep == 1) {
                                         const amd = state.attrData.TotalData.ViewStyle.MapLegend.MarkMD;
-                                        state.attrData.Draw_Line(g, amd.MultiEnMode_Line, tateObiXY, new point(lx2, tateObiXY.y));
-                                        state.attrData.Draw_Line(g, amd.MultiEnMode_Line, new point(lx2, tateObiXY.y), new point(lx2, tateObiMojiXY.y + TH / 2));
-                                        state.attrData.Draw_Line(g, amd.MultiEnMode_Line,new point( lx2, tateObiMojiXY.y + TH / 2),new point( tateObiMojiXY.x, tateObiMojiXY.y + TH / 2));
+                                        state.attrData.Draw_Line(g, amd.MultiEnMode_Line, [tateObiXY, new point(lx2, tateObiXY.y)]);
+                                        state.attrData.Draw_Line(g, amd.MultiEnMode_Line, [new point(lx2, tateObiXY.y), new point(lx2, tateObiMojiXY.y + TH / 2)]);
+                                        state.attrData.Draw_Line(g, amd.MultiEnMode_Line,[new point( lx2, tateObiMojiXY.y + TH / 2),new point( tateObiMojiXY.x, tateObiMojiXY.y + TH / 2)]);
                                     }
                                 }
                                 size2.width = Math.max(size2.width, r1 * gData.En_Obi.AspectRatio + TH * 1.5 + VL);
@@ -861,8 +861,8 @@ export class clsAccessory {
             if ((j != Ymin) && (j != Ymax)) {
                 const H = 1 - (j - Ymin) / (Ymax - Ymin);
                 const yy = HeadBoxSize.height + TH / 2 + wh * H;
-                state.attrData.Draw_Line(g, Zero_Line,new point( ALP.x, ALP.y + yy),new point( ALP.x + stx / 2 + 1, ALP.y + yy));
-                state.attrData.Draw_Line(g, Zero_Line,new point(  ALP.x + ww, ALP.y + yy),new point(  ALP.x + ww - stx / 2 - 1, ALP.y + yy));
+                state.attrData.Draw_Line(g, Zero_Line,[new point( ALP.x, ALP.y + yy),new point( ALP.x + stx / 2 + 1, ALP.y + yy)]);
+                state.attrData.Draw_Line(g, Zero_Line,[new point(  ALP.x + ww, ALP.y + yy),new point(  ALP.x + ww - stx / 2 - 1, ALP.y + yy)]);
             }
         }
 
@@ -872,7 +872,7 @@ export class clsAccessory {
             const H = 1 - (-Ymin) / (Ymax - Ymin);
             const yy = HeadBoxSize.height + TH / 2 + wh * H;
             g.setLineDash([5,3]);
-            state.attrData.Draw_Line(g, Zero_Line,new point( ALP.x, ALP.y + yy),new point( ALP.x + ww + 1, ALP.y + yy));
+            state.attrData.Draw_Line(g, Zero_Line,[new point( ALP.x, ALP.y + yy),new point( ALP.x + ww + 1, ALP.y + yy)]);
             g.setLineDash([]);
             zpf = true;
             zy = yy;
@@ -896,7 +896,7 @@ export class clsAccessory {
                     fly2 = ALP.y + yy;
                     fsx += stx;
                 } else {
-                    state.attrData.Draw_Line(g, gData.Oresen_Bou.Line, new point(flx1, fly2), new point(ALP.x + fsx + 1, ALP.y + yy + 1));
+                    state.attrData.Draw_Line(g, gData.Oresen_Bou.Line, [new point(flx1, fly2), new point(ALP.x + fsx + 1, ALP.y + yy + 1)]);
                     flx1 = ALP.x + fsx + 1;
                     fly2 = ALP.y + yy + 1;
                     fsx += stx;
@@ -1186,17 +1186,17 @@ export class clsAccessory {
                 state.attrData.Draw_Tile_Box(g, barrect, Bar_Md.FrameLinePat, Tile, 0);
                 for (let v = 0; v < maxv; v += Bar_Md.ScaleLineInterval) {
                     const h = v / maxv * BarSize.height;
-                    state.attrData.Draw_Line(g, clsBase.Line(), new point(zerop.x, zerop.y - h), new point(zerop.x - tickw, zerop.y - h));
+                    state.attrData.Draw_Line(g, clsBase.Line(), [new point(zerop.x, zerop.y - h), new point(zerop.x - tickw, zerop.y - h)]);
                     if (Bar_Md.ScaleLineVisible == true) {
-                        state.attrData.Draw_Line(g, Bar_Md.scaleLinePat, new point(barrect.left, zerop.y - h), new point(barrect.right, zerop.y - h));
+                        state.attrData.Draw_Line(g, Bar_Md.scaleLinePat, [new point(barrect.left, zerop.y - h), new point(barrect.right, zerop.y - h)]);
                     }
                 }
                 break;
             }
         }
 
-        state.attrData.Draw_Line(g, clsBase.Line(), zerop, new point(zerop.x + BarAreaSize.width, zerop.y))
-        state.attrData.Draw_Line(g, clsBase.Line(), zerop, new point(zerop.x, zerop.y - BarSize.height))
+        state.attrData.Draw_Line(g, clsBase.Line(), [zerop, new point(zerop.x + BarAreaSize.width, zerop.y)])
+        state.attrData.Draw_Line(g, clsBase.Line(), [zerop, new point(zerop.x, zerop.y - BarSize.height)])
         // if (Bar_Md.ScaleLineVisible == true) {
         //     state.attrData.Draw_Tile_Box(g, barrect, Bar_Md.FrameLinePat, clsBase.BlancTile(), 0);
         // }
@@ -1367,7 +1367,7 @@ export class clsAccessory {
                         Line_Pat.Edge_Connect_Pattern = msmdm.Line.Edge_Connect_Pattern;
                         const P1 = new point(ALP.x + r, ALP.y + ys2 + cyplus);
                         const P2 = new point(ALP.x + shapexs + 1 - r, ALP.y + ys2 + cyplus);
-                        state.attrData.Draw_Line(g, Line_Pat, P1, P2);
+                        state.attrData.Draw_Line(g, Line_Pat, [P1, P2]);
                         HL = shapexs / 2;
                         break;
                     }
@@ -1408,11 +1408,11 @@ export class clsAccessory {
                     Lpat.Set_Same_ColorWidth_to_LinePat?.(MkCommon.MinusTile.Line.Color, LFont.Size / 5);
                     const p1 = new point(ALP.x + r, ALP.y + ys2);
                     const p2 = new point(ALP.x + shapexs - r, ALP.y + ys2);
-                    state.attrData.Draw_Line(g, Lpat, p1, p2);
+                    state.attrData.Draw_Line(g, Lpat, [p1, p2]);
                     const p3 = new point(ALP.x + r, ALP.y + ys2 + r * 2.5);
                     const p4 = new point(ALP.x + shapexs - r, ALP.y + ys2 + r * 2.5);
                     Lpat.Set_Same_ColorWidth_to_LinePat?.(MkCommon.MinusTile.Line.Color, LFont.Size / 5);
-                    state.attrData.Draw_Line(g, Lpat, p3, p4);
+                    state.attrData.Draw_Line(g, Lpat, [p3, p4]);
                     const p5 = new point(ALP.x + shapexs, ALP.y + ys2 - UH / 2);
                     const p6 = new point(ALP.x + shapexs, ALP.y + ys2 - UH / 2 + r * 2.5);
                     state.attrData.Draw_Print(g, PlusWord, p5, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
