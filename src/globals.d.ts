@@ -1,16 +1,32 @@
 // MANDARA GIS Application - 型定義ファイル（強化版）
 
+// ==================== 共通型定義 ====================
+// リストアイテムの型定義（select要素やListBoxで使用）
+type ListItem = { value: string | number; text: string };
+
 // ==================== グローバル変数の型定義強化 ====================
 
 // ==================== グローバル変数の宣言 ====================
+// Note: 以下の変数はAppStateで管理されています。AppStateからアクセスしてください。
+// - attrData: IAttrData
+// - settingModeWindow: HTMLDivElement | undefined
+// - scrMargin: IScrMargin
+// - propertyWindow: IPropertyWindow
+// - frmPrint: IFrmPrint
+// - divmain: HTMLDivElement
+// - preReadMapFile: MapFileInfo[]
+
+// 旧互換性のためのグローバル宣言（新規コードでは使用しないでください）
 declare let attrData: IAttrData;
-declare let settingModeWindow: any;
-declare let scrMargin: any;
-declare let propertyWindow: any;
-declare let frmPrint: any;
+declare let settingModeWindow: HTMLDivElement | undefined;
+declare let scrMargin: IScrMargin;
+declare let propertyWindow: IPropertyWindow;
+declare let frmPrint: IFrmPrint;
 declare let divmain: HTMLDivElement;
-declare let preReadMapFile: any;
-declare let clsLayerData: any;
+declare let preReadMapFile: MapFileInfo[];
+
+// レイヤーデータ（未使用の可能性が高い）
+declare let clsLayerData: typeof ILayerDataInfo | undefined;
 
 // GlobalEventHandlers拡張
 interface GlobalEventHandlers {
@@ -77,25 +93,25 @@ interface IAttrData {
             FileName?: string;
             FullPath?: string;
         };
-        Condition?: unknown[]; // strCondition_DataSet_Info[] (clsAttrData.tsで定義)
+        Condition?: strCondition_DataSet_Info[]; // strCondition_DataSet_Info[] (clsAttrData.tsで定義)
         TotalMode?: {
             OverLay?: {
                 SelectedIndex?: number;
                 DataSet: IOverLayDatasetInfo[];
                 Always_Overlay_Index?: number;
                 MarkModePosFixFlag?: boolean;
-                AddDataSet?: (data?: unknown) => void;
+                AddDataSet?: (data?: IOverLayDatasetInfo) => void;
                 initDataSet?: () => void;
             };
             Series?: {
                 SelectedIndex?: number;
                 DataSet: ISeriesDatasetInfo[];
-                AddDataSet?: (data?: unknown) => void;
+                AddDataSet?: (data?: ISeriesDatasetInfo) => void;
                 initDataSet?: () => void;
             };
         };
         ViewStyle: {
-            Clone?: () => unknown;
+            Clone?: () => JsonValue;
             Dummy_Size_Flag?: boolean;
             ScrData: {
                 frmPrint_FormSize: rectangle;
@@ -119,17 +135,17 @@ interface IAttrData {
                 SampleBoxFlag?: boolean;
                 Set_PictureBox_and_CulculateMul?: (arg1?: rectangle) => void;
                 ScrRectangle?: rectangle;
-                Screen_Margin?: unknown; // IScrMargin
+                Screen_Margin?: ScreenMargin; // ScreenMargin class from clsAttrData.ts
                 getSxSyRect?: (arg1?: rectangle) => rectangle;
                 Get_Length_On_Screen?: (arg1?: number) => number;
                 ScreenMG?: {
                     Mul?: number;
-                    [key: string]: any;
+                    [key: string]: JsonValue;
                 }; // ScreenMultiply_Data_Info
                 Clone?: () => unknown;
-                init?: (sz?: size, margin?: unknown, mapRect?: rectangle, accessoryBase?: number, clearFlag?: boolean) => void;
+                init?: (sz?: size, margin?: ScreenMargin, mapRect?: rectangle, accessoryBase?: number, clearFlag?: boolean) => void;
             };
-            AttMapCompass?: unknown; // strMapCompass_Attri
+            AttMapCompass?: strCompass_Attri; // strMapCompass_Attri from clsAttrData.ts
             MapLegend: {
                 Base: {
                     ModeValueInScreenFlag: boolean;
@@ -212,7 +228,7 @@ interface IAttrData {
             TileMapView: {
                 Visible: boolean;
                 DrawTiming?: number; // enmDrawTiming
-                TileMapDataSet?: unknown;
+                TileMapDataSet?: strTileMapViewInfo; // strTileMapViewInfo from clsAttrData.ts
                 AlphaValue?: number;
             };
             Missing_Data?: {
@@ -233,9 +249,9 @@ interface IAttrData {
                 PointInterval?: number;
                 LoopAreaF?: boolean;
                 LoopSize?: number;
-                [key: string]: any;
+                [key: string]: JsonValue;
             }; // strSoubyou_Data_Info
-            DummyObjectPointMark?: unknown[]; // strDummyObjectPointMark_Info[]
+            DummyObjectPointMark?: strDummyObjectPointMark_Info[]; // strDummyObjectPointMark_Info[] from clsAttrData.ts
             Screen_Back?: BackGround_Box_Property;
             PointPaint_Order?: number; // enmPointOnjectDrawOrder
             ValueShow?: {
@@ -243,11 +259,11 @@ interface IAttrData {
                 ValueVisible?: boolean;
                 ObjNameFont?: Font_Property;
                 ValueFont?: Font_Property;
-                [key: string]: any;
+                [key: string]: JsonValue;
             }; // strValueShow_Info
             InVisibleObjectBoundaryF?: boolean;
             MeshLine?: Line_Property;
-            SymbolLine?: unknown; // strSymbolLine_Info
+            SymbolLine?: strSymbolLine_Info; // strSymbolLine_Info (needs definition)
             LatLonLine_Print?: {
                 Lat_Interval?: number;
                 Lon_Interval?: number;
@@ -266,37 +282,37 @@ interface IAttrData {
             mouseAccesoryDragType?: number;
             OD_Drag?: {
                 ObjectPos: number;
-                Data: unknown;
+                Data: strOD_Drag_Data; // OD drag data structure
             };
-            OnObject?: unknown;
-            OldObject?: unknown;
+            OnObject?: strLocationSearchObject | null;
+            OldObject?: strLocationSearchObject | null;
             SymbolPointFirstMessage?: boolean;
             LabelPointFirstMessage?: boolean;
             LocationMenuString?: string;
-            MultiObjects?: unknown[];
+            MultiObjects?: strLocationSearchObject[];
         };
         Accessory_Temp: IAccessoryTemp;
-        OnObject?: unknown;
+        OnObject?: strLocationSearchObject | null;
         MouseDownF?: boolean;
         PrintMouseMode?: number;
         PointObjectKindUsedStack?: strDummyObjectPointMark_Info[];
-        MapAreaLatLon?: unknown; // latlonbox
+        MapAreaLatLon?: latlonbox; // latlonbox from clsAttrData.ts
         ContourMode_Temp?: {
             Contour_Point?: point[];
-            [key: string]: any;
+            [key: string]: JsonValue;
         };
         DotMap_Temp?: {
             DotMapTempResetF?: boolean;
-            [key: string]: any;
+            [key: string]: JsonValue;
         };
         Series_temp?: {
             Koma?: number;
             title?: string;
-            [key: string]: any;
+            [key: string]: JsonValue;
         };
         OverLay_Temp?: {
             title?: string;
-            [key: string]: any;
+            [key: string]: JsonValue;
         };
         drawing?: boolean;
         SoubyouLinePointIntervalCriteria?: number;
@@ -305,19 +321,19 @@ interface IAttrData {
         InVisibleObjectBoundaryF?: boolean;
         ModeValueInScreen_Stac?: {
             setF?: boolean;
-            [key: string]: any;
+            [key: string]: JsonValue;
         };
         ObjectPrintedCheckFlag?: boolean[];
     };
     LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド
     Get_AllMapLineKind?: () => LPatSek_Info[];
-    Get_LineKindUsedList?: () => unknown[];
+    Get_LineKindUsedList?: () => LPatSek_Info[];
     Get_Length_On_Screen?: (arg1?: number) => number;
     Radius?: (size?: number, arg2?: number, arg3?: number) => number;
-    Draw_Line?: (arg1: CanvasRenderingContext2D, arg2: Line_Property, arg3?: point[], arg4?: unknown) => void;
-    Draw_Print?: (arg1: CanvasRenderingContext2D, arg2: string, arg3?: point, arg4?: unknown, arg5?: string | number, arg6?: string | number) => void;
-    Draw_Mark?: (arg1: CanvasRenderingContext2D, arg2: point, arg3?: unknown, arg4?: unknown) => void;
+    Draw_Line?: (arg1: CanvasRenderingContext2D, arg2: Line_Property, arg3?: point[], arg4?: Screen_info) => void;
+    Draw_Print?: (arg1: CanvasRenderingContext2D, arg2: string, arg3?: point, arg4?: Font_Property, arg5?: string | number, arg6?: string | number) => void;
+    Draw_Mark?: (arg1: CanvasRenderingContext2D, arg2: point, arg3?: Mark_Property, arg4?: Screen_info) => void;
     Get_DataUnit_With_Kakko?: (arg1?: number, arg2?: number) => string;
     Get_PrintError?: () => { Print_Enable: number; message: string };
     Get_Condition_Info?: (layer?: number) => string;
@@ -337,39 +353,39 @@ interface IAttrData {
     layerGraph?: (layerNum?: number) => IGraphMode;
     layerLabel?: (layerNum?: number) => ILabelMode;
     Check_Screen_In?: (CenterP: point, R?: number) => boolean;
-    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, arg4?: unknown) => void;
+    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, scrData?: Screen_info) => void;
     Convert_Zahyo?: (zahyo: number) => void;
     GetMapFileName?: () => string[];
     SetMapFile?: (filename: string) => IMapData;
     Check_Vector_Object?: () => void;
     PrtObjectSpatialIndex?: () => void;
-    SetMapViewerData?: (data: unknown, arg2?: unknown, arg3?: unknown) => { ok: boolean; emes: string };
-    OpenNewMandaraFile?: (filename: string, callback?: () => void, options?: unknown, layer?: number) => { ok: boolean; emes: string };
-    ADD_AttrData?: (data: unknown, flag?: boolean) => { ok: boolean; emes: string };
+    SetMapViewerData?: (data: JsonObject, arg2?: JsonObject, arg3?: JsonObject) => { ok: boolean; emes: string };
+    OpenNewMandaraFile?: (filename: string, callback?: () => void, options?: JsonObject, layer?: number) => { ok: boolean; emes: string };
+    ADD_AttrData?: (data: JsonObject, flag?: boolean) => { ok: boolean; emes: string };
     Set_LayerName_to?: (selbox: HTMLSelectElement, SelectedIndex?: number, NormalF?: boolean, syntheticF?: boolean, PointF?: boolean, MeshF?: boolean) => void;
     Set_ObjectName_to_selectBox?: (selbox: HTMLSelectElement, Layernum?: number, SelectedObject?: number) => void;
     MapData?: IMapData; // clsAttrMapData (clsAttrData.tsで定義)
-    DeleteObjects?: (objects: number[], arg2?: unknown) => void;
+    DeleteObjects?: (objects: number[], options?: JsonObject) => void;
     Set_DataTitle_to_cboBox?: (cbox: HTMLSelectElement, Layernum?: number, SelectedIndex?: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
     Set_ObjectName_to_checkedListBox?: (selectElement: HTMLElement, layerNum?: number, selectedObject?: number) => void;
     getDummyObjGroupArray?: (Layernum?: number, shape?: number) => { DummyOBGArray: boolean[]; trueNum: number };
     Get_MedianValue?: (layer?: number, data?: number) => number;
     nowLayer?: () => ILayerDataInfo;
     Screen_Back?: BackGround_Box_Property;
-    Draw_Tile_Box?: (context: CanvasRenderingContext2D, rect: rectangle, arg3?: unknown, arg4?: unknown, arg5?: unknown) => void;
-    Draw_Sample_LineBox?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: unknown, arg4?: unknown) => void;
-    Draw_Sample_Mark_Box?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: unknown, arg4?: unknown) => void;
+    Draw_Tile_Box?: (context: CanvasRenderingContext2D, rect: rectangle, tile?: Tile_Property, line?: Line_Property, arg5?: Screen_info) => void;
+    Draw_Sample_LineBox?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: Line_Property, arg4?: Screen_info) => void;
+    Draw_Sample_Mark_Box?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: Mark_Property, arg4?: Screen_info) => void;
     Get_Length_On_Screen?: (fontSize?: number) => number;
-    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, arg4?: unknown) => void;
-    Draw_Line?: (context: CanvasRenderingContext2D, linePattern: Line_Property, points: point[], style?: unknown) => void;
-    Draw_Print?: (context: CanvasRenderingContext2D, text: string, position?: point, font?: unknown, hAlign?: string | number, vAlign?: string | number) => void;
+    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, scrData?: Screen_info) => void;
+    Draw_Line?: (context: CanvasRenderingContext2D, linePattern: Line_Property, points: point[], style?: Screen_info) => void;
+    Draw_Print?: (context: CanvasRenderingContext2D, text: string, position?: point, font?: Font_Property, hAlign?: string | number, vAlign?: string | number) => void;
     Get_DataUnit_With_Kakko?: (layerIndex?: number, dataIndex?: number) => string;
     Get_PaddingPixcel?: (style?: Tile_Property) => number;
     Get_DataNote?: (layer?: number, data?: number) => string;
     Get_MaxURLNum?: (Layernum?: number) => number;
     Get_KenObjCode?: (Layernum: number, Objectnum: number) => string;
-    Check_screen_Kencode_In?: (kencode: number, arg2?: unknown) => boolean;
-    Check_Screen_Objcode_In?: (objcode: number, arg2?: unknown) => boolean;
+    Check_screen_Kencode_In?: (kencode: number, time?: strYMD | null) => boolean;
+    Check_Screen_Objcode_In?: (objcode: number, time?: strYMD | null) => boolean;
     Get_DataNum?: (layer?: number) => number;
     
     // 追加プロパティ・メソッド
@@ -390,11 +406,11 @@ interface IAttrData {
     Get_Data_Cell_Array_With_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
     Add_One_Data_Value?: (Layernum: number, Title: string, Unit: string, Note: string, Data_Val_str: string, Missing_F?: boolean) => boolean;
     Check_Missing_Value?: (layer?: number, object?: number, data?: number) => boolean;
-    Check_Enable_SoloMode?: (soloMode?: unknown, layernum?: number, dataNum?: number) => boolean;
+    Check_Enable_SoloMode?: (soloMode?: ISoloModeViewSettings, layernum?: number, dataNum?: number) => boolean;
     Get_CategolyArray?: (layer?: number, data?: number) => unknown[];
     Get_Categoly?: (layer?: number, data?: number, index?: number) => unknown;
-    Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], style?: unknown, tile?: Tile_Property) => void;
-    Get_InnerTile?: (layer?: number, object?: number, arg3?: unknown) => Tile_Property;
+    Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], scrData?: Screen_info, tile?: Tile_Property) => void;
+    Get_InnerTile?: (layer?: number, object?: number, arg3?: Screen_info) => Tile_Property;
     Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;
     Get_DataMin?: (layer?: number, data?: number) => number;
     Get_DataMax?: (layer?: number, data?: number) => number;
@@ -407,14 +423,14 @@ interface IAttrData {
     Set_DataTitle_to_CheckedListBox?: (CheckedListBox: HTMLElement, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
     Get_DivNum?: (layer?: number, data?: number) => number;
     Check_Point_in_Kencode_OneObject?: (layernum: number, objnum: number, mapP: point) => boolean;
-    Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: unknown, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
-    Draw_Fan?: (context: CanvasRenderingContext2D, centerP: point, radius: number, startAngle: number, endAngle: number, style?: unknown, tile?: Tile_Property) => void;
+    Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: ISoloModeViewSettings, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
+    Draw_Fan?: (context: CanvasRenderingContext2D, centerP: point, radius: number, startAngle: number, endAngle: number, scrData?: Screen_info, tile?: Tile_Property) => void;
     Get_SxSy_With_3D?: (point: point) => point;
-    ClassMD?: unknown; // strClassMode_Data (clsAttrData.tsで定義)
-    saveAsMDRJ?: (filename?: string, options?: unknown) => void;
-    Sort_OverLay_Data?: (arg1?: unknown, arg2?: unknown) => unknown;
-    Sort_OverLay_Data_Sub?: (arg1?: unknown, arg2?: unknown) => unknown;
-    Boundary_Kencode_Arrange?: (layer?: number, object?: number, time?: unknown) => unknown[];
+    ClassMD?: strClassMode_Data; // strClassMode_Data (clsAttrData.tsで定義)
+    saveAsMDRJ?: (filename?: string, options?: JsonObject) => void;
+    Sort_OverLay_Data?: (arg1?: ISoloModeViewSettings[], arg2?: number) => ISoloModeViewSettings[];
+    Sort_OverLay_Data_Sub?: (arg1?: ISoloModeViewSettings[], arg2?: number) => ISoloModeViewSettings[];
+    Boundary_Kencode_Arrange?: (layer?: number, object?: number, time?: strYMD | null) => boundArrangeData[];
     GetObjMenseki?: (layer?: number, object?: number) => number;
     Get_MaxMinValue_Range?: (layer?: number, data?: number) => { min: number; max: number };
     Get_OD_Label_Position?: (layer?: number, object?: number) => point;
@@ -422,13 +438,13 @@ interface IAttrData {
     Get_Label_Position?: (layer?: number, object?: number) => point;
     Get_KenCode_Circumscribed_Rectangle?: (layer?: number, object?: number) => rectangle;
     Get_Kencode_Object_Circumscribed_Rectangle?: (layer?: number, object?: number) => rectangle;
-    Draw_Arrow?: (context: CanvasRenderingContext2D, arg2?: unknown, arg3?: unknown, arg4?: unknown, arg5?: unknown) => void;
+    Draw_Arrow?: (context: CanvasRenderingContext2D, point: point, beforePoint: point, linePat: Line_Property, arrow: Arrow_Property) => void;
     getMpLineDrawn?: (layer?: number, lineCode?: number) => boolean;
     setMpLineDrawn?: (layer?: number, lineCode?: number, drawn?: boolean) => void;
-    setLineKindUseChecked?: (layer?: number, lineKind?: number, arg3?: unknown, checked?: boolean) => void;
+    setLineKindUseChecked?: (layer?: number, lineKind?: number, objGroup?: number, checked?: boolean) => void;
     ResetMPSubLineDrawn?: (mapFileName?: string) => void;
     ResetMPSubLineXY?: (layer?: number) => void;
-    Get_MPSubLineXY?: (layer?: number, lineCode?: number, arg3?: unknown) => point[];
+    Get_MPSubLineXY?: (layer?: number, lineCode?: number, objGroup?: number) => point[];
     Set_MPSubLineXY?: (layer?: number, lineCode?: number, points?: point[], reverse?: boolean) => void;
     GetAllMapLineKindName?: () => string[];
     Get_AllMapLineKind?: () => LPatSek_Info[];
@@ -441,7 +457,7 @@ interface IAttrData {
     Get_ObjectCode_from_ObjName?: (layer?: number, objName?: string) => number;
     // 追加メソッド
     getSeriesDataSetName?: () => string[];
-    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement, DataSetItem: unknown) => void;
+    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement, DataSetItem: ISeriesDatasetInfo) => void;
     getGraphTitle?: (layernum: number) => { text: string }[];
     getLabelTitle?: (layernum: number) => { text: string }[];
     getOverlayTitle?: () => { text: string }[];
@@ -450,31 +466,31 @@ interface IAttrData {
     // 距離計算メソッド
     Distance_Kencode_Point?: (layernum: number, obj: number, point: point) => number;
     Distance_Kencode_Object?: (objNum1: number, objNum2: number, layNum1: number, layNum2: number) => number;
-    Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: unknown, objCode2: number, time: unknown) => number;
-    getOneObjectPanelLabelString?: (layernum: number, arg2?: unknown, objNum?: number, arg4?: unknown) => string;
+    Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: IMapData, objCode2: number, time?: strYMD | null) => number;
+    getOneObjectPanelLabelString?: (layernum: number, dataNum?: number, objNum?: number, soloMode?: ISoloModeViewSettings) => string;
     Set_Acc_First_Position?: () => void;
-    Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: unknown) => void;
+    Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: ISoloModeViewSettings) => void;
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
     SetMapFile?: (mapFileName: string) => IMapData;
-    AddPointObjectKindUsed?: (layer?: number, object?: number, arg3?: unknown) => unknown;
+    AddPointObjectKindUsed?: (layer?: number, object?: number, mark?: strDummyObjectPointMark_Info) => strDummyObjectPointMark_Info;
     AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
-    Get_Check_Enable_SoloMode?: (soloMode?: unknown, layerNum?: number, dataNum?: number) => boolean;
+    Get_Check_Enable_SoloMode?: (soloMode?: ISoloModeViewSettings, layerNum?: number, dataNum?: number) => boolean;
     
     // MapData関連
     MapData: {
         SetMapFile: (mapFileName: string) => IMapData;
         SetObject_Name_Search?: (mapFileName: string) => unknown;
         CheckMapfileExists?: (mapFileName: string) => boolean;
-        AddExistingMapData?: (mapData: unknown, mapFileName: string) => void;
+        AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
         getAllMapData?: () => unknown;
-        [key: string]: any;
+        [key: string]: JsonValue;
     };
 }
 
 // Accessory_Temp（拡張版）
 interface IAccessoryTemp {
     MapLegend_W: IMapLegendW[];
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // MapLegend_W（拡張版）
@@ -489,7 +505,7 @@ interface IMapLegendW {
     LineKind_Flag: boolean;
     PointObject_Flag: boolean;
     OverLay_Printing_Flag?: boolean;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // OverLay DataSet情報（拡張版）
@@ -497,7 +513,7 @@ interface IOverLayDatasetInfo {
     title: string;
     DataItem: IOverLayDataItem;
     initData?: () => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // OverLay DataItem（拡張版）
@@ -507,7 +523,7 @@ interface IOverLayDataItem {
     Clone?: () => IOverLayDataItem;
     push?: (item: IOverLayDataItemElement) => number;
     length?: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // OverLay DataItem要素（拡張版）
@@ -516,15 +532,15 @@ interface IOverLayDataItemElement {
     DataNumber: number;
     Print_Mode_Layer: number;
     Clone?: () => IOverLayDataItemElement;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // Series DataSet情報（拡張版）
 interface ISeriesDatasetInfo {
     title: string;
-    DataItem: any;
+    DataItem: ISeriesDataItem;
     initData?: () => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // レイヤーデータ情報（拡張版）
@@ -543,19 +559,19 @@ interface ILayerDataInfo {
     TripType: number; // enmTripPositionType
     atrObject: IObjectInfo;
     atrData: IAttrDataInfo;
-    Dummy: any[]; // strDummyObjectName_and_Code[]
+    Dummy: strDummyObjectName_and_Code[];
     DummyGroup: number[];
     Print_Mode_Layer: number; // enmLayerMode_Number
     LayerModeViewSettings: ILayerModeViewSettings;
-    PrtSpatialIndex: any; // clsSpatialIndexSearch
+    PrtSpatialIndex: JsonValue; // clsSpatialIndexSearch
     ObjectGroupRelatedLine: number[];
-    ODBezier_DataStac: any[]; // ODBezier_Data[]
+    ODBezier_DataStac: ODBezier_Data[]
 }
 
 // オブジェクト情報（拡張版）
 interface IObjectInfo {
     ObjectNum: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 属性データ情報（拡張版）
@@ -563,7 +579,7 @@ interface IAttrDataInfo {
     Count: number;
     Data: IDataItem[];
     SelectedIndex: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // データ項目（拡張版）
@@ -573,7 +589,7 @@ interface IDataItem {
     Unit: string;
     Note: string;
     SoloModeViewSettings: ISoloModeViewSettings;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // ソロモード表示設定（拡張版）
@@ -593,9 +609,9 @@ interface ISoloModeViewSettings {
     MarkBarMD: any;
     ClassMarkMode: any;
     MarkTurnMode: any;
-    Class_Div: any[];
+    Class_Div: strClass_Div_data[];
     Div_Num: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // クラス塗り分けモード（拡張版）
@@ -605,7 +621,7 @@ interface IClassPaintMode {
     color3?: colorRGBA;
     Color_Mode?: number;
     Clone?: () => IClassPaintMode;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 記号の大きさモード（拡張版）
@@ -616,7 +632,7 @@ interface IMarkSizeMode {
     Mark?: Mark_Property;
     LineShape?: any;
     Clone?: () => IMarkSizeMode;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 記号の数モード（拡張版）
@@ -628,7 +644,7 @@ interface IMarkBlockMode {
     Overlap?: number;
     LegendBlockModeWord?: string;
     Clone?: () => IMarkBlockMode;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 記号の棒モード（拡張版）
@@ -645,7 +661,7 @@ interface IMarkBarMode {
     scaleLinePat?: Line_Property;
     BarShape?: number;
     Clone?: () => IMarkBarMode;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 線引きモード（拡張版）
@@ -655,7 +671,7 @@ interface IClassODMode {
     Dummy_ObjectFlag?: boolean;
     Arrow?: Arrow_Data;
     Clone?: () => IClassODMode;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 等値線モード（拡張版）
@@ -666,15 +682,15 @@ interface IContourMode {
     Detailed?: number;
     Regular?: any;
     IrregularNum?: number;
-    Irregular?: any[];
+    Irregular?: strContour_Data_Irregular_interval[];
     Clone?: () => IContourMode;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // クラスODモード設定（拡張版）
 interface IClassODMD {
     Arrow: Arrow_Property;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // レイヤーモード表示設定（拡張版）
@@ -683,7 +699,7 @@ interface ILayerModeViewSettings {
     LabelMode: ILabelMode;
     PointLineShape: any;
     PolygonDummy_ClipSet_F: boolean;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // グラフモード（拡張版）
@@ -691,7 +707,7 @@ interface IGraphMode {
     DataSet: IGraphDataSet[];
     SelectedIndex?: number;
     initDataSet?: () => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // グラフデータセット（拡張版）
@@ -699,14 +715,14 @@ interface IGraphDataSet {
     Data: IGraphDataItem[];
     Type?: number;
     length?: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // グラフデータ項目（拡張版）
 interface IGraphDataItem {
     DataNumber: number;
     Layer?: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // ラベルモード（拡張版）
@@ -714,29 +730,29 @@ interface ILabelMode {
     DataSet: ILabelDataSet[];
     SelectedIndex?: number;
     initDataSet?: () => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // ラベルデータセット（拡張版）
 interface ILabelDataSet {
     Data: ILabelDataItem[];
     length?: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // ラベルデータ項目（拡張版）
 interface ILabelDataItem {
     DataNumber: number;
     Layer?: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // マップデータ（拡張版）
 interface IMapData {
     Map: IMapInfo;
-    LineKind?: any[]; // Line_Pattern配列
-    MPObj?: any[]; // 地図オブジェクト配列
-    [key: string]: any;
+    LineKind?: JsonValue[]; // Line_Pattern配列
+    MPObj?: JsonValue[]; // 地図オブジェクト配列
+    [key: string]: JsonValue;
 }
 
 // マップ情報（拡張版）
@@ -749,7 +765,7 @@ interface IMapInfo {
     Zahyo?: Zahyo_info;
     Kend?: number;
     FileName?: string;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // マップコンパス情報（拡張版）
@@ -757,7 +773,7 @@ interface IMapCompassInfo {
     Mark: Mark_Property;
     Position?: point;
     Visible?: boolean;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // スクリーンマージン（拡張）
@@ -812,16 +828,16 @@ interface IGeneric {
     createNewSpan: (parent: HTMLElement, text: string, className: string, innerHTML: string, left: number, top: number, style: string, tooltip: string | undefined) => HTMLSpanElement;
     createNewFrame: (parent: HTMLElement, id: string, className: string, left: number, top: number, width: number, height: number, title: string) => HTMLDivElement;
     createNewCheckBox: (parent: HTMLElement, text: string, className: string, checked: boolean, left: number, top: number, tooltip: string | undefined, onChange: (element: HTMLInputElement) => void, style: string) => HTMLInputElement;
-    createNewRadioButtonList: (parent: HTMLElement, name: string, items: any[], left: number, top: number, tooltip: string | undefined, itemHeight: number, selectedValue: any, onChange: (value: number) => void, style: string) => void;
+    createNewRadioButtonList: (parent: HTMLElement, name: string, items: JsonValue[], left: number, top: number, tooltip: string | undefined, itemHeight: number, selectedValue: JsonValue, onChange: (value: number) => void, style: string) => void;
     createNewWordNumberInput: (parent: HTMLElement, label: string, unit: string, value: number, className: string, left: number, top: number, tooltip: string | undefined, inputWidth: number, onChange: (element: HTMLElement, value: number) => void, style: string) => HTMLInputElement;
     set_backDiv: (id: string, title: string, width: number, height: number, modal: boolean, closeButton: boolean, okButton: (() => void) | number, opacity: number, draggable: boolean, resizable?: boolean) => HTMLDivElement;
     getBrowserWidth: () => number;
     getBrowserHeight: () => number;
     copyText: (text: string) => void;
     Set_Box_Position_in_Browser: (event: Event, element: HTMLElement) => void;
-    Array2Dimension: (array: any[], dimensions: number[]) => any;
-    Array2Clone: (array: any[]) => any[];
-    ceatePopupMenu: (menu: any, position: point) => void;
+    Array2Dimension: (array: JsonValue[], dimensions: number[]) => JsonValue;
+    Array2Clone: (array: JsonValue[]) => JsonValue[];
+    ceatePopupMenu: (menu: JsonValue, position: point) => void;
     [key: string]: any;
 }
 
@@ -1246,7 +1262,7 @@ declare class Line_Property {
     Pat?: unknown; // LinePattern関連
     Set_Same_ColorWidth_to_LinePat?: (color: colorRGBA, width: number) => void;
     Clone?: () => Line_Property;
-    Draw_Fan?: (...args: unknown[]) => void;
+    Draw_Fan?: (...args: JsonValue[]) => void;
 }
 
 declare class Tile_Property {
@@ -1281,7 +1297,7 @@ declare class Font_Property {
     Back: BackGround_Box_Property;
     constructor();
     Clone?(): Font_Property;
-    toContextFont?(ScrData: unknown): { font: string | undefined; height: number };
+    toContextFont?(ScrData: Screen_info): { font: string | undefined; height: number };
 }
 
 declare class Mark_Property {
@@ -1369,11 +1385,11 @@ interface ExtendedHTMLDivElement extends HTMLDivElement {
     setNumberValue?: (value: number) => void;
     selectedRow?: number;
     inPanel?: number;
-    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
+    addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
     getText?: () => string;
     getValue?: () => string | number;
     setSelectText?: (text: string) => void;
-    setSelectData?: (data: unknown, arg2?: unknown, arg3?: unknown) => void;
+    setSelectData?: (index: number, value: string | number, text: string) => void;
     setAstarisk?: (index?: number, flag?: boolean) => void;
     setSelectValue?: (value: string | number) => void;
 }
@@ -1392,8 +1408,8 @@ interface HTMLDivElement {
     enabled?: boolean;
     submenunum?: number;
     Capture?: boolean;
-    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
-    setSelectData?: (arg1?: unknown, arg2?: unknown, arg3?: unknown) => void;
+    addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
+    setSelectData?: (index: number, value: string | number, text: string) => void;
     setAstarisk?: (index?: number, flag?: boolean) => void;
     setSelectValue?: (value: string | number) => void;
     setNumberValue?: (value: number) => void;
@@ -1454,8 +1470,8 @@ interface Element {
 }
 
 interface HTMLElement {
-    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
-    setSelectData?: (arg1?: unknown, arg2?: unknown, arg3?: unknown) => void;
+    addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
+    setSelectData?: (index: number, value: string | number, text: string) => void;
     setAstarisk?: (index?: number, flag?: boolean) => void;
     setSelectValue?: (value: string | number) => void;
     setNumberValue?: (value: number) => void;
@@ -1469,104 +1485,110 @@ interface Math {
 }
 
 // Legacy globals still referenced across the codebase (typed as unknown for now)
-declare function clsSelectData(...args: unknown[]): unknown;
-declare class GraphModeDataItem { [key: string]: unknown; constructor(...args: unknown[]); }
-declare function clsTileSet(...args: unknown[]): unknown;
-declare function clsLinePatternSet(...args: unknown[]): unknown;
-declare function graphModeEn_Obi(...args: unknown[]): unknown;
-declare function graphModeOresen_Bou(...args: unknown[]): unknown;
-declare function openMapFile(...args: unknown[]): unknown;
-declare class clsMapdata { [key: string]: unknown; constructor(...args: unknown[]); }
+declare function clsSelectData(...args: JsonValue[]): void;
+declare class GraphModeDataItem { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare function clsTileSet(...args: JsonValue[]): void;
+declare function clsLinePatternSet(...args: JsonValue[]): void;
+declare function graphModeEn_Obi(...args: JsonValue[]): void;
+declare function graphModeOresen_Bou(...args: JsonValue[]): void;
+declare function openMapFile(...args: JsonValue[]): JsonValue;
+declare class clsMapdata { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class clsAttrData implements IAttrData { 
     TotalData: IAttrData['TotalData'];
     TempData: IAttrData['TempData'];
     LayerData: IAttrData['LayerData'];
-    [key: string]: unknown; 
-    constructor(...args: unknown[]); 
+    [key: string]: JsonValue; 
+    constructor(...args: JsonValue[]); 
 }
-declare class clsTileMap { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class clsTileMap { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class clsDrawMarkFan {
-    static init?: (...args: unknown[]) => unknown;
-    static getMarkShameNum?: (...args: unknown[]) => unknown;
-    static Draw_Fan?: (...args: unknown[]) => unknown;
-    static Draw_Mark_Sample_Box?: (...args: unknown[]) => unknown;
-    static Mark_Print?: (...args: unknown[]) => unknown;
+    static init?: (...args: JsonValue[]) => void;
+    static getMarkShameNum?: (...args: JsonValue[]) => number;
+    static Draw_Fan?: (...args: JsonValue[]) => void;
+    static Draw_Mark_Sample_Box?: (...args: JsonValue[]) => void;
+    static Mark_Print?: (...args: JsonValue[]) => void;
 }
 declare const ListBox: unknown;
 declare const CheckedListBox: unknown;
 declare const ListViewTable: unknown;
-declare function frmPrint_DummyObjectGroup(...args: unknown[]): unknown;
-declare function frmProjectionConvert(...args: unknown[]): unknown;
-declare function frmPrintOption(...args: unknown[]): unknown;
-declare function frmPrint_ObjectValue(...args: unknown[]): unknown;
-declare function frmPrint_backImageSet(...args: unknown[]): unknown;
-declare function frmCompassSettings(...args: unknown[]): unknown;
-declare class clsSpline { static Spline_Get?: (...args: unknown[]) => unknown; }
-declare class strLocationSearchObject { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class LPatSek_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare function frmPrint_DummyObjectGroup(...args: JsonValue[]): void;
+declare function frmProjectionConvert(...args: JsonValue[]): void;
+declare function frmPrintOption(...args: JsonValue[]): void;
+declare function frmPrint_ObjectValue(...args: JsonValue[]): void;
+declare function frmPrint_backImageSet(...args: JsonValue[]): void;
+declare function frmCompassSettings(...args: JsonValue[]): void;
+declare class clsSpline { static Spline_Get?: (...args: JsonValue[]) => JsonValue; }
+declare class strLocationSearchObject { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class LPatSek_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strDummyObjectPointMark_Info { 
     ObjectKindName: string;
     Mark: Mark_Property;
     Clone(): strDummyObjectPointMark_Info;
 }
-declare class strCondition_Limitation_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strDummyObjectName_and_Code { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strOverLay_DataSet_Item_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strContour_Data_Irregular_interval { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strClass_Div_data { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class clsSortingSearch { [key: string]: unknown; constructor(...args: unknown[]); }
-declare function clsColorPicker(...args: unknown[]): unknown;
-declare function clsMarkSet(...args: unknown[]): unknown;
-declare function clsInnerDataSet(...args: unknown[]): unknown;
-declare function clsLineEdgePattern(...args: unknown[]): unknown;
-declare function clsColorChart(...args: unknown[]): unknown;
-declare function clsArrow(...args: unknown[]): unknown;
-declare function clsGrid(...args: unknown[]): unknown;
-declare function clsCompassSettings(...args: unknown[]): unknown;
-declare function frmMain_Buffer(...args: unknown[]): unknown;
-declare function frmMain_AreaPeripheri(...args: unknown[]): unknown;
-declare function frmMain_Culc(...args: unknown[]): unknown;
-declare function frmMain_GetDistance(...args: unknown[]): unknown;
-declare function frmMain_ConditionSettings(...args: unknown[]): unknown;
-declare function frmMainCopyDataSettings(...args: unknown[]): unknown;
-declare function frmMain_SetSeriesMode(...args: unknown[]): unknown;
-declare function frmMain_MarkPosition(...args: unknown[]): unknown;
-declare function frmMain_LayeObjectSelectOne(...args: unknown[]): unknown;
-declare function settingFront(...args: unknown[]): unknown;
+declare class strCondition_Limitation_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strDummyObjectName_and_Code { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strOverLay_DataSet_Item_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strContour_Data_Irregular_interval { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strClass_Div_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class clsSortingSearch { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare function clsColorPicker(...args: JsonValue[]): void;
+declare function clsMarkSet(...args: JsonValue[]): void;
+declare function clsInnerDataSet(...args: JsonValue[]): void;
+declare function clsLineEdgePattern(...args: JsonValue[]): void;
+declare function clsColorChart(...args: JsonValue[]): void;
+declare function clsArrow(...args: JsonValue[]): void;
+declare function clsGrid(...args: JsonValue[]): void;
+declare function clsCompassSettings(...args: JsonValue[]): void;
+declare function frmMain_Buffer(...args: JsonValue[]): void;
+declare function frmMain_AreaPeripheri(...args: JsonValue[]): void;
+declare function frmMain_Culc(...args: JsonValue[]): void;
+declare function frmMain_GetDistance(...args: JsonValue[]): void;
+declare function frmMain_ConditionSettings(...args: JsonValue[]): void;
+declare function frmMainCopyDataSettings(...args: JsonValue[]): void;
+declare function frmMain_SetSeriesMode(...args: JsonValue[]): void;
+declare function frmMain_MarkPosition(...args: JsonValue[]): void;
+declare function frmMain_LayeObjectSelectOne(...args: JsonValue[]): void;
+declare function settingFront(...args: JsonValue[]): void;
 declare const clsSpatialIndexSearch: unknown;
-declare class strFrmCopyObjectName_init_parameter_data { [key: string]: unknown; constructor(...args: unknown[]); }
-declare function frmCopyObjectName(...args: unknown[]): unknown;
+declare class strFrmCopyObjectName_init_parameter_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare function frmCopyObjectName(...args: JsonValue[]): void;
 declare class strOverLay_Dataset_Info { 
-    [key: string]: unknown;
+    [key: string]: JsonValue;
     Clone?: () => strOverLay_Dataset_Info;
-    constructor(...args: unknown[]); 
+    constructor(...args: JsonValue[]); 
 }
-declare class strSeries_Dataset_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strCondition_DataSet_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strCondition_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strObject_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strSeries_DataSet_Item_Info { [key: string]: unknown; constructor(...args: unknown[]); }
+declare class strSeries_Dataset_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strCondition_DataSet_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strCondition_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strObject_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strSeries_DataSet_Item_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strLKOjectGroup_Info { 
     GroupNumber?: number;
     UseOnly?: boolean;
     Pattern?: Line_Property;
     ObjGroup?: strLKOjectGroup_Info[];
     NumofObjectGroup?: number;
-    [key: string]: unknown; 
-    constructor(...args: unknown[]); 
+    [key: string]: JsonValue; 
+    constructor(...args: JsonValue[]); 
 }
-declare class strTileMapViewInfo { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strCompass_Attri { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class clsDrawLine { [key: string]: unknown; static Arrow?: (...args: unknown[]) => unknown; static Line?: (...args: unknown[]) => unknown; static Draw_Sample_LineBox?: (...args: unknown[]) => unknown; static Check_Draw_Arrow_Line?: (...args: unknown[]) => unknown; }
-declare class clsDrawTile { [key: string]: unknown; static Darw_Sample_BackGroundBox?: (...args: unknown[]) => unknown; static Draw_Poly_Inner?: (...args: unknown[]) => unknown; static Draw_Tile_Box?: (...args: unknown[]) => unknown; static Draw_Tile_RoundBox?: (...args: unknown[]) => unknown; }
-declare class tileList_Data_Info { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class EnableMPLine_Data { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class strContour_Line_property { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class clsMeshContour { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class Legend2_Atri { [key: string]: unknown; constructor(...args: unknown[]); }
-declare class clsFontSet { [key: string]: unknown; constructor(...args: unknown[]); }
-declare function clsFontSet(...args: unknown[]): unknown;
-declare function clsDrawTileSample(...args: unknown[]): unknown;
+declare class strTileMapViewInfo { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strCompass_Attri { 
+    Mark?: Mark_Property;
+    Position?: point;
+    Visible?: boolean;
+    [key: string]: JsonValue; 
+    constructor(...args: JsonValue[]); 
+}
+declare class clsDrawLine { [key: string]: JsonValue; static Arrow?: (...args: JsonValue[]) => void; static Line?: (...args: JsonValue[]) => void; static Draw_Sample_LineBox?: (...args: JsonValue[]) => void; static Check_Draw_Arrow_Line?: (...args: JsonValue[]) => boolean; }
+declare class clsDrawTile { [key: string]: JsonValue; static Darw_Sample_BackGroundBox?: (...args: JsonValue[]) => void; static Draw_Poly_Inner?: (...args: JsonValue[]) => void; static Draw_Tile_Box?: (...args: JsonValue[]) => void; static Draw_Tile_RoundBox?: (...args: JsonValue[]) => void; }
+declare class tileList_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class EnableMPLine_Data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strContour_Line_property { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class clsMeshContour { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class Legend2_Atri { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class clsFontSet { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare function clsFontSet(...args: JsonValue[]): void;
+declare function clsDrawTileSample(...args: JsonValue[]): void;
 declare const enmBasePosition: unknown;
 declare const enmKenCodeObjectstructure: unknown;
 declare const enmObjectGoupType_Data: unknown;
@@ -1665,7 +1687,7 @@ interface EventTarget {
 }
 
 // 関数
-declare function logX(data: unknown): void;
+declare function logX(data: JsonValue): void;
 declare function init(): void;
 declare function setting(search: string): void;
 declare function contextMenuPrevent(e: Event): void;
@@ -1674,8 +1696,8 @@ declare function FrmprintMenuClick(pos: point): void;
 declare function dataValueShow(): void;
 declare function backImageButton(): void;
 declare function mapMouse(canvas: HTMLCanvasElement, callback: Function): void;
-declare function AddMeshPoint(objectNum: number, action: unknown): void;
-declare function AddMeshRect(objectNum: number, action: unknown): void;
+declare function AddMeshPoint(objectNum: number, action: JsonValue): void;
+declare function AddMeshRect(objectNum: number, action: JsonValue): void;
 
 // frmPrint は clsPrint.ts で class として定義済み
 
@@ -1789,14 +1811,14 @@ interface HTMLCanvasElement {
 }
 
 interface HTMLSelectElement {
-    addSelectList?: (items: unknown[], arg2?: unknown, arg3?: unknown, arg4?: unknown) => void;
+    addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
     getValue?: () => string | number | unknown;
     getText?: () => string;
     oldSel?: unknown;
     setSelectValue?: (value: string | number) => void;
     tooltip?: string;
     setSelectText?: (text: string) => void;
-    setSelectData?: (data: unknown, arg2?: unknown, arg3?: unknown) => void;
+    setSelectData?: (index: number, value: string | number, text: string) => void;
 }
 
 // Global functions
@@ -1812,7 +1834,7 @@ declare let lstDummyItem: unknown; // 変更される可能性あり
 // Array extensions
 interface Array<T> {
     trueNum?: number;
-    DummyOBGArray?: unknown[];
+    DummyOBGArray?: boolean[];
 }
 
 // EventTarget extensions
@@ -1841,11 +1863,11 @@ declare class Grid_Color {
     SelectedGrid: colorRGBA;
     FixedGrid: colorRGBA;
     SelectedFixedGrid: colorRGBA;
-    Clone(arg?: unknown): Grid_Color;
+    Clone(arg?: JsonValue): Grid_Color;
 }
 
 declare class Operation_enable_info {
-    Clone(arg?: unknown): Operation_enable_info;
+    Clone(arg?: JsonValue): Operation_enable_info;
 }
 
 declare class strYMD {
@@ -1866,6 +1888,11 @@ declare class latlonbox {
     SouthEast?: latlon;
     NorthEast?: latlon;
     SouthWest?: latlon;
+    // 代替プロパティ名
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
     constructor(nw?: latlon, se?: latlon);
 }
 
@@ -1875,16 +1902,16 @@ declare class Generic {
     static createNewCanvas(parent: HTMLElement, id: string, className: string, x: number, y: number, width: number, height: number, selectColor?: string): HTMLCanvasElement;
     static alert(event: Event, message: string, callback?: Function): void;
     static alert(message: string, callback?: Function): void;
-    static createMsgBox(title: string, message: string, showOk: boolean, arg4?: unknown, arg5?: unknown, arg6?: unknown, arg7?: unknown, arg8?: unknown, arg9?: unknown, arg10?: unknown): void;
-    static createNewDiv(parent: HTMLElement, text: string, id: string, className: string, x: number, y: number, width?: number | string, height?: number | string, style?: string, arg10?: unknown): HTMLDivElement;
-    static addSelectList(selectElement: HTMLSelectElement | string, items: unknown[], arg3?: unknown, arg4?: unknown): void;
-    static createNewRadioButtonList(parent: HTMLElement, name: string, list: unknown[], x: number, y: number, w?: number | string, h?: number | string, defaultValue?: string | number, changeHandler?: Function, fontSize?: number): HTMLElement;
-    static createNewFrame(parent: HTMLElement, text: string, id: string, x: number, y: number, width: number, height: number, title?: string, arg9?: unknown, arg10?: unknown): HTMLElement;
-    static createNewWordNumberInput(parent: HTMLElement, label: string, id: string, value: string | number, unit?: string, x?: number, y?: number, w?: number | string, h?: number | string, className?: string, arg11?: unknown): HTMLInputElement;
+    static createMsgBox(title: string, message: string, showOk: boolean, arg4?: JsonValue, arg5?: JsonValue, arg6?: JsonValue, arg7?: JsonValue, arg8?: JsonValue, arg9?: JsonValue, arg10?: JsonValue): void;
+    static createNewDiv(parent: HTMLElement, text: string, id: string, className: string, x: number, y: number, width?: number | string, height?: number | string, style?: string, arg10?: JsonValue): HTMLDivElement;
+    static addSelectList(selectElement: HTMLSelectElement | string, items: ListItem[], selectedIndex?: number, resetF?: boolean): void;
+    static createNewRadioButtonList(parent: HTMLElement, name: string, list: ListItem[], x: number, y: number, w?: number | string, h?: number | string, defaultValue?: string | number, changeHandler?: Function, fontSize?: number): HTMLElement;
+    static createNewFrame(parent: HTMLElement, text: string, id: string, x: number, y: number, width: number, height: number, title?: string, arg9?: JsonValue, arg10?: JsonValue): HTMLElement;
+    static createNewWordNumberInput(parent: HTMLElement, label: string, id: string, value: string | number, unit?: string, x?: number, y?: number, w?: number | string, h?: number | string, className?: string, arg11?: JsonValue): HTMLInputElement;
     static Get_LatLon_Strings(latlon: latlon, arg2?: boolean): {x: string, y: string};
     static convValue(value: string | number): number;
     static Remove_Same_String(arr: string[]): string[];
-    static createNewCheckBox(parent: HTMLElement, text: string, id: string, checked: boolean, x: number, y: number, arg7?: unknown, onChange?: Function, arg9?: unknown, arg10?: unknown): HTMLInputElement;
+    static createNewCheckBox(parent: HTMLElement, text: string, id: string, checked: boolean, x: number, y: number, arg7?: JsonValue, onChange?: Function, arg9?: JsonValue, arg10?: JsonValue): HTMLInputElement;
     static createNewTextarea(parent: HTMLElement, type: string, id: string, x: number, y: number, width: number, height: number, style?: string): HTMLTextAreaElement;
     static ArrayClone<T>(arr: T[]): T[];
 }
@@ -2061,7 +2088,7 @@ declare class spatial {
     static getCircumscribedRectangle(points: point[] | point | rectangle, margin?: number | rectangle): rectangle;
     static Get_TurnedBox(size: size, angle: number): size;
     static Get_Scale_Baititu_IdoKedo(p: point, MPDataMapZahyo: Zahyo_info): number;
-    static Trans3D(x: number, y: number, z?: number, center?: point, expand?: number, pitch?: number, head?: number, bank?: number, xyPara?: unknown): point;
+    static Trans3D(x: number, y: number, z?: number, center?: point, expand?: number, pitch?: number, head?: number, bank?: number, xyPara?: JsonValue): point;
     static Trans2D(CP: point, Kakudo_P: number, Kakudo?: number): point;
     static Check_Zahyo_Projection_Convert_Enabled(zahyo: Zahyo_info, zahyo2?: Zahyo_info): { ok: boolean; emes: string };
     static Get_Reverse_and_Convert_XY(point: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info): point;
@@ -2085,7 +2112,7 @@ declare class spatial {
     static Distance(x1: number, y1: number, x2: number, y2: number): number;
     static Get_Poly_Point_Juushin(points: point[]): point;
     static Get_CenterP_from_MeshCode(meshcode: string, meshType: number): point;
-    static BoundaryArrangeGeneral(arg1?: unknown, arg2?: unknown, arg3?: unknown): unknown;
+    static BoundaryArrangeGeneral(arg1?: JsonValue, arg2?: JsonValue, arg3?: JsonValue): JsonValue;
     static Check_TwoRectangele_Inner_Contact(rect1: rectangle, rect2: rectangle): boolean;
     static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle): boolean;
     static checkAndModifyPointInRect(point: point, rect: rectangle): point;
@@ -2096,27 +2123,27 @@ declare class spatial {
 
 // リストボックス
 declare class ListBox {
-    constructor(parent: HTMLElement, classname?: string, list?: unknown[], x?: number, y?: number, width?: number, height?: number, onChange?: Function, styleinfo?: unknown);
+    constructor(parent: HTMLElement, classname?: string, list?: string[], x?: number, y?: number, width?: number, height?: number, onChange?: Function, styleinfo?: string);
     getSelectedIndex(): number;
     setSelectedIndex(index: number): void;
-    setItems(items: unknown[]): void;
+    setItems(items: string[]): void;
     selectedIndex?: number;
-    frame?: unknown;
+    frame?: HTMLElement;
     length?: number;
-    value?: unknown;
-    options?: unknown[];
-    getItems?: () => unknown[];
+    value?: string | number;
+    options?: string[];
+    getItems?: () => string[];
     clear?: () => void;
-    add?: (item: unknown) => void;
-    addList?: (items: unknown[], pos?: number) => void;
-    addSelectList?: (items: unknown[], pos?: number) => void;
+    add?: (item: string) => void;
+    addList?: (items: string[], pos?: number) => void;
+    addSelectList?: (items: string[], pos?: number) => void;
     removeList?: (pos: number, delNum?: number) => void;
     removeAll?: () => void;
     getText?: (index?: number) => string;
     getAllText?: () => string[];
-    getAllValue?: () => unknown[];
-    getValue?: () => unknown;
-    setValue?: (row: number, value: unknown) => void;
+    getAllValue?: () => Array<string | number>;
+    getValue?: () => string | number;
+    setValue?: (row: number, value: string | number) => void;
     setText?: (row: number, text: string) => void;
     rowUp?: (row: number) => void;
     rowDown?: (row: number) => void;
@@ -2124,20 +2151,20 @@ declare class ListBox {
 
 // チェックリストボックス
 declare class CheckedListBox {
-    constructor(parent: HTMLElement, classname?: string, list?: unknown[], x?: number, y?: number, width?: number, height?: number, twoStepCheckF?: boolean, onChange?: Function, styleinfo?: unknown);
+    constructor(parent: HTMLElement, classname?: string, list?: string[], x?: number, y?: number, width?: number, height?: number, twoStepCheckF?: boolean, onChange?: Function, styleinfo?: string);
     getChecked(): { checkedStatus: boolean[]; checkedArray: number[] };
     getCheckedStatus(n: number): boolean;
     setChecked(index: number, checked: boolean): void;
     setCheckStatus(n: number, checked: boolean): void;
     getSelectedIndex(): number;
     setSelectedIndex(index: number): void;
-    setItems(items: unknown[]): void;
-    addList(list: unknown[], pos?: number): void;
+    setItems(items: string[]): void;
+    addList(list: string[], pos?: number): void;
     removeList(pos: number, delNum?: number): void;
     removeAll(): void;
     setText(n: number, text: string): void;
-    add(item: unknown): void;
-    frame?: unknown;
+    add(item: string): void;
+    frame?: HTMLElement;
     length?: number;
     selectedIndex?: number;
     disabled?: boolean;
