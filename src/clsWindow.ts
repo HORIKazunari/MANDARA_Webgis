@@ -2243,7 +2243,7 @@ function setting(locSearch: string) {
         }
         const settingControl=document.getElementsByClassName("rightSettingWindowControlBase");
         for (let i = 0; i < settingControl.length; i++) {
-            (settingControl[i] as unknown)?.setVisibility?.(false);
+            (settingControl[i] as ExtendedHTMLElement)?.setVisibility?.(false);
         }
 
         switch(attrData.TotalData.LV1.Print_Mode_Total){

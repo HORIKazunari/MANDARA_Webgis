@@ -4043,8 +4043,8 @@ class clsAttrData {
             }
             case enmLayerType.DefPoint: {
                 const LDA = LD.atrObject.atrObjectData[ObjNum];
-                const pt = [LDA.CenterPoint, LDA.Symbol, LDA.Label];
-                const rect = spatial.getCircumscribedRectangle(pt as unknown);
+                const pt: point[] = [LDA.CenterPoint, LDA.Symbol, LDA.Label];
+                const rect = spatial.getCircumscribedRectangle(pt);
                 return rect;
                 break;
             }
@@ -4190,7 +4190,7 @@ class clsAttrData {
             if (i == 0) {
                 TotalScrRect = ScrRect.Clone();     
             }else{
-                TotalScrRect=spatial.getCircumscribedRectangle(TotalScrRect as unknown,ScrRect as unknown);
+                TotalScrRect=spatial.getCircumscribedRectangle(TotalScrRect, ScrRect);
             }
         }
         if (TotalScrRect.left == TotalScrRect.right) {
@@ -4399,7 +4399,7 @@ class clsAttrData {
                         for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                             const Meshcode = ld.atrObject.atrObjectData[j].Name;
                             const RectLatLon = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode);
-                            LLRect = spatial.getCircumscribedRectangle(RectLatLon as unknown, LLRect);
+                            LLRect = spatial.getCircumscribedRectangle(RectLatLon, LLRect);
                         }
                         break;
                     }
@@ -4436,11 +4436,11 @@ class clsAttrData {
 
     getLinelatLon(mapdata: clsMapdata, LineNumber: number, rect: rectangle): rectangle {
         const ml=mapdata.MPLine[LineNumber];
-        const LP=[];
+        const LP: point[] = [];
         for (let i = 0; i <  ml.NumOfPoint;i++){
             LP.push( spatial.Get_Reverse_XY(ml.PointSTC[i], this.TotalData.ViewStyle.Zahyo))
         }
-        const rectf = spatial.getCircumscribedRectangle(LP as unknown);
+        const rectf = spatial.getCircumscribedRectangle(LP);
         const newRect = spatial.getCircumscribedRectangle(rect, rectf)  ;
         return newRect;
     }
