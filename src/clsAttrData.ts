@@ -4916,12 +4916,13 @@ class clsAttrData {
             for (let i = 0; i < otmoDataSet.length; i++) {
                 const od = otmoDataSet[i];
                 const d = new strOverLay_Dataset_Info();
-                d.title = od.title;
-                d.SelectedIndex = od.SelectedIndex;
-                d.Note = od.Note;
-                for (let j = 0; j < od.DataItem.length; j++) {
+                d.title = od.title as string;
+                d.SelectedIndex = od.SelectedIndex as number;
+                d.Note = od.Note as string;
+                const odDataItem = od.DataItem as JsonObject[];
+                for (let j = 0; j < odDataItem.length; j++) {
                     const itm = new strOverLay_DataSet_Item_Info();
-                    Object.assign(itm, od.DataItem[j]);
+                    Object.assign(itm, odDataItem[j]);
                     d.DataItem.push(itm);
                 }
                 tmo.DataSet.push(d);
@@ -5013,12 +5014,12 @@ class clsAttrData {
                 const oldItemScreenMargin = oldItem.Screen_Margin as JsonObject;
                 s.Screen_Margin.ClipF = oldItemScreenMargin.ClipF as boolean;
                 s.Screen_Margin.rect = cnvRectgle(oldItemScreenMargin.rect as JsonObject);
-                s.Accessory_Base = oldItem.Accessory_Base;
-                s.MapScale = cnvMapSCL(oldItem.MapScale);
-                s.MapTitle = cnvMapTitle(oldItem.MapTitle);
-                s.DataNote = cnvDataNode(oldItem.DataNote);
-                s.AttMapCompass = cnvCompass(oldItem.AttMapCompass);
-                s.MapLegend = cnvMapLegend(oldItem.MapLegend);
+                s.Accessory_Base = oldItem.Accessory_Base as number;
+                s.MapScale = cnvMapSCL(oldItem.MapScale as JsonObject);
+                s.MapTitle = cnvMapTitle(oldItem.MapTitle as JsonObject);
+                s.DataNote = cnvDataNode(oldItem.DataNote as JsonObject);
+                s.AttMapCompass = cnvCompass(oldItem.AttMapCompass as JsonObject);
+                s.MapLegend = cnvMapLegend(oldItem.MapLegend as JsonObject);
                 s.ThreeDMode = new strThreeDMode_Set();
                 Object.assign(s.ThreeDMode, oldItem.ThreeDMode);
                 ss.push(s);
@@ -5028,65 +5029,67 @@ class clsAttrData {
 
         function cnvDataNode(oldDN: JsonObject) {
             const dn = new strNote_Attri();
-            dn.Visible = oldDN.Visible;
-            dn.Position = cnvPoint(oldDN.Position);
-            dn.MaxWidth = oldDN.MaxWidth;
-            dn.Font = cnvFontProperty(oldDN.Font);
+            dn.Visible = oldDN.Visible as boolean;
+            dn.Position = cnvPoint(oldDN.Position as JsonObject);
+            dn.MaxWidth = oldDN.MaxWidth as number;
+            dn.Font = cnvFontProperty(oldDN.Font as JsonObject);
             return dn;
         }
 
         function cnvScreen_Back(oldsb: JsonObject) {
             const sb = new strScreen_Back_data();
-            sb.MapAreaFrameLine = cnvLineProperty(oldsb.MapAreaFrameLine);
-            sb.ScreenFrameLine = cnvLineProperty(oldsb.ScreenFrameLine);
-            sb.ScreenAreaBack = cnvTileProperty(oldsb.ScreenAreaBack);
-            sb.MapAreaBack = cnvTileProperty(oldsb.MapAreaBack);
-            sb.ObjectInner = cnvTileProperty(oldsb.ObjectInner);
+            sb.MapAreaFrameLine = cnvLineProperty(oldsb.MapAreaFrameLine as JsonObject);
+            sb.ScreenFrameLine = cnvLineProperty(oldsb.ScreenFrameLine as JsonObject);
+            sb.ScreenAreaBack = cnvTileProperty(oldsb.ScreenAreaBack as JsonObject);
+            sb.MapAreaBack = cnvTileProperty(oldsb.MapAreaBack as JsonObject);
+            sb.ObjectInner = cnvTileProperty(oldsb.ObjectInner as JsonObject);
             return sb;
         }
         function cnvMissingData(oldM: JsonObject) {
             const m = new strMissing_set();
-            m.Print_Flag = oldM.Print_Flag;
-            m.Text = oldM.Text;
-            m.PaintTile = cnvTileProperty(oldM.PaintTile);
-            m.Mark = cnvMarkProperty(oldM.Mark);
-            m.BlockMark = cnvMarkProperty(oldM.BlockMark);
-            m.ClassMark = cnvMarkProperty(oldM.ClassMark);
-            m.MarkBar = cnvMarkProperty(oldM.MarkBar);
-            m.Label = oldM.Label;
-            m.LineShape = cnvLineProperty(oldM.LineShape);
+            m.Print_Flag = oldM.Print_Flag as boolean;
+            m.Text = oldM.Text as string;
+            m.PaintTile = cnvTileProperty(oldM.PaintTile as JsonObject);
+            m.Mark = cnvMarkProperty(oldM.Mark as JsonObject);
+            m.BlockMark = cnvMarkProperty(oldM.BlockMark as JsonObject);
+            m.ClassMark = cnvMarkProperty(oldM.ClassMark as JsonObject);
+            m.MarkBar = cnvMarkProperty(oldM.MarkBar as JsonObject);
+            m.Label = oldM.Label as string;
+            m.LineShape = cnvLineProperty(oldM.LineShape as JsonObject);
             return m;
         }
         function cnvMapTitle(oldTtl: JsonObject) {
             const ttl = new strTitle_Attri();
-            ttl.Visible = oldTtl.Visible;
-            ttl.Position = cnvPoint(oldTtl.Position);
-            ttl.MaxWidth = oldTtl.MaxWidth;
-            ttl.Font = cnvFontProperty(oldTtl.Font);
+            ttl.Visible = oldTtl.Visible as boolean;
+            ttl.Position = cnvPoint(oldTtl.Position as JsonObject);
+            ttl.MaxWidth = oldTtl.MaxWidth as number;
+            ttl.Font = cnvFontProperty(oldTtl.Font as JsonObject);
             return ttl;
         }
         function cnvMapSCL(olsSCL: JsonObject) {
             const scl = new strScale_Attri();
-            scl.Visible = olsSCL.Visible;
-            scl.Position = cnvPoint(olsSCL.Position);
-            scl.Font = cnvFontProperty(olsSCL.Font);
-            scl.BarPattern = olsSCL.BarPattern;
-            scl.BarAuto = olsSCL.BarAuto;
-            scl.BarDistance = olsSCL.BarDistance;
-            scl.BarKugiriNum = olsSCL.BarKugiriNum;
-            scl.Back = cnvBackGround_Box_Property(olsSCL.Back);
-            scl.Unit = olsSCL.Unit;
+            scl.Visible = olsSCL.Visible as boolean;
+            scl.Position = cnvPoint(olsSCL.Position as JsonObject);
+            scl.Font = cnvFontProperty(olsSCL.Font as JsonObject);
+            scl.BarPattern = olsSCL.BarPattern as number;
+            scl.BarAuto = olsSCL.BarAuto as boolean;
+            scl.BarDistance = olsSCL.BarDistance as number;
+            scl.BarKugiriNum = olsSCL.BarKugiriNum as number;
+            scl.Back = cnvBackGround_Box_Property(olsSCL.Back as JsonObject);
+            scl.Unit = olsSCL.Unit as string;
             return scl;
         }
         function cnvMapLegend(oldML: JsonObject) {
             const MapLegend = new strLegend_Attri();
             const mlb = MapLegend.Base;
-            mlb.Back = cnvBackGround_Box_Property(oldML.Base.Back);
-            mlb.Font = cnvFontProperty(oldML.Base.Font);
-            mlb.Legend_Num = oldML.Base.Legend_Num
+            const oldMLBase = oldML.Base as JsonObject;
+            mlb.Back = cnvBackGround_Box_Property(oldMLBase.Back as JsonObject);
+            mlb.Font = cnvFontProperty(oldMLBase.Font as JsonObject);
+            mlb.Legend_Num = oldMLBase.Legend_Num as number;
             mlb.LegendXY = [];
+            const oldMLBaseLegendXY = oldMLBase.LegendXY as JsonObject[];
             for (let i = 0; i < mlb.Legend_Num; i++) {
-                mlb.LegendXY.push(cnvPoint(oldML.Base.LegendXY[i]));
+                mlb.LegendXY.push(cnvPoint(oldMLBaseLegendXY[i]));
             }
             mlb.Visible = oldML.Base.Visible;
             mlb.Comma_f = oldML.Base.Comma_f;
