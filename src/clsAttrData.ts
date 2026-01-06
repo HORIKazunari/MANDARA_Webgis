@@ -3911,12 +3911,12 @@ class clsAttrData {
                 return;
             }
         }
-        const newObk = strObjectKindUsed_Info();
+        const newObk = new strObjectKindUsed_Info();
         newObk.MapFileName = MapFilename;
         newObk.ObjectKindNumber = ObjKindNumber;
         newObk.Mark = MK;
         newObk .ObjectKindName = this.SetMapFile(MapFilename).ObjectKind[ObjKindNumber].Name;
-        this.TempData.PointObjectKindUsedStack.Push(newObk)
+        this.TempData.PointObjectKindUsedStack.push(newObk);
     }
 
     //オブジェクトの表示チェックをクリア
@@ -7903,7 +7903,7 @@ class clsAttrData {
         let P2;
         let d;
         const z = this.TotalData.ViewStyle.Zahyo;
-        if (this.MapData.SetMapFile(MapFile).MPObj(ObjCode2).Shape == enmShape.LineShape) {
+        if (this.MapData.SetMapFile(MapFile).MPObj[ObjCode2].Shape == enmShape.LineShape) {
             if (this.LayerData[LayNum1].Shape != enmShape.LineShape) {
                 P1 = this.Get_CenterP(LayNum1, ObjNum1);
                 d = this.MapData.SetMapFile(MapFile).Get_Distance_Between_ObjectLine_and_Point(ObjCode2, Time, P1);
@@ -8315,8 +8315,8 @@ class clsAttrMapData {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 class clsObjectNameSearch {
-    private Object_Name_Search: JsonObject;
-    private Object_Name_Stac_for_Search_O_Code: JsonValue[];
+    private Object_Name_Search: clsSortingSearch;
+    private Object_Name_Stac_for_Search_O_Code: InstanceType<clsObjectNameSearch['ObjNameAndTime_Info']>[];
     private checkObjectNameKanjiCompatibleFF: boolean;
 
     ObjNameAndTime_Info = class {
@@ -8356,7 +8356,7 @@ class clsObjectNameSearch {
         this.Object_Name_Search.AddEnd();
     }
 
-    Object_Name_Stac(Pos: number): JsonValue {
+    Object_Name_Stac(Pos: number): InstanceType<clsObjectNameSearch['ObjNameAndTime_Info']> {
         return this.Object_Name_Stac_for_Search_O_Code[Pos];
     }
 
