@@ -4267,4 +4267,4 @@ class clsTileMap {
     }
 }
 
-export { clsDraw };
+export { clsDraw, clsSpline };

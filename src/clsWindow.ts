@@ -1,5 +1,6 @@
 ﻿import { Generic, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { appState } from './core/AppState';
+import { clsShapefile } from './shapeFile';
 import type { 
   ExtendedHTMLElement, 
   SelectChangeHandler, 
@@ -4032,7 +4033,7 @@ function readData(okCall: () => void) {
 
 //シェープファイル読み込み
 function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void{
-    let shapeFiles: { [key: string]: JsonObject } = {};//clsShapefile
+    let shapeFiles: { [key: string]: { shape: clsShapefile } } = {};
     const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");

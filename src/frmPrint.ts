@@ -1,6 +1,7 @@
 ﻿import { appState } from './core/AppState';
 import { clsAccessory } from './clsAccessory';
-import type { JsonValue } from './types';
+import { clsSpline } from './clsDraw';
+import type { JsonValue, MenuItem } from './types';
 
 // mousePointingSituations は globals.d.ts で定義済み
 
@@ -501,7 +502,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         });
                                     }
                                     if(state.attrData.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido){
-                                        const pmnu={caption: "この地点のWeb地図を表示", enabled: true, child: [
+                                        const pmnu: MenuItem = {caption: "この地点のWeb地図を表示", enabled: true, child: [
                                             { caption: "Googleマップ", event: showWebMap },
                                             { caption: "YAHOO!地図", event:  showWebMap},
                                             { caption: "Mapion", event:  showWebMap},
@@ -761,8 +762,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             mnuAccPopupVisible.push({ caption: "-" })
                         }
                         for (let i = 0; i < alo.HyperLinkNum; i++) {
-                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: JsonValue, e: Event){
-                                window.open(data.tag, '_blank');
+                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: MenuItem, e: Event){
+                                if (data.tag) window.open(data.tag, '_blank');
                             },tag:alo.HyperLink[i].Address} );
                         }
                         // mnuAccPopupVisible.push({ caption: "-" });
@@ -884,8 +885,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const splineGet = (clsSpline as JsonValue).Spline_Get as ((a: number, b: number, pts: JsonValue, c: number, scr: JsonValue) => JsonValue) | undefined;
-        const pxy = splineGet ? splineGet(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData) : poxy;
+        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData);
         const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
         O_LPat.Color=clsBase.ColorRed();
