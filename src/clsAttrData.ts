@@ -4478,7 +4478,7 @@ class clsAttrData {
         const state = appState();
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
-            this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
+            this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
         }
 
         const odata = JSON.parse(attrText);

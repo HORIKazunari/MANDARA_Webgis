@@ -187,11 +187,13 @@ interface IAttrData {
                 Position: point;
                 Visible?: boolean;
                 Font?: Font_Property;
+                MaxWidth?: number;
                 Clone?: () => {
                     Position: point;
                     Visible?: boolean;
                     Font?: Font_Property;
                     Back?: BackGround_Box_Property;
+                    MaxWidth?: number;
                 };
                 Back?: BackGround_Box_Property
             };
@@ -199,6 +201,7 @@ interface IAttrData {
                 Position: point;
                 Visible?: boolean;
                 Font?: Font_Property;
+                BarAuto?: boolean;
                 Clone?: () => {
                     Position: point;
                     Visible?: boolean;
@@ -207,6 +210,7 @@ interface IAttrData {
                     Back?: BackGround_Box_Property;
                     Unit?: number;
                     Font?: Font_Property;
+                    BarAuto?: boolean;
                 };
                 BarDistance?: number;
                 BarKugiriNum?: number;
