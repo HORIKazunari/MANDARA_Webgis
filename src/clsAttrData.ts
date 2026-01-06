@@ -4668,61 +4668,67 @@ class clsAttrData {
             ld.Print_Mode_Layer = oLay.Print_Mode_Layer;
 
             const lda = ld.atrObject;// オブジェクトの情報
-            lda.ObjectNum = oldLay.atrObject.ObjectNum;
-            lda.NumOfSyntheticObj = oldLay.atrObject.NumOfSyntheticObj;
-            for (let i = 0; i < oldLay.atrObject.atrObjectData.length; i++) {
-                const od = oldLay.atrObject.atrObjectData[i];
+            const oldAtrObject = oLay.atrObject as JsonObject;
+            lda.ObjectNum = oldAtrObject.ObjectNum as number;
+            lda.NumOfSyntheticObj = oldAtrObject.NumOfSyntheticObj as number;
+            const oldAtrObjectData = oldAtrObject.atrObjectData as JsonObject[];
+            for (let i = 0; i < oldAtrObjectData.length; i++) {
+                const od = oldAtrObjectData[i];
                 const d = new strObject_Data_Info();
-                d.MpObjCode = od.MpObjCode;
-                d.Name = od.Name;
-                d.Objectstructure = od.Objectstructure;
-                d.HyperLinkNum = od.HyperLinkNum;
+                d.MpObjCode = od.MpObjCode as number;
+                d.Name = od.Name as string;
+                d.Objectstructure = od.Objectstructure as number;
+                d.HyperLinkNum = od.HyperLinkNum as number;
                 for (const i in od.HyperLink) {
                     const ud = new strURL_Data();
-                    Object.assign(ud, od.HyperLink[i]);
+                    Object.assign(ud, (od.HyperLink as JsonObject[])[i]);
                     d.HyperLink.push(ud);
                 }
-                d.CenterPoint = cnvPoint(od.CenterPoint);
-                d.Symbol = cnvPoint(od.Symbol);
-                d.Label = cnvPoint(od.Label);
-                d.MeshRect = cnvRectgle(od.MeshRect);
-                d.defPoint = new latlon(od.defPoint.lat, od.defPoint.lon);
+                d.CenterPoint = cnvPoint(od.CenterPoint as JsonObject);
+                d.Symbol = cnvPoint(od.Symbol as JsonObject);
+                d.Label = cnvPoint(od.Label as JsonObject);
+                d.MeshRect = cnvRectgle(od.MeshRect as JsonObject);
+                d.defPoint = new latlon((od.defPoint as JsonObject).lat, (od.defPoint as JsonObject).lon);
                 for(const i in od.MeshPoint){
-                    d.MeshPoint.push(cnvPoint(od.MeshPoint[i]));
+                    d.MeshPoint.push(cnvPoint((od.MeshPoint as JsonObject[])[i]));
                 }
-                d.Visible = od.Visible;
+                d.Visible = od.Visible as boolean;
                 lda.atrObjectData.push(d);
             }
-            for (let i = 0; i < oldLay.atrObject.MPSyntheticObj.length; i++) {
-                const od = oldLay.atrObject.MPSyntheticObj[i];
+            const oldMPSyntheticObj = oldAtrObject.MPSyntheticObj as JsonObject[];
+            for (let i = 0; i < oldMPSyntheticObj.length; i++) {
+                const od = oldMPSyntheticObj[i];
                 const d = new strSynthetic_Object_Data();
-                d.Kind = od.Kind;
-                d.NumOfObject = od.NumOfObject;
-                d.Name = od.Name;
-                d.CenterP = cnvPoint(od.CenterP);
-                d.SETime = cnvStart_End_Time_data(od.SETime);
-                d.Shape = od.Shape;
+                d.Kind = od.Kind as string;
+                d.NumOfObject = od.NumOfObject as number;
+                d.Name = od.Name as string;
+                d.CenterP = cnvPoint(od.CenterP as JsonObject);
+                d.SETime = cnvStart_End_Time_data(od.SETime as JsonObject);
+                d.Shape = od.Shape as number;
                 d.Circumscribed_Rectangle = new rectangle();
+                const odObjects = od.Objects as JsonObject[];
                 d.Objects = [];
-                for (const j in od.Objects) {
+                for (const j in odObjects) {
                     const s = new strSynthetic_ObjectName_and_Code();
-                    Object.assign(s, od.Objects[j]);
+                    Object.assign(s, odObjects[j]);
                     d.Objects.push(s);
                 }
                 lda.MPSyntheticObj.push(d);
             }
 
             const ldd = ld.atrData;//データ項目の情報
-            ldd.Count = oldLay.atrData.Count;
-            ldd.SelectedIndex = oldLay.atrData.SelectedIndex;
-            for (const i in oldLay.atrData.Data) {
-                const od = oldLay.atrData.Data[i];
+            const oldAtrData = oLay.atrData as JsonObject;
+            ldd.Count = oldAtrData.Count as number;
+            ldd.SelectedIndex = oldAtrData.SelectedIndex as number;
+            const oldDataArray = oldAtrData.Data as JsonObject[];
+            for (const i in oldDataArray) {
+                const od = oldDataArray[i];
                 const d = new strData_info();
                 Object.assign(d, od);
                 d.Statistics = new strStatisticInfo();
                 Object.assign(d.Statistics, od.Statistics);
                 const dts = new strSoloModeViewSettings_Data();
-                const odts = od.SoloModeViewSettings;
+                const odts = od.SoloModeViewSettings as JsonObject;
                 dts.Div_Method = odts.Div_Method;
                 dts.Div_Num = odts.Div_Num;
                 dts.Class_Div = [];
@@ -4801,67 +4807,72 @@ class clsAttrData {
             }
 
             ld.Dummy = [];//ダミーオブジェクト
-            for (const i in oldLay.Dummy) {
+            const oldDummy = oLay.Dummy as JsonObject[];
+            for (const i in oldDummy) {
                 const d = new strDummyObjectName_and_Code();
-                Object.assign(d, oldLay.Dummy[i]);
+                Object.assign(d, oldDummy[i]);
                 ld.Dummy.push(d);
             }
             ld.DummyGroup = [];//ダミーオブジェクトグループ
-            ld.DummyGroup = oldLay.DummyGroup.concat();
+            ld.DummyGroup = (oLay.DummyGroup as JsonArray).concat() as string[];
 
-            const oldv = oldLay.LayerModeViewSettings;
-            const oldvl = oldv.LabelMode;
+            const oldv = oLay.LayerModeViewSettings as JsonObject;
+            const oldvl = oldv.LabelMode as JsonObject;
             const ldv = ld.LayerModeViewSettings;
             ldv.LabelMode = new strLabelMode_Data_info();//ラベルモード
-            ldv.LabelMode.SelectedIndex = oldvl.SelectedIndex;
-            for (const i in oldvl.DataSet) {
-                const od = oldvl.DataSet[i];
+            ldv.LabelMode.SelectedIndex = oldvl.SelectedIndex as number;
+            const oldvlDataSet = oldvl.DataSet as JsonObject[];
+            for (const i in oldvlDataSet) {
+                const od = oldvlDataSet[i];
                 const d = new strLabel_Data();
                 Object.assign(d, od);
-                d.DataItem = od.DataItem.concat();
-                d.Location_Mark = cnvMarkProperty(od.Location_Mark);
-                d.DataValue_Font = cnvFontProperty(od.DataValue_Font);
-                d.ObjectName_Font= cnvFontProperty(od.ObjectName_Font);
-                d.BorderObjectTile = cnvTileProperty(od.BorderObjectTile);
-                d.BorderDataTile = cnvTileProperty(od.BorderDataTile);
-                d.BorderLine = cnvLineProperty(od.BorderLine);
+                d.DataItem = (od.DataItem as JsonArray).concat() as number[];
+                d.Location_Mark = cnvMarkProperty(od.Location_Mark as JsonObject);
+                d.DataValue_Font = cnvFontProperty(od.DataValue_Font as JsonObject);
+                d.ObjectName_Font= cnvFontProperty(od.ObjectName_Font as JsonObject);
+                d.BorderObjectTile = cnvTileProperty(od.BorderObjectTile as JsonObject);
+                d.BorderDataTile = cnvTileProperty(od.BorderDataTile as JsonObject);
+                d.BorderLine = cnvLineProperty(od.BorderLine as JsonObject);
                 ldv.LabelMode.DataSet.push(d);
             }
-            const oldvg = oldv.GraphMode;
+            const oldvg = oldv.GraphMode as JsonObject;
             ldv.GraphMode = new strGraphMode_DataSetting_Info();//グラフモード
-            ldv.GraphMode.SelectedIndex = oldvg.SelectedIndex;
-            for (const i in oldvg.DataSet) {
-                const od = oldvg.DataSet[i];
+            ldv.GraphMode.SelectedIndex = oldvg.SelectedIndex as number;
+            const oldvgDataSet = oldvg.DataSet as JsonObject[];
+            for (const i in oldvgDataSet) {
+                const od = oldvgDataSet[i];
                 const d = new strGraph_Data();
                 Object.assign(d, od);
                 d.En_Obi = new strGraph_Data_En();
                 Object.assign(d.En_Obi, od.En_Obi);
-                d.En_Obi.BoaderLine = cnvLineProperty(od.En_Obi.BoaderLine);
+                d.En_Obi.BoaderLine = cnvLineProperty((od.En_Obi as JsonObject).BoaderLine as JsonObject);
                 d.Oresen_Bou = new strGraph_Data_Oresen();
                 Object.assign(d.Oresen_Bou, od.Oresen_Bou);
-                d.Oresen_Bou.Line = cnvLineProperty(od.Oresen_Bou.Line);
-                d.Oresen_Bou.BackgroundTile = cnvTileProperty(od.Oresen_Bou.BackgroundTile);
-                d.Oresen_Bou.BorderLine = cnvLineProperty(od.Oresen_Bou.BorderLine);
+                d.Oresen_Bou.Line = cnvLineProperty((od.Oresen_Bou as JsonObject).Line as JsonObject);
+                d.Oresen_Bou.BackgroundTile = cnvTileProperty((od.Oresen_Bou as JsonObject).BackgroundTile as JsonObject);
+                d.Oresen_Bou.BorderLine = cnvLineProperty((od.Oresen_Bou as JsonObject).BorderLine as JsonObject);
                 d.Data = [];
-                for (const j in od.Data) {
+                const odData = od.Data as JsonObject[];
+                for (const j in odData) {
                     const s = new GraphModeDataItem();
-                    s.DataNumber = od.Data[j].DataNumber;
-                    s.Tile = cnvTileProperty(od.Data[j].Tile);
+                    s.DataNumber = odData[j].DataNumber as number;
+                    s.Tile = cnvTileProperty(odData[j].Tile as JsonObject);
                     d.Data.push(s);
                 }
                 ldv.GraphMode.DataSet.push(d);
             }
 
-            
-            ldv.PointLineShape.LineWidth = oldv.PointLineShape.LineWidth;
-            ldv.PointLineShape.LineEdge = cnvLineEdgeProperty(oldv.PointLineShape.LineEdge);
-            ldv.PointLineShape.PointMark = cnvMarkProperty(oldv.PointLineShape.PointMark);
-            ldv.PolygonDummy_ClipSet_F = oldv.PolygonDummy_ClipSet_F;
+            const oldvPointLineShape = oldv.PointLineShape as JsonObject;
+            ldv.PointLineShape.LineWidth = oldvPointLineShape.LineWidth as number;
+            ldv.PointLineShape.LineEdge = cnvLineEdgeProperty(oldvPointLineShape.LineEdge as JsonObject);
+            ldv.PointLineShape.PointMark = cnvMarkProperty(oldvPointLineShape.PointMark as JsonObject);
+            ldv.PolygonDummy_ClipSet_F = oldv.PolygonDummy_ClipSet_F as boolean;
 
-            for (const i in oldLay.ODBezier_DataStac) {
+            const oldODBezier = oLay.ODBezier_DataStac as JsonObject[];
+            for (const i in oldODBezier) {
                 const d = new ODBezier_Data();
-                Object.assign(d, oldLay.ODBezier_DataStac[i]);
-                d.Point = cnvPoint(oldLay.ODBezier_DataStac[i].Point);
+                Object.assign(d, oldODBezier[i]);
+                d.Point = cnvPoint(oldODBezier[i].Point as JsonObject);
                 ld.ODBezier_DataStac.push(d);
             }
             return ld;
