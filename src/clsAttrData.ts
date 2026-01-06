@@ -1107,7 +1107,7 @@ class strLayerDataInfo {
     }
 
     /** 線モードのベジェ曲線用の参照地点をRefPointに返す。該当しない場合はfalseを返す*/
-    Get_OD_Bezier_RefPoint(ObjPos: number, DataNum: number): point | undefined {
+    Get_OD_Bezier_RefPoint(ObjPos: number, DataNum: number): { ok: boolean; RefPoint?: point } {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
             if ((bs.Data == DataNum) && (bs.ObjectPos == ObjPos)){
@@ -1145,7 +1145,7 @@ class strLayerDataInfo {
     }
 
     initLayerData(): void {
-        this.ObjectGRelatedLine = [];
+        this.ObjectGroupRelatedLine = [];
         switch (this.Type) {
             case enmLayerType.Normal:
             case enmLayerType.Mesh:
@@ -2127,8 +2127,8 @@ class Screen_info {
     }
 
     Set_PictureBox_and_CulculateMul(Size: rectangle): void {
-        const Wwidth = Size.width;
-        const Wheight = Size.height;
+        const Wwidth = Size.width();
+        const Wheight = Size.height();
         const w = Wwidth * (1 - (this.Screen_Margin.rect.left + this.Screen_Margin.rect.right) / 100);
         const H = Wheight * (1 - (this.Screen_Margin.rect.top + this.Screen_Margin.rect.bottom) / 100);
 
@@ -2144,11 +2144,11 @@ class Screen_info {
         this.ScreenMG.Xplus = (w - xw * this.ScreenMG.Mul) / 2 + Wwidth * this.Screen_Margin.rect.left / 100;
         this.ScreenMG.YPlus = (H - yw * this.ScreenMG.Mul) / 2 + Wheight * this.Screen_Margin.rect.top / 100;
         if (this.OutputDevide != enmOutputDevice.Printer) {
-            this.MapScreen_Scale = new rectangle(0, Wwidth, 0, Wheight)
-            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRX(Wwidth), this.getSRY(0), this.getSRY(Wheight));
+            this.MapScreen_Scale = new rectangle(0, 0, Wwidth, Wheight);
+            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRY(0), this.getSRX(Wwidth), this.getSRY(Wheight));
         } else {
             this.OutputDevide = enmOutputDevice.Screen;
-            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRX(Wwidth), this.getSRY(0), this.getSRY(Wheight));
+            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRY(0), this.getSRX(Wwidth), this.getSRY(Wheight));
             this.OutputDevide = enmOutputDevice.Printer;
             this.MapScreen_Scale = this.getSxSy(this.ScrRectangle);
         }
@@ -2211,11 +2211,11 @@ class Screen_info {
     //回転を考慮して地図座標列をスクリーン座標に変換
     Get_SxSy_With_3D(Pnum: number, inXY: point[], ReverseGetF: boolean): point[];
     Get_SxSy_With_3D(Point: point): point;
-    Get_SxSy_With_3D(p1: point, p2?: point, p3?: point): point {
+    Get_SxSy_With_3D(p1: number | point | point[] | rectangle, p2?: point[] | boolean, p3?: boolean): point | point[] | rectangle {
         if ((typeof p1) === 'number') {
             const Pnum = p1;
-            const inXY = p2;
-            const ReverseGetF = p3;
+            const inXY = p2 as point[];
+            const ReverseGetF = p3 as boolean;
             if (this.ThreeDMode.Set3D_F == true) {
                 const XYPara = Math.sqrt((this.MapRectangle.width()) ** 2 + (this.MapRectangle.height()) ** 2);
                 const TurnCenter = this.MapRectangle.centerP();
@@ -2233,14 +2233,15 @@ class Screen_info {
             for (let i = 0; i < 4; i++) {
                 meshP.push(p1[i].Clone());
             }
-            meshP.push(p1[0].Clone);
+            meshP.push(p1[0].Clone());
             return this.Get_SxSy_With_3D(5, meshP, false);
         } else if ((p1 instanceof rectangle) == true) {
-            const meshP = [];
-            meshP[0] = new point(p1.left, p1.top);
-            meshP[1] = new point(p1.right, p1.top);
-            meshP[2] = new point(p1.right, p1.bottom);
-            meshP[3] = new point(p1.left, p1.bottom);
+            const rect = p1 as rectangle;
+            const meshP: point[] = [];
+            meshP[0] = new point(rect.left, rect.top);
+            meshP[1] = new point(rect.right, rect.top);
+            meshP[2] = new point(rect.right, rect.bottom);
+            meshP[3] = new point(rect.left, rect.bottom);
             const pxy = this.Get_SxSy_With_3D(4, meshP, false);
             let minx = pxy[0].x;
             let maxx = pxy[0].x;
@@ -2252,10 +2253,10 @@ class Screen_info {
                 miny = Math.min(miny, pxy[i].y)
                 maxy = Math.max(maxy, pxy[i].y)
             }
-            const ret = new rectangle(minx, maxx, miny, maxy);
+            const ret = new rectangle(minx, miny, maxx, maxy);
             return ret;
         } else if ((p1 instanceof point) == true) {
-            const P = [p1.Clone()];
+            const P = [(p1 as point).Clone()];
             const Pout = this.Get_SxSy_With_3D(1, P, false);
             return Pout[0];
         }
@@ -2372,7 +2373,7 @@ class Screen_info {
     //地図座標から相対比座標を返す
     getRatioPfromSrxSry(p: point): point {
         const p2 = this.getSxSy(p);
-        const P3 = new point(p2.X / this.frmPrint_FormSize.width(), p2.y / this.frmPrint_FormSize.height());
+        const P3 = new point(p2.x / this.frmPrint_FormSize.width(), p2.y / this.frmPrint_FormSize.height());
         return P3;
     }
 
