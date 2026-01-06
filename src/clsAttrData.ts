@@ -4899,21 +4899,22 @@ class clsAttrData {
         }
         function cnvStart_End_Time_data(ot: JsonObject) {
             const nt = new Start_End_Time_data();
-            nt.StartTime = new strYMD(ot.StartTime);
-            nt.EndTime = new strYMD(ot.EndTime);
+            nt.StartTime = new strYMD(ot.StartTime as JsonObject);
+            nt.EndTime = new strYMD(ot.EndTime as JsonObject);
             return nt;
         }
         function cnvTime(oldT: JsonObject) {
-            return new strYMD(oldT.Year, oldT.Month, oldT.Day);
+            return new strYMD(oldT.Year as number, oldT.Month as number, oldT.Day as number);
         }
         function cnvTotalmode(oldTM: JsonObject) {
-            const otmo = oldTM.OverLay;
+            const otmo = oldTM.OverLay as JsonObject;
             const tm = new strTotalMode_Info();
             const tmo = tm.OverLay;
-            tmo.SelectedIndex = otmo.SelectedIndex;
-            tmo.Always_Overlay_Index = otmo.Always_Overlay_Index;
-            for (let i = 0; i < otmo.DataSet.length; i++) {
-                const od = otmo.DataSet[i];
+            tmo.SelectedIndex = otmo.SelectedIndex as number;
+            tmo.Always_Overlay_Index = otmo.Always_Overlay_Index as number;
+            const otmoDataSet = otmo.DataSet as JsonObject[];
+            for (let i = 0; i < otmoDataSet.length; i++) {
+                const od = otmoDataSet[i];
                 const d = new strOverLay_Dataset_Info();
                 d.title = od.title;
                 d.SelectedIndex = od.SelectedIndex;
@@ -4925,17 +4926,19 @@ class clsAttrData {
                 }
                 tmo.DataSet.push(d);
             }
-            const otms = oldTM.Series;
+            const otms = oldTM.Series as JsonObject;
             const tms = tm.Series;
-            tms.SelectedIndex = otms.SelectedIndex;
-            for (let i = 0; i < otms.DataSet.length; i++) {
-                const od = otms.DataSet[i];
+            tms.SelectedIndex = otms.SelectedIndex as number;
+            const otmsDataSet = otms.DataSet as JsonObject[];
+            for (let i = 0; i < otmsDataSet.length; i++) {
+                const od = otmsDataSet[i];
                 const d = new strSeries_Dataset_Info();
-                d.title = od.title;
-                d.SelectedIndex = od.SelectedIndex;
-                for (let j = 0; j < od.DataItem.length; j++) {
+                d.title = od.title as string;
+                d.SelectedIndex = od.SelectedIndex as number;
+                const odDataItem = od.DataItem as JsonObject[];
+                for (let j = 0; j < odDataItem.length; j++) {
                     const itm = new strSeries_DataSet_Item_Info();
-                    Object.assign(itm, od.DataItem[j]);
+                    Object.assign(itm, odDataItem[j]);
                     d.DataItem.push(itm);
                 }
                 tms.DataSet.push(d);
@@ -4948,16 +4951,18 @@ class clsAttrData {
             for (let i = 0; i < oldC.length; i++) {
                 const od = oldC[i];
                 const d = new strCondition_DataSet_Info();
-                d.Enabled = od.Enabled;
-                d.Layer = od.Layer;
-                d.Name = od.Name;
-                for (let j = 0; j < od.Condition_Class.length; j++) {
-                    const oind = od.Condition_Class[j];
+                d.Enabled = od.Enabled as boolean;
+                d.Layer = od.Layer as number;
+                d.Name = od.Name as string;
+                const odConditionClass = od.Condition_Class as JsonObject[];
+                for (let j = 0; j < odConditionClass.length; j++) {
+                    const oind = odConditionClass[j];
                     const ind = new strCondition_Data_Info();
-                    ind.And_OR = oind.And_OR;
-                    for (let k = 0; k < oind.Condition.length; k++) {
+                    ind.And_OR = oind.And_OR as number;
+                    const oindCondition = oind.Condition as JsonObject[];
+                    for (let k = 0; k < oindCondition.length; k++) {
                         const lim = new strCondition_Limitation_Info();
-                        Object.assign(lim, oind.Condition[k]);
+                        Object.assign(lim, oindCondition[k]);
                         ind.Condition.push(lim);
                     }
                     d.Condition_Class.push(ind);
@@ -5001,12 +5006,13 @@ class clsAttrData {
             for (let i = 0; i < oldSS.length; i++) {
                 const oldItem = oldSS[i];
                 const s = new strScreen_Setting_Data_Info();
-                s.title = oldItem.Title;
-                s.frmPrint_FormSize = cnvRectgle(oldItem.frmPrint_FormSize);
-                s.ScrView = cnvRectgle(oldItem.ScrView);
+                s.title = oldItem.Title as string;
+                s.frmPrint_FormSize = cnvRectgle(oldItem.frmPrint_FormSize as JsonObject);
+                s.ScrView = cnvRectgle(oldItem.ScrView as JsonObject);
                 s.Screen_Margin = new ScreenMargin();
-                s.Screen_Margin.ClipF = oldItem.Screen_Margin.ClipF;
-                s.Screen_Margin.rect = cnvRectgle(oldItem.Screen_Margin.rect);
+                const oldItemScreenMargin = oldItem.Screen_Margin as JsonObject;
+                s.Screen_Margin.ClipF = oldItemScreenMargin.ClipF as boolean;
+                s.Screen_Margin.rect = cnvRectgle(oldItemScreenMargin.rect as JsonObject);
                 s.Accessory_Base = oldItem.Accessory_Base;
                 s.MapScale = cnvMapSCL(oldItem.MapScale);
                 s.MapTitle = cnvMapTitle(oldItem.MapTitle);
