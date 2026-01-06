@@ -4657,15 +4657,15 @@ class clsAttrData {
         function cnvLayerData(oldLay: JsonObject) {
             const oLay = oldLay;
             const ld = new strLayerDataInfo();
-            ld.Name = oLay.Name;
-            ld.MapFileName = oLay.MapFileName;
-            ld.Shape = oLay.Shape;
-            ld.Type = oLay.Type;
-            ld.MeshType = oLay.MeshType;
-            ld.ReferenceSystem = oLay.ReferenceSystem;
-            ld.Time = cnvTime(oLay.Time);
-            ld.Comment = oLay.Comment;
-            ld.Print_Mode_Layer = oLay.Print_Mode_Layer;
+            ld.Name = oLay.Name as string;
+            ld.MapFileName = oLay.MapFileName as string;
+            ld.Shape = oLay.Shape as number;
+            ld.Type = oLay.Type as number;
+            ld.MeshType = oLay.MeshType as number;
+            ld.ReferenceSystem = oLay.ReferenceSystem as number;
+            ld.Time = cnvTime(oLay.Time as JsonObject);
+            ld.Comment = oLay.Comment as string;
+            ld.Print_Mode_Layer = oLay.Print_Mode_Layer as number;
 
             const lda = ld.atrObject;// オブジェクトの情報
             const oldAtrObject = oLay.atrObject as JsonObject;
@@ -4679,18 +4679,20 @@ class clsAttrData {
                 d.Name = od.Name as string;
                 d.Objectstructure = od.Objectstructure as number;
                 d.HyperLinkNum = od.HyperLinkNum as number;
-                for (const i in od.HyperLink) {
+                const odHyperLink = od.HyperLink as JsonObject[];
+                for (const i in odHyperLink) {
                     const ud = new strURL_Data();
-                    Object.assign(ud, (od.HyperLink as JsonObject[])[i]);
+                    Object.assign(ud, odHyperLink[i]);
                     d.HyperLink.push(ud);
                 }
                 d.CenterPoint = cnvPoint(od.CenterPoint as JsonObject);
                 d.Symbol = cnvPoint(od.Symbol as JsonObject);
                 d.Label = cnvPoint(od.Label as JsonObject);
                 d.MeshRect = cnvRectgle(od.MeshRect as JsonObject);
-                d.defPoint = new latlon((od.defPoint as JsonObject).lat, (od.defPoint as JsonObject).lon);
-                for(const i in od.MeshPoint){
-                    d.MeshPoint.push(cnvPoint((od.MeshPoint as JsonObject[])[i]));
+                d.defPoint = new latlon((od.defPoint as JsonObject).lat as number, (od.defPoint as JsonObject).lon as number);
+                const odMeshPoint = od.MeshPoint as JsonObject[];
+                for(const i in odMeshPoint){
+                    d.MeshPoint.push(cnvPoint(odMeshPoint[i]));
                 }
                 d.Visible = od.Visible as boolean;
                 lda.atrObjectData.push(d);
@@ -4729,79 +4731,91 @@ class clsAttrData {
                 Object.assign(d.Statistics, od.Statistics);
                 const dts = new strSoloModeViewSettings_Data();
                 const odts = od.SoloModeViewSettings as JsonObject;
-                dts.Div_Method = odts.Div_Method;
-                dts.Div_Num = odts.Div_Num;
+                dts.Div_Method = odts.Div_Method as number;
+                dts.Div_Num = odts.Div_Num as number;
                 dts.Class_Div = [];
-                for (const j in odts.Class_Div) {
+                const odtsClassDiv = odts.Class_Div as JsonObject[];
+                for (const j in odtsClassDiv) {
                     const s = new strClass_Div_data();
-                    s.Value = odts.Class_Div[j].Value;
-                    s.PaintColor = cnvColorProperty(odts.Class_Div[j].PaintColor);
-                    s.ClassMark = cnvMarkProperty(odts.Class_Div[j].ClassMark);
-                    s.ODLinePat = cnvLineProperty(odts.Class_Div[j].ODLinePat);
+                    s.Value = odtsClassDiv[j].Value as number;
+                    s.PaintColor = cnvColorProperty(odtsClassDiv[j].PaintColor as JsonObject);
+                    s.ClassMark = cnvMarkProperty(odtsClassDiv[j].ClassMark as JsonObject);
+                    s.ODLinePat = cnvLineProperty(odtsClassDiv[j].ODLinePat as JsonObject);
                     dts.Class_Div.push(s);
                 }
                 dts.ClassMarkMD = new strInner_Data_Info();
                 Object.assign(dts.ClassMarkMD, odts.ClassMarkMD);
                 dts.ClassODMD = new strClassODMode_data();
                 Object.assign(dts.ClassODMD, odts.ClassODMD);
-                dts.ClassODMD.Arrow = cnvArrow(odts.ClassODMD.Arrow);
+                dts.ClassODMD.Arrow = cnvArrow((odts.ClassODMD as JsonObject).Arrow as JsonObject);
                 if(dts.ClassODMD.Dummy_ObjectFlag==undefined){
                     dts.ClassODMD.Dummy_ObjectFlag=false;
                 }
                 dts.ClassPaintMD = new strClassPaint_Data();
-                dts.ClassPaintMD.color1 = cnvColorProperty(odts.ClassPaintMD.color1);
-                dts.ClassPaintMD.color2 = cnvColorProperty(odts.ClassPaintMD.color2);
-                dts.ClassPaintMD.color3 = cnvColorProperty(odts.ClassPaintMD.color3);
-                dts.ClassPaintMD.Color_Mode = odts.ClassPaintMD.Color_Mode;
+                const odtsClassPaintMD = odts.ClassPaintMD as JsonObject;
+                dts.ClassPaintMD.color1 = cnvColorProperty(odtsClassPaintMD.color1 as JsonObject);
+                dts.ClassPaintMD.color2 = cnvColorProperty(odtsClassPaintMD.color2 as JsonObject);
+                dts.ClassPaintMD.color3 = cnvColorProperty(odtsClassPaintMD.color3 as JsonObject);
+                dts.ClassPaintMD.Color_Mode = odtsClassPaintMD.Color_Mode as number;
                 dts.ContourMD = new strContour_Data();
-                Object.assign(dts.ContourMD, odts.ContourMD);
+                const odtsContourMD = odts.ContourMD as JsonObject;
+                Object.assign(dts.ContourMD, odtsContourMD);
                 dts.ContourMD.Regular = new strContour_Data_Regular_interval();
-                Object.assign(dts.ContourMD.Regular, odts.ContourMD.Regular);
-                dts.ContourMD.Regular.Line_Pat = cnvLineProperty(odts.ContourMD.Regular.Line_Pat);
-                dts.ContourMD.Regular.SP_Line_Pat = cnvLineProperty(odts.ContourMD.Regular.SP_Line_Pat);
-                dts.ContourMD.Regular.EX_Line_Pat = cnvLineProperty(odts.ContourMD.Regular.EX_Line_Pat);
+                const odtsContourMDRegular = odtsContourMD.Regular as JsonObject;
+                Object.assign(dts.ContourMD.Regular, odtsContourMDRegular);
+                dts.ContourMD.Regular.Line_Pat = cnvLineProperty(odtsContourMDRegular.Line_Pat as JsonObject);
+                dts.ContourMD.Regular.SP_Line_Pat = cnvLineProperty(odtsContourMDRegular.SP_Line_Pat as JsonObject);
+                dts.ContourMD.Regular.EX_Line_Pat = cnvLineProperty(odtsContourMDRegular.EX_Line_Pat as JsonObject);
                 dts.ContourMD.Irregular = [];
-                for (const j in odts.ContourMD.Irregular) {
+                const odtsContourMDIrregular = odtsContourMD.Irregular as JsonObject[];
+                for (const j in odtsContourMDIrregular) {
                     const ir = new strContour_Data_Irregular_interval();
-                    ir.Value = odts.ContourMD.Irregular[j].Value;
-                    ir.Line_Pat = cnvLineProperty(odts.ContourMD.Irregular[j].Line_Pat);
+                    ir.Value = odtsContourMDIrregular[j].Value as number;
+                    ir.Line_Pat = cnvLineProperty(odtsContourMDIrregular[j].Line_Pat as JsonObject);
                     dts.ContourMD.Irregular.push(ir);
                 }
                 dts.MarkCommon = new strMarkCommon_Data();
+                const odtsMarkCommon = odts.MarkCommon as JsonObject;
                 dts.MarkCommon.Inner_Data = new strInner_Data_Info();
-                Object.assign(dts.MarkCommon.Inner_Data, odts.MarkCommon.Inner_Data);
-                dts.MarkCommon.MinusTile = cnvTileProperty(odts.MarkCommon.MinusTile);
-                dts.MarkCommon.MinusLineColor = cnvColorProperty(odts.MarkCommon.MinusLineColor);
-                dts.MarkCommon.LegendMinusWord = odts.MarkCommon.LegendMinusWord;
-                dts.MarkCommon.LegendPlusWord = odts.MarkCommon.LegendPlusWord;
+                Object.assign(dts.MarkCommon.Inner_Data, odtsMarkCommon.Inner_Data);
+                dts.MarkCommon.MinusTile = cnvTileProperty(odtsMarkCommon.MinusTile as JsonObject);
+                dts.MarkCommon.MinusLineColor = cnvColorProperty(odtsMarkCommon.MinusLineColor as JsonObject);
+                dts.MarkCommon.LegendMinusWord = odtsMarkCommon.LegendMinusWord as string;
+                dts.MarkCommon.LegendPlusWord = odtsMarkCommon.LegendPlusWord as string;
                 dts.MarkBarMD = new strMarkBar_Data();
-                Object.assign(dts.MarkBarMD, odts.MarkBarMD);
-                dts.MarkBarMD.InnerTile = cnvTileProperty(odts.MarkBarMD.InnerTile);
-                dts.MarkBarMD.FrameLinePat = cnvLineProperty(odts.MarkBarMD.FrameLinePat);
-                dts.MarkBarMD.scaleLinePat = cnvLineProperty(odts.MarkBarMD.scaleLinePat);
+                const odtsMarkBarMD = odts.MarkBarMD as JsonObject;
+                Object.assign(dts.MarkBarMD, odtsMarkBarMD);
+                dts.MarkBarMD.InnerTile = cnvTileProperty(odtsMarkBarMD.InnerTile as JsonObject);
+                dts.MarkBarMD.FrameLinePat = cnvLineProperty(odtsMarkBarMD.FrameLinePat as JsonObject);
+                dts.MarkBarMD.scaleLinePat = cnvLineProperty(odtsMarkBarMD.scaleLinePat as JsonObject);
                 if(dts.MarkBarMD.BarShape==undefined){
                     dts.MarkBarMD.BarShape = enmMarkBarShape.bar;
                 }
                 dts.MarkBlockMD = new strMarkBlock_Data();
-                Object.assign(dts.MarkBlockMD, odts.MarkBlockMD);
-                dts.MarkBlockMD.Mark = cnvMarkProperty(odts.MarkBlockMD.Mark);
+                const odtsMarkBlockMD = odts.MarkBlockMD as JsonObject;
+                Object.assign(dts.MarkBlockMD, odtsMarkBlockMD);
+                dts.MarkBlockMD.Mark = cnvMarkProperty(odtsMarkBlockMD.Mark as JsonObject);
                 dts.MarkSizeMD = new strMarkSize_Data();
-                dts.MarkSizeMD.MaxValueMode = odts.MarkSizeMD.MaxValueMode;
-                dts.MarkSizeMD.MaxValue = odts.MarkSizeMD.MaxValue;
-                dts.MarkSizeMD.Value = odts.MarkSizeMD.Value.concat();
-                dts.MarkSizeMD.Mark = cnvMarkProperty(odts.MarkSizeMD.Mark);
+                const odtsMarkSizeMD = odts.MarkSizeMD as JsonObject;
+                dts.MarkSizeMD.MaxValueMode = odtsMarkSizeMD.MaxValueMode as number;
+                dts.MarkSizeMD.MaxValue = odtsMarkSizeMD.MaxValue as number;
+                dts.MarkSizeMD.Value = (odtsMarkSizeMD.Value as JsonArray).concat() as number[];
+                dts.MarkSizeMD.Mark = cnvMarkProperty(odtsMarkSizeMD.Mark as JsonObject);
                 dts.MarkSizeMD.LineShape = new strMarkSizeModeLineShapeData();
-                dts.MarkSizeMD.LineShape.LineWidth = odts.MarkSizeMD.LineShape.LineWidth;
-                dts.MarkSizeMD.LineShape.LineEdge = cnvLineEdgeProperty(odts.MarkSizeMD.LineShape.LineEdge);
-                dts.MarkSizeMD.LineShape.Color = cnvColorProperty(odts.MarkSizeMD.LineShape.Color);
+                const odtsMarkSizeMDLineShape = odtsMarkSizeMD.LineShape as JsonObject;
+                dts.MarkSizeMD.LineShape.LineWidth = odtsMarkSizeMDLineShape.LineWidth as number;
+                dts.MarkSizeMD.LineShape.LineEdge = cnvLineEdgeProperty(odtsMarkSizeMDLineShape.LineEdge as JsonObject);
+                dts.MarkSizeMD.LineShape.Color = cnvColorProperty(odtsMarkSizeMDLineShape.Color as JsonObject);
                 dts.MarkTurnMD = new strMarkTurnMode_Data();
-                dts.MarkTurnMD.Dirction = odts.MarkTurnMD.Dirction;
-                dts.MarkTurnMD.DegreeLap = odts.MarkTurnMD.DegreeLap;
-                dts.MarkTurnMD.Mark = cnvMarkProperty(odts.MarkTurnMD.Mark);
+                const odtsMarkTurnMD = odts.MarkTurnMD as JsonObject;
+                dts.MarkTurnMD.Dirction = odtsMarkTurnMD.Dirction as number;
+                dts.MarkTurnMD.DegreeLap = odtsMarkTurnMD.DegreeLap as number;
+                dts.MarkTurnMD.Mark = cnvMarkProperty(odtsMarkTurnMD.Mark as JsonObject);
                 dts.StringMD = new strString_Data();
-                dts.StringMD.Font = cnvFontProperty(odts.StringMD.Font);
-                dts.StringMD.maxWidth = odts.StringMD.maxWidth;
-                dts.StringMD.WordTurnF = odts.StringMD.WordTurnF;
+                const odtsStringMD = odts.StringMD as JsonObject;
+                dts.StringMD.Font = cnvFontProperty(odtsStringMD.Font as JsonObject);
+                dts.StringMD.maxWidth = odtsStringMD.maxWidth as number;
+                dts.StringMD.WordTurnF = odtsStringMD.WordTurnF as boolean;
                 d.SoloModeViewSettings = dts;
                 ldd.Data.push(d);
             }
