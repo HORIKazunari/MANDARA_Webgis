@@ -806,7 +806,7 @@ export class gridControl {
     }else{
         const xs = this.Grid_Total.FixedObjectName_n;
         const ys = GP.Ymax;
-        const dt = Generic.Array2Dimension(xs, ys);
+        const dt = Generic.Array2Dimension<string>(xs, ys);
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < ys; j++) {
                 dt[i][j] = GP.FixedObjectName[i][j].Text;
@@ -1000,7 +1000,7 @@ export class gridControl {
         const GP = this.Grid_Property[LayerNum];
         const xs = GP.Xmax;
         const ys = GP.Ymax;
-        const D = Generic.Array2Dimension(xs, ys);
+        const D = Generic.Array2Dimension<string>(xs, ys);
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < ys; j++) {
                 D[i][j] = GP.Grid_Text[i][j].Text;
@@ -1025,7 +1025,7 @@ export class gridControl {
         const GP = this.Grid_Property[LayerNum];
         const xs = this.Grid_Total.FixedObjectName_n;
         const ys = this.Grid_Total.FixedDataItem_n;
-        const dt = Generic.Array2Dimension(xs, ys);
+        const dt = Generic.Array2Dimension<string>(xs, ys);
         for (let i = 0; i <= xs; i++) {
             for (let j = 0; j <= ys; j++) {
                 dt[i][j] = GP.FixedUpperLeft[i][j].Text;
@@ -1083,7 +1083,7 @@ export class gridControl {
         } else {
             const xs = GP.Xmax;
             const ys = this.Grid_Total.FixedDataItem_n;
-            const dt = Generic.Array2Dimension(xs, ys);
+            const dt = Generic.Array2Dimension<string>(xs, ys);
             for (let i = 0; i < xs; i++) {
                 for (let j = 0; j < ys; j++) {
                     dt[i][j] = GP.FixedDataItem[i][j].Text;
@@ -1785,10 +1785,10 @@ export class gridControl {
         }
         const GP = new Grid_Info(); 
         GP.OriginalLayerNumber = OriginalLayerNumber;
-        GP.Grid_Text = Generic.Array2Dimension(xs, ys, "");
-        GP.FixedObjectName = Generic.Array2Dimension(this.Grid_Total.FixedObjectName_n, ys, "")
-        GP.FixedDataItem = Generic.Array2Dimension(xs, this.Grid_Total.FixedDataItem_n, "")
-        GP.FixedUpperLeft = Generic.Array2Dimension(this.Grid_Total.FixedObjectName_n, this.Grid_Total.FixedDataItem_n, "")
+        GP.Grid_Text = Generic.Array2Dimension<string>(xs, ys, "");
+        GP.FixedObjectName = Generic.Array2Dimension<string>(this.Grid_Total.FixedObjectName_n, ys, "")
+        GP.FixedDataItem = Generic.Array2Dimension<string>(xs, this.Grid_Total.FixedDataItem_n, "")
+        GP.FixedUpperLeft = Generic.Array2Dimension<string>(this.Grid_Total.FixedObjectName_n, this.Grid_Total.FixedDataItem_n, "")
 
         GP.Ope = OperationEnable;
         GP.LayerName = LayName;
@@ -2121,7 +2121,7 @@ export class gridControl {
         }
         GP.CellHeight.length = ys;
         let GTempText = Generic.Array2Clone(GP.Grid_Text);
-        GP.Grid_Text = Generic.Array2Dimension(xs, ys);
+        GP.Grid_Text = Generic.Array2Dimension<string>(xs, ys);
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < DeletePoint; j++) {
                 GP.Grid_Text[i][j] = GTempText[i][j];
@@ -2134,7 +2134,7 @@ export class gridControl {
         //オブジェクト名部分を削除
          GTempText = Generic.Array2Clone(GP.FixedObjectName);
          xs = this.Grid_Total.FixedObjectName_n;
-        GP.FixedObjectName = Generic.Array2Dimension(xs, ys);
+        GP.FixedObjectName = Generic.Array2Dimension<string>(xs, ys);
         for (let i = -xs; i <= -1; i++) {
             for (let j = 0; j < DeletePoint; j++) {
                 GP.FixedObjectName[i + xs][j] = GTempText[i + xs][j];
@@ -2155,7 +2155,7 @@ export class gridControl {
         GP.Ymax = ys;
         let xs = GP.Xmax;
         let GTempText = Generic.Array2Clone(GP.Grid_Text);
-        GP.Grid_Text = Generic.Array2Dimension(xs, ys);
+        GP.Grid_Text = Generic.Array2Dimension<string>(xs, ys);
         const refPoint = (InsertPoint != oldYs) ? InsertPoint : InsertPoint - 1;
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < InsertPoint; j++) {
@@ -2186,7 +2186,7 @@ export class gridControl {
         //オブジェクト名部分を挿入
         xs = this.Grid_Total.FixedObjectName_n
         GTempText = Generic.Array2Clone(GP.FixedObjectName);
-        GP.FixedObjectName = Generic.Array2Dimension(xs, ys);
+        GP.FixedObjectName = Generic.Array2Dimension<string>(xs, ys);
         for (let i = -xs; i <= -1; i++) {
             for (let j = 0; j < InsertPoint; j++) {
                 GP.FixedObjectName[i + xs][j] = GTempText[i + xs][j];
@@ -2213,7 +2213,7 @@ export class gridControl {
         GP.Xmax = xs;
 
         let GTempText = Generic.Array2Clone(GP.Grid_Text);
-        GP.Grid_Text = Generic.Array2Dimension(xs, ys);
+        GP.Grid_Text = Generic.Array2Dimension<string>(xs, ys);
         for (let i = 0; i < ys; i++) {
             for (let j = 0; j < DeletePoint; j++) {
                 GP.Grid_Text[j][i] = GTempText[j][i];
@@ -2231,7 +2231,7 @@ export class gridControl {
         //データ項目部分を削除
          ys = this.Grid_Total.FixedDataItem_n
         GTempText = Generic.Array2Clone(GP.FixedDataItem);
-        GP.FixedDataItem = Generic.Array2Dimension(xs, ys);
+        GP.FixedDataItem = Generic.Array2Dimension<string>(xs, ys);
         for (let i = -ys; i <= -1; i++) {
             for (let j = 0; j < DeletePoint; j++) {
                 GP.FixedDataItem[j][i + ys] = GTempText[j][i + ys];
@@ -2253,7 +2253,7 @@ export class gridControl {
         const xs = GP.Xmax + InsertNum;
         GP.Xmax = xs;
         let GTempText = Generic.Array2Clone(GP.Grid_Text);
-        GP.Grid_Text = Generic.Array2Dimension(xs, ys);
+        GP.Grid_Text = Generic.Array2Dimension<string>(xs, ys);
         const refPoint = (InsertPoint != oldXs) ? InsertPoint : InsertPoint - 1;
         for (let i = 0; i < ys; i++) {
             for (let j = 0; j < InsertPoint; j++) {
@@ -2289,7 +2289,7 @@ export class gridControl {
         GP = this.Grid_Property[GridLay];
          ys = this.Grid_Total.FixedDataItem_n
         GTempText = Generic.Array2Clone(GP.FixedDataItem);
-        GP.FixedDataItem = Generic.Array2Dimension(xs, ys);
+        GP.FixedDataItem = Generic.Array2Dimension<string>(xs, ys);
         for (let i = -ys; i <= -1; i++) {
             for (let j = 0; j < InsertPoint; j++) {
                 GP.FixedDataItem[j][i + ys] = GTempText[j][i + ys];

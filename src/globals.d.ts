@@ -900,7 +900,7 @@ interface IGeneric {
     getBrowserHeight: () => number;
     copyText: (text: string) => void;
     Set_Box_Position_in_Browser: (event: Event, element: HTMLElement) => void;
-    Array2Dimension: (array: JsonValue[], dimensions: number[]) => JsonValue;
+    Array2Dimension: <T>(dim1num: number, dim2num: number, defoValue?: T) => T[][];
     Array2Clone: (array: JsonValue[]) => JsonValue[];
     ceatePopupMenu: (menu: JsonValue, position: point) => void;
     [key: string]: any;
