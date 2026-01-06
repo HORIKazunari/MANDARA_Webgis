@@ -5091,38 +5091,43 @@ class clsAttrData {
             for (let i = 0; i < mlb.Legend_Num; i++) {
                 mlb.LegendXY.push(cnvPoint(oldMLBaseLegendXY[i]));
             }
-            mlb.Visible = oldML.Base.Visible;
-            mlb.Comma_f = oldML.Base.Comma_f;
-            mlb.ModeValueInScreenFlag = oldML.Base.ModeValueInScreenFlag;
+            const oldMLBase2 = oldML.Base as JsonObject;
+            mlb.Visible = oldMLBase2.Visible as boolean;
+            mlb.Comma_f = oldMLBase2.Comma_f as boolean;
+            mlb.ModeValueInScreenFlag = oldMLBase2.ModeValueInScreenFlag as boolean;
             if (mlb.ModeValueInScreenFlag == undefined) {
                 mlb.ModeValueInScreenFlag = false;
             }
             const mlc = MapLegend.ClassMD;
-            mlc.ClassMarkFrame_Visible = oldML.ClassMD.ClassMarkFrame_Visible;
-            mlc.PaintMode_Line = cnvLineProperty(oldML.ClassMD.PaintMode_Line);
-            mlc.PaintMode_Method = oldML.ClassMD.PaintMode_Method;
-            mlc.PaintMode_Width = oldML.ClassMD.PaintMode_Width;
-            mlc.SeparateGapSize = oldML.ClassMD.SeparateGapSize;
-            mlc.SeparateClassWords = oldML.ClassMD.SeparateClassWords;
-            mlc.FrequencyPrint = oldML.ClassMD.FrequencyPrint;
-            mlc.ClassBoundaryLine.Visible = oldML.ClassMD.ClassBoundaryLine.Visible;
-            mlc.ClassBoundaryLine.LPat = cnvLineProperty(oldML.ClassMD.ClassBoundaryLine.LPat);
-            if (oldML.ClassMD.CategorySeparate_f == undefined) {
-                oldML.ClassMD.CategorySeparate_f = false;
+            const oldMLClassMD = oldML.ClassMD as JsonObject;
+            mlc.ClassMarkFrame_Visible = oldMLClassMD.ClassMarkFrame_Visible as boolean;
+            mlc.PaintMode_Line = cnvLineProperty(oldMLClassMD.PaintMode_Line as JsonObject);
+            mlc.PaintMode_Method = oldMLClassMD.PaintMode_Method as number;
+            mlc.PaintMode_Width = oldMLClassMD.PaintMode_Width as number;
+            mlc.SeparateGapSize = oldMLClassMD.SeparateGapSize as number;
+            mlc.SeparateClassWords = oldMLClassMD.SeparateClassWords as boolean;
+            mlc.FrequencyPrint = oldMLClassMD.FrequencyPrint as boolean;
+            const oldMLClassMDBoundaryLine = oldMLClassMD.ClassBoundaryLine as JsonObject;
+            mlc.ClassBoundaryLine.Visible = oldMLClassMDBoundaryLine.Visible as boolean;
+            mlc.ClassBoundaryLine.LPat = cnvLineProperty(oldMLClassMDBoundaryLine.LPat as JsonObject);
+            if (oldMLClassMD.CategorySeparate_f == undefined) {
+                oldMLClassMD.CategorySeparate_f = false;
             }
-            mlc.CategorySeparate_f = oldML.ClassMD.CategorySeparate_f;
-            MapLegend.En_Graph_Pattern = oldML.En_Graph_Pattern;
+            mlc.CategorySeparate_f = oldMLClassMD.CategorySeparate_f as boolean;
+            MapLegend.En_Graph_Pattern = oldML.En_Graph_Pattern as number;
 
             const mll = MapLegend.Line_DummyKind;
-            mll.Back = cnvBackGround_Box_Property(oldML.Line_DummyKind.Back);
-            mll.Dummy_Point_Visible = oldML.Line_DummyKind.Dummy_Point_Visible;
-            mll.Line_Pattern = oldML.Line_DummyKind.Line_Pattern;
-            mll.Line_Visible = oldML.Line_DummyKind.Line_Visible;
-            mll.Line_Visible_Number_STR = oldML.Line_DummyKind.Line_Visible_Number_STR;
+            const oldMLLineDummyKind = oldML.Line_DummyKind as JsonObject;
+            mll.Back = cnvBackGround_Box_Property(oldMLLineDummyKind.Back as JsonObject);
+            mll.Dummy_Point_Visible = oldMLLineDummyKind.Dummy_Point_Visible as boolean;
+            mll.Line_Pattern = oldMLLineDummyKind.Line_Pattern as number;
+            mll.Line_Visible = oldMLLineDummyKind.Line_Visible as boolean;
+            mll.Line_Visible_Number_STR = oldMLLineDummyKind.Line_Visible_Number_STR as string;
 
             const mlm = MapLegend.MarkMD;
-            mlm.CircleMD_CircleMini_F = oldML.MarkMD.CircleMD_CircleMini_F;
-            mlm.MultiEnMode_Line = cnvLineProperty(oldML.MarkMD.MultiEnMode_Line);
+            const oldMLMarkMD = oldML.MarkMD as JsonObject;
+            mlm.CircleMD_CircleMini_F = oldMLMarkMD.CircleMD_CircleMini_F as boolean;
+            mlm.MultiEnMode_Line = cnvLineProperty(oldMLMarkMD.MultiEnMode_Line as JsonObject);
 
             Object.assign(MapLegend.OverLay_Legend_Title, oldML.OverLay_Legend_Title);
 
@@ -5130,23 +5135,25 @@ class clsAttrData {
         }
 
         function cnvPoint(oldP: JsonObject) {
-            return new point(oldP.x, oldP.y);
+            return new point(oldP.x as number, oldP.y as number);
         }
         function cnvRectgle(orect: JsonObject) {
-            const rec = new rectangle(orect.left, orect.right, orect.top, orect.bottom);
+            const rec = new rectangle(orect.left as number, orect.right as number, orect.top as number, orect.bottom as number);
             return rec;
         }
         function cnvCompass(ovsc: JsonObject) {
             const vsc = new strCompass_Attri();
-            vsc.dirWord.East = ovsc.dirWord.East;
-            vsc.dirWord.West = ovsc.dirWord.West;
-            vsc.dirWord.North = ovsc.dirWord.North;
-            vsc.dirWord.South = ovsc.dirWord.South;
-            vsc.Visible = ovsc.Visible;
+            const ovscdirWord = ovsc.dirWord as JsonObject;
+            vsc.dirWord.East = ovscdirWord.East as string;
+            vsc.dirWord.West = ovscdirWord.West as string;
+            vsc.dirWord.North = ovscdirWord.North as string;
+            vsc.dirWord.South = ovscdirWord.South as string;
+            vsc.Visible = ovsc.Visible as boolean;
             vsc.Font = cnvFontProperty(ovsc.Font as JsonObject);
             vsc.Mark = cnvMarkProperty(ovsc.Mark as JsonObject);
-            vsc.Position.x = ovsc.Position.x;
-            vsc.Position.y = ovsc.Position.y;
+            const ovscPosition = ovsc.Position as JsonObject;
+            vsc.Position.x = ovscPosition.x as number;
+            vsc.Position.y = ovscPosition.y as number;
             return vsc;
         }
         function cnvMarkProperty(oldMK: JsonObject) {
