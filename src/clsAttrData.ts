@@ -5158,25 +5158,25 @@ class clsAttrData {
         }
         function cnvMarkProperty(oldMK: JsonObject) {
             const mk = new Mark_Property();
-            mk.PrintMark = oldMK.PrintMark;
-            mk.ShapeNumber = oldMK.ShapeNumber;
+            mk.PrintMark = oldMK.PrintMark as number;
+            mk.ShapeNumber = oldMK.ShapeNumber as number;
             mk.Tile = cnvTileProperty(oldMK.Tile as JsonObject);
             mk.Line = cnvLineProperty(oldMK.Line as JsonObject);
-            mk.wordmark = oldMK.wordmark;
+            mk.wordmark = oldMK.wordmark as string;
             mk.WordFont = cnvFontProperty(oldMK.WordFont as JsonObject);
             return mk;
         }
         function cnvFontProperty(oldFont: JsonObject) {
             const fnt = new Font_Property();
             fnt.Color = cnvColorProperty(oldFont.Color as JsonObject);
-            fnt.Size = oldFont.Size;
-            fnt.italic = oldFont.italic;
-            fnt.bold = oldFont.bold;
-            fnt.Underline = oldFont.Underline;
-            fnt.Name = oldFont.Name;
-            fnt.Kakudo = oldFont.Kakudo;
-            fnt.FringeF = oldFont.FringeF;
-            fnt.FringeWidth = oldFont.FringeWidth;
+            fnt.Size = oldFont.Size as number;
+            fnt.italic = oldFont.italic as boolean;
+            fnt.bold = oldFont.bold as boolean;
+            fnt.Underline = oldFont.Underline as boolean;
+            fnt.Name = oldFont.Name as string;
+            fnt.Kakudo = oldFont.Kakudo as number;
+            fnt.FringeF = oldFont.FringeF as boolean;
+            fnt.FringeWidth = oldFont.FringeWidth as number;
             fnt.FringeColor = cnvColorProperty(oldFont.FringeColor as JsonObject);
             fnt.Back = cnvBackGround_Box_Property(oldFont.Back as JsonObject);
             //フォントの有無チェック
@@ -5198,8 +5198,8 @@ class clsAttrData {
             const bk = new BackGround_Box_Property();
             bk.Tile = cnvTileProperty(oldBK.Tile as JsonObject)
             bk.Line = cnvLineProperty(oldBK.Line as JsonObject);
-            bk.Round = oldBK.Round;
-            bk.Padding = oldBK.Padding;
+            bk.Round = oldBK.Round as number;
+            bk.Padding = oldBK.Padding as number;
             return bk;
         }
         function cnvColorProperty(oldColor: JsonObject) {
@@ -5208,8 +5208,8 @@ class clsAttrData {
         }
         function cnvLineProperty(oldLine: JsonObject) {
             const line = new Line_Property();
-            line.BlankF = oldLine.BlankF;
-            line.Width = oldLine.Width;
+            line.BlankF = oldLine.BlankF as boolean;
+            line.Width = oldLine.Width as number;
             line.Color = cnvColorProperty(oldLine.Color as JsonObject);
             line.Edge_Connect_Pattern = cnvLineEdgeProperty(oldLine.Edge_Connect_Pattern as JsonObject);
             return line;
@@ -5220,7 +5220,7 @@ class clsAttrData {
         }
         function cnvTileProperty(oldTile: JsonObject) {
             const tile = new Tile_Property();
-            tile.BlankF = oldTile.BlankF;
+            tile.BlankF = oldTile.BlankF as boolean;
             tile.Color = cnvColorProperty(oldTile.Color as JsonObject);
             return tile;
         }
