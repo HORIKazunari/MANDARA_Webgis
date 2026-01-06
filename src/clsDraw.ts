@@ -1048,8 +1048,8 @@ class clsTileMap {
             ScrLatLonBox.SouthEast.Latitude = -85;
         }
 
-        const ZoomMin = TileMap.opt.minZoom;
-        const ZoomMax = TileMap.opt.maxNativeZoom;
+        const ZoomMin = (TileMap.opt as JsonObject).minZoom as number;
+        const ZoomMax = (TileMap.opt as JsonObject).maxNativeZoom as number;
         let g_num;
 
         let z = ZoomMax;
@@ -1066,8 +1066,8 @@ class clsTileMap {
         const numofTile = tileList_Data.length;
         let getTileNum=0;
         for (let i = 0; i < numofTile; i++) {
-            const d = tileList_Data[i];
-            request(d.URL, d.ScrPosition);
+            const d = tileList_Data[i] as JsonObject;
+            request(d.URL as string, d.ScrPosition as rectangle);
         }
 
         return true;
@@ -1180,7 +1180,7 @@ class clsTileMap {
     }
 
     /**緯度経度とズームレベルからタイルマップのXYを求める*/
-    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): JsonValue {
+    Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): point {
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
         }
@@ -1284,7 +1284,8 @@ class clsTileMap {
     PrintCopyright(g: CanvasRenderingContext2D, TileMap: JsonObject, ScrData: Screen_info): void {
         const x = 5;
         const y = ScrData.MapScreen_Scale.bottom - 5;
-        const tx = TileMap.copyright + chrLF + TileMap.opt.id;
+        const tileMapOpt = TileMap.opt as JsonObject;
+        const tx = TileMap.copyright + chrLF + tileMapOpt.id;
         clsDraw.print(g, tx, new point(x, y), this.LicenseFontData, enmHorizontalAlignment.Left, enmVerticalAlignment.Bottom, ScrData);
     }
 

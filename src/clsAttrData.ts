@@ -7231,7 +7231,8 @@ class clsAttrData {
         } else {
             t = clsBase.Tile();
             const layerDataArray = this.LayerData[Layernum].atrData.Data as strData_info[];
-            t.Color = layerDataArray[InnerData.Data].SoloModeViewSettings.Class_Div[CategoryPos].PaintColor.Clone();
+            const innerDataInfo = InnerData as strInner_Data_Info;
+            t.Color = layerDataArray[innerDataInfo.Data].SoloModeViewSettings.Class_Div[CategoryPos].PaintColor.Clone();
         }
         return t;
     }
@@ -7309,14 +7310,14 @@ class clsAttrData {
             }
         } else {
             let n = Color_cng_n - GradationPoint4 + 1;
-            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color3, col, n);
+            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color3 as colorRGBA, col, n);
             for (let i = 0; i < n; i++) {
-                sv.Class_Div[GradationPoint4 + i].PaintColor = ColData[i];
+                sv.Class_Div[GradationPoint4 + i].PaintColor = ColData[i] as colorRGBA;
             }
             n = sv.Div_Num - Color_cng_n;
-            ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color2, n);
+            ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color2 as colorRGBA, n);
             for (let i = 0; i < n; i++) {
-                sv.Class_Div[Color_cng_n + i].PaintColor = ColData[i];
+                sv.Class_Div[Color_cng_n + i].PaintColor = ColData[i] as colorRGBA;
             }
 
         }
@@ -7771,7 +7772,7 @@ class clsAttrData {
                 seriesData[2] = Number(T.length);
                 seriesData[3] = 0; // Convert empty string to number
             } else {
-                seriesData[1] = this.LayerData[di.Layer].Name;
+                seriesData[1] = this.LayerData[di.Layer as number].Name;
                 switch (di.Print_Mode_Layer) {
                     case enmLayerMode_Number.SoloMode: {
                         seriesData[2] = this.Get_DataTitle(di.Layer, di.Data, false);
@@ -8414,7 +8415,7 @@ class clsObjectNameSearch {
     }
 
     DataPositionValue(Pos: number): JsonValue {
-        return (this.Object_Name_Search.DataPositionValue as unknown[])[Pos];
+        return (this.Object_Name_Search.DataPositionValue as JsonValue[])[Pos];
     }
 
     NumofData(): number {
