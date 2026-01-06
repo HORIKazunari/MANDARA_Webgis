@@ -2345,7 +2345,15 @@ declare const strMapPrint: { new(): any; [key: string]: JsonValue };
 declare const strColorPalette: { new(): any; [key: string]: JsonValue };
 declare const strDivideValue: { new(): any; [key: string]: JsonValue };
 declare const strTripObjData_Info: { new(): any; [key: string]: JsonValue };
-declare const strObjectKindUsed_Info: { new(): any; [key: string]: JsonValue };
+
+interface IObjectKindUsed_Info {
+    MapFileName?: string;
+    ObjectKindNumber?: number;
+    Mark?: Mark_Property;
+    ObjectKindName?: string;
+    [key: string]: JsonValue;
+}
+declare const strObjectKindUsed_Info: { new(): IObjectKindUsed_Info; [key: string]: JsonValue };
 
 // Map静的プロパティ拡張
 interface MapConstructor {

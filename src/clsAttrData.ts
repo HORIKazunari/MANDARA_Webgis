@@ -2559,7 +2559,7 @@ class strTem {
     frmPrint_Temp: frmPrint_temp_info = new frmPrint_temp_info();
     FigurePrinted: boolean[] = []; //Boolean
     ObjectPrintedCheckFlag: boolean[] = []; //Boolean
-    PointObjectKindUsedStack: JsonValue[] = []; //strObjectKindUsed_Info[] (未定義)
+    PointObjectKindUsedStack: IObjectKindUsed_Info[] = []; //strObjectKindUsed_Info[]
     drawing: boolean | undefined; //boolean描画中
     DotMap_Temp: DotMapTemp_Info = new DotMapTemp_Info();
     ModeValueInScreen_Stac: ModeValueInScreen_Stac_Info = new ModeValueInScreen_Stac_Info();
@@ -4647,15 +4647,15 @@ class clsAttrData {
         return { ok: true, emes: ObjectErrorMessage };
 
         //-----------------
-        function cnvAccessoryGroupBox(oa: JsonValue){
+        function cnvAccessoryGroupBox(oa: JsonObject){
             const d=new strAccessoryGroupBox_Info();
             Object.assign(d, oa);
-            d.Back=cnvBackGround_Box_Property((oa as any).Back);
+            d.Back=cnvBackGround_Box_Property(oa.Back as JsonObject);
             return d;
         }
 
-        function cnvLayerData(oldLay: JsonValue) {
-            const oLay = oldLay as any; // 型アサーション
+        function cnvLayerData(oldLay: JsonObject) {
+            const oLay = oldLay;
             const ld = new strLayerDataInfo();
             ld.Name = oLay.Name;
             ld.MapFileName = oLay.MapFileName;
@@ -4867,21 +4867,21 @@ class clsAttrData {
             return ld;
         }
 
-        function cnvArrow(oa: JsonValue) {
+        function cnvArrow(oa: JsonObject) {
             const a = new Arrow_Data();
-            Object.assign(oa);
+            Object.assign(a, oa);
             return a;
         }
-        function cnvStart_End_Time_data(ot: JsonValue) {
+        function cnvStart_End_Time_data(ot: JsonObject) {
             const nt = new Start_End_Time_data();
             nt.StartTime = new strYMD(ot.StartTime);
             nt.EndTime = new strYMD(ot.EndTime);
             return nt;
         }
-        function cnvTime(oldT: JsonValue) {
+        function cnvTime(oldT: JsonObject) {
             return new strYMD(oldT.Year, oldT.Month, oldT.Day);
         }
-        function cnvTotalmode(oldTM: JsonValue) {
+        function cnvTotalmode(oldTM: JsonObject) {
             const otmo = oldTM.OverLay;
             const tm = new strTotalMode_Info();
             const tmo = tm.OverLay;
@@ -4941,13 +4941,13 @@ class clsAttrData {
             }
             return cd;
         }
-        function cnvTileMapView(oldTV: JsonValue){
+        function cnvTileMapView(oldTV: JsonObject){
             const tm = new strTileMapViewInfo();
             Object.assign(tm, oldTV);
             return tm;
         }
 
-        function cnvSouByou(oldSB: JsonValue) {
+        function cnvSouByou(oldSB: JsonObject) {
             const sb = new strSouByou_Info();
             Object.assign(sb, oldSB);
             if (sb.Auto==undefined){
@@ -4957,7 +4957,7 @@ class clsAttrData {
             return sb;
         }
 
-        function cnvValueShow(oldvs: JsonValue) {
+        function cnvValueShow(oldvs: JsonObject) {
             const sv = new strValueShow_Info();
             Object.assign(sv, oldvs);
             if (sv.DecimalNumber == undefined) {
@@ -4966,8 +4966,8 @@ class clsAttrData {
             if (sv.DecimalSepaF == undefined) {
                 sv.DecimalSepaF = false;
             }
-            sv.ValueFont = cnvFontProperty(oldvs.ValueFont);
-            sv.ObjNameFont = cnvFontProperty(oldvs.ObjNameFont);
+            sv.ValueFont = cnvFontProperty(oldvs.ValueFont as JsonObject);
+            sv.ObjNameFont = cnvFontProperty(oldvs.ObjNameFont as JsonObject);
             return sv;
         }
 
@@ -4995,7 +4995,7 @@ class clsAttrData {
             return ss;
         }
 
-        function cnvDataNode(oldDN: JsonValue) {
+        function cnvDataNode(oldDN: JsonObject) {
             const dn = new strNote_Attri();
             dn.Visible = oldDN.Visible;
             dn.Position = cnvPoint(oldDN.Position);
@@ -5004,7 +5004,7 @@ class clsAttrData {
             return dn;
         }
 
-        function cnvScreen_Back(oldsb: JsonValue) {
+        function cnvScreen_Back(oldsb: JsonObject) {
             const sb = new strScreen_Back_data();
             sb.MapAreaFrameLine = cnvLineProperty(oldsb.MapAreaFrameLine);
             sb.ScreenFrameLine = cnvLineProperty(oldsb.ScreenFrameLine);
@@ -5013,7 +5013,7 @@ class clsAttrData {
             sb.ObjectInner = cnvTileProperty(oldsb.ObjectInner);
             return sb;
         }
-        function cnvMissingData(oldM: JsonValue) {
+        function cnvMissingData(oldM: JsonObject) {
             const m = new strMissing_set();
             m.Print_Flag = oldM.Print_Flag;
             m.Text = oldM.Text;
@@ -5026,7 +5026,7 @@ class clsAttrData {
             m.LineShape = cnvLineProperty(oldM.LineShape);
             return m;
         }
-        function cnvMapTitle(oldTtl: JsonValue) {
+        function cnvMapTitle(oldTtl: JsonObject) {
             const ttl = new strTitle_Attri();
             ttl.Visible = oldTtl.Visible;
             ttl.Position = cnvPoint(oldTtl.Position);
@@ -5034,7 +5034,7 @@ class clsAttrData {
             ttl.Font = cnvFontProperty(oldTtl.Font);
             return ttl;
         }
-        function cnvMapSCL(olsSCL: JsonValue) {
+        function cnvMapSCL(olsSCL: JsonObject) {
             const scl = new strScale_Attri();
             scl.Visible = olsSCL.Visible;
             scl.Position = cnvPoint(olsSCL.Position);
@@ -5047,7 +5047,7 @@ class clsAttrData {
             scl.Unit = olsSCL.Unit;
             return scl;
         }
-        function cnvMapLegend(oldML: JsonValue) {
+        function cnvMapLegend(oldML: JsonObject) {
             const MapLegend = new strLegend_Attri();
             const mlb = MapLegend.Base;
             mlb.Back = cnvBackGround_Box_Property(oldML.Base.Back);
@@ -5095,39 +5095,39 @@ class clsAttrData {
             return MapLegend;
         }
 
-        function cnvPoint(oldP: JsonValue) {
+        function cnvPoint(oldP: JsonObject) {
             return new point(oldP.x, oldP.y);
         }
-        function cnvRectgle(orect: JsonValue) {
+        function cnvRectgle(orect: JsonObject) {
             const rec = new rectangle(orect.left, orect.right, orect.top, orect.bottom);
             return rec;
         }
-        function cnvCompass(ovsc: JsonValue) {
+        function cnvCompass(ovsc: JsonObject) {
             const vsc = new strCompass_Attri();
             vsc.dirWord.East = ovsc.dirWord.East;
             vsc.dirWord.West = ovsc.dirWord.West;
             vsc.dirWord.North = ovsc.dirWord.North;
             vsc.dirWord.South = ovsc.dirWord.South;
             vsc.Visible = ovsc.Visible;
-            vsc.Font = cnvFontProperty(ovsc.Font);
-            vsc.Mark = cnvMarkProperty(ovsc.Mark);
+            vsc.Font = cnvFontProperty(ovsc.Font as JsonObject);
+            vsc.Mark = cnvMarkProperty(ovsc.Mark as JsonObject);
             vsc.Position.x = ovsc.Position.x;
             vsc.Position.y = ovsc.Position.y;
             return vsc;
         }
-        function cnvMarkProperty(oldMK: JsonValue) {
+        function cnvMarkProperty(oldMK: JsonObject) {
             const mk = new Mark_Property();
             mk.PrintMark = oldMK.PrintMark;
             mk.ShapeNumber = oldMK.ShapeNumber;
-            mk.Tile = cnvTileProperty(oldMK.Tile);
-            mk.Line = cnvLineProperty(oldMK.Line);
+            mk.Tile = cnvTileProperty(oldMK.Tile as JsonObject);
+            mk.Line = cnvLineProperty(oldMK.Line as JsonObject);
             mk.wordmark = oldMK.wordmark;
-            mk.WordFont = cnvFontProperty(oldMK.WordFont);
+            mk.WordFont = cnvFontProperty(oldMK.WordFont as JsonObject);
             return mk;
         }
-        function cnvFontProperty(oldFont: JsonValue) {
+        function cnvFontProperty(oldFont: JsonObject) {
             const fnt = new Font_Property();
-            fnt.Color = cnvColorProperty(oldFont.Color);
+            fnt.Color = cnvColorProperty(oldFont.Color as JsonObject);
             fnt.Size = oldFont.Size;
             fnt.italic = oldFont.italic;
             fnt.bold = oldFont.bold;
@@ -5136,8 +5136,8 @@ class clsAttrData {
             fnt.Kakudo = oldFont.Kakudo;
             fnt.FringeF = oldFont.FringeF;
             fnt.FringeWidth = oldFont.FringeWidth;
-            fnt.FringeColor = cnvColorProperty(oldFont.FringeColor);
-            fnt.Back = cnvBackGround_Box_Property(oldFont.Back);
+            fnt.FringeColor = cnvColorProperty(oldFont.FringeColor as JsonObject);
+            fnt.Back = cnvBackGround_Box_Property(oldFont.Back as JsonObject);
             //フォントの有無チェック
             if(fnt.Name && existFont.indexOf(fnt.Name)==-1){
                 if(nonExistFont.indexOf(fnt.Name)==-1){
@@ -5153,34 +5153,34 @@ class clsAttrData {
             }
             return fnt;
         }
-        function cnvBackGround_Box_Property(oldBK: JsonValue) {
+        function cnvBackGround_Box_Property(oldBK: JsonObject) {
             const bk = new BackGround_Box_Property();
-            bk.Tile = cnvTileProperty(oldBK.Tile)
-            bk.Line = cnvLineProperty(oldBK.Line);
+            bk.Tile = cnvTileProperty(oldBK.Tile as JsonObject)
+            bk.Line = cnvLineProperty(oldBK.Line as JsonObject);
             bk.Round = oldBK.Round;
             bk.Padding = oldBK.Padding;
             return bk;
         }
-        function cnvColorProperty(oldColor: JsonValue) {
+        function cnvColorProperty(oldColor: JsonObject) {
             const col = new colorRGBA();
             return Object.assign(col, oldColor);
         }
-        function cnvLineProperty(oldLine: JsonValue) {
+        function cnvLineProperty(oldLine: JsonObject) {
             const line = new Line_Property();
             line.BlankF = oldLine.BlankF;
             line.Width = oldLine.Width;
-            line.Color = cnvColorProperty(oldLine.Color);
-            line.Edge_Connect_Pattern = cnvLineEdgeProperty(oldLine.Edge_Connect_Pattern);
+            line.Color = cnvColorProperty(oldLine.Color as JsonObject);
+            line.Edge_Connect_Pattern = cnvLineEdgeProperty(oldLine.Edge_Connect_Pattern as JsonObject);
             return line;
         }
-        function cnvLineEdgeProperty(oldLineEdsge: JsonValue) {
+        function cnvLineEdgeProperty(oldLineEdsge: JsonObject) {
             const ledge = new LineEdge_Connect_Pattern_Data_Info();
             return Object.assign(ledge, oldLineEdsge);
         }
-        function cnvTileProperty(oldTile: JsonValue) {
+        function cnvTileProperty(oldTile: JsonObject) {
             const tile = new Tile_Property();
             tile.BlankF = oldTile.BlankF;
-            tile.Color = cnvColorProperty(oldTile.Color);
+            tile.Color = cnvColorProperty(oldTile.Color as JsonObject);
             return tile;
         }
 }
