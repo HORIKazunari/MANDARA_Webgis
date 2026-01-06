@@ -408,9 +408,9 @@ interface IAttrData {
     nowLayer?: () => ILayerDataInfo;
     nowSeries?: () => ISeriesDatasetInfo;
     nowOverlay?: () => IOverLayDatasetInfo;
-    Twocolort?: colorRGBA[];
-    Threecolor?: colorRGBA[];
-    FourColor?: colorRGBA[];
+    Twocolort?: (Layernum: number, DataNum: number) => void;
+    Threecolor?: (Layernum: number, DataNum: number, Color_cng_n: number) => void;
+    FourColor?: (layer?: number, data?: number, color_ch_n?: number) => void;
     Get_DataNote?: (layer?: number, data?: number) => string;
     Get_Data_Value?: (Layernum?: number, DataNum?: number, Obj?: number, Missing_word?: string) => string | number;
     Get_DataUnit?: (layer?: number, data?: number) => string;
@@ -1562,7 +1562,7 @@ interface Math {
 declare function clsSelectData(...args: JsonValue[]): void;
 declare class GraphModeDataItem { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function clsTileSet(...args: JsonValue[]): void;
-declare function clsLinePatternSet(...args: JsonValue[]): void;
+declare function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line: LinePattern) => void): void;
 declare function graphModeEn_Obi(...args: JsonValue[]): void;
 declare function graphModeOresen_Bou(...args: JsonValue[]): void;
 declare function openMapFile(...args: JsonValue[]): JsonValue;
@@ -1606,7 +1606,7 @@ declare class strContour_Data_Irregular_interval { [key: string]: JsonValue; con
 declare class strClass_Div_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class clsSortingSearch { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function clsColorPicker(...args: JsonValue[]): void;
-declare function clsMarkSet(...args: JsonValue[]): void;
+declare function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: JsonValue): void;
 declare function clsInnerDataSet(...args: JsonValue[]): void;
 declare function clsLineEdgePattern(...args: JsonValue[]): void;
 declare function clsColorChart(...args: JsonValue[]): void;

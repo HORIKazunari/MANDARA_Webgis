@@ -889,7 +889,7 @@ class clsSpline {
 
 
         let lpf;
-        if (Line_XY[Ls].Equals(Line_XY(Ls + ln - 1)) == true) {
+        if (Line_XY[Ls].Equals(Line_XY[Ls + ln - 1]) == true) {
             lpf = true;
         }
 

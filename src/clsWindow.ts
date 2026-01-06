@@ -1838,7 +1838,7 @@ function setting(locSearch: string) {
                         }
                         case enmSoloMode_Number.ClassMarkMode: {
                             const md = attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark;
-                            clsMarkSet(e, mkChange, md, attrData)
+                            clsMarkSet(e, mkChange, md, attrData);
                             function mkChange(newMark: Mark) {
                                 attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark = newMark.Clone();
                                 attrData.Draw_Sample_Mark_Box(tgt, newMark);
@@ -1847,7 +1847,7 @@ function setting(locSearch: string) {
                         }
                         case enmSoloMode_Number.ClassODMode: {
                             const md = attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat;
-                            clsLinePatternSet(e,md,lineChange)
+                            clsLinePatternSet(e, md, lineChange);
                             function lineChange(newPat: LinePattern) {
                                 attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat = newPat.Clone();
                                 attrData.Draw_Sample_LineBox(tgt,newPat);

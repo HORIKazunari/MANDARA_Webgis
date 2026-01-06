@@ -410,9 +410,9 @@ class spatial {
         RectLatLon.SouthEast = spatial.ConvertRefSystemLatLon(RectLatLon.SouthEast, refOrigin, refDestZahyo.System);
         const P=[];
         P[0] = spatial.Get_Converted_XY(RectLatLon.NorthWest.toPoint(), refDestZahyo);
-        P[1] = spatial.Get_Converted_XY(RectLatLon.NorthEast().toPoint(), refDestZahyo);
+        P[1] = spatial.Get_Converted_XY(RectLatLon.NorthEast.toPoint(), refDestZahyo);
         P[2] = spatial.Get_Converted_XY(RectLatLon.SouthEast.toPoint(), refDestZahyo);
-        P[3] = spatial.Get_Converted_XY(RectLatLon.SouthWest().toPoint(), refDestZahyo);
+        P[3] = spatial.Get_Converted_XY(RectLatLon.SouthWest.toPoint(), refDestZahyo);
         const filteredP = P.filter((p): p is point => p !== undefined);
         return { convRect: spatial.getCircumscribedRectangle(filteredP, undefined), latlonBox: RectLatLon, RPoint: P };
     }
