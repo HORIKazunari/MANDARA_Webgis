@@ -5525,8 +5525,8 @@ class clsAttrData {
                             return { ok: false, emes: ObjectErrorMessage };
                         }
                         const retv = this.Set_Data_from_String(LayerReading, TotalMissing);
-                        OK_Flag = OK_Flag && retv.ok;
-                        LayerError += retv.emes;;
+                        OK_Flag = OK_Flag && (retv.ok as boolean);
+                        LayerError += retv.emes as string;;
                         if (LayerError != "") {
                             ObjectErrorMessage += "エラー／レイヤ:";
                             if (LayerReading.Name == "") {
@@ -5650,8 +5650,8 @@ class clsAttrData {
             }
         }
         const retv = this.Set_Data_from_String(LayerReading, TotalMissing);
-        OK_Flag = OK_Flag && retv.ok;
-        LayerError += retv.emes;
+        OK_Flag = OK_Flag && (retv.ok as boolean);
+        LayerError += retv.emes as string;
         if (LayerError != "") {
             ObjectErrorMessage += "エラー／レイヤ:";
             if (LayerReading.Name == "") {
@@ -5825,36 +5825,37 @@ class clsAttrData {
             return { ok: false, emes: E_Mes };
         }
         
-        this.Add_one_Layer(LayerReading.Name, LayerReading.Type, LayerReading.MeshType, LayerReading.Shape, LayerReading.MapFile,
-            LayerReading.Time, LayerReading.ReferenceSystem, LayerReading.Comment_Temp, Object_num, Get_Obj);
+        this.Add_one_Layer(LayerReading.Name as string, LayerReading.Type as number, LayerReading.MeshType as number, LayerReading.Shape as number, LayerReading.MapFile as string,
+            LayerReading.Time as JsonObject, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj);
 
         const Laye_Shape_Emes = this.Check_LayerShape();
         if (Laye_Shape_Emes != "") {
             E_Mes += Laye_Shape_Emes + '\n';
         }
 
-        if (LayerReading.UNT.length==0) {
+        if ((LayerReading.UNT as string[]).length==0) {
             LayerReading.UNT = new Array(MxData).fill("");
         }
-        if (LayerReading.TTL.length == 0) {
+        if ((LayerReading.TTL as string[]).length == 0) {
             LayerReading.TTL = new Array(MxData).fill("");
         }
 
-        if (LayerReading.DTMis.length == 0) {
+        if ((LayerReading.DTMis as JsonValue[]).length == 0) {
             LayerReading.DTMis = new Array(MxData).fill(TotalMissing);
         }
-        if (LayerReading.Note.length == 0) {
+        if ((LayerReading.Note as string[]).length == 0) {
             LayerReading.Note = new Array(MxData).fill("");
         }
 
-        LayerReading.TTL.shift();
-        LayerReading.UNT.shift();
-        LayerReading.DTMis.shift();
-        LayerReading.Note.shift();
+        (LayerReading.TTL as JsonValue[]).shift();
+        (LayerReading.UNT as JsonValue[]).shift();
+        (LayerReading.DTMis as JsonValue[]).shift();
+        (LayerReading.Note as JsonValue[]).shift();
 
         const DummmyObjNamesList = [];
-        for (let i = 0; i < LayerReading.Dummy_Temp.length; i++) {
-            const DCS = LayerReading.Dummy_Temp[i];
+        const LayerReadingDummyTemp = LayerReading.Dummy_Temp as string[][];
+        for (let i = 0; i < LayerReadingDummyTemp.length; i++) {
+            const DCS = LayerReadingDummyTemp[i];
             for (let j = 1; j < DCS.length; j++) {
                 if (DCS[j] != "") {
                     DummmyObjNamesList.push(DCS[j]);
@@ -5863,8 +5864,9 @@ class clsAttrData {
         }
 
         const DummmyObjGroupNamesList = [];
-        for (let i = 0; i < LayerReading.Dummy_OBKTemp.length; i++) {
-            const DCS = LayerReading.Dummy_OBKTemp[i];
+        const LayerReadingDummyOBKTemp = LayerReading.Dummy_OBKTemp as string[][];
+        for (let i = 0; i < LayerReadingDummyOBKTemp.length; i++) {
+            const DCS = LayerReadingDummyOBKTemp[i];
             for (let j = 1; j < DCS.length; j++) {
                 if (DCS[j] != "") {
                     DummmyObjGroupNamesList.push(DCS[j]);
@@ -5876,8 +5878,8 @@ class clsAttrData {
         if (Emes != "") {
             E_Mes += "ダミーオブジェクト指定で地図ファイルに含まれないものがあります。" + '\n' + Emes
         }
-        const retv = this.Set_STRData_To_Cell(NowLay, MxData - 1, LayerReading.TTL, LayerReading.UNT, LayerReading.DTMis, LayerReading.Note, DN_Str);
-        E_Mes += retv.emes;
+        const retv = this.Set_STRData_To_Cell(NowLay, MxData - 1, LayerReading.TTL as string[], LayerReading.UNT as string[], LayerReading.DTMis as JsonValue[], LayerReading.Note as string[], DN_Str);
+        E_Mes += retv.emes as string;
         return { ok: retv.ok, emes: E_Mes };
     }
 
@@ -7228,7 +7230,8 @@ class clsAttrData {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
         } else {
             t = clsBase.Tile();
-            t.Color = this.LayerData[Layernum].atrData.Data[InnerData.Data].SoloModeViewSettings.Class_Div[CategoryPos].PaintColor.Clone();
+            const layerDataArray = this.LayerData[Layernum].atrData.Data as strData_info[];
+            t.Color = layerDataArray[InnerData.Data].SoloModeViewSettings.Class_Div[CategoryPos].PaintColor.Clone();
         }
         return t;
     }
@@ -7296,13 +7299,13 @@ class clsAttrData {
         const sv = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         if (Color_cng_n < GradationPoint4) {
             const n = GradationPoint4 + 1;
-            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color1, col, Color_cng_n + 1);
+            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color1 as colorRGBA, col, Color_cng_n + 1);
             for (let i = 0; i < Color_cng_n; i++) {
-                sv.Class_Div[i].PaintColor = ColData[i];
+                sv.Class_Div[i].PaintColor = ColData[i] as colorRGBA;
             }
-            ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color3, n - Color_cng_n);
+            ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color3 as colorRGBA, n - Color_cng_n);
             for (let i = Color_cng_n; i < n; i++) {
-                sv.Class_Div[i].PaintColor = ColData[i - Color_cng_n];
+                sv.Class_Div[i].PaintColor = ColData[i - Color_cng_n] as colorRGBA;
             }
         } else {
             let n = Color_cng_n - GradationPoint4 + 1;
@@ -7754,8 +7757,9 @@ class clsAttrData {
     SeriesMode_to_ListViewData(seriesListView: HTMLElement, DataSetItem: JsonValue): void {
         seriesListView.clear();
         const seriesData: JsonValue[] = [4];
-        for (let i = 0; i < DataSetItem.length; i++) {
-            const di = DataSetItem[i];
+        const DataSetItemArray = DataSetItem as JsonValue[];
+        for (let i = 0; i < DataSetItemArray.length; i++) {
+            const di = DataSetItemArray[i] as JsonObject;
             seriesData[0] = Number((i + 1).toString());
             if (di.Print_Mode_Total == enmTotalMode_Number.OverLayMode) {
                 const over = this.TotalData.TotalMode.OverLay;
@@ -8243,14 +8247,14 @@ class clsAttrMapData {
     }
 
 
-    EqualizeZahyoMode(Zahyo: JsonValue): ZahyoResult {
+    EqualizeZahyoMode(Zahyo: Zahyo_info): ZahyoResult {
         //読み込んだ地図ファイルの投影法等座標設定を同じにする
         let f = true;
         let emes = "";
         //コレクションのループ
         const self = this;
         Object.keys(this.attrMapData).forEach(function (key) {
-            const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo, self.attrMapData[key].Map.Zahyo);
+            const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo as Zahyo_info, self.attrMapData[key].Map.Zahyo as Zahyo_info);
             if (retv.ok == false) { 
                 f = false;
                 emes += key + ":" + retv.emes + '\n';
@@ -8258,8 +8262,8 @@ class clsAttrMapData {
         });
         if (f == true) {
             Object.keys(this.attrMapData).forEach(function (key) {
-                if (Generic.equal(self.attrMapData[key].Map.Zahyo, Zahyo) == false) {
-                    self.attrMapData[key].Convert_ZahyoMode(Zahyo);
+                if (Generic.equal(self.attrMapData[key].Map.Zahyo as Zahyo_info, Zahyo as Zahyo_info) == false) {
+                    self.attrMapData[key].Convert_ZahyoMode(Zahyo as Zahyo_info);
                 }
             });
         }
