@@ -5683,40 +5683,46 @@ class clsAttrData {
 
 
     //文字列からデータに変換
-    Set_Data_from_String(LayerReading: JsonValue, TotalMissing: JsonValue): JsonValue {
+    Set_Data_from_String(LayerReading: JsonObject, TotalMissing: JsonObject): JsonObject {
         let E_Mes = "";
-        const MapFileData = this.MapData.SetMapFile(LayerReading.MapFile);
-        const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile);
+        const MapFileData = this.MapData.SetMapFile(LayerReading.MapFile as string);
+        const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile as string);
         const Object_Use_Check = new Array(MapFileData.Map.Kend - 1);
         const No_Object_Name = [];
         const Over_Lap_Object = [];
 
         let MxData = 0;
-        MxData = Math.max(LayerReading.TTL.length, MxData);
-        MxData = Math.max(LayerReading.UNT.length, MxData);
-        MxData = Math.max(MxData, LayerReading.DTMis.length);
-        MxData = Math.max(MxData, LayerReading.Note.length);
-        for (let i = 0; i < LayerReading.ObjectDataStac.length; i++) {
-            MxData = Math.max(MxData, LayerReading.ObjectDataStac[i].length);
+        const LayerReadingTTL = LayerReading.TTL as string[];
+        const LayerReadingUNT = LayerReading.UNT as string[];
+        const LayerReadingDTMis = LayerReading.DTMis as string[];
+        const LayerReadingNote = LayerReading.Note as string[];
+        const LayerReadingObjectDataStac = LayerReading.ObjectDataStac as string[][];
+        MxData = Math.max(LayerReadingTTL.length, MxData);
+        MxData = Math.max(LayerReadingUNT.length, MxData);
+        MxData = Math.max(MxData, LayerReadingDTMis.length);
+        MxData = Math.max(MxData, LayerReadingNote.length);
+        for (let i = 0; i < LayerReadingObjectDataStac.length; i++) {
+            MxData = Math.max(MxData, LayerReadingObjectDataStac[i].length);
         }
         if (MxData == 0) {
             return { ok: false, emes: "タグ・オブジェクトが存在しません。" + '\n' };
         }
-        const DN_Str = Generic.Array2Dimension(MxData, LayerReading.ObjectDataStac.length);
+        const DN_Str = Generic.Array2Dimension(MxData, LayerReadingObjectDataStac.length);
         
         const Get_Obj = [];//strObject_Data_Info / strTripObjData_Info / string
         let MeshCodeLen = 0;
-        if (LayerReading.Type == enmLayerType.Mesh) {
-            MeshCodeLen = Generic.getMeshCodeLength(LayerReading.MeshType) ?? 0;
+        const LayerReadingType = LayerReading.Type as number;
+        if (LayerReadingType == enmLayerType.Mesh) {
+            MeshCodeLen = Generic.getMeshCodeLength(LayerReading.MeshType as number) ?? 0;
         }
 
-        for (let i = 0; i < LayerReading.ObjectDataStac.length; i++) {
-            const CutS = LayerReading.ObjectDataStac[i];
+        for (let i = 0; i < LayerReadingObjectDataStac.length; i++) {
+            const CutS = LayerReadingObjectDataStac[i];
             const OBName = CutS[0];
             let code: number | undefined;
-            switch (LayerReading.Type) {
+            switch (LayerReadingType) {
                 case (enmLayerType.Normal): {
-                    code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time);
+                    code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time as JsonObject);
                     if (code == -1) {
                         No_Object_Name.push(OBName);
                     } else if (code !== undefined) {
@@ -5753,13 +5759,13 @@ class clsAttrData {
                     code = 0;
             }
             if (code != -1) {
-                if ((LayerReading.Type == enmLayerType.Mesh) || (LayerReading.Type == enmLayerType.Normal) || (LayerReading.Type == enmLayerType.DefPoint)) {
+                if ((LayerReadingType == enmLayerType.Mesh) || (LayerReadingType == enmLayerType.Normal) || (LayerReadingType == enmLayerType.DefPoint)) {
                     const d = new strObject_Data_Info();
                     d.MpObjCode = code;
                     d.Name = OBName;
                     d.Objectstructure = enmKenCodeObjectstructure.MapObj;
-                    if (LayerReading.Type == enmLayerType.Normal) {
-                        d.CenterPoint = MapFileData.Get_Enable_CenterP(code, LayerReading.Time);
+                    if (LayerReadingType == enmLayerType.Normal) {
+                        d.CenterPoint = MapFileData.Get_Enable_CenterP(code, LayerReading.Time as JsonObject);
                         d.Symbol = d.CenterPoint;
                         d.Label = d.Symbol;
                         d.Visible = true;
