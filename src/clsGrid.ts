@@ -139,7 +139,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     Generic.createNewSpan(gbLayerData, "時期設定", "", "", 10, 370, "", "");
     const DateTimePickerLayer = Generic.createNewInput(gbLayerData, "date", "", "", 20, 390, "", "width:130px");
     DateTimePickerLayer.onchange = function () {
-        ktGrid.setLayerData(ktGrid.getLayer(), GridLayerData.Time, clsTime.GetFromInputDate(DateTimePickerLayer.value));
+        ktGrid.setLayerData(ktGrid.getLayer(), GridLayerData.Time, clsTime.GetFromInputDate(DateTimePickerLayer.value) as unknown as JsonValue);
         ErrorCheck();
     }
     //layerTime.onchange = layerTimeChange;
@@ -181,7 +181,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     if (newDataFlag == true) {
         ktGrid.addLayer("新しいレイヤ", 0, 5, 50);
         ktGrid.setLayerData(0, GridLayerData.Shape, enmShape.NotDeffinition);
-        ktGrid.setLayerData(0, GridLayerData.Time, clsTime.GetNullYMD());
+        ktGrid.setLayerData(0, GridLayerData.Time, clsTime.GetNullYMD() as unknown as JsonValue);
         ktGrid.setLayerData(0, GridLayerData.OldIndex, -1);
         ktGrid.setLayerData(0, GridLayerData.Type, enmLayerType.Normal);
         ktGrid.setLayerData(0, GridLayerData.Mesh, enmMesh_Number.mhNonMesh);
@@ -370,7 +370,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         }
 
         ktGrid.setLayerData(InsertPoint, GridLayerData.Shape,enmShape.NotDeffinition);
-        ktGrid.setLayerData(InsertPoint, GridLayerData.Time, clsTime.GetYMD(new Date()));
+        ktGrid.setLayerData(InsertPoint, GridLayerData.Time, clsTime.GetYMD(new Date()) as unknown as JsonValue);
         ktGrid.setLayerData(InsertPoint, GridLayerData.OldIndex, -1);
         ktGrid.setLayerData(InsertPoint, GridLayerData.Type, enmLayerType.Normal);
         ktGrid.setLayerData(InsertPoint, GridLayerData.Mesh, enmMesh_Number.mhNonMesh);
@@ -1910,9 +1910,9 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                     ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
                     const LTime = ktGrid.getLayerData(i, GridLayerData.Time);
                     if ((newAttrData.SetMapFile(filename).Map.Time_Mode == true) && (LTime.nullFlag == true)) {
-                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetYMD(new Date()));
+                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetYMD(new Date()) as unknown as JsonValue);
                     } else if ((newAttrData.SetMapFile(filename).Map.Time_Mode == false) && (LTime.nullFlag == false)) {
-                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetNullYMD());
+                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetNullYMD() as unknown as JsonValue);
                     }
                 }
             }

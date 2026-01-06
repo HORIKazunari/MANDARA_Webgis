@@ -5885,7 +5885,7 @@ class clsAttrData {
 
 
     //レイヤ単位で文字列配列に入れたデータを設定する
-    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string, UNT: string, DTMissing: string, Note: string, DN_Str: string): void {
+    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string[], UNT: string[], DTMissing: JsonValue[], Note: string[], DN_Str: string[][]): JsonObject {
         let ErrorMes = "";
         const L = this.LayerData[Layernum];
         const ObjNum = L.atrObject.ObjectNum;
