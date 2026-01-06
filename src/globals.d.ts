@@ -387,8 +387,8 @@ interface IAttrData {
     nowLayer?: () => ILayerDataInfo;
     Screen_Back?: BackGround_Box_Property;
     Draw_Tile_Box?: (context: CanvasRenderingContext2D, rect: rectangle, tile?: Tile_Property, line?: Line_Property, arg5?: Screen_info) => void;
-    Draw_Sample_LineBox?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: Line_Property, arg4?: Screen_info) => void;
-    Draw_Sample_Mark_Box?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: Mark_Property, arg4?: Screen_info) => void;
+    Draw_Sample_LineBox?: (picBox: HTMLElement, LinePat: Line_Property) => void;
+    Draw_Sample_Mark_Box?: (picBox: HTMLElement, Mark: Mark) => void;
     Get_Length_On_Screen?: (fontSize?: number) => number;
     Draw_Line?: (context: CanvasRenderingContext2D, linePattern: Line_Property, points: point[], style?: Screen_info) => void;
     Draw_Print?: (context: CanvasRenderingContext2D, text: string, position?: point, font?: Font_Property, hAlign?: string | number, vAlign?: string | number) => void;

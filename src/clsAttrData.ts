@@ -2564,7 +2564,7 @@ class strTem {
     DotMap_Temp: DotMapTemp_Info = new DotMapTemp_Info();
     ModeValueInScreen_Stac: ModeValueInScreen_Stac_Info = new ModeValueInScreen_Stac_Info();
     // 地図の緯度経度の領域
-    MapAreaLatLon: JsonObject | undefined; //RectangleF (未定義)
+    MapAreaLatLon: rectangle | undefined; //RectangleF (未定義)
     SoubyouLayerEnable: boolean[] = []; //Boolean
     SoubyouLoopLineArea: JsonValue[] = []; //(未定義)
     SoubyouLoopAreaCriteria: JsonValue | undefined; //(未定義)
@@ -5334,7 +5334,7 @@ class clsAttrData {
                                 break;
                             }
                             default:
-                                LayerError += "SHAPEタグで" + CutS(1) + "は無効です。";
+                                LayerError += "SHAPEタグで" + CutS[1] + "は無効です。";
                         }
                     }
                     break;
