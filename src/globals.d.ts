@@ -698,13 +698,27 @@ interface IClassODMode {
     [key: string]: JsonValue;
 }
 
+// 等値線レギュラー設定
+interface IContourRegular {
+    bottom?: number;
+    Interval?: number;
+    top?: number;
+    SP_Bottom?: number;
+    SP_interval?: number;
+    SP_Top?: number;
+    Line_Pat?: Line_Property;
+    SP_Line_Pat?: Line_Property;
+    EX_Line_Pat?: Line_Property;
+    [key: string]: JsonValue;
+}
+
 // 等値線モード（拡張版）
 interface IContourMode {
     Interval_Mode?: number;
     Draw_in_Polygon_F?: boolean;
     Spline_flag?: boolean;
     Detailed?: number;
-    Regular?: any;
+    Regular?: IContourRegular;
     IrregularNum?: number;
     Irregular?: strContour_Data_Irregular_interval[];
     Clone?: () => IContourMode;

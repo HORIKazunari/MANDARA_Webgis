@@ -3696,7 +3696,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         mask.style.backgroundColor = "#ffffff";
         mask.style.left = (firstSel * tabw + 1).px();
         return base;
-        function tabclick(this: HTMLElement) {
+        function tabclick(this: HTMLElement & { tag: number }) {
             for (let i = 0; i < n; i++) {
                 base.tab[i].style.backgroundColor = "#e1e1e1";
                 base.panel[i]?.setVisibility?.(false);
@@ -4626,11 +4626,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let w = browserWidth * 0.9;
         if (innerWidth != undefined) {
-            w = innerWidth;
+            w = typeof innerWidth === 'number' ? innerWidth : Number(innerWidth);
         }
         let h = browserHeight * 0.8// / 2
         if (innerHeight != undefined) {
-            h = innerHeight;
+            h = typeof innerHeight === 'number' ? innerHeight : Number(innerHeight);
         }
         const state = appState();
         const y = this.getScrollY() + (browserHeight - h) / 2;
@@ -4643,9 +4643,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             const cv = this.createXmark(dup, cancelButton, 14);
         }
 
-        let bux = innerWidth;
+        let bux = w;
         if (cancelButtonF == true) {
-            const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, innerHeight - 35, cancelButton, "width:70px;height:23px");
+            const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, h - 35, cancelButton, "width:70px;height:23px");
             ele.bottomRightPositionFixed=true;
             ele.relativePosition=new point(80,30);
             ele.name="cancel";
@@ -4655,7 +4655,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             if (okCall == undefined) {
                 okCall = deletediv;
             }
-            const ele=Generic.createNewButton(dup, "OK", "", bux - 90, innerHeight - 35, okButton, "width:60px;height:23px");
+            const ele=Generic.createNewButton(dup, "OK", "", bux - 90, h - 35, okButton, "width:60px;height:23px");
             ele.bottomRightPositionFixed=true;
             if (cancelButtonF == true) {
                 ele.relativePosition=new point(150,30);

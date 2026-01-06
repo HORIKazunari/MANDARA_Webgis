@@ -7134,13 +7134,13 @@ class clsAttrData {
             ctm.Detailed = 3;
             ctm.Draw_in_Polygon_F = true;
             ctm.Spline_flag = true;
-            const ctmr = ctm.Regular;
+            const ctmr = ctm.Regular!;
             ctmr.bottom = sv.Class_Div[sv.Div_Num - 2].Value;
-            ctmr.Interval = (sv.Class_Div[sv.Div_Num - 3].Value - ctmr.bottom) / 2;
+            ctmr.Interval = (sv.Class_Div[sv.Div_Num - 3].Value - (ctmr.bottom as number)) / 2;
             ctmr.Line_Pat = clsBase.Line();
             ctmr.top = DataMax;
             ctmr.SP_Bottom = ctmr.bottom;
-            ctmr.SP_interval = ctmr.Interval * 5;
+            ctmr.SP_interval = (ctmr.Interval as number) * 5;
             ctmr.SP_Line_Pat = clsBase.Line();
             ctmr.SP_Line_Pat.Color = clsBase.ColorBlue();
             ctmr.SP_Top = ctmr.top;
@@ -7279,10 +7279,12 @@ class clsAttrData {
         L.EnableValueNum = this.LayerData[Layernum].atrObject.ObjectNum - L.MissingValueNum;
         switch (L.DataType) {
             case enmAttDataType.Normal:
-                const EDataNum = L.EnableValueNum;
+                const EDataNum = L.EnableValueNum as number;
                 if (EDataNum > 0) {
                     const EnableDT = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
-                    let Add = 0, Add2 = 0, Max = EnableDT[0].DataValue, Min = Max;
+                    let Add: number = 0, Add2: number = 0;
+                    const firstValue = Number(EnableDT[0].DataValue);
+                    let Max: number = firstValue, Min: number = firstValue;
                     const Decimal = { AfterDecimal: 0, BeforeDecimal: 0 };
 
                     for (let i = 0; i < EDataNum; i++) {
