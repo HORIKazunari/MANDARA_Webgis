@@ -1647,14 +1647,14 @@ class frmPrint {
                 headTx+=state.attrData.getOneObjectPanelLabelString(LayerNum, DataNumber, objNumber, '<br>' + " ");
                 headHeight=90;
                 const n = state.attrData.Get_DataNum(LayerNum);
-                data = Generic.Array2Dimension(3, n + 1);
+                data = Generic.Array2Dimension(n + 1, 3);
                 data[0][0] = "データ項目";
-                data[1][0] = "値";
-                data[2][0] = "単位";
+                data[0][1] = "値";
+                data[0][2] = "単位";
                 for (let i = 0; i < n; i++) {
-                    data[0][i + 1] = state.attrData.Get_DataTitle(LayerNum, i, true);
-                    data[1][i + 1] = state.attrData.Get_Data_Value(LayerNum, i, objNumber, "");
-                    data[2][i + 1] = state.attrData.Get_DataUnit(LayerNum, i);
+                    data[i + 1][0] = state.attrData.Get_DataTitle(LayerNum, i, true);
+                    data[i + 1][1] = state.attrData.Get_Data_Value(LayerNum, i, objNumber, "");
+                    data[i + 1][2] = state.attrData.Get_DataUnit(LayerNum, i);
                 }
                 break;
             }
@@ -1730,14 +1730,14 @@ class frmPrint {
                 const ald=al.LayerModeViewSettings.LabelMode.DataSet[Dset];
                 const DataItem = ald.DataItem;
                 const n = DataItem.length;
-                data = Generic.Array2Dimension(3, n + 1);
+                data = Generic.Array2Dimension(n + 1, 3);
                 data[0][0] = "データ項目";
-                data[1][0] = "値";
-                data[2][0] = "単位";
+                data[0][1] = "値";
+                data[0][2] = "単位";
                 for (let i = 0; i < n; i++) {
-                    data[0][i + 1] = state.attrData.Get_DataTitle(LayerNum, DataItem[i], true);
-                    data[1][i + 1] =  state.attrData.Get_Data_Value(LayerNum, DataItem[i], objNumber, "");
-                    data[2][i + 1] = state.attrData.Get_DataUnit(LayerNum, i);
+                    data[i + 1][0] = state.attrData.Get_DataTitle(LayerNum, DataItem[i], true);
+                    data[i + 1][1] =  state.attrData.Get_Data_Value(LayerNum, DataItem[i], objNumber, "");
+                    data[i + 1][2] = state.attrData.Get_DataUnit(LayerNum, i);
                 }
                 break;
             }

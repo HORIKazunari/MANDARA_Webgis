@@ -118,7 +118,7 @@ class clsMeshContour {
             const NL = High_CN[i];
             if (0 < NL) {
                 const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false, new rectangle(0, this.XMeshNum, 0, this.YMeshNum));
-                const Arrange_LineCode = Generic.Array2Dimension(NL + 1, 2);
+                const Arrange_LineCode = Generic.Array2Dimension(NL + 1, 2, 0);
                 for (let j = 0; j < Arrange_LineCode.length; j++) {
                     for (let k = 0; k < Arrange_LineCode[j].length; k++) { Arrange_LineCode[j][k] = 0; }
                 }

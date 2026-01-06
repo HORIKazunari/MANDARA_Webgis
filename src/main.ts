@@ -56,7 +56,7 @@ function init(): void {
     
     // 状態の初期化
     state.settingData = new Setting_Info();
-    state.tky2jgd = new TKY2JGDInfo();
+    state.tky2jgd = TKY2JGDInfo;
     state.tileMapClass = new clsTileMap();
     
     // フォント設定
@@ -84,33 +84,34 @@ function init(): void {
     document.body.removeChild(divscr);
     
     // 出力画面生成
+    const frmPrintRef = { windowClose: null as (() => void) | null, resizeMapWindow: null as (() => void) | null };
     state.frmPrint = Generic.createWindow(
         "frmPrint", "", "", 250, 50, 300, 250, 
         false, true, FrmprintMenuClick, true, 
-        frmPrint.windowClose, true, "printFoot", true, 
-        frmPrint.resizeMapWindow
+        null, true, "printFoot", true, 
+        null
     ) as IFrmPrint;
     
     state.frmPrint.picMap = Generic.createNewCanvas(
-        state.frmPrint, "mapArea", "", 0, 0, 0, 0, "", 
+        state.frmPrint, "mapArea", "", 0, 0, 0, 0, null, 
         "background-color: white"
     );
 
     state.frmPrint.picMap.oncontextmenu = (): boolean => false;
     state.frmPrint.addEventListener('mousedown', frmPrintFront);
     state.frmPrint.addEventListener('touchstart', frmPrintFront);
-    state.frmPrint.dragBorder?.(undefined, frmPrint.resizeMapWindow);
+    state.frmPrint.dragBorder?.(undefined, state.frmPrint.resizeMapWindow as any);
     
     const footer: HTMLElement = document.getElementById("printFoot")!;
-    state.frmPrint.label1 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", "");
-    state.frmPrint.label2 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", "");
-    state.frmPrint.label3 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", "");
+    state.frmPrint.label1 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
+    state.frmPrint.label2 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
+    state.frmPrint.label3 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
     
     // プロパティウィンドウ生成
     state.propertyWindow = Generic.createWindow(
         "", "", "プロパティ", 350, 50, 200, 250, 
-        false, false, "", true, 
-        frmPrint.propertyWindowClose, false, "", false, 
+        false, false, null, true, 
+        null, false, "", false, 
         undefined
     ) as IPropertyWindow;
     
@@ -126,12 +127,12 @@ function init(): void {
         state.propertyWindow.pnlProperty, "", "", "", 0, 0, 
         '100%', 90, "padding:5px;background-color:white", ""
     );
-    state.propertyWindow.pnlProperty.oObject = -1;
-    state.propertyWindow.pnlProperty.oLayer = -1;
-    state.propertyWindow.pnlProperty.oData = -1;
+    (state.propertyWindow.pnlProperty as any).oObject = -1;
+    (state.propertyWindow.pnlProperty as any).oLayer = -1;
+    (state.propertyWindow.pnlProperty as any).oData = -1;
     state.propertyWindow.copyButton = Generic.createNewButton(
         state.propertyWindow, "コピー", "", 30, 0, 
-        frmPrint.copyProperty, ""
+        () => state.frmPrint.copyProperty?.(), ""
     );
     (state.propertyWindow.copyButton as Record<string, boolean | point>).bottomPositionFixed = true;
     (state.propertyWindow.copyButton as Record<string, boolean | point>).relativePosition = new point(0, 30);
@@ -146,10 +147,10 @@ function init(): void {
     (rightDIV as Record<string, boolean | point>).relativePosition = new point(325, 0);
     
     Generic.createNewButton(rightDIV, "データ値表示", "", 0, 0, dataValueShow, "width:90px");
-    Generic.createNewButton(rightDIV, "全体表示", "", 90, 0, frmPrint.wholeMapShow, "text-aligh:center;width:75px");
+    Generic.createNewButton(rightDIV, "全体表示", "", 90, 0, () => state.frmPrint.wholeMapShow?.(), "text-aligh:center;width:75px");
     state.frmPrint.backImageButton = Generic.createNewButton(rightDIV, "背景画像", "", 165, 0, backImageButton, "text-aligh:center;width:75px");
-    state.frmPrint.seriesNextButton = Generic.createNewButton(rightDIV, "◀", "", 240, 0, frmPrint.seriesBefore, "font-weight: 900;width:30px");
-    state.frmPrint.seriesBeforeButton = Generic.createNewButton(rightDIV, "▶", "", 270, 0, frmPrint.seriesNext, "font-weight: 900;width:30px");
+    state.frmPrint.seriesNextButton = Generic.createNewButton(rightDIV, "◀", "", 240, 0, () => state.frmPrint.seriesBefore?.(), "font-weight: 900;width:30px");
+    state.frmPrint.seriesBeforeButton = Generic.createNewButton(rightDIV, "▶", "", 270, 0, () => state.frmPrint.seriesNext?.(), "font-weight: 900;width:30px");
     
     mapMouse(state.frmPrint.picMap, clsPrint.printMapScreen);
     clsDrawMarkFan?.init?.();
@@ -162,8 +163,8 @@ function init(): void {
         const pwchwck: boolean = (state.propertyWindow.getVisibility?.() === true);
         const popmenu = [
             {caption: "画像", enabled: true, child: [
-                { caption: "画像ファイルに保存", event: frmPrint.savePNG },
-                { caption: "コピー用画像表示", event: frmPrint.copyImageWindow }
+                { caption: "画像ファイルに保存", event: () => state.frmPrint.savePNG?.() },
+                { caption: "コピー用画像表示", event: () => state.frmPrint.copyImageWindow?.() }
             ]
         },
             {caption: "表示", enabled: true, child: [
@@ -172,7 +173,7 @@ function init(): void {
                 { caption: "プロパティウインドウ", checked: pwchwck, event: pwreverse },
             ]
         },
-        { caption: "線種ラインパターン設定", event: frmPrint.linePattern },
+        { caption: "線種ラインパターン設定", event: () => state.frmPrint.linePattern?.() },
         { caption: "投影法変換", event: frmPrintProjection},
         { caption: "オプション", event: frmPrintOptionMenu }
         ];
@@ -195,7 +196,7 @@ function init(): void {
             } else {
                 state.propertyWindow.setVisibility?.(true);
             }
-            frmPrint.propertyWindowClose();
+            state.frmPrint.propertyWindowClose?.();
         }
         
         function mnuDummyObjChange(): void {
@@ -232,7 +233,7 @@ function frmPrintProjection(): void {
         if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
             (centerLon !== state.attrData.TotalData.ViewStyle.Zahyo.CenterXY.x)) {
             
-            state.attrData?.Convert_Zahyo?.(newZahyo);
+            state.attrData?.Convert_Zahyo?.(newZahyo as any);
             const MapFileList: string[] = state.attrData?.GetMapFileName?.() ?? [];
             
             for (let i = 0; i < MapFileList.length; i++) {

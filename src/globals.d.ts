@@ -123,7 +123,7 @@ interface IAttrData {
         ViewStyle: {
             Clone?: () => JsonValue;
             Dummy_Size_Flag?: boolean;
-            ScrData: {
+            ScrData: Screen_info & {
                 frmPrint_FormSize: rectangle;
                 ScrView?: rectangle;
                 MapScreen_Scale?: size;
@@ -142,17 +142,14 @@ interface IAttrData {
                 };
                 Accessory_Base?: number;
                 OutputDevide?: number; // enmOutputDevice
-                SampleBoxFlag?: boolean;
                 Set_PictureBox_and_CulculateMul?: (arg1?: rectangle) => void;
                 ScrRectangle?: rectangle;
                 Screen_Margin?: ScreenMargin; // ScreenMargin class from clsAttrData.ts
                 getSxSyRect?: (arg1?: rectangle) => rectangle;
-                Get_Length_On_Screen?: (arg1?: number) => number;
                 ScreenMG?: {
                     Mul?: number;
                     [key: string]: JsonValue;
                 }; // ScreenMultiply_Data_Info
-                Clone?: () => unknown;
                 init?: (sz?: size, margin?: ScreenMargin, mapRect?: rectangle, accessoryBase?: number, clearFlag?: boolean) => void;
             };
             AttMapCompass?: strCompass_Attri; // strMapCompass_Attri from clsAttrData.ts
@@ -230,10 +227,12 @@ interface IAttrData {
                 };
             };
             AccessoryGroupBox?: BackGround_Box_Property;
-            Zahyo: {
-                Mode: number;
-                Projection: number;
-                CenterXY: point;
+            Zahyo: Zahyo_info;
+            LatLonLine_Print?: {
+                LPat: Line_Property;
+                OuterPat: Line_Property;
+                Equator: Line_Property;
+                [key: string]: any;
             };
             TileMapView: {
                 Visible: boolean;
@@ -298,7 +297,13 @@ interface IAttrData {
             OldObject?: strLocationSearchObject | null;
             SymbolPointFirstMessage?: boolean;
             LabelPointFirstMessage?: boolean;
-            LocationMenuString?: string;
+            LocationMenuString?: {
+                ObjectNameValue?: string;
+                ContourStacPos?: number;
+                ClickMapPos?: point;
+                DataIndex?: number;
+                [key: string]: any;
+            };
             MultiObjects?: strLocationSearchObject[];
         };
         Accessory_Temp: IAccessoryTemp;
@@ -363,7 +368,6 @@ interface IAttrData {
     layerGraph?: (layerNum?: number) => IGraphMode;
     layerLabel?: (layerNum?: number) => ILabelMode;
     Check_Screen_In?: (CenterP: point | rectangle, R?: number) => boolean;
-    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, scrData?: Screen_info) => void;
     Convert_Zahyo?: (zahyo: number) => void;
     GetMapFileName?: () => string[];
     SetMapFile?: (filename: string) => IMapData;
@@ -386,7 +390,6 @@ interface IAttrData {
     Draw_Sample_LineBox?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: Line_Property, arg4?: Screen_info) => void;
     Draw_Sample_Mark_Box?: (arg1?: CanvasRenderingContext2D, arg2?: rectangle, arg3?: Mark_Property, arg4?: Screen_info) => void;
     Get_Length_On_Screen?: (fontSize?: number) => number;
-    Draw_Tile_RoundBox?: (context: CanvasRenderingContext2D, rect: rectangle, style?: Tile_Property, scrData?: Screen_info) => void;
     Draw_Line?: (context: CanvasRenderingContext2D, linePattern: Line_Property, points: point[], style?: Screen_info) => void;
     Draw_Print?: (context: CanvasRenderingContext2D, text: string, position?: point, font?: Font_Property, hAlign?: string | number, vAlign?: string | number) => void;
     Get_DataUnit_With_Kakko?: (layerIndex?: number, dataIndex?: number) => string;
@@ -477,7 +480,8 @@ interface IAttrData {
     Distance_Kencode_Point?: (layernum: number, obj: number, point: point) => number;
     Distance_Kencode_Object?: (objNum1: number, objNum2: number, layNum1: number, layNum2: number) => number;
     Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: IMapData, objCode2: number, time?: strYMD | null) => number;
-    getOneObjectPanelLabelString?: (layernum: number, dataNum?: number, objNum?: number, soloMode?: ISoloModeViewSettings) => string;
+    getOneObjectPanelLabelString?: (layernum: number, dataNum: number, objNum: number, separatorString: string) => string;
+    getSoloMode?: (layernum: number, dataNum: number) => ISoloModeViewSettings;
     Set_Acc_First_Position?: () => void;
     Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: ISoloModeViewSettings) => void;
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
@@ -485,6 +489,12 @@ interface IAttrData {
     AddPointObjectKindUsed?: (layer?: number, object?: number, mark?: strDummyObjectPointMark_Info) => strDummyObjectPointMark_Info;
     AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
     Get_Check_Enable_SoloMode?: (soloMode?: ISoloModeViewSettings, layerNum?: number, dataNum?: number) => boolean;
+    Draw_Tile_RoundBox?: (g: CanvasRenderingContext2D, boundaryRect: rectangle, back: BackGround_Box_Property, kakudo: number) => void;
+    Check_Screen_In?: (rect: rectangle) => boolean;
+    Get_Padding_Pixcel?: (back: BackGround_Box_Property) => number;
+    Get_Paddin_Pixcel?: (back: BackGround_Box_Property) => number; // typo variant
+    Radius?: (size: number, arg2?: number, arg3?: number) => number;
+    [key: string]: any;
     
     // MapData関連
     MapData: {
@@ -575,7 +585,11 @@ interface ILayerDataInfo {
     LayerModeViewSettings: ILayerModeViewSettings;
     PrtSpatialIndex: JsonValue; // clsSpatialIndexSearch
     ObjectGroupRelatedLine: number[];
-    ODBezier_DataStac: ODBezier_Data[]
+    ODBezier_DataStac: ODBezier_Data[];
+    // Methods
+    Remove_OD_Bezier?: (objPos: number, dataNum: number) => void;
+    Get_OD_Bezier_RefPoint?: (index: number, dataNum: number) => any;
+    [key: string]: any;
 }
 
 // オブジェクト情報（拡張版）
@@ -813,8 +827,24 @@ interface IFrmPrint extends ExtendedHTMLDivElement {
     seriesNextButton?: HTMLInputElement;
     seriesBeforeButton?: HTMLInputElement;
     // HTMLDivElementのプロパティも継承
-    dragBorder?: (arg1: MouseEvent, arg2: HTMLElement) => void;
+    dragBorder?: (arg1?: MouseEvent | undefined, arg2?: ((...args: any[]) => void) | HTMLElement) => void;
     resetMaxButton?: (flag?: boolean) => void;
+    // Methods
+    windowClose?: () => void;
+    resizeMapWindow?: () => void;
+    PropertyFix?: () => void;
+    PrintCursorObjectLine?: (g: CanvasRenderingContext2D, flag: boolean) => void;
+    ShowOneObjectProperty?: (layerNum: number, objNum: number, dataIndex: number, printMode: number) => void;
+    ShowOverLayObjectProperty?: (layerNum: number, dataIndex: number, onObject: any[]) => void;
+    savePNG?: (flag?: boolean) => void;
+    propertyWindowClose?: () => void;
+    copyProperty?: () => void;
+    wholeMapShow?: () => void;
+    seriesBefore?: () => void;
+    seriesNext?: () => void;
+    copyImageWindow?: () => void;
+    linePattern?: () => void;
+    [key: string]: any;
 }
 
 // プロパティウィンドウ（拡張）
@@ -1681,6 +1711,7 @@ interface Zahyo_info {
     CenterXY: point;
     Zahyo?: Zahyo_info; // 自己参照（実装で使用されている場合）
     Clone(): Zahyo_info;
+    [key: string]: any; // 柔軟性のため追加
 }
 declare const Zahyo_info: {
     new(): Zahyo_info;
