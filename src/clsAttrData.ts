@@ -4319,12 +4319,12 @@ class clsAttrData {
     }
 
     //単独表示モードのモードを取得
-    getSoloMode(LayerNum: number, DataNum: number): ISoloModeViewSettings {
-        return this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings;
+    getSoloMode(LayerNum: number, DataNum: number): number {
+        return this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings.SoloMode;
     }
 
-    setSoloMode(LayerNum: number, DataNum: number, mode: ISoloModeViewSettings): void {
-        this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings = mode;
+    setSoloMode(LayerNum: number, DataNum: number, mode: number): void {
+        this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings.SoloMode = mode;
     }
 
     //データの緯度経度の領域を返す

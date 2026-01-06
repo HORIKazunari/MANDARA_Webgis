@@ -2369,7 +2369,7 @@ function setting(locSearch: string) {
             selDiv.selected = true;
             selDiv.style.backgroundColor = '#ff6464';
         }
-        settingModeWindow?.setTitle?.(attrData.getSoloMode(md));
+        settingModeWindow?.setTitle?.(attrData.getSolomodeWord(md));
         rightSettingWindowControlVisibilitySet();
         Check_Print_err();
     }
@@ -3832,7 +3832,7 @@ function setting(locSearch: string) {
 //属性データ読み込み
 function readData(okCall: () => void) {
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
-    const mapList: Record<string, unknown> = {};
+    const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);
     const mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, scrMargin.top+5, 450, 140, "使用地図ファイル");
     Generic.createNewSpan(mapFileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", "");
@@ -4033,7 +4033,7 @@ function readData(okCall: () => void) {
 //シェープファイル読み込み
 function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void{
     let shapeFiles: { [key: string]: JsonObject } = {};//clsShapefile
-    const mapList: Record<string, unknown> = {};
+    const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
@@ -4289,8 +4289,8 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[])
     }
     function buttonOK() {
 
-        const mapList: { [key: string]: JsonObject } = {};
-        const LayerData: JsonValue[] = []; //strLayerInfo
+        const mapList: Record<string, clsMapdata> = {};
+        const LayerData: strLayerInfo[] = [];
         const prj = parseInt(cboProjection?.getValue ? cboProjection.getValue() : "0");
         for (const i in shapeFiles) {
             const sfile = shapeFiles[i];
@@ -4322,8 +4322,8 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[])
 
 /** 白地図・初期属性データ表示 */
 function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void {
-    const mapList: Record<string, unknown> = {};
-    const LayerData: JsonValue[] = []; //strLayerInfo
+    const mapList: Record<string, clsMapdata> = {};
+    const LayerData: strLayerInfo[] = [];
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
 
     const fileFrame=Generic.createNewFrame(bbox, "file", "", 15, scrMargin.top+5, 450, 100, "地図ファイル");

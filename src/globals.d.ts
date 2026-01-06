@@ -356,8 +356,8 @@ interface IAttrData {
     Get_ObjectNum?: (layer?: number) => number;
     Check_Condition?: (layer?: number, index?: number) => boolean;
     Get_KenObjName?: (layer?: number, index?: number) => string;
-    getSoloMode?: (arg1?: number, arg2?: number) => ISoloModeViewSettings;
-    setSoloMode?: (arg1: number, arg2?: number, arg3?: ISoloModeViewSettings) => void;
+    getSoloMode?: (arg1?: number, arg2?: number) => number;
+    setSoloMode?: (arg1: number, arg2?: number, arg3?: number) => void;
     Get_DataTitle?: (arg1?: number, arg2?: number, arg3?: boolean) => string;
     Get_SelectedDataTitle?: () => string;
     nowGraph?: () => any; // strGraph_Data (clsAttrData.tsで定義)
@@ -481,7 +481,7 @@ interface IAttrData {
     Distance_Kencode_Object?: (objNum1: number, objNum2: number, layNum1: number, layNum2: number) => number;
     Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: IMapData, objCode2: number, time?: strYMD | null) => number;
     getOneObjectPanelLabelString?: (layernum: number, dataNum: number, objNum: number, separatorString: string) => string;
-    getSoloMode?: (layernum: number, dataNum: number) => ISoloModeViewSettings;
+    getSoloMode?: (layernum: number, dataNum: number) => number;
     Set_Acc_First_Position?: () => void;
     Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: ISoloModeViewSettings) => void;
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
@@ -575,7 +575,7 @@ interface ILayerDataInfo {
     ReferenceSystem: number; // enmZahyo_System_Info
     Time: any; // strYMD
     Comment: string;
-    TripTimeSpan: unknown;
+    TripTimeSpan: number; // 移動時間のスパン（数値）
     TripType: number; // enmTripPositionType
     atrObject: IObjectInfo;
     atrData: IAttrDataInfo;
@@ -920,7 +920,7 @@ declare const clsSettingData: {
     Clone(): any;
     [key: string]: any;
 };
-declare const clsTime: unknown;
+declare const clsTime: typeof import('./clsTime').clsTime;
 declare const clsDraw: IClsDraw;
 declare const clsPrint: IClsPrint;
 // frmPrint: AppStateで管理（削除済み）
@@ -938,7 +938,7 @@ declare const TKY2JGD: {
 // logWindow: AppStateで管理（削除済み）
 
 declare let tx: string; // 一時変数
-declare let mnuPropertyWindow: unknown; // 変更される可能性あり
+declare let mnuPropertyWindow: HTMLElement | undefined; // 変更される可能性あり
 declare let fname: string; // 一時変数
 declare let i: number; // ループカウンタ
 declare let j: number; // ループカウンタ
@@ -1318,7 +1318,7 @@ declare class Line_Property {
     Width?: number;
     Color?: colorRGBA;
     Pattern?: number[];
-    Pat?: unknown; // LinePattern関連
+    Pat?: number[]; // LinePattern関連（数値配列）
     Set_Same_ColorWidth_to_LinePat?: (color: colorRGBA, width: number) => void;
     Clone?: () => Line_Property;
     Draw_Fan?: (...args: JsonValue[]) => void;
@@ -1391,7 +1391,22 @@ declare class boundArrangeData {
 }
 
 declare class Setting_Info {
-    [key: string]: unknown;
+    ObjectName_Word_Compatible?: string;
+    KatakanaCheck?: boolean;
+    SinKyuCharacter?: boolean;
+    SetFont?: string;
+    MinimumLineWidth?: number;
+    Printing_Time_Limit?: number;
+    Ido_Kedo_Print_Pattern?: number;
+    Compass_Mark?: number;
+    Compass_Mark_Size?: number;
+    default_Projection?: number;
+    MDRFileHistory?: JsonValue;
+    BackImageSpeed?: number;
+    LegendMinusWord?: string;
+    LegendPlusWord?: string;
+    LegendBlockmodeWord?: string;
+    [key: string]: JsonValue;
     constructor();
     Clone?(): Setting_Info;
 }
@@ -1567,9 +1582,9 @@ declare class clsDrawMarkFan {
     static Draw_Mark_Sample_Box?: (...args: JsonValue[]) => void;
     static Mark_Print?: (...args: JsonValue[]) => void;
 }
-declare const ListBox: unknown;
-declare const CheckedListBox: unknown;
-declare const ListViewTable: unknown;
+declare const ListBox: typeof import('./clsGeneric').ListBox;
+declare const CheckedListBox: typeof import('./clsGeneric').CheckedListBox;
+declare const ListViewTable: typeof import('./clsGeneric').ListViewTable;
 declare function frmPrint_DummyObjectGroup(...args: JsonValue[]): void;
 declare function frmProjectionConvert(...args: JsonValue[]): void;
 declare function frmPrintOption(...args: JsonValue[]): void;
@@ -1608,7 +1623,7 @@ declare function frmMain_SetSeriesMode(...args: JsonValue[]): void;
 declare function frmMain_MarkPosition(...args: JsonValue[]): void;
 declare function frmMain_LayeObjectSelectOne(...args: JsonValue[]): void;
 declare function settingFront(...args: JsonValue[]): void;
-declare const clsSpatialIndexSearch: unknown;
+declare const clsSpatialIndexSearch: typeof import('./SpatialIndexSearch').clsSpatialIndexSearch;
 declare class strFrmCopyObjectName_init_parameter_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function frmCopyObjectName(...args: JsonValue[]): void;
 declare class strOverLay_Dataset_Info { 
@@ -1648,10 +1663,10 @@ declare class Legend2_Atri { [key: string]: JsonValue; constructor(...args: Json
 declare class clsFontSet { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function clsFontSet(...args: JsonValue[]): void;
 declare function clsDrawTileSample(...args: JsonValue[]): void;
-declare const enmBasePosition: unknown;
-declare const enmKenCodeObjectstructure: unknown;
-declare const enmObjectGoupType_Data: unknown;
-declare const enmCondition: unknown;
+declare const enmBasePosition: { readonly [key: string]: number };
+declare const enmKenCodeObjectstructure: { readonly MapObj: number; readonly SyntheticObj: number };
+declare const enmObjectGoupType_Data: { readonly [key: string]: number };
+declare const enmCondition: { readonly [key: string]: number };
 declare const enmDataSource: {
     NoData: number;
     [key: string]: number;
@@ -1660,8 +1675,8 @@ declare const enmPrint_Enable: {
     Printable: number;
     [key: string]: number;
 };
-declare const enmMarkPrintType: unknown;
-declare const enmDivisionMethod: unknown;
+declare const enmMarkPrintType: { readonly [key: string]: number };
+declare const enmDivisionMethod: { readonly [key: string]: number };
 declare const enmPaintColorSettingModeInfo: {
     SoloColor: number;
     [key: string]: number;
@@ -1670,38 +1685,38 @@ declare const enmMarkBlockArrange: {
     Random: number;
     [key: string]: number;
 };
-declare const enmMarkBarShape: unknown;
+declare const enmMarkBarShape: { readonly [key: string]: number };
 declare const enmMarkSizeValueMode: {
     inDataItem: number;
     [key: string]: number;
 };
-declare const enmContourIntervalMode: unknown;
-declare const enmBarLineMaxMinMode: unknown;
-declare const enmMarkMaxValueType: unknown;
-declare const enmInner_Data_Info_Mode: unknown;
+declare const enmContourIntervalMode: { readonly [key: string]: number };
+declare const enmBarLineMaxMinMode: { readonly [key: string]: number };
+declare const enmMarkMaxValueType: { readonly [key: string]: number };
+declare const enmInner_Data_Info_Mode: { readonly [key: string]: number };
 declare const enmClassMode_Meshod: {
     Separated: number;
     [key: string]: number;
 };
-declare const enmEdge_Pattern: unknown;
-declare const enmSeparateClassWords: unknown;
-declare const enmScaleBarPattern: unknown;
-declare const enmGraphMaxSize: unknown;
+declare const enmEdge_Pattern: { readonly [key: string]: number };
+declare const enmSeparateClassWords: { readonly [key: string]: number };
+declare const enmScaleBarPattern: { readonly [key: string]: number };
+declare const enmGraphMaxSize: { readonly [key: string]: number };
 declare const enmStackedBarChart_Direction: {
     Vertical: number;
     [key: string]: number;
 };
-declare const enmBarChartFrameAxePattern: unknown;
-declare const enmMultiEnGraphPattern: unknown;
-declare const enmLatLonLine_Order: unknown;
-declare const enmOutputDevice: unknown;
-declare const enmDrawTiming: unknown;
-declare const enmLineConnect: unknown;
-declare const enmPointOnjectDrawOrder: unknown;
-declare const Quad_Mesh_Info: unknown;
-declare const LineCodeStac_Data: unknown;
-declare const strDefTimeAttDataEach_Info: unknown;
-declare const strDefTimeAttData_Info: unknown;
+declare const enmBarChartFrameAxePattern: { readonly [key: string]: number };
+declare const enmMultiEnGraphPattern: { readonly [key: string]: number };
+declare const enmLatLonLine_Order: { readonly [key: string]: number };
+declare const enmOutputDevice: { readonly [key: string]: number };
+declare const enmDrawTiming: { readonly [key: string]: number };
+declare const enmLineConnect: { readonly [key: string]: number };
+declare const enmPointOnjectDrawOrder: { readonly [key: string]: number };
+declare const Quad_Mesh_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
+declare const LineCodeStac_Data: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
+declare const strDefTimeAttDataEach_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
+declare const strDefTimeAttData_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
 
 interface Zahyo_info {
     Mode: number;
@@ -1732,8 +1747,8 @@ interface strMap_data {
     Time_Mode: boolean;
     Circumscribed_Rectangle: rectangle;
     Zahyo: Zahyo_info;
-    Detail: unknown;
-    MapCompass: unknown;
+    Detail: { DistanceMeasurable?: boolean; ScaleVisible?: boolean; [key: string]: JsonValue };
+    MapCompass: { Position?: point; Visible?: boolean; Mark?: Mark_Property; Font?: Font_Property; dirWord?: { North?: string; East?: string; West?: string; South?: string; }; [key: string]: JsonValue };
 }
 declare const strMap_data: {
     new(): strMap_data;
@@ -1794,7 +1809,7 @@ declare const enmPrintMouseMode: {
     MultiObjectSelect: 12;
 };
 
-declare const TKY2JGDInfo: unknown;
+declare const TKY2JGDInfo: { new(): any; Tokyo97toITRF94: (latlonP: latlon) => latlon; ITRF94toTokyo97: (latlonP: latlon) => latlon; [key: string]: any };
 
 
 
@@ -1827,7 +1842,7 @@ interface HTMLInputElement {
     preValue?: string | number;
     setNumberValue?: (value: number) => void;
     btnDisabled?: (disabled: boolean) => void;
-    numberCheck?: unknown;
+    numberCheck?: boolean;
 }
 
 interface HTMLDivElement {
@@ -1835,7 +1850,7 @@ interface HTMLDivElement {
     selected?: boolean;
     setTitle?: (title: string) => void;
     setVisibility?: (visible: boolean) => void;
-    panel?: unknown;
+    panel?: HTMLElement;
     name?: string;
     sizeFixed?: boolean;
     relativeSize?: size;
@@ -1850,9 +1865,9 @@ interface HTMLElement {
     removeOne?: () => void;
     getVisibility?: () => boolean;
     btnDisabled?: (disabled: boolean) => void;
-    inPic?: unknown;
-    inTxt?: unknown;
-    numberCheck?: unknown;
+    inPic?: HTMLElement;
+    inTxt?: HTMLElement;
+    numberCheck?: boolean;
     getText?: () => string;
     getValue?: () => string | number | unknown;
     setSelectText?: (text: string) => void;
@@ -1874,7 +1889,7 @@ interface HTMLSelectElement {
     addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
     getValue?: () => string | number | unknown;
     getText?: () => string;
-    oldSel?: unknown;
+    oldSel?: number;
     setSelectValue?: (value: string | number) => void;
     tooltip?: string;
     setSelectText?: (text: string) => void;
@@ -1885,11 +1900,11 @@ interface HTMLSelectElement {
 declare function Check_Print_err(): void;
 
 // Shapefile class
-declare const clsShapefile: unknown;
+declare const clsShapefile: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
 
 // Additional global variables
-declare let picMark: unknown; // 変更される可能性あり
-declare let lstDummyItem: unknown; // 変更される可能性あり
+declare let picMark: HTMLElement | undefined; // 変更される可能性あり
+declare let lstDummyItem: HTMLElement | undefined; // 変更される可能性あり
 
 // Array extensions
 interface Array<T> {
@@ -2246,73 +2261,73 @@ declare const chvValue_on_twoValue: {
 };
 
 // strScale_Attri型
-declare const strScale_Attri: unknown;
+declare const strScale_Attri: { new(): any; [key: string]: JsonValue };
 
 // clsAttrData.ts の関数コンストラクタ型
-declare const strDegreeMinuteSeconde: unknown;
-declare const strLatLonDegreeMinuteSecond: unknown;
-declare const Start_End_Time_data: unknown;
-declare const strContourData: unknown;
-declare const strMeshPaint: unknown;
-declare const strMesh3DPaint: unknown;
-declare const strLayerData: unknown;
-declare const strLabelDummyData: unknown;
-declare const strLabel_Data: unknown;
-declare const strGraphData: unknown;
-declare const strLabel_Attri: unknown;
-declare const strGraph_Attri: unknown;
-declare const strOverLay_Attri: unknown;
-declare const strTotalData: unknown;
-declare const strLinkURL: unknown;
-declare const strDataTile: unknown;
-declare const strDataTileList: unknown;
-declare const strDataObject: unknown;
-declare const strDataTitle: unknown;
-declare const strDataEdit: unknown;
-declare const strDataEditRow: unknown;
-declare const strDataEditCell: unknown;
-declare const strCategoryData: unknown;
-declare const strMaskData: unknown;
-declare const strMPLine: unknown;
-declare const strMPLineSub: unknown;
-declare const strDataStatistics: unknown;
-declare const strLegend_Attri: unknown;
-declare const strPrint_Mode: unknown;
-declare const strSoloData: unknown;
-declare const strSeriesData: unknown;
-declare const strOverlayData: unknown;
-declare const strPaintModeData: unknown;
-declare const strMarkData: unknown;
-declare const strBarData: unknown;
-declare const strPieData: unknown;
-declare const strFlowData: unknown;
-declare const strTileMarkData: unknown;
-declare const strTimeData: unknown;
-declare const strViewStyle: unknown;
-declare const strScreenData: unknown;
-declare const strMapLegend: unknown;
-declare const strMapTitle: unknown;
-declare const strMapScale: unknown;
-declare const strMapNorth: unknown;
-declare const strGridLine: unknown;
-declare const strBackGround: unknown;
-declare const strMapOverLay: unknown;
-declare const strCondition: unknown;
-declare const strConditionItem: unknown;
-declare const strConditionValue: unknown;
-declare const strPointObject: unknown;
-declare const strPolyObject: unknown;
-declare const strLineObject: unknown;
-declare const strObjectGroup: unknown;
-declare const strAttrValue: unknown;
-declare const strThreeD_Mode: unknown;
-declare const strPrintFooter: unknown;
-declare const strPrintHeader: unknown;
-declare const strMapPrint: unknown;
-declare const strColorPalette: unknown;
-declare const strDivideValue: unknown;
-declare const strTripObjData_Info: unknown;
-declare const strObjectKindUsed_Info: unknown;
+declare const strDegreeMinuteSeconde: { new(...args: any[]): any; [key: string]: JsonValue };
+declare const strLatLonDegreeMinuteSecond: { new(...args: any[]): any; [key: string]: JsonValue };
+declare const Start_End_Time_data: { new(): any; StartTime?: any; EndTime?: any; [key: string]: JsonValue };
+declare const strContourData: { new(): any; [key: string]: JsonValue };
+declare const strMeshPaint: { new(): any; [key: string]: JsonValue };
+declare const strMesh3DPaint: { new(): any; [key: string]: JsonValue };
+declare const strLayerData: { new(): any; [key: string]: JsonValue };
+declare const strLabelDummyData: { new(): any; [key: string]: JsonValue };
+declare const strLabel_Data: { new(): any; [key: string]: JsonValue };
+declare const strGraphData: { new(): any; [key: string]: JsonValue };
+declare const strLabel_Attri: { new(): any; [key: string]: JsonValue };
+declare const strGraph_Attri: { new(): any; [key: string]: JsonValue };
+declare const strOverLay_Attri: { new(): any; [key: string]: JsonValue };
+declare const strTotalData: { new(): any; [key: string]: JsonValue };
+declare const strLinkURL: { new(): any; [key: string]: JsonValue };
+declare const strDataTile: { new(): any; [key: string]: JsonValue };
+declare const strDataTileList: { new(): any; [key: string]: JsonValue };
+declare const strDataObject: { new(): any; [key: string]: JsonValue };
+declare const strDataTitle: { new(): any; [key: string]: JsonValue };
+declare const strDataEdit: { new(): any; [key: string]: JsonValue };
+declare const strDataEditRow: { new(): any; [key: string]: JsonValue };
+declare const strDataEditCell: { new(): any; [key: string]: JsonValue };
+declare const strCategoryData: { new(): any; [key: string]: JsonValue };
+declare const strMaskData: { new(): any; [key: string]: JsonValue };
+declare const strMPLine: { new(): any; [key: string]: JsonValue };
+declare const strMPLineSub: { new(): any; [key: string]: JsonValue };
+declare const strDataStatistics: { new(): any; [key: string]: JsonValue };
+declare const strLegend_Attri: { new(): any; [key: string]: JsonValue };
+declare const strPrint_Mode: { new(): any; [key: string]: JsonValue };
+declare const strSoloData: { new(): any; [key: string]: JsonValue };
+declare const strSeriesData: { new(): any; [key: string]: JsonValue };
+declare const strOverlayData: { new(): any; [key: string]: JsonValue };
+declare const strPaintModeData: { new(): any; [key: string]: JsonValue };
+declare const strMarkData: { new(): any; [key: string]: JsonValue };
+declare const strBarData: { new(): any; [key: string]: JsonValue };
+declare const strPieData: { new(): any; [key: string]: JsonValue };
+declare const strFlowData: { new(): any; [key: string]: JsonValue };
+declare const strTileMarkData: { new(): any; [key: string]: JsonValue };
+declare const strTimeData: { new(): any; [key: string]: JsonValue };
+declare const strViewStyle: { new(): any; [key: string]: JsonValue };
+declare const strScreenData: { new(): any; [key: string]: JsonValue };
+declare const strMapLegend: { new(): any; [key: string]: JsonValue };
+declare const strMapTitle: { new(): any; [key: string]: JsonValue };
+declare const strMapScale: { new(): any; [key: string]: JsonValue };
+declare const strMapNorth: { new(): any; [key: string]: JsonValue };
+declare const strGridLine: { new(): any; [key: string]: JsonValue };
+declare const strBackGround: { new(): any; [key: string]: JsonValue };
+declare const strMapOverLay: { new(): any; [key: string]: JsonValue };
+declare const strCondition: { new(): any; [key: string]: JsonValue };
+declare const strConditionItem: { new(): any; [key: string]: JsonValue };
+declare const strConditionValue: { new(): any; [key: string]: JsonValue };
+declare const strPointObject: { new(): any; [key: string]: JsonValue };
+declare const strPolyObject: { new(): any; [key: string]: JsonValue };
+declare const strLineObject: { new(): any; [key: string]: JsonValue };
+declare const strObjectGroup: { new(): any; [key: string]: JsonValue };
+declare const strAttrValue: { new(): any; [key: string]: JsonValue };
+declare const strThreeD_Mode: { new(): any; [key: string]: JsonValue };
+declare const strPrintFooter: { new(): any; [key: string]: JsonValue };
+declare const strPrintHeader: { new(): any; [key: string]: JsonValue };
+declare const strMapPrint: { new(): any; [key: string]: JsonValue };
+declare const strColorPalette: { new(): any; [key: string]: JsonValue };
+declare const strDivideValue: { new(): any; [key: string]: JsonValue };
+declare const strTripObjData_Info: { new(): any; [key: string]: JsonValue };
+declare const strObjectKindUsed_Info: { new(): any; [key: string]: JsonValue };
 
 // Map静的プロパティ拡張
 interface MapConstructor {
@@ -2349,7 +2364,7 @@ interface MapFileInfo {
     name: string;
     path?: string;
     type: 'mpfj' | 'mdrj' | 'mdrmj' | 'csv';
-    data?: unknown;
+    data?: JsonValue;
 }
 
 /**
@@ -2381,7 +2396,7 @@ interface LayerInfo {
     id: string | number;
     name: string;
     visible: boolean;
-    data?: unknown;
+    data?: JsonValue;
 }
 
 /**
