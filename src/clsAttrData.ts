@@ -4907,8 +4907,8 @@ class clsAttrData {
         }
         function cnvStart_End_Time_data(ot: JsonObject) {
             const nt = new Start_End_Time_data();
-            nt.StartTime = new strYMD(ot.StartTime as JsonObject);
-            nt.EndTime = new strYMD(ot.EndTime as JsonObject);
+            nt.StartTime = new strYMD(ot.StartTime as strYMD);
+            nt.EndTime = new strYMD(ot.EndTime as strYMD);
             return nt;
         }
         function cnvTime(oldT: JsonObject) {
@@ -5679,7 +5679,7 @@ class clsAttrData {
     }
 
     /**オブジェクトからオブジェクトコードを返す。見つからない場合は-1を返す Timeは地図ファイル指定の場合     */
-    Get_ObjectCode_from_ObjName(Layernum_MapfileName: JsonValue, ObjName: string, Time: number): number {
+    Get_ObjectCode_from_ObjName(Layernum_MapfileName: JsonValue, ObjName: string, Time: strYMD): number {
         if(typeof(Layernum_MapfileName)==="string"){//地図ファイル指定
             const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
             return MapFileObjectNameSearch.Get_KenToCode(ObjName, Time);
@@ -5730,7 +5730,7 @@ class clsAttrData {
             let code: number | undefined;
             switch (LayerReadingType) {
                 case (enmLayerType.Normal): {
-                    code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time as JsonObject);
+                    code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time as strYMD);
                     if (code == -1) {
                         No_Object_Name.push(OBName);
                     } else if (code !== undefined) {
@@ -7815,7 +7815,7 @@ class clsAttrData {
         }
 
     }
-    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: number, LayerSystem: number, comment: string, ObjectNum: number, ObjData: JsonValue): void {
+    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: JsonValue): void {
         //レイヤの追加
         const NewL = new strLayerDataInfo();
         if (LayerMapFile == "") {
