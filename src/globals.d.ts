@@ -440,7 +440,7 @@ interface IAttrData {
     Check_Enable_SoloMode?: (soloMode?: ISoloModeViewSettings, layernum?: number, dataNum?: number) => boolean;
     Get_CategolyArray?: (layer?: number, data?: number) => unknown[];
     Get_Categoly?: (layer?: number, data?: number, index?: number) => unknown;
-    Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], scrData?: Screen_info, tile?: Tile_Property) => void;
+    Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], nPolyP: number[], tile: Tile_Property) => void;
     Get_InnerTile?: (layer?: number, object?: number, arg3?: Screen_info) => Tile_Property;
     Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;
     Get_DataMin?: (layer?: number, data?: number) => number;

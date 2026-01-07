@@ -1165,7 +1165,7 @@ export class clsAccessory {
                 tri.push(new point(OP.x + BarSize.width / 2, OP.y));
                 tri.push(new point(OP.x, OP.y - BarSize.height));
                 tri.push(tri[0].Clone());
-                state.attrData.Draw_Poly_Inner(g, tri, 4, Tile);
+                state.attrData.Draw_Poly_Inner(g, tri, [4], Tile);
                 state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, tri);
                 break;
             }
@@ -1173,12 +1173,12 @@ export class clsAccessory {
                 if (Bar_Md.ThreeD == true) {
                     const Ptile = Tile.Clone();
                     Ptile.Color = Generic.GetColorArrange(Tile.Color, 100);
-                    state.attrData.Draw_Poly_Inner(g, poly, 5, Ptile);
+                    state.attrData.Draw_Poly_Inner(g, poly, [5], Ptile);
                     state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly);
 
                     const Ptile2 = Tile.Clone();
                     Ptile2.Color = Generic.GetColorArrange(Tile.Color, -100);
-                    state.attrData.Draw_Poly_Inner(g, poly2, 5, Ptile2);
+                    state.attrData.Draw_Poly_Inner(g, poly2, [5], Ptile2);
                     state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly2);
                 }
                 state.attrData.Draw_Tile_Box(g, barrect, Bar_Md.FrameLinePat, Tile, 0);

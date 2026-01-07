@@ -3572,7 +3572,7 @@ class clsAttrData {
         }
     }
 
-    Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number, T: Tile_Property): void {
+    Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], T: Tile_Property): void {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
