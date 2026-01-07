@@ -2726,11 +2726,14 @@ class clsAttrData {
                                     if (this.Get_DataType(Layernum, DataNum) == enmAttDataType.Normal) {
                                         for (let i = 0; i < laydata.SoloModeViewSettings.Div_Num - 1; i++) {
                                             const v = laydata.SoloModeViewSettings.Class_Div[i].Value;
-                                            if ((v > DataMax) || (v < DataMin)) {
+                                            const numV = typeof v === 'number' ? v : parseFloat(String(v));
+                                            if ((numV > DataMax) || (numV < DataMin)) {
                                                 ef = 2;
                                             }
                                             if (i != 0) {
-                                                if (laydata.SoloModeViewSettings.Class_Div[i - 1].Value <= v) {
+                                                const prevV = laydata.SoloModeViewSettings.Class_Div[i - 1].Value;
+                                                const numPrevV = typeof prevV === 'number' ? prevV : parseFloat(String(prevV));
+                                                if (numPrevV <= numV) {
                                                     ef = 1;
                                                 }
                                             }
@@ -6786,25 +6789,26 @@ class clsAttrData {
                                 }
                                 default:{
                                     const av = Math.floor(V);
+                                    const valNum = parseFloat(tdcc.Val);
                                     f = false;
                                     switch (tdcc.Condition) {
                                         case enmCondition.Less:
-                                            if (av < tdcc.Val) { f = true }
+                                            if (av < valNum) { f = true }
                                             break;
                                         case enmCondition.LessEqual:
-                                            if (av <= tdcc.Val) { f = true }
+                                            if (av <= valNum) { f = true }
                                             break;
                                         case enmCondition.Equal:
-                                            if (av == tdcc.Val) { f = true }
+                                            if (av == valNum) { f = true }
                                             break;
                                         case enmCondition.GreaterEqual:
-                                            if (av >= tdcc.Val) { f = true }
+                                            if (av >= valNum) { f = true }
                                             break;
                                         case enmCondition.Greater:
-                                            if (av > tdcc.Val) { f = true }
+                                            if (av > valNum) { f = true }
                                             break;
                                         case enmCondition.NotEqual:
-                                            if (av != tdcc.Val) { f = true }
+                                            if (av != valNum) { f = true }
                                             break;
                                         case enmCondition.Include:
                                             if (V.indexOf(tdcc.Val) != -1) { f = true }
@@ -7299,12 +7303,13 @@ class clsAttrData {
     //複数グラデーション
     FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: JsonValue, col: JsonValue): void {
         let ColData = [];// colorARGB
+        const gradPoint = Number(GradationPoint4);
 
-        if (Color_cng_n == GradationPoint4) { return; }
+        if (Color_cng_n == gradPoint) { return; }
 
         const sv = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
-        if (Color_cng_n < GradationPoint4) {
-            const n = GradationPoint4 + 1;
+        if (Color_cng_n < gradPoint) {
+            const n = gradPoint + 1;
             ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color1 as colorRGBA, col, Color_cng_n + 1);
             for (let i = 0; i < Color_cng_n; i++) {
                 sv.Class_Div[i].PaintColor = ColData[i] as colorRGBA;
@@ -7314,10 +7319,10 @@ class clsAttrData {
                 sv.Class_Div[i].PaintColor = ColData[i - Color_cng_n] as colorRGBA;
             }
         } else {
-            let n = Color_cng_n - GradationPoint4 + 1;
+            let n = Color_cng_n - gradPoint + 1;
             ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color3 as colorRGBA, col, n);
             for (let i = 0; i < n; i++) {
-                sv.Class_Div[GradationPoint4 + i].PaintColor = ColData[i] as colorRGBA;
+                sv.Class_Div[gradPoint + i].PaintColor = ColData[i] as colorRGBA;
             }
             n = sv.Div_Num - Color_cng_n;
             ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color2 as colorRGBA, n);
@@ -7772,7 +7777,7 @@ class clsAttrData {
                 seriesData[1] = Number("重ね合わせ表示モード".length); // Convert to number
                 let T = over.DataSet[over.SelectedIndex].title;
                 if (T == "") {
-                    T = "データセット" + Number(di.Data + 1);
+                    T = "データセット" + Number(Number(di.Data) + 1);
                 }
                 seriesData[2] = Number(T.length);
                 seriesData[3] = 0; // Convert empty string to number
@@ -7788,7 +7793,7 @@ class clsAttrData {
                         seriesData[2] = "グラフ表示".length; // Convert string to number
                         let T = this.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.Data].title;
                         if (T == "") {
-                            T = "データセット" + String(di.Data + 1);
+                            T = "データセット" + String(Number(di.Data) + 1);
                         }
                         seriesData[3] = T;
                         break;
@@ -7797,7 +7802,7 @@ class clsAttrData {
                         seriesData[2] = "ラベル表示".length; // Convert string to number
                         let T = this.LayerData[di.Layer].LayerModeViewSettings.LabelMode.DataSet[di.Data].title;
                         if (T == "") {
-                            T = "データセット" + String(di.Data + 1);
+                            T = "データセット" + String(Number(di.Data) + 1);
                         }
                         seriesData[3] = T;
                         break;

@@ -730,13 +730,14 @@ class clsPrint {
         for (let i = 0; i < Objn; i++) {
             if ((ShowF[i] == true) && (Missing_DataArray[i] == false)) {
                 const v = MV_Array[i];
-                SortV.Add(v);
+                const vNum = Number(v);
+                SortV.Add(vNum);
                 inObjectList[inObjN] = i;
-                Add += v;
-                Add2 += +v * v;
-                maxV = Math.max(maxV, v);
-                minV = Math.min(minV, v);
-                const retv = Generic.Figure_Arrange(v);
+                Add += vNum;
+                Add2 += vNum * vNum;
+                maxV = Math.max(maxV, vNum);
+                minV = Math.min(minV, vNum);
+                const retv = Generic.Figure_Arrange(vNum);
                 BeforeDecimal = Math.max(BeforeDecimal, retv.BeforeDecimal);
                 AfterDecimal = Math.max(AfterDecimal, retv.AfterDecimal);
                 inObjN++;
@@ -2776,7 +2777,7 @@ console.log(SortSumDataValue)
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             if((state.attrData.Check_Condition(LayerNum, i) == true) && (
                 (Missing_DataArray[i] == false) || (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag == true))) {
-                const MV = MV_Array[i];
+                const MV = Number(MV_Array[i]);
                 const Block_n = parseInt((Math.abs(MV) / mbmd.Value).toString());
                 const Hasu = Math.abs(MV) - (mbmd.Value * Block_n);
                 const Hasu_R = state.attrData.Radius(mbmd.Mark.WordFont.Size, Hasu, mbmd.Value);

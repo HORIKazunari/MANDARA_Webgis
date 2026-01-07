@@ -4329,7 +4329,7 @@ class scrollBar {
     let mdownF = false;
     let sliderInPosition: number;//-1,0,1
     let mDownsliderInPosition: number;
-    let mdownPos: point | undefined;
+    let mdownPos: number | undefined;
     function mdown(event: MouseEvent) {
         let e;
         if (event.type === "mousedown") {
@@ -4348,7 +4348,8 @@ class scrollBar {
         if (type == 0) {//縦
             // mdownPos = p.y;
             const p1 = slider.style.top.removePx();
-            if ((p1 < mdownPos) && (mdownPos < p1 + slider.clientHeight)) {
+            const pos = mdownPos ?? 0;
+            if ((p1 < pos) && (pos < p1 + slider.clientHeight)) {
                 sliderInPosition = 0;
                 mDownsliderInPosition = slider.style.top.removePx();
             } else if (p1 < mdownPos) {
@@ -4359,7 +4360,8 @@ class scrollBar {
         } else {//横
             // mdownPos = p.x;
             const p1 = slider.style.left.removePx();
-            if ((p1 < mdownPos) && (mdownPos < p1 + slider.clientWidth)) {
+            const pos = mdownPos ?? 0;
+            if ((p1 < pos) && (pos < p1 + slider.clientWidth)) {
                 sliderInPosition = 0;
                 mDownsliderInPosition = slider.style.left.removePx();
             } else if (p1 < mdownPos) {

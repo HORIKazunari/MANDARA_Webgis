@@ -1826,7 +1826,8 @@ function setting(locSearch: string) {
             const ph = picClassBoxHeight;
             pnlClassDiv.style.height = (ph * div_num + 2).px();
             //不足するpicClassBoxを追加
-            for (let i = pnlClassDiv.inPic; i < div_num; i++) {
+            const pnlWithProps = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+            for (let i = pnlWithProps.inPic ?? 0; i < div_num; i++) {
                 const cbox = Generic.createNewCanvas(pnlClassDiv,  "picClassBox" + i,"", 0, i * picClassBoxHeight, picClassBoxWidth, picClassBoxHeight,undefined, "border:solid 1px");
                 cbox.tag = i;
                 cbox.onclick = function (e: MouseEvent) {
@@ -1865,7 +1866,7 @@ function setting(locSearch: string) {
                 txtNum--;
             }
             const txtStyle = "border:solid 1px;height:" + picClassBoxHeight.px();
-            for (let i = pnlClassDiv.inTxt; i < txtNum; i++) {
+            for (let i = (pnlClassDiv as any).inTxt; i < txtNum; i++) {
                 const txele=Generic.createNewNumberInput(pnlClassDiv,0,"txtClassValue" + i,picClassBoxWidth + 2, i * picClassBoxHeight, txtClassValueWidth,txeleOnChange,txtStyle);
                 txele.ondragstart = function (e: DragEvent) {
                     if (!e.dataTransfer || !e.target) { return; }
@@ -1876,8 +1877,8 @@ function setting(locSearch: string) {
                     //カテゴリーデータの場合、他のカテゴリーをドロップ
                     if (!e.dataTransfer || !e.target) { return; }
                     const oele = doc.getElementById("txtClassValue" + String(e.dataTransfer.getData('abc')));
-                    const dragN = oele.tag;
-                    const dropN = (e.target as HTMLElement).tag;
+                    const dragN = Number(oele.tag);
+                    const dropN = Number((e.target as HTMLElement).tag);
                     if(dropN == dragN) { return; }
                     const Layernum = attrData.TotalData.LV1.SelectedLayer;
                     const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -1936,18 +1937,19 @@ function setting(locSearch: string) {
                 }
             }
             //余ったpicClassBoxとtxtClassValueを削除
-            for (let i = div_num; i < pnlClassDiv.inPic; i++) {
+            const pnlWithProps = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+            for (let i = div_num; i < (pnlWithProps.inPic ?? 0); i++) {
                 const cbox = doc.getElementById( "picClassBox" + i);
                 cbox.parentNode.removeChild(cbox);
                 const fbox = doc.getElementById("freqBox" + i);
                 fbox.parentNode.removeChild(fbox);
             }
-            for (let i = txtNum; i < pnlClassDiv.inTxt; i++) {
+            for (let i = txtNum; i < (pnlWithProps.inTxt ?? 0); i++) {
                 const txele = doc.getElementById( "txtClassValue" + i);
                 txele.parentNode.removeChild(txele);
             }
-            pnlClassDiv.inPic = div_num;
-            pnlClassDiv.inTxt = txtNum;
+            pnlWithProps.inPic = div_num;
+            pnlWithProps.inTxt = txtNum;
 
             SetPictureBox();
             SetPicClassBoxCursol();
@@ -2482,8 +2484,9 @@ function setting(locSearch: string) {
 
         const pnlClassDivBase = Generic.createNewDiv(classView, "", "pnlClassDivBase", "", 150, 20, allW + 20, 350, "background-color:#f0f0f0;overflow-y: scroll", "");
         const pnlClassDiv = Generic.createNewDiv(pnlClassDivBase, "", "pnlClassDiv", "", 0, 0, allW, 300, "overflow:hidden", "");
-        pnlClassDiv.inPic = 0;//pnlClassDiv内部の色と息栖とボックスの数を記録
-        pnlClassDiv.inTxt = 0;
+        const pnlWithProps = pnlClassDiv as HTMLElement & { inPic: number; inTxt: number };
+        pnlWithProps.inPic = 0;//pnlClassDiv内部の色と息栖とボックスの数を記録
+        pnlWithProps.inTxt = 0;
         //ペイントモード：色設定方法
         const gbClassPaint = Generic.createNewFrame(classView, "gbClassPaint", "", 0, 115, 140, 160, "色設定方法");
         const PaintColorSettingModeList = [{ value: enmPaintColorSettingModeInfo.twoColor, text: "2色グラデーション" },

@@ -1190,7 +1190,7 @@ class clsTileMap {
         return TileXY;
     }
 
-    Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): JsonObject {
+    Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): JsonArray {
 
         const FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
         const StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
