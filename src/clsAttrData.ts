@@ -6552,7 +6552,7 @@ class clsAttrData {
         }
     }
 
-    Add_One_Data_Value(Layernum: number, TTL: string, UNT: string, Note: string, Dn_Val_str: string, Missing_F: boolean): void {
+    Add_One_Data_Value(Layernum: number, TTL: string, UNT: string, Note: string, Dn_Val_str: (string | number | undefined)[], Missing_F: boolean): boolean {
 
         if(TTL == null){TTL=""}
         if(UNT == null){UNT=""}

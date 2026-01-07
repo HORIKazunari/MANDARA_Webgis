@@ -913,7 +913,7 @@ function setting(locSearch: string) {
     //白地図初期属性データ
     function mnuMapViewer(): void {
         mapViewer(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]): void {
+        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]): void {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Viwer;

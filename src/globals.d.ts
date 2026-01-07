@@ -10,7 +10,7 @@ type ListItem = { value: string | number; text: string };
 // メニューアイテムの型定義（ポップアップメニューで使用）
 interface MenuItem {
     caption: string;
-    event?: (() => void) | ((data: MenuItem, e?: Event) => void);
+    event?: (() => void) | ((data: MenuItem, e?: Event) => void) | ((e: MouseEvent) => void);
     enabled?: boolean;
     checked?: boolean;
     tag?: string;
