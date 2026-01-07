@@ -766,7 +766,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトグループのオブジェクトを抽出して配列に取得(時間指定)
-    Get_Objects_by_Group(ObjGroup: number, Time: number) {
+    Get_Objects_by_Group(ObjGroup: number, Time: strYMD) {
         const Get_Objects = [];
         for (let i = 0; i < this.Map.Kend; i++) {
             if (this.MPObj[i].Kind == ObjGroup) {
@@ -1019,7 +1019,7 @@ class clsMapdata {
         }
     }
     //オブジェクトの重心を求める。面形状でない場合はundefinedを返す
-    GetObjGraviityXY(ObjData: strObj_Data, L_Time: number) {
+    GetObjGraviityXY(ObjData: strObj_Data, L_Time: strYMD) {
         if (ObjData.Shape != enmShape.PolygonShape) {
             //ポリゴンでない場合は求めない
             return undefined;
@@ -1196,7 +1196,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange(ObjData_objNum: number, Time: number) {
+    Boundary_Arrange(ObjData_objNum: number, Time: strYMD) {
         const ELine = this.Get_EnableMPLine(ObjData_objNum, Time)
         const boundArrange = this.Boundary_Arrange_Sub(ELine);
         return boundArrange;
@@ -1244,7 +1244,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトの面積を重心付きで返す
-    Menseki(ObjData: strObj_Data,  L_Time: number) {
+    Menseki(ObjData: strObj_Data,  L_Time: strYMD) {
         const badata = this.Boundary_Arrange(ObjData, L_Time);
         if (badata.Pon <= 0) {
             return -1;
@@ -1363,7 +1363,7 @@ class clsMapdata {
     }
 
     //ある地点がオブジェクトの外接四角形に入るかどうかを調べ、さらに面オブジェクトの中かどうかを調べる
-    Check_Point_in_OneObject(Obj_ObjNumber: number | strObj_Data, x: number, y: number, LAY_Time: number) {
+    Check_Point_in_OneObject(Obj_ObjNumber: number | strObj_Data, x: number, y: number, LAY_Time: strYMD) {
         let obj;
         if ((typeof Obj_ObjNumber) === 'number') {
             obj = this.MPObj[Obj_ObjNumber];
@@ -1581,7 +1581,7 @@ class clsMapdata {
     }
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン番号を返す
-    Get_EnableMPLine(ObjData_objNum: number, Time: number) {
+    Get_EnableMPLine(ObjData_objNum: number, Time: strYMD) {
         let ObjData;
         if ((ObjData_objNum instanceof strObj_Data) == false) {
             ObjData = this.MPObj[ObjData_objNum];
@@ -1609,13 +1609,13 @@ class clsMapdata {
     }
 
     //集成オブジェクトを構成する元のオブジェクト番号を取得
-    Get_MpObj_used_AggregateObject(ObjData: strObj_Data, Time: number) {
+    Get_MpObj_used_AggregateObject(ObjData: strObj_Data, Time: strYMD) {
         this.Enable_MPObjStac = [];
         this.Get_MpObj_used_AggregateObject_Sub(ObjData, Time)
         return this.Enable_MPObjStac;
     }
     //集成オブジェクトを構成する元のオブジェクト番号を取得、再帰処理を行う
-    Get_MpObj_used_AggregateObject_Sub(ObjData: strObj_Data, Time: number) {
+    Get_MpObj_used_AggregateObject_Sub(ObjData: strObj_Data, Time: strYMD) {
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             const lc = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time)
             if (lc != -1) {
@@ -1631,7 +1631,7 @@ class clsMapdata {
     }
 
     //ラインコードスタックのラインが指定時期に利用できるかをチェック、利用できる場合はラインコード番号を返し，そうでない場合は－１を返す
-    Check_Enable_LineCode(Lcode_Stac: number[], Time: clsTime) {
+    Check_Enable_LineCode(Lcode_Stac: number[], Time: strYMD) {
         if ((Lcode_Stac.NumOfTime == 0) || (Time.nullFlag() == true)) {
             return Lcode_Stac.LineCode;
         } else {
@@ -1644,7 +1644,7 @@ class clsMapdata {
         return -1;
     }
     //ラインが指定時期に利用できるかをチェック,利用できる場合は線種番号そうでない場合は-1を返す
-    Check_Enable_Line(MpLine: strLine_Data, Check_Time: clsTime) {
+    Check_Enable_Line(MpLine: strLine_Data, Check_Time: strYMD) {
         let L_K = -1;
         if (Check_Time.nullFlag() == true) {
             L_K = MpLine.LineTimeSTC[0].Kind;
@@ -1660,7 +1660,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトで、指定した時間に利用できるライン番号を戻し、その要素を返す
-    Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: clsTime) {
+    Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: strYMD) {
         const Enable_LCode = [];
         if (Time.nullFlag() == true) {
             for (let i = 0; i < ObjData.NumOfLine; i++) {
@@ -1707,7 +1707,7 @@ class clsMapdata {
 
 
     //指定した時間に指定したオブジェクトが存在する場合trueを返す
-    CheckEnableObject(ObjData: strObj_Data, Time: number) {
+    CheckEnableObject(ObjData: strObj_Data, Time: strYMD) {
         for (let i = 0; i < ObjData.NumOfNameTime; i++) {
             if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) == true) {
                 return true;
@@ -2703,10 +2703,10 @@ class clsMapdata {
     // </summary>
     // <param name="ObjData">オブジェクト</param>
     // <param name="L_Time"></param>
-    // <param name="CutPoint">切れ目の地図座標（戻り値）</param>
+    // <param name="CutPoint">切れ目の地図座標(戻り値)</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_PolyShape_PolygonNum( ObjData: JsonObject ,  L_Time: number ,  CutPoint: JsonObject | undefined  = undefined) {
+    Check_PolyShape_PolygonNum( ObjData: JsonObject ,  L_Time: strYMD ,  CutPoint: JsonObject | undefined  = undefined) {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;
