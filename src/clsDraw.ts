@@ -1041,11 +1041,11 @@ class clsTileMap {
         const p2 = spatial.Get_Reverse_XY(new point(iRect.right, iRect.bottom), MapZahyo);
         ScrLatLonBox.SouthEast = spatial.Get_World_IdoKedo(p2, MapZahyo);
 
-        if (ScrLatLonBox.NorthWest.Latitude > 85) {
-            ScrLatLonBox.NorthWest.Latitude = 85;
+        if (ScrLatLonBox.NorthWest.lat > 85) {
+            ScrLatLonBox.NorthWest.lat = 85;
         }
-        if (ScrLatLonBox.SouthEast.Latitude < -85) {
-            ScrLatLonBox.SouthEast.Latitude = -85;
+        if (ScrLatLonBox.SouthEast.lat < -85) {
+            ScrLatLonBox.SouthEast.lat = -85;
         }
 
         const ZoomMin = (TileMap.opt as JsonObject).minZoom as number;

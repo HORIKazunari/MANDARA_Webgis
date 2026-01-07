@@ -6753,6 +6753,8 @@ class clsAttrData {
                                 case enmAttDataType.Category:
                                 case enmAttDataType.Strings:{
                                     f = false;
+                                    const strV = String(V);
+                                    const strVal = String(tdcc.Val);
                                     switch (tdcc.Condition) {
                                         case enmCondition.Less:
                                             if (V < tdcc.Val) { f = true }
@@ -6773,16 +6775,16 @@ class clsAttrData {
                                             if (V != tdcc.Val) { f = true }
                                             break;
                                         case enmCondition.Include:
-                                            if (V.indexOf(tdcc.Val) != -1) { f = true }
+                                            if (strV.indexOf(strVal) != -1) { f = true }
                                             break;
                                         case enmCondition.Exclude:
-                                            if (V.IndexOf(tdcc.Val) == -1) { f = true }
+                                            if (strV.indexOf(strVal) == -1) { f = true }
                                             break;
                                         case enmCondition.Head:
-                                            if ((V.left(tdcc.Val.length)) == tdcc.Val) { f = true }
+                                            if (strV.substring(0, strVal.length) == strVal) { f = true }
                                             break;
                                         case enmCondition.Foot:
-                                            if (V.right(tdcc.Val.length) == tdcc.Val) { f = true }
+                                            if (strV.substring(strV.length - strVal.length) == strVal) { f = true }
                                             break;
                                     }
                                     break;
@@ -6811,16 +6813,16 @@ class clsAttrData {
                                             if (av != valNum) { f = true }
                                             break;
                                         case enmCondition.Include:
-                                            if (V.indexOf(tdcc.Val) != -1) { f = true }
+                                            if (String(V).indexOf(String(tdcc.Val)) != -1) { f = true }
                                             break;
                                         case enmCondition.Exclude:
-                                            if (V.indexOf(tdcc.Val) == -1) { f = true }
+                                            if (String(V).indexOf(String(tdcc.Val)) == -1) { f = true }
                                             break;
                                         case enmCondition.Head:
-                                            if (V.left(tdcc.Val.length) == tdcc.Val) { f = true }
+                                            if (String(V).substring(0, String(tdcc.Val).length) == String(tdcc.Val)) { f = true }
                                             break;
                                         case enmCondition.Foot:
-                                            if (V.left(tdcc.Val.length) == tdcc.Val) { f = true }
+                                            if (String(V).substring(String(V).length - String(tdcc.Val).length) == String(tdcc.Val)) { f = true }
                                             break;
                                     }
                                     break;
