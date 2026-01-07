@@ -2622,12 +2622,15 @@ class strLayerReadingInfo {
         this.MeshType = enmMesh_Number.mhNonMesh;
     }
 }
-const strSaveLinePat_Info: JsonObject =function(){
-    this. MapNum ;// Integer
-    this. MapFileName=[];//  As String
-    this. LpatNumByMapfile=[];//  As Integer
-    this. Lpat=[];//  As List(Of clsMapData.LineKind_Data)
-}
+
+// 旧コード（未使用）
+// const strSaveLinePat_Info: JsonObject =function(){
+//     this. MapNum ;// Integer
+//     this. MapFileName=[];//  As String
+//     this. LpatNumByMapfile=[];//  As Integer
+//     this. Lpat=[];//  As List(Of clsMapData.LineKind_Data)
+// }
+
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 class clsAttrData {
@@ -3439,7 +3442,8 @@ class clsAttrData {
                         for (let j = 0; j < ELine.length; j++) {
                             Fringe_Line.push(ELine[j].LineCode);
                         }
-                        return this.LayerData[Layernum].MapFileData.Check_Point_in_Polygon_LineCode(MapP.x, MapP.y, ELine.length, Fringe_Line)
+                        const result = this.LayerData[Layernum].MapFileData.Check_Point_in_Polygon_LineCode(MapP.x, MapP.y, ELine);
+                        return result.ok;
                     }
                     break;
                 }
@@ -3579,7 +3583,7 @@ class clsAttrData {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): point {
+    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): boolean | undefined {
         return clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
