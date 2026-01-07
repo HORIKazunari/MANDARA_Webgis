@@ -1753,7 +1753,7 @@ class clsMapdata {
         return PatNum;
     }
     //オブジェクトの初期属性データ取得。時期がはずれてデータが取得できない場合はundefined
-    Get_DefTimeAttrValue(ObjCode: number, defNumber: number, Time: clsTime) {
+    Get_DefTimeAttrValue(ObjCode: number, defNumber: number, Time: strYMD) {
         const ob = this.MPObj[ObjCode];
         const ogp = ob.Kind;
         let Value;
@@ -1905,7 +1905,7 @@ class clsMapdata {
     }
 
     /**オブジェクトの線とある地点との距離を求める */
-    Get_Distance_Between_ObjectLine_and_Point(Ocode: number,  Time: clsTime,  P: point){
+    Get_Distance_Between_ObjectLine_and_Point(Ocode: number,  Time: strYMD,  P: point){
         const ELine=this.Get_EnableMPLine(this.MPObj[Ocode], Time);
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
@@ -2668,7 +2668,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: clsTime, CutPoint: point) {
+    Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: strYMD, CutPoint: point) {
         if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
             //集成オブジェクトタイプの場合
             const OBShape = new Array(3);
@@ -2812,7 +2812,7 @@ class clsMapdata {
         }
     }
     //指定した時間のオブジェクトの代表点を取得、取得できない場合はundefinedを返す
-    Get_Enable_CenterP(ObjInfo: strObj_Data, Time: clsTime) {
+    Get_Enable_CenterP(ObjInfo: number | strObj_Data, Time: strYMD) {
         let ObjData;
         if (typeof ObjInfo === 'number') {
             ObjData = this.MPObj[ObjInfo];
@@ -2890,7 +2890,7 @@ class clsMapdata {
 
     //オブジェクトから、指定した時間のオブジェクト名リストを取得、取得できない場合はundefinedを返す
     //ObjData:strObj_Dataまたはオブジェクト番号
-    Get_Enable_ObjectName(ObjInfo: number | strObj_Data, Time: clsTime, NoDataLastGetF: boolean) {
+    Get_Enable_ObjectName(ObjInfo: number | strObj_Data, Time: strYMD, NoDataLastGetF: boolean) {
     let ObjData;
     if (typeof ObjInfo === 'number') {
         ObjData = this.MPObj[ObjInfo];
