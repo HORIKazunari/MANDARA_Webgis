@@ -10,7 +10,7 @@ type ListItem = { value: string | number; text: string };
 // メニューアイテムの型定義（ポップアップメニューで使用）
 interface MenuItem {
     caption: string;
-    event?: (data: MenuItem, e: Event) => void;
+    event?: (() => void) | ((data: MenuItem, e?: Event) => void);
     enabled?: boolean;
     checked?: boolean;
     tag?: string;
@@ -491,9 +491,9 @@ interface IAttrData {
     // 追加メソッド
     getSeriesDataSetName?: () => string[];
     SeriesMode_to_ListViewData?: (seriesListView: HTMLElement, DataSetItem: ISeriesDatasetInfo) => void;
-    getGraphTitle?: (layernum: number) => { text: string }[];
-    getLabelTitle?: (layernum: number) => { text: string }[];
-    getOverlayTitle?: () => { text: string }[];
+    getGraphTitle?: (layernum: number) => Array<{value: number, text: string}>;
+    getLabelTitle?: (layernum: number) => Array<{value: number, text: string}>;
+    getOverlayTitle?: () => Array<{value: number, text: string}>;
     Get_ObjectGravityPoint?: (layernum: number, objNumber: number) => { ok: boolean; gpoint: point };
     Get_ObjectLength?: (layernum: number, objNum: number) => number;
     // 距離計算メソッド

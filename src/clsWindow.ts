@@ -1208,7 +1208,7 @@ function setting(locSearch: string) {
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
-    function changeDataItem(obj: HTMLSelectElement, sel: number | number[], v: string = "") {
+    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], v: string | number = "") {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = attrData.TotalData.LV1.SelectedLayer;
         attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;

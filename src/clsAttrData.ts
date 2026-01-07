@@ -7608,7 +7608,7 @@ class clsAttrData {
     }
 
     //**グラフデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    getGraphTitle(Layernum: number): string[] {
+    getGraphTitle(Layernum: number): Array<{value: number, text: string}> {
         const graph = this.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         const items = [];
         for (let i = 0; i < graph.DataSet.length; i++) {
@@ -7622,7 +7622,7 @@ class clsAttrData {
     }
 
     //**ラベルデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    getLabelTitle(Layernum: number): string[] {
+    getLabelTitle(Layernum: number): Array<{value: number, text: string}> {
         const lbl = this.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         const items = [];
         for (let i = 0; i < lbl.DataSet.length; i++) {
@@ -7636,7 +7636,7 @@ class clsAttrData {
     }
 
     //**重ね合わせデータセットのタイトル配列取得(value:番号、text:タイトル) */
-    getOverlayTitle(): string[] {
+    getOverlayTitle(): Array<{value: number, text: string}> {
         const over = this.TotalData.TotalMode.OverLay;
         const items = [];
         for (let i = 0; i < over.DataSet.length; i++) {
