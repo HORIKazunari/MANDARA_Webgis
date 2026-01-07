@@ -51,6 +51,7 @@ interface EventTarget {
     style?: CSSStyleDeclaration;
     files?: FileList; // HTMLInputElement.files
     parentNode?: Node;
+    tag?: string | number; // カスタムタグプロパティ
 }
 
 // ParentNode拡張
@@ -75,6 +76,16 @@ interface HTMLElement {
     onchange?: ((e: Event) => void) | null; // changeイベントハンドラ
     selected?: boolean; // 選択状態（カスタム要素）
     tooltip?: string; // ツールチップテキスト
+    // レイアウト調整用のカスタムプロパティ
+    sizeFixed?: boolean;
+    relativeSize?: size;
+    bottomPositionFixed?: boolean;
+    rightPositionFixed?: boolean;
+    relativePosition?: point;
+    // オブジェクト管理用のカスタムプロパティ
+    oObject?: number;
+    oLayer?: number;
+    oData?: number;
 }
 
 // Function拡張（イベントハンドラデータ保持用）
@@ -347,7 +358,7 @@ interface IAttrData {
     LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド
     Get_AllMapLineKind?: () => LPatSek_Info[];
-    Get_LineKindUsedList?: () => LPatSek_Info[];
+    Get_LineKindUsedList?: () => boolean[];
     Get_Length_On_Screen?: (arg1?: number) => number;
     Radius?: (size?: number, arg2?: number, arg3?: number) => number;
     Draw_Line?: (arg1: CanvasRenderingContext2D, arg2: Line_Property, arg3?: point[], arg4?: Screen_info) => void;
@@ -397,7 +408,7 @@ interface IAttrData {
     Draw_Line?: (context: CanvasRenderingContext2D, linePattern: Line_Property, points: point[], style?: Screen_info) => void;
     Draw_Print?: (context: CanvasRenderingContext2D, text: string, position?: point, font?: Font_Property, hAlign?: string | number, vAlign?: string | number) => void;
     Get_DataUnit_With_Kakko?: (layerIndex?: number, dataIndex?: number) => string;
-    Get_PaddingPixcel?: (style?: Tile_Property) => number;
+    Get_PaddingPixcel?: (back?: BackGround_Box_Property) => number;
     Get_DataNote?: (layer?: number, data?: number) => string;
     Get_MaxURLNum?: (Layernum?: number) => number;
     Get_KenObjCode?: (Layernum: number, Objectnum: number) => string;

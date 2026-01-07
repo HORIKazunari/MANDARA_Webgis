@@ -127,7 +127,7 @@ class clsMeshContour {
                 const Get_Linef: boolean[] = new Array(NL + 1);
                 for (let j = 0; j < Get_Linef.length; j++) { Get_Linef[j] = false; }
                 for (let j = 0; j < NL; j++) {
-                    PointIndex.AddDoublePoint(con[i][j].p0, con[i][j].p1, j);
+                    PointIndex.AddDoublePoint(con[i][j].p0.toLatlon(), con[i][j].p1.toLatlon(), j);
                 }
                 PointIndex.AddEnd();
                 let fnl = 0;

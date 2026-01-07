@@ -65,7 +65,7 @@ export class AppState {
     /**
      * 座標変換情報
      */
-    public tky2jgd!: TKY2JGDInfo;
+    public tky2jgd!: typeof TKY2JGDInfo;
 
     /**
      * タイルマップクラス

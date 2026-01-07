@@ -1539,9 +1539,9 @@ class frmPrint {
             }
             function inePatternClick(e: Event){
                 const state = appState();
-                const target = e.target as Record<string, number>;
-                if (!target) { return; }
-                const n=target.tag;
+                const target = e.target as HTMLElement;
+                if (!target || !target.tag) { return; }
+                const n = target.tag as number;
                 clsLinePatternSet(e, NewLineKind[Mpindex][n].Pat, LinePatternGet);
                 function LinePatternGet(Lpat: Line_Property) {
                     const state = appState();

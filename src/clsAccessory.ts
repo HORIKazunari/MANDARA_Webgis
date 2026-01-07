@@ -14,7 +14,7 @@ export class clsAccessory {
         const LineKind_Used = state.attrData.Get_LineKindUsedList();
         const Use_Line_Number=[]; 
         for(let i  = 0 ;i< LPC.length ;i++){
-            if((LineKind_Used[i] == true)&&((av.MapLegend.Line_DummyKind.Line_Visible_Number_STR as any)?.mid?.(i, 1) == "1" )){
+            if((LineKind_Used[i] == true) && (av.MapLegend.Line_DummyKind.Line_Visible_Number_STR.charAt(i) == "1" )){
                 Use_Line_Number.push(i);
             }
         }
@@ -314,10 +314,10 @@ export class clsAccessory {
         const P_Legend = vs.MapLegend;
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
             const p = P_Legend.Base.LegendXY[Legend_No];
-            ALP = vs.ScrData.getSxSy(vs.ScrData.getSRXYfromRatio(p as any) as point);
+            ALP = vs.ScrData.getSxSy(vs.ScrData.getSRXYfromRatio(p));
         } else {
             const p = P_Legend.Base.LegendXY[Legend_No];
-            ALP = vs.ScrData.getSxSy(p as point);
+            ALP = vs.ScrData.getSxSy(p);
         }
         const LFont = P_Legend.Base.Font;
 
@@ -426,7 +426,7 @@ export class clsAccessory {
         }
         if (SizeGetOnlyF == true) {
             LegendW.Rect = new rectangle(ALP, BoxSize);
-            const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag == true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back as any);
+            const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag == true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
             LegendW.Rect.inflate(padw, padw);
             return;
         }
@@ -466,8 +466,7 @@ export class clsAccessory {
                         if (n > 0) {
                             const NoteD = [];
                             for (let i = 0; i < n; i++) {
-                                const txObj = state.attrData.Get_DataNote(Layernum, gm.DataSet[gm.SelectedIndex].Data[i].DataNumber);
-                                const tx = typeof txObj === 'string' ? txObj : (txObj as any)?.note || '';
+                                const tx = state.attrData.Get_DataNote(Layernum, gm.DataSet[gm.SelectedIndex].Data[i].DataNumber) || '';
                                 if (tx != "") {
                                     NoteD.push(tx);
                                 }
@@ -485,8 +484,7 @@ export class clsAccessory {
                         if (n > 0) {
                             const NoteD = [];
                             for (let i = 0; i < n; i++) {
-                                const txObj = state.attrData.Get_DataNote(Layernum, lm.DataSet[lm.SelectedIndex].Data[i].DataNumber);
-                                const tx = typeof txObj === 'string' ? txObj : (txObj as any)?.note || '';
+                                const tx = state.attrData.Get_DataNote(Layernum, lm.DataSet[lm.SelectedIndex].Data[i].DataNumber) || '';
                                 if (tx != "") {
                                     NoteD.push(tx);
                                 }
@@ -517,7 +515,7 @@ export class clsAccessory {
         const P_Note= state.attrData.TotalData.ViewStyle.DataNote.Clone();
         const vs = state.attrData.TotalData.ViewStyle;
         if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
-            P_Note.Position = vs.ScrData.getSRXYfromRatio(P_Note.Position as any) as point;
+            P_Note.Position = vs.ScrData.getSRXYfromRatio(P_Note.Position);
         }
         const atx = nt;
         const xw = state.attrData.Get_Length_On_Screen(P_Note.MaxWidth);
@@ -665,7 +663,7 @@ export class clsAccessory {
         }
 
         if ((state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num].GraphMode == enmGraphMode.PieGraph) && (
-            (vs.MapLegend.En_Graph_Pattern as any) == (enmMultiEnGraphPattern as any).oneCircle)) {
+            vs.MapLegend.En_Graph_Pattern == enmMultiEnGraphPattern.oneCircle)) {
             //円グラフで、凡例の表示方法が円一つの場合
             return this.Draw_Multi_Engraph_Pattern1(g, ALP, HeadBoxSize, Layn2, DataSet_Num, SizeGetOnlyF);
         }
@@ -1167,21 +1165,21 @@ export class clsAccessory {
                 tri.push(new point(OP.x + BarSize.width / 2, OP.y));
                 tri.push(new point(OP.x, OP.y - BarSize.height));
                 tri.push(tri[0].Clone());
-                state.attrData.Draw_Poly_Inner(g, tri, [4], Tile);
-                state.attrData.Draw_Line(g, Bar_Md.FrameLinePat,  tri as point[]);
+                state.attrData.Draw_Poly_Inner(g, tri, 4, Tile);
+                state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, tri);
                 break;
             }
             case enmMarkBarShape.bar: {
                 if (Bar_Md.ThreeD == true) {
                     const Ptile = Tile.Clone();
                     Ptile.Color = Generic.GetColorArrange(Tile.Color, 100);
-                    state.attrData.Draw_Poly_Inner(g, poly, [5], Ptile);
-                    state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly as point[]);
+                    state.attrData.Draw_Poly_Inner(g, poly, 5, Ptile);
+                    state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly);
 
                     const Ptile2 = Tile.Clone();
                     Ptile2.Color = Generic.GetColorArrange(Tile.Color, -100);
-                    state.attrData.Draw_Poly_Inner(g, poly2, [5], Ptile2);
-                    state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly2 as point[]);
+                    state.attrData.Draw_Poly_Inner(g, poly2, 5, Ptile2);
+                    state.attrData.Draw_Line(g, Bar_Md.FrameLinePat, poly2);
                 }
                 state.attrData.Draw_Tile_Box(g, barrect, Bar_Md.FrameLinePat, Tile, 0);
                 for (let v = 0; v < maxv; v += Bar_Md.ScaleLineInterval) {
@@ -1688,9 +1686,9 @@ export class clsAccessory {
             for (let i = 0; i <= vn; i++) {
                 let fu;
                 if (PData.DataType == enmAttDataType.Category) {
-                    fu = (sv.Class_Div[i] as any)?.Value || '';
+                    fu = sv.Class_Div[i]?.Value || '';
                 } else {
-                    fu = this.Get_SeparateClassWords( sv.Class_Div as any, i, Div_Num, LL, RR);
+                    fu = this.Get_SeparateClassWords(sv.Class_Div, i, Div_Num, LL, RR);
                 }
                 const p = new point(ALP.x + inBox.width + ww / 2, ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height);
                 state.attrData.Draw_Print(g, fu, p, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
@@ -1809,7 +1807,7 @@ export class clsAccessory {
                 if (PData.DataType == enmAttDataType.Category) {
                     fu = cvi.Value;
                 } else {
-                    fu = this.Get_SeparateClassWords( Class_div as any, i, Div_Num, LL, RR);
+                    fu = this.Get_SeparateClassWords(Class_div, i, Div_Num, LL, RR);
                 }
                 xs = Math.max(xs, g.measureText(fu).width);
                 HeadBoxSize.height += H * 1.5;
@@ -1874,7 +1872,7 @@ export class clsAccessory {
                     if(PData.DataType == enmAttDataType.Category ){
                         fu = cvi.Value;
                     }else{
-                        fu = this.Get_SeparateClassWords( Class_div as any, i, Div_Num, LL, RR);
+                        fu = this.Get_SeparateClassWords(Class_div, i, Div_Num, LL, RR);
                     }
                     state.attrData.Draw_Print(g, fu, new point(ALP.x + x2 + Xsepa, ALP.y + Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
                     if(vs.MapLegend.ClassMD.FrequencyPrint == true ){
@@ -1907,7 +1905,7 @@ export class clsAccessory {
     }
 
     //階級区分凡例分離表示の文字
-    static Get_SeparateClassWords(Class_div: number[], checkN: number, DivNum: number, LL: number, RR: number){
+    static Get_SeparateClassWords(Class_div: strClass_Div_data[], checkN: number, DivNum: number, LL: number, RR: number){
         const state = appState();
 
         let UnderSTR ;
@@ -2388,19 +2386,19 @@ export class clsAccessory {
                     for (let i = 1; i < SCST + 2; i++) {
                         const P1 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H);
                         const P2 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H * 1.5 - 1);
-                        state.attrData.Draw_Line(g, LPat, P1, P2);
+                        state.attrData.Draw_Line(g, LPat, [P1, P2]);
                     }
                     break;
                 }
                 case (enmScaleBarPattern.Slim): {
                     LPat.Color = P_Scl.Font.Color.Clone();
                     LPat.Width = 0.4;
-                    state.attrData.Draw_Line(g, LPat, new point(sxy.x + zeroW, sxy.y + H * 1.5 - 1), new point(sxy.x + zeroW + ScaleLength, sxy.y + H * 1.5 - 1));
+                    state.attrData.Draw_Line(g, LPat, [new point(sxy.x + zeroW, sxy.y + H * 1.5 - 1), new point(sxy.x + zeroW + ScaleLength, sxy.y + H * 1.5 - 1)]);
                     LPat.Width = 0.3;
                     for (let i = 1; i < (SCST + 2); i++) {
                         const P1 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H);
                         const P2 = new point(sxy.x + zeroW + ScaleLength / SCST * (i - 1), sxy.y + H * 1.5 - 1);
-                        state.attrData.Draw_Line(g, LPat, P1, P2);
+                        state.attrData.Draw_Line(g, LPat, [P1, P2]);
                     }
                     break;
                 }

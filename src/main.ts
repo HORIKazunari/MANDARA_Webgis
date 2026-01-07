@@ -127,15 +127,15 @@ function init(): void {
         state.propertyWindow.pnlProperty, "", "", "", 0, 0, 
         '100%', 90, "padding:5px;background-color:white", ""
     );
-    (state.propertyWindow.pnlProperty as any).oObject = -1;
-    (state.propertyWindow.pnlProperty as any).oLayer = -1;
-    (state.propertyWindow.pnlProperty as any).oData = -1;
+    state.propertyWindow.pnlProperty.oObject = -1;
+    state.propertyWindow.pnlProperty.oLayer = -1;
+    state.propertyWindow.pnlProperty.oData = -1;
     state.propertyWindow.copyButton = Generic.createNewButton(
         state.propertyWindow, "コピー", "", 30, 0, 
         () => state.frmPrint.copyProperty?.(), ""
     );
-    (state.propertyWindow.copyButton as Record<string, boolean | point>).bottomPositionFixed = true;
-    (state.propertyWindow.copyButton as Record<string, boolean | point>).relativePosition = new point(0, 30);
+    state.propertyWindow.copyButton.bottomPositionFixed = true;
+    state.propertyWindow.copyButton.relativePosition = new point(0, 30);
     state.propertyWindow.fixed = false;
     state.propertyWindow.nextVisible = true;
 
@@ -143,8 +143,8 @@ function init(): void {
         footer, "", "FTRight", "", 350, 0, 295, 18, 
         "text-align:center", undefined
     );
-    (rightDIV as Record<string, boolean | point>).rightPositionFixed = true;
-    (rightDIV as Record<string, boolean | point>).relativePosition = new point(325, 0);
+    rightDIV.rightPositionFixed = true;
+    rightDIV.relativePosition = new point(325, 0);
     
     Generic.createNewButton(rightDIV, "データ値表示", "", 0, 0, dataValueShow, "width:90px");
     Generic.createNewButton(rightDIV, "全体表示", "", 90, 0, () => state.frmPrint.wholeMapShow?.(), "text-aligh:center;width:75px");

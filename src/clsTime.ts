@@ -31,7 +31,7 @@ class clsTime  {
     static getDifference (Time1: strYMD, Time2: strYMD) {
         const day1 = Time1.toDate();
         const day2 = Time2.toDate();
-        const termDay = (day2 - day1) / 86400000;
+        const termDay = (day2.getTime() - day1.getTime()) / 86400000;
         return termDay;
     }
     static GetNullStartEndYMD(){
