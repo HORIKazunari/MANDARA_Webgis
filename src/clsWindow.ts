@@ -437,7 +437,7 @@ function setting(locSearch: string) {
     function mnuOpenShapeFile() {
 
         openShapeFile(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
+        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]) {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
@@ -499,7 +499,7 @@ function setting(locSearch: string) {
     /**データ挿入(シェープファイルから) */
     function menuInsertShapefile() {
         openShapeFile(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
+        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]) {
             const newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
             newAttrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
@@ -515,7 +515,7 @@ function setting(locSearch: string) {
     /**データ挿入(白地図・初期属性データ表示から) */
     function menuInsertMapViewer(){
         mapViewer(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: clsLayerData[]) {
+        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]) {
             const newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
 
@@ -4035,7 +4035,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
 }
 
 //シェープファイル読み込み
-function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void{
+function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) => void) | undefined): void{
     let shapeFiles: { [key: string]: { shape: clsShapefile } } = {};
     const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
@@ -4325,7 +4325,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[])
 }
 
 /** 白地図・初期属性データ表示 */
-function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: clsLayerData[]) => void) | undefined): void {
+function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) => void) | undefined): void {
     const mapList: Record<string, clsMapdata> = {};
     const LayerData: strLayerInfo[] = [];
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);

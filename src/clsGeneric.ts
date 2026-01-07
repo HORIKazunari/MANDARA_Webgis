@@ -1761,7 +1761,7 @@ export class Generic {
         return tx;
     }
     /**メッシュコードの名称を取得 */
-    static ConvertMeshTypeFromEnum(MeshNumber: enmMesh_Number) {
+    static ConvertMeshTypeFromEnum(MeshNumber: number) {
 
         switch (MeshNumber) {
             case enmMesh_Number.mhNonMesh:
@@ -1804,7 +1804,7 @@ export class Generic {
         }
     }
     /** レイヤタイプの文字列を返す*/
-    static ConvertStringFromLayerType(Type: enmLayerType) {
+    static ConvertStringFromLayerType(Type: number) {
 
         switch (Type) {
             case enmLayerType.Normal:
@@ -1859,7 +1859,7 @@ export class Generic {
 
 
     /**条件検索の文字を返す */
-    static getConditionString(con: enmCondition){
+    static getConditionString(con: number){
 
         switch (con) {
             case enmCondition.Less:
@@ -1958,7 +1958,7 @@ export class Generic {
     }
 
     /**レイヤの種類の名称 */
-    static getLayerTypeName(layType: enmLayerType){
+    static getLayerTypeName(layType: number){
 
         let tx = "";
         const enmLayerType = { Normal: 0, Trip_Definition: 1, Trip: 2, Mesh: 3, DefPoint: 4 };
@@ -2330,7 +2330,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     };
 
     /**投影法に対応した文字列を返す */
-    static getStringProjectionEnum (prj: enmProjection_Info){
+    static getStringProjectionEnum (prj: number){
         switch (prj) {
             case enmProjection_Info.prjNo:
                 return "設定なし";
@@ -2361,7 +2361,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 } 
 
 /**単独表示モードの文字列を返す */
-    static getSolomodeStrings (solomode: enmSoloMode_Number){
+    static getSolomodeStrings (solomode: number){
         switch (solomode) {
             case enmSoloMode_Number.ClassPaintMode:
                 return "ペイント";
@@ -2818,7 +2818,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //メッシュコードの文字の長さを取得
-    static getMeshCodeLength(MeshNumber: enmMesh_Number) {
+    static getMeshCodeLength(MeshNumber: number) {
 
         let CodeLen;
         switch (MeshNumber) {
@@ -2868,7 +2868,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     
     /**距離単位列挙型から面積文字列を返す */
-    static getScaleUnitAreaStrings(scl: enmScaleUnit) {
+    static getScaleUnitAreaStrings(scl: number) {
 
         switch (scl) {
             case enmScaleUnit.meter:
@@ -2899,7 +2899,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     ///*距離単位列挙型と値から距離文字列を返す 距離単位だけの場合はValue=undefined*/
-    static getScaleUnitStrings(Value: number | undefined, scl: enmScaleUnit) {
+    static getScaleUnitStrings(Value: number | undefined, scl: number) {
 
         let vs;
         if(Value==undefined){
@@ -2959,7 +2959,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //距離単位の変換係数を求める
-    static Convert_ScaleUnit(from_Unit: enmScaleUnit, to_Unit: enmScaleUnit){
+    static Convert_ScaleUnit(from_Unit: number, to_Unit: number){
 
         const kmco = [];
         kmco[enmScaleUnit.meter] = 1000;
@@ -3067,7 +3067,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //属性データタイプ列挙型から文字を返す
-    static ConvertAttDataTypeString(dataType: enmAttDataType) {
+    static ConvertAttDataTypeString(dataType: number) {
 
         switch (dataType) {
             case enmAttDataType.Normal:
@@ -3121,7 +3121,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //形状列挙型からその文字を返す
-    static ConvertShapeEnumString(shape: enmShape) {
+    static ConvertShapeEnumString(shape: number) {
 
         switch (shape) {
             case enmShape.LineShape:
@@ -3176,7 +3176,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
-    static Get_Outer_Mpline_AggregatedObj(LCode: Array<{LineCode: number}>, Shape: enmShape): Array<{LineCode: number}> { //LCode:EnableMPLine_Data
+    static Get_Outer_Mpline_AggregatedObj(LCode: Array<{LineCode: number}>, Shape: number): Array<{LineCode: number}> { //LCode:EnableMPLine_Data
 
         const lc = this.ArrayClone(LCode);
 
@@ -3234,7 +3234,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //属性データタイプ列挙型からTITLE、単位文字列を設定
 
     /** @returns {MyType} */
-    static SetTitleUnit_from_AttDataType(dtype: enmAttDataType, defoTitle: string, defoUnit: string) {
+    static SetTitleUnit_from_AttDataType(dtype: number, defoTitle: string, defoUnit: string) {
 
         let Title=defoTitle;
         let Unit=defoUnit;
