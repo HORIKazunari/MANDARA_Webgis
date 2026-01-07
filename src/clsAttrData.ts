@@ -1097,7 +1097,7 @@ class strLayerDataInfo {
     Print_Mode_Layer: number = 0; // enmLayerMode_Number '0:単独 1:グラフ 2:ラベル 3:移動
     // グラフ表示、ラベル表示、移動表示、点線オブジェクトのペイントモードの記号
     LayerModeViewSettings: strLayerModeViewSetting_Data = new strLayerModeViewSetting_Data();
-    PrtSpatialIndex: clsSpatialIndexSearch | undefined = undefined;
+    PrtSpatialIndex: typeof clsSpatialIndexSearch | undefined = undefined;
     ObjectGroupRelatedLine: number[] = []; // Integer()
     ODBezier_DataStac: ODBezier_Data[] = []; // List(Of ODBezier_Data)
 
@@ -3592,7 +3592,7 @@ class clsAttrData {
     }
 
         // サンプル記号ボックスに記号を描画
-    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: Mark): void {
+    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: typeof Mark): void {
         clsDrawMarkFan.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
@@ -3600,7 +3600,7 @@ class clsAttrData {
         clsDrawLine.Draw_Sample_LineBox?.(picBox, LinePat, this.TotalData.ViewStyle.ScrData);
     }
     //記号描画
-    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark): void {
+    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: typeof Mark): void {
         clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
