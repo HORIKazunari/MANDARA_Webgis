@@ -1669,6 +1669,7 @@ declare class strCondition_Data_Info { [key: string]: JsonValue; constructor(...
 declare class strObject_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strSeries_DataSet_Item_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strLKOjectGroup_Info { 
+    Name?: string;
     GroupNumber?: number;
     UseOnly?: boolean;
     Pattern?: Line_Property;
@@ -2185,7 +2186,11 @@ declare namespace SpatialPointType {
 declare class spatial {
     static Get_Converted_XY(point: point, zahyo: Zahyo_info): point;
     static Get_Reverse_XY(point: point, zahyo: Zahyo_info): point;
-    static Get_MeshCode_Rectangle(meshcode: string, meshType: number, refOrigin: number, refDestZahyo: Zahyo_info): rectangle;
+    static Get_MeshCode_Rectangle(meshcode: string, meshType: number, refOrigin: number, refDestZahyo: Zahyo_info): {
+        convRect: rectangle;
+        latlonBox: { NorthWest: latlon; NorthEast: latlon; SouthEast: latlon; SouthWest: latlon; CenterPoint: () => latlon };
+        RPoint: point[];
+    };
     static Distance_Ido_Kedo_XY_Point(P1: point, P2: point, MapDTMapZahyo: Zahyo_info): number;
     static Distance_Ido_Kedo_XY(P1: point, P2: point, MapDTMapZahyo: Zahyo_info): number;
     static Distance_Ido_Kedo_LatLon(D1: latlon, D2: latlon): number;

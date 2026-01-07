@@ -665,6 +665,7 @@ interface strSoloModeViewSettings_Data {
     Class_Div: strClass_Div_data[];  //strClass_Div_data;
 }
 class strSoloModeViewSettings_Data {
+    SoloMode: number = 0;
     Div_Num: number = 0;
     Div_Method: number = 0;
     ClassPaintMD: strClassPaint_Data = new strClassPaint_Data();
@@ -8219,7 +8220,7 @@ class clsAttrMapData {
             return this.attrMapData[MapFileName.toUpperCase()];
         }
     }
-    SetObject_Name_Search(MapFileName: string): clsSortingSearch | undefined {
+    SetObject_Name_Search(MapFileName: string): clsObjectNameSearch | undefined {
         if (MapFileName == "") {
             return this.Object_Name_Search[this.Prestage_MapFileName];
         } else {
