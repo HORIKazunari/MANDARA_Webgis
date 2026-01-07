@@ -1121,23 +1121,23 @@ class clsTileMap {
 
     /**ライセンスフォントを設定 */
     setLicenceFont(fnt: Font_Property): void {
-        LicenseFontData = fnt;
+        this.LicenseFontData = fnt;
     }
 
     getLicenceFont(): Font_Property {
-        return LicenseFontData;
+        return this.LicenseFontData;
     }
 
     /**既存タイルマップデータをキーで取得 */
     getTileMapData(dataName: string): JsonObject | undefined {
-        return TileMapData[dataName];
+        return this.TileMapData[dataName];
     }
 
     /**既存タイルマップデータをIDで取得 */
     getTileMapDataById(id: number): JsonObject | undefined {
-        for (const i in TileMapData) {
-            if (TileMapData[i].opt.id == id) {
-                return TileMapData[i];
+        for (const i in this.TileMapData) {
+            if (this.TileMapData[i].opt.id == id) {
+                return this.TileMapData[i];
             }
         }
         return undefined;
@@ -1147,8 +1147,8 @@ class clsTileMap {
     /**既存タイルマップの中のタグの一覧を取得 */
     getTileMapTagList(): string[] {
         const tag=[];
-        for(const i in TileMapData){
-            tag.push(TileMapData[i].opt.tag);
+        for(const i in this.TileMapData){
+            tag.push(this.TileMapData[i].opt.tag);
         }
         return Generic.getArrayContentsList(tag);
     }
@@ -1156,9 +1156,9 @@ class clsTileMap {
     /**指定のタグに一致するタイルマップ一覧を取得 */
     getTileMapListByTag(tag: string): JsonObject[] {
         const tiles=[];
-        for(const i in TileMapData){
-            if(TileMapData[i].opt.tag==tag){
-                tiles.push(TileMapData[i])
+        for(const i in this.TileMapData){
+            if(this.TileMapData[i].opt.tag==tag){
+                tiles.push(this.TileMapData[i])
             };
         }
         return tiles;

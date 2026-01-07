@@ -1,5 +1,8 @@
 // MANDARA GIS Application - 型定義ファイル（強化版）
 
+// JSON型はtypes.tsからインポートして使用してください
+// import type { JsonValue, JsonObject, JsonArray } from './types';
+
 // ==================== 共通型定義 ====================
 // リストアイテムの型定義（select要素やListBoxで使用）
 type ListItem = { value: string | number; text: string };

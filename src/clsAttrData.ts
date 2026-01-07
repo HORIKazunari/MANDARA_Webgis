@@ -6,7 +6,7 @@ import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata } from './clsMapdata';
 import type { strLayerInfo } from './clsWindow';
-import type { JsonObject, JsonValue } from './types';
+import type { JsonObject, JsonValue, JsonArray } from './types';
 
 
 // size クラスは globals.d.ts で定義済み
@@ -5230,7 +5230,7 @@ class clsAttrData {
     SetDataFromClipBoard(MapDataList: clsMapdata[], attrText: string): JsonObject {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
-            this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.filename);
+            this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
         }
 
         const str = attrText.split(/\n/);
@@ -5530,7 +5530,7 @@ class clsAttrData {
                         if (LayerError != "") {
                             ObjectErrorMessage += "エラー／レイヤ:";
                             if (LayerReading.Name == "") {
-                                ObjectErrorMessage += (this.TotalData.LV1.Lay_Maxn).ToString + '\n';
+                                ObjectErrorMessage += (this.TotalData.LV1.Lay_Maxn).toString() + '\n';
                             } else {
                                 ObjectErrorMessage += LayerReading.Name + '\n';
                             }
@@ -5655,7 +5655,7 @@ class clsAttrData {
         if (LayerError != "") {
             ObjectErrorMessage += "エラー／レイヤ:";
             if (LayerReading.Name == "") {
-                ObjectErrorMessage += (this.TotalData.LV1.Lay_Maxn).ToString + '\n';
+                ObjectErrorMessage += (this.TotalData.LV1.Lay_Maxn).toString() + '\n';
             } else {
                 ObjectErrorMessage += LayerReading.Name + '\n';
             }
@@ -6946,9 +6946,9 @@ class clsAttrData {
             pmd.color1 = new colorRGBA([255, 255, 0, 255]);
             pmd.color2 = new colorRGBA([255, 0, 0, 255]);
         } else {
-            pmd.color1 = defaultColor.paintMode[0].Clone();
+            pmd.color1 = this.defaultColor.paintMode[0].Clone();
 
-                pmd.color2 =defaultColor.paintMode[1].Clone();
+                pmd.color2 = this.defaultColor.paintMode[1].Clone();
 
         }
         //タイトルと単位によって記号モードとペイントモードを振り分ける
@@ -7105,7 +7105,7 @@ class clsAttrData {
                     mmd.Mark = clsBase.Mark();
                     mmd.Mark.ShapeNumber = 0;
                     mmd.Mark.Tile.BlankF = false;
-                    mmd.Mark.Tile.Color = defaultColor.markColorTrance.Clone();
+                    mmd.Mark.Tile.Color = this.defaultColor.markColorTrance.Clone();
                     mmd.Mark.Line.BlankF = false;
                     mmd.Mark.WordFont.Size = 10;
                 }
@@ -7124,7 +7124,7 @@ class clsAttrData {
                 mmb.ArrangeB = enmMarkBlockArrange.Block;
                 mmb.HasuVisible = false;
                 mmb.Mark = clsBase.Mark();
-                mmb.Mark.Tile.Color=defaultColor.markColor.Clone();
+                mmb.Mark.Tile.Color=this.defaultColor.markColor.Clone();
                 mmb.Mark.WordFont.Size = 2;
                 mmb.Overlap = 0;
                 mmb.LegendBlockModeWord = "";
@@ -7138,12 +7138,12 @@ class clsAttrData {
                 mmt.DegreeLap = 360;
                 mmt.Mark = clsBase.Mark();
                 mmt.Mark.ShapeNumber = 14;
-                mmt.Mark.Tile.Color=defaultColor.markColor.Clone();
+                mmt.Mark.Tile.Color=this.defaultColor.markColor.Clone();
                 mmt.Mark.WordFont.Size = 5;
 
                 const mmbar = data.SoloModeViewSettings.MarkBarMD;
                 mmbar.InnerTile.BlankF=false;
-                mmbar.InnerTile.Color = defaultColor.markBarColor.Clone();
+                mmbar.InnerTile.Color = this.defaultColor.markBarColor.Clone();
                 mmbar.FrameLinePat = clsBase.Line();
                 mmbar.ScaleLineInterval = mdiv.step;
                 mmbar.MaxHeight = 10;
@@ -7160,9 +7160,9 @@ class clsAttrData {
 
         const mkc = data.SoloModeViewSettings.MarkCommon;
         mkc.MinusTile = clsBase.Tile();
-        mkc.MinusTile.Color = defaultColor.minusColor.Clone();
+        mkc.MinusTile.Color = this.defaultColor.minusColor.Clone();
         mkc.MinusTile.BlankF = false;
-        mkc.MinusLineColor = defaultColor.minusColor.Clone();
+        mkc.MinusLineColor = this.defaultColor.minusColor.Clone();
         mkc.Inner_Data.Flag = false;
         mkc.Inner_Data.Data = DataNum;
         mkc.LegendMinusWord = "";
@@ -7246,7 +7246,7 @@ class clsAttrData {
             cs.ClassMark.wordmark = String.fromCharCode("A".charCodeAt(0) + j % 26);
             cs.ClassMark.PrintMark = 1;
             cs.ClassMark.Tile = clsBase.Tile();
-            cs.ClassMark.Tile.Color=defaultColor.markColor.Clone();
+            cs.ClassMark.Tile.Color=this.defaultColor.markColor.Clone();
             cs.ClassMark.WordFont = clsBase.Font();
             cs.ClassMark.WordFont.Size = 4;
             cs.ClassMark.WordFont.FringeF=true;

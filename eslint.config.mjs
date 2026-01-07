@@ -7,7 +7,15 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['tests/e2e/**', 'playwright.config.ts'],
+    ignores: [
+      'tests/e2e/**', 
+      'playwright.config.ts',
+      '*.cjs',
+      'src/.!*',
+      'node_modules/**',
+      'dist/**',
+      'playwright-report/**'
+    ],
   },
   {
     languageOptions: {
