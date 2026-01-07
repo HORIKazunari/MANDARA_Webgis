@@ -1707,8 +1707,8 @@ export class clsAccessory {
         let retFV;
         if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.FrequencyPrint == true) {
             //度数分布
-            retFV = state.attrData.Get_ClassFrequency(Layn2, datn2, true as any);
-            if (retFV.ok == true) {
+            retFV = state.attrData.Get_ClassFrequency(Layn2, datn2, true);
+            if (retFV.ok == true && retFV.frequency) {
                 acumy = 0;
                 for (let i = 0; i < retFV.frequency.length; i++) {
                     const cwp = new point();
@@ -1823,11 +1823,11 @@ export class clsAccessory {
         }
 
         let FreqW  = 0;
-        let freq=[]; 
+        let freq: number[] | undefined = []; 
         if(vs.MapLegend.ClassMD.FrequencyPrint == true ){
-            const retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true as any);
+            const retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
             freq=retV.frequency;
-            if(retV.ok == true) {
+            if(retV.ok == true && retV.frequency) {
                 for (let i = 0; i < retV.frequency.length;i++){
                     FreqW = Math.max(FreqW, g.measureText("(" + retV.frequency[i].toString() + ")").width);
                 }
@@ -2055,7 +2055,7 @@ export class clsAccessory {
         if (vs.MapLegend.ClassMD.FrequencyPrint == true) {
             //度数分布
             retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
-            if (retV.ok == true) {
+            if (retV.ok == true && retV.frequency) {
                 for (let i = 0; i < retV.frequency.length; i++) {
                     const cwp = new point();
                     cwp.y = ALP.y + i * byh + hu + HeadBoxSize.height;
@@ -2199,7 +2199,7 @@ export class clsAccessory {
         let FreqW = 0;
         if (vs.MapLegend.ClassMD.FrequencyPrint == true) {
             const retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
-            if (retV.ok == true) {
+            if (retV.ok == true && retV.frequency) {
                 for (let j = 0; j < retV.frequency.length; j++) {
                     const fq="(" + String(retV.frequency[j]) + ")";
                     FreqW = Math.max(FreqW, g.measureText(fq).width);

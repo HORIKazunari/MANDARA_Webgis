@@ -3834,7 +3834,7 @@ function setting(locSearch: string) {
 }
 
 //属性データ読み込み
-function readData(okCall: () => void) {
+function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: string, ext: string) => void) {
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
     const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);

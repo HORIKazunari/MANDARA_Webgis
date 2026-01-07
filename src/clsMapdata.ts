@@ -424,14 +424,20 @@ class strMap_data {
  * Description placeholder
  */
 class strLKOjectGroup_Info {
+    Name?: string;
     GroupNumber?: number;
     UseOnly?: boolean;
     Pattern: Line_Property = new Line_Property();
+    ObjGroup?: strLKOjectGroup_Info[];
+    NumofObjectGroup?: number;
 
     Clone(): strLKOjectGroup_Info {
         const d = new strLKOjectGroup_Info();
         Object.assign(d, this);
         d.Pattern = this.Pattern.Clone();
+        if (this.ObjGroup) {
+            d.ObjGroup = this.ObjGroup.map(og => og.Clone());
+        }
         return d;
     }
 }

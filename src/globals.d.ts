@@ -10,8 +10,10 @@ type ListItem = { value: string | number; text: string };
 // メニューアイテムの型定義（ポップアップメニューで使用）
 interface MenuItem {
     caption: string;
-    event?: () => void;
+    event?: (data: MenuItem, e: Event) => void;
     enabled?: boolean;
+    checked?: boolean;
+    tag?: string;
     child?: MenuItem[];
 }
 
@@ -146,7 +148,7 @@ interface IAttrData {
                 getSXSY_Margin?: () => rectangle;
                 getSRXY?: (p: point) => point;
                 getSxSy?: (arg1: point, arg2?: point) => point;
-                getSRXYfromRatio?: (arg1: number) => point;
+                getSRXYfromRatio?: (p: point) => point;
                 Get_SxSy_With_3D?: (arg1?: point, arg2?: number, arg3?: number) => point;
                 ThreeDMode?: {
                     Set3D_F: boolean;
@@ -445,9 +447,9 @@ interface IAttrData {
     Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;
     Get_DataMin?: (layer?: number, data?: number) => number;
     Get_DataMax?: (layer?: number, data?: number) => number;
-    Get_ClassFrequency?: (layer?: number, data?: number, classNum?: number) => {
+    Get_ClassFrequency?: (layer: number, data: number, conditionCheck: boolean) => {
         ok: boolean;
-        frequency: number[];
+        frequency?: number[];
     };
     Get_CenterP?: (layer?: number, object?: number) => point;
     Check_Condition_UMU?: (layer?: number) => boolean;
@@ -916,7 +918,7 @@ interface IGeneric {
     Set_Box_Position_in_Browser: (event: Event, element: HTMLElement) => void;
     Array2Dimension: <T>(dim1num: number, dim2num: number, defoValue?: T) => T[][];
     Array2Clone: (array: JsonValue[]) => JsonValue[];
-    ceatePopupMenu: (menu: JsonValue, position: point) => void;
+    ceatePopupMenu: (menu: MenuItem[], position: point) => void;
     [key: string]: any;
 }
 

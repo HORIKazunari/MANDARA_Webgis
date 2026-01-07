@@ -1,7 +1,7 @@
 import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
 import { gridControl } from './clsGridControl';
-import type { JsonObject } from './types';
+import type { JsonObject, JsonValue } from './types';
 
 type LayerTypeValue = (typeof enmLayerType)[keyof typeof enmLayerType];
 type ShapeValue = (typeof enmShape)[keyof typeof enmShape];
@@ -407,14 +407,14 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 { caption: Generic.ConvertAttDataTypeString(enmAttDataType.URL), value: enmAttDataType.URL, event: dtype },
                 { caption: Generic.ConvertAttDataTypeString(enmAttDataType.URL_Name), value: enmAttDataType.URL_Name, event: dtype }
                 ];
-                Generic.ceatePopupMenu(popmenu, e);
+                Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
                 break;
             }
             case 2: {
                 const popmenu = [{ caption: Generic.ConvertMissingValueFromBool(true), event: dMissing },
                     { caption: Generic.ConvertMissingValueFromBool(false),  event: dMissing }
                     ];
-                    Generic.ceatePopupMenu(popmenu, e);
+                    Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
                 break;
             }
         }

@@ -2151,7 +2151,7 @@ class Screen_info {
             this.OutputDevide = enmOutputDevice.Screen;
             this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRY(0), this.getSRX(Wwidth), this.getSRY(Wheight));
             this.OutputDevide = enmOutputDevice.Printer;
-            this.MapScreen_Scale = new size(this.ScrRectangle.width(), this.ScrRectangle.height());
+            this.MapScreen_Scale = new rectangle(0, 0, this.ScrRectangle.width(), this.ScrRectangle.height());
         }
         this.Get_Screen_BaseMul();
     }
@@ -2814,7 +2814,7 @@ class clsAttrData {
                             }
                             break;
                         }
-
+                        break;
                     }
                     case enmLayerMode_Number.GraphMode:{
                         const dset  = lay.LayerModeViewSettings.GraphMode.SelectedIndex;
