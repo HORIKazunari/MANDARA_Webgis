@@ -2420,6 +2420,8 @@ interface MapFileInfo {
  */
 interface zahyohenkan {
     Mode: number; // enmZahyo_mode_info
+    System: number; // enmZahyo_System_Info
+    HeimenTyokkaku_KEI_Number: number; // 平面直角座標系の系番号
     Projection: number; // enmProjection_Info
     CenterXY: point;
 }

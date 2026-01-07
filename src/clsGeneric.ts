@@ -4761,7 +4761,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
 
-    static Check_Two_Value_In(CheckV: number, V1: number, V2: number): boolean {
+    static Check_Two_Value_In(CheckV: number, V1: number, V2: number): number {
 
         //チェックする値が二つの数字の中間であればtrue
 
