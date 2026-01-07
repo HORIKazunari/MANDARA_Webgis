@@ -70,7 +70,7 @@ function setting(locSearch: string) {
     let seriesListView: ListViewTable | undefined;//連続表示データセットりリストビュー
     let lstLabelDataItem: ListBox | undefined;//ラベルデータセットのデータ項目
     let lstcontourSeparateValue: ListBox | undefined;//等値線モードの個別設定のリストボックス
-    const popmenu = [{
+    const popmenu: MenuItem[] = [{
         caption: "ファイル",enabled:true, child: [
             { caption: "白地図・初期属性データ表示", event: mnuMapViewer },
             { caption: "属性データ読み込み", event: menuReadData },
