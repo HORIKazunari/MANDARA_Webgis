@@ -946,8 +946,8 @@ class clsSpline {
 
         const z = Maxpt - 1;
         let Value = 0;
-        let ST = parseInt(T) - 2;
-        let ET = parseInt(T) + 2;
+        let ST = parseInt(String(T)) - 2;
+        let ET = parseInt(String(T)) + 2;
         if (ST < 0) ST = 0;
         if (ET > z) ET = z;
         for (let i = ST; i <= ET; i++) {
@@ -1036,10 +1036,10 @@ class clsTileMap {
         const iRect = ScrData.ScrRectangle.Clone();
 
         const ScrLatLonBox = new latlonbox();
-        const p = spatial.Get_Reverse_XY(new point(iRect.left, iRect.top), MapZahyo);
-        ScrLatLonBox.NorthWest = spatial.Get_World_IdoKedo(p, MapZahyo);
-        const p2 = spatial.Get_Reverse_XY(new point(iRect.right, iRect.bottom), MapZahyo);
-        ScrLatLonBox.SouthEast = spatial.Get_World_IdoKedo(p2, MapZahyo);
+        const p = spatial.Get_Reverse_XY(new point(iRect.left, iRect.top), MapZahyo as Zahyo_info);
+        ScrLatLonBox.NorthWest = spatial.Get_World_IdoKedo(p, MapZahyo as Zahyo_info);
+        const p2 = spatial.Get_Reverse_XY(new point(iRect.right, iRect.bottom), MapZahyo as Zahyo_info);
+        ScrLatLonBox.SouthEast = spatial.Get_World_IdoKedo(p2, MapZahyo as Zahyo_info);
 
         if (ScrLatLonBox.NorthWest.lat > 85) {
             ScrLatLonBox.NorthWest.lat = 85;
@@ -1136,8 +1136,10 @@ class clsTileMap {
     /**既存タイルマップデータをIDで取得 */
     getTileMapDataById(id: number): JsonObject | undefined {
         for (const i in this.TileMapData) {
-            if (this.TileMapData[i].opt.id == id) {
-                return this.TileMapData[i];
+            const data = this.TileMapData[i];
+            const opt = data.opt as JsonObject;
+            if (opt.id == id) {
+                return data;
             }
         }
         return undefined;
@@ -1148,7 +1150,9 @@ class clsTileMap {
     getTileMapTagList(): string[] {
         const tag=[];
         for(const i in this.TileMapData){
-            tag.push(this.TileMapData[i].opt.tag);
+            const data = this.TileMapData[i];
+            const opt = data.opt as JsonObject;
+            tag.push(opt.tag);
         }
         return Generic.getArrayContentsList(tag);
     }
@@ -1157,8 +1161,10 @@ class clsTileMap {
     getTileMapListByTag(tag: string): JsonObject[] {
         const tiles=[];
         for(const i in this.TileMapData){
-            if(this.TileMapData[i].opt.tag==tag){
-                tiles.push(this.TileMapData[i])
+            const data = this.TileMapData[i];
+            const opt = data.opt as JsonObject;
+            if(opt.tag==tag){
+                tiles.push(data)
             };
         }
         return tiles;
@@ -1218,10 +1224,10 @@ class clsTileMap {
 
                 const d = new tileList_Data_Info();
                 d.LatLonBox = this.Get_TileMap_IdoKedo(ZoomLevel, ox, yy);
-                const NW = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.NorthWest, MapZahyo);
-                const SE = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.SouthEast, MapZahyo);
-                const NWpoint = ScrData.getSxSy(spatial.Get_Converted_XY(NW.toPoint(), MapZahyo));
-                const SEpoint = ScrData.getSxSy(spatial.Get_Converted_XY(SE.toPoint(), MapZahyo));
+                const NW = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.NorthWest, MapZahyo as Zahyo_info);
+                const SE = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.SouthEast, MapZahyo as Zahyo_info);
+                const NWpoint = ScrData.getSxSy(spatial.Get_Converted_XY(NW.toPoint(), MapZahyo as Zahyo_info));
+                const SEpoint = ScrData.getSxSy(spatial.Get_Converted_XY(SE.toPoint(), MapZahyo as Zahyo_info));
                 d.ScrPosition = new rectangle(NWpoint, new size(SEpoint.x - NWpoint.x, SEpoint.y - NWpoint.y));
                 d.URL = TileMap.href;
                 d.URL = d.URL.replace("{z}", String(ZoomLevel));
