@@ -966,8 +966,10 @@ declare class latlon {
     lon: number;
     constructor(lat?: number, lon?: number);
     Clone(): latlon;
-    toDegreeMinuteSecond(): {lat: string; lon: string};
-    toLatlon?(): latlon;
+    toDegreeMinuteSecond(): {LatitudeDMS: {degree: number; minute: number; second: number}; LongitudeDMS: {degree: number; minute: number; second: number}};
+    toLatlon(): latlon;
+    toPoint(): point;
+    Equals(other: latlon): boolean;
 }
 declare const TKY2JGD: {
     Tokyo97toITRF94: (latlonP: latlon) => latlon;
@@ -1148,6 +1150,14 @@ declare class Screen_info {
     STDWsize: number;
     GSMul: number;
     SampleBoxFlag: boolean;
+    ScrView: rectangle;
+    ScrRectangle: rectangle;
+    MapRectangle: rectangle;
+    MapScreen_Scale: rectangle;
+    ScreenMG: Magnification;
+    PrinterMG: Magnification;
+    Zahyo: Zahyo_info;
+    Screen_Margin: ScreenMargin;
     Get_SxSy_With_3D(p: point): point;
     Get_Length_On_Screen(fontSize: number): number;
     Clone(): Screen_info;

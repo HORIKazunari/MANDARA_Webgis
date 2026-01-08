@@ -62,7 +62,10 @@ class TKY2JGDInfo_Impl {
 
         const B2 = retV.Brad * this.rad2deg;
         const L2 = retV.ALrad * this.rad2deg;
-        return {lat: B2, lon: L2};
+        const result = new latlon();
+        result.lat = B2;
+        result.lon = L2;
+        return result;
     }
 
     ITRF94toTokyo97(latlonP: latlon): latlon {
@@ -79,7 +82,10 @@ class TKY2JGDInfo_Impl {
         retV = this.XYZBLHcalc(xyz2, this.EP[1]) || { Brad: 0, ALrad: 0, H: 0 };
         const B2 = retV.Brad * this.rad2deg;
         const L2 = retV.ALrad * this.rad2deg;
-        return {lat: B2, lon: L2};
+        const result = new latlon();
+        result.lat = B2;
+        result.lon = L2;
+        return result;
     }
 
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
@@ -927,7 +933,10 @@ class spatial {
 
         if(MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_tokyo ){
         //日本測地系の場合は世界測地系に変換
-            const result = TKY2JGD.Tokyo97toITRF94({lat: LatLon.lat, lon: LatLon.lon});
+            const inputLatLon = new latlon();
+            inputLatLon.lat = LatLon.lat;
+            inputLatLon.lon = LatLon.lon;
+            const result = TKY2JGD.Tokyo97toITRF94(inputLatLon);
             LatLon.lon = result.lon;
             LatLon.lat = result.lat;
         }
@@ -2389,7 +2398,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**spanの文字のサイズをbodyに設定して求める（改行しない） */
     static getSpanSize(text: string, fontSize: number){
 
-        const t = this.createNewSpan(document.body, text, "", "", 0, 0, "", "visibility:hidden");
+        const t = this.createNewSpan(document.body, text, "", "", 0, 0, "visibility:hidden", undefined);
         t.whiteSpace = 'nowrap';
         t.style.top = '600px';
         t.style.fontSize = fontSize.px();
@@ -2447,7 +2456,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         const tx = this.createNewNumberInput(ParentObj, defoValue, ID, x + hsw, y, width, onChange, styleinfo);
         if (footWord != "") {
-            Generic.createNewSpan(ParentObj, footWord, "", "", x + width + hsw + 5, y + 3, "", "");
+            Generic.createNewSpan(ParentObj, footWord, "", "", x + width + hsw + 5, y + 3, "", undefined);
         }
         return tx;
     }
@@ -3026,7 +3035,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             x = e_point.clientX; //ページ内でのマウスカーソル位置を取得
             y = e_point.clientY;
         }
-        if (x == 'undefined') {
+        if (x == 'undefined' && 'pageX' in e_point && 'pageY' in e_point) {
             x = e_point.pageX;
             y = e_point.pageY;
         } else {
@@ -3154,11 +3163,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
             const cx = e.clientX;
             const cy = e.clientY;
-            if(typeof e.target.getBoundingClientRect !=='function'){
+            const target = e.target as HTMLElement;
+            if(typeof target.getBoundingClientRect !=='function'){
                 return undefined;//ブラウザ外に移動した場合
             }
-            const rx = cx - (e.target.getBoundingClientRect().x);
-            const ry = cy - (e.target.getBoundingClientRect().y);
+            const rx = cx - (target.getBoundingClientRect().x);
+            const ry = cy - (target.getBoundingClientRect().y);
             return new point(rx, ry);
         }
 
@@ -3178,7 +3188,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
     static Get_Outer_Mpline_AggregatedObj(LCode: Array<{LineCode: number}>, Shape: number): Array<{LineCode: number}> { //LCode:EnableMPLine_Data
 
-        const lc = this.ArrayClone(LCode);
+        const lc = LCode.map(item => ({LineCode: item.LineCode}));
 
         const ncode = [];
         for (let i = 0; i < lc.length; i++) {
@@ -6409,25 +6419,31 @@ class latlon {
         return new latlon(this.lat, this.lon);
     }
     
-    toDegreeMinuteSecond(): {lat: string; lon: string} {
+    toDegreeMinuteSecond(): {LatitudeDMS: {degree: number; minute: number; second: number}; LongitudeDMS: {degree: number; minute: number; second: number}} {
         const latDeg = Math.floor(Math.abs(this.lat));
         const latMin = Math.floor((Math.abs(this.lat) - latDeg) * 60);
         const latSec = ((Math.abs(this.lat) - latDeg) * 60 - latMin) * 60;
-        const latDir = this.lat >= 0 ? 'N' : 'S';
         
         const lonDeg = Math.floor(Math.abs(this.lon));
         const lonMin = Math.floor((Math.abs(this.lon) - lonDeg) * 60);
         const lonSec = ((Math.abs(this.lon) - lonDeg) * 60 - lonMin) * 60;
-        const lonDir = this.lon >= 0 ? 'E' : 'W';
         
         return {
-            lat: `${latDeg}°${latMin}'${latSec.toFixed(2)}"${latDir}`,
-            lon: `${lonDeg}°${lonMin}'${lonSec.toFixed(2)}"${lonDir}`
+            LatitudeDMS: {degree: latDeg, minute: latMin, second: latSec},
+            LongitudeDMS: {degree: lonDeg, minute: lonMin, second: lonSec}
         };
     }
     
     toLatlon(): latlon {
         return this;
+    }
+    
+    toPoint(): point {
+        return new point(this.lon, this.lat);
+    }
+    
+    Equals(other: latlon): boolean {
+        return this.lat === other.lat && this.lon === other.lon;
     }
 }
 
