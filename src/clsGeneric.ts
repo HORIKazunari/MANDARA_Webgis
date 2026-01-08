@@ -62,7 +62,7 @@ class TKY2JGDInfo_Impl {
 
         const B2 = retV.Brad * this.rad2deg;
         const L2 = retV.ALrad * this.rad2deg;
-        return new latlon(B2, L2);
+        return {lat: B2, lon: L2};
     }
 
     ITRF94toTokyo97(latlonP: latlon): latlon {
@@ -79,7 +79,7 @@ class TKY2JGDInfo_Impl {
         retV = this.XYZBLHcalc(xyz2, this.EP[1]) || { Brad: 0, ALrad: 0, H: 0 };
         const B2 = retV.Brad * this.rad2deg;
         const L2 = retV.ALrad * this.rad2deg;
-        return new latlon(B2, L2);
+        return {lat: B2, lon: L2};
     }
 
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
@@ -6394,4 +6394,42 @@ HTMLElement.prototype.btnDisabled = function (f) {
 (globalThis as Record<string, unknown>).CheckedListBox = CheckedListBox;
 (globalThis as Record<string, unknown>).ListBox = ListBox;
 (globalThis as Record<string, unknown>).ListViewTable = ListViewTable;
+
+// latlon class for latitude/longitude coordinates
+class latlon {
+    lat: number;
+    lon: number;
+    
+    constructor(lat: number = 0, lon: number = 0) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+    
+    Clone(): latlon {
+        return new latlon(this.lat, this.lon);
+    }
+    
+    toDegreeMinuteSecond(): {lat: string; lon: string} {
+        const latDeg = Math.floor(Math.abs(this.lat));
+        const latMin = Math.floor((Math.abs(this.lat) - latDeg) * 60);
+        const latSec = ((Math.abs(this.lat) - latDeg) * 60 - latMin) * 60;
+        const latDir = this.lat >= 0 ? 'N' : 'S';
+        
+        const lonDeg = Math.floor(Math.abs(this.lon));
+        const lonMin = Math.floor((Math.abs(this.lon) - lonDeg) * 60);
+        const lonSec = ((Math.abs(this.lon) - lonDeg) * 60 - lonMin) * 60;
+        const lonDir = this.lon >= 0 ? 'E' : 'W';
+        
+        return {
+            lat: `${latDeg}°${latMin}'${latSec.toFixed(2)}"${latDir}`,
+            lon: `${lonDeg}°${lonMin}'${lonSec.toFixed(2)}"${lonDir}`
+        };
+    }
+    
+    toLatlon(): latlon {
+        return this;
+    }
+}
+
+(globalThis as Record<string, unknown>).latlon = latlon;
 

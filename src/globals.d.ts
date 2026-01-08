@@ -961,9 +961,13 @@ declare const clsPrint: IClsPrint;
 declare let Frm_Print: IFrmPrint; // 変更される可能性あり
 // propertyWindow: AppStateで管理（削除済み）
 // divmain: AppStateで管理（削除済み）
-interface latlon {
+declare class latlon {
     lat: number;
     lon: number;
+    constructor(lat?: number, lon?: number);
+    Clone(): latlon;
+    toDegreeMinuteSecond(): {lat: string; lon: string};
+    toLatlon?(): latlon;
 }
 declare const TKY2JGD: {
     Tokyo97toITRF94: (latlonP: latlon) => latlon;
