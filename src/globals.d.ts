@@ -2203,7 +2203,7 @@ declare class spatial {
     static Get_TurnedBox(size: size, angle: number): size;
     static Get_Scale_Baititu_IdoKedo(p: point, MPDataMapZahyo: Zahyo_info): number;
     static Trans3D(x: number, y: number, z?: number, center?: point, expand?: number, pitch?: number, head?: number, bank?: number, xyPara?: JsonValue): point;
-    static Trans2D(CP: point, Kakudo_P: number, Kakudo?: number): point;
+    static Trans2D(CP: point, Kakudo_P: number | point, Kakudo?: number): point;
     static Check_Zahyo_Projection_Convert_Enabled(zahyo: Zahyo_info, zahyo2?: Zahyo_info): { ok: boolean; emes: string };
     static Get_Reverse_and_Convert_XY(point: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info): point;
     static check_Point_in_Polygon(point: point, polygon: point[]): { ok: boolean };
