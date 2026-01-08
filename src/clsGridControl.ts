@@ -2964,13 +2964,13 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     }
     /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
     //マウス操作
-    mdown = (e: MouseEvent) => {
+    mdown = (e: MouseEvent | TouchEvent) => {
         e.preventDefault();
         let event;
         if (e.type === "mousedown") {
-            event = e;
+            event = e as MouseEvent;
         } else {
-            event = e.changedTouches[0];
+            event = (e as TouchEvent).changedTouches[0];
         }
         const MouseDownF = true;
         this.touchStartTime = new Date().getTime();
@@ -3100,13 +3100,13 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             }
         }
     }
-    mmove = (e: MouseEvent) => {
+    mmove = (e: MouseEvent | TouchEvent) => {
         let event;
         e.preventDefault();
         if(this.txtTextBox?.getVisibility?.()==true){return;}
 
         if (e.type === "mousemove") {
-            event = e;
+            event = e as MouseEvent;
         } else {
             // if(mousePointingSituation == mousePointingSituations.pinch){
             //     pinchMove(e);
@@ -3461,14 +3461,14 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         }
     }
 
-    mup = (e: MouseEvent) => {
+    mup = (e: MouseEvent | TouchEvent) => {
         e.preventDefault();
         let event;
 
         if ((e.type === "mouseup") ||(e.type === "mouseleave")){
-             event = e;
+             event = e as MouseEvent;
         } else {
-             event = e.changedTouches[0];
+             event = (e as TouchEvent).changedTouches[0];
         }
         let xx, yy
         const f=false;
