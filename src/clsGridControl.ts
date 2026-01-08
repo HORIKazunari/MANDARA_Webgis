@@ -681,6 +681,7 @@ export class gridControl {
                             Index = 0;
                             break;
                         }
+                        break;
                     case enmMatchingMode.PartialtMatching:
                         Index = gstr.indexOf(FindStr);
                         break;
@@ -824,7 +825,7 @@ export class gridControl {
     }
     /**グリッドの左上固定部分設定 */
     setFixedUpperLeftData(LayerNum: number, X: number, Y: number, value: string) {
-        this.Grid_Property[LayerNum].FixedUpperLeftData[X][Y].Text = value;
+        this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text = value;
     }
     /**グリッドの左端固定部分の配置設定 */
     setFixedXSAllignment(LayerNum: number, X: number, value: enmHorizontalAlignment) {
@@ -916,7 +917,7 @@ export class gridControl {
     }
     /**グリッドの選択範囲を取得 */
     getSelectedArea(LayerNum: number) {
-        const R = this.Grid_Property[LayerNum].MouseUpDownRect;
+        const R = this.Grid_Property[LayerNum].MouseUpDownRect();
         if (this.Grid_Property[LayerNum].SelectedF == false) {
             R.Height = -1;
             R.Width = -1;
@@ -1157,7 +1158,7 @@ export class gridControl {
     getGridAlligntment(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].DataItemData[X].Allignment
     }
-    setGridAlligntment(LayerNum: number, X: number, value: string) {
+    setGridAlligntment(LayerNum: number, X: number, value: number) {
         this.Grid_Property[LayerNum].DataItemData[X].Allignment = value;
     }
 
@@ -1165,7 +1166,7 @@ export class gridControl {
     getFixedUpperLeftAlligntment(LayerNum: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeftAllignment
     }
-    setFixedUpperLeftAlligntment(LayerNum: number, value: string) {
+    setFixedUpperLeftAlligntment(LayerNum: number, value: number) {
         this.Grid_Property[LayerNum].FixedUpperLeftAllignment = value;
     }
 
@@ -1173,7 +1174,7 @@ export class gridControl {
     getFixedXSAllignmentData(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[n].Allignment
     }
-    setFixedXSAllignmentData(LayerNum: number, n: number, value: string) {
+    setFixedXSAllignmentData(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedObjectNameData[n].Allignment = value;
     }
 
@@ -1189,7 +1190,7 @@ export class gridControl {
     getFixedYSAllignment(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedDataItemData[n].Allignment
     }
-    setFixedYSAllignment(LayerNum: number, n: number, value: string) {
+    setFixedYSAllignment(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedDataItemData[n].Allignment = value;
     }
 
