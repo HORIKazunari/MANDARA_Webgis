@@ -2696,14 +2696,15 @@ function setting(locSearch: string) {
         }
 
         //階級区分方法クリック
-        function cboDivisionMethodChange(obj: HTMLElement, sel: number, v: number) {
+        function cboDivisionMethodChange(obj: HTMLSelectElement, sel: number | number[], v?: string) {
+            const selectedValue = typeof sel === 'number' ? cboDivisionMethodList[sel].value : cboDivisionMethodList[sel[0]].value;
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
             const dc = doc.getElementById("cboDivisionCount");
             const lshape = attrData.LayerData[Layernum].Shape;
             dc.disabled = false;
-            switch (v) {
+            switch (selectedValue) {
                 case enmDivisionMethod.AreaQuantile:
                     if (lshape != enmShape.PolygonShape) {
                         Generic.alert(undefined,"レイヤの形状が" + Generic.ConvertShapeEnumString(lshape) + "なので面積分位数は使えません。");
@@ -2727,41 +2728,42 @@ function setting(locSearch: string) {
                     }
                     break;
             }
-            data.Div_Method = v;
+            data.Div_Method = selectedValue;
             attrData.Set_Div_Value(Layernum, DataNum);
             setSettingSoloModeWindow();
             setFrequencyLabel();
         }
         //階級分割数クリック
-        function cboDivisionCountChange(obj: HTMLElement, sel: number, v: number) {
+        function cboDivisionCountChange(obj: HTMLSelectElement, sel: number | number[], v?: string) {
+            const selectedValue = typeof sel === 'number' ? cboDivisionCountMethodList[sel].value : cboDivisionCountMethodList[sel[0]].value;
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
             const oldDivNum = data.Div_Num;
-            if (oldDivNum == v) {
+            if (oldDivNum == selectedValue) {
                 return;
             }
-            data.Div_Num = v;
-            data.Class_Div.length = v;
-            if (v > oldDivNum) {
-                for (let i = oldDivNum; i < v; i++) {
+            data.Div_Num = selectedValue;
+            data.Class_Div.length = selectedValue;
+            if (selectedValue > oldDivNum) {
+                for (let i = oldDivNum; i < selectedValue; i++) {
                     data.Class_Div[i] = new strClass_Div_data();
                 }
                 attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
             }
             switch (data.ClassPaintMD.Color_Mode) {
                 case enmPaintColorSettingModeInfo.SoloColor:
-                    for (let i = oldDivNum; i < v; i++) {
+                    for (let i = oldDivNum; i < selectedValue; i++) {
                         data.Class_Div[i].PaintColor = data.Class_Div[oldDivNum - 1].PaintColor.Clone();
                     }
-                    data.ClassPaintMD.color2 = data.Class_Div[v - 1].PaintColor.Clone();
+                    data.ClassPaintMD.color2 = data.Class_Div[selectedValue - 1].PaintColor.Clone();
                     break;
                 default:
                     attrData.Twocolort(Layernum, DataNum);
             }
             switch (data.Div_Method) {
                 case enmDivisionMethod.Free:
-                    for (let i = oldDivNum - 1; i < v; i++) {
+                    for (let i = oldDivNum - 1; i < selectedValue; i++) {
                         data.Class_Div[i].Value = 0;
                     }
                     break;
@@ -2797,7 +2799,10 @@ function setting(locSearch: string) {
         { value: 2, text: '少し細かい' }, { value: 3, text: '普通' }, { value: 4, text: '粗い' }];
 
         Generic.createNewWordSelect(gbContourDrawMethod, "密度", cboDetailedList.map(item => item.text), 0, "contourDetailed", 10, 70, 40, 80, 0,
-            function (obj: HTMLSelectElement, sel: number, v: number) { attrData.nowDataSolo().ContourMD.Detailed = v }, "", "", true);
+            function (obj: HTMLSelectElement, sel: number | number[], v?: string) {
+                const selectedValue = typeof sel === 'number' ? cboDetailedList[sel].value : cboDetailedList[sel[0]].value;
+                attrData.nowDataSolo().ContourMD.Detailed = selectedValue;
+            }, "", "", true);
         const gbContourLineLpat = Generic.createNewFrame(contourView, "gbContourLineLpat", "", 190, 0, 90, 55, "等値線線種");
         Generic.createNewCanvas(gbContourLineLpat, "contourLinePat", "imgButton", 20, 15, 50, 30, function (e: MouseEvent) {
             clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.Line_Pat,
@@ -3085,7 +3090,10 @@ function setting(locSearch: string) {
         const cboOverlapList = [{ value: 0, text: '少し離す' }, { value: 1, text: 'ぴったり' },
         { value: 2, text: '1/4重ねる' }, { value: 3, text: '1/2重ねる' }, { value: 4, text: '3/4重ねる' }];
         Generic.createNewWordSelect(markBlockView, "記号の重なり", cboOverlapList.map(item => item.text), 0, "markBlockOverlap", 0, 335, undefined, 100, 0,
-            function (obj: HTMLSelectElement, sel: number, v: number) { attrData.nowDataSolo().MarkBlockMD.Overlap = v }, "", "", false);
+            function (obj: HTMLSelectElement, sel: number | number[], v?: string) {
+                const selectedValue = typeof sel === 'number' ? cboOverlapList[sel].value : cboOverlapList[sel[0]].value;
+                attrData.nowDataSolo().MarkBlockMD.Overlap = selectedValue;
+            }, "", "", false);
         setMinusValueCase(markBlockView, "gbMarBlockMinusValueCase");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■棒の高さモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -3153,7 +3161,7 @@ function setting(locSearch: string) {
         }, "");
 
         Generic.createNewSizeSelect(stringView, 0, "txtStringSizeChange", "最大幅", 30, 70, 40, 3,
-            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().StringMD.maxWidth = v; });
+            function (obj: HTMLInputElement, value: number) { attrData.nowDataSolo().StringMD.maxWidth = value; });
         Generic.createNewCheckBox(stringView, "最大幅を超えたら折り返す", "chkStringReturn", false, 30, 110, undefined,
             function (obj: HTMLInputElement) { attrData.nowDataSolo().StringMD.WordTurnF = obj.checked }, "");
         Generic.createNewButton(stringView, "内部データ", "", 30, 150, innerDataSet, "");
@@ -3636,7 +3644,7 @@ function setting(locSearch: string) {
 
         const gbLabelMaxSize = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 240, 110, 110, 70, "最大幅");
         Generic.createNewSizeSelect(gbLabelMaxSize, 0, "txtLabelSizeChange", "", 15, 30, 40, 3,
-            function (obj: HTMLSelectElement, v: number) { attrData.nowLabel().Width = v; });
+            function (obj: HTMLInputElement, value: number) { attrData.nowLabel().Width = value; });
 
         const gbLabelDataItem = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 0, 195, 350, 155, "データ項目");
         lstLabelDataItem = new ListBox(gbLabelDataItem, "", [], 15, 15, 180, 80, undefined, "");
