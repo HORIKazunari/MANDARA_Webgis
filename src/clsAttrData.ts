@@ -4715,7 +4715,7 @@ class clsAttrData {
                 d.Name = String(od.Name);
                 d.CenterP = cnvPoint(od.CenterP as JsonObject);
                 d.SETime = cnvStart_End_Time_data(od.SETime as JsonObject);
-                d.Shape = od.Shape as enmShape;
+                d.Shape = od.Shape as number;
                 d.Circumscribed_Rectangle = new rectangle();
                 const odObjects = od.Objects as JsonObject[];
                 d.Objects = [];
@@ -5112,11 +5112,11 @@ class clsAttrData {
             const oldMLClassMD = oldML.ClassMD as JsonObject;
             mlc.ClassMarkFrame_Visible = oldMLClassMD.ClassMarkFrame_Visible as boolean;
             mlc.PaintMode_Line = cnvLineProperty(oldMLClassMD.PaintMode_Line as JsonObject);
-            mlc.PaintMode_Method = oldMLClassMD.PaintMode_Method as enmPaintMode;
+            mlc.PaintMode_Method = oldMLClassMD.PaintMode_Method as number;
             mlc.PaintMode_Width = oldMLClassMD.PaintMode_Width as number;
             mlc.SeparateGapSize = oldMLClassMD.SeparateGapSize as number;
             mlc.SeparateClassWords = oldMLClassMD.SeparateClassWords as boolean;
-            mlc.FrequencyPrint = Number(oldMLClassMD.FrequencyPrint) as 0 | 1 | 2;
+            mlc.FrequencyPrint = oldMLClassMD.FrequencyPrint as boolean;
             const oldMLClassMDBoundaryLine = oldMLClassMD.ClassBoundaryLine as JsonObject;
             mlc.ClassBoundaryLine.Visible = oldMLClassMDBoundaryLine.Visible as boolean;
             mlc.ClassBoundaryLine.LPat = cnvLineProperty(oldMLClassMDBoundaryLine.LPat as JsonObject);
@@ -5930,7 +5930,7 @@ class clsAttrData {
                         switch (Uttl) {
                             case ("LAT"): {
                                 if (LatPosition == -1) {
-                                    LatPosition = i
+                                    LatPosition = i;
                                 }
                                 DataItemNotF[i] = true;
                                 break;
@@ -5964,11 +5964,12 @@ class clsAttrData {
                                 break;
                             }
                         }
+                        break;
                     }
                     case (enmLayerType.DefPoint): {
                         //地点定義レイヤ
                         if (Uttl == "LAT") {
-                            if (LatPosition = -1) {
+                            if (LatPosition == -1) {
                                 LatPosition = i;
                             }
                             DataItemNotF[i] = true;
@@ -6244,7 +6245,7 @@ class clsAttrData {
                     }
                 }
             }
-            let layshape = layData.Shape;
+            let layshape: number = layData.Shape;
             if (layshape === enmShape.NotDeffinition) {
                 layshape = UseMap.MPObj[Get_Obj[0].MpObjCode].Shape;
             }
@@ -6256,7 +6257,7 @@ class clsAttrData {
                 //初期属性が無い場合の色の設定
 
                 this.Add_One_Data_Value(LayN, "地図表示", "CAT", "", new Array(objn).fill(''), false)
-                if (layData.Shape != enmShape.LineShape) {
+                if (Number(layData.Shape) !== enmShape.LineShape) {
                     this.LayerData[LayN].atrData.Data[0].SoloModeViewSettings.Class_Div[0].PaintColor = new colorRGBA([255, 255, 255,255])
                 }
             } else {
@@ -6297,6 +6298,7 @@ class clsAttrData {
             this.TotalData.ViewStyle.MapTitle.Visible = false;
         }
 
+        this.Check_LayerShape();
         return true;
     }
 
@@ -6377,7 +6379,7 @@ class clsAttrData {
                 shcount++;
                 if (shmax < sh[j] ) {
                     shmax = sh[j];
-                    shmaxN = j as 0 | 1 | 2;
+                    shmaxN = j;
                 }
             }
         }
@@ -6495,7 +6497,8 @@ class clsAttrData {
         const rect = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
             const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
-            const screct = new rectangle(0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width(), 0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height());
+            const formSize = this.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
+            const screct = new rectangle(new point(0, 0), new size(formSize.width(), formSize.height()));
             const relation = spatial.Compare_Two_Rectangle_Position(turnRect, screct);
             if (relation == cstRectangle_Cross.cstOuter) {
                 return false;
