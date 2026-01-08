@@ -4293,8 +4293,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
             }
         }
         mapList[filename.toUpperCase()] = mapdata;
-        fileList.addSelectList([{ value: fu, text: filename }], fileList.options.length);
-        mapList.addSelectList([{ value: fu, text: filename }], mapList.options.length,false,false)
+        fileList.addList([filename], fileList.length);
         // @ts-expect-error - layerFrame is not defined in this scope
         Generic.setDisabled(layerFrame, false);
         // @ts-expect-error - AddLayer is not defined in this scope
@@ -4369,7 +4368,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     const objGList=new CheckedListBox(eachLayerFrame,"",[],15,90,150,80,false,objGListChange,"")
     Generic.createNewSpan(eachLayerFrame, "使用する地図ファイル", "", "", 180, 15, "", undefined);
     const useMapList = Generic.createNewSelect(eachLayerFrame, undefined, 0, "", 180, 35, false, useMapListChange, "width:130px;");
-    Generic.createNewSpan(eachLayerFrame, "時期設定", "", "", 180, 60, "", "");
+    Generic.createNewSpan(eachLayerFrame, "時期設定", "", "", 180, 60, "", undefined);
     const layerTime = Generic.createNewInput(eachLayerFrame, "date", "", "", 180, 80, "", "width:130px");
     layerTime.onchange = layerTimeChange;
     Generic.setDisabled(layerFrame, true);
@@ -4540,11 +4539,12 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     }
 
     //レイヤのオブジェクトグループ変更
-    function objGListChange(obj: HTMLElement, checkList: JsonValue, checkArray: number[]) {
+    function objGListChange(index: number) {
         const n = layerList.selectedIndex;
+        const checked = objGList.getChecked();
         LayerData[n].UseObjectKind.fill(false);
-        for (let i = 0; i < checkArray.length; i++) {
-            LayerData[n].UseObjectKind[checkArray[i]] = true;
+        for (let i = 0; i < checked.checkedArray.length; i++) {
+            LayerData[n].UseObjectKind[checked.checkedArray[i]] = true;
         }
     }
 
