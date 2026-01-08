@@ -3415,9 +3415,10 @@ class clsAttrData {
             this.LayerData[i].MapFileData=this.SetMapFile(this.LayerData[i].MapFileName);
         }
 
-        const bData: Uint8Array[] = [Generic.strToUtf8Array(json)];
+        const bData: Uint8Array = Generic.strToUtf8Array(json);
+        const bDataArray: Uint8Array[] = [bData];
         const bDataFile=[fname+"in"];
-        Generic.zipFile(fname,bData,bDataFile);
+        Generic.zipFile(fname, bDataArray, bDataFile);
     }
 
     //ある地点がオブジェクト内部に入るかどうかを調べる
@@ -3476,10 +3477,11 @@ class clsAttrData {
                 f = this.Check_Condition(Layernum, i);
             }
             if (f == true) {
-                if (cate[i] == -1) {
+                const cateValue = Number(cate[i]);
+                if (cateValue == -1) {
                     MissFreq++;
                 } else {
-                    Freqency[cate[i]]++;
+                    Freqency[cateValue]++;
                 }
             }
         }
@@ -4710,12 +4712,12 @@ class clsAttrData {
             for (let i = 0; i < oldMPSyntheticObj.length; i++) {
                 const od = oldMPSyntheticObj[i];
                 const d = new strSynthetic_Object_Data();
-                d.Kind = String(od.Kind);
+                d.Kind = Number(od.Kind);
                 d.NumOfObject = Number(od.NumOfObject);
                 d.Name = String(od.Name);
                 d.CenterP = cnvPoint(od.CenterP as JsonObject);
                 d.SETime = cnvStart_End_Time_data(od.SETime as JsonObject);
-                d.Shape = od.Shape as number;
+                d.Shape = Number(od.Shape);
                 d.Circumscribed_Rectangle = new rectangle();
                 const odObjects = od.Objects as JsonObject[];
                 d.Objects = [];
@@ -4838,7 +4840,7 @@ class clsAttrData {
             }
             ld.DummyGroup = [];//ダミーオブジェクトグループ
             const dummyGroup = oLay.DummyGroup as JsonArray;
-            ld.DummyGroup = dummyGroup.map(item => String(item));
+            ld.DummyGroup = dummyGroup.map(item => Number(item));
 
             const oldv = oLay.LayerModeViewSettings as JsonObject;
             const oldvl = oldv.LabelMode as JsonObject;
@@ -5115,7 +5117,7 @@ class clsAttrData {
             mlc.PaintMode_Method = oldMLClassMD.PaintMode_Method as number;
             mlc.PaintMode_Width = oldMLClassMD.PaintMode_Width as number;
             mlc.SeparateGapSize = oldMLClassMD.SeparateGapSize as number;
-            mlc.SeparateClassWords = oldMLClassMD.SeparateClassWords as boolean;
+            mlc.SeparateClassWords = oldMLClassMD.SeparateClassWords as number;
             mlc.FrequencyPrint = oldMLClassMD.FrequencyPrint as boolean;
             const oldMLClassMDBoundaryLine = oldMLClassMD.ClassBoundaryLine as JsonObject;
             mlc.ClassBoundaryLine.Visible = oldMLClassMDBoundaryLine.Visible as boolean;
@@ -5244,7 +5246,7 @@ class clsAttrData {
         }
 
         const str = attrText.split(/\n/);
-        const retv = this.ReadAttrDataOneLine(str);
+        const retv = this.ReadAttrDataOneLine(attrText);
         let ObjectErrorMessage = '';
         let f = true;
         if (retv.ok == true) {
@@ -5686,8 +5688,9 @@ class clsAttrData {
             const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
             return MapFileObjectNameSearch.Get_KenToCode(String(ObjName), Time);
         }else{//レイヤ指定
-            const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(this.LayerData[Layernum_MapfileName].MapFileName);
-            return MapFileObjectNameSearch.Get_KenToCode(String(ObjName), this.LayerData[Layernum_MapfileName].Time);    
+            const layerIndex = Number(Layernum_MapfileName);
+            const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(this.LayerData[layerIndex].MapFileName);
+            return MapFileObjectNameSearch.Get_KenToCode(String(ObjName), this.LayerData[layerIndex].Time);    
         }
     }
 
@@ -5775,7 +5778,9 @@ class clsAttrData {
                     d.Name = OBName;
                     d.Objectstructure = enmKenCodeObjectstructure.MapObj;
                     if (LayerReadingType == enmLayerType.Normal) {
-                        d.CenterPoint = MapFileData.Get_Enable_CenterP(code, LayerReading.Time as JsonObject);
+                        const timeObj = LayerReading.Time as JsonObject;
+                        const layerTime = new strYMD(timeObj.Year as number, timeObj.Month as number, timeObj.Day as number);
+                        d.CenterPoint = MapFileData.Get_Enable_CenterP(code, layerTime);
                         d.Symbol = d.CenterPoint;
                         d.Label = d.Symbol;
                         d.Visible = true;
@@ -6131,7 +6136,7 @@ class clsAttrData {
                         }
                     }
                 }
-                const missingValue = typeof DTMissing[i] === 'boolean' ? DTMissing[i] : false;
+                const missingValue = (typeof DTMissing[i] === 'boolean' && DTMissing[i]) ? true : false;
                 if (this.Add_One_Data_Value(Layernum, TTL[i], UNT[i], Note[i], Data_Val_STR, missingValue) == false) {
                     if (TTL[i] != "") {
                         addErMes += TTL[i] +"はデータ値がないため取得できませんでした。" + '\n';
@@ -6245,7 +6250,7 @@ class clsAttrData {
                     }
                 }
             }
-            let layshape: number = layData.Shape;
+            let layshape = layData.Shape as number;
             if (layshape === enmShape.NotDeffinition) {
                 layshape = UseMap.MPObj[Get_Obj[0].MpObjCode].Shape;
             }
@@ -6373,13 +6378,13 @@ class clsAttrData {
         }
         let shcount = 0;
         let shmax = sh[0];
-        let shmaxN = enmShape.PointShape;
+        let shmaxN: 0 | 1 | 2 = 0;
         for (let j = 0; j <= 2; j++) {
             if (sh[j] > 0 ) {
                 shcount++;
                 if (shmax < sh[j] ) {
                     shmax = sh[j];
-                    shmaxN = j;
+                    shmaxN = j as 0 | 1 | 2;
                 }
             }
         }
@@ -6614,7 +6619,10 @@ class clsAttrData {
                 }
             }
         } else {
-            newD.Value = Generic.Clone(Dn_Val_str);
+            newD.Value = Dn_Val_str.map(v => {
+                if (v === undefined) return undefined;
+                return typeof v === 'number' ? v : Number(v);
+            }) as (number | undefined)[];
         }
         this.LayerData[Layernum].atrData.Data.push(newD);
         this.LayerData[Layernum].atrData.Count++;
