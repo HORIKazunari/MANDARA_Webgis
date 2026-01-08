@@ -4047,7 +4047,15 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
 
 //シェープファイル読み込み
 function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) => void) | undefined): void{
-    let shapeFiles: { [key: string]: { shape: clsShapefile } } = {};
+    type ShapeFileInfo = {
+        shape: clsShapefile;
+        shp?: boolean;
+        shx?: boolean;
+        prj?: boolean;
+        dbf?: boolean;
+        files?: (File | string)[];
+    };
+    let shapeFiles: { [key: string]: ShapeFileInfo } = {};
     const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
@@ -4122,7 +4130,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
 
     const dropShapeFiles = function (files: FileList) {
         //ファイル読み込み（ドロップ）
-        const sFiles: Record<string, unknown> = {};
+        const sFiles: { [key: string]: ShapeFileInfo } = {};
         let er = "";
         let er_sub = "";
         const encode = cboCode?.getValue ? cboCode.getValue() : undefined;
@@ -4187,7 +4195,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
                 case 'prj':
                 case 'dbf':
                     if (sFiles[fname] == undefined) {
-                        sFiles[fname] = { shp: false, prj: false, dbf: false, shx: false, files: [], shape: new clsShapefile };
+                        sFiles[fname] = { shp: false, prj: false, dbf: false, shx: false, files: [], shape: new clsShapefile() };
                     }
                     switch (ext) {
                         case 'shp':
@@ -4343,8 +4351,8 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
 
     const fileFrame=Generic.createNewFrame(bbox, "file", "", 15, scrMargin.top+5, 450, 100, "地図ファイル");
-    Generic.createNewSpan(fileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", "");
-    const fileList =new ListBox(fileFrame, "", [], 15, 35, 200, 55, undefined, "");
+    Generic.createNewSpan(fileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", undefined);
+    const fileList =new ListBox(fileFrame, "", [], 15, 35, 200, 55, null, "");
     Generic.createNewButton(fileFrame, "地図ファイル追加", "", 230, 50, addMapOn,"");
     Generic.createNewButton(fileFrame, "削除", "", 360, 50, deleteMap, "");
 
@@ -4354,12 +4362,12 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     Generic.createNewButton(layerFrame, "削除", "", 120, 160, deleteLayer, "width:80px");
 
     const eachLayerFrame = Generic.createNewFrame(layerFrame, "", "", 225, 5,320,  180, "レイヤごとの設定");
-    Generic.createNewSpan(eachLayerFrame, "レイヤ名", "", "", 15, 15, "", "");
+    Generic.createNewSpan(eachLayerFrame, "レイヤ名", "", "", 15, 15, "", undefined);
     const layerNameBox = Generic.createNewInput(eachLayerFrame, "text", "", "", 15, 35, "", "width:150px");
     layerNameBox.onchange = layerNameChange;
     Generic.createNewWordWidthDiv(eachLayerFrame, "","表示するオブジェクトグループ", 15,63,22,150,undefined);
     const objGList=new CheckedListBox(eachLayerFrame,"",[],15,90,150,80,false,objGListChange,"")
-    Generic.createNewSpan(eachLayerFrame, "使用する地図ファイル", "", "", 180, 15, "", "");
+    Generic.createNewSpan(eachLayerFrame, "使用する地図ファイル", "", "", 180, 15, "", undefined);
     const useMapList = Generic.createNewSelect(eachLayerFrame, undefined, 0, "", 180, 35, false, useMapListChange, "width:130px;");
     Generic.createNewSpan(eachLayerFrame, "時期設定", "", "", 180, 60, "", "");
     const layerTime = Generic.createNewInput(eachLayerFrame, "date", "", "", 180, 80, "", "width:130px");
