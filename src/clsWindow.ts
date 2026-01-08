@@ -3170,8 +3170,8 @@ function setting(locSearch: string) {
         const overlayView = Generic.createNewDiv(settingModeWindow, "", "overlayView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gbOverlayDataSet = Generic.createNewFrame(overlayView, "gbOverlayDataSet", "", 0, 10, 380, 80, "重ね合わせデータセット");
         Generic.createNewSelect(gbOverlayDataSet, [], -1, "overlayDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
-                attrData.TotalData.TotalMode.OverLay.SelectedIndex = selectedIndex;
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+                attrData.TotalData.TotalMode.OverLay.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 overlayDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gbOverlayDataSet, "追加", "", 205, 15,
@@ -3290,8 +3290,8 @@ function setting(locSearch: string) {
         const seriesView = Generic.createNewDiv(settingModeWindow, "", "seriesView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gbseriesDataSet = Generic.createNewFrame(seriesView, "gbSeriesDataSet", "", 0, 10, 380, 80, "連続表示データセット");
         Generic.createNewSelect(gbseriesDataSet, [], -1, "seriesDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
-                attrData.TotalData.TotalMode.Series.SelectedIndex = selectedIndex;
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+                attrData.TotalData.TotalMode.Series.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 seriesDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gbseriesDataSet, "追加", "", 205, 15,
@@ -3413,8 +3413,8 @@ function setting(locSearch: string) {
         const graphView = Generic.createNewDiv(settingModeWindow, "", "graphView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gbgraphDataSet = Generic.createNewFrame(graphView, "gbgraphDataSet", "", 0, 10, 380, 80, "グラフデータセット");
         Generic.createNewSelect(gbgraphDataSet, [], -1, "graphDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
-                attrData.layerGraph().SelectedIndex = selectedIndex;
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+                attrData.layerGraph().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 pnlGraphItem.selectedRow = -1;
                 pnlGraphEachItem(0);
                 graphDatasetDataItem();
@@ -3604,8 +3604,8 @@ function setting(locSearch: string) {
         const labelView = Generic.createNewDiv(settingModeWindow, "", "labelView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gblabelDataSet = Generic.createNewFrame(labelView, "gblabelDataSet", "", 0, 10, 380, 80, "ラベルデータセット");
         Generic.createNewSelect(gblabelDataSet, [], -1, "labelDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number, value: number) {
-                attrData.layerLabel().SelectedIndex = selectedIndex;
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+                attrData.layerLabel().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 labelDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gblabelDataSet, "追加", "", 205, 15,
@@ -4076,7 +4076,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     for (let i = 1; i <= 19; i++) {
         keiNo.push({ value: i, text: i.toString() });
     }
-    const cboKeiNo = Generic.createNewSelect(zahyoModeFrame, keiNo, 0, "cboKeiNo", 50, 50, false, keiChange, "");
+    const cboKeiNo = Generic.createNewSelect(zahyoModeFrame, keiNo.map(item => item.text), 0, "cboKeiNo", 50, 50, false, keiChange, "");
 
     const zahyoSystemFrame = Generic.createNewFrame(infoFrame, "", "", 125, 100, 110, 100, "測地系");
     const ZahyoModeList = [{ value: enmZahyo_System_Info.Zahyo_System_tokyo, text: "日本測地系" },
@@ -4087,10 +4087,11 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     const chkTopology=Generic.createNewCheckBox(bbox,"位相構造化","",false,30,260,120,undefined,"");
     const cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList().map(item => item.text), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
 
-    function keiChange(obj: HTMLSelectElement, sel: HTMLSelectElement, v: number){
-        const fileKey = fileList.getValue();   
+    function keiChange(obj: HTMLSelectElement, sel: number | number[], v?: string){
+        const fileKey = fileList.getValue();
+        const selectedIndex = typeof sel === 'number' ? sel : sel[0];
         const zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
-        zahyo.HeimenTyokkaku_KEI_Number=v;
+        zahyo.HeimenTyokkaku_KEI_Number = keiNo[selectedIndex].value;
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
 
@@ -4540,7 +4541,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     }
 
     //レイヤの地図ファイル変更
-    function useMapListChange(obj: HTMLElement, sel: HTMLSelectElement, v: number) {
+    function useMapListChange(obj: HTMLSelectElement, sel: number | number[], v?: string) {
         const n = layerList.selectedIndex;
         const mapName = useMapList?.getText ? useMapList.getText() : "";
         LayerData[n].MapfileName = mapName;
