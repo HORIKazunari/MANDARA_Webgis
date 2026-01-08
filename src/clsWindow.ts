@@ -2460,7 +2460,7 @@ function setting(locSearch: string) {
         const sw = 400;
         const sh = 450;
         const xpos = divmain.style.left.removePx() + divmain.style.width.removePx() + 10;
-        settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, "", false, false, "", false, undefined) as HTMLDivElement;
+        settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, null, false, null, false, "", false, undefined) as HTMLDivElement;
         settingModeWindow.style.backgroundColor = "#f0f0f0";
         settingModeWindow.style.userSelect = 'none';
         settingModeWindow.addEventListener('click', settingFront)
@@ -3061,7 +3061,7 @@ function setting(locSearch: string) {
                         function (retTile: Tile_Property) { mkc.MinusTile = retTile });
                 }
             );
-            Generic.createNewSpan(gbBlockMinusValueCase, "凡例文字", "", "", 10, 45, "", "");
+            Generic.createNewSpan(gbBlockMinusValueCase, "凡例文字", "", "", 10, 45, "", undefined);
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "正の値", "", "", ID + "_txtMarkSizePlusValue", 20, 62, undefined, 80,
                 function (e: Event) { attrData.nowDataSolo().MarkCommon.LegendPlusWord = e.target.value }, "text-align:left");
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "負の値", "", "", ID + "_txtMarkSizeMinusValue", 20, 92, undefined, 80,
@@ -3850,8 +3850,8 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
     const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);
     const mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, scrMargin.top+5, 450, 140, "使用地図ファイル");
-    Generic.createNewSpan(mapFileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", "");
-    const mapFileList = new ListBox(mapFileFrame, "", [], 15, 35, 200, 55, undefined, "");
+    Generic.createNewSpan(mapFileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", undefined);
+    const mapFileList = new ListBox(mapFileFrame, "", [], 15, 35, 200, 55, null, "");
     Generic.createNewButton(mapFileFrame, "地図ファイル追加", "", 230, 50, addMapOn, "");
     Generic.createNewButton(mapFileFrame, "削除", "", 360, 50, deleteMap, "");
     Generic.createNewDiv(mapFileFrame,"※以下の地図ファイルは、読み込み済みのため設定不要です。<br>JAPAN、WORLD、日本緯度経度","","",15,95,430,50,"","");
@@ -3897,7 +3897,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
     let filename="";
     let mdrjString: string | undefined;
 
-    Generic.createNewSpan(dataFileFrame, "<b>下に属性データを貼り付ける（ctrl+v）、Excelで範囲選択してドラッグ&ドロップ、またはCSV、MDRJ、MDRMJファイルをドロップしてください</b>", "", "", 10, 55, "", "");
+    Generic.createNewSpan(dataFileFrame, "<b>下に属性データを貼り付ける（ctrl+v）、Excelで範囲選択してドラッグ&ドロップ、またはCSV、MDRJ、MDRMJファイルをドロップしてください</b>", "", "", 10, 55, "", undefined);
     const dataTextArea = Generic.createNewTextarea(dataFileFrame, "", "tArea", 15, 85, 42, 24,"font-size:12px;width:420px;height:170px;resize: none;overflow-x: scroll")
     dataTextArea.wrap = "off";
 
