@@ -2471,7 +2471,7 @@ interface ListItem {
     disabled?: boolean;
 }
 
-type RadioValue = string | number;
+type RadioValue = string | number | boolean;
 
 /**
  * レイヤー情報型
