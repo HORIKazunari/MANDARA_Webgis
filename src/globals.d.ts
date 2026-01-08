@@ -2465,6 +2465,8 @@ interface ListItem {
     disabled?: boolean;
 }
 
+type RadioValue = string | number;
+
 /**
  * レイヤー情報型
  * 地図レイヤーの管理に使用

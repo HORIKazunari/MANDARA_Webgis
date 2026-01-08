@@ -2263,7 +2263,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         const compressData = zip.compress();
 
-        const blob = new Blob([compressData], { 'type': 'application/octet-stream' });
+        const blob = new Blob([compressData.buffer], { 'type': 'application/octet-stream' });
 
         const nav = window.navigator as ExtendedNavigator;
         if (typeof nav?.msSaveBlob === "function") {
@@ -2710,7 +2710,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if ((n == -1) && (hn == -1)) {
             tx = filename;
         } else if (n == -1) {
-            tx = filename.right(filename.length - (hn + 1), n);
+            tx = filename.right(filename.length - (hn + 1));
         } else if (hn == -1) {
             tx = filename.left(n);
         } else {
@@ -3737,9 +3737,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const obj = document.createElement("div");
         obj.setAttribute("id", ID);
         obj.setAttribute("class", Class);
-        obj.setAttribute("onclick", onclick);
+        if (onclick && typeof onclick === 'string') {
+            obj.setAttribute("onclick", onclick);
+        }
         obj.setAttribute("style", "position:absolute;" + styleinfo);
-        obj.onclick = onclick;
+        if (onclick && typeof onclick === 'function') {
+            obj.onclick = onclick;
+        }
         obj.innerHTML = innerHtml;
         obj.style.top = y.px();
         obj.style.left = x.px();
@@ -3788,7 +3792,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const ok = this.createNewInput(ParentObj, "radio", "", ID, x, y, "", styleinfo);
         ok.addEventListener('change', change);
-        ok.value = value;
+        ok.value = String(value);
         ok.setAttribute("name", name);
         if (checked == true) {
             ok.setAttribute("checked", "")
@@ -3809,11 +3813,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 //        sp.addEventListener('click', onClick, false);
         function change(){
             if (typeof (onClick) === "function") {
-                let v=ok.value;
+                let v: string | number = ok.value;
                 if (isNaN(Number(v))==false){
-                    v=String(Number(v));
+                    v=Number(v);
                 }
-                onClick(v);
+                onClick(v as RadioValue);
             }
         }
     }
@@ -3823,8 +3827,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
-            let v = rd[i].value;
-            if ((isNaN(v) == false) && (isNaN(value) == false)) {
+            let v: string | number = rd[i].value;
+            if ((isNaN(Number(v)) == false) && (isNaN(Number(value)) == false)) {
                 v = Number(v);
             }
             if (v == value) {
@@ -3838,8 +3842,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
-            let v = rd[i].value;
-            if ((isNaN(v) == false) && (isNaN(value) == false)) {
+            let v: string | number = rd[i].value;
+            if ((isNaN(Number(v)) == false) && (isNaN(Number(value)) == false)) {
                 v = Number(v);
             }
             if (v == value) {
@@ -3855,8 +3859,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
             if (rd[i].checked==true) {
-                let v=rd[i].value;
-                if (isNaN(v)==false){
+                let v: string | number = rd[i].value;
+                if (isNaN(Number(v))==false){
                     v=Number(v);
                 }
                 return v;
@@ -3897,7 +3901,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const tx = this.createNewInput(ParentObj, "text", defoText, ID, x + hsw, y, undefined, styleinfo);
         tx.onchange = onChange;
         if (footWord != "") {
-            Generic.createNewSpan(ParentObj, footWord, "", "", x + boxWidth + hsw + 5, y + 3, "", "");
+            Generic.createNewSpan(ParentObj, footWord, "", "", x + boxWidth + hsw + 5, y + 3, "", undefined);
         }
         return tx;
     }
@@ -3912,7 +3916,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         ok.setAttribute("id", ID);
         ok.setAttribute("class", "imgButton");
         ok.setAttribute("src", src);
-        ok.onclick = onClick;
+        if (onClick) {
+            ok.addEventListener('click', onClick);
+        }
         ParentObj.appendChild(ok);
         return ok;
 
@@ -3987,7 +3993,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //** 色divボックス */
     static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: colorRGBA) => void) | undefined) {
 
-        const sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", "");
+        const sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", undefined);
         let sw = sp.offsetWidth;
         if (sw < 35) {
             sw = 35;
@@ -4053,7 +4059,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const sw =this.createNewWordWidthDiv(ParentObj,"",preWord,x,y,lineH,preWordWidth,undefined);
         const sInput=this.createNewNumberComboBox(ParentObj,defoValue,ID, cboCodeList,x+sw,y,60,10,onChange );
         if(percentShowF==true){
-            Generic.createNewSpan(ParentObj, "%", "", "", x+sw+65, y+3, "", "");
+            Generic.createNewSpan(ParentObj, "%", "", "", x+sw+65, y+3, "", undefined);
         }
         return sInput;
     }
@@ -4131,7 +4137,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.addEventListener("mouseenter", mouseEnter, false);
         sbox.addEventListener("mouseleave", mouseLeave, false);
         if (list != undefined) {
-            sbox.addSelectList?.( list, firstSelectIndex,true,astariskNonF);
+            const listItems: ListItem[] = list.map(item => ({value: item, text: item}));
+            sbox.addSelectList?.(listItems, firstSelectIndex, true, astariskNonF);
             sbox.selectedIndex = firstSelectIndex;
         }
         sbox.oldSel = firstSelectIndex;
