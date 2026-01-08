@@ -2674,7 +2674,7 @@ function setting(locSearch: string) {
         }
 
         //色設定方法ボタンクリック
-        function PaintColorSettingModeChange(v: number) {
+        function PaintColorSettingModeChange(v: RadioValue) {
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
             attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD.Color_Mode = v;
@@ -2780,7 +2780,7 @@ function setting(locSearch: string) {
         { value: enmContourIntervalMode.RegularInterval, text: '等間隔' },
         { value: enmContourIntervalMode.SeparateSettings, text: '個別設定' }];
         Generic.createNewRadioButtonList(gbContourMode, "contourInterval_Mode", contourIntervalList, 10, 10, undefined, 30, undefined,
-            function (v: number) {
+            function (v: RadioValue) {
                 attrData.nowDataSolo().ContourMD.Interval_Mode = v;
                 doc.getElementById("gbContourLineLpat").setVisibility(v == enmContourIntervalMode.ClassPaint);
                 doc.getElementById("gbRegularInterval").setVisibility(v == enmContourIntervalMode.RegularInterval);
@@ -3004,7 +3004,7 @@ function setting(locSearch: string) {
         const maxValuesetting = [{ value: enmMarkSizeValueMode.inDataItem, text: "データ項目の最大値" },
         { value: enmMarkSizeValueMode.UserDefinition, text: "ユーザ設定" }];
         Generic.createNewRadioButtonList(gbMarksizeLegendMaxValue, "markSizeMaxValueSetting", maxValuesetting, 10, 10, undefined, 30, undefined,
-            function (v: number) { attrData.nowDataSolo().MarkSizeMD.MaxValueMode = v }, "");
+            function (v: RadioValue) { attrData.nowDataSolo().MarkSizeMD.MaxValueMode = v }, "");
         Generic.createNewNumberInput(gbMarksizeLegendMaxValue, 0, "markSizeUserMaxValue", 40, 63, 90,
             function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkSizeMD.MaxValue = v; }, "");
         setMinusValueCase(markSizeView, "gbMarkSizeMinusValueCase");
@@ -3075,7 +3075,7 @@ function setting(locSearch: string) {
         { value: enmMarkBlockArrange.Horizontal, text: '横' },
         { value: enmMarkBlockArrange.Random, text: 'ランダム' }];
         Generic.createNewRadioButtonList(gbBlockMarkArrange, "blockArrange", arrangeList, 10, 10, undefined, 22, undefined,
-            function (v: number) { attrData.nowDataSolo().MarkBlockMD.ArrangeB = v }, "");
+            function (v: RadioValue) { attrData.nowDataSolo().MarkBlockMD.ArrangeB = v }, "");
         Generic.createNewWordNumberInput(markBlockView, "1記号あたりの値", "", 0, "markBlockValue", 0, 260, undefined, 100,
             function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBlockMD.Value = v }, "");
         Generic.createNewWordTextInput(markBlockView, "凡例文字", "（空白は既定値）", "", "markBlockWord", 0, 285, undefined, 80,
@@ -3095,7 +3095,7 @@ function setting(locSearch: string) {
 
         const gbMarkBarLegendMaxValue = Generic.createNewFrame(markBarView, "", "", 0, 55, 150, 100, "最大高さの値");
         Generic.createNewRadioButtonList(gbMarkBarLegendMaxValue, "markBarmaxValueSetting", maxValuesetting, 10, 15, undefined, 30, undefined,
-            function (v: number) { attrData.nowDataSolo().MarkBarMD.MaxValueMode = v }, "");
+            function (v: RadioValue) { attrData.nowDataSolo().MarkBarMD.MaxValueMode = v }, "");
         Generic.createNewNumberInput(gbMarkBarLegendMaxValue, 0, "markBarUserMaxValue", 40, 70, 90,
             function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxValue = v; }, "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarWidth", "幅", 0, 185, 40, 2,
@@ -3123,7 +3123,7 @@ function setting(locSearch: string) {
         const MarkBarShapeList = [{ value: enmMarkBarShape.bar, text: "縦棒" },
         { value: enmMarkBarShape.triangle, text: "三角" }];
         Generic.createNewRadioButtonList(gbMarkBarShape, "markBarShape", MarkBarShapeList, 10, 15, undefined, 25, undefined,
-            function (v: number) { attrData.nowDataSolo().MarkBarMD.BarShape = v }, "");
+            function (v: RadioValue) { attrData.nowDataSolo().MarkBarMD.BarShape = v }, "");
 
         const gbMarkBarScale = Generic.createNewFrame(markBarView, "", "", 180, 120, 150, 150, "縦棒設定");
         Generic.createNewCheckBox(gbMarkBarScale, "立体表示", "", true, 10, 20, undefined,
@@ -3540,7 +3540,7 @@ function setting(locSearch: string) {
         const gbGraphShape = Generic.createNewFrame(graphView, "gbGraphShape", "", 260, 110, 120, 130, "グラフの形式");
         const gslist = [{ value: enmGraphMode.PieGraph, text: "円グラフ" }, { value: enmGraphMode.StackedBarGraph, text: "帯グラフ" }, { value: enmGraphMode.LineGraph, text: "折れ線グラフ" }, { value: enmGraphMode.BarGraph, text: "棒グラフ" }];
         Generic.createNewRadioButtonList(gbGraphShape, "graphShape", gslist, 10, 15, undefined, 25, undefined,
-            function (v: number) {
+            function (v: RadioValue) {
                 const selGraph = attrData.nowGraph();
                 selGraph.GraphMode = v;
                 for (let i = 0; i < selGraph.Data.length; i++) {
@@ -4086,17 +4086,17 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
 
-    function zahyoModeFrameChange(v: number) {
+    function zahyoModeFrameChange(v: RadioValue) {
         const fileKey = fileList.value;   
         const zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
-        zahyo.Mode=v;
+        zahyo.Mode = Number(v);
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
 
-    function zahyoSystemFrameChange(v: number) {
+    function zahyoSystemFrameChange(v: RadioValue) {
         const fileKey = fileList.value;   
         const zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
-        zahyo.System=v;
+        zahyo.System = Number(v);
         shapeFiles[fileKey].shape.setMapZahyo(zahyo);
     }
     fileList.frame.addEventListener('dragover', function (e: DragEvent) {
