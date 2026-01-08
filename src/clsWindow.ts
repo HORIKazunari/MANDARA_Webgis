@@ -2481,7 +2481,7 @@ function setting(locSearch: string) {
         for (let i = 0; i < 19; i++) {
             cboDivisionCountMethodList.push({ value: i + 2, text: (i + 2).toString() });
         }
-        Generic.createNewWordSelect(gbDivNum, "分割数", cboDivisionCountMethodList, 0, "cboDivisionCount", 10, 53, 90, 50, 1, cboDivisionCountChange, "", "", true);
+        Generic.createNewWordSelect(gbDivNum, "分割数", cboDivisionCountMethodList.map(item => item.text), 0, "cboDivisionCount", 10, 53, 90, 50, 1, cboDivisionCountChange, "", "", true);
 
         //階級区分
 
@@ -3084,7 +3084,7 @@ function setting(locSearch: string) {
             function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBlockMD.HasuVisible = obj.checked }, "text-align:left");
         const cboOverlapList = [{ value: 0, text: '少し離す' }, { value: 1, text: 'ぴったり' },
         { value: 2, text: '1/4重ねる' }, { value: 3, text: '1/2重ねる' }, { value: 4, text: '3/4重ねる' }];
-        Generic.createNewWordSelect(markBlockView, "記号の重なり", cboOverlapList, 0, "markBlockOverlap", 0, 335, undefined, 100, 0,
+        Generic.createNewWordSelect(markBlockView, "記号の重なり", cboOverlapList.map(item => item.text), 0, "markBlockOverlap", 0, 335, undefined, 100, 0,
             function (obj: HTMLSelectElement, sel: number, v: number) { attrData.nowDataSolo().MarkBlockMD.Overlap = v }, "", "", false);
         setMinusValueCase(markBlockView, "gbMarBlockMinusValueCase");
 
@@ -3137,7 +3137,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowDataSolo().MarkBarMD.scaleLinePat,
                     function (Lpat: Line_Property) {
                         attrData.nowDataSolo().MarkBarMD.scaleLinePat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3547,7 +3547,7 @@ function setting(locSearch: string) {
                     const tbox = doc.getElementById("pnlGraphIteminPanelTileBox" + String(i));
                     tbox.setVisibility(value != enmGraphMode.LineGraph);
                 }
-                doc.getElementById("btmBarGraphColorSetting").setVisibility(v == enmGraphMode.BarGraph);
+                doc.getElementById("btmBarGraphColorSetting").setVisibility(value == enmGraphMode.BarGraph);
                 Check_Print_err();
             }, "");
         const gbGraphLineLpat = Generic.createNewFrame(graphView, "gbGraphLineLpat", "", 260, 260, 120, 45, "線種");
@@ -3724,7 +3724,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowLabel().BorderLine,
                     function (Lpat: Line_Property) {
                         attrData.nowLabel().BorderLine = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3883,7 +3883,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
     fileIn.accept=".csv,.mdrj,.mdrmj";
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
     { value: 'utf-8', text: 'UTF-8' }];
-    const cboCode = Generic.createNewWordSelect(dataFileFrame,"CSVファイル文字コード", cboCodeList, 0,  "cboCode", 270, 8,undefined,100,1,  undefined,"", "font-size:12px",false);
+    const cboCode = Generic.createNewWordSelect(dataFileFrame,"CSVファイル文字コード", cboCodeList.map(item => item.text), 0,  "cboCode", 270, 8,undefined,100,1,  undefined,"", "font-size:12px",false);
 
     let ext="clipboard";
     let filename="";
@@ -3996,7 +3996,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
             }
         }
         mapList[mapFilename.toUpperCase()] = mapdata;
-        mapFileList.addList([{ value: fu, text: mapFilename }], mapFileList.length);
+        mapFileList.addList([mapFilename], mapFileList.length);
     }
     //選択した地図ファイル削除
     function deleteMap() {
@@ -4045,7 +4045,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
     { value: 'utf-8', text: 'UTF-8' }];
-    const cboCode = Generic.createNewWordSelect(fileFrame,"dbfファイル文字コード", cboCodeList, 0,  "cboCode",15, 15,140,100,0,  undefined,"", "",false);
+    const cboCode = Generic.createNewWordSelect(fileFrame,"dbfファイル文字コード", cboCodeList.map(item => item.text), 0,  "cboCode",15, 15,140,100,0,  undefined,"", "",false);
 
     Generic.createNewDiv(fileFrame, "<b>下にシェープファイル1式（shp,shx,dbf,prjファイル）ずつ（またはzip圧縮ファイル）ドロップしてください</b>", "", "", 15, 45, 310, 50, "", "");
     const fileList = new ListBox(fileFrame, "", [], 15, 90, 220, 95, setShapeFileInfo, "");
@@ -4077,7 +4077,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     Generic.createNewRadioButtonList(zahyoSystemFrame, "zahyoSystem", ZahyoModeList, 10, 10,undefined, 22,undefined, zahyoSystemFrameChange, "");
     infoFrame?.setVisibility?.(false);
     const chkTopology=Generic.createNewCheckBox(bbox,"位相構造化","",false,30,260,120,undefined,"");
-    const cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList(), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
+    const cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList().map(item => item.text), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
 
     function keiChange(obj: HTMLSelectElement, sel: HTMLSelectElement, v: number){
         const fileKey = fileList.getValue();   
@@ -4143,7 +4143,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
         sFiles[key].shape.fileRead(sFiles[key].files, encode,key, onOk, onError);
         function onOk(tag: string) {//読み込めた
             const lst=[{ value: tag, text: tag + ".shp"  }];
-            fileList.addList(lst, firstSel);
+            fileList.addList(lst.map(item => item.text), firstSel);
             shapeFiles[tag] = sFiles[tag];
             setShapeFileInfo();
         }
@@ -4414,7 +4414,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
             }
         }
         mapList[filename.toUpperCase()]=mapdata;
-        fileList.addList([{ value: fu, text: filename }], fileList.length);
+        fileList.addList([filename], fileList.length);
         useMapList?.addSelectList?.([{ value: fu, text: filename }], useMapList.options.length, false, false)
         Generic.setDisabled(layerFrame, false);
         AddLayer();
@@ -4433,7 +4433,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         d.UseObjectKind = (new Array(okn)).fill(false);
         d.UseObjectKind[0] = true;
         Generic.setDisabled(eachLayerFrame, false);
-        layerList.addList([{ value: "", text: d.Name }], n);
+        layerList.addList([d.Name], n);
         LayerData[n ] = d;
         layerListOnChange();
     }
