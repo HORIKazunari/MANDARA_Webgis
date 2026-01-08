@@ -919,13 +919,15 @@ export class gridControl {
     getSelectedArea(LayerNum: number) {
         const R = this.Grid_Property[LayerNum].MouseUpDownRect();
         if (this.Grid_Property[LayerNum].SelectedF == false) {
-            R.Height = -1;
-            R.Width = -1;
-            R.X = 0;
-            R.Y = 0;
+            const sz = R.size();
+            sz.height = -1;
+            sz.width = -1;
+            R.left = 0;
+            R.top = 0;
         } else {
-            R.Height++;
-            R.Width++;
+            const sz = R.size();
+            sz.height++;
+            sz.width++;
         }
         return R;
     }
@@ -1281,7 +1283,7 @@ export class gridControl {
     getFixedGridColor() {
         return this.Grid_Total.Color.FixedGrid;
     }
-    setFixedGridColor(value: string) {
+    setFixedGridColor(value: colorRGBA) {
         this.Grid_Total.Color.FixedGrid = value;
     }
 
@@ -1289,14 +1291,14 @@ export class gridControl {
     getGridLineColor() {
         return this.Grid_Total.Color.GridLine;
     }
-    setGridLineColor(value: string) {
+    setGridLineColor(value: colorRGBA) {
         this.Grid_Total.Color.GridLine = value;
     }
     /**枠部分色設定 */
     getFrameColor() {
         return this.Grid_Total.Color.Frame;
     }
-    setFrameColor(value: string) {
+    setFrameColor(value: colorRGBA) {
         this.Grid_Total.Color.Frame = value;
     }
     /**行のキャプション */
@@ -1789,7 +1791,7 @@ export class gridControl {
         GP.Grid_Text = Generic.Array2Dimension<string>(xs, ys, "");
         GP.FixedObjectName = Generic.Array2Dimension<string>(this.Grid_Total.FixedObjectName_n, ys, "")
         GP.FixedDataItem = Generic.Array2Dimension<string>(xs, this.Grid_Total.FixedDataItem_n, "")
-        GP.FixedUpperLeft = Generic.Array2Dimension<string>(this.Grid_Total.FixedObjectName_n, this.Grid_Total.FixedDataItem_n, "")
+        GP.FixedUpperLeft = Generic.Array2Dimension<FixedUpperLeft_Info>(this.Grid_Total.FixedObjectName_n, this.Grid_Total.FixedDataItem_n, new FixedUpperLeft_Info())
 
         GP.Ope = OperationEnable;
         GP.LayerName = LayName;
