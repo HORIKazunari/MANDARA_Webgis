@@ -7,6 +7,12 @@
 // リストアイテムの型定義（select要素やListBoxで使用）
 type ListItem = { value: string | number; text: string };
 
+// ListViewTable互換のインターフェース（clsGenericのListViewTableクラスと互換）
+interface IListViewTable {
+    clear?: () => void;
+    insertRow?: (index: number, data: JsonValue) => void;
+}
+
 // メニューアイテムの型定義（ポップアップメニューで使用）
 interface MenuItem {
     caption: string;
@@ -439,7 +445,7 @@ interface IAttrData {
     Get_Data_Cell_Array_With_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
     Add_One_Data_Value?: (Layernum: number, Title: string, Unit: string, Note: string, Data_Val_str: string, Missing_F?: boolean) => boolean;
     Check_Missing_Value?: (layer?: number, object?: number, data?: number) => boolean;
-    Check_Enable_SoloMode?: (soloMode?: ISoloModeViewSettings, layernum?: number, dataNum?: number) => boolean;
+    Check_Enable_SoloMode?: (soloMode?: number, layernum?: number, dataNum?: number) => boolean;
     Get_CategolyArray?: (layer?: number, data?: number) => unknown[];
     Get_Categoly?: (layer?: number, data?: number, index?: number) => unknown;
     Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], nPolyP: number[], tile: Tile_Property) => void;
@@ -461,8 +467,8 @@ interface IAttrData {
     Get_SxSy_With_3D?: (point: point) => point;
     ClassMD?: strClassMode_Data; // strClassMode_Data (clsAttrData.tsで定義)
     saveAsMDRJ?: (filename?: string, options?: JsonObject) => void;
-    Sort_OverLay_Data?: (arg1?: ISoloModeViewSettings[], arg2?: number) => ISoloModeViewSettings[];
-    Sort_OverLay_Data_Sub?: (arg1?: ISoloModeViewSettings[], arg2?: number) => ISoloModeViewSettings[];
+    Sort_OverLay_Data?: (dataSetNumber: number) => void;
+    Sort_OverLay_Data_Sub?: (ovData: strOverLay_DataSet_Item_Info[]) => strOverLay_DataSet_Item_Info[];
     Boundary_Kencode_Arrange?: (layer?: number, object?: number, time?: strYMD | null) => boundArrangeData[];
     GetObjMenseki?: (layer?: number, object?: number) => number;
     Get_MaxMinValue_Range?: (layer?: number, data?: number) => { min: number; max: number };
@@ -489,8 +495,8 @@ interface IAttrData {
     Get_DataMissingNum?: (layer?: number, data?: number) => number;
     Get_ObjectCode_from_ObjName?: (layer?: number, objName?: string) => number;
     // 追加メソッド
-    getSeriesDataSetName?: () => string[];
-    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement, DataSetItem: ISeriesDatasetInfo) => void;
+    getSeriesDataSetName?: () => ListItem[];
+    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement | IListViewTable, DataSetItem: ISeriesDatasetInfo) => void;
     getGraphTitle?: (layernum: number) => Array<{value: number, text: string}>;
     getLabelTitle?: (layernum: number) => Array<{value: number, text: string}>;
     getOverlayTitle?: () => Array<{value: number, text: string}>;
@@ -503,12 +509,12 @@ interface IAttrData {
     getOneObjectPanelLabelString?: (layernum: number, dataNum: number, objNum: number, separatorString: string) => string;
     getSoloMode?: (layernum: number, dataNum: number) => number;
     Set_Acc_First_Position?: () => void;
-    Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: ISoloModeViewSettings) => void;
+    Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: number) => void;
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
     SetMapFile?: (mapFileName: string) => IMapData;
     AddPointObjectKindUsed?: (layer?: number, object?: number, mark?: strDummyObjectPointMark_Info) => strDummyObjectPointMark_Info;
     AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
-    Get_Check_Enable_SoloMode?: (soloMode?: ISoloModeViewSettings, layerNum?: number, dataNum?: number) => boolean;
+    Get_Check_Enable_SoloMode?: (soloMode?: number, layerNum?: number, dataNum?: number) => boolean;
     Draw_Tile_RoundBox?: (g: CanvasRenderingContext2D, boundaryRect: rectangle, back: BackGround_Box_Property, kakudo: number) => void;
     Check_Screen_In?: (rect: rectangle) => boolean;
     Get_Padding_Pixcel?: (back: BackGround_Box_Property) => number;

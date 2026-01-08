@@ -452,7 +452,7 @@ function setting(locSearch: string) {
         readData(okButton);
         function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
             attrData = new clsAttrData();
-            const retv = attrData.OpenNewMandaraFile(mapdata, attrText, filename, ext);
+            const retv = attrData.OpenNewMandaraFile(mapdata, attrText, filename as string, ext);
             if(retv.emes != "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
@@ -567,7 +567,7 @@ function setting(locSearch: string) {
         }
         Generic.createNewSpan(backDiv,"データ","","",15,40,"",undefined);
         Generic.createNewSpan(backDiv,"データのコメント","","",330,40,"",undefined);
-        Generic.createNewGrid(backDiv,"","","grayFrame","",data,15,60,300,250,'100%',"","font-size:13px",1,"background-color:#aaffaa;","","","");
+        Generic.createNewGrid(backDiv,"","","grayFrame","",data,15,60,300,250,100,"","font-size:13px",1,"background-color:#aaffaa;","","","");
         const txComment=Generic.createNewTextarea(backDiv,attrData.TotalData.LV1.Comment,"",330,60,20,50,"resize:none;width:300px;height:250px");
         function buttonOK(){
             Generic.clear_backDiv();
@@ -827,7 +827,7 @@ function setting(locSearch: string) {
                             TTL = title + "Ｙ";
                             break;
                     }
-                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRX, false);
+                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRX.join('\n'), false);
 
                     switch (attrData.TotalData.ViewStyle.Zahyo.Mode) {
                         case enmZahyo_mode_info.Zahyo_No_Mode:
@@ -840,7 +840,7 @@ function setting(locSearch: string) {
                             TTL = title + "Ｘ";
                             break;
                     }
-                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRY, false);
+                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRY.join('\n'), false);
                     selectDataItem?.addSelectList?.([
                         { value: newN, text: attrData.Get_DataTitle(LayerNum, newN, true) },
                         { value: newN + 1, text: attrData.Get_DataTitle(LayerNum, newN + 1, true) }
@@ -1707,7 +1707,7 @@ function setting(locSearch: string) {
         const seriesSelD = series.DataSet[series.SelectedIndex];
         doc.getElementById("seriesDatasetTitle").value = seriesSelD.title;
         doc.getElementById("gbSeriesItemData").setVisibility(seriesSelD.DataItem.length > 0);
-        attrData.SeriesMode_to_ListViewData(seriesListView,seriesSelD.DataItem);
+        attrData.SeriesMode_to_ListViewData(seriesListView, seriesSelD.DataItem);
         Check_Print_err();
     }
 
@@ -1819,17 +1819,17 @@ function setting(locSearch: string) {
             doc.getElementById("cboDivisionMethod").value = data.SoloModeViewSettings.Div_Method;
             //面以外は面積分位数を選べない
             doc.getElementById("cboDivisionMethod").setAstarisk(enmDivisionMethod.AreaQuantile, (layShape != enmShape.PolygonShape));
-            doc.getElementById("cboDivisionCount").value = data.SoloModeViewSettings.Div_Num;
+            doc.getElementById("cboDivisionCount").value = String(data.SoloModeViewSettings.Div_Num);
             Generic.checkRadioByValue("PaintColorSettingMode", data.SoloModeViewSettings.ClassPaintMD.Color_Mode);
             const div_num = data.SoloModeViewSettings.Div_Num;
             const pnlClassDiv = doc.getElementById("pnlClassDiv");
             const ph = picClassBoxHeight;
             pnlClassDiv.style.height = (ph * div_num + 2).px();
             //不足するpicClassBoxを追加
-            const pnlWithProps = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
-            for (let i = pnlWithProps.inPic ?? 0; i < div_num; i++) {
+            const pnlWithProps1 = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+            for (let i = pnlWithProps1.inPic ?? 0; i < div_num; i++) {
                 const cbox = Generic.createNewCanvas(pnlClassDiv,  "picClassBox" + i,"", 0, i * picClassBoxHeight, picClassBoxWidth, picClassBoxHeight,undefined, "border:solid 1px");
-                cbox.tag = i;
+                cbox.tag = String(i);
                 cbox.onclick = function (e: MouseEvent) {
                     const tgt = e.target as HTMLCanvasElement;
                     if (!tgt) { return; }
@@ -1871,13 +1871,13 @@ function setting(locSearch: string) {
                 txele.ondragstart = function (e: DragEvent) {
                     if (!e.dataTransfer || !e.target) { return; }
                     const tgt = e.target as HTMLInputElement;
-                    e.dataTransfer.setData('abc', tgt.tag);
+                    e.dataTransfer.setData('abc', String(tgt.tag ?? ''));
                 };
                 txele.ondrop = function (e: DragEvent) {
                     //カテゴリーデータの場合、他のカテゴリーをドロップ
                     if (!e.dataTransfer || !e.target) { return; }
                     const oele = doc.getElementById("txtClassValue" + String(e.dataTransfer.getData('abc')));
-                    const dragN = Number(oele.tag);
+                    const dragN = Number(String(oele.tag));
                     const dropN = Number((e.target as HTMLElement).tag);
                     if(dropN == dragN) { return; }
                     const Layernum = attrData.TotalData.LV1.SelectedLayer;
@@ -1911,7 +1911,7 @@ function setting(locSearch: string) {
                         ldd.Class_Div[n].Value = v;
                     } else {
                         const oldTx = ldd.Class_Div[n].Value;
-                        const newTx =v.trim();
+                        const newTx = String(v).trim();
                         if((newTx == "")&&(ldd.MissingF == true)) {
                             Generic.alert(undefined,"欠損値設定があるので空白にはできません。")
                             //e.target.value = oldTx;
@@ -1937,19 +1937,19 @@ function setting(locSearch: string) {
                 }
             }
             //余ったpicClassBoxとtxtClassValueを削除
-            const pnlWithProps = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
-            for (let i = div_num; i < (pnlWithProps.inPic ?? 0); i++) {
+            const pnlWithProps2 = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+            for (let i = div_num; i < (pnlWithProps2.inPic ?? 0); i++) {
                 const cbox = doc.getElementById( "picClassBox" + i);
                 cbox.parentNode.removeChild(cbox);
                 const fbox = doc.getElementById("freqBox" + i);
                 fbox.parentNode.removeChild(fbox);
             }
-            for (let i = txtNum; i < (pnlWithProps.inTxt ?? 0); i++) {
+            for (let i = txtNum; i < (pnlWithProps2.inTxt ?? 0); i++) {
                 const txele = doc.getElementById( "txtClassValue" + i);
                 txele.parentNode.removeChild(txele);
             }
-            pnlWithProps.inPic = div_num;
-            pnlWithProps.inTxt = txtNum;
+            pnlWithProps2.inPic = div_num;
+            pnlWithProps2.inTxt = txtNum;
 
             SetPictureBox();
             SetPicClassBoxCursol();
@@ -1962,7 +1962,7 @@ function setting(locSearch: string) {
                 if (target?.tag == null) {
                     return;
                 }
-                const n = parseInt(target.tag);
+                const n = parseInt(String(target.tag));
                 const Layernum = attrData.TotalData.LV1.SelectedLayer;
                 const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
                 const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
@@ -2457,7 +2457,7 @@ function setting(locSearch: string) {
         const sw = 400;
         const sh = 450;
         const xpos = divmain.style.left.removePx() + divmain.style.width.removePx() + 10;
-        settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, "", false, false, "", false, undefined);
+        settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, "", false, false, "", false, undefined) as HTMLDivElement;
         settingModeWindow.style.backgroundColor = "#f0f0f0";
         settingModeWindow.style.userSelect = 'none';
         settingModeWindow.addEventListener('click', settingFront)
@@ -2473,7 +2473,7 @@ function setting(locSearch: string) {
         { value: enmDivisionMethod.StandardDeviation, text: '標準偏差' },
         { value: enmDivisionMethod.EqualInterval, text: '等間隔' }
         ]
-        Generic.createNewWordSelect(gbDivNum, "区分方法", cboDivisionMethodList, 0, "cboDivisionMethod", 10, 10, 90, 100, 1, cboDivisionMethodChange, "", "", true);
+        Generic.createNewWordSelect(gbDivNum, "区分方法", cboDivisionMethodList.map(item => item.text), 0, "cboDivisionMethod", 10, 10, 90, 100, 1, cboDivisionMethodChange, "", "", true);
         const cboDivisionCountMethodList = [];
         for (let i = 0; i < 19; i++) {
             cboDivisionCountMethodList.push({ value: i + 2, text: (i + 2).toString() });
@@ -2484,7 +2484,7 @@ function setting(locSearch: string) {
 
         const pnlClassDivBase = Generic.createNewDiv(classView, "", "pnlClassDivBase", "", 150, 20, allW + 20, 350, "background-color:#f0f0f0;overflow-y: scroll", "");
         const pnlClassDiv = Generic.createNewDiv(pnlClassDivBase, "", "pnlClassDiv", "", 0, 0, allW, 300, "overflow:hidden", "");
-        const pnlWithProps = pnlClassDiv as HTMLElement & { inPic: number; inTxt: number };
+        const pnlWithProps = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
         pnlWithProps.inPic = 0;//pnlClassDiv内部の色と息栖とボックスの数を記録
         pnlWithProps.inTxt = 0;
         //ペイントモード：色設定方法
@@ -2624,7 +2624,7 @@ function setting(locSearch: string) {
             clsMarkSet(e, picMarkChange, md.PointMark, attrData);
             function picMarkChange(newMark: Mark) {
                 md.PointMark = newMark;
-                attrData.Draw_Sample_Mark_Box(e.target, newMark);
+                attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
             }
         }
         //ペイントモード線オブジェクトのサイズ設定
@@ -2793,7 +2793,7 @@ function setting(locSearch: string) {
         const cboDetailedList = [{ value: 0, text: '非常に細かい' }, { value: 1, text: '細かい' },
         { value: 2, text: '少し細かい' }, { value: 3, text: '普通' }, { value: 4, text: '粗い' }];
 
-        Generic.createNewWordSelect(gbContourDrawMethod, "密度", cboDetailedList, 0, "contourDetailed", 10, 70, 40, 80, 0,
+        Generic.createNewWordSelect(gbContourDrawMethod, "密度", cboDetailedList.map(item => item.text), 0, "contourDetailed", 10, 70, 40, 80, 0,
             function (obj: HTMLSelectElement, sel: number, v: number) { attrData.nowDataSolo().ContourMD.Detailed = v }, "", "", true);
         const gbContourLineLpat = Generic.createNewFrame(contourView, "gbContourLineLpat", "", 190, 0, 90, 55, "等値線線種");
         Generic.createNewCanvas(gbContourLineLpat, "contourLinePat", "imgButton", 20, 15, 50, 30, function (e: MouseEvent) {
@@ -2917,7 +2917,7 @@ function setting(locSearch: string) {
         Generic.createNewButton(gbSeparateSettings, "追加", "", 10, 295,
             function () {
                 doc.getElementById("gbContourSepaData").setVisibility(true);
-                lstcontourSeparateValue.addList([{ value: 0, text: "0" }], lstcontourSeparateValue.length);
+                lstcontourSeparateValue.addList(["0"], lstcontourSeparateValue.length);
                 attrData.nowDataSolo().ContourMD.IrregularNum++;
                 const dt = new strContour_Data_Irregular_interval()
                 dt.Line_Pat = clsBase.Line();

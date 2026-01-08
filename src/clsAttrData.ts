@@ -6,7 +6,7 @@ import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata } from './clsMapdata';
 import type { strLayerInfo } from './clsWindow';
-import type { JsonObject, JsonValue, JsonArray } from './types';
+import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
 
 
 // size クラスは globals.d.ts で定義済み
@@ -7771,7 +7771,7 @@ class clsAttrData {
     }
   
     /**連続表示モードのデータセット一覧を取得 */
-    getSeriesDataSetName(): string[] {
+    getSeriesDataSetName(): ListItem[] {
         const state = appState();
         const series = state.attrData.TotalData.TotalMode.Series;
         const seriesDataSetList = [];
@@ -7786,8 +7786,12 @@ class clsAttrData {
     }
 
     /** 連続表示モードのデータセットをリストビューに入れる*/
-    SeriesMode_to_ListViewData(seriesListView: HTMLElement, DataSetItem: JsonValue): void {
-        seriesListView.clear();
+    SeriesMode_to_ListViewData(seriesListView: HTMLElement | IListViewTable, DataSetItem: JsonValue): void {
+        // ListViewTableインスタンスかHTMLElementかを判定
+        if ('clear' in seriesListView && typeof seriesListView.clear === 'function') {
+            // ListViewTableのメソッドを直接使用
+            seriesListView.clear();
+        }
         const seriesData: JsonValue[] = [4];
         const DataSetItemArray = DataSetItem as JsonValue[];
         for (let i = 0; i < DataSetItemArray.length; i++) {
@@ -7832,9 +7836,10 @@ class clsAttrData {
                         break;
                 }
             }
-            seriesListView.insertRow(1, seriesData);
+            if ('insertRow' in seriesListView && typeof seriesListView.insertRow === 'function') {
+                seriesListView.insertRow(1, seriesData);
+            }
         }
-
     }
     Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: JsonValue): void {
         //レイヤの追加
