@@ -1845,7 +1845,7 @@ function setting(locSearch: string) {
                             const md = attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark;
                             clsMarkSet(e, mkChange, md, attrData);
                             function mkChange(newMark: Mark) {
-                                attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark = newMark.Clone();
+                                attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark = { ...newMark };
                                 attrData.Draw_Sample_Mark_Box(tgt, newMark);
                             }
                             break;
@@ -1854,7 +1854,7 @@ function setting(locSearch: string) {
                             const md = attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat;
                             clsLinePatternSet(e, md, lineChange);
                             function lineChange(newPat: LinePattern) {
-                                attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat = newPat.Clone();
+                                attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat = { ...newPat };
                                 attrData.Draw_Sample_LineBox(tgt,newPat);
                             }
                             break
@@ -2538,7 +2538,7 @@ function setting(locSearch: string) {
                 const ldd = attrData.nowDataSolo();
                 clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: LinePattern) {
                     for (let i = 0; i < ldd.Div_Num; i++) {
-                        ldd.Class_Div[i].ODLinePat = newLpat.Clone();
+                        ldd.Class_Div[i].ODLinePat = { ...newLpat };
                     }
                     SetPictureBox();
                 })
@@ -2548,7 +2548,7 @@ function setting(locSearch: string) {
                 clsColorPicker(new point(e.clientX, e.clientY),
                     function (newColor: Color) {
                         for (let i = 0; i < ldd.Div_Num; i++) {
-                            ldd.Class_Div[i].ODLinePat.Color = newColor.Clone();
+                            ldd.Class_Div[i].ODLinePat.Color = { ...newColor };
                         }
                         SetPictureBox();
                     })
@@ -2603,7 +2603,7 @@ function setting(locSearch: string) {
                 clsMarkSet(e, mkChange, md, attrData)
                 function mkChange(newMark: Mark) {
                     for (let i = 0; i < sv.Div_Num; i++) {
-                        sv.Class_Div[i].ClassMark = newMark.Clone();
+                        sv.Class_Div[i].ClassMark = { ...newMark };
                     }
                     SetPictureBox();
                 }
@@ -2985,7 +2985,7 @@ function setting(locSearch: string) {
         Generic.createNewCanvas(gbMark, "picMarkSize", "imgButton", 25, 17, 65, 65, picMark_Click, "");
         const gbMarkLine = Generic.createNewFrame(markSizeView, "gbMarkLine", "", 0, 0, 125, 95, "線の設定");
         Generic.createNewSizeSelect(gbMarkLine, 0, "cboMarkLineSize", "最大幅", 15, 10, 40, 1,
-            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
         Generic.createNewColorBox(gbMarkLine, "markLineColor", "色", "", 15, 35, MarkLineColor);
         Generic.createNewButton(gbMarkLine, "線端設定", "", 30, 70, btnMarkLineEdge, "");
 
@@ -3019,7 +3019,7 @@ function setting(locSearch: string) {
         }
         //記号の大きさモード線オブジェクトの色設定
         function MarkLineColor(e: MouseEvent) {
-            const col = Generic.RGBAfromElement(e.target);
+            const col = Generic.RGBAfromElement(e.target as HTMLElement);
             attrData.nowDataSolo().MarkSizeMD.LineShape.Color = col;
         }
 
@@ -3043,7 +3043,7 @@ function setting(locSearch: string) {
             clsMarkSet(e, picMarkChange, md.Mark, attrData);
             function picMarkChange(newMark: Mark_Property) {
                 md.Mark = newMark;
-                attrData.Draw_Sample_Mark_Box(e.target, newMark);
+                attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
             }
         }
         //負の場合の内部色（記号の大きさ・数共通）
@@ -3091,7 +3091,7 @@ function setting(locSearch: string) {
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■棒の高さモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
         const markBarView = Generic.createNewDiv(settingModeWindow, "", "markBarView", "rightSettingWindowControlBase", 20, scrMargin.top, sw - 20, sh - 20, "", "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarHeightSize", "最大高さ", 0, 30, 60, 3,
-            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
 
         const gbMarkBarLegendMaxValue = Generic.createNewFrame(markBarView, "", "", 0, 55, 150, 100, "最大高さの値");
         Generic.createNewRadioButtonList(gbMarkBarLegendMaxValue, "markBarmaxValueSetting", maxValuesetting, 10, 15, undefined, 30, undefined,
@@ -3099,7 +3099,7 @@ function setting(locSearch: string) {
         Generic.createNewNumberInput(gbMarkBarLegendMaxValue, 0, "markBarUserMaxValue", 40, 70, 90,
             function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxValue = v; }, "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarWidth", "幅", 0, 185, 40, 2,
-            function (obj: HTMLSelectElement, v: number) { attrData.nowDataSolo().MarkBarMD.Width = v });
+            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.Width = v });
         Generic.createNewTileBox(markBarView, "markBarInnerColor", "内部色", clsBase.Tile(), 0, 215, 40,
             function (e: MouseEvent) {
                 const mkc = attrData.nowDataSolo().MarkBarMD.InnerTile;
@@ -3112,7 +3112,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowDataSolo().MarkBarMD.FrameLinePat,
                     function (Lpat: Line_Property) {
                         attrData.nowDataSolo().MarkBarMD.FrameLinePat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
