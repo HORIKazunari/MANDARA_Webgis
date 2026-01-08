@@ -1875,9 +1875,19 @@ interface String {
 }
 
 // Zlib library
+interface ZlibUnzip {
+    getFilenames(): string[];
+    decompress(filename: string): Uint8Array;
+}
+
+interface ZlibZip {
+    addFile(data: Uint8Array, options: {filename: Uint8Array}): void;
+    compress(): Uint8Array;
+}
+
 declare const Zlib: {
-    Zip: new() => unknown;
-    Unzip: new(buffer: Uint8Array) => unknown;
+    Zip: new() => ZlibZip;
+    Unzip: new(buffer: Uint8Array) => ZlibUnzip;
 };
 
 // Navigator extensions

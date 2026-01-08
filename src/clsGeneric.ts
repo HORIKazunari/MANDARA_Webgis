@@ -1911,7 +1911,7 @@ export class Generic {
         let V = 0;
         for (let i = 0; i < Words.length; i++) {
             if (Words[i].left(L) == CheckWords) {
-                V = Math.max(Math.floor(Words[i].mid(L, undefined)), V);
+                V = Math.max(Math.floor(Number(Words[i].mid(L, undefined))), V);
             }
         }
         return CheckWords + String(V + 1);
@@ -2234,7 +2234,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const zipReader = new FileReader();
         zipReader.readAsArrayBuffer(file);
-        const unZipData=[];
+        const unZipData: {[key: string]: Uint8Array} = {};
         zipReader.onload = function () {
             try {
                 const zipArr = new Uint8Array(zipReader.result as ArrayBuffer);
@@ -2248,7 +2248,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                onOK(unZipData);
             } catch (e) {
                 console.log(e);
-                 onError(e);
+                 onError(e as Error);
              }
         }
     }
@@ -2310,7 +2310,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**UTF8文字列をバイト配列に変換 */
-     static strToUtf8Array(str: string) {
+     static strToUtf8Array(str: string): Uint8Array {
 
         let n = str.length,
             idx = -1,
@@ -2335,7 +2335,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 bytes[++idx] = 0x80 | (c & 0x3F);
             }
         }
-        return bytes;
+        return new Uint8Array(bytes);
     };
 
     /**投影法に対応した文字列を返す */
@@ -2479,14 +2479,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
     static createNewNumberInput(ParentObj: HTMLElement, defoValue: number, ID: string, x: number, y: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, styleinfo: string) {
 
-        const box = this.createNewInput(ParentObj, "text", defoValue, ID, x, y, undefined, "width:" + width.px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
+        const box = this.createNewInput(ParentObj, "text", String(defoValue), ID, x, y, undefined, "width:" + width.px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
         box.preValue = defoValue;
         box.numberCheck = true;//数字のチェックをしない場合はfalseにする
         box.onchange = function () {
             let v = box.value;         
             if (box.numberCheck == false) {
                 if(typeof onChange==='function'){
-                    onChange(box, v);
+                    onChange(box, Number(v));
                 }
             } else {
                 if (isNaN(Number(v)) == false) {
@@ -2514,7 +2514,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                                 document.body.removeChild(divele);
                                 clearTimeout(timerId);
                             }, 1000);
-                        box.value = box.preValue;//退避値にもどす
+                        box.value = String(box.preValue ?? "");//退避値にもどす
                     }
                 }
             }
@@ -2557,7 +2557,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             for (const i in list) {
                 const msp = document.createElement('span');
                 document.body.appendChild(msp)
-                msp.innerHTML = list[i].caption;
+                msp.innerHTML = String(list[i]);
                 mainw = Math.max(mainw, msp.offsetWidth);
                 lineh = msp.offsetHeight;
                 document.body.removeChild(msp);
@@ -2565,7 +2565,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
             dropArea.style.height=(Math.min(maxNumber,list.length)*lineh).px();
             for (const i in list) {
-                const md = Generic.createNewDiv(selectList, list[i], "", "", 0, lineh * parseInt(i), mainw + 20, lineh, "padding-left:5px", "");
+                const md = Generic.createNewDiv(selectList, String(list[i]), "", "", 0, lineh * parseInt(i), mainw + 20, lineh, "padding-left:5px", "");
                 md.onmouseover = function () {
                     md.style.backgroundColor = '#dddddd';
                 }
@@ -2635,7 +2635,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     break;
                 } else {
                     if (v != "") {
-                        if (isNaN(v) == true) {
+                        if (isNaN(Number(v)) == true) {
                                 f = false;
                             break;
                         }
