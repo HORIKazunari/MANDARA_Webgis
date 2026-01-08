@@ -1071,7 +1071,7 @@ interface IPolydataInfo {
 interface IboundArrangeData {
     Pon?: number;
     Fringe: Fringe_Line_Info[];
-    Arrange_LineCode: number[];
+    Arrange_LineCode: number[][];
     pxy?: point[];
     nPolyP?: number[];
 }

@@ -1448,11 +1448,11 @@ class spatial {
         return pxy;
     }
 
-    static Distance_PointLine2(P: point, LineP1: point, LineP2: point): number{
+    static Distance_PointLine2(P: point, LineP1: point, LineP2: point): {distance: number; nearP: point}{
 
         return this.Distance_PointLine(P.x,P.y,LineP1.x,LineP1.y,LineP2.x,LineP2.y);
     }
-    static Distance_PointLine (X: number, Y: number, ax: number, ay: number, BX: number, BY: number): number {
+    static Distance_PointLine (X: number, Y: number, ax: number, ay: number, BX: number, BY: number): {distance: number; nearP: point} {
         //AXAY,BXBYで定義される線分と、XYポイントの間の距離
         //Nearest_point:最も近い位置の線分上の点を取得（オプション）
 
