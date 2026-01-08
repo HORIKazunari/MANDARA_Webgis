@@ -961,6 +961,10 @@ declare const clsPrint: IClsPrint;
 declare let Frm_Print: IFrmPrint; // 変更される可能性あり
 // propertyWindow: AppStateで管理（削除済み）
 // divmain: AppStateで管理（削除済み）
+interface latlon {
+    lat: number;
+    lon: number;
+}
 declare const TKY2JGD: {
     Tokyo97toITRF94: (latlonP: latlon) => latlon;
     ITRF94toTokyo97: (latlonP: latlon) => latlon;
@@ -1419,7 +1423,7 @@ declare class boundArrangeData {
     Mark?: Mark_Property;
     Line?: Line_Property;
     Fringe?: Fringe_Line_Info[];
-    Arrange_LineCode?: number[];
+    Arrange_LineCode?: number[][];
     Pon?: number;
     constructor();
 }
