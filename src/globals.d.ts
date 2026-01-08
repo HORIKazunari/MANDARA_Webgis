@@ -1934,8 +1934,8 @@ interface HTMLElement {
     removeOne?: () => void;
     getVisibility?: () => boolean;
     btnDisabled?: (disabled: boolean) => void;
-    inPic?: HTMLElement;
-    inTxt?: HTMLElement;
+    inPic?: number;
+    inTxt?: number;
     numberCheck?: boolean;
     getText?: () => string;
     getValue?: () => string | number | unknown;

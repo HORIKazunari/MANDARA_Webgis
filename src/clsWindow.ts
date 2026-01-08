@@ -18,6 +18,9 @@ import type {
   JsonObject
 } from './types';
 
+// カスタム型定義
+type PanelWithCounters = HTMLElement & { inPic?: number; inTxt?: number };
+
 // Helper for DOM access with legacy extensions
 const doc = document;
 
@@ -1826,7 +1829,7 @@ function setting(locSearch: string) {
             const ph = picClassBoxHeight;
             pnlClassDiv.style.height = (ph * div_num + 2).px();
             //不足するpicClassBoxを追加
-            const pnlWithProps1 = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+            const pnlWithProps1 = pnlClassDiv as PanelWithCounters;
             for (let i = pnlWithProps1.inPic ?? 0; i < div_num; i++) {
                 const cbox = Generic.createNewCanvas(pnlClassDiv,  "picClassBox" + i,"", 0, i * picClassBoxHeight, picClassBoxWidth, picClassBoxHeight,undefined, "border:solid 1px");
                 cbox.tag = String(i);
@@ -1900,7 +1903,7 @@ function setting(locSearch: string) {
                 };
                 txele.setAttribute("ondragover", "return false;");
                 txele.tag = i;
-                function txeleOnChange (obj: HTMLElement, v: number) {
+                function txeleOnChange (obj: HTMLInputElement, v: number) {
                     //階級区分値を変更設定
                     const n = obj.tag;
                     const L = attrData.TotalData.LV1.SelectedLayer;
@@ -1937,7 +1940,7 @@ function setting(locSearch: string) {
                 }
             }
             //余ったpicClassBoxとtxtClassValueを削除
-            const pnlWithProps2 = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+            const pnlWithProps2 = pnlClassDiv as PanelWithCounters;
             for (let i = div_num; i < (pnlWithProps2.inPic ?? 0); i++) {
                 const cbox = doc.getElementById( "picClassBox" + i);
                 cbox.parentNode.removeChild(cbox);
@@ -2484,7 +2487,7 @@ function setting(locSearch: string) {
 
         const pnlClassDivBase = Generic.createNewDiv(classView, "", "pnlClassDivBase", "", 150, 20, allW + 20, 350, "background-color:#f0f0f0;overflow-y: scroll", "");
         const pnlClassDiv = Generic.createNewDiv(pnlClassDivBase, "", "pnlClassDiv", "", 0, 0, allW, 300, "overflow:hidden", "");
-        const pnlWithProps = pnlClassDiv as HTMLElement & { inPic?: number; inTxt?: number };
+        const pnlWithProps: PanelWithCounters = pnlClassDiv as HTMLElement as PanelWithCounters;
         pnlWithProps.inPic = 0;//pnlClassDiv内部の色と息栖とボックスの数を記録
         pnlWithProps.inTxt = 0;
         //ペイントモード：色設定方法
@@ -2628,7 +2631,7 @@ function setting(locSearch: string) {
             }
         }
         //ペイントモード線オブジェクトのサイズ設定
-        function cboPaintLineSizeChange(obj: HTMLElement, v: number) {
+        function cboPaintLineSizeChange(obj: HTMLInputElement, v: number) {
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth = v;
         }
@@ -2826,7 +2829,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.Line_Pat,
                     function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Regular.Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -2853,7 +2856,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.SP_Line_Pat,
                     function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Regular.SP_Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -2873,7 +2876,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.EX_Line_Pat,
                     function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Regular.EX_Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -2895,7 +2898,7 @@ function setting(locSearch: string) {
                 clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Irregular[n].Line_Pat,
                     function (Lpat: Line_Property) {
                         attrData.nowDataSolo().ContourMD.Irregular[n].Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target, Lpat);
+                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
