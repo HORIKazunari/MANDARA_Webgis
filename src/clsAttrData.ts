@@ -761,7 +761,7 @@ class strData_info {
     //  表示モード
     ModeData: number = 0;  //enmSoloMode_Number
     SoloModeViewSettings: strSoloModeViewSettings_Data = new strSoloModeViewSettings_Data();//  '単独表示モードごとのプロパティ
-    Value: string[] = [];  //String
+    Value: (string | number | undefined)[] = [];  //String or Number
     
     Clone(NoValueFlag: boolean = false): strData_info {
         const dt = new strData_info();
@@ -7041,7 +7041,7 @@ class clsAttrData {
             pmd.Color_Mode = enmPaintColorSettingModeInfo.SoloColor;
             const mmMD = data.SoloModeViewSettings.ClassMarkMD;
             mmMD.Data = DataNum;
-            mmMD.Flag = false;
+            mmMD.Flag = 0;
 
         } else {
             //通常のデータの階級区分値
@@ -7161,7 +7161,7 @@ class clsAttrData {
 
                 const mmMD = data.SoloModeViewSettings.ClassMarkMD;
                 mmMD.Data = DataNum;
-                mmMD.Flag = false;
+                mmMD.Flag = 0;
 
                 const mmt = data.SoloModeViewSettings.MarkTurnMD;
                 mmt.Dirction = 0;
@@ -7193,7 +7193,7 @@ class clsAttrData {
         mkc.MinusTile.Color = this.defaultColor.minusColor.Clone();
         mkc.MinusTile.BlankF = false;
         mkc.MinusLineColor = this.defaultColor.minusColor.Clone();
-        mkc.Inner_Data.Flag = false;
+        mkc.Inner_Data.Flag = 0;
         mkc.Inner_Data.Data = DataNum;
         mkc.LegendMinusWord = "";
         mkc.LegendPlusWord = "";
@@ -7214,8 +7214,8 @@ class clsAttrData {
             ctm.Draw_in_Polygon_F = true;
             ctm.Spline_flag = true;
             const ctmr = ctm.Regular!;
-            ctmr.bottom = sv.Class_Div[sv.Div_Num - 2].Value;
-            ctmr.Interval = (sv.Class_Div[sv.Div_Num - 3].Value - (ctmr.bottom as number)) / 2;
+            ctmr.bottom = Number(sv.Class_Div[sv.Div_Num - 2].Value);
+            ctmr.Interval = (Number(sv.Class_Div[sv.Div_Num - 3].Value) - ctmr.bottom) / 2;
             ctmr.Line_Pat = clsBase.Line();
             ctmr.top = DataMax;
             ctmr.SP_Bottom = ctmr.bottom;
