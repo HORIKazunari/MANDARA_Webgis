@@ -2623,13 +2623,13 @@ class strLayerReadingInfo {
     }
 }
 
-// 旧コード（未使用）
-// const strSaveLinePat_Info: JsonObject =function(){
-//     this. MapNum ;// Integer
-//     this. MapFileName=[];//  As String
-//     this. LpatNumByMapfile=[];//  As Integer
-//     this. Lpat=[];//  As List(Of clsMapData.LineKind_Data)
-// }
+// Save Line Pattern Info
+class strSaveLinePat_Info {
+    MapNum: number = 0;
+    MapFileName: string[] = [];
+    LpatNumByMapfile: number[] = [];
+    Lpat: any[] = [];
+}
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
@@ -2649,12 +2649,13 @@ class clsAttrData {
     };
 
     constructor() {
-        this.defaultColor = {}
-        this.defaultColor.paintMode = [new colorRGBA(0x99, 0x34, 0x4), new colorRGBA(0xFF, 0xFF, 0xC4)];
-        this.defaultColor.markColorTrance = new colorRGBA(0xff, 0xbf, 0xbf, 200);
-        this.defaultColor.markColor = new colorRGBA(0xff, 0xbf, 0xbf);
-        this.defaultColor.markBarColor = new colorRGBA(0xff, 0x80, 0x00);
-        this.defaultColor.minusColor = new colorRGBA(0x55, 0x55, 0xbf);
+        this.defaultColor = {
+            paintMode: [new colorRGBA(0x99, 0x34, 0x4), new colorRGBA(0xFF, 0xFF, 0xC4)],
+            markColorTrance: new colorRGBA(0xff, 0xbf, 0xbf, 200),
+            markColor: new colorRGBA(0xff, 0xbf, 0xbf),
+            markBarColor: new colorRGBA(0xff, 0x80, 0x00),
+            minusColor: new colorRGBA(0x55, 0x55, 0xbf)
+        };
 
         this.TempData = new strTem();
 
@@ -2905,7 +2906,7 @@ class clsAttrData {
     }
 
     InsertData.Convert_Zahyo(this.TotalData.ViewStyle.Zahyo);
-    this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo, "");
+    this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo);
 
     if (InsertData.TotalData.LV1.Comment != "") {
         this.TotalData.LV1.Comment += "\n" + InsertData.TotalData.LV1.FileName + "を挿入" + "\n" +
@@ -3350,7 +3351,7 @@ class clsAttrData {
         const layData = this.LayerData[LayerNum].atrData.Data[DataNumber];
         switch (layData.ModeData) {
             case enmSoloMode_Number.ClassMarkMode: {
-                if (layData.SoloModeViewSettings.ClassMarkMD.Flag == true) {
+                if (layData.SoloModeViewSettings.ClassMarkMD.Flag) {
                     inData = layData.SoloModeViewSettings.ClassMarkMD.Data;
                 }
                 break;
@@ -3358,7 +3359,7 @@ class clsAttrData {
             case enmSoloMode_Number.MarkSizeMode:
             case enmSoloMode_Number.MarkBlockMode:
             case enmSoloMode_Number.MarkTurnMode: {
-                if (layData.SoloModeViewSettings.MarkCommon.Inner_Data.Flag == true) {
+                if (layData.SoloModeViewSettings.MarkCommon.Inner_Data.Flag) {
                     inData = layData.SoloModeViewSettings.MarkCommon.Inner_Data.Data;
                 }
                 break;
@@ -3414,7 +3415,7 @@ class clsAttrData {
             this.LayerData[i].MapFileData=this.SetMapFile(this.LayerData[i].MapFileName);
         }
 
-        const bData=[Generic.strToUtf8Array(json)];
+        const bData: Uint8Array[] = [Generic.strToUtf8Array(json)];
         const bDataFile=[fname+"in"];
         Generic.zipFile(fname,bData,bDataFile);
     }
@@ -3440,7 +3441,7 @@ class clsAttrData {
                     // @ts-expect-error TS2304: Cannot find name 'Check_Point_in_Kencode_oneObject_Box'.
                     const f = Check_Point_in_Kencode_oneObject_Box(Layernum, ObjNum, MapP.x, MapP.y);
                     if (f == true) {
-                        const ELine = this.Get_Enable_KenCode_MPLine(Layernum, ObjNum, MapP.x)
+                        const ELine = this.Get_Enable_KenCode_MPLine(Layernum, ObjNum)
                         const Fringe_Line = [];
                         for (let j = 0; j < ELine.length; j++) {
                             Fringe_Line.push(ELine[j].LineCode);
@@ -3482,7 +3483,7 @@ class clsAttrData {
                 }
             }
         }
-        return { ok: true, frequency: Freqency, missFreq: MissFreq };
+        return { ok: true, frequency: Freqency };
     }
 
     //Backgroundの余白部分のピクセル数を取得
@@ -3586,8 +3587,8 @@ class clsAttrData {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): boolean | undefined {
-        return clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
+    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): void {
+        clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
     Draw_Fan(g: CanvasRenderingContext2D, OP: point, r: number, start_p: number, end_p: number, Lpat: Line_Property, Tile: Tile_Property): void {
@@ -3595,7 +3596,7 @@ class clsAttrData {
     }
 
         // サンプル記号ボックスに記号を描画
-    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: typeof Mark): void {
+    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: any): void {
         clsDrawMarkFan.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
@@ -3603,7 +3604,7 @@ class clsAttrData {
         clsDrawLine.Draw_Sample_LineBox?.(picBox, LinePat, this.TotalData.ViewStyle.ScrData);
     }
     //記号描画
-    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: typeof Mark): void {
+    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: any): void {
         clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
@@ -3931,7 +3932,7 @@ class clsAttrData {
     ResetObjectPrintedCheckFlag(): void {
         this.TempData.ObjectPrintedCheckFlag = [];
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
-            this.TempData.ObjectPrintedCheckFlag[i] = [];
+            // 必要に応じて配列を初期化
         }
     }
 
@@ -4082,7 +4083,7 @@ class clsAttrData {
                 const d = [];
                 for (let i = 0; i < PointObjG[key].length; i++) {
                     const dd = new strDummyObjectPointMark_Info();
-                    dd.ObjectKindName = PointObjG[key];
+                    dd.ObjectKindName = PointObjG[key][i];
                     dd.Mark = clsBase.Mark();
                     d.push(dd);
                 }
@@ -4709,12 +4710,12 @@ class clsAttrData {
             for (let i = 0; i < oldMPSyntheticObj.length; i++) {
                 const od = oldMPSyntheticObj[i];
                 const d = new strSynthetic_Object_Data();
-                d.Kind = od.Kind as string;
-                d.NumOfObject = od.NumOfObject as number;
-                d.Name = od.Name as string;
+                d.Kind = String(od.Kind);
+                d.NumOfObject = Number(od.NumOfObject);
+                d.Name = String(od.Name);
                 d.CenterP = cnvPoint(od.CenterP as JsonObject);
                 d.SETime = cnvStart_End_Time_data(od.SETime as JsonObject);
-                d.Shape = od.Shape as number;
+                d.Shape = od.Shape as enmShape;
                 d.Circumscribed_Rectangle = new rectangle();
                 const odObjects = od.Objects as JsonObject[];
                 d.Objects = [];
@@ -4836,7 +4837,8 @@ class clsAttrData {
                 ld.Dummy.push(d);
             }
             ld.DummyGroup = [];//ダミーオブジェクトグループ
-            ld.DummyGroup = (oLay.DummyGroup as JsonArray).concat() as string[];
+            const dummyGroup = oLay.DummyGroup as JsonArray;
+            ld.DummyGroup = dummyGroup.map(item => String(item));
 
             const oldv = oLay.LayerModeViewSettings as JsonObject;
             const oldvl = oldv.LabelMode as JsonObject;
@@ -4907,8 +4909,8 @@ class clsAttrData {
         }
         function cnvStart_End_Time_data(ot: JsonObject) {
             const nt = new Start_End_Time_data();
-            nt.StartTime = new strYMD(ot.StartTime as strYMD);
-            nt.EndTime = new strYMD(ot.EndTime as strYMD);
+            nt.StartTime = cnvTime(ot.StartTime as JsonObject);
+            nt.EndTime = cnvTime(ot.EndTime as JsonObject);
             return nt;
         }
         function cnvTime(oldT: JsonObject) {
@@ -5084,7 +5086,7 @@ class clsAttrData {
             scl.BarDistance = olsSCL.BarDistance as number;
             scl.BarKugiriNum = olsSCL.BarKugiriNum as number;
             scl.Back = cnvBackGround_Box_Property(olsSCL.Back as JsonObject);
-            scl.Unit = olsSCL.Unit as string;
+            scl.Unit = Number(olsSCL.Unit);
             return scl;
         }
         function cnvMapLegend(oldML: JsonObject) {
@@ -5110,11 +5112,11 @@ class clsAttrData {
             const oldMLClassMD = oldML.ClassMD as JsonObject;
             mlc.ClassMarkFrame_Visible = oldMLClassMD.ClassMarkFrame_Visible as boolean;
             mlc.PaintMode_Line = cnvLineProperty(oldMLClassMD.PaintMode_Line as JsonObject);
-            mlc.PaintMode_Method = oldMLClassMD.PaintMode_Method as number;
+            mlc.PaintMode_Method = oldMLClassMD.PaintMode_Method as enmPaintMode;
             mlc.PaintMode_Width = oldMLClassMD.PaintMode_Width as number;
             mlc.SeparateGapSize = oldMLClassMD.SeparateGapSize as number;
             mlc.SeparateClassWords = oldMLClassMD.SeparateClassWords as boolean;
-            mlc.FrequencyPrint = oldMLClassMD.FrequencyPrint as boolean;
+            mlc.FrequencyPrint = Number(oldMLClassMD.FrequencyPrint) as 0 | 1 | 2;
             const oldMLClassMDBoundaryLine = oldMLClassMD.ClassBoundaryLine as JsonObject;
             mlc.ClassBoundaryLine.Visible = oldMLClassMDBoundaryLine.Visible as boolean;
             mlc.ClassBoundaryLine.LPat = cnvLineProperty(oldMLClassMDBoundaryLine.LPat as JsonObject);
@@ -5682,10 +5684,10 @@ class clsAttrData {
     Get_ObjectCode_from_ObjName(Layernum_MapfileName: JsonValue, ObjName: string, Time: strYMD): number {
         if(typeof(Layernum_MapfileName)==="string"){//地図ファイル指定
             const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
-            return MapFileObjectNameSearch.Get_KenToCode(ObjName, Time);
+            return MapFileObjectNameSearch.Get_KenToCode(String(ObjName), Time);
         }else{//レイヤ指定
-            const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
-            return MapFileObjectNameSearch.Get_KenToCode(ObjName, this.LayerData[Layernum_MapfileName].Time);    
+            const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(this.LayerData[Layernum_MapfileName].MapFileName);
+            return MapFileObjectNameSearch.Get_KenToCode(String(ObjName), this.LayerData[Layernum_MapfileName].Time);    
         }
     }
 
@@ -5833,8 +5835,10 @@ class clsAttrData {
             return { ok: false, emes: E_Mes };
         }
         
+        const timeObj = LayerReading.Time as JsonObject;
+        const layerTime = new strYMD(timeObj.Year as number, timeObj.Month as number, timeObj.Day as number);
         this.Add_one_Layer(LayerReading.Name as string, LayerReading.Type as number, LayerReading.MeshType as number, LayerReading.Shape as number, LayerReading.MapFile as string,
-            LayerReading.Time as JsonObject, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj);
+            layerTime, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj);
 
         const Laye_Shape_Emes = this.Check_LayerShape();
         if (Laye_Shape_Emes != "") {
@@ -5918,6 +5922,7 @@ class clsAttrData {
                 DataItemNotF[i] = true;
                 URL_NameData[URL_NameDataNum] = i;
                 URL_NameDataNum += 1;
+                break;
             } else {
                 switch (L.Type) {
                     case (enmLayerType.Trip): {
@@ -6038,8 +6043,9 @@ class clsAttrData {
         if (L.Type == enmLayerType.Mesh) {
             for (let j = 0; j < L.atrObject.ObjectNum; j++) {
                 const O = L.atrObject.atrObjectData[j];
-                const retV=spatial.Get_MeshCode_Rectangle( O.Name, L.MeshType, L.ReferenceSystem, this.SetMapFile("").Map.Zahyo);
-                O.CenterPoint = spatial.Get_Converted_XY(retV.latlonBox.CenterPoint().toPoint(), this.SetMapFile("").Map.Zahyo);
+                const mapZahyo = this.SetMapFile("").Map.Zahyo;
+                const retV=spatial.Get_MeshCode_Rectangle( O.Name, L.MeshType, L.ReferenceSystem, { ...mapZahyo, Mode: mapZahyo.Mode ?? 0 } as Zahyo_info);
+                O.CenterPoint = spatial.Get_Converted_XY(retV.latlonBox.CenterPoint().toPoint(), mapZahyo);
                 O.Symbol = O.CenterPoint.Clone();
                 O.Label = O.CenterPoint.Clone();
                 O.MeshRect = retV.convRect;
@@ -6124,7 +6130,8 @@ class clsAttrData {
                         }
                     }
                 }
-                if (this.Add_One_Data_Value(Layernum, TTL[i], UNT[i], Note[i], Data_Val_STR, DTMissing[i]) == false) {
+                const missingValue = typeof DTMissing[i] === 'boolean' ? DTMissing[i] : false;
+                if (this.Add_One_Data_Value(Layernum, TTL[i], UNT[i], Note[i], Data_Val_STR, missingValue) == false) {
                     if (TTL[i] != "") {
                         addErMes += TTL[i] +"はデータ値がないため取得できませんでした。" + '\n';
                     }
@@ -6222,11 +6229,11 @@ class clsAttrData {
                 if (layData.UseObjectKind[UseMap.MPObj[i].Kind] == true) {
                     fobk = UseMap.MPObj[i].Kind;
                     const objName = UseMap.Get_Enable_ObjectName(i, layData.Time, false);
-                    if (objName != undefined) {
+                    if (objName != undefined && typeof objName !== 'string') {
                         const CP = UseMap.Get_Enable_CenterP(i, layData.Time);
                         const ob = new strObject_Data_Info();
                         ob.MpObjCode = i;
-                        ob.Name = objName[0];
+                        ob.Name = String(objName[0]);
                         ob.Objectstructure = enmKenCodeObjectstructure.MapObj;
                         ob.CenterPoint = CP.Clone();
                         ob.Symbol = CP.Clone();
@@ -6238,7 +6245,7 @@ class clsAttrData {
                 }
             }
             let layshape = layData.Shape;
-            if (layshape == enmShape.NotDeffinition) {
+            if (layshape === enmShape.NotDeffinition) {
                 layshape = UseMap.MPObj[Get_Obj[0].MpObjCode].Shape;
             }
 
@@ -6294,7 +6301,7 @@ class clsAttrData {
     }
 
     //レイヤの形状を実際のオブジェクトの形状に基づいて設定
-    Check_LayerShape(): void {
+    Check_LayerShape(): string {
         let EMes = "";
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             const L = this.LayerData[i];
@@ -6370,7 +6377,7 @@ class clsAttrData {
                 shcount++;
                 if (shmax < sh[j] ) {
                     shmax = sh[j];
-                    shmaxN = j;
+                    shmaxN = j as 0 | 1 | 2;
                 }
             }
         }
@@ -6513,7 +6520,7 @@ class clsAttrData {
         const rect = this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
             const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
-            const screct = new rectangle(0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.Width, 0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.Height);
+            const screct = new rectangle(0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width(), 0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height());
             const relation = spatial.Compare_Two_Rectangle_Position(turnRect, screct);
             if (relation == cstRectangle_Cross.cstOuter) {
                 return false;
@@ -6591,12 +6598,13 @@ class clsAttrData {
         if (Dtype == enmAttDataType.Normal) {
             for (let i = 0; i < Dn_Val_str.length; i++) {
                 if (Dn_Val_str[i] != undefined) {
-                    if(isNaN(Dn_Val_str[i])){
-                        let sv = Dn_Val_str[i].replace(/,/g, "");
+                    const val = Dn_Val_str[i];
+                    if (typeof val === 'string' && isNaN(Number(val))) {
+                        let sv = val.replace(/,/g, "");
                         sv = sv.replace(/\s+/g, "");
                         newD.Value[i] = Number(sv);
                     } else {
-                        newD.Value[i] = Dn_Val_str[i];
+                        newD.Value[i] = typeof val === 'number' ? val : Number(val);
                     }
                 } else {
                     newD.Value[i] = undefined;

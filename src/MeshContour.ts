@@ -85,7 +85,7 @@ class clsMeshContour {
 
         //'出力
         //'戻り値：線の数
-        //'Con_LineStac() (0)等高線番号　(1)点スタックの始め　(2)点の数～　線の数分繰り返す
+        //'Con_LineStac() (0)等高線番号 (1)点スタックの始め (2)点の数 線の数分繰り返す
         //'Con_Point() xy座標
 
         const hn = ContourNum;
@@ -565,7 +565,7 @@ class clsMeshContour {
         for (let k = max_PartitiopnLevel - 1; k >= 1; k--) {
             const SP = this.Get_MortonArrayPosition(k); //自レベルの四分木線形配列の開始位置
             const SP2 = this.Get_MortonArrayPosition(k - 1);//親レベルの四分木線形配列の開始位置
-            for (let i = 0; i < Math.pow(4, k); i += 4) {　//子4メッシュで親1メッシュ
+            for (let i = 0; i < Math.pow(4, k); i += 4) { //子4メッシュで親1メッシュ
                 let f = true;
                 mxv = undefined;
                 mnv = undefined;
