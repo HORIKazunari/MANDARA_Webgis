@@ -1,6 +1,6 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
-import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator, MenuItem } from './types';
+import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
 import { Object_NameTimeStac_Data } from './clsMapdata';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
@@ -2263,7 +2263,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         const compressData = zip.compress();
 
-        const blob = new Blob([compressData.buffer], { 'type': 'application/octet-stream' });
+        const blob = new Blob([new Uint8Array(compressData)], { 'type': 'application/octet-stream' });
 
         const nav = window.navigator as ExtendedNavigator;
         if (typeof nav?.msSaveBlob === "function") {
@@ -3718,7 +3718,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static createNewDiv(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, width: number | string | undefined, height: number | string | undefined, styleinfo: string, onclick?: ((event: MouseEvent) => void) | string) {
+    static createNewDiv(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, width: number | string | undefined, height: number | string | undefined, styleinfo: string, onclick?: ((event: MouseEvent) => void) | string): HTMLDivElement {
 
         /// <signature>
         /// <summary>div要素を作成</summary>
@@ -3804,7 +3804,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sp.addEventListener('click', function gg(e) {
             const target = e?.target as (HTMLElement & {tag?: string}) | null;
             if (!target) { return; }
-            const obj = target.tag ? document.getElementById(target.tag) as HTMLInputElement | null : null;
+            const obj = target.tag ? document.getElementById(target.tag) as unknown as HTMLInputElement | null : null;
             if (obj?.disabled == false) {
                 obj.checked = true;
                 change();
@@ -3820,6 +3820,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 onClick(v as RadioValue);
             }
         }
+        return ok;
     }
 
     //ラジオボタンの指定valueの要素をenabled/disableする
@@ -4147,7 +4148,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         function mouseEnter(this: HTMLSelectElement, e: MouseEvent) {
             const w = Generic.getSpanSize(sbox.getText ? sbox.getText() : "", sbox.style.fontSize.removePx()).width + 20;
             if (w > sbox.offsetWidth) {
-                Generic.createNewDiv(this.parentNode, sbox.getText ? sbox.getText() : "", "", "", x + 50, y + sbox.offsetHeight, 150, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#fffff0;text-align:center", "");
+                Generic.createNewDiv(this.parentNode as HTMLElement, sbox.getText ? sbox.getText() : "", "", "", x + 50, y + sbox.offsetHeight, 150, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#fffff0;text-align:center", "");
                 sbox.tooltip = 'true';
             }
         }
@@ -4191,9 +4192,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const children = element.children;
         for (let i = 0; i < children.length; i++) {
-            children[i].disabled = value;
+            const child = children[i] as HTMLElement & { disabled?: boolean };
+            if ('disabled' in child) {
+                child.disabled = value;
+            }
             if (children[i].children.length > 0) {
-               this.setDisabled(children[i], value);
+               this.setDisabled(children[i] as HTMLElement, value);
             }
         }
 
@@ -4210,7 +4214,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         canvas.height = height;
         canvas.style.top = y.px();
         canvas.style.left = x.px();
-        canvas.onclick = onClick;
+        if (onClick) {
+            canvas.addEventListener('click', onClick as EventListener);
+        }
         ParentObj.appendChild(canvas);
         return canvas;
     }
@@ -4239,7 +4245,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         function handleClick(this: HTMLCanvasElement, e: MouseEvent) {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
-            onClick(new point(rect.right, rect.bottom));
+            if (onClick) {
+                onClick.call(canvas, e);
+            }
         }
     }
 
@@ -4328,8 +4336,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         obj.setAttribute("id", id);
         obj.innerHTML = text;
         obj.setAttribute("style", "position:absolute;" + styleinfo);
-        obj.setAttribute("rows", row);
-        obj.setAttribute("cols", col);
+        obj.setAttribute("rows", String(row));
+        obj.setAttribute("cols", String(col));
         obj.style.top = y.px();
         obj.style.left = x.px();
         parentObj.appendChild(obj);
@@ -4360,7 +4368,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 } else if (i >= headNum && normalXStyleinfo !== "") {
                     newtd.setAttribute("style", normalXStyleinfo[j]);
                 }
-                newtd.innerHTML = data[j][i];
+                newtd.innerHTML = String(data[j][i]);
             }
         }
         parentObj.appendChild(tb);
@@ -4378,10 +4386,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         obj.style.left = x.px();
         obj.style.width = (typeof width === 'string') ? width : width.px();
         obj.style.height = (typeof height === 'string') ? height : height.px();
-        obj.table = this.createNewTable(obj, tableID, tableClass, data, tableWidth, tableStyleinfo, tableHeadNum,
+        const tableElement = this.createNewTable(obj, tableID, tableClass, data, tableWidth, tableStyleinfo, tableHeadNum,
             tableHeadStyleinfo, tableNormalStyleinfo, tableHeadXStyleinfo, tableNormalXStyleinfo);
-        parentObj.appendChild(obj);
-        return obj;
+        const objWithTable = obj as HTMLDivElement & { table: HTMLTableElement };
+        objWithTable.table = tableElement;
+        parentObj.appendChild(objWithTable);
+        return objWithTable;
     }
 
     // 表の中身を取得する
@@ -4418,10 +4428,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const div = this.createNewDiv(parentObj, "", id, Class, x, yy, width, height, "border:solid 1px;border-color:#666666;border-radius:3px;", "");
         if (text !== "") {
             let bg = parentObj.style.backgroundColor;
-            if (bg === "") {
-                bg = parentObj.parentNode.style.backgroundColor;
+            if (bg === "" && parentObj.parentNode && 'style' in parentObj.parentNode) {
+                bg = (parentObj.parentNode as HTMLElement).style.backgroundColor;
             }
-            this.createNewSpan(div, text, "label", Class, 8, -8, "padding-left:3px;padding-right:3px;background-color:" + bg, "");
+            this.createNewSpan(div, text, "label", Class, 8, -8, "padding-left:3px;padding-right:3px;background-color:" + bg, undefined);
         }
         return div;
     }
@@ -4450,7 +4460,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static createMsgTableBox(title: string, data: TableData, width: number, height: number, borderFlag: boolean): void {
 
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
-        const gd = Generic.createNewGrid(msgbox, "", "", "", "", data, 5, 35, width - 10, height - 80, '100%', "", "font-size:13px", 1, "background-color:#aaffaa;", "", "", "");
+        const gd = Generic.createNewGrid(msgbox, "", "", "", "", data, 5, 35, width - 10, height - 80, width - 10, "", "font-size:13px", 1, "background-color:#aaffaa;", "", "", "");
         if (borderFlag === true) {
             msgbox.dragBorder(undefined, undefined);
             gd.sizeFixed = true;
@@ -4511,7 +4521,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             this.createXmark(window, hiddenWindow, 14);
         }
         if (menuMarkF == true) {
-            this.createMenuMark(window,menuCall, 14);
+            const menuHandler = menuCall ? function(this: HTMLCanvasElement, e: MouseEvent) {
+                const rect = this.getBoundingClientRect();
+                menuCall(new point(rect.right, rect.bottom));
+            } : null;
+            this.createMenuMark(window, menuHandler, 14);
         }
         if (maxButtonF == true) {
             const cs=this.createMaxButton(window, resizeWindow, 14);
@@ -4610,9 +4624,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const browserWidth = this.getBrowserWidth();
         const browserHeight = this.getBrowserHeight();
         const d = document.createElement("div");
-        const deletediv = function (e: Event) {
+        const deletediv = function (e: Event | undefined): void {
         //固定ウインドウを消す
-            e.preventDefault();
+            if (e) e.preventDefault();
             const last1 = document.body.lastChild;
             if (last1) {
                 document.body.removeChild(last1);
@@ -4637,7 +4651,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         d.style.height = '100%';
         d.style.opacity = "0.5";
         if (opacity != undefined) {
-            d.style.opacity =opacity;
+            d.style.opacity = String(opacity);
         }
         document.body.appendChild(d)
 
@@ -4655,7 +4669,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const dup = this.createNewDiv(document.body, idname, "frontDIV", "setting", x, y, w, h, "background-color:#ffffff; border:solid 1px; border-radius: 4px;border-color:#666666;opacity:1", undefined);
         dup.style.zIndex = (maxZindex+1).toString();
         const head = Generic.createNewDiv(dup, "", "", "", 0, 0, '100%', state.scrMargin.top, "background-color: gray;color:#ffffff;font-size:15px", "");
-        Generic.createNewSpan(head, title, "", "", 10, 0, "margin-top:4px", "");
+        Generic.createNewSpan(head, title, "", "", 10, 0, "margin-top:4px", undefined);
         if(createXmark){
             const cv = this.createXmark(dup, cancelButton, 14);
         }
@@ -4670,9 +4684,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         if (okButtonF == true) {
             if (okCall == undefined) {
-                okCall = deletediv;
+                okCall = () => deletediv(undefined);
             }
-            const ele=Generic.createNewButton(dup, "OK", "", bux - 90, h - 35, okButton, "width:60px;height:23px");
+            const ele=Generic.createNewButton(dup, "OK", "", bux - 90, h - 35, () => okButton(), "width:60px;height:23px");
             ele.bottomRightPositionFixed=true;
             if (cancelButtonF == true) {
                 ele.relativePosition=new point(150,30);
@@ -4681,14 +4695,16 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
             ele.name="ok";
         }
-        function cancelButton(e: Event): void {
-            deletediv(e);
+        function cancelButton(): void {
+            deletediv(undefined);
             if(cancelCall!=undefined){
                 cancelCall();
             }
         }
-        function okButton(e: Event): void {
-            okCall(e);
+        function okButton(): void {
+            if (okCall) {
+                okCall();
+            }
         }
         return dup;
     }
@@ -4905,8 +4921,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
         };
         mnudiv.onclick = mnudicclivk;
-        mnudiv.addEventListener('touchstart',mnudicclivk,false)
-        function mnudicclivk(e: MouseEvent): void {
+        mnudiv.addEventListener('touchstart', mnudicclivk as EventListener);
+        function mnudicclivk(e: MouseEvent | TouchEvent): void {
             e.stopPropagation();
             e.preventDefault();
             if(touchf==true){//タッチした直後はクリックスルー
@@ -4982,13 +4998,29 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 md.enabled=enabled;
                 if (data.hasOwnProperty('event')) {
                     if (enabled==true) {
-                        md.onclick = function (e) {
+                        md.onclick = function (e: MouseEvent) {
                             deletediv();
-                            data.event(data,e);
+                            if (data.event) {
+                                if (data.event.length === 0) {
+                                    (data.event as () => void)();
+                                } else if (data.event.length === 1) {
+                                    (data.event as (e: MouseEvent) => void)(e);
+                                } else {
+                                    (data.event as (data: MenuItem, e?: Event) => void)(data, e);
+                                }
+                            }
                         }
-                        md.ontouchend = function (e) {
+                        md.ontouchend = function (e: TouchEvent) {
                             deletediv();
-                            data.event(data,e);
+                            if (data.event) {
+                                if (data.event.length === 0) {
+                                    (data.event as () => void)();
+                                } else if (data.event.length === 1) {
+                                    (data.event as (e: Event) => void)(e);
+                                } else {
+                                    (data.event as (data: MenuItem, e?: Event) => void)(data, e);
+                                }
+                            }
                         }
                     }
                 }
@@ -5051,11 +5083,25 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                         if ((data.hasOwnProperty('event'))&&(enabled==true)) {
                             md.onclick = function () {
                                 deletediv();
-                                data.event(data);
+                                if (data.event) {
+                                    if (data.event.length === 0) {
+                                        (data.event as () => void)();
+                                    } else {
+                                        (data.event as (data: MenuItem) => void)(data);
+                                    }
+                                }
                             }
-                            md.ontouchend = function (e) {
+                            md.ontouchend = function (e: TouchEvent) {
                                 deletediv();
-                                data.event(data,e);
+                                if (data.event) {
+                                    if (data.event.length === 0) {
+                                        (data.event as () => void)();
+                                    } else if (data.event.length === 1) {
+                                        (data.event as (e: Event) => void)(e);
+                                    } else {
+                                        (data.event as (data: MenuItem, e?: Event) => void)(data, e);
+                                    }
+                                }
                             }
                         }
                         if (data.hasOwnProperty('checked')) {
@@ -5141,7 +5187,7 @@ export class CheckedListBox {
     private lineH: number;
     private allh: number;
     private w: number;
-    private lBox: HTMLDivElement[] = [];
+    private lBox: Array<HTMLInputElement & {word: HTMLElement}> = [];
     private frame: HTMLElement;
     private inFrame: HTMLElement;
     private width: number;
@@ -5152,7 +5198,7 @@ export class CheckedListBox {
     constructor(
         ParentObj: HTMLElement,
         Class: string,
-        list: string[],
+        list: string[] | {text: string; value: string; checked?: boolean}[],
         x: number,
         y: number,
         width: number,
@@ -5175,20 +5221,27 @@ export class CheckedListBox {
         Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, () => { this.allChange(true); if (onChange != undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
         Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, () => { this.allChange(false); if (onChange != undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
         this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w, this.allh, "");
-        this._addList(list, 0, styleinfo);
+        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
+            ? (list as string[]).map(item => ({text: item, value: item}))
+            : list as {text: string; value: string; checked?: boolean}[];
+        this._addList(dataList, 0, styleinfo);
     }
 
     /**リ1つ追加 */
-    add(soloData: string, pos: number | undefined = undefined): void {
+    add(soloData: string | {text: string; value: string; checked?: boolean}, pos: number | undefined = undefined): void {
         if (pos == undefined) {
             pos = this.length;
         }
-        this._addList([soloData], pos, "");
+        const dataObj = typeof soloData === 'string' ? {text: soloData, value: soloData} : soloData;
+        this._addList([dataObj], pos, "");
     }
 
     /**リストを追加 */
-    addList(list: string[], pos: number): void {
-        this._addList(list, pos, "");
+    addList(list: string[] | {text: string; value: string; checked?: boolean}[], pos: number): void {
+        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
+            ? (list as string[]).map(item => ({text: item, value: item}))
+            : list as {text: string; value: string; checked?: boolean}[];
+        this._addList(dataList, pos, "");
     }
 
     /**指定範囲のリストを削除 */
@@ -5236,7 +5289,7 @@ export class CheckedListBox {
         this.reNumbering();
     }
 
-    private _addList(lst: string[], pos: number, styleinfo: string): void {
+    private _addList(lst: {text: string; value: string; checked?: boolean}[], pos: number, styleinfo: string = ""): void {
         const osel = this.selectedIndex;
         const newsel = (osel == -1) ? -1 : osel + lst.length;
         if (osel >= pos) {
@@ -5264,14 +5317,15 @@ export class CheckedListBox {
                 }
             };
             cbox.onchange = change;
-            cbox.word = Generic.createNewDiv(this.inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
+            const wordDiv: HTMLElement = Generic.createNewDiv(this.inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
                 function (e: MouseEvent) {
                     if (asfdisabled == false) {
                         cbox.checked = !cbox.checked;
-                        change(e);
+                        change(e as Event);
                     }
                 });
-            this.lBox.splice(pos + i, 0, cbox);
+            const cboxWithWord: HTMLInputElement & {word: HTMLElement} = Object.assign(cbox, {word: wordDiv});
+            this.lBox.splice(pos + i, 0, cboxWithWord);
         }
         this.reNumbering();
         if (osel >= pos) {
@@ -5342,7 +5396,7 @@ export class ListBox {
     private styleinfo: string;
     private onChange: ((index: number) => void) | null;
 
-    constructor(ParentObj: HTMLElement, Class: string, list: string[], x: number | string, y: number | string, width: number, height: number, onChange: ((index: number) => void) | null, styleinfo: string = "") {
+    constructor(ParentObj: HTMLElement, Class: string, list: string[] | {text: string; value: string}[], x: number | string, y: number | string, width: number, height: number, onChange: ((index: number) => void) | null, styleinfo: string = "") {
         const state = appState();
         this.width = width;
         this.height = height;
@@ -5352,26 +5406,33 @@ export class ListBox {
         this.lineH = Generic.getDivSize("A", undefined, "").height + 3;
         this.allh = this.lineH * list.length;
         const ovy = (this.allh < height - 2) ? "" : "overflow-y: scroll";
-        this.w = (this.allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
-        this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", x, y, width, height, ovy + "overflow-x:hidden;background-color:white");
-        this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w, this.allh, "");
-        this._addList(list, 0);
+        this.w = (this.allh < height - 2) ? Number(width) - 2 : Number(width) - (state.scrMargin.scrollWidth ?? 0) - 1;
+        this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", Number(x), Number(y), Number(width), Number(height), ovy + "overflow-x:hidden;background-color:white");
+        this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w as number, this.allh as number, "");
+        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
+            ? (list as string[]).map(item => ({text: item, value: item}))
+            : list as {text: string; value: string}[];
+        this._addList(dataList, 0);
     }
 
     /**1つ追加 */
-    add(soloData: string, pos: number | undefined = undefined): void {
+    add(soloData: string | {text: string; value: string}, pos: number | undefined = undefined): void {
         if (pos == undefined) {
             pos = this.length;
         }
-        this._addList([soloData], pos);
+        const dataObj = typeof soloData === 'string' ? {text: soloData, value: soloData} : soloData;
+        this._addList([dataObj], pos);
     }
 
     /**リストを配列で追加 */
-    addList(list: string[], pos: number | undefined = undefined): void {
+    addList(list: string[] | {text: string; value: string}[], pos: number | undefined = undefined): void {
         if (pos == undefined) {
             pos = this.length;
         }
-        this._addList(list, pos);
+        const dataList = Array.isArray(list) && typeof list[0] === 'string' 
+            ? (list as string[]).map(item => ({text: item, value: item}))
+            : list as {text: string; value: string}[];
+        this._addList(dataList, pos);
     }
 
     /**指定範囲のリストを削除 */
@@ -5584,7 +5645,7 @@ export class ListViewTable {
         this.rowselFlag = _rowselFlag;
         this.onclick = onclick;
         const state = appState();
-        this.topDIV = Generic.createNewDiv(ParentObj, gridID, "", gridClass, x, y, width, height, this.frameStyleinfo, undefined);
+        this.topDIV = Generic.createNewDiv(ParentObj, gridID, "", gridClass, Number(x), Number(y), Number(width), Number(height), this.frameStyleinfo, undefined);
 
         this.headNum = hdata[0].length;
         this.tbhdiv = document.createElement("div");
@@ -5677,9 +5738,13 @@ export class ListViewTable {
         this.tbody = this.tb.createTBody();
 
         const clickTBody = (e: MouseEvent) => {
-            this.selectRow(e.target.parentNode.rowIndex);
-            if (typeof this.onclick === 'function') {
-                this.onclick(e.target.parentNode.rowIndex);
+            const target = e.target as HTMLTableCellElement;
+            if (target?.parentNode && 'rowIndex' in target.parentNode) {
+                const row = target.parentNode as HTMLTableRowElement;
+                this.selectRow(row.rowIndex);
+                if (typeof this.onclick === 'function') {
+                    this.onclick(row.rowIndex);
+                }
             }
         };
 
@@ -5705,7 +5770,7 @@ export class ListViewTable {
         this.tbdiv.appendChild(this.tb);
         this.topDIV.appendChild(this.tbdiv);
         if (this.headNum > 0) {
-            this.tbhdiv.style.width = (width - (state.scrMargin.scrollWidth ?? 0)).px();
+            this.tbhdiv.style.width = (Number(width) - (state.scrMargin.scrollWidth ?? 0)).px();
         }
     }
 
@@ -5809,7 +5874,10 @@ export class ListViewTable {
             this.deleteRow();
             this.selectRow(this.tb!.rows.length - 1);
             this.insertRow(1, stac);
-            this.tbdiv!.scrollTop = (this.tbdiv as HTMLElement & {scrollTopMax: number}).scrollTopMax;
+            const tbdivWithScroll = this.tbdiv as HTMLElement & {scrollTopMax?: number};
+            if (tbdivWithScroll.scrollTopMax !== undefined) {
+                this.tbdiv!.scrollTop = tbdivWithScroll.scrollTopMax;
+            }
         } else {
             for (let i = 0; i < celln; i++) {
                 [this.tb!.rows[rowPos].cells[i].innerHTML, this.tb!.rows[dest].cells[i].innerHTML] = [this.tb!.rows[dest].cells[i].innerHTML, this.tb!.rows[rowPos].cells[i].innerHTML];
@@ -6215,7 +6283,7 @@ HTMLElement.prototype.addSelectList = function (list: ListItem[], firstSelectInd
     }
     for (let j = 0; j < list.length; j++) {
         const opt = document.createElement("option");
-        opt.value = list[j].value;
+        opt.value = String(list[j].value);
         opt.appendChild(document.createTextNode(list[j].text));
         if ((list[j].text.left(1) == "*") && (astariskNonF == true)) {
             opt.disabled = true;
@@ -6278,7 +6346,7 @@ HTMLElement.prototype.setAstarisk = function (value: string | number, astariskAd
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
-        if ((isNaN(v)==false)&&(isNaN(value)==false)){
+        if ((isNaN(Number(v))==false)&&(isNaN(Number(value))==false)){
             v=Number(v);
         }
         if (v == value) {
@@ -6305,7 +6373,7 @@ HTMLElement.prototype.setSelectValue= function (value: string | number) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
-        if ((isNaN(v)==false)&&(isNaN(value)==false)){
+        if ((isNaN(Number(v))==false)&&(isNaN(Number(value))==false)){
             v=Number(v);
         }
         if (v == value) {
@@ -6360,16 +6428,22 @@ HTMLElement.prototype.btnDisabled = function (f) {
 };
 
 //文字列左から抜き出し
-(String.prototype as unknown).left = function (num: number) {
+interface String {
+    left(num: number): string;
+}
+(String.prototype as { left: (this: string, num: number) => string }).left = function (num: number): string {
     return this.substr(0, num);
 };
 
 //文字列右から抜き出し
-(String.prototype as unknown).right = function (num: number) {
+(String.prototype as { right: (this: string, num: number) => string }).right = function (num: number): string {
     return this.substr(this.length - num);
 };
 /**文字を途中から抜き出し lengthがundefinedの場合最後まで*/
-(String.prototype as unknown).mid = function (start: number, length?: number){
+interface String {
+    mid(start: number, length?: number): string;
+}
+(String.prototype as { mid: (this: string, start: number, length?: number) => string }).mid = function (start: number, length?: number): string {
     if(length==undefined){
         return this.slice(start);
 
@@ -6378,24 +6452,33 @@ HTMLElement.prototype.btnDisabled = function (f) {
     }
 }
 /**文字列の指定位置に文字列を差し替え */
-(String.prototype as unknown).midReplace = function (start: number, replaceString?: string): string {
+interface String {
+    midReplace(start: number, replaceString?: string): string;
+}
+(String.prototype as { midReplace: (this: string, start: number, replaceString?: string) => string }).midReplace = function (start: number, replaceString?: string): string {
     const rep = replaceString ?? "";
     const tx = this.substring(0, start ) + rep + this.substring(start + rep.length);
    return tx;
 }
 
 //文字列全置換
-(String.prototype as unknown).replaceAll = function (org: string, dest?: string): string {
+interface String {
+    replaceAll(org: string, dest?: string): string;
+}
+(String.prototype as { replaceAll: (this: string, org: string, dest?: string) => string }).replaceAll = function (org: string, dest?: string): string {
     return this.split(org).join(dest);
 }
 
 // Number型の拡張: px()メソッド
-(Number.prototype as unknown).px = function() {
+interface Number {
+    px(): string;
+}
+(Number.prototype as { px: (this: number) => string }).px = function(): string {
     return this.toString() + "px";
 };
 
 // String型の拡張: right()メソッド  
-(String.prototype as unknown).right = function(length: number) {
+(String.prototype as { right: (this: string, length: number) => string }).right = function(length: number): string {
     if (length >= this.length) {
         return this;
     }
@@ -6403,7 +6486,10 @@ HTMLElement.prototype.btnDisabled = function (f) {
 };
 
 // String型の拡張: removePx()メソッド
-(String.prototype as unknown).removePx = function() {
+interface String {
+    removePx(): number;
+}
+(String.prototype as { removePx: (this: string) => number }).removePx = function(): number {
     return parseFloat(this.replace("px", "")) || 0;
 };
 
