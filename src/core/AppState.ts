@@ -18,6 +18,7 @@
  */
 
 import type { MapFileInfo } from '../types';
+import type { TKY2JGDInfo_Impl } from '../clsGeneric';
 
 /**
  * スクロールマージン情報
@@ -65,7 +66,7 @@ export class AppState {
     /**
      * 座標変換情報
      */
-    public tky2jgd!: typeof TKY2JGDInfo;
+    public tky2jgd!: TKY2JGDInfo_Impl;
 
     /**
      * タイルマップクラス

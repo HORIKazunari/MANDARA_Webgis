@@ -66,7 +66,7 @@ class strLatLonDegreeMinuteSecond {
 // PeripheriDirinfo クラスは globals.d.ts で定義済み
 // strYMD クラスは globals.d.ts で定義済み
 
-class Start_End_Time_data {
+export class Start_End_Time_data {
     StartTime: strYMD;
     EndTime: strYMD;
 

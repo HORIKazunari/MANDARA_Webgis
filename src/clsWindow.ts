@@ -15,7 +15,8 @@ import type {
   Font, 
   Edge,
   JsonValue,
-  JsonObject
+  JsonObject,
+  MapData
 } from './types';
 
 // カスタム型定義
@@ -47,10 +48,10 @@ const enmSelectMode = {
 
 export class strLayerInfo {
     Name?: string;
-    MapfileName?: string;
+    MapfileName?: string | number;
     UseObjectKind: boolean[] = [];
     Time?: strYMD;
-    Shape?: string;
+    Shape?: string | number;
 }
 
 /**設定画面（左側）を保存 */
@@ -455,12 +456,12 @@ function setting(locSearch: string) {
         readData(okButton);
         function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
             attrData = new clsAttrData();
-            const retv = attrData.OpenNewMandaraFile(filename, attrText, [mapdata], ext);
+            const retv = attrData.OpenNewMandaraFile([mapdata], attrText, filename, ext);
             if(retv.emes != "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
             if(retv.ok == false) {
-                Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。", undefined);
+                Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。");
                 Frm_Print?.setVisibility?.(false);
                 propertyWindow.nextVisible = true;
                 propertyWindow.setVisibility?.(false);
@@ -484,12 +485,12 @@ function setting(locSearch: string) {
         readData(okButton);
         function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
             const newAttrData = new clsAttrData();
-            const retv = newAttrData.OpenNewMandaraFile(mapdata, attrText, filename, ext);            
+            const retv = newAttrData.OpenNewMandaraFile([mapdata], attrText, filename, ext);            
             if(retv.emes != "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
             if(retv.ok == false) {
-                Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。", undefined);
+                Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。");
             } else {
                 const retV=attrData.ADD_AttrData(newAttrData, true);
                 if(retV.ok==true){
@@ -1081,9 +1082,9 @@ function setting(locSearch: string) {
                 }
                 d.Legend_Print_Flag = lpf;
                 if(Index == Num) {
-                    DataSet.DataItem.push(d);
+                    DataSet.DataItem.push(d as unknown as IOverLayDataItemElement);
                 } else {
-                    DataSet.DataItem[Index] = d;
+                    DataSet.DataItem[Index] = d as unknown as IOverLayDataItemElement;
                 }
                 attrData.Sort_OverLay_Data(OverLayDataSetNum);
                 Generic.alert(new point(e.clientX, e.clientY),"「" + ovttl[OverLayDataSetNum] + "」にセットしました。");
@@ -1861,7 +1862,7 @@ function setting(locSearch: string) {
                         }
                     }
                 };
-                Generic.createNewSpan(pnlClassDiv, "()", "freqBox" + i, "", picClassBoxWidth + 2 + txtClassValueWidth + 10, i * picClassBoxHeight, freqWidth - 10, "", "");
+                Generic.createNewSpan(pnlClassDiv, "()", "freqBox" + i, "", picClassBoxWidth + 2 + txtClassValueWidth + 10, i * picClassBoxHeight, freqWidth - 10 + "px", undefined);
             }
             //不足するtxtClassValueを追加
             let txtNum = div_num;
@@ -2017,7 +2018,7 @@ function setting(locSearch: string) {
                                     data.ClassPaintMD.color3 = col;
                                     attrData.Threecolor(Layernum, DataNum, n);
                                 } else {
-                                    attrData.FourColor(Layernum, DataNum, n, SelectedCategoryIndex, col);
+                                    attrData.FourColor(Layernum, DataNum, n);
                                     SelectedCategoryIndex = n;
                                     data.ClassPaintMD.color3 = col;
                                 }
@@ -2991,7 +2992,9 @@ function setting(locSearch: string) {
         const gbMarkLine = Generic.createNewFrame(markSizeView, "gbMarkLine", "", 0, 0, 125, 95, "線の設定");
         Generic.createNewSizeSelect(gbMarkLine, 0, "cboMarkLineSize", "最大幅", 15, 10, 40, 1,
             function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
-        Generic.createNewColorBox(gbMarkLine, "markLineColor", "色", attrData.nowDataSolo().MarkSizeMD.LineShape.LineColor, 15, 35, MarkLineColor);
+        Generic.createNewColorBox(gbMarkLine, "markLineColor", "色", attrData.nowDataSolo().MarkSizeMD.LineShape.LineColor, 15, 35, function(color: colorRGBA) {
+            attrData.nowDataSolo().MarkSizeMD.LineShape.Color = color;
+        });
         Generic.createNewButton(gbMarkLine, "線端設定", "", 30, 70, btnMarkLineEdge, "");
 
         Generic.createNewButton(markSizeView, "内部データ", "", 20, 120, innerDataSet, "");
@@ -3281,8 +3284,7 @@ function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbOverlayDataSetItem, "すべて削除", "", 260, 260,
             function () {
-                const emptyItem: IOverLayDataItem = { Count: 0, ItemList: [] };
-                attrData.nowOverlay().DataItem = [emptyItem];
+                attrData.nowOverlay().DataItem = { Count: 0, ItemList: [] } as IOverLayDataItem;
                 overlayListView.clear();
                 gbOverlayItemData?.setVisibility?.(false);
             }, "width:100px");
@@ -3298,7 +3300,7 @@ function setting(locSearch: string) {
         Generic.createNewButton(gbseriesDataSet, "追加", "", 205, 15,
             function () {
                 const ov = attrData.TotalData.TotalMode.Series;
-                const newDataset: ISeriesDatasetInfo = { DataItem: [], Name: "" };
+                const newDataset: ISeriesDatasetInfo = { DataItem: [], Name: "", title: "" };
                 ov.AddDataSet(newDataset);
                 ov.SelectedIndex = ov.DataSet.length - 1;
                 setSettingSeriesModeWindow();
@@ -3827,9 +3829,10 @@ function setting(locSearch: string) {
         }
         Generic.readingIcon(filename +"データ読み込み");
         Generic.getMapfileByHttpRequest(url, function (getData: string | MapData) {
+            const getDataStr = typeof getData === 'string' ? getData : JSON.stringify(getData);
             attrData = new clsAttrData();
             const mapdata: clsMapdata[] = [];
-            const retv = attrData.OpenNewMandaraFile(filename, getData, mapdata, ext);
+            const retv = attrData.OpenNewMandaraFile(mapdata, getDataStr, filename, ext);
             if (retv.emes != "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
@@ -4159,16 +4162,17 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
         }
 
         const key = Object.keys(sFiles)[0];
+        const keyNum = parseInt(key, 10);
         const filesArray = (sFiles[key].files || []).filter((f): f is File => f instanceof File);
-        sFiles[key].shape.fileRead(filesArray, encode,key, onOk, onError);
-        function onOk(tag: string) {//読み込めた
-            const lst=[{ value: tag, text: tag + ".shp"  }];
+        sFiles[key].shape.fileRead(filesArray, encode as string | number, keyNum, onOk, onError);
+        function onOk(tag: string | number) {//読み込めた
+            const lst=[{ value: tag, text: String(tag) + ".shp"  }];
             fileList.addList(lst.map(item => item.text), firstSel);
             shapeFiles[tag] = sFiles[tag];
             setShapeFileInfo();
         }
-        function onError(tag: string) {
-            Generic.alert(undefined,tag + "は読み込めませんでした。")
+        function onError(tag: string | number) {
+            Generic.alert(undefined,String(tag) + "は読み込めませんでした。")
         }
         /**zipされたシェープファイル */
         function zipShape(zipFile: File) {
@@ -4182,7 +4186,8 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
                     return;
                 }
                 const key = Object.keys(sFiles)[0];
-                sFiles[key].shape.fileReadZip(unZipData, encode, key, onOk);
+                const keyNum = parseInt(key, 10);
+                sFiles[key].shape.fileReadZip(unZipData, encode as string | number, keyNum, (tag: string | number) => onOk(tag));
 
             }
             function zipSErr(){
@@ -4321,21 +4326,24 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
 
         const mapList: Record<string, clsMapdata> = {};
         const LayerData: strLayerInfo[] = [];
-        const prj = parseInt(cboProjection?.getValue ? cboProjection.getValue() : "0");
+        const prjValue = cboProjection?.getValue ? cboProjection.getValue() : "0";
+        const prj = parseInt(String(prjValue));
         for (const i in shapeFiles) {
             const sfile = shapeFiles[i];
+            const iNum = parseInt(i, 10);
             const newMapData = sfile.shape.convertToMapfile(prj, true);
             newMapData.init_Compass_First();
             if(chkTopology.checked==true){
                 newMapData.TopologyStructure_SameLine();
             }
-            const key = i.toUpperCase();
+            const keyNum = iNum;
+            const key = String(keyNum).toUpperCase();
             mapList[key] = newMapData;
             const d = new strLayerInfo();
             d.Time = clsTime.GetYMD(new Date());
             d.Shape = sfile.shape.getShape();
-            d.MapfileName = String(i);
-            d.Name = "レイヤ" + d.MapfileName
+            d.MapfileName = keyNum;
+            d.Name = "レイヤ" + String(d.MapfileName);
             const okn = mapList[key].Map.OBKNum;
             d.UseObjectKind = (new Array(okn)).fill(false);
             d.UseObjectKind[0] = true;
@@ -4473,7 +4481,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
             }
         }
         const d = LayerData[n];
-        useMapList?.setSelectText?.(d.MapfileName ?? "");
+        useMapList?.setSelectText?.(String(d.MapfileName ?? ""));
         layerNameBox.value = d.Name;
         checkTime();
         resetObjKind();
@@ -4484,7 +4492,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         const n = layerList.selectedIndex;
         if(n == -1) { return }
         const d = LayerData[n];
-        if(mapList[d.MapfileName.toUpperCase()].Map.Time_Mode == true) {
+        if(mapList[String(d.MapfileName).toUpperCase()].Map.Time_Mode == true) {
             layerTime.disabled = false;
             layerTime.value = d.Time.toInputDate();
         } else {
@@ -4498,7 +4506,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         if(n == -1) { return }
         const d = LayerData[n];
         if (!d?.MapfileName) { return; }
-        const key = d.MapfileName.toUpperCase();
+        const key = String(d.MapfileName).toUpperCase();
         const okn = mapList[key].Map.OBKNum;
         const tx = [];
         for (let i = 0; i < okn; i++) {
@@ -4541,7 +4549,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     //レイヤ名の変更
     function layerNameChange(e: Event) {
         const n = layerList.selectedIndex;
-        LayerData[n].Name = e.target.value;
+        LayerData[n].Name = (e.target as HTMLInputElement).value;
         // layerList.setText(n,e.target.value); // ListBoxに存在しないメソッド
     }
 
@@ -4581,7 +4589,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         }
         for (const i in LayerData) {
             const LD = LayerData[i];
-            const key = LD.MapfileName.toUpperCase();
+            const key = String(LD.MapfileName).toUpperCase();
             let f1 = false;
             for (const j in LD.UseObjectKind) {
                 if(LD.UseObjectKind[j] == true) {

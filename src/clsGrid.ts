@@ -54,7 +54,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     const layerDataWidth=200;
     let gScreenWidth =( Generic.getBrowserWidth()-50*2);
     let gScreenHeight = (Generic.getBrowserHeight() - 100);
-    const backDiv = Generic.set_backDiv("", "属性データ編集", gScreenWidth, gScreenHeight, false, false, buttonOK, 0.2, false, false);
+    const backDiv = Generic.set_backDiv("", "属性データ編集", gScreenWidth, gScreenHeight, false, false, () => buttonOK(newAttrData), 0.2, false, false);
     const picTop = Generic.createNewDiv(backDiv, "", "", "", 0, 30, gScreenWidth, 100, "", undefined);
     Generic.createNewButton(picTop, "OK", "", 480, 20, okButton, "width:70px;height:25px");
     Generic.createNewButton(picTop, "Cancel", "", 480, 50, cancelButton, "width:70px;height:25px");
@@ -64,15 +64,17 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     const btnRemoveMapfile = Generic.createNewButton(gbMapFile, "削除", "", 140, 35, btnRemoveMapfileClick, "width:70px;font-size:10.5px");
     Generic.createNewButton(gbMapFile, "追加", "", 140, 60,  btnAddMapfile, "width:70px;font-size:10.5px");
     const gbSearch=Generic.createNewFrame(picTop,"","",240,10,190,40,"検索");
-    Generic.createNewButton(gbSearch, "検索", "", 10, 10, function(e: Event){
+    Generic.createNewButton(gbSearch, "検索", "", 10, 10, function(){
         ktGrid.removeEventlister();
-        Generic.prompt(e,"検索文字列",SearchSTR,function(v: string){
+        const okCall = (v: string) => {
             ktGrid.addEventlister();
             SearchSTR = v;
             if (v != "") {
                 ktGrid.Find(SearchSTR, enmMatchingMode.PartialtMatching);
             }
-        },'left',function(){ktGrid.addEventlister();})
+        };
+        const cancelCall = () => { ktGrid.addEventlister(); };
+        Generic.prompt(undefined,"検索文字列",SearchSTR,okCall,'left',cancelCall);
     }, "width:70px;");
     Generic.createNewButton(gbSearch, "前", "", 90, 10, function () {
         if (SearchSTR != "") {
@@ -177,7 +179,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         evtChange_Layer:Change_Layer//レイヤ名の変更、レイヤの移動などで発生
       }
     setIniform();
-    ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as unknown);
+    ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as unknown as Function);
     if (newDataFlag == true) {
         ktGrid.addLayer("新しいレイヤ", 0, 5, 50);
         ktGrid.setLayerData(0, GridLayerData.Shape, enmShape.NotDeffinition);
@@ -227,7 +229,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             }
             const d = [];
             for (let j = 0; j < al.atrData.length; j++) {
-                d[j] = Get_Data_Property_Value(state.attrData, i, j);
+                d[j] = Get_Data_Property_Value(state.attrData as clsAttrData, i, j);
             }
             D_CheckDataValue.push(d);
             let SideE = true;
@@ -339,7 +341,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             const retV=  spatial.Check_Zahyo_Projection_Convert_Enabled(newAttrData.TotalData.ViewStyle.Zahyo, oldAttr.TotalData.ViewStyle.Zahyo);
             ZahyoOk=retV.ok ;
             if(ZahyoOk == true ){
-                oldAttr.Convert_Zahyo(newAttrData.TotalData.ViewStyle.Zahyo);
+                oldAttr.Convert_Zahyo(newAttrData.TotalData.ViewStyle.Zahyo as unknown as number);
             }
             Check_Data();
             Reset_SCRView_Size();
@@ -819,7 +821,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 }
             }
             newATO.SelectedIndex = Math.min(oldATO.DataSet[i].SelectedIndex, OverDataset.DataItem.length - 1)
-            newATO.DataSet.push(OverDataset);
+            newATO.DataSet.push(OverDataset as unknown as IOverLayDatasetInfo);
         }
         newATO.SelectedIndex = oldATO.SelectedIndex;
 
@@ -874,7 +876,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 }
             }
             SeriesDataset.SelectedIndex = Math.min(oldATS.DataSet[i].SelectedIndex, SeriesDataset.DataItem.length - 1);
-            newATS.DataSet.push(SeriesDataset);
+            newATS.DataSet.push(SeriesDataset as unknown as ISeriesDatasetInfo);
         }
         newATS.SelectedIndex = oldATS.SelectedIndex
 
@@ -1188,8 +1190,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 const n = oldMapfile.indexOf(newMapfile[i]);
                 if (n != -1) {
                     if (newTV.DummyObjectPointMark[newMapfile[i]]) {
-                        const d = newTV.DummyObjectPointMark[newMapfile[i]];
-                        for (let j = 0; j < d.Length; j++) {
+                        const d = newTV.DummyObjectPointMark[newMapfile[i]] as any;
+                        for (let j = 0; j < d.length; j++) {
                             d[j].ObjectKindName = oldDummy[newMapfile[i]][j].ObjectKindName;
                             d[j].Mark = oldDummy[newMapfile[i]][j].Mark.Clone();
                         }
@@ -1198,8 +1200,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             }
         }
 
-        const oldTTS  = oldTV.ScrData;
-        const newTTS=newTV.ScrData;
+        const oldTTS  = oldTV.ScrData as any;
+        const newTTS=newTV.ScrData as any;
         if(oldTTS.MapRectangle.Equals(newTTS.MapRectangle) == true ){
             newTTS.ScrData = oldTTS.Clone();
             //地図領域が同じ場合はここまで
@@ -1244,8 +1246,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 for (let i = 0; i < mlb.Legend_Num; i++) {
                     if ((mlb.LegendXY[i].x < WAKU.left) || (mlb.LegendXY[i].x > WAKU.right) || (
                         mlb.LegendXY[i].y < WAKU.top) || (mlb.LegendXY[i].y > WAKU.bottom)) {
-                        mlb.LegendXY[i].x = MapRect.right + (1 - i) * WAKU.width / 50;
-                        mlb.LegendXY[i].y = (MapRect.top + MapRect.bottom) / 2 + (1 - i) * sz.height / 50; // + wy2) / 2 + (1 - i) * h / 50
+                        mlb.LegendXY[i].x = MapRect.right + (1 - i) * (WAKU.width as number) / 50;
+                        mlb.LegendXY[i].y = (MapRect.top + MapRect.bottom) / 2 + (1 - i) * (sz.height as number) / 50; // + wy2) / 2 + (1 - i) * h / 50
                     }
                 }
 
@@ -1672,8 +1674,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         for (let i = 0; i < ktGrid.getXsize(Layernum); i++) {
             const lType = ktGrid.getLayerData(Layernum, GridLayerData.Type);
             let ttl = "通常のデータ";
-            const titleCell = ktGrid.getFixedYSData(Layernum, i, 3).toUpperCase();
-            const unitCell = ktGrid.getFixedYSData(Layernum, i, 4).toUpperCase();
+            const titleCell = String(ktGrid.getFixedYSData(Layernum, i, 3)).toUpperCase();
+            const unitCell = String(ktGrid.getFixedYSData(Layernum, i, 4)).toUpperCase();
 
             if (titleCell == "URL_NAME") {
                 ttl = Generic.ConvertAttDataTypeString(enmAttDataType.URL_Name);
@@ -1821,8 +1823,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 }
             }
             newAttrData.AddExistingMapData(mapdata, filename);
-            lstMapFile.add({ text: filename, value: 0 });
-            cboLayerMapFile.addSelectList([{ text: filename, value: 0 }], undefined, false, false);
+            lstMapFile.add(filename);
+            cboLayerMapFile.addSelectList([filename], undefined, false, false);
             btnRemoveMapfile.disabled = false;
             btnReplaceMapFile.disabled = false;
             btnObjectNameCopy.disabled = false;
@@ -1901,9 +1903,9 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     
             newAttrData.AddExistingMapData(mData, filename);
             lstMapFile.removeList(sel,1);
-            lstMapFile.add({ text: filename, value: 0 })
+            lstMapFile.add(filename)
             cboLayerMapFile.remove(sel);
-            cboLayerMapFile.addSelectList([{ text: filename, value: 0 }], undefined, false, false);
+            cboLayerMapFile.addSelectList([filename], undefined, false, false);
             for (let i = 0; i < ktGrid.getLayerMax(); i++) {
                 const oldFname = ktGrid.getLayerData(i, GridLayerData.MapFile);
                 if (oldFname == repFname) {

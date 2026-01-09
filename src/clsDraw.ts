@@ -1059,7 +1059,7 @@ class clsTileMap {
         } while ((g_num >= BackImageSpeed * 10) && (z >= ZoomMin))
         if ((z + 1 < ZoomMin) || (g_num >= BackImageSpeed * 10)) {
             //MsgBox("背景画像を表示するにはさらに拡大してください。", MsgBoxStyle.Exclamation)
-            return false;
+            return;
         }
         const ZoomLevel = z + 1;
         const tileList_Data = this.Get_TileMap_Image(TileMap, ZoomLevel, ScrLatLonBox, MapZahyo, ScrData);
@@ -1067,10 +1067,8 @@ class clsTileMap {
         let getTileNum=0;
         for (let i = 0; i < numofTile; i++) {
             const d = tileList_Data[i] as JsonObject;
-            request(d.URL as string, d.ScrPosition as rectangle);
+            request(d.URL as string, d.ScrPosition as unknown as rectangle);
         }
-
-        return true;
 
         function request(url: string, destRect: rectangle) {
             const n = self.xhr.length;
@@ -1256,7 +1254,7 @@ class clsTileMap {
     }
 
     /**指定したZoomのタイルマップの緯度経度を求める*/
-    Get_TileMap_IdoKedo(ZoomLevel: number, X: number, Y: number): IdoKeido {
+    Get_TileMap_IdoKedo(ZoomLevel: number, X: number, Y: number): latlonbox {
         const nw = new latlon();
         nw.lon = (X / 2 ** ZoomLevel) * 360 - 180;
         const tx1 = (Y / 2 ** ZoomLevel) * 2 * Math.PI - Math.PI;
@@ -1271,7 +1269,7 @@ class clsTileMap {
     }
 
     /**タイルマップのXYの値が外れていた場合に修正する*/
-    check_TileMap_XY(ZoomLevel: number, X: number, Y: number): boolean {
+    check_TileMap_XY(ZoomLevel: number, X: number, Y: number): { x: number; y: number } {
         if (X < 0) {
             X = -X;
         }
@@ -1299,7 +1297,7 @@ class clsTileMap {
     private setTileMapData(): {[key: string]: JsonObject} {
         const gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
 
-        const MapTypeArray: Record<string, unknown> = {};
+        const MapTypeArray: {[key: string]: JsonObject} = {};
         MapTypeArray['k_cj4'] = {
             href: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
             info:'http://www.gsi.go.jp/common/000058211.pdf',

@@ -400,7 +400,7 @@ interface IAttrData {
     Check_Vector_Object?: () => void;
     PrtObjectSpatialIndex?: () => void;
     SetMapViewerData?: (data: JsonObject, arg2?: JsonObject, arg3?: JsonObject) => { ok: boolean; emes: string };
-    OpenNewMandaraFile?: (filename: string, callback?: () => void, options?: JsonObject, layer?: number) => { ok: boolean; emes: string };
+    OpenNewMandaraFile?: (MapDataList: clsMapdata[], attrText: string, filename: string, ext: string) => { ok: boolean; emes: string };
     ADD_AttrData?: (data: JsonObject, flag?: boolean) => { ok: boolean; emes: string };
     Set_LayerName_to?: (selbox: HTMLSelectElement, SelectedIndex?: number, NormalF?: boolean, syntheticF?: boolean, PointF?: boolean, MeshF?: boolean) => void;
     Set_ObjectName_to_selectBox?: (selbox: HTMLSelectElement, Layernum?: number, SelectedObject?: number) => void;
@@ -908,7 +908,7 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
 // Generic ユーティリティクラス（拡張）
 interface IGeneric {
     alert: (event: Event | undefined, message: string) => void;
-    prompt: (event: Event, title: string, defaultValue: string, callback: (value: string) => void) => void;
+    prompt: (event_point: point | undefined, promptText: string, defoText: string, okCall: (value: string) => void, textAlign?: string, cancelCall?: (() => void) | undefined) => void;
     confirm: (event: Event, message: string, callback: (confirmed: boolean) => void) => void;
     createNewDiv: (parent: HTMLElement, id: string, className: string, innerHTML: string, left: number, top: number, width: number, height: number, style: string, tooltip: string | undefined) => HTMLDivElement;
     createNewButton: (parent: HTMLElement, text: string, className: string, left: number, top: number, onClick: (e: Event) => void, style: string) => HTMLButtonElement;

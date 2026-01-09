@@ -25,7 +25,7 @@ class EllipPar {
 
 // TKY2JGDInfo クラス: 測地系変換（Tokyo97 ⇔ ITRF94）
 // 国土地理院技術資料 Ｈ・１－Ｎｏ．２「測地成果2000のための座標変換ソフトウェアTKY2JGD」によるTKY2JGDソース・コードを利用
-class TKY2JGDInfo_Impl {
+export class TKY2JGDInfo_Impl {
     private readonly EP = new Array<EllipPar>(3);
     private readonly XY_Genten = new Array<latlon>(20);
     private readonly rad2deg = 57.2957795130823;
