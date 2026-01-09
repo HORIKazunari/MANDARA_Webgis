@@ -1747,7 +1747,7 @@ class strViewStyle_Info {
     ObjectLimitationF: boolean = false;
     InVisibleObjectBoundaryF: boolean = false;
     // Key:地図ファイル、Value:点オブジェクトのダミー表示時記号
-    DummyObjectPointMark: strDummyObjectPointMark_Info[] = []; // Dictionary(Of String, strDummyObjectPointMark_Info())
+    DummyObjectPointMark: Record<string, strDummyObjectPointMark_Info[]> = {};
     MapPrint_Flag: boolean = false;
     LatLonLine_Print: strLatLonLine_Print_Info = new strLatLonLine_Print_Info();
     SouByou: strSouByou_Info = new strSouByou_Info();
@@ -1776,7 +1776,10 @@ class strViewStyle_Info {
         d.TileLicenceFont = this.TileLicenceFont.Clone();
         d.ObjectLimitationF = this.ObjectLimitationF; //Boolean
         d.InVisibleObjectBoundaryF = this.InVisibleObjectBoundaryF; //Boolean
-        d.DummyObjectPointMark = Generic.ArrayClone(this.DummyObjectPointMark);
+        d.DummyObjectPointMark = {};
+        for (const key in this.DummyObjectPointMark) {
+            d.DummyObjectPointMark[key] = [...this.DummyObjectPointMark[key]];
+        }
         d.MapPrint_Flag = this.MapPrint_Flag; //Boolean
         
         d.SouByou = this.SouByou.Clone();
@@ -2597,11 +2600,11 @@ class strLayerReadingInfo {
     Shape: number = 0; // enmShape
     TTL: string[] = [];
     UNT: string[] = [];
-    DTMis: boolean[] = [];
+    DTMis: JsonValue[] = [];
     Note: string[] = [];
-    ObjectDataStac: strObject_Data_Info[] = [];
-    Dummy_Temp: strDummyObjectName_and_Code[] = [];
-    Dummy_OBKTemp: JsonValue[] = []; // (未定義)
+    ObjectDataStac: string[][] = [];
+    Dummy_Temp: string[][] = [];
+    Dummy_OBKTemp: string[][] = [];
     Comment_Temp: string = "";
 
     //レイヤの初期化。タイプはNormal形状はNotDefinition
@@ -2974,7 +2977,7 @@ class clsAttrData {
 
     for (let i = 0; i < Mfile.length; i++) {
         if (ExtMfile.indexOf(Mfile[i]) == -1) {
-            if (itv.DummyObjectPointMark.length > 0) {
+            if (Object.keys(itv.DummyObjectPointMark).length > 0) {
                 this.TotalData.ViewStyle.DummyObjectPointMark[Mfile[i]] = itv.DummyObjectPointMark[Mfile[i]];
             }
         }
@@ -4078,7 +4081,7 @@ class clsAttrData {
     initDummuyPointObjectMark(): void {
         const vs = this.TotalData.ViewStyle;
         vs.MapLegend.Line_DummyKind.Line_Visible_Number_STR = "1".repeat(this.GetAllMapLineKindNum());
-        vs.DummyObjectPointMark = [];
+        vs.DummyObjectPointMark = {};
         const PointObjG = this.GetAllPointObjectGroup();
         for (const key in PointObjG) {
             if (PointObjG[key].length > 0) {
@@ -4410,7 +4413,13 @@ class clsAttrData {
                         for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                             const Meshcode = ld.atrObject.atrObjectData[j].Name;
                             const RectLatLon = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode);
-                            LLRect = spatial.getCircumscribedRectangle(RectLatLon, LLRect);
+                            const RectPoints = [
+                                RectLatLon[0].toPoint(),
+                                RectLatLon[1].toPoint(),
+                                RectLatLon[2].toPoint(),
+                                RectLatLon[3].toPoint()
+                            ];
+                            LLRect = spatial.getCircumscribedRectangle(RectPoints, LLRect);
                         }
                         break;
                     }
@@ -4536,7 +4545,7 @@ class clsAttrData {
         const oldDOG = oldvs.DummyObjectPointMark;
         for (const key in oldDOG) {
             const d = oldDOG[key];
-            const nd: JsonValue[] = [];
+            const nd: strDummyObjectPointMark_Info[] = [];
             for (let i = 0; i < d.length; i++) {
                 const dd = new strDummyObjectPointMark_Info();
                 dd.ObjectKindName = d.ObjectKindName;
@@ -4594,7 +4603,7 @@ class clsAttrData {
                 this.LayerData[i].MapFileData = this.MapData.SetMapFile(fname);
                 this.LayerData[i].MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(fname);
             } else {
-                let tx = "";
+                let tx: string | JsonObject = "";
                 switch (fname) {
                     case "JAPAN.MPFJ":
                     case "日本緯度経度.MPFJ":
@@ -4604,7 +4613,7 @@ class clsAttrData {
                 } 
                 if (tx != "") {
                     const mapdata = new clsMapdata();
-                    mapdata.openJsonMapData(tx);
+                    mapdata.openJsonMapData(tx as JsonObject);
                     this.MapData.AddExistingMapData(mapdata, fname);
                     this.LayerData[i].MapFileData = this.MapData.SetMapFile(fname);
                     this.LayerData[i].MapFileObjectNameSearch = this.MapData.SetObject_Name_Search( fname);
@@ -5537,8 +5546,8 @@ class clsAttrData {
                             return { ok: false, emes: ObjectErrorMessage };
                         }
                         const retv = this.Set_Data_from_String(LayerReading, TotalMissing);
-                        OK_Flag = OK_Flag && (retv.ok as boolean);
-                        LayerError += retv.emes as string;;
+                        OK_Flag = OK_Flag && retv.ok;
+                        LayerError += retv.emes;
                         if (LayerError != "") {
                             ObjectErrorMessage += "エラー／レイヤ:";
                             if (LayerReading.Name == "") {
@@ -5662,8 +5671,8 @@ class clsAttrData {
             }
         }
         const retv = this.Set_Data_from_String(LayerReading, TotalMissing);
-        OK_Flag = OK_Flag && (retv.ok as boolean);
-        LayerError += retv.emes as string;
+        OK_Flag = OK_Flag && retv.ok;
+        LayerError += retv.emes;
         if (LayerError != "") {
             ObjectErrorMessage += "エラー／レイヤ:";
             if (LayerReading.Name == "") {
@@ -5696,7 +5705,7 @@ class clsAttrData {
 
 
     //文字列からデータに変換
-    Set_Data_from_String(LayerReading: JsonObject, TotalMissing: JsonObject): JsonObject {
+    Set_Data_from_String(LayerReading: strLayerReadingInfo, TotalMissing: boolean): {ok: boolean, emes: string} {
         let E_Mes = "";
         const MapFileData = this.MapData.SetMapFile(LayerReading.MapFile as string);
         const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile as string);
@@ -5707,7 +5716,7 @@ class clsAttrData {
         let MxData = 0;
         const LayerReadingTTL = LayerReading.TTL as string[];
         const LayerReadingUNT = LayerReading.UNT as string[];
-        const LayerReadingDTMis = LayerReading.DTMis as string[];
+        const LayerReadingDTMis = LayerReading.DTMis as JsonValue[];
         const LayerReadingNote = LayerReading.Note as string[];
         const LayerReadingObjectDataStac = LayerReading.ObjectDataStac as string[][];
         MxData = Math.max(LayerReadingTTL.length, MxData);
@@ -5735,7 +5744,7 @@ class clsAttrData {
             let code: number | undefined;
             switch (LayerReadingType) {
                 case (enmLayerType.Normal): {
-                    code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time as strYMD);
+                    code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time);
                     if (code == -1) {
                         No_Object_Name.push(OBName);
                     } else if (code !== undefined) {
@@ -5778,8 +5787,7 @@ class clsAttrData {
                     d.Name = OBName;
                     d.Objectstructure = enmKenCodeObjectstructure.MapObj;
                     if (LayerReadingType == enmLayerType.Normal) {
-                        const timeObj = LayerReading.Time as JsonObject;
-                        const layerTime = new strYMD(timeObj.Year as number, timeObj.Month as number, timeObj.Day as number);
+                        const layerTime = LayerReading.Time;
                         d.CenterPoint = MapFileData.Get_Enable_CenterP(code, layerTime);
                         d.Symbol = d.CenterPoint;
                         d.Label = d.Symbol;
@@ -5840,8 +5848,7 @@ class clsAttrData {
             return { ok: false, emes: E_Mes };
         }
         
-        const timeObj = LayerReading.Time as JsonObject;
-        const layerTime = new strYMD(timeObj.Year as number, timeObj.Month as number, timeObj.Day as number);
+        const layerTime = LayerReading.Time;
         this.Add_one_Layer(LayerReading.Name as string, LayerReading.Type as number, LayerReading.MeshType as number, LayerReading.Shape as number, LayerReading.MapFile as string,
             layerTime, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj);
 
@@ -5870,7 +5877,7 @@ class clsAttrData {
         (LayerReading.Note as JsonValue[]).shift();
 
         const DummmyObjNamesList = [];
-        const LayerReadingDummyTemp = LayerReading.Dummy_Temp as string[][];
+        const LayerReadingDummyTemp = LayerReading.Dummy_Temp;
         for (let i = 0; i < LayerReadingDummyTemp.length; i++) {
             const DCS = LayerReadingDummyTemp[i];
             for (let j = 1; j < DCS.length; j++) {
@@ -5896,13 +5903,13 @@ class clsAttrData {
             E_Mes += "ダミーオブジェクト指定で地図ファイルに含まれないものがあります。" + '\n' + Emes
         }
         const retv = this.Set_STRData_To_Cell(NowLay, MxData - 1, LayerReading.TTL as string[], LayerReading.UNT as string[], LayerReading.DTMis as JsonValue[], LayerReading.Note as string[], DN_Str);
-        E_Mes += retv.emes as string;
+        E_Mes += retv.emes;
         return { ok: retv.ok, emes: E_Mes };
     }
 
 
     //レイヤ単位で文字列配列に入れたデータを設定する
-    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string[], UNT: string[], DTMissing: JsonValue[], Note: string[], DN_Str: string[][]): JsonObject {
+    Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string[], UNT: string[], DTMissing: JsonValue[], Note: string[], DN_Str: string[][]): {ok: boolean, emes: string} {
         let ErrorMes = "";
         const L = this.LayerData[Layernum];
         const ObjNum = L.atrObject.ObjectNum;
@@ -6168,7 +6175,7 @@ class clsAttrData {
     }
 
     //レイヤにダミーオブジェクトとグループを設定する
-    Set_Dummy_and_Group(LayerNum: number, Dummy: string, DummyGroup: string): string {
+    Set_Dummy_and_Group(LayerNum: number, Dummy: string[], DummyGroup: string[]): string {
         const L = this.LayerData[LayerNum];
         if (L.Type == enmLayerType.Trip_Definition) {
             return "";
@@ -6230,7 +6237,7 @@ class clsAttrData {
             const layData = LayDataInf[key];
             const Get_Obj = [];
             let fobk = 0;
-            const UseMap = this.SetMapFile(layData.MapfileName);
+            const UseMap = this.SetMapFile(String(layData.MapfileName));
             for (let i = 0; i < UseMap.Map.Kend; i++) {
                 if (layData.UseObjectKind[UseMap.MPObj[i].Kind] == true) {
                     fobk = UseMap.MPObj[i].Kind;
@@ -6256,7 +6263,7 @@ class clsAttrData {
             }
 
             const objn = Get_Obj.length;
-            this.Add_one_Layer(layData.Name, enmLayerType.Normal, enmMesh_Number.mhNonMesh, layshape, layData.MapfileName, layData.Time,
+            this.Add_one_Layer(layData.Name, enmLayerType.Normal, enmMesh_Number.mhNonMesh, layshape, String(layData.MapfileName), layData.Time,
                 enmZahyo_System_Info.Zahyo_System_No, "", objn, Get_Obj);
             if (UseMap.ObjectKind[fobk].DefTimeAttDataNum == 0) {
                 //初期属性が無い場合の色の設定
@@ -6304,7 +6311,6 @@ class clsAttrData {
         }
 
         this.Check_LayerShape();
-        return true;
     }
 
     //レイヤの形状を実際のオブジェクトの形状に基づいて設定
@@ -6501,10 +6507,12 @@ class clsAttrData {
     Check_screen_Kencode_In(Layernum: number, ObjNum: number): boolean {
         const rect = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
-            const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
+            const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.topLeft());
+            const turnRect2 = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.bottomRight());
+            const turnRectFull = new rectangle(turnRect, turnRect2);
             const formSize = this.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
             const screct = new rectangle(new point(0, 0), new size(formSize.width(), formSize.height()));
-            const relation = spatial.Compare_Two_Rectangle_Position(turnRect, screct);
+            const relation = spatial.Compare_Two_Rectangle_Position(turnRectFull, screct);
             if (relation == cstRectangle_Cross.cstOuter) {
                 return false;
             } else {
@@ -6527,9 +6535,11 @@ class clsAttrData {
     Check_Screen_Objcode_In(Layernum: number, ObjCode: number): boolean {
         const rect = this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
-            const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect);
+            const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.topLeft());
+            const turnRect2 = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.bottomRight());
+            const turnRectFull = new rectangle(turnRect, turnRect2);
             const screct = new rectangle(0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width(), 0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height());
-            const relation = spatial.Compare_Two_Rectangle_Position(turnRect, screct);
+            const relation = spatial.Compare_Two_Rectangle_Position(turnRectFull, screct);
             if (relation == cstRectangle_Cross.cstOuter) {
                 return false;
             } else {
@@ -6810,7 +6820,7 @@ class clsAttrData {
                                 }
                                 default:{
                                     const av = Math.floor(V);
-                                    const valNum = parseFloat(tdcc.Val);
+                                    const valNum = typeof tdcc.Val === 'number' ? tdcc.Val : parseFloat(String(tdcc.Val));
                                     f = false;
                                     switch (tdcc.Condition) {
                                         case enmCondition.Less:
