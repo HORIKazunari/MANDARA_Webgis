@@ -1,7 +1,7 @@
 ﻿import { appState } from './core/AppState';
 import { clsAccessory } from './clsAccessory';
 import { clsSpline } from './clsDraw';
-import type { JsonValue, MenuItem } from './types';
+import type { JsonValue } from './types';
 
 // mousePointingSituations は globals.d.ts で定義済み
 
@@ -23,7 +23,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     elem.addEventListener("mousemove", mmove, false);
     elem.addEventListener("touchmove", mmove, {passive:false});
     elem.addEventListener("mouseup", mup, false);
-    elem.addEventListener("touchend", mup, {passive:false});
+    elem.addEventListener("touchend", mup as EventListener);
     elem.addEventListener("mouseleave", mup, false);
     
     const mousewheelevent: string = 'onwheel' in document ? 'wheel' : 'onmousewheel' in document ? 'mousewheel' : 'DOMMouseScroll';
@@ -65,6 +65,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         switch (keyCode) {
             case 82: //Rキー
                 state.frmPrint.wholeMapShow();
+                break;
             case 37:
             case 38:
             case 39:
@@ -396,7 +397,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         } else {
                             stp = mapstep;
                         }
-                        const ag = vs.AccessoryGroupBox;
+                        const ag = vs.AccessoryGroupBox as any;
                         if (ag.Title == true) {
                             vs.MapTitle.Position.offset(stp.x, stp.y);
                         }
@@ -460,7 +461,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     }
                                     //非表示の飾りを表示させるメニューの表示
                                     if ((av.MapTitle.Visible == false) || (av.MapLegend.Base.Visible == false) || (av.MapScale.Visible == false) || (
-                                        av.AttMapCompass.Visible == false) || (av.AttMapCompass.Visible == false) || (av.AccessoryGroupBox.Visible == false)) {
+                                        av.AttMapCompass.Visible == false) || (av.DataNote.Visible == false) || (av.AccessoryGroupBox?.Visible == false)) {
                                         if (mnuAccPopupVisible.length > 0) {
                                             mnuAccPopupVisible.push({ caption: "-" });
                                         }
@@ -510,8 +511,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                             { caption: "地理院地図", event:  showWebMap},
                                             { caption: "今昔マップ", event:  showWebMap}
                                         ]};
-                                        mnuAccPopupVisible.push(pmnu);
-                                        function showWebMap(data: {caption: string}, e: Event) {
+                                        mnuAccPopupVisible.push(pmnu as MenuItem);
+                                        function showWebMap(data: MenuItem, e?: Event) {
                                             const state = appState();
                                             const p = vs.ScrData.getSRXY(mouseDownPosition);
                                             const xy1=spatial.Get_Reverse_XY(p,state.attrData.TotalData.ViewStyle.Zahyo);   
@@ -1166,7 +1167,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         if (OnObject.length == 0) {
                             //frm_PropertypnlProperty.Visible = false;
                         } else {
-                            if (mnuPropertyWindow.Checked == true) {
+                            if (mnuPropertyWindow.checked == true) {
                                 //frm_Property.ShowTripModeProperty(state.attrData, Layernum, OnObject, dtindex);
                             }
                         }
@@ -1353,7 +1354,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const vs = state.attrData.TotalData.ViewStyle;
         const originalP = vs.ScrData.getSRXY(MousePosition);
         if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)==true){
-            const P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo);
+            const P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo) as point;
             const PSt  = Generic.Get_PositionCoordinate_Strings(P, vs.Zahyo);
             Frm_Print.label1.innerHTML=PSt.x + "/" + PSt.y;
         }else{

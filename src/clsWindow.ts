@@ -2531,11 +2531,11 @@ function setting(locSearch: string) {
             }
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
 
-            function LArrow(_data: void, e: MouseEvent) {
+            function LArrow(_data: MenuItem, ev?: Event) {
                 const ldd = attrData.nowDataSolo().ClassODMD;
-                clsArrow(e, ldd.Arrow, "起点方向", "終点方向", function (newArrow: Arrow) { ldd.Arrow = newArrow });
+                clsArrow(ev as MouseEvent, ldd.Arrow, "起点方向", "終点方向", function (newArrow: Arrow) { ldd.Arrow = newArrow });
             }
-            function LpatChange(_data: void, e: MouseEvent) {
+            function LpatChange(_data: MenuItem, ev?: Event) {
                 const ldd = attrData.nowDataSolo();
                 clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: LinePattern) {
                     for (let i = 0; i < ldd.Div_Num; i++) {
@@ -2544,9 +2544,9 @@ function setting(locSearch: string) {
                     SetPictureBox();
                 })
             }
-            function LColorChange(_data: void, e: MouseEvent) {
+            function LColorChange(_data: MenuItem, ev?: Event) {
                 const ldd = attrData.nowDataSolo();
-                clsColorPicker(new point(e.clientX, e.clientY),
+                clsColorPicker(new point((ev as MouseEvent).clientX, (ev as MouseEvent).clientY),
                     function (newColor: Color) {
                         for (let i = 0; i < ldd.Div_Num; i++) {
                             ldd.Class_Div[i].ODLinePat.Color = newColor;
@@ -2599,9 +2599,9 @@ function setting(locSearch: string) {
                 { caption: "内部データの設定", event: innerDataSet }
             ];
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
-            function setSameMark(_data: void, e: MouseEvent) {
+            function setSameMark(_data: MenuItem, ev?: Event) {
                 const md = sv.Class_Div[0].ClassMark;
-                clsMarkSet(e, mkChange, md, attrData)
+                clsMarkSet(ev as MouseEvent, mkChange, md, attrData)
                 function mkChange(newMark: Mark) {
                     for (let i = 0; i < sv.Div_Num; i++) {
                         sv.Class_Div[i].ClassMark = { ...newMark };
@@ -2616,8 +2616,8 @@ function setting(locSearch: string) {
                 }
                 SetPictureBox();
             }
-            function innerDataSet(_data: void, e: MouseEvent) {
-                clsInnerDataSet(e, attrData);
+            function innerDataSet(_data: MenuItem, ev?: Event) {
+                clsInnerDataSet(ev as MouseEvent, attrData);
             }
         }
 
