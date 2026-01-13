@@ -76,35 +76,96 @@ interface MouseEvent {
 }
 
 // HTMLElement拡張（select要素のoptions等）
+// 注: HTMLElementの定義は一箇所にまとめています。他の箇所で重複定義しないこと。
 interface HTMLElement {
+    // 標準的なプロパティ
     options?: HTMLOptionsCollection;
     selectedIndex?: number;
     value?: string;
-    optionSwap?: (n1?: number, n2?: number) => void;
-    objInfo?: any; // カスタムデータ保持用
+    disabled?: boolean;
+    innerText?: string;
+    checked?: boolean;
+    
+    // カスタムプロパティ（データ保持用）
+    oldSel?: number; // addSelectList で使用される選択位置記憶用
+    preValue?: number; // setNumberValue で使用される前回の値
+    objInfo?: Record<string, unknown>; // カスタムデータ保持用
     word?: HTMLElement; // カスタム子要素への参照
-    checked?: boolean; // チェックボックス等
-    onchange?: ((e: Event) => void) | null; // changeイベントハンドラ
-    selected?: boolean; // 選択状態（カスタム要素）
     tooltip?: string; // ツールチップテキスト
+    tag?: string | number; // カスタムタグプロパティ
+    
     // レイアウト調整用のカスタムプロパティ
     sizeFixed?: boolean;
     relativeSize?: size;
     bottomPositionFixed?: boolean;
     rightPositionFixed?: boolean;
+    bottomRightPositionFixed?: boolean;
     relativePosition?: point;
+    
     // オブジェクト管理用のカスタムプロパティ
     oObject?: number;
     oLayer?: number;
     oData?: number;
+    inPanel?: number;
+    panel?: HTMLElement[];
+    selectedRow?: number;
+    inPic?: number;
+    inTxt?: number;
+    numberCheck?: boolean;
+    
+    // イベントハンドラ
+    onchange?: ((e: Event) => void) | null; // changeイベントハンドラ
+    selected?: boolean; // 選択状態（カスタム要素）
+    
+    // プロトタイプ拡張メソッド (clsGeneric.ts で定義)
+    removeAll?: () => void; // select要素の子要素を全削除
+    optionSwap?: (n1?: number, n2?: number) => void; // optionを入れ替え
+    removeOne?: () => string | number | undefined; // select要素の選択要素を1つ削除
+    addSelectList?: (list: ListItem[], firstSelectIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
+    getText?: () => string | undefined; // select要素の選択テキストを取得
+    getValue?: () => string | number | undefined; // select要素の選択valueを取得
+    setSelectText?: (txt: string) => boolean; // 指定した文字のテキストを選択
+    setSelectData?: (n: number, value: string | number, text: string) => void; // 指定位置のvalueとテキストを変更
+    setAstarisk?: (value: string | number, astariskAddF: boolean) => void; // アスタリスクを付ける/外す
+    setNumberValue?: (v: number) => void; // NumberInputに値を設定
+    setSelectValue?: (value: string | number) => void; // select要素の値を設定
+    addList?: (list: (string | {text: string; value: string; checked?: boolean})[], pos: number) => void; // リストを配列で追加 (ListBox/CheckedListBox用)
+    getVisibility?: () => boolean; // 表示状態を取得
+    setVisibility?: (visible: boolean) => void; // 表示状態を設定
+    btnDisabled?: (disabled: boolean) => void; // ボタンの無効化
 }
 
 // Function拡張（イベントハンドラデータ保持用）
 interface Function {
-    evtChange_Data?: any;
-    evtChange_FixedXS?: any;
-    evtChange_FixedYS?: any;
+    evtChange_Data?: Record<string, unknown>;
+    evtChange_FixedXS?: Record<string, unknown>;
+    evtChange_FixedYS?: Record<string, unknown>;
     evtChange_Layer?: (arg1?: boolean, arg2?: boolean, arg3?: boolean) => void;
+}
+
+// Number拡張（px単位変換）
+interface Number {
+    px?: () => string; // 数値にpxをつける (clsGeneric.tsで定義)
+}
+
+// String拡張（ユーティリティメソッド）
+interface String {
+    right?: (length: number) => string; // 右から指定文字数を取得
+    left?: (length: number) => string; // 左から指定文字数を取得
+    mid?: (start: number, length?: number) => string; // 中間の文字列を取得
+    midReplace?: (start: number, replaceString: string) => string; // 指定位置の文字列を置換
+    removePx?: () => number; // pxを削除して数値化
+    px?: () => string; // 数値にpxをつける
+    repeat?: (count: number) => string; // 文字列を繰り返す
+    replaceAll?: (org: string, dest: string) => string; // 全置換
+}
+
+// Event拡張（カスタムプロパティ）
+interface Event {
+    ctrlKey?: boolean;
+    shiftKey?: boolean;
+    dataTransfer?: DataTransfer;
+    caption?: string;
 }
 
 // ChildNode拡張（name等）
@@ -1522,7 +1583,7 @@ interface ExtendedHTMLDivElement extends HTMLDivElement {
     getValue?: () => string | number;
     setSelectText?: (text: string) => void;
     setSelectData?: (index: number, value: string | number, text: string) => void;
-    setAstarisk?: (index?: number, flag?: boolean) => void;
+    setAstarisk?: (value: string | number, astariskAddF: boolean) => void;
     setSelectValue?: (value: string | number) => void;
 }
 
@@ -1542,7 +1603,7 @@ interface HTMLDivElement {
     Capture?: boolean;
     addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
     setSelectData?: (index: number, value: string | number, text: string) => void;
-    setAstarisk?: (index?: number, flag?: boolean) => void;
+    setAstarisk?: (value: string | number, astariskAddF: boolean) => void;
     setSelectValue?: (value: string | number) => void;
     setNumberValue?: (value: number) => void;
     inPanel?: number;
@@ -1579,38 +1640,17 @@ interface CSSStyleDeclaration {
     vivility?: boolean;
 }
 
-interface Number {
-    px(): string;
-}
+// Number の定義は globals.d.ts の冒頭 (147行目付近) に統合されています
 
-interface String {
-    right(length: number): string;
-    removePx(): number;
-    mid(start: number, length?: number): string;
-    px(): string;
-}
+// String の定義は globals.d.ts の冒頭 (150行目付近) に統合されています
 
-interface Event {
-    ctrlKey?: boolean;
-    shiftKey?: boolean;
-    dataTransfer?: DataTransfer;
-    caption?: string;
-}
+// Event の定義は globals.d.ts の冒頭 (165行目付近) に統合されています
 
 interface Element {
     setVisibility?: (visible: boolean) => void;
 }
 
-interface HTMLElement {
-    addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
-    setSelectData?: (index: number, value: string | number, text: string) => void;
-    setAstarisk?: (index?: number, flag?: boolean) => void;
-    setSelectValue?: (value: string | number) => void;
-    setNumberValue?: (value: number) => void;
-    inPanel?: number;
-    panel?: HTMLElement[];
-    selectedRow?: number;
-}
+// HTMLElement の定義は globals.d.ts の冒頭 (78行目付近) に統合されています
 
 interface Math {
     Max: typeof Math.max;
@@ -1870,15 +1910,7 @@ declare const enmPrintMouseMode: {
 
 declare const TKY2JGDInfo: { new(): any; Tokyo97toITRF94: (latlonP: latlon) => latlon; ITRF94toTokyo97: (latlonP: latlon) => latlon; [key: string]: any };
 
-
-
-// String prototype extensions
-interface String {
-    left(length: number): string;
-    mid(start: number, length?: number): string;
-    midReplace(start: number, replaceString: string): string;
-    replaceAll(org: string, dest: string): string;
-}
+// String の定義は globals.d.ts の冒頭 (150行目付近) に統合されています
 
 // Zlib library
 interface ZlibUnzip {
@@ -1927,20 +1959,7 @@ interface HTMLDivElement {
     relativePosition?: point;
 }
 
-interface HTMLElement {
-    disabled?: boolean;
-    innerText?: string;
-    checked?: boolean;
-    removeOne?: () => void;
-    getVisibility?: () => boolean;
-    btnDisabled?: (disabled: boolean) => void;
-    inPic?: number;
-    inTxt?: number;
-    numberCheck?: boolean;
-    getText?: () => string;
-    getValue?: () => string | number | unknown;
-    setSelectText?: (text: string) => void;
-}
+// HTMLElement の定義は globals.d.ts の冒頭 (78行目付近) に統合されています
 
 interface HTMLTextAreaElement {
     getVisibility?: () => boolean;
