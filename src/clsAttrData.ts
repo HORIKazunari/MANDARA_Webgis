@@ -1368,6 +1368,7 @@ class strMissing_set {
     BlockMark: Mark_Property = new Mark_Property();
     ClassMark: Mark_Property = new Mark_Property();
     MarkBar: Mark_Property = new Mark_Property();
+    TurnMark: Mark_Property = new Mark_Property();
     Label: string = ""; //String
     LineShape: Line_Property = new Line_Property();
     
@@ -1379,6 +1380,7 @@ class strMissing_set {
         d.BlockMark = this.BlockMark.Clone();
         d.ClassMark = this.ClassMark.Clone();
         d.MarkBar = this.MarkBar.Clone();
+        d.TurnMark = this.TurnMark.Clone();
         d.LineShape = this.LineShape.Clone();
         return d;
     }
@@ -2427,8 +2429,10 @@ class Legend2_Atri {
    Print_Mode_Layer: number = 0;// enmLayerMode_Number
    SoloMode: number = 0;// enmSoloMode_Number
    GraphMode: number = 0;// enmGraphMode
+   LabelMode: number = 0;// enmLabelMode
    title: string = "";// String
    Rect: rectangle = new rectangle();
+   OverLay_Printing_Flag: boolean = false;// Boolean
    
    Clone(): Legend2_Atri {
        const La = new Legend2_Atri();
@@ -2439,8 +2443,10 @@ class Legend2_Atri {
        La.Print_Mode_Layer = this.Print_Mode_Layer;
        La.SoloMode = this.SoloMode;
        La.GraphMode = this.GraphMode;
+       La.LabelMode = this.LabelMode;
        La.title = this.title;
        La.Rect = this.Rect.Clone();
+       La.OverLay_Printing_Flag = this.OverLay_Printing_Flag;
        return La;
    }
 }
@@ -6927,8 +6933,8 @@ class clsAttrData {
 
 
     //指定したレイヤのデータ項目の全オブジェクトの階級区分の際の位置を配列で取得する。欠損値は-1
-    Get_CategolyArray(Layernum: number, DataNum: number): string[] {
-        const Category_Array = [];
+    Get_CategolyArray(Layernum: number, DataNum: number): number[] {
+        const Category_Array: number[] = [];
         for (let i = 0; i < this.LayerData[Layernum].atrObject.ObjectNum; i++) {
             Category_Array.push(this.Get_Categoly(Layernum, DataNum, i));
         }
@@ -6936,10 +6942,10 @@ class clsAttrData {
     }
 
     //指定したレイヤのデータ項目・オブジェクトの階級区分の際の位置を取得する。欠損値の場合は-1を返す
-    Get_Categoly(Layernum: number, DataNum: number, Objectnum: number): string {
+    Get_Categoly(Layernum: number, DataNum: number, Objectnum: number): number {
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         const Div_Num = ad.SoloModeViewSettings.Div_Num;
-        let sj;
+        let sj: number = -1;
         if (ad.Value[Objectnum] == undefined) {
             sj = -1;
         } else {
@@ -7998,7 +8004,7 @@ class clsAttrData {
     }
 
     /**KecnCodeと地図ファイルのオブジェクトの間で指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
-    Distance_Kencode_MPObject(LayNum1: number, ObjNum1: number, MapFile: string, ObjCode2: number, Time: number): number {
+    Distance_Kencode_MPObject(LayNum1: number, ObjNum1: number, MapFile: string, ObjCode2: number, Time: strYMD): number {
         let P1;
         let P2;
         let d;

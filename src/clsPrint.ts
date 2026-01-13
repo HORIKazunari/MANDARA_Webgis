@@ -166,7 +166,8 @@ class clsPrint {
 
     static printMap(g: CanvasRenderingContext2D) {
         const state = appState();
-        state.attrData.TotalData.ViewStyle.ScrData.Set_PictureBox_and_CulculateMul(state.frmPrint.picMap)
+        const picMapRect = new rectangle(0, 0, state.frmPrint.picMap.width, state.frmPrint.picMap.height);
+        state.attrData.TotalData.ViewStyle.ScrData.Set_PictureBox_and_CulculateMul(picMapRect)
         state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = false;
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         let ca;
