@@ -1113,7 +1113,7 @@ class clsPrint {
         }
     }
 
-    static Legend_Mark_Mode_Inner_Data_set(InnerData: strInner_Data_Info, Layernum: number, Datanum?: number) {
+    static Legend_Mark_Mode_Inner_Data_set(InnerData: strInner_Data_Info, Layernum: number, Datanum?: number): Legend2_Atri | undefined {
         const state = appState();
         if(InnerData.Flag == false) {
             return undefined;
