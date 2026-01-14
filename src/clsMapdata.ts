@@ -1916,7 +1916,7 @@ class clsMapdata {
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
 
-    Distance_PointMPLineAllay(P: point, LCode: number) {
+    Distance_PointMPLineAllay(P: point, LCode: EnableMPLine[]) {
         let mind;
         let f = false;
         for (let i = 0; i < LCode.length; i++) {

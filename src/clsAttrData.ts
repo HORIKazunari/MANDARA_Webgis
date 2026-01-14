@@ -6825,7 +6825,7 @@ class clsAttrData {
                                     break;
                                 }
                                 default:{
-                                    const av = Math.floor(V);
+                                    const av = Math.floor(typeof V === 'number' ? V : parseFloat(String(V)));
                                     const valNum = typeof tdcc.Val === 'number' ? tdcc.Val : parseFloat(String(tdcc.Val));
                                     f = false;
                                     switch (tdcc.Condition) {
@@ -7447,7 +7447,7 @@ class clsAttrData {
             }
             p.push(LO.MeshPoint[0]);
             p.push(LO.MeshPoint[1]);
-            const men = spatial.Get_Hairetu_Menseki( p, lay.MapFileData.Map)
+            const men = spatial.Get_Hairetu_Menseki( p, lay.MapFileData.Map as { Zahyo: Zahyo_info; SCL: number })
             return men;
         } else {
             const badata = this.Boundary_Kencode_Arrange(Layernum, ObjNumber);
@@ -8014,7 +8014,7 @@ class clsAttrData {
                 P1 = this.Get_CenterP(LayNum1, ObjNum1);
                 d = this.MapData.SetMapFile(MapFile).Get_Distance_Between_ObjectLine_and_Point(ObjCode2, Time, P1);
             } else {
-                this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(P1, ObjCode2, Time);
+                P1 = this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(ObjCode2, Time);
                 if (P1 && P2 && z.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, z);
                 } else if (P1 && P2) {
@@ -8027,7 +8027,7 @@ class clsAttrData {
                 d = this.Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum1, ObjNum1, P2);
             } else {
                 P1 = this.Get_CenterP(LayNum1, ObjNum1);
-                this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(P2, ObjCode2, Time);
+                P2 = this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(ObjCode2, Time);
                 if (P1 && P2 && z.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, z);
                 } else if (P1 && P2) {
@@ -8234,6 +8234,7 @@ class clsAttrData {
             }
             this.TempData.SoubyouLoopLineArea[i] = LoopLineArea;
         }
+        return true;
     }
 }
 
@@ -8249,9 +8250,9 @@ class clsAttrMapData {
     };
     private Prestage_MapFileName: string = "";
     private attrMapData: Record<string, clsMapdata> = {}; //  clsMapData
-    private Object_Name_Search: Record<string, clsSortingSearch> = {}; //clsObjectNameSearch
+    private Object_Name_Search: Record<string, clsObjectNameSearch> = {}; //clsObjectNameSearch
 
-    getAllMapData(): clsMapdata[] {
+    getAllMapData(): Record<string, clsMapdata> {
         return this.attrMapData;
     }
 
@@ -8450,7 +8451,7 @@ class clsObjectNameSearch {
                             const retV=Generic.ObjName_Kanji_Compatible(nam);
                             nam=retV.newObjname;
                         }
-                        this.Object_Name_Search.Add(nam);
+                        this.Object_Name_Search.Add(nam as any);
                         const dt = new this.ObjNameAndTime_Info();
                         dt.ObjCode = i;
                         dt.SETime = nstc.SETime;
@@ -8467,7 +8468,7 @@ class clsObjectNameSearch {
     }
 
     DataPositionValue(Pos: number): JsonValue {
-        return (this.Object_Name_Search.DataPositionValue as JsonValue[])[Pos];
+        return this.Object_Name_Search.DataPositionValue(Pos) as JsonValue;
     }
 
     NumofData(): number {
@@ -8487,7 +8488,7 @@ class clsObjectNameSearch {
             const retV=Generic.ObjName_Kanji_Compatible(ObjName);
             ObjName=retV.newObjname;
         }
-        const DataList = this.Object_Name_Search.SearchData_Array(ObjName);
+        const DataList = this.Object_Name_Search.SearchData_Array(ObjName as any);
         for (const i in DataList) {
             const j = DataList[i];
             if (clsTime.checkDurationIn(this.Object_Name_Stac_for_Search_O_Code[j].SETime, Time) === true) {
@@ -8513,7 +8514,6 @@ export {
     enmScaleUnit,
     enmProjection_Info,
     enmInner_Data_Info_Mode,
-    enmMarkSizeValueMode,
     enmMarkPrintType,
     enmBasePosition,
     enmScaleBarPattern,
