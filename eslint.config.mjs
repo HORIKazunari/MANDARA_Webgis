@@ -12,6 +12,7 @@ export default tseslint.config(
       'playwright.config.ts',
       '*.cjs',
       'src/.!*',
+      'src/encoding.min.ts', // minifyされた外部ライブラリを除外
       'node_modules/**',
       'dist/**',
       'playwright-report/**'
