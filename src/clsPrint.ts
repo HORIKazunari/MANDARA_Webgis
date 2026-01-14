@@ -1265,7 +1265,7 @@ class clsPrint {
     }
 
     /**重ね合わせモードのデータセット内の表示項目ごとの凡例セット */
-    static Legend_Data_Set_Over_sub(Over_D: Legend2_Atri, orn: number) {
+    static Legend_Data_Set_Over_sub(Over_D: IOverLayDataItemElement, orn: number) {
         const state = appState();
         let n = orn;
         const L = Over_D.Layer;
@@ -1364,7 +1364,7 @@ class clsPrint {
         aot.OverLay_Printing_Flag = false;
     }
 
-    static OverLay_Print_Sub(g: CanvasRenderingContext2D, Ov_Data: Legend2_Atri) {
+    static OverLay_Print_Sub(g: CanvasRenderingContext2D, Ov_Data: IOverLayDataItemElement | strOverLay_DataSet_Item_Info) {
         const state = appState();
         switch (Ov_Data.Print_Mode_Layer) {
             case enmLayerMode_Number.SoloMode: {
