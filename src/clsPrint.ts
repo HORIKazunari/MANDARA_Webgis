@@ -1,14 +1,12 @@
 ﻿import { clsAccessory } from './clsAccessory';
 import { contourLineStacInfo } from './MeshContour';
 import { appState } from './core/AppState';
-
-// JavaScript source code
-/// <reference path="clsGeneric.ts" />
-/// <reference path="clsAttrData.ts" />
-/// <reference path="clsTime.ts" />
-/// <reference path="clsMapdata.ts" />
-/// <reference path="clsDraw.ts" />
-
+import { clsDraw } from './clsDraw';
+import { clsBase } from './clsGeneric';
+import { Generic } from './clsGeneric';
+import { spatial } from './clsGeneric';
+import { Legend2_Atri } from './clsAttrData';
+import { clsSortingSearch } from './SortingSearch';
 
 const enmTotalMode_Number = {
     DataViewMode: 0,

@@ -2421,7 +2421,7 @@ class Overlay_Temporaly_Data_Info {
     Always_Ove_DataStac: strOverLay_DataSet_Item_Info[] = []; // List(Of strOverLay_Dat//et_Item_Info)
 }
 
-class Legend2_Atri {
+export class Legend2_Atri {
    LineKind_Flag: boolean = false;// Boolean
    PointObject_Flag: boolean = false;// Boolean
    Layn: number = 0;// Integer
@@ -6063,7 +6063,7 @@ class clsAttrData {
             for (let j = 0; j < L.atrObject.ObjectNum; j++) {
                 const O = L.atrObject.atrObjectData[j];
                 const mapZahyo = this.SetMapFile("").Map.Zahyo;
-                const retV=spatial.Get_MeshCode_Rectangle( O.Name, L.MeshType, L.ReferenceSystem, { ...mapZahyo, Mode: mapZahyo.Mode ?? 0 } as Zahyo_info);
+                const retV=spatial.Get_MeshCode_Rectangle( O.Name, L.MeshType, L.ReferenceSystem, mapZahyo);
                 O.CenterPoint = spatial.Get_Converted_XY(retV.latlonBox.CenterPoint().toPoint(), mapZahyo);
                 O.Symbol = O.CenterPoint.Clone();
                 O.Label = O.CenterPoint.Clone();
