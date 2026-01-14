@@ -6542,3 +6542,34 @@ class latlon {
 
 (globalThis as Record<string, unknown>).latlon = latlon;
 
+/**
+ * ベースユーティリティクラス
+ * 空のプロパティオブジェクトを生成する
+ */
+export class clsBase {
+    /** 空のタイルプロパティを返す */
+    static BlancTile(): Tile_Property {
+        const tile = new Tile_Property();
+        tile.BlankF = true;
+        tile.Color = { R: 255, G: 255, B: 255, A: 0 };
+        return tile;
+    }
+
+    /** 空のラインプロパティを返す */
+    static BlankLine(): Line_Property {
+        const line = new Line_Property();
+        line.BlankF = true;
+        line.Color = { R: 0, G: 0, B: 0, A: 0 };
+        line.Width = 0;
+        return line;
+    }
+
+    /** 基本的なラインプロパティを返す */
+    static Line(): Line_Property {
+        const line = new Line_Property();
+        line.BlankF = false;
+        line.Color = { R: 0, G: 0, B: 0, A: 255 };
+        line.Width = 1;
+        return line;
+    }
+}

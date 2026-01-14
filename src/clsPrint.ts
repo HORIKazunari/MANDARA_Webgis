@@ -2,7 +2,7 @@
 import { contourLineStacInfo } from './MeshContour';
 import { appState } from './core/AppState';
 import { clsDraw } from './clsDraw';
-// import { clsBase } from './clsGeneric'; // clsBaseは存在しないためコメントアウト
+import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
 import { Legend2_Atri } from './clsAttrData';
@@ -1030,7 +1030,7 @@ class clsPrint {
                 penw = 1;
             }
             marginRect.inflate(-penw, -penw);
-            state.attrData.Draw_Tile_Box(g, marginRect, Lpat, clsBase.BlancTile, 0);
+            state.attrData.Draw_Tile_Box(g, marginRect, Lpat, clsBase.BlancTile(), 0);
         }
     }
 
