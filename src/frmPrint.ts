@@ -110,7 +110,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     if (shiftKey === true) {
                         bairitsu /= 2;
                     }
-                    if (ctrlKey == true) {
+                    if (ctrlKey === true) {
                         bairitsu /= 4;
                     }
                 }
@@ -145,7 +145,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         if (e.type === "mousemove") {
              event = e as MouseEvent;
         } else {
-            if(mousePointingSituation == mousePointingSituations.pinch){
+            if(mousePointingSituation === mousePointingSituations.pinch){
                 pinchMove(e as TouchEvent);
                 return;
             }
@@ -168,8 +168,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     case enmPrintMouseMode.od:
                     case enmPrintMouseMode.Normal: {
                         let mCursorF = false;
-                        if (state.attrData.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == false) {
-                            if (state.propertyWindow.fixed == false) {
+                        if (state.attrData.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F === false) {
+                            if (state.propertyWindow.fixed === false) {
                                 LocationSearch(p);
                             } else {
                                 //picMapMouseMovePointInformation(p);
@@ -177,12 +177,12 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             LocationContourSearch(p);
                             mCursorF = LocationODSearch(p);
                         }
-                        if (mCursorF == false) {
-                            if (Check_Acc(p).type != Check_Acc_Result.NoAccessory) {
+                        if (mCursorF === false) {
+                            if (Check_Acc(p).type !== Check_Acc_Result.NoAccessory) {
                                 mCursorF = true;
                             }
                         }
-                        if (mCursorF == true) {
+                        if (mCursorF === true) {
                             elem.style.cursor = 'pointer';
                         } else {
                             elem.style.cursor = 'default';
@@ -194,14 +194,14 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
             case mousePointingSituations.down: {
                 //マウスダウンの直後
-                if (p.Equals(mouseDownPosition) == false) {
+                if (p.Equals(mouseDownPosition) === false) {
                     mousePreviousPosition = p;
                     mousePointingSituation = mousePointingSituations.downAndMove;
                     switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                         case enmPrintMouseMode.Normal: {
                             const retv = Check_Acc(p);
                             state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType = retv.type;
-                            if (state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType != Check_Acc_Result.NoAccessory) {
+                            if (state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType !== Check_Acc_Result.NoAccessory) {
                                 state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.Accessory_Drag;
                                 elem.style.cursor = 'move';
                             }
@@ -216,7 +216,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
             case mousePointingSituations.downAndMove: {
                 //マウスダウンとドラッグ開始後
-                if (p.Equals(mousePreviousPosition) == false) {
+                if (p.Equals(mousePreviousPosition) === false) {
                     const vs = state.attrData.TotalData.ViewStyle;
                     const MouseDownSRxy = vs.ScrData.getSRXY(mouseDownPosition);
                     const movePx = new point(p.x - mouseDownPosition.x, p.y - mouseDownPosition.y);
@@ -230,7 +230,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
 
                             const stp=new point(0, 0);
-                            const smode = (vs.ScrData.Accessory_Base == enmBasePosition.Screen);
+                            const smode = (vs.ScrData.Accessory_Base === enmBasePosition.Screen);
                             if (smode) {
                                 stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width;
                                 stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height;
@@ -333,7 +333,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         
         e.preventDefault();
         let event;
-        if(mousePointingSituation == mousePointingSituations.pinch){
+        if(mousePointingSituation === mousePointingSituations.pinch){
             pinchUp(e as TouchEvent)
             mousePointingSituation = mousePointingSituations.up;
             MouseDownF=false;
@@ -348,9 +348,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const mouseUpPosition = Generic.getCanvasXY(event);
         const mouseUpSRXT = vs.ScrData.getSRXY(mouseUpPosition);
 
-        if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.LabelPoint )){
+        if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.LabelPoint )){
         //シンボル位置／ラベル位置移動
-            if (e.which  == 3) {
+            if (e.which  === 3) {
             } else {
                 const tmp = state.attrData.TempData;
                 const P = vs.ScrData.getSRXY(mouseDownPosition);
@@ -376,7 +376,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
         }
 
-        if (mousePointingSituation == mousePointingSituations.downAndMove) {
+        if (mousePointingSituation === mousePointingSituations.downAndMove) {
             const StartP = vs.ScrData.getSRXY(mouseDownPosition);
             const EndP = mouseUpSRXT;
             const mapstep = new point(EndP.x - StartP.x, EndP.y - StartP.y);
@@ -385,10 +385,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     break;
                 }
                 case enmPrintMouseMode.Accessory_Drag: {
-                    if (state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType == Check_Acc_Result.GroupBox) {
+                    if (state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType === Check_Acc_Result.GroupBox) {
                         //グループボックスのドラッグの場合
                         let stp = new point(0, 0);
-                        if (vs.ScrData.Accessory_Base == enmBasePosition.Screen) {
+                        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
 
                             const gr = state.attrData.TempData.Accessory_Temp;
                             const movePx = new point(gr.GroupBox_Rect.left - gr.OriginalGroupBoxRect.left, gr.GroupBox_Rect.top - gr.OriginalGroupBoxRect.top);
@@ -398,19 +398,19 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             stp = mapstep;
                         }
                         const ag = vs.AccessoryGroupBox as any;
-                        if (ag.Title == true) {
+                        if (ag.Title === true) {
                             vs.MapTitle.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.Scale == true) {
+                        if (ag.Scale === true) {
                             vs.MapScale.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.Note == true) {
+                        if (ag.Note === true) {
                             vs.DataNote.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.Comapss == true) {
+                        if (ag.Comapss === true) {
                             vs.AttMapCompass.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.Legend == true) {
+                        if (ag.Legend === true) {
                             for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
                                 vs.MapLegend.Base.LegendXY[i].offset(stp.x, stp.y);
                             }
@@ -438,12 +438,12 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
             state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.Normal;
         }else{
-            if (e.type != "mouseleave") {
+            if (e.type !== "mouseleave") {
                 //クリックの場合
                 const touchTime = (new Date().getTime()- touchStartTime) / 1000;
                 let rightButton=false;
-                if((e as MouseEvent).button==2){rightButton=true;}
-                if((e.type === "touchend") && (mousePointingSituation == mousePointingSituations.down)&&(touchTime>0.5)){
+                if((e as MouseEvent).button===2){rightButton=true;}
+                if((e.type === "touchend") && (mousePointingSituation === mousePointingSituations.down)&&(touchTime>0.5)){
                     //タッチで0.5秒以上移動しない場合は右クリック
                     rightButton=true;
                 }
@@ -452,57 +452,57 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                             case enmPrintMouseMode.Normal: {
                                 const retV = Check_Acc(mouseUpPosition);
-                                if (retV.type == Check_Acc_Result.NoAccessory) {
+                                if (retV.type === Check_Acc_Result.NoAccessory) {
                                     const av = state.attrData.TotalData.ViewStyle;
                                     const mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: JsonValue[]}> = [];
-                                    if (av.ScrData.ThreeDMode.Set3D_F == false) {
+                                    if (av.ScrData.ThreeDMode.Set3D_F === false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
                                     }
                                     //非表示の飾りを表示させるメニューの表示
-                                    if ((av.MapTitle.Visible == false) || (av.MapLegend.Base.Visible == false) || (av.MapScale.Visible == false) || (
-                                        av.AttMapCompass.Visible == false) || (av.DataNote.Visible == false) || (av.AccessoryGroupBox?.Visible == false)) {
+                                    if ((av.MapTitle.Visible === false) || (av.MapLegend.Base.Visible === false) || (av.MapScale.Visible === false) || (
+                                        av.AttMapCompass.Visible === false) || (av.DataNote.Visible === false) || (av.AccessoryGroupBox?.Visible === false)) {
                                         if (mnuAccPopupVisible.length > 0) {
                                             mnuAccPopupVisible.push({ caption: "-" });
                                         }
                                     }
-                                    if (av.MapTitle.Visible == false) {
+                                    if (av.MapTitle.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "タイトル表示",
                                             event: function () { state.attrData.TotalData.ViewStyle.MapTitle.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
                                         });
                                     }
-                                    if (av.MapLegend.Base.Visible == false) {
+                                    if (av.MapLegend.Base.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "凡例表示",
                                             event: function () { state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
                                         });
                                     }
-                                    if (av.MapScale.Visible == false) {
+                                    if (av.MapScale.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "スケール表示",
                                             event: function () { state.attrData.TotalData.ViewStyle.MapScale.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
                                         });
                                     }
-                                    if (av.AttMapCompass.Visible == false) {
+                                    if (av.AttMapCompass.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "方位表示",
                                             event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap) }
                                         });
                                     }
-                                    if (av.DataNote.Visible == false) {
+                                    if (av.DataNote.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "注表示",
                                             event: function () { state.attrData.TotalData.ViewStyle.DataNote.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
                                         });
                                     }
-                                    if (av.AccessoryGroupBox.Visible == false) {
+                                    if (av.AccessoryGroupBox.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "飾りグループボックス表示",
                                             event: function () { state.attrData.TotalData.ViewStyle.AccessoryGroupBox.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
                                         });
                                     }
-                                    if(state.attrData.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido){
+                                    if(state.attrData.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido){
                                         const pmnu: MenuItem = {caption: "この地点のWeb地図を表示", enabled: true, child: [
                                             { caption: "Googleマップ", event: showWebMap },
                                             { caption: "YAHOO!地図", event:  showWebMap},
@@ -606,7 +606,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
                                 const ato = state.attrData.TempData.frmPrint_Temp.OD_Drag;
                                 const retV = state.attrData.LayerData[Layernum].Get_OD_Bezier_RefPoint(ato.ObjectPos, ato.Data);
-                                if (retV.ok == true) {
+                                if (retV.ok === true) {
                                     const popmenu = [{ caption: "直線に戻す", event: odReset }];
                                     Generic.ceatePopupMenu(popmenu, new point(event.clientX, event.clientY));
                                     function odReset() {
@@ -621,7 +621,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         break;
                     }
                     case false: {//左クリック
-                        if ((e.type === "touchend") && (mousePointingSituation == mousePointingSituations.down)) {
+                        if ((e.type === "touchend") && (mousePointingSituation === mousePointingSituations.down)) {
                             const p = Generic.getCanvasXY(event);
                             LocationSearch(p);
                         } else {
@@ -653,7 +653,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             const alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
-                    if (state.attrData.TempData.frmPrint_Temp.OnObject.length == 1) {
+                    if (state.attrData.TempData.frmPrint_Temp.OnObject.length === 1) {
                         //mnuAccPopupVisible.push({ caption:"図形モードでオブジェクト名・データ値表示", event: function(){}});
                         const Layernum = state.attrData.TempData.frmPrint_Temp.OnObject[0].objLayer;
                         const ObjNum = state.attrData.TempData.frmPrint_Temp.OnObject[0].ObjNumber;
@@ -674,7 +674,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     case enmSoloMode_Number.ClassHatchMode:
                                     case enmSoloMode_Number.ClassMarkMode:
                                     case enmSoloMode_Number.ClassPaintMode:
-                                        if (al.Shape == enmShape.PointShape) {
+                                        if (al.Shape === enmShape.PointShape) {
                                             SymbolPosMeuF = true;
                                         }
                                         break;
@@ -689,7 +689,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 for (let i = 0; i < n; i++) {
                                     tx += state.attrData.Get_DataTitle(Layernum, DataItem[i].DataNumber, false) + ":" +
                                         state.attrData.Get_Data_Value(Layernum, DataItem[i].DataNumber, ObjNum, "") + state.attrData.Get_DataUnit(Layernum, DataItem[i].DataNumber)
-                                    if (i != n - 1) {
+                                    if (i !== n - 1) {
                                         tx += chrLF;
                                     }
                                 }
@@ -704,7 +704,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 for (let i = 0; i < n; i++) {
                                     tx += state.attrData.Get_DataTitle(Layernum, DataItem[i], false) + ":" +
                                         state.attrData.Get_Data_Value(Layernum, DataItem[i], ObjNum, "") + state.attrData.Get_DataUnit(Layernum, DataItem[i]);
-                                    if (i != n - 1) {
+                                    if (i !== n - 1) {
                                         tx += chrLF;
                                     }
                                 }
@@ -714,18 +714,18 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             case enmLayerMode_Number.TripMode:
                                 break;
                         }
-                        if (SymbolPosMeuF == true) {
+                        if (SymbolPosMeuF === true) {
                             mnuAccPopupVisible.push({
                                 caption: "記号表示位置移動", event: function () {
-                                    if (state.attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage == true) {
-                                        if (window.confirm("新しい記号表示位置をクリックして指定します(右クリックでキャンセル)。") == false) {return;}
+                                    if (state.attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage === true) {
+                                        if (window.confirm("新しい記号表示位置をクリックして指定します(右クリックでキャンセル)。") === false) {return;}
                                     }
                                     state.attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage = false;
                                     Frm_Print.picMap.style.cursor = 'crosshair';
                                     state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.SymbolPoint;
                                 }
                             });
-                            if (alo.CenterPoint.Equals(alo.Symbol) == false) {
+                            if (alo.CenterPoint.Equals(alo.Symbol) === false) {
                                 mnuAccPopupVisible.push({
                                     caption: "記号表示位置を元に戻す", event: function () {
                                         const on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
@@ -736,19 +736,19 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 });
                             }
                         }
-                        if ((al.Print_Mode_Layer == enmLayerMode_Number.LabelMode) || ((al.Print_Mode_Layer == enmLayerMode_Number.SoloMode) && (
-                            state.attrData.getSoloMode(Layernum, dtIndex) == enmSoloMode_Number.StringMode))) {
+                        if ((al.Print_Mode_Layer === enmLayerMode_Number.LabelMode) || ((al.Print_Mode_Layer === enmLayerMode_Number.SoloMode) && (
+                            state.attrData.getSoloMode(Layernum, dtIndex) === enmSoloMode_Number.StringMode))) {
                             mnuAccPopupVisible.push({
                                 caption: "ラベル表示位置移動", event: function () {
-                                    if (state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage == true) {
-                                        if (window.confirm("新しいラベル表示位置をクリックして指定します(右クリックでキャンセル)。") == false) { return; }
+                                    if (state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage === true) {
+                                        if (window.confirm("新しいラベル表示位置をクリックして指定します(右クリックでキャンセル)。") === false) { return; }
                                     }
                                     state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage = false;
                                     Frm_Print.picMap.style.cursor = 'crosshair';
                                     state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.LabelPoint;
                                 }
                             });
-                            if (alo.CenterPoint.Equals(alo.Label) == false) {
+                            if (alo.CenterPoint.Equals(alo.Label) === false) {
                                 mnuAccPopupVisible.push({
                                     caption: "ラベル表示位置を元に戻す", event: function () {
                                         const on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
@@ -771,14 +771,14 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         // mnuAccPopupVisible.push({caption: "リンクの編集", event: mnuAccPopupVisible_LinkEdit} );
 
                         const ObjName = Generic.Check_StringLength_And_Cut(state.attrData.Get_KenObjName(Layernum, ObjNum), 20)
-                        if (alo.Objectstructure == enmKenCodeObjectstructure.SyntheticObj) {
+                        if (alo.Objectstructure === enmKenCodeObjectstructure.SyntheticObj) {
                             // mnuAccPopupVisible.push({caption: ObjName + "の構成", event: mnuAccPopupVisible_synthetic} );
                         }
                     }
                     break;
                 }
             }
-            if (alm.ContourStacPos != -1) {
+            if (alm.ContourStacPos !== -1) {
                 mnuAccPopupVisible.push({caption: "等値線の値表示", event: function(){}});
             }
         }
@@ -812,7 +812,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     }
     function onWheel(event: WheelEvent) {
         const state = appState();
-        if ((MouseDownF == true)||(state.attrData.TempData.drawing==true)) {
+        if ((MouseDownF === true)||(state.attrData.TempData.drawing===true)) {
             return;
         }
         let bairitu = 0.5;
@@ -842,7 +842,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const w1 = Pos.x - sv.left;
         const w2 = sv.right - Pos.x;
         const rec = new rectangle(Pos.x - w1 / ratio, Pos.x + w2 / ratio, Pos.y - h1 / ratio, Pos.y + h2 / ratio);
-        if (Generic.Check_New_ScrView(sd.MapRectangle, rec) == true) {
+        if (Generic.Check_New_ScrView(sd.MapRectangle, rec) === true) {
             state.attrData.TotalData.ViewStyle.ScrData.ScrView = rec;
             callback(elem);
             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
@@ -899,7 +899,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const state = appState();
         const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         const odc = Near_OD(MapP);
-        if (odc != -1) {
+        if (odc !== -1) {
             const tx4 = "OD" + state.attrData.Get_KenObjName(state.attrData.TotalData.LV1.SelectedLayer, odc);
             const label1 = Frm_Print.label1;
             const label2 = Frm_Print.label2;
@@ -925,9 +925,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
                 const al = state.attrData.LayerData[Layernum];
                 const DataNum = al.atrData.SelectedIndex;
-                if (al.Print_Mode_Layer == enmLayerMode_Number.SoloMode) {
-                    if ((state.attrData.getSoloMode(Layernum, DataNum) == enmSoloMode_Number.ClassODMode) && (
-                        al.Shape != enmShape.LineShape) && (al.Type != enmLayerType.Trip)) {
+                if (al.Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
+                    if ((state.attrData.getSoloMode(Layernum, DataNum) === enmSoloMode_Number.ClassODMode) && (
+                        al.Shape !== enmShape.LineShape) && (al.Type !== enmLayerType.Trip)) {
                         Near_ODNumber = Near_OD_sub(MapP, Layernum, DataNum);
                     }
                 }
@@ -939,10 +939,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     const Layernum = ovl.Layer
                     const DataNum = ovl.DataNumber
                     const al = state.attrData.LayerData[Layernum];
-                    if ((ovl.Print_Mode_Layer == enmLayerMode_Number.SoloMode)&& (ovl.Mode == enmSoloMode_Number.ClassODMode) && (
-                        al.Shape != enmShape.LineShape)){
+                    if ((ovl.Print_Mode_Layer === enmLayerMode_Number.SoloMode)&& (ovl.Mode === enmSoloMode_Number.ClassODMode) && (
+                        al.Shape !== enmShape.LineShape)){
                         Near_ODNumber = Near_OD_sub(MapP, Layernum, DataNum);
-                        if (Near_ODNumber != -1) {
+                        if (Near_ODNumber !== -1) {
                             break;
                         }
                     }
@@ -975,13 +975,13 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             for (let i = 0; i <  objn ; i++) {
                 EndP = al.atrObject.atrObjectData[i].CenterPoint;
                 const Cate  = Category_Array[i];
-                if(Cate != -1 ){
+                if(Cate !== -1 ){
                     let D ;
-                    if (((i == mod.O_object) && (Layernum == mod.o_Layer)) || (
-                        (al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.BlankF == false) && (
-                            state.attrData.Check_Missing_Value(Layernum, DataNum, i) == false))) {
+                    if (((i === mod.O_object) && (Layernum === mod.o_Layer)) || (
+                        (al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.BlankF === false) && (
+                            state.attrData.Check_Missing_Value(Layernum, DataNum, i) === false))) {
                         const retV = al.Get_OD_Bezier_RefPoint(i, DataNum);
-                        if (retV.ok == false) {
+                        if (retV.ok === false) {
                              D= spatial.Distance_PointLine2(MapP, StartP, EndP).distance;
                         } else {
                             const ControlP = retV.RefPoint;
@@ -1011,16 +1011,16 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const state = appState();
         const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         let tx4 = ""
-        if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal) {
+        if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.Normal) {
             state.attrData.TempData.frmPrint_Temp.LocationMenuString.ContourStacPos = -1;
-            if (Check_Contour_in() == true) {
+            if (Check_Contour_in() === true) {
                 const c = Near_Contour(MapP);
-                if (c != -1) {
+                if (c !== -1) {
                     state.attrData.TempData.frmPrint_Temp.LocationMenuString.ContourStacPos = c;
                     const cdt = state.attrData.TempData.ContourMode_Temp.Contour_Object[c];
                     tx4 = "等値線" + cdt.Value.toString() + state.attrData.Get_DataUnit(cdt.Layernum, cdt.DataNum);
                     let conDiv=document.getElementById("contourDataTip");
-                    if(conDiv==undefined){
+                    if(conDiv===undefined){
                         conDiv=Generic.createNewSpan(Frm_Print,tx4,"contourDataTip","",ScreenP.x+5,ScreenP.y+state.scrMargin.top-15,"z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffff",undefined)
                     }else{
                         conDiv.innerHTML=tx4;
@@ -1030,9 +1030,9 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 }
             }
         }
-        if(tx4==""){
+        if(tx4===""){
             const dv=document.getElementById("contourDataTip")
-            if( dv!=undefined){
+            if( dv!==undefined){
                 Frm_Print.removeChild(dv);
             }
     }
@@ -1045,7 +1045,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                      const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
                      if (state.attrData.LayerData[Layernum].atrData.Count > 0) {
                          const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
-                         if (state.attrData.getSoloMode(Layernum, DataNum) == enmSoloMode_Number.ContourMode) {
+                         if (state.attrData.getSoloMode(Layernum, DataNum) === enmSoloMode_Number.ContourMode) {
                              return true;
                          }
                      }
@@ -1056,7 +1056,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                      const atod = ato.DataSet[ato.SelectedIndex];
                      for (let i = 0; i < atod.DataItem.Count; i++) {
                          const atodi = atod.DataItem[i];
-                         if ((atodi.Print_Mode_Layer == enmLayerMode_Number.SoloMode) && (atodi.Mode == enmSoloMode_Number.ContourMode)) {
+                         if ((atodi.Print_Mode_Layer === enmLayerMode_Number.SoloMode) && (atodi.Mode === enmSoloMode_Number.ContourMode)) {
                              return true;
                          }
                      }
@@ -1073,7 +1073,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             const atc = state.attrData.TempData.ContourMode_Temp;
             for (let i = 0; i < atc.Contour_All_Number; i++) {
                 const atco = atc.Contour_Object[i];
-                if ((atco.Flag == true) && (spatial.Check_PointInBox(MapP, 0, atco.Circumscribed_Rectangle) == true)) {
+                if ((atco.Flag === true) && (spatial.Check_PointInBox(MapP, 0, atco.Circumscribed_Rectangle) === true)) {
                     for (let j = atco.PointStac; j <= atco.PointStac + atco.NumOfPoint - 2; j++) {
                         const retV = spatial.Distance_PointLine(MapP.x,MapP.y, atc.Contour_Point[j].x,atc.Contour_Point[j].y, atc.Contour_Point[j + 1].x, atc.Contour_Point[j + 1].y ) ;
                         const d=retV.distance* state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
@@ -1098,7 +1098,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         let L_Print_Mode_Layer ;
         let L_Data ;
         let L_Solomode ;
-        if( state.attrData.TotalData.LV1.Print_Mode_Total == enmTotalMode_Number.SeriesMode ){
+        if( state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.SeriesMode ){
             const koma  = state.attrData.TempData.Series_temp.Koma;
             const n  = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
             const im= state.attrData.TotalData.TotalMode.Series.DataSet[n].DataItem[koma];
@@ -1164,17 +1164,17 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     }
                     case enmLayerMode_Number.TripMode: {
                         OnObject = NearestObject(MapP, Layernum);
-                        if (OnObject.length == 0) {
+                        if (OnObject.length === 0) {
                             //frm_PropertypnlProperty.Visible = false;
                         } else {
-                            if (mnuPropertyWindow.checked == true) {
+                            if (mnuPropertyWindow.checked === true) {
                                 //frm_Property.ShowTripModeProperty(state.attrData, Layernum, OnObject, dtindex);
                             }
                         }
                         break;
                     }
                 }
-                if (L_Print_Mode_Layer != enmLayerMode_Number.TripMode) {
+                if (L_Print_Mode_Layer !== enmLayerMode_Number.TripMode) {
                     switch (OnObject.length) {
                         case 0: {
                             state.propertyWindow.pnlProperty?.setVisibility?.(false);
@@ -1184,7 +1184,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             break;
                         }
                         case 1: {
-                            if ((typeof state.propertyWindow.getVisibility === "function") && (state.propertyWindow.getVisibility() == true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal)) {
+                            if ((typeof state.propertyWindow.getVisibility === "function") && (state.propertyWindow.getVisibility() === true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.Normal)) {
                                 state.frmPrint.ShowOneObjectProperty( Layernum, OnObject[0].ObjNumber, dtindex, state.attrData.LayerData[Layernum].Print_Mode_Layer);
                             }
                             state.attrData.TempData.frmPrint_Temp.LocationMenuString.DataIndex = dtindex;
@@ -1200,13 +1200,13 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 for (let i = 0; i < OnObject.length; i++) {
                     const onum = OnObject[i].ObjNumber;
                     tx += state.attrData.Get_KenObjName(Layernum, onum) + "［" + state.attrData.Get_Data_Value(Layernum, L_Data, onum, "欠損値") + "］"
-                    if (i != OnObject.length - 1) {
+                    if (i !== OnObject.length - 1) {
                         tx += "／"
                     }
                 }
-                if (tx != "") {
-                    if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.MultiObjectswitch) {
-                        if (state.attrData.TempData.frmPrint_Temp.MultiObjects.indexOf(OnObject[0].ObjNumber) != -1) {
+                if (tx !== "") {
+                    if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.MultiObjectswitch) {
+                        if (state.attrData.TempData.frmPrint_Temp.MultiObjects.indexOf(OnObject[0].ObjNumber) !== -1) {
                             tx += "（選択中）"
                         }
                     }
@@ -1216,7 +1216,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     Frm_Print.label2.innerHTML= tx;
                 }
                 state.attrData.TempData.frmPrint_Temp.OnObject = OnObject;
-                if ((state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.MultiObjectswitch) && (L_Print_Mode_Layer == enmLayerMode_Number.SoloMode)){
+                if ((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.MultiObjectswitch) && (L_Print_Mode_Layer === enmLayerMode_Number.SoloMode)){
                 }
                 break;
             }
@@ -1250,7 +1250,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 const ObjData = OnObject[j];
                 lblTxt += "レイヤ：" + state.attrData.Get_LayerName(ObjData.objLayer) + '<br>';
                 lblTxt += "オブジェクト：" + state.attrData.Get_KenObjName(ObjData.objLayer, ObjData.ObjNumber) + '<br>';
-                if (f == true) {
+                if (f === true) {
                     tx += "／";
                 } else {
                     f = true;
@@ -1274,10 +1274,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 state.attrData.TempData.frmPrint_Temp.OnObject.push(ObjData);
             }
         }
-        if (typeof state.propertyWindow.getVisibility === "function" && state.propertyWindow.getVisibility() == true) {
+        if (typeof state.propertyWindow.getVisibility === "function" && state.propertyWindow.getVisibility() === true) {
             const cnode = state.propertyWindow.pnlProperty.childNodes;
             for (const i in cnode) {
-                if (cnode[i].name == "grid") {
+                if (cnode[i].name === "grid") {
                     state.propertyWindow.pnlProperty.removeChild(cnode[i]);
                     break;
                 }
@@ -1287,7 +1287,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 state.propertyWindow.pnlProperty.objInfo.style.height = '100%';
                 state.propertyWindow.pnlProperty.objInfo.innerHTML = lblTxt;
             }
-            // if (lblTxt == "") {
+            // if (lblTxt === "") {
             //     frm_Property.pnlOverLayProperty.Visible = false;
             // }
         }
@@ -1302,7 +1302,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const state = appState();
         const OnObject = [];
 
-        if (state.attrData.LayerData[Layernum].Type == enmLayerType.Trip) {
+        if (state.attrData.LayerData[Layernum].Type === enmLayerType.Trip) {
 
         } else {
             switch (state.attrData.LayerData[Layernum].Shape) {
@@ -1310,8 +1310,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     const retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetRectIn(MapP.x, MapP.y);
                     if (retV.number > 0) {
                         for (let i = 0; i < retV.number; i++) {
-                            if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] == true) {
-                                if (state.attrData.Check_Point_in_Kencode_OneObject(Layernum, retV.Tags[i], MapP) == true) {
+                            if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] === true) {
+                                if (state.attrData.Check_Point_in_Kencode_OneObject(Layernum, retV.Tags[i], MapP) === true) {
                                     const ObjData =new strLocationSearchObject(Layernum,retV.Tags[i]) ;
                                     OnObject.push(ObjData);
                                 }
@@ -1323,7 +1323,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 default: {
                     let retV;
                     const mind = 10 / state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
-                    if (state.attrData.LayerData[Layernum].Shape == enmShape.PointShape) {
+                    if (state.attrData.LayerData[Layernum].Shape === enmShape.PointShape) {
                         retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetNearPointNumber(MapP.x, MapP.y, mind);
                     } else {
                         retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetNearestLineNumber(MapP.x, MapP.y, mind);
@@ -1331,11 +1331,11 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     if (retV.num > 0) {
                         let serarchNCount = 0;
                         for (let i = 0; i < retV.num; i++) {
-                            if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] == true) {
+                            if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] === true) {
                                 const ObjData = new strLocationSearchObject(Layernum, retV.Tags[i]);
                                 OnObject.push(ObjData);
                                 serarchNCount++;
-                                if (serarchNCount == 5) {//候補は最大で5つ
+                                if (serarchNCount === 5) {//候補は最大で5つ
                                     break;
                                 }
                             }
@@ -1353,7 +1353,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
         const originalP = vs.ScrData.getSRXY(MousePosition);
-        if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)==true){
+        if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)===true){
             const P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo) as point;
             const PSt  = Generic.Get_PositionCoordinate_Strings(P, vs.Zahyo);
             Frm_Print.label1.innerHTML=PSt.x + "/" + PSt.y;
@@ -1367,29 +1367,29 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const vs = state.attrData.TotalData.ViewStyle;
         const threed = vs.ScrData.ThreeDMode;
         const ata = state.attrData.TempData.Accessory_Temp;
-        if (vs.MapTitle.Visible == true) {
-            if (spatial.Check_PointInBox(ScreenP, vs.MapTitle.Font.Kakudo, ata.MapTitle_Rect) == true) {
+        if (vs.MapTitle.Visible === true) {
+            if (spatial.Check_PointInBox(ScreenP, vs.MapTitle.Font.Kakudo, ata.MapTitle_Rect) === true) {
                 ata.Push_titleXY = vs.MapTitle.Position.Clone();
                 return { type: Check_Acc_Result.Title, rect: ata.MapTitle_Rect };
             }
         }
         //------方位
-        if ((vs.AttMapCompass.Visible == true) && ((vs.ScrData.ThreeDMode.Set3D_F == false) || ((threed.Pitch == 0) && (threed.Head == 0)))) {
-            if (spatial.Check_PointInBox(ScreenP, 0, ata.MapCompass_Rect) == true) {
+        if ((vs.AttMapCompass.Visible === true) && ((vs.ScrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
+            if (spatial.Check_PointInBox(ScreenP, 0, ata.MapCompass_Rect) === true) {
                 ata.Push_CompassXY = vs.AttMapCompass.Position.Clone();
                 return { type: Check_Acc_Result.Compass, rect: ata.MapCompass_Rect };
             }
         }
         //------スケール
-        if ((vs.MapScale.Visible == true) && ((vs.ScrData.ThreeDMode.Set3D_F == false) || ((threed.Pitch == 0) && (threed.Head == 0)))) {
-            if (spatial.Check_PointInBox(ScreenP, 0, ata.MapScale_Rect) == true) {
+        if ((vs.MapScale.Visible === true) && ((vs.ScrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
+            if (spatial.Check_PointInBox(ScreenP, 0, ata.MapScale_Rect) === true) {
                 ata.Push_ScaleXY = vs.MapScale.Position.Clone();
                 return { type: Check_Acc_Result.Scale, rect: ata.MapScale_Rect };
             }
         }
         //------注
-        if (vs.DataNote.Visible == true) {
-            if (spatial.Check_PointInBox(ScreenP, 0, ata.DataNote_Rect) == true) {
+        if (vs.DataNote.Visible === true) {
+            if (spatial.Check_PointInBox(ScreenP, 0, ata.DataNote_Rect) === true) {
                 ata.Push_DataNoteXY = vs.DataNote.Position.Clone();
                 return { type: Check_Acc_Result.Note, rect: ata.DataNote_Rect };
             }
@@ -1397,8 +1397,8 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         //------凡例
         for (let i = ata.Legend_No_Max - 1; i >= 0; i--) {
             const lg =  ata.MapLegend_W[i];
-            if ((vs.MapLegend.Base.Visible == true) || (lg.LineKind_Flag == true) || (lg.PointObject_Flag == true)) {
-                if (spatial.Check_PointInBox(ScreenP, 0, lg.Rect) == true) {
+            if ((vs.MapLegend.Base.Visible === true) || (lg.LineKind_Flag === true) || (lg.PointObject_Flag === true)) {
+                if (spatial.Check_PointInBox(ScreenP, 0, lg.Rect) === true) {
                     ata.Edit_Legend = i;
                     ata.Push_LegendXY = state.attrData.TotalData.ViewStyle.MapLegend.Base.LegendXY[i];
                     return { type: Check_Acc_Result.Legend, rect: lg.Rect };
@@ -1406,11 +1406,11 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             }
         }
         //------グループボックス
-        if ((vs.AccessoryGroupBox.Visible == true) && (vs.ScrData.ThreeDMode.Set3D_F == false)) {
+        if ((vs.AccessoryGroupBox.Visible === true) && (vs.ScrData.ThreeDMode.Set3D_F === false)) {
             const Acc_Rect = ata.GroupBox_Rect.Clone();
             const pad = state.attrData.Get_PaddingPixcel(vs.AccessoryGroupBox.Back);
             Acc_Rect.inflate(pad, pad);
-            if (spatial.Check_PointInBox(ScreenP, 0, Acc_Rect) == true) {
+            if (spatial.Check_PointInBox(ScreenP, 0, Acc_Rect) === true) {
                 ata.Push_GroupBoxXY = vs.MapScale.Position.Clone();
                 ata.OriginalGroupBoxRect = Acc_Rect.Clone();
                 return { type: Check_Acc_Result.GroupBox, rect: Acc_Rect };
@@ -1442,7 +1442,7 @@ class frmPrint {
         tg.fillStyle = "#ffffff";//背後が透過色になるため白にする
         tg.fillRect(0, 0, tilecanvas.width, tilecanvas.height)
         tg.drawImage(Frm_Print.picMap, 0, 0);
-        if (WindowOutFlag == true) {
+        if (WindowOutFlag === true) {
             Generic.windowCenterOpen(tilecanvas.toDataURL(), tilecanvas.width, tilecanvas.height, "MANDARA JS");
         } else {
             Generic.prompt(undefined, "画像ファイル名", "mandara.png", function (v: string) {
@@ -1474,7 +1474,7 @@ class frmPrint {
         const pnlLineList = Generic.createNewDiv(pnlLinePattern, "", "", "", 0, 0, 210, 100, "", "");
         let meshf=false;
         for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
-            if (state.attrData.LayerData[i].Type == enmLayerType.Mesh) {
+            if (state.attrData.LayerData[i].Type === enmLayerType.Mesh) {
                 meshf= true;
                 break;
             }
@@ -1482,7 +1482,7 @@ class frmPrint {
         const pnlMeshLine = Generic.createNewDiv(backDiv, "", "", "", 15, 290, 200, 40, "", "");
         const picMeshLine=Generic.createNewWordDivCanvas(pnlMeshLine, "","メッシュデータの輪郭ラインパターン",0,0,100,meshLinePatternClick);
         let MeshLpat=state.attrData.TotalData.ViewStyle.MeshLine.Clone();
-        if (meshf == true) {
+        if (meshf === true) {
             pnlMeshLine.setVisibility(true);
             state.attrData.Draw_Sample_LineBox(picMeshLine,MeshLpat );
             pnlLinePattern.style.height = (pnlMeshLine.offsetTop - pnlLinePattern.offsetTop - 5).px();
@@ -1555,7 +1555,7 @@ class frmPrint {
 
     static windowClose(){
         const state = appState();
-        state.propertyWindow.nextVisible=(typeof state.propertyWindow.getVisibility === "function") ? (state.propertyWindow.getVisibility()==true) : false;
+        state.propertyWindow.nextVisible=(typeof state.propertyWindow.getVisibility === "function") ? (state.propertyWindow.getVisibility()===true) : false;
         state.propertyWindow.setVisibility?.(false);
         state.frmPrint.propertyWindowClose();
     }
@@ -1575,7 +1575,7 @@ class frmPrint {
         let gridtx="";
         const cnode = state.propertyWindow.pnlProperty.childNodes;
         for(const i in cnode){
-            if(cnode[i].name=="grid"){
+            if(cnode[i].name==="grid"){
                 gridtx=Generic.getTableValue(cnode[i].table);
                 break;
             }
@@ -1586,9 +1586,9 @@ class frmPrint {
     //プロパティウインドウの固定・解除
     static PropertyFix() {
         const state = appState();
-        if (state.propertyWindow.pnlProperty.getVisibility() == true) {
+        if (state.propertyWindow.pnlProperty.getVisibility() === true) {
             const f = !state.propertyWindow.fixed;
-            if (f == true) {
+            if (f === true) {
                 state.propertyWindow.style.borderWidth = '2px';
             } else {
                 state.propertyWindow.style.borderWidth = '1px';
@@ -1600,10 +1600,10 @@ class frmPrint {
     //複数オブジェクトのプロパティ表示
     static ShowOverLayObjectProperty(Layernum: number, dtindex: number, OnObject: strLocationSearchObject[]) {
         const state = appState();
-        if ((state.propertyWindow.pnlProperty.getVisibility()==true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode == enmPrintMouseMode.Normal)) {
+        if ((state.propertyWindow.pnlProperty.getVisibility()===true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.Normal)) {
             const cnode = state.propertyWindow.pnlProperty.childNodes;
             for(const i in cnode){
-                if(cnode[i].name=="grid"){
+                if(cnode[i].name==="grid"){
                     state.propertyWindow.pnlProperty.removeChild(cnode[i]);
                     break;
                 }
@@ -1616,7 +1616,7 @@ class frmPrint {
                 state.attrData.Get_DataTitle(Layernum, dtindex, false) + ":" +
                 state.attrData.Get_Data_Value(Layernum, dtindex, OnObject[i].ObjNumber, state.attrData.TotalData.ViewStyle.Missing_Data.Label) +
                 state.attrData.Get_DataUnit_With_Kakko(Layernum, dtindex);
-            if (i != OnObject.length - 1) {
+            if (i !== OnObject.length - 1) {
                 ptx += '<br>' + '<br>';
             }
             state.propertyWindow.pnlProperty.objInfo.style.height = '100%';
@@ -1627,7 +1627,7 @@ class frmPrint {
     //1オブジェクトのプロパティ表示
     static ShowOneObjectProperty(LayerNum: number, objNumber: number, DataNumber: number, LayerMode: number) {
         const state = appState();
-        if ((state.propertyWindow.oObject == objNumber) && (state.propertyWindow.oLayer == LayerNum) && (state.propertyWindow.oData == DataNumber) && (state.propertyWindow.pnlProperty.getVisibility() == true)) {
+        if ((state.propertyWindow.oObject === objNumber) && (state.propertyWindow.oLayer === LayerNum) && (state.propertyWindow.oData === DataNumber) && (state.propertyWindow.pnlProperty.getVisibility() === true)) {
             return;
         }
         let headTx="";
@@ -1636,7 +1636,7 @@ class frmPrint {
 
         const cnode = state.propertyWindow.pnlProperty.childNodes;
         for (const i in cnode) {
-            if (cnode[i].name == "grid") {
+            if (cnode[i].name === "grid") {
                 state.propertyWindow.pnlProperty.removeChild(cnode[i]);
                 break;
             }
@@ -1667,7 +1667,7 @@ class frmPrint {
                 const ald=al.LayerModeViewSettings.GraphMode.DataSet[Dset];
                 const DataItem = ald.Data;
                 const n = DataItem.length;
-                if (n == 0) {
+                if (n === 0) {
                     return;
                 }
                 switch (ald.GraphMode) {
@@ -1786,12 +1786,12 @@ class frmPrint {
         const s = new size(Frm_Print.picMap.width, Frm_Print.picMap.height);
         state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
         Generic.moveInnerElement(Frm_Print);
-        if(Frm_Print.maxSizeFlag==false){
+        if(Frm_Print.maxSizeFlag===false){
             Frm_Print.oldpos=new rectangle(new point(Frm_Print.style.left.removePx(),Frm_Print.style.top.removePx()),
                         new size(Frm_Print.style.width.removePx(),Frm_Print.style.height.removePx()));
         }
         Frm_Print.resetMaxButton?.(!Frm_Print.maxSizeFlag);
-        if (typeof Frm_Print.getVisibility === "function" && Frm_Print.getVisibility() == true) {
+        if (typeof Frm_Print.getVisibility === "function" && Frm_Print.getVisibility() === true) {
             clsPrint.printMapScreen(Frm_Print.picMap);
         }
     }
@@ -1826,7 +1826,7 @@ class frmPrint {
         const ats = state.attrData.TotalData.TotalMode.Series;
         const n = ats.SelectedIndex;
         const atst = state.attrData.TempData.Series_temp;
-        atst.Koma = (atst.Koma == ats.DataSet[n].DataItem.length - 1) ? 0 : atst.Koma+1;
+        atst.Koma = (atst.Koma === ats.DataSet[n].DataItem.length - 1) ? 0 : atst.Koma+1;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 
@@ -1836,7 +1836,7 @@ class frmPrint {
         const ats = state.attrData.TotalData.TotalMode.Series;
         const n = ats.SelectedIndex;
         const atst = state.attrData.TempData.Series_temp;
-        atst.Koma  = (atst.Koma == 0) ? ats.DataSet[n].DataItem.length - 1 : atst.Koma-1;
+        atst.Koma  = (atst.Koma === 0) ? ats.DataSet[n].DataItem.length - 1 : atst.Koma-1;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 
@@ -1852,25 +1852,25 @@ class frmPrint {
         const state = appState();
         const OnObject = state.attrData.TempData.frmPrint_Temp.OnObject;
         const OldObject = state.attrData.TempData.frmPrint_Temp.OldObject;
-        if (OnObject.length == 0) {
+        if (OnObject.length === 0) {
             if (OldObject.length > 0) {
                 g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
                 state.attrData.TempData.frmPrint_Temp.OldObject = [];
             }
             return;
         } else {
-            if ((OnObject.length == OldObject.length) && (Draw_F == false)) {
+            if ((OnObject.length === OldObject.length) && (Draw_F === false)) {
                 //ちらつき防止のため、描画済みの場合は再描画しない
                 let f = false;
                 for (const i in OnObject) {
                     for (const j in OldObject) {
-                        if ((OnObject[i].ObjNumber != OldObject[j].ObjNumber) || (OnObject[i].objLayer != OldObject[j].objLayer)) {
+                        if ((OnObject[i].ObjNumber !== OldObject[j].ObjNumber) || (OnObject[i].objLayer !== OldObject[j].objLayer)) {
                             f = true;
                             break;
                         }
                     }
                 }
-                if (f == false) {
+                if (f === false) {
                     return;
                 }
             }
@@ -1897,10 +1897,10 @@ class frmPrint {
                 case enmShape.PolygonShape: {
 
                     let w = 3;
-                    if (sp == enmShape.LineShape) {
+                    if (sp === enmShape.LineShape) {
                         w = 5;
                     }
-                    if (state.attrData.LayerData[Layernum].Type == enmLayerType.Mesh) {
+                    if (state.attrData.LayerData[Layernum].Type === enmLayerType.Mesh) {
                         const meshP = Generic.ArrayClone(state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
                         meshP[4] = meshP[0].Clone();
                         const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(5, meshP, false);
@@ -1909,7 +1909,7 @@ class frmPrint {
                         const ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, ObjNum);
                         for (const j in ELine) {
                             const pxy = clsPrint.Get_PointXY_by_LineCode(Layernum, ELine[j].LineCode, false);
-                            if (pxy != undefined) {
+                            if (pxy !== undefined) {
                                 drawLines(g, pxy, w, new colorRGBA(255, 0, 150, 150));
                             }
                         }

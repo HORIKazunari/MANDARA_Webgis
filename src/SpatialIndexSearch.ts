@@ -86,7 +86,7 @@ class clsSpatialIndexSearch {
     }
     
     AddEnd() {
-        if(this.ObjectNum==0) return;
+        if(this.ObjectNum===0) return;
         let n = 0;
         for (let i = 0; i < this.ObjectNum; i++) {
             n += this.ObjectXY[i].Pnum;
@@ -94,7 +94,7 @@ class clsSpatialIndexSearch {
         switch (this.ObjectType) {
             case SpatialPointType.SinglePoint:
                 this.XYSize = Math.floor(Math.sqrt(n));
-                if (this.ExtraRange == 0){ this.XYSize = this.XYSize * 2};
+                if (this.ExtraRange === 0){ this.XYSize = this.XYSize * 2};
                 break;
             case SpatialPointType.SPILine:
                 this.XYSize = Math.floor(Math.sqrt(n) / 8);
@@ -108,7 +108,7 @@ class clsSpatialIndexSearch {
         this.XYSize = Math.max(this.XYSize, 2);
         this.MeshIndex = Generic.Array2Dimension(this.XYSize + 1, this.XYSize + 1);
 
-        if (this.RectSetF == false) {
+        if (this.RectSetF === false) {
             const firstPoint = this.ObjectXY[0].Point[0].toPoint();
             this.MeshRect.left = firstPoint.x;
             this.MeshRect.right = this.MeshRect.left;
@@ -122,12 +122,12 @@ class clsSpatialIndexSearch {
             this.BoxData_AddExtraRange(this.MeshRect);
         }
 
-        if (this.MeshRect.left == this.MeshRect.right) {
+        if (this.MeshRect.left === this.MeshRect.right) {
             this.meshw = 1;
         }  else {
             this.meshw = (this.MeshRect.right - this.MeshRect.left) / this.XYSize;
         }
-        if (this.MeshRect.top == this.MeshRect.bottom) {
+        if (this.MeshRect.top === this.MeshRect.bottom) {
             this.meshh = 1;
         } else {
             this.meshh = (this.MeshRect.bottom - this.MeshRect.top) / this.XYSize;
@@ -137,7 +137,7 @@ class clsSpatialIndexSearch {
 
 
         for (let i = 0; i < this.ObjectNum; i++) {
-            if (this.ObjectXY[i].RemoveF == false) {
+            if (this.ObjectXY[i].RemoveF === false) {
                 switch (this.ObjectType) {
                     case SpatialPointType.SinglePoint:
                         this.AddMeshPoint(i, Add_or_Remove_Add_Obj);
@@ -176,7 +176,7 @@ class clsSpatialIndexSearch {
         }
         PBox=this.BoxData_AddExtraRange(PBox);
         const f = this.GetRangeXY(PBox, RBox);
-        if (f == true) {
+        if (f === true) {
             for (let ii = RBox.left; ii <= RBox.right; ii++) {
                 for (let j = RBox.top; j <= RBox.bottom; j++) {
                     switch (AddorRemove) {
@@ -195,7 +195,7 @@ class clsSpatialIndexSearch {
         const PBox = this.BoxData_AddExtraRange(spatial.Get_Rectangle(this.ObjectXY[ObjNum].Point[0].toPoint(), this.ObjectXY[ObjNum].Point[1].toPoint()));
         const RBox = new rectangle();
         const f = this.GetRangeXY(PBox, RBox);
-        if (f == true) {
+        if (f === true) {
             for (let i = RBox.left; i <= RBox.right; i++) {
                 for (let j = RBox.top; j <= RBox.bottom; j++) {
                     switch (AddorRemove) {
@@ -217,7 +217,7 @@ class clsSpatialIndexSearch {
                 //大きさのないポイントを追加
                 const outXY=new point;
                 const exf = this.GetConPointXY(oxy.Point[k].toPoint(), outXY);
-                if (exf == true) {
+                if (exf === true) {
                     switch (AddorRemove) {
                         case Add_or_Remove_Add_Obj:
                             this.Add_Mesh_PointSub(outXY.x, outXY.y, ObjNum, k);
@@ -231,7 +231,7 @@ class clsSpatialIndexSearch {
                 //大きさのあるポイントを追加
                 const RBox = new rectangle();
                 const exf = this.GetExtraRange_XY(oxy.Point[k].toPoint(), RBox)
-                if (exf == true) {
+                if (exf === true) {
                     for (let i = RBox.left; i <= RBox.right; i++) {
                         for (let j = RBox.top; j <= RBox.bottom; j++) {
                             switch (AddorRemove) {
@@ -280,7 +280,7 @@ class clsSpatialIndexSearch {
     }
 
     private GetRangeXY(InPBox: rectangle, OutRBox: rectangle) {
-        if (spatial.Compare_Two_Rectangle_Position(InPBox, this.MeshRect) != cstRectangle_Cross.cstOuter) {
+        if (spatial.Compare_Two_Rectangle_Position(InPBox, this.MeshRect) !== cstRectangle_Cross.cstOuter) {
             let x1 = Math.floor((InPBox.left - this.MeshRect.left) / this.meshw);
             let y1 = Math.floor((InPBox.top - this.MeshRect.top) / this.meshh);
             x1 = Generic.m_min_max(x1, 0, this.XYSize);
@@ -301,7 +301,7 @@ class clsSpatialIndexSearch {
     }
     private Add_Point_Sub(Pnum: number, XY: latlon[], TagData: string | number) {
         this.ObjectXY[this.ObjectNum] = new ObjectXY_Info(Pnum, XY, TagData,false);
-        if (this.AddEndF == true) {
+        if (this.AddEndF === true) {
             switch (this.ObjectType) {
                 case SpatialPointType.SinglePoint:
                     this.AddMeshPoint(this.ObjectNum, Add_or_Remove_Add_Obj);
@@ -319,7 +319,7 @@ class clsSpatialIndexSearch {
     }
     AddMultiPoint(Pnum: number, XY: latlon[], TagData: string | number) {
         //複数地点オブジェクトを追加
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
         }
@@ -327,7 +327,7 @@ class clsSpatialIndexSearch {
     }
     AddDoublePoint(XY1: latlon, XY2: latlon, TagData: string | number) {
         //2地点オブジェクトを追加
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
         }
@@ -340,7 +340,7 @@ class clsSpatialIndexSearch {
         /// <summary>地点オブジェクトを追加</summary>
         /// <returns type="Number" >同じ値の数</returns>
         /// </signature> 
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
         }
@@ -349,7 +349,7 @@ class clsSpatialIndexSearch {
     }
     AddSinglePoint_Array(Num: number, XY: latlon[], TagData: string | number) {
         //1地点オブジェクトを配列で追加
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
         }
@@ -364,32 +364,32 @@ class clsSpatialIndexSearch {
         /// <summary>同じ地点を求め、番号を返す 存在しない場合は-1を返す</summary>
         /// <returns type="Number" >同じ値の数</returns>
         /// </signature> 
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return  new GetObjectPointTagInfo(-1,0, 0); 
         }
-        if ( this.ExtraRangeF == true){
+        if ( this.ExtraRangeF === true){
             alert( "GetSamePointNumberは大きさのあるポイントには実装されていません。");
             return  new GetObjectPointTagInfo(-1,0, 0); 
         }
-        if (this.ObjectNum == 0) {
+        if (this.ObjectNum === 0) {
             return  new GetObjectPointTagInfo(-1,0, 0); 
         }
         const XY = new point(x, y);
         const outXY = new point();
         const exf = this.GetConPointXY(XY, outXY);
-        if (exf == false) { return new GetObjectPointTagInfo(-1, 0, 0); }
+        if (exf === false) { return new GetObjectPointTagInfo(-1, 0, 0); }
         const gn = -1;
         let PointNumber;
         let Tag;
         const meshxy = this.MeshIndex[outXY.x][outXY.y];
-        if (meshxy != undefined) {
+        if (meshxy !== undefined) {
             for (let i = 0; i < meshxy.Num; i++) {
                 const n = meshxy.ObjectNumber[i].ObjectNumber;
                 const np = meshxy.ObjectNumber[i].ObjectPointNumber;
                 const Point = this.ObjectXY[n].Point[np].toPoint();
-                if (Point.x == x) {
-                    if (Point.y == y) {
+                if (Point.x === x) {
+                    if (Point.y === y) {
                         const gn: number = n;
                         PointNumber = np;
                         Tag = this.ObjectXY[n].Tag;
@@ -408,30 +408,30 @@ class clsSpatialIndexSearch {
         /// <returns type="Number" >同じ地点の数</returns>
         /// </signature> 
 
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
         }
-        if (this.ExtraRangeF == true) {
+        if (this.ExtraRangeF === true) {
             alert("GetSamePointNumberArrayは大きさのあるポイントには実装されていません。");
             return;
         }
-        if (this.ObjectNum == 0) {
+        if (this.ObjectNum === 0) {
             return -1;
         }
         SamePointData.length = 0;
         const XY = new point(x, y);
         const outXY = new point;
         const exf = this.GetConPointXY(XY, outXY);
-        if (exf == false) { return -1; }
+        if (exf === false) { return -1; }
 
         const meshxy = this.MeshIndex[outXY.x][outXY.y];
         for (let i = 0; i < meshxy.Num; i++) {
             const n = meshxy.ObjectNumber[i].ObjectNumber;
             const np = meshxy.ObjectNumber[i].ObjectPointNumber;
             const Point = this.ObjectXY[n].Point[np].toPoint();
-            if (Point.x == x) {
-                if (Point.y == y) {
+            if (Point.x === x) {
+                if (Point.y === y) {
                     SamePointData.push(new GetObjectPointTagInfo(n,np,this.ObjectXY[n].Tag));
                 }
             }
@@ -441,11 +441,11 @@ class clsSpatialIndexSearch {
 
     GetNearestLineNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number, ExceptionTag: string | number) {
         
-        if (this.ObjectType != SpatialPointType.SPILine) {
+        if (this.ObjectType !== SpatialPointType.SPILine) {
             alert("線以外はできません。");
             return { Num:0 };
         }
-        if (this.ObjectNum == 0) {
+        if (this.ObjectNum === 0) {
             return { Num:0 };
         }
         const XY = new point(x, y);
@@ -456,11 +456,11 @@ class clsSpatialIndexSearch {
         const Tags=[];
 
         const exf = this.GetConPointXY(XY, outXY);
-        if (exf == false) { return { Num:0 }; }
+        if (exf === false) { return { Num:0 }; }
 
         let mind = Math.min(this.ExtraRange, BaseDistance);
         const meshxy = this.MeshIndex[outXY.x][outXY.y];
-        if (meshxy != undefined) {
+        if (meshxy !== undefined) {
             for (let i = 0; i < meshxy.Num; i++) {
                 const Onum = meshxy.ObjectNumber[i].ObjectNumber;
                 const SP = meshxy.ObjectNumber[i].ObjectPointNumber;
@@ -484,9 +484,9 @@ class clsSpatialIndexSearch {
                         thisNearObjPoint = j;
                     }
                 }
-                if ((thisMin <= mind) && (thisNearObjPoint != -1)) {
+                if ((thisMin <= mind) && (thisNearObjPoint !== -1)) {
                     //線分集合の最短最小値がそれ以前の最短距離以下の場合
-                    if (thisMin != mind) {
+                    if (thisMin !== mind) {
                         ObStac.length = 0;
                         PStac.length = 0;
                         NearP.length = 0;
@@ -518,32 +518,32 @@ class clsSpatialIndexSearch {
         const PStac: number[] = [];
         const Distance: number[] = [];
         const Tags: (string | number)[] = [];
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance};
         }
-        if (this.ExtraRangeF == false) {
+        if (this.ExtraRangeF === false) {
             alert("GetNearPointNumberは大きさのないポイントには実装されていません。");
             return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance};
         }
-        if (this.ObjectNum == 0) {
+        if (this.ObjectNum === 0) {
             return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance};
         }
-        if(ExceptionTag==undefined){
+        if(ExceptionTag===undefined){
             ExceptionTag=[];
         }
         const XY = new point(x, y);
         const outXY = new point;
         const exf = this.GetConPointXY(XY, outXY);
-        if (exf == false) { return {num:0} }
+        if (exf === false) { return {num:0} }
 
         const mind  = Math.min(this.ExtraRange, BaseDistance);
         const mi = this.MeshIndex[outXY.x][outXY.y];
-        if (mi != undefined) {
+        if (mi !== undefined) {
             for (let i = 0; i < mi.ObjectNumber.length; i++) {
                 const n = mi.ObjectNumber[i].ObjectNumber;
                 const np = mi.ObjectNumber[i].ObjectPointNumber;
-                if ((n != ExceptionNumber) && ((ExceptionTag.indexOf(this.ObjectXY[n].Tag) == -1))) {
+                if ((n !== ExceptionNumber) && ((ExceptionTag.indexOf(this.ObjectXY[n].Tag) === -1))) {
                     const op = this.ObjectXY[n].Point[np].toPoint();
                     const D = spatial.Distance(x, y, op.x, op.y);
                     if (D < mind) {
@@ -568,37 +568,37 @@ class clsSpatialIndexSearch {
         /// <returns type="Number" >同じ値の数</returns>
         /// </signature> 
         const NearestPointData=[];
-        if (this.ObjectType != SpatialPointType.SinglePoint) {
+        if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
         }
-        if (this.ExtraRangeF == false) {
+        if (this.ExtraRangeF === false) {
             alert("GetNearestPointNumberは大きさのないポイントには実装されていません。");
             return;
         }
-        if (this.ObjectNum == 0) {
+        if (this.ObjectNum === 0) {
             return -1;
         }
-        if(ExceptionTag==undefined){
+        if(ExceptionTag===undefined){
             ExceptionTag=[];
         }
         const XY = new point(x, y);
         const outXY = new point;
         const exf = this.GetConPointXY(XY, outXY);
-        if (exf == false) { return {num:0}  }
+        if (exf === false) { return {num:0}  }
 
         let mind = Math.min(this.ExtraRange, BaseDistance);
         let o_mind = mind - 1;
         const meshxy = this.MeshIndex[outXY.x][outXY.y];
-        if (meshxy != undefined) {
+        if (meshxy !== undefined) {
             for (let i = 0; i < meshxy.Num; i++) {
                 const n = meshxy.ObjectNumber[i].ObjectNumber;
                 const np = meshxy.ObjectNumber[i].ObjectPointNumber;
-                if ((n != ExceptionNumber) && (this.ObjectXY[n].Tag != ExceptionTag)) {
+                if ((n !== ExceptionNumber) && (this.ObjectXY[n].Tag !== ExceptionTag)) {
                     const Point = this.ObjectXY[n].Point[np].toPoint();
                     const D = spatial.Distance(x, y, Point.x, Point.y);
                     if (D <= mind) {
-                        if (D != o_mind) {
+                        if (D !== o_mind) {
                             NearestPointData.length = 0;
                         }
                         NearestPointData.push(new GetObjectPointTagInfo(n, np, this.ObjectXY[n].Tag));
@@ -613,11 +613,11 @@ class clsSpatialIndexSearch {
 
     //指定した点が入る四角領域を取得
     GetRectIn(x: number, y: number) {
-        if (this.ObjectType != SpatialPointType.SPIRect) {
+        if (this.ObjectType !== SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
             return 0;
         }
-        if (this.ObjectNum == 0) {
+        if (this.ObjectNum === 0) {
             return 0;
         }
 
@@ -626,19 +626,19 @@ class clsSpatialIndexSearch {
         XY.x = x;
         XY.y = y;
         const exf = this.GetConPointXY(XY, sp);
-        if (exf == false) {
+        if (exf === false) {
             return 0;
         }
 
         let same_N = 0;
         const ObStac = [];
         const MI = this.MeshIndex[sp.x][sp.y];
-        if (MI != undefined) {
+        if (MI !== undefined) {
             for (let i = 0; i < MI.ObjectNumber.length;i++) {
                 const n = MI.ObjectNumber[i].ObjectNumber;
                 const Ob = this.ObjectXY[n];
                 const PBox= spatial.Get_Rectangle(Ob.Point[0].toPoint(), Ob.Point[1].toPoint());
-                if (spatial.Check_PointInBox(new point(x, y), 0, PBox) == true) {
+                if (spatial.Check_PointInBox(new point(x, y), 0, PBox) === true) {
                     ObStac.push(n);
                     same_N++;
                 }
@@ -680,7 +680,7 @@ class clsSpatialIndexSearch {
         let i = -1;
         do {
            i ++;
-        } while (meshxy.ObjectNumber[i].ObjectNumber != Number)
+        } while (meshxy.ObjectNumber[i].ObjectNumber !== Number)
         //for (j = i + 1;j<meshxy.Num;j++){ '配列をつめる
         //    meshxy.ObjectNumber[j-1]=meshxy.ObjectNumber[j]
         //}
@@ -692,8 +692,8 @@ class clsSpatialIndexSearch {
     RemoveObject_byTag(TagNumber: string | number) {
         //指定したタグのオブジェクトの検索インデックスを削除
         for (let i = 0; i < this.ObjectNum; i++) {
-            if (this.ObjectXY[i].Tag == TagNumber) {
-                if (this.ObjectXY[i].RemoveF == false) {
+            if (this.ObjectXY[i].Tag === TagNumber) {
+                if (this.ObjectXY[i].RemoveF === false) {
                     this.RemoveObject(i);
                 }
             }
@@ -702,7 +702,7 @@ class clsSpatialIndexSearch {
 
     AddLine(Pnum: number, XY: latlon[], TagData: string | number) {
         //線オブジェクト追加
-        if (this.ObjectType != SpatialPointType.SPILine) {
+        if (this.ObjectType !== SpatialPointType.SPILine) {
             alert("線以外はできません。");
             return;
         }
@@ -713,7 +713,7 @@ class clsSpatialIndexSearch {
         //タグの値を変化させる
         for (let i = 0; i < this.ObjectNum; i++) {
             const tagNum = Number(this.ObjectXY[i].Tag);
-            if (Generic.Check_Two_Value_In(tagNum, StartRangeValue, LastRangeValue) != (chvOuter as unknown as number)) {
+            if (Generic.Check_Two_Value_In(tagNum, StartRangeValue, LastRangeValue) !== (chvOuter as unknown as number)) {
                 this.ObjectXY[i].Tag = tagNum + ChangeValue;
             }
         }
@@ -721,11 +721,11 @@ class clsSpatialIndexSearch {
 
     AddRect(XY1_rectangle: point | rectangle, XY2_TagData: latlon | string | number, TagData?: string | number) {
         //四角オブジェクト追加
-        if (this.ObjectType != SpatialPointType.SPIRect) {
+        if (this.ObjectType !== SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
             return;
         }
-        if ((XY1_rectangle instanceof point) == true) {
+        if ((XY1_rectangle instanceof point) === true) {
             const XY = [(XY1_rectangle as point).toLatlon(), (XY2_TagData as latlon)];
             this.Add_Point_Sub(2, XY, TagData);
         } else {

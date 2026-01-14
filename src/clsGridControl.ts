@@ -434,7 +434,7 @@ export class gridControl {
 }
 
     private ScrollChange = () => {
-        if (this.txtTextBox?.getVisibility?.() == true) {
+        if (this.txtTextBox?.getVisibility?.() === true) {
             if (this.txtTextBox.setVisibility) this.txtTextBox.setVisibility(false);
             this.Set_Data_from_txtBox_To_Grid();
         }
@@ -534,7 +534,7 @@ export class gridControl {
     /**レイヤ追加（メソッド） */
     addLayer(LayName: string, LayerNum: number, Xsize: number, Ysize: number, opeEnable?: Partial<Grid_Operation_enable_info>) {
         let Ope = new Grid_Operation_enable_info();
-        if (opeEnable == undefined) {
+        if (opeEnable === undefined) {
             Ope = this.Grid_Total.tOpe;
         } else {
             Object.assign(Ope, opeEnable);
@@ -590,7 +590,7 @@ export class gridControl {
         this.tabMake();
         this.Set_SSTAB_Name();
         let nnt;
-        if (Layer == mxt - 1) {
+        if (Layer === mxt - 1) {
             nnt = Layer - 1;
         } else {
             nnt = Layer;
@@ -654,13 +654,13 @@ export class gridControl {
         const SPL = this.Grid_Total.Layer;
         let SX, SY;
         let GP = this.Grid_Property[SPL];
-        if (GP.SelectedF == true) {
+        if (GP.SelectedF === true) {
             SX = GP.MouseDownX
             SY = GP.MouseDownY
-            if (SX == -this.Grid_Total.FixedObjectName_n) {
+            if (SX === -this.Grid_Total.FixedObjectName_n) {
                 SX ++;
             }
-            if (SY == -this.Grid_Total.FixedDataItem_n) {
+            if (SY === -this.Grid_Total.FixedDataItem_n) {
                 SY ++;
             }
         } else {
@@ -675,22 +675,22 @@ export class gridControl {
         do {
             GP = this.Grid_Property[L];
             Y++;
-            if (Y == GP.Ymax) {
+            if (Y === GP.Ymax) {
                 Y = -this.Grid_Total.FixedDataItem_n + 1;
                 X++;
             }
-            if (X == GP.Xmax) {
+            if (X === GP.Xmax) {
                 L++;
-                if (L == this.Grid_Total.LayerNum) {
+                if (L === this.Grid_Total.LayerNum) {
                     L = 0;
                 }
                 X = -this.Grid_Total.FixedObjectName_n + 1;
             }
             const gstr = this.Get_XYData(L, X, Y);
-            if ((gstr != undefined)) {
+            if ((gstr !== undefined)) {
                 switch (MatchingMode) {
                     case enmMatchingMode.PerfectMatching:
-                        if (gstr == FindStr) {
+                        if (gstr === FindStr) {
                             Index = 0;
                             break;
                         }
@@ -700,8 +700,8 @@ export class gridControl {
                         break;
                 }
             }
-        } while ((Index == -1) && ((SX != X) || (SY != Y) || (SPL != L)))
-        if ((SX == X) && (SY == Y) && (SPL == L) && (Index == -1)) {
+        } while ((Index === -1) && ((SX !== X) || (SY !== Y) || (SPL !== L)))
+        if ((SX === X) && (SY === Y) && (SPL === L) && (Index === -1)) {
             Generic.alert(undefined, "見つかりませんでした:" + FindStr);
         } else {
             GP = this.Grid_Property[L];
@@ -712,7 +712,7 @@ export class gridControl {
             GP.MouseDownY = Y;
             GP.MouseUpX = X;
             GP.MouseUpY = Y;
-            if (this.Grid_Total.Layer != L) {
+            if (this.Grid_Total.Layer !== L) {
                 this.Grid_Total.Layer = L;
                 this.tabSelect();
                 this.Print_Grid_ViewSize();
@@ -727,13 +727,13 @@ export class gridControl {
         const SPL = this.Grid_Total.Layer;
         let SX, SY;
         let GP = this.Grid_Property[SPL];
-        if (GP.SelectedF == true) {
+        if (GP.SelectedF === true) {
             SX = GP.MouseDownX;
             SY = GP.MouseDownY;
-            if (SX == -this.Grid_Total.FixedObjectName_n) {
+            if (SX === -this.Grid_Total.FixedObjectName_n) {
                 SX++;
             }
-            if (SY == -this.Grid_Total.FixedDataItem_n) {
+            if (SY === -this.Grid_Total.FixedDataItem_n) {
                 SY++;
             }
         } else {
@@ -748,23 +748,23 @@ export class gridControl {
         do {
             GP = this.Grid_Property[L];
             Y--;
-            if (Y == -this.Grid_Total.FixedDataItem_n) {
+            if (Y === -this.Grid_Total.FixedDataItem_n) {
                 Y = GP.Ymax - 1
                 X--;
             }
-            if (X == -this.Grid_Total.FixedObjectName_n) {
+            if (X === -this.Grid_Total.FixedObjectName_n) {
                 L--;
-                if (L == -1) {
+                if (L === -1) {
                     L = this.Grid_Total.LayerNum - 1;
                 }
                 X = this.Grid_Property[L].Xmax - 1;
                 Y = this.Grid_Property[L].Ymax - 1;
             }
             const gstr = this.Get_XYData(L, X, Y);
-            if (gstr != undefined) {
+            if (gstr !== undefined) {
                 switch (MatchingMode) {
                     case enmMatchingMode.PerfectMatching:
-                        if (gstr == FindStr) {
+                        if (gstr === FindStr) {
                             Index = 0;
                         }
                         break;
@@ -773,8 +773,8 @@ export class gridControl {
                         break;
                 }
             }
-        } while ((Index == -1) && ((SX != X) || (SY != Y) || (SPL != L)))
-        if ((SX == X) && (SY == Y) && (SPL == L) && (Index == -1)) {
+        } while ((Index === -1) && ((SX !== X) || (SY !== Y) || (SPL !== L)))
+        if ((SX === X) && (SY === Y) && (SPL === L) && (Index === -1)) {
             Generic.alert(undefined, "見つかりませんでした:" + FindStr);
         } else {
             GP = this.Grid_Property[L];
@@ -785,7 +785,7 @@ export class gridControl {
             GP.MouseDownY = Y;
             GP.MouseUpX = X;
             GP.MouseUpY = Y;
-            if (this.Grid_Total.Layer != L) {
+            if (this.Grid_Total.Layer !== L) {
                 this.Grid_Total.Layer = L;
                 this.tabSelect();
             }
@@ -815,7 +815,7 @@ export class gridControl {
    /**グリッドの左端固定部分の文字設定取得  XY指定なしの場合は配列で取得*/
    getFixedXSData(LayerNum: number, X: number = -1, Y: number = -1) {
     const GP = this.Grid_Property[LayerNum];
-    if (X != undefined) {
+    if (X !== undefined) {
         return GP.FixedObjectName[X][Y].Text;    
     }else{
         const xs = this.Grid_Total.FixedObjectName_n;
@@ -931,7 +931,7 @@ export class gridControl {
     /**グリッドの選択範囲を取得 */
     getSelectedArea(LayerNum: number) {
         const R = this.Grid_Property[LayerNum].MouseUpDownRect();
-        if (this.Grid_Property[LayerNum].SelectedF == false) {
+        if (this.Grid_Property[LayerNum].SelectedF === false) {
             const sz = R.size();
             sz.height = -1;
             sz.width = -1;
@@ -951,7 +951,7 @@ export class gridControl {
     /**グリッドの横セル数設定 */
     setXsize(LayerNum: number, value: number) {
         const xmax = this.Grid_Property[LayerNum].Xmax;
-        if (value == xmax) {
+        if (value === xmax) {
             return;
         } else if (value > xmax) {
             this.InsertColumns(LayerNum, xmax, value - xmax);
@@ -966,7 +966,7 @@ export class gridControl {
     /**グリッドの縦セル数設定 */
     setYsize(LayerNum: number, value: number) {
         const ymax = this.Grid_Property[LayerNum].Ymax;
-        if (value == ymax) {
+        if (value === ymax) {
             return;
         } else if (value > ymax) {
             this.InsertRows(LayerNum, ymax, value - ymax);
@@ -1004,7 +1004,7 @@ export class gridControl {
         GP.MouseDownY = TopCell;
         GP.MouseUpX = LeftCell;
         GP.MouseUpY = TopCell;
-        if (this.Grid_Total.Layer != LayerNum) {
+        if (this.Grid_Total.Layer !== LayerNum) {
             this.Grid_Total.Layer = LayerNum;
             this.tabSelect();
         }
@@ -1059,7 +1059,7 @@ export class gridControl {
     }
     /** グリッドの左端固定部分の個別色設定*/
     getFixedXSColor(Layernum: number, X: number, Y: number) {
-        if (this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF == true) {
+        if (this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF === true) {
             return this.Grid_Property[Layernum].FixedObjectName[X][Y].Color
         } else {
             if (X < this.Grid_Total.FixedObjectName_n2) {
@@ -1094,7 +1094,7 @@ export class gridControl {
     /**グリッドの上端固定部分の文字設定取得 XY指定なしの場合は配列で取得*/
     getFixedYSData(LayerNum: number, X?: number, Y?: number) {
         const GP = this.Grid_Property[LayerNum];
-        if (X != undefined) {
+        if (X !== undefined) {
             return GP.FixedDataItem[X][Y].Text;
         } else {
             const xs = GP.Xmax;
@@ -1116,7 +1116,7 @@ export class gridControl {
 
     /**グリッドの上端固定部分の個別色設定 */
     getFixedYSColor(Layernum: number, X: number, Y: number) {
-        if (this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF == true) {
+        if (this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF === true) {
             return this.Grid_Property[Layernum].Grid_Text[X][Y].Color;
         } else {
             if (Y < this.Grid_Total.FixedDataItem_n2) {
@@ -1265,7 +1265,7 @@ export class gridControl {
 
     /** セルの個別色設定 */
     getGridColor(LayerNum: number, X: number, Y: number) {
-        if (this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF == false) {
+        if (this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF === false) {
             return this.Grid_Total.Color.Grid;
         } else {
             return this.Grid_Property[LayerNum].Grid_Text[X][Y].Color;
@@ -1338,7 +1338,7 @@ export class gridControl {
 
         const picW = this.picGrid.clientWidth;
         const picH = this.picGrid.clientHeight;
-        if ((picW == 0) || (picH == 0)) {
+        if ((picW === 0) || (picH === 0)) {
             return;
         }
 
@@ -1385,24 +1385,24 @@ export class gridControl {
             let X = GP.FixedObjectNameDataWidth();
             let i = GP.LeftCell;
             let bkCol;
-            if (j == ys - 1) {//一番下の行は折り返しが見えないようにクリップ
+            if (j === ys - 1) {//一番下の行は折り返しが見えないようにクリップ
                 this.ctx.save();
                 this.ctx.rect(0,Y,picW,GP.CellHeight[j]+1);
                 this.ctx.clip();
             }
             do {
-                if (GP.Grid_Text[i][j].colorSetF == false) {
+                if (GP.Grid_Text[i][j].colorSetF === false) {
                     bkCol = this.Grid_Total.Color.Grid.Clone();
                 } else {
                     bkCol = GP.Grid_Text[i][j].Color.Clone();
                 }
-                if (GP.SelectedF == true) {
+                if (GP.SelectedF === true) {
                     if (((MBX1 <= i) && (i <= MBX2)) && ((MBY1 <= j) && (j <= MBY2))) {
                         bkCol = this.Grid_Total.Color.SelectedGrid.Clone();
                     }
                 }
                 let ptx=GP.Grid_Text[i][j].Text;
-                if(ptx=='undefined'){
+                if(ptx==='undefined'){
                     ptx="";
                 }
                this.Print_Data(ptx, GP.DataItemData[i].Allignment, X, Y, GP.DataItemData[i].Width, GP.CellHeight[j], GP.GridLineCol, bkCol, 0, font);
@@ -1412,7 +1412,7 @@ export class gridControl {
             //オブジェクト名
             X = 0;
             for (let i = 0; i < this.Grid_Total.FixedObjectName_n; i++) {
-                if (GP.FixedObjectName[i][j].colorSetF == true) {
+                if (GP.FixedObjectName[i][j].colorSetF === true) {
                     bkCol = GP.FixedObjectName[i][j].Color.Clone();
                 } else {
                     if (i < this.Grid_Total.FixedObjectName_n2) {
@@ -1421,7 +1421,7 @@ export class gridControl {
                         bkCol = this.Grid_Total.Color.FixedGrid;
                     }
                 }
-                if (GP.SelectedF == true) {
+                if (GP.SelectedF === true) {
                     if ((MBY1 <= j) && (j <= MBY2)) {
                         if ((MBX1 <= -(this.Grid_Total.FixedObjectName_n - i)) && (-(this.Grid_Total.FixedObjectName_n - i) <= MBX2)) {
                             bkCol = bkCol.getDarkColor();
@@ -1437,7 +1437,7 @@ export class gridControl {
 
                 X += GP.FixedObjectNameData[i].Width;
             }
-            if (j == ys - 1) {
+            if (j === ys - 1) {
                 this.ctx.restore();
             }
             Y += GP.CellHeight[j];
@@ -1460,7 +1460,7 @@ export class gridControl {
             let Y = 0;
             for (let j = 0; j < this.Grid_Total.FixedDataItem_n; j++) {
                 let bkCol;
-                if (GP.FixedDataItem[i][j].colorSetF == true) {
+                if (GP.FixedDataItem[i][j].colorSetF === true) {
                     bkCol = GP.FixedDataItem[i][j].Color.Clone();
                 } else {
                     if (j < this.Grid_Total.FixedDataItem_n2) {
@@ -1470,7 +1470,7 @@ export class gridControl {
                     }
                 }
 
-                if (GP.SelectedF == true) {
+                if (GP.SelectedF === true) {
                     if ((MBX1 <= i) && (i <= MBX2)) {
                         if ((MBY1 <= -(this.Grid_Total.FixedDataItem_n - j)) && (-(this.Grid_Total.FixedDataItem_n - j) <= MBY2)) {
                             bkCol = bkCol.getDarkColor();
@@ -1489,7 +1489,7 @@ export class gridControl {
             i++; 1
         } while ((X < picW) && (i < xs))
         if (X >= picW) {
-            if (GP.Xmax == 1) {
+            if (GP.Xmax === 1) {
                 GP.RightCell = 0;
             } else {
                 GP.RightCell = i - 2;
@@ -1509,7 +1509,7 @@ export class gridControl {
                 } else {
                     bkCol = this.Grid_Total.Color.FixedGrid.Clone();
                 }
-                if (GP.SelectedF == true) {
+                if (GP.SelectedF === true) {
                     let dkf = false;
                     if (((MBX1 <= -(this.Grid_Total.FixedObjectName_n - i)) && (-(this.Grid_Total.FixedObjectName_n - i) <= MBX2)
                     ) && ((MBY1 <= -(this.Grid_Total.FixedDataItem_n - j)) && (-(this.Grid_Total.FixedDataItem_n - j) <= MBY2))) {
@@ -1525,7 +1525,7 @@ export class gridControl {
                             dkf = true;
                         }
                     }
-                    if (dkf == true) {
+                    if (dkf === true) {
                         bkCol = bkCol.getDarkColor();
                     }
                 }
@@ -1536,7 +1536,7 @@ export class gridControl {
             X += GP.FixedObjectNameData[i].Width;
         }
         this.ctx.restore();
-        if (txtF == true) {
+        if (txtF === true) {
             if ((GP.MouseDownX > GP.RightCell) || (GP.MouseDownX < GP.LeftCell) || (GP.MouseDownY > GP.BottomCell) || (GP.MouseDownY < GP.TopCell)) {
             } else {
                 if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(true);
@@ -1549,7 +1549,7 @@ export class gridControl {
     Set_Data_from_txtBox_To_Grid = () => {
         const tx  = this.Get_Data_from_Grid(this.Grid_Total.Layer, this.GX, this.GY);
         const newTx  = this.txtTextBox.value;
-        if (tx != newTx ){
+        if (tx !== newTx ){
             this.SetUndo_Input(this.GX, this.GY, newTx + "の入力");
             this.Set_Data_To_Grid(this.Grid_Total.Layer, this.GX, this.GY, newTx, true);
             this.Check_ChangeEvent(this.GX, this.GY);
@@ -1569,7 +1569,7 @@ export class gridControl {
         } else {
             tx = GP.Grid_Text[X][Y].Text;
         }
-        if (tx == undefined) {
+        if (tx === undefined) {
             tx = "";
         }
         return tx
@@ -1577,7 +1577,7 @@ export class gridControl {
 
     Grid_Clear = (Caption: string ) => {
         const GP = this.Grid_Property[this.Grid_Total.Layer];
-        if (GP.SelectedF == false) {
+        if (GP.SelectedF === false) {
             return;
         }
         const rect = GP.MouseUpDownRect();
@@ -1669,7 +1669,7 @@ export class gridControl {
     }
 
     Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
-        if(STT==undefined){return;}
+        if(STT===undefined){return;}
         if (!this.ctx) return;
         
         let ST = typeof STT === 'string' ? STT : (STT?.toString() ?? '');
@@ -1683,14 +1683,14 @@ export class gridControl {
         const S_Size = new size(mes.width, mes.actualBoundingBoxAscent + mes.actualBoundingBoxDescent);
         const txtw = (S_Size.width);
         const txth = (S_Size.height);
-        if ((txtw >= CellW - 4) && (Allignment == enmHorizontalAlignment.Center)) {
+        if ((txtw >= CellW - 4) && (Allignment === enmHorizontalAlignment.Center)) {
             Allignment = enmHorizontalAlignment.Left;
         }
         this.ctx.fillStyle = 'rgba(0, 0, 0)';
         switch (Allignment) {
             case enmHorizontalAlignment.Left: { //左詰
                 const STP = ST.split('\n');
-                if ((txtw <= CellW - 4) && (STP.length == 1)) {
+                if ((txtw <= CellW - 4) && (STP.length === 1)) {
                     this.ctx.fillText(ST, X + 2, Y + 2);
                 } else {
                     let H = 0;
@@ -1702,19 +1702,19 @@ export class gridControl {
                             ST2 = ST.left(i);
                             tw = this.ctx.measureText(ST2).width;
                             i++;
-                        } while ((tw < CellW - 4) && (i <= ST.length) && (ST.mid(i - 1, ST.length) != '\n'))
+                        } while ((tw < CellW - 4) && (i <= ST.length) && (ST.mid(i - 1, ST.length) !== '\n'))
                         if (tw >= CellW - 4) {
                             i--;
                         }
                         ST2 = ST.left(i - 1);
                         this.ctx.fillText(ST2, X + 2, Y + H + 2);
-                        if (ST.mid(i, ST.length) != '\n') {
+                        if (ST.mid(i, ST.length) !== '\n') {
                             ST = ST.mid(i - 1, ST.length)
                         } else {
                             ST = ST.mid(i, ST.length)
                         }
                         H += txth;
-                    } while ((H < CellHeight - 4) && (ST != ""))
+                    } while ((H < CellHeight - 4) && (ST !== ""))
                 }
                 break;
             }
@@ -1745,7 +1745,7 @@ export class gridControl {
 
     /**全体のサイズを求める */
     Print_Grid_ViewSize = () => {
-        if (this.Grid_Total.LayerNum == 0) {
+        if (this.Grid_Total.LayerNum === 0) {
             this.vScroll.setVisibility(false);
             this.hScroll.setVisibility(false);
             return;
@@ -1798,7 +1798,7 @@ export class gridControl {
     Insert_Layer = (LayName: string, lay: number, OriginalLayerNumber: number, xs: number, ys: number, OperationEnable: Grid_Operation_enable_info) => {
         this.Grid_Total.LayerNum++;
         this.tabMake();
-        if (this.Grid_Total.LayerNum != 1) {
+        if (this.Grid_Total.LayerNum !== 1) {
             for (let i = this.Grid_Total.LayerNum - 1; i >= lay + 1; i--) {
                 this.Grid_Property[i] = this.Grid_Property[i - 1].Clone();
             }
@@ -1834,15 +1834,15 @@ export class gridControl {
         }
     }
     RaiseEvent = (call: Function) => {
-        if(call !=undefined){
+        if(call !==undefined){
 
         }
     }
     rightClickmenu = (pos: point) => {
         const GPO = this.Grid_Property[this.Grid_Total.Layer].Ope;
-        if(GPO.RightClickAllEnabled==false){return;}
+        if(GPO.RightClickAllEnabled===false){return;}
         let udo="";
-        if(this.UndoArray.length!=0){
+        if(this.UndoArray.length!==0){
             udo="("+this.UndoArray[this.UndoArray.length-1].caption+")";
         }
         const popmenu = [
@@ -1860,7 +1860,7 @@ export class gridControl {
         Generic.ceatePopupMenu(popmenu, pos);
         const self = this;
         function mnuPaste() {
-            if (self.inClipboard != "") {
+            if (self.inClipboard !== "") {
                 self.Grid_Paste(self.inClipboard, false);
                 return;
             }
@@ -1874,7 +1874,7 @@ export class gridControl {
                 self.addDocumentEvent();
                 self.base.addEventListener("contextmenu", contextMenuPrevent);
                 document.body.addEventListener("contextmenu", contextMenuPrevent);
-                if (tx != "") {
+                if (tx !== "") {
                     self.inClipboard = tx;
                     self.Grid_Paste(self.inClipboard, false);
                 }
@@ -1890,7 +1890,7 @@ export class gridControl {
             const PV = self.Grid_Property[self.Grid_Total.Layer].Ymax;
             self.removeEventlister();
             Generic.prompt(undefined, self.Grid_Total.RowCaption + "数指定", String(PV), function (SF: string) {
-                if (SF != "") {
+                if (SF !== "") {
                     const convertedValue = Generic.convValue(SF);
                     const numValue = Number(convertedValue);
                     if (isNaN(numValue)) {
@@ -1898,7 +1898,7 @@ export class gridControl {
                     }
                     const V = numValue;
                     const n = V - PV;
-                    if ((V > 0) && (n != 0)) {
+                    if ((V > 0) && (n !== 0)) {
                         if (n < 0) {
                             self.SetUndo_DeleteRows(self.Grid_Total.RowCaption + "数変更", PV + n, -n);
                             self.DeleteRows(self.Grid_Total.Layer, PV + n, -n);
@@ -1920,7 +1920,7 @@ export class gridControl {
             const PV = self.Grid_Property[self.Grid_Total.Layer].Xmax;
             self.removeEventlister();
             Generic.prompt(undefined, self.Grid_Total.ColumnCaption + "数指定", String(PV), function (SF: string) {
-                if (SF != "") {
+                if (SF !== "") {
                     const convertedValue = Generic.convValue(SF);
                     const numValue = Number(convertedValue);
                     if (isNaN(numValue)) {
@@ -1928,7 +1928,7 @@ export class gridControl {
                     }
                     const V = numValue;
                     const n = V - PV;
-                    if ((V > 0) && (n != 0)) {
+                    if ((V > 0) && (n !== 0)) {
                         if (n < 0) {
                             self.SetUndo_DeleteColumns(self.Grid_Total.ColumnCaption + "数指定", PV + n, -n)
                             self.DeleteColumns(self.Grid_Total.Layer, PV + n, -n);
@@ -1954,7 +1954,7 @@ export class gridControl {
             const rect = GP.MouseUpDownRect();
             if (rect.top < 0) { return; }
             const r = rect.bottom - rect.top + 1;
-            if (e.caption == "後ろに挿入") {
+            if (e.caption === "後ろに挿入") {
                 ip = rect.top + 1;
             } else {
                 ip = rect.top;
@@ -1977,7 +1977,7 @@ export class gridControl {
 
             let ip;
             const r = rect.right - rect.left + 1;
-            if (e.caption == "右に挿入") {
+            if (e.caption === "右に挿入") {
                 ip = rect.right + 1;
             } else {
                 ip = rect.left;
@@ -1996,7 +1996,7 @@ export class gridControl {
             const r1 = rect.left;
             const r2 = rect.right;
             const r = r2 - r1 + 1;
-            if ((r1 < 0) || (r == GP.Xmax)) { return; }
+            if ((r1 < 0) || (r === GP.Xmax)) { return; }
             self.SetUndo_DeleteColumns(self.Grid_Total.ColumnCaption + "削除", r1, r);
             self.DeleteColumns(self.Grid_Total.Layer, r1, r);
             if ((GP.Xmax <= GP.MouseUpX)) {
@@ -2015,7 +2015,7 @@ export class gridControl {
             const r1 = rect.top;
             const r2 = rect.bottom;
             const r = r2 - r1 + 1;
-            if ((r1 < 0) || (r == GP.Ymax)) { return; }
+            if ((r1 < 0) || (r === GP.Ymax)) { return; }
             self.SetUndo_DeleteRows(self.Grid_Total.RowCaption + "削除", r1, r)
             self.DeleteRows(self.Grid_Total.Layer, r1, r);
             if ((GP.Ymax <= GP.MouseUpY)) {
@@ -2075,7 +2075,7 @@ export class gridControl {
         for (let i = 0; i < this.Grid_Total.FixedDataItem_n; i++) {            
             const GPF =new FixedDataItemData_Info();
             GPF.Height = this.defoCellHeight;
-            if (i == 0) {
+            if (i === 0) {
                 GPF.Allignment = this.Grid_Total.DefaultNumberingAlligntment;
             } else {
                 GPF.Allignment = this.Grid_Total.DefaultFixedYSAllignment;
@@ -2092,7 +2092,7 @@ export class gridControl {
 
         for (let i = 0; i < this.Grid_Total.FixedObjectName_n; i++) {
             const GPF =new FixedObjectNameData_Info();
-            if (i == 0) {
+            if (i === 0) {
                 GPF.Width = this.Grid_Total.DefaultFixedXNumberingWidth;
                 GPF.Allignment = this.Grid_Total.DefaultNumberingAlligntment;
             } else {
@@ -2178,7 +2178,7 @@ export class gridControl {
         let xs = GP.Xmax;
         let GTempText = Generic.Array2Clone(GP.Grid_Text);
         GP.Grid_Text = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
-        const refPoint = (InsertPoint != oldYs) ? InsertPoint : InsertPoint - 1;
+        const refPoint = (InsertPoint !== oldYs) ? InsertPoint : InsertPoint - 1;
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < InsertPoint; j++) {
                 GP.Grid_Text[i][j] = GTempText[i][j];
@@ -2192,7 +2192,7 @@ export class gridControl {
             }
         }
 
-        if (InsertPoint == oldYs) {
+        if (InsertPoint === oldYs) {
             for (let i = InsertPoint; i < InsertPoint + InsertNum; i++) {
                 GP.CellHeight[i] = GP.CellHeight[InsertPoint - 1];
             }
@@ -2276,7 +2276,7 @@ export class gridControl {
         GP.Xmax = xs;
         let GTempText = Generic.Array2Clone(GP.Grid_Text);
         GP.Grid_Text = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
-        const refPoint = (InsertPoint != oldXs) ? InsertPoint : InsertPoint - 1;
+        const refPoint = (InsertPoint !== oldXs) ? InsertPoint : InsertPoint - 1;
         for (let i = 0; i < ys; i++) {
             for (let j = 0; j < InsertPoint; j++) {
                 GP.Grid_Text[j][i] = GTempText[j][i];
@@ -2290,7 +2290,7 @@ export class gridControl {
             }
         }
 
-        if (InsertPoint == oldXs) {
+        if (InsertPoint === oldXs) {
             for (let i = InsertPoint; i < InsertPoint + InsertNum; i++) {
                 GP.DataItemData[i] = GP.DataItemData[InsertPoint - 1].Clone();
             }
@@ -2345,11 +2345,11 @@ export class gridControl {
 
     /**指定された位置のグリッド配列にﾃﾞｰﾀをｾｯﾄする Check_F:変更できるかどうかチェックする */
     Set_Data_To_Grid = ( Grid_Lay: number ,  X: number ,  Y: number ,  tx: string ,  Check_F: boolean ) => {
-        if (Check_F == true) {
+        if (Check_F === true) {
             const gpo = this.Grid_Property[this.Grid_Total.Layer].Ope;
-            if (((Y < 0) && (X >= 0)) && (gpo.FixedYSEnabled == false) ||
-                ((X < 0) && (Y >= 0)) && (gpo.FixedXSEnabled == false) ||
-                ((X < 0) && (Y < 0)) && (gpo.FixedUpperLeftEnabeld == false)) {
+            if (((Y < 0) && (X >= 0)) && (gpo.FixedYSEnabled === false) ||
+                ((X < 0) && (Y >= 0)) && (gpo.FixedXSEnabled === false) ||
+                ((X < 0) && (Y < 0)) && (gpo.FixedUpperLeftEnabeld === false)) {
                 return;
             }
         }
@@ -2391,20 +2391,20 @@ Grid_Copy = () => {
         for (let i = c1; i <= c2; i++) {
             for (let j = r1; j <= r2; j++) {
                 let PlusCell = this.Get_Data_from_Grid(this.Grid_Total.Layer, j, i);
-                if (PlusCell.indexOf("\n") != -1) {
+                if (PlusCell.indexOf("\n") !== -1) {
                     //改行が含まれるセルは""で囲む
                     PlusCell = '"' + PlusCell + '"';
                 }
                 sb += PlusCell;
-                if (j != r2) {
+                if (j !== r2) {
                     sb += '\t';
                 }
             }
-            if (c1 != c2) {
+            if (c1 !== c2) {
                 sb += '\n';
             }
         }
-        if (sb.length != 0) {
+        if (sb.length !== 0) {
             Generic.copyText(sb);
             this.inClipboard = sb;
         }
@@ -2516,7 +2516,7 @@ Grid_Copy = () => {
         const GP = this.Grid_Property[this.Grid_Total.Layer];
 
         //クリップボードのデータ分解
-        if (clipText.right(1) == '\n') {
+        if (clipText.right(1) === '\n') {
             clipText = clipText.left(clipText.length - 1);
         }
         const pastData: string[][] = [];
@@ -2529,22 +2529,22 @@ Grid_Copy = () => {
         for (let i = 0; i < clipText.length; i++) {
             const tx = clipText.mid(i, 1)
             endf = false;
-            if (tx == '"') {
-                if (dbq == true) {
+            if (tx === '"') {
+                if (dbq === true) {
                     dbq = false;
                 } else {
                     dbq = true;
                 }
-            } else if (tx == '\t') {
+            } else if (tx === '\t') {
                 let ptx = clipText.mid(startp, i - startp);
                 startp = i + 1;
-                if (ptx.indexOf('\n') != -1) {
+                if (ptx.indexOf('\n') !== -1) {
                     ptx = ptx.mid(1, ptx.length - 2);
                 }
                 pastData[Yn].push(ptx);
                 endf = true;
-            } else if (tx == '\n') {
-                if (dbq == false) {
+            } else if (tx === '\n') {
+                if (dbq === false) {
                     const ptx = clipText.mid(startp, i - startp);
                     startp = i + 1;
                     pastData[Yn].push(ptx);
@@ -2555,7 +2555,7 @@ Grid_Copy = () => {
                 }
             }
         }
-        if (endf == false) {
+        if (endf === false) {
             const ptx = clipText.mid(startp, undefined);
             pastData[Yn].push(ptx)
             Xn = Math.max(Xn, pastData[Yn].length);
@@ -2587,8 +2587,8 @@ Grid_Copy = () => {
         }
 
         let f = true;
-        if ((Yn == 1) && (Xn == 1)) {
-            if (UndoMode_Flag == false) {
+        if ((Yn === 1) && (Xn === 1)) {
+            if (UndoMode_Flag === false) {
                 this.SetUndo_CopyPasteCutClear("貼り付け");
             }
             for (let i = yg; i <= yg2; i++) {
@@ -2598,8 +2598,8 @@ Grid_Copy = () => {
             }
             Xn = xgs;
             Yn = ygs;
-        } else if (((ygs == 1) && (xgs == 1)) || ((Xn == xgs) && (Yn == ygs))) {
-            if (UndoMode_Flag == false) {
+        } else if (((ygs === 1) && (xgs === 1)) || ((Xn === xgs) && (Yn === ygs))) {
+            if (UndoMode_Flag === false) {
                 GP.MouseDownX = xg;
                 GP.MouseDownY = yg;
                 GP.MouseUpX = xg + Xn - 1;
@@ -2611,8 +2611,8 @@ Grid_Copy = () => {
                     this.Set_Data_To_Grid(this.Grid_Total.Layer, j + xg, i + yg, pastData[i][j], true)
                 }
             }
-        } else if ((xgs == 1) && (ygs > 1) && (Yn == 1) && (Xn > 1)) {
-            if (UndoMode_Flag == false) {
+        } else if ((xgs === 1) && (ygs > 1) && (Yn === 1) && (Xn > 1)) {
+            if (UndoMode_Flag === false) {
                 GP.MouseDownX = xg;
                 GP.MouseDownY = yg;
                 GP.MouseUpX = xg + Xn - 1;
@@ -2625,8 +2625,8 @@ Grid_Copy = () => {
                 }
             }
             Yn = ygs;
-        } else if ((ygs == 1) && (xgs > 1) && (Xn == 1) && (Yn > 1)) {
-            if (UndoMode_Flag == false) {
+        } else if ((ygs === 1) && (xgs > 1) && (Xn === 1) && (Yn > 1)) {
+            if (UndoMode_Flag === false) {
                 GP.MouseDownX = xg;
                 GP.MouseDownY = yg;
                 GP.MouseUpX = xg + xgs - 1;
@@ -2639,8 +2639,8 @@ Grid_Copy = () => {
                 }
             }
             Xn = xgs;
-        } else if ((xgs == 1) && (ygs == Yn)){
-            if (UndoMode_Flag == false) {
+        } else if ((xgs === 1) && (ygs === Yn)){
+            if (UndoMode_Flag === false) {
                 GP.MouseDownX = xg;
                 GP.MouseDownY = yg;
                 GP.MouseUpX = xg + Xn - 1;
@@ -2652,8 +2652,8 @@ Grid_Copy = () => {
                     this.Set_Data_To_Grid(this.Grid_Total.Layer, j + xg, i + yg, pastData[i][j], true);
                 }
             }
-        } else if ((ygs == 1) && (xgs == Xn)) {
-            if (UndoMode_Flag == false) {
+        } else if ((ygs === 1) && (xgs === Xn)) {
+            if (UndoMode_Flag === false) {
                 GP.MouseDownX = xg;
                 GP.MouseDownY = yg;
                 GP.MouseUpX = xg + xgs - 1;
@@ -2670,7 +2670,7 @@ Grid_Copy = () => {
             f = false;
         }
 
-        if (f == true) {
+        if (f === true) {
             this.Print_Grid_Data();
             this.Check_ChangeEventRange(xg, yg, Xn, Yn);
         }
@@ -2776,7 +2776,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     /**タブクリック */
     tabMouseDown = (e: MouseEvent) => {
         //マウスダウンでレイヤ移動
-        if (this.txtTextBox?.getVisibility?.() == true) {
+        if (this.txtTextBox?.getVisibility?.() === true) {
             if (this.txtTextBox.setVisibility) this.txtTextBox.setVisibility(false);
             this.Set_Data_from_txtBox_To_Grid();
         }
@@ -2796,7 +2796,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         this.eventCall.evtChange_LayerSelect(this.Grid_Total.Layer, oldLay);
         let rightButton = false;
         this.touchStartTime = new Date().getTime();
-            if (e.button == 2) { rightButton = true; }
+            if (e.button === 2) { rightButton = true; }
 
             //右クリックの場合メニュー
             if((rightButton)&&(this.Grid_Total.tOpe.TabClickEnabled)){
@@ -2821,7 +2821,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             const nt = this.Grid_Total.Layer;
             switch (e.caption) {
                 case "1つ前に移動": {
-                    if (nt != 0) {
+                    if (nt !== 0) {
                         const UndoData = new Undo_SwapLayer();
                         UndoData.Layer1 = nt;
                         UndoData.Layer2 = nt - 1;
@@ -2836,7 +2836,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     break;
                 }
                 case "1つ後ろに移動": {
-                    if (nt != this.Grid_Total.LayerNum - 1) {
+                    if (nt !== this.Grid_Total.LayerNum - 1) {
                         const UndoData = new Undo_SwapLayer();
                         UndoData.Layer1 = nt;
                         UndoData.Layer2 = nt + 1;
@@ -2851,7 +2851,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     break;
                 }
                 case "先頭に移動": {
-                    if (nt != 0) {
+                    if (nt !== 0) {
                         const UndoData = new Undo_MoveLayer();
                         UndoData.OriginLay = nt;
                         UndoData.DestLay = 0;
@@ -2868,7 +2868,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 }
                 case "末尾に移動": {
                     const mxt = this.Grid_Total.LayerNum;
-                    if (nt != mxt - 1) {
+                    if (nt !== mxt - 1) {
                         const UndoData = new Undo_MoveLayer();
                         UndoData.OriginLay = nt;
                         UndoData.DestLay = mxt - 1;
@@ -2888,7 +2888,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         const mnuTabRightMenuChangeTabName = () => {
             this.removeEventlister();
             Generic.prompt(undefined, "新しい" + this.Grid_Total.LayerCaption + "名", this.Grid_Property[this.Grid_Total.Layer].LayerName, (newLayerName: string) => {
-                if (newLayerName == "") {
+                if (newLayerName === "") {
                 } else {
                     const UndoData = new Undo_ChangeLayerName();
                     UndoData.Layer = this.Grid_Total.Layer;
@@ -2904,7 +2904,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         };
         const mnuTabRightMenuInsert = (e: Event) => {
             let nt;
-            if (e.caption == "前に挿入") {
+            if (e.caption === "前に挿入") {
                 nt = this.Grid_Total.Layer;
             } else {
                 nt = this.Grid_Total.Layer + 1;
@@ -2928,7 +2928,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         };
         const mnuTabRightMenuDeleteTab = () => {
             const mxt = this.Grid_Total.LayerNum;
-            if (mxt == 1) { return }
+            if (mxt === 1) { return }
             const nt = this.Grid_Total.Layer;
             const UndoData = new Undo_deleteLayer();
             UndoData.OriginLay = nt;
@@ -2938,7 +2938,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             this.Delete_Layer(nt);
             this.Set_SSTAB_Name();
             let nnt;
-            if (nt == mxt - 1) {
+            if (nt === mxt - 1) {
                 nnt = nt - 1;
             } else {
                 nnt = nt;
@@ -2974,7 +2974,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 
     tabSelect = () => {
         for (let i = 0; i < this.tabbase.tab.length; i++) {
-            if (this.Grid_Total.Layer == i) {
+            if (this.Grid_Total.Layer === i) {
                 this.tabbase.tab[i].style.backgroundColor = "#ffffff";            
             }else{
                 this.tabbase.tab[i].style.backgroundColor = "#e1e1e1";
@@ -3000,7 +3000,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         let xx, yy
         const GR = this.GridResize;
         const GP = this.Grid_Property[this.Grid_Total.Layer];
-        if (GR.Enable != 0) {
+        if (GR.Enable !== 0) {
             const grresult = this.check_Width_Height_Change(x, y);
             GR.Enable = grresult.result;
             GR.GridX = grresult.ResizeX;
@@ -3009,7 +3009,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             GR.TopY = grresult.lY;
             this.GridMouseDown = true;
         } else {
-            if (this.txtTextBox?.getVisibility?.() == true) {
+            if (this.txtTextBox?.getVisibility?.() === true) {
                 if (this.txtTextBox.setVisibility) this.txtTextBox.setVisibility(false);
                 this.Set_Data_from_txtBox_To_Grid();
                 this.Print_Grid_Data();
@@ -3018,9 +3018,9 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             xx = p.x;
             yy = p.y;
             let rightButton = false;
-            if ('button' in e && e.button == 2) { rightButton = true; }
+            if ('button' in e && e.button === 2) { rightButton = true; }
 
-            if (rightButton == false) { //左クリック
+            if (rightButton === false) { //左クリック
                 if ((xx < -this.Grid_Total.FixedObjectName_n + this.Grid_Total.FixedObjectName_n2
                 ) && (yy < -this.Grid_Total.FixedDataItem_n + this.Grid_Total.FixedDataItem_n2)) { //左上端をクリック
                     GP.MouseDownX = -this.Grid_Total.FixedObjectName_n;
@@ -3028,14 +3028,14 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     GP.MouseUpX = GP.Xmax - 1;
                     GP.MouseUpY = GP.Ymax - 1;
                 } else {
-                    if ((xx == -this.Grid_Total.FixedObjectName_n) && (0 < this.Grid_Total.FixedObjectName_n)) {  //左端をクリック
+                    if ((xx === -this.Grid_Total.FixedObjectName_n) && (0 < this.Grid_Total.FixedObjectName_n)) {  //左端をクリック
                         GP.MouseDownX = -this.Grid_Total.FixedObjectName_n;
                         GP.MouseDownY = yy;
                         GP.MouseUpX = GP.Xmax - 1;
                         GP.MouseUpY = GP.MouseDownY;
                         GP.MouseDown_Mode = 2;
                         this.GridMouseDown = true;
-                    } else if ((yy == -this.Grid_Total.FixedDataItem_n) && (0 < this.Grid_Total.FixedDataItem_n)) {  //上端をクリック
+                    } else if ((yy === -this.Grid_Total.FixedDataItem_n) && (0 < this.Grid_Total.FixedDataItem_n)) {  //上端をクリック
                         GP.MouseDownX = xx
                         GP.MouseDownY = -this.Grid_Total.FixedDataItem_n;
                         GP.MouseUpX = GP.MouseDownX;
@@ -3088,19 +3088,19 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     ((GP.MouseDownY <= yy) && (yy <= GP.MouseUpY)) || ((GP.MouseDownY >= yy) && (yy >= GP.MouseUpY)))) {
                     //右クリックで、選択範囲内をクリックした場合は範囲を変更しない
                 } else {
-                    if ((xx == -this.Grid_Total.FixedObjectName_n) && (yy == -this.Grid_Total.FixedDataItem_n)) { //左上端をクリック
+                    if ((xx === -this.Grid_Total.FixedObjectName_n) && (yy === -this.Grid_Total.FixedDataItem_n)) { //左上端をクリック
                         GP.MouseDownX = xx;
                         GP.MouseDownY = yy;
                         GP.MouseUpX = GP.Xmax - 1;
                         GP.MouseUpY = GP.Ymax - 1;
                     } else {
-                        if (xx == -this.Grid_Total.FixedObjectName_n) { //左端をクリック
+                        if (xx === -this.Grid_Total.FixedObjectName_n) { //左端をクリック
                             GP.MouseDownX = xx;
                             GP.MouseDownY = yy;
                             GP.MouseUpX = GP.Xmax - 1;
                             GP.MouseUpY = GP.MouseDownY;
                             GP.MouseDown_Mode = 2;
-                        } else if (yy == -this.Grid_Total.FixedDataItem_n) { //上端をクリック
+                        } else if (yy === -this.Grid_Total.FixedDataItem_n) { //上端をクリック
                             GP.MouseDownX = xx;
                             GP.MouseDownY = yy;
                             GP.MouseUpX = GP.MouseDownX;
@@ -3124,12 +3124,12 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     mmove = (e: MouseEvent | TouchEvent) => {
         let event;
         e.preventDefault();
-        if(this.txtTextBox?.getVisibility?.()==true){return;}
+        if(this.txtTextBox?.getVisibility?.()===true){return;}
 
         if (e.type === "mousemove") {
             event = e as MouseEvent;
         } else {
-            // if(mousePointingSituation == mousePointingSituations.pinch){
+            // if(mousePointingSituation === mousePointingSituations.pinch){
             //     pinchMove(e);
             //     return;
             // }
@@ -3143,43 +3143,43 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             }
         }
         const p = Generic.getCanvasXY2(event);
-        if(p==undefined){
+        if(p===undefined){
             return;
         }
         const x = p.x;
         const y = p.y;
 
-        if (this.GridMouseDown == false) {
+        if (this.GridMouseDown === false) {
             this.GridResize.Enable = this.check_Width_Height_Change(x, y).result;
             if (this.ctx) {
                 this.GridResize.tempImage= this.ctx.getImageData(0, 0, this.canvas.offsetWidth, this.canvas.offsetHeight);
             }
-            if (this.GridResize.Enable != 0) {
+            if (this.GridResize.Enable !== 0) {
                 this.picGrid.style.cursor = 'crosshair';
             } else {
                 this.picGrid.style.cursor = 'default';
                 //マウス移動中にセルの値ツールチップ表示
                 // GetGridXY(x, y, xx, yy, true)
                 // let v  = Get_Data_from_Grid(Grid_Total.Layer, xx, yy)
-                // if(ToolTip1.GetToolTip(picGrid) != v ){
+                // if(ToolTip1.GetToolTip(picGrid) !== v ){
                 //     ToolTip1.SetToolTip(picGrid, v);
                 // }
             }
             return;
         }
 
-        if (this.GridResize.Enable != 0) {
+        if (this.GridResize.Enable !== 0) {
             this.Print_GridResizeLine(x, y);
         } else {
             const GP = this.Grid_Property[this.Grid_Total.Layer];
             let f = false;
-            if ((GP.MouseDownX == -this.Grid_Total.FixedObjectName_n) || (GP.MouseDownY == -this.Grid_Total.FixedDataItem_n)) {
+            if ((GP.MouseDownX === -this.Grid_Total.FixedObjectName_n) || (GP.MouseDownY === -this.Grid_Total.FixedDataItem_n)) {
                 f = true;
             } else {
                 f = false;
             }
             if (((y > this.picGrid.clientHeight - 30) || (x > this.picGrid.clientWidth - 30) || (y < GP.FixedDataItemHeight()) || (x < GP.FixedObjectNameDataWidth()))) {
-                if (this.TimerObj == undefined) {
+                if (this.TimerObj === undefined) {
                     this.TimerObj = setInterval(this.TimerMouse, 250);
                 }
                 this.TimerVX = x;
@@ -3210,11 +3210,11 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 
     /**キーダウン */
     keydown = (e: KeyboardEvent) => {
-        if (this.txtTextBox?.getVisibility?.() == true) {
+        if (this.txtTextBox?.getVisibility?.() === true) {
             const op=new point(this.GX,this.GY);
             this.txtTextBox_KeyDown(e);
             const np=new point(this.GX,this.GY);
-            if((op.Equals(np)==false)||((this.GY==this.Grid_Property[this.Grid_Total.Layer].Ymax-1)&&(e.keyCode==Keys.Enter))){
+            if((op.Equals(np)===false)||((this.GY===this.Grid_Property[this.Grid_Total.Layer].Ymax-1)&&(e.keyCode===Keys.Enter))){
                 //セルが移動した場合はイベント継続キャンセル
                 e.preventDefault();
             }
@@ -3224,18 +3224,18 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         const GPO = GP.Ope;
         const CTRL_Key = e.ctrlKey;
         const Shift_Key = e.shiftKey;
-        if (((CTRL_Key == true) && (e.keyCode == Keys.ControlKey)) || (
-            (Shift_Key == true) && (e.keyCode == Keys.ShiftKey))) {
+        if (((CTRL_Key === true) && (e.keyCode === Keys.ControlKey)) || (
+            (Shift_Key === true) && (e.keyCode === Keys.ShiftKey))) {
             return;
         }
-        if (CTRL_Key == true) {
+        if (CTRL_Key === true) {
             switch (e.keyCode) {
                 case Keys.Z: //Ctrl+Z
                     this.Undo() ;
                     return;
                     break;
                 case Keys.X: //Ctrl+X
-                    if ((GPO.RightClickEnabled == true) && (GP.Ope.InputEnabled == true)) {
+                    if ((GPO.RightClickEnabled === true) && (GP.Ope.InputEnabled === true)) {
                         this.Grid_Copy();
                         this.Grid_Clear("切り取り")
                         return;
@@ -3246,9 +3246,9 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                         return;
                     break;
                 case Keys.V: //Ctrl+V
-                    if ((GPO.RightClickEnabled == true) && (GP.Ope.InputEnabled == true)) {
+                    if ((GPO.RightClickEnabled === true) && (GP.Ope.InputEnabled === true)) {
                         // let clip  = System.Windows.Forms.Clipboard.GetText()
-                        if (this.inClipboard != "") {
+                        if (this.inClipboard !== "") {
                             this.Grid_Paste(this.inClipboard, false);;
                             return;
                         }
@@ -3257,47 +3257,47 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             }
         }
 
-        if (GP.SelectedF == false) {
+        if (GP.SelectedF === false) {
             return;
         }
-        if ((e.keyCode == Keys.Delete) && (GP.Ope.InputEnabled == true)) {
+        if ((e.keyCode === Keys.Delete) && (GP.Ope.InputEnabled === true)) {
             this.Grid_Clear("削除");
         } else {
-            if (CTRL_Key == true) {
+            if (CTRL_Key === true) {
                 //CTRL+カーソル／上下左右端にとぶ
                 let x, y;
-                if (Shift_Key == true) {
+                if (Shift_Key === true) {
                     x = GP.MouseUpX;
                     y = GP.MouseUpY;
                 } else {
                     x = GP.MouseDownX;
                     y = GP.MouseDownY;
                 }
-                if (e.keyCode == Keys.Left) {
+                if (e.keyCode === Keys.Left) {
                     x = 0;
                     this.GX = x;
                     GP.LeftCell = x;
                     this.HScrollGrid_ValueSet();
                 }
-                if (e.keyCode == Keys.Right) {
+                if (e.keyCode === Keys.Right) {
                     x = GP.Xmax - 1;
                     this.GX = x;
                     GP.LeftCell = x;
                     this.HScrollGrid_ValueSet()
                 }
-                if (e.keyCode == Keys.Up) {
+                if (e.keyCode === Keys.Up) {
                     y = 0;
                     this.GY = y;
                     GP.TopCell = y;
                     this.VScrollGrid_ValueSet();
                 }
-                if (e.keyCode == Keys.Down) {
+                if (e.keyCode === Keys.Down) {
                     y = GP.Ymax - 1;
                     this.GY = y;
                     GP.TopCell = y;
                     this.VScrollGrid_ValueSet();
                 }
-                if (Shift_Key == false) {
+                if (Shift_Key === false) {
                     GP.MouseDownX = x;
                     GP.MouseDownY = y;
                 }
@@ -3305,12 +3305,12 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 GP.MouseUpY = y;
                 this.Print_Grid_Data()
             }
-            if ((CTRL_Key == false) && (e.keyCode != Keys.Tab) && (Shift_Key == true)) {
+            if ((CTRL_Key === false) && (e.keyCode !== Keys.Tab) && (Shift_Key === true)) {
                 //SHIFT+カーソル／選択範囲移動
                 this.Key_Move(e.keyCode, true);
                 this.Print_Grid_Data();
             }
-            if (((CTRL_Key == false) && (Shift_Key == false)) || ((e.keyCode == Keys.Tab))) {
+            if (((CTRL_Key === false) && (Shift_Key === false)) || ((e.keyCode === Keys.Tab))) {
                 //通常の移動
                 this.Key_Move(e.keyCode, Shift_Key);
                 this.Print_Grid_Data();
@@ -3322,7 +3322,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 
         let X, Y;
         const GP = this.Grid_Property[this.Grid_Total.Layer];
-        if (Shit_f == true) {
+        if (Shit_f === true) {
             X = GP.MouseUpX;
             Y = GP.MouseUpY;
         } else {
@@ -3339,25 +3339,25 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             case Keys.PageDown:
             case Keys.PageUp:
             case Keys.Home: {
-                if ((KeyCode == Keys.Left) || ((KeyCode == Keys.Tab) && (Shit_f == true))) {
+                if ((KeyCode === Keys.Left) || ((KeyCode === Keys.Tab) && (Shit_f === true))) {
                     X--;
                 }
-                if ((KeyCode == Keys.Right) || ((KeyCode == Keys.Tab) && (Shit_f == false))) {
+                if ((KeyCode === Keys.Right) || ((KeyCode === Keys.Tab) && (Shit_f === false))) {
                     X++;
                 }
-                if (KeyCode == Keys.Up) {
+                if (KeyCode === Keys.Up) {
                     Y--;
                 }
-                if ((KeyCode == Keys.Down)|| (KeyCode == Keys.Return)){
+                if ((KeyCode === Keys.Down)|| (KeyCode === Keys.Return)){
                     Y++;
                 }
-                if (KeyCode == Keys.PageDown) {
+                if (KeyCode === Keys.PageDown) {
                     Y += 20;
                 }
-                if (KeyCode == Keys.PageUp) {
+                if (KeyCode === Keys.PageUp) {
                     Y -= 20;
                 }
-                if (KeyCode == Keys.Home) {
+                if (KeyCode === Keys.Home) {
                     X = 0;
                     Y = 0;
                 }
@@ -3377,13 +3377,13 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 
                 GP.SelectedF = false;
 
-                if ((Shit_f == false) || (KeyCode == Keys.Tab)) {
+                if ((Shit_f === false) || (KeyCode === Keys.Tab)) {
                     this.Print_Grid_Data();
                 }
                 this.GX = X;
                 this.GY = Y;
                 GP.SelectedF = true;
-                if ((Shit_f == false) || (KeyCode == Keys.Tab)) {
+                if ((Shit_f === false) || (KeyCode === Keys.Tab)) {
                     GP.MouseDownX = this.GX;
                     GP.MouseDownY = this.GY;
                 }
@@ -3406,12 +3406,12 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         this.GY = GP.MouseDownY;
         this.txtTextBox.Tag = "";
         const Tx = this.txtTextBox.value;
-        if (e.keyCode == Keys.Enter) {
-            if (ALT_Key == true) { //Alt+Enter
+        if (e.keyCode === Keys.Enter) {
+            if (ALT_Key === true) { //Alt+Enter
                 const a = this.txtTextBox.selectionStart;
-                if (Tx.length == a) {
+                if (Tx.length === a) {
                     this.txtTextBox.value = Tx + "\n";
-                } else if (a == 0) {
+                } else if (a === 0) {
                     this.txtTextBox.value = "\n" + Tx;
                 } else {
                     this.txtTextBox.value = Tx.left(a) + "\n" + Tx.mid(a, undefined);
@@ -3419,7 +3419,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 this.txtTextBox.selectionStart = a;
                 return;
             }else{
-                if(Tx.right(1)=="\n"){
+                if(Tx.right(1)==="\n"){
                     this.txtTextBox.value = Tx.left(Tx.length - 1);
                 }
             }
@@ -3432,24 +3432,24 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             case Keys.Down:
             case Keys.Enter:
             case Keys.Tab: {
-                if ((GP.Ymax == 1) && (this.GX == 0) && (this.GY == 0) && ((e.keyCode == Keys.Enter) || (e.keyCode == Keys.Tab))) {
+                if ((GP.Ymax === 1) && (this.GX === 0) && (this.GY === 0) && ((e.keyCode === Keys.Enter) || (e.keyCode === Keys.Tab))) {
                     this.Set_Data_from_txtBox_To_Grid();
                     if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(false);
                     this.Print_Grid_Data();
                     return;
                 }
                 const tv = this.txtTextBox?.value ?? "";
-                if ((this.txtTextBox?.selectionStart != tv.length) && ((e.keyCode == Keys.Left) || (e.keyCode == Keys.Right))) {
+                if ((this.txtTextBox?.selectionStart !== tv.length) && ((e.keyCode === Keys.Left) || (e.keyCode === Keys.Right))) {
                     return;
                 }
-                if (e.keyCode == Keys.Left) {
+                if (e.keyCode === Keys.Left) {
                     return;
                 }
 
                 this.Set_Data_from_txtBox_To_Grid();
                 this.Key_Move(e.keyCode, Shift_Key);
-                if ((e.keyCode == Keys.Up) && (this.GY == -1) && (((GP.Ope.FixedYSEnabled == false) && (this.GX >= 0)
-                ) || ((GP.Ope.FixedUpperLeftEnabeld == false) && (this.GX < 0)))) {
+                if ((e.keyCode === Keys.Up) && (this.GY === -1) && (((GP.Ope.FixedYSEnabled === false) && (this.GX >= 0)
+                ) || ((GP.Ope.FixedUpperLeftEnabeld === false) && (this.GX < 0)))) {
                     GP.SelectedF = true;
                     this.SetTextBox(this.GX, this.GY);
                     if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(false);
@@ -3498,15 +3498,15 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         const f=false;
         const mouseUpPosition = Generic.getCanvasXY2(event);
 
-        if(mouseUpPosition==undefined){
+        if(mouseUpPosition===undefined){
             return;
         }
         const x = mouseUpPosition.x
         const y = mouseUpPosition.y
 
-        if (this.GridMouseDown == true) {
+        if (this.GridMouseDown === true) {
             this.GridMouseDown = false;
-            if (this.GridResize.Enable != 0) {
+            if (this.GridResize.Enable !== 0) {
                 this.Grid_Resize_MouseUp(x, y);
                 this.GridResize.Enable = 0;
             } else {
@@ -3518,27 +3518,27 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 xx = p.x;
                 yy = p.y;
                 const touchTime = (new Date().getTime() - this.touchStartTime) / 1000;
-                if ((e.type === "touchend")  && (touchTime > 0.5)&&(GP.MouseDownX == xx) && (GP.MouseDownY == yy) ) {
+                if ((e.type === "touchend")  && (touchTime > 0.5)&&(GP.MouseDownX === xx) && (GP.MouseDownY === yy) ) {
                     //タッチで0.5秒以上移動しない場合は右クリック
                     this.rightClickmenu(new point(event.clientX,event.clientY));
                     return;
                 }
 
-                if ((GP.MouseDownX == xx) && (GP.MouseDownY == yy) && (GP.MouseDown_Mode == 0)) {
-                    if ((yy == GP.BottomCell) && (yy < GP.Ymax - 1)) {
+                if ((GP.MouseDownX === xx) && (GP.MouseDownY === yy) && (GP.MouseDown_Mode === 0)) {
+                    if ((yy === GP.BottomCell) && (yy < GP.Ymax - 1)) {
                         GP.TopCell++;
                         this.VScrollGrid_ValueSet();
                         this.Print_Grid_Data();
                     }
-                    if ((xx == GP.RightCell) && (xx < GP.Xmax - 1)) {
+                    if ((xx === GP.RightCell) && (xx < GP.Xmax - 1)) {
                         GP.LeftCell++;
                         this.HScrollGrid_ValueSet();
                         this.Print_Grid_Data();
                     }
-                    if ((this.GX == xx) && (this.GY == yy) && (GP.Ope.InputEnabled == true)) {
-                        if (((xx < 0) && (yy >= 0) && (GP.Ope.FixedXSEnabled == false)) ||
-                            ((xx >= 0) && (yy < 0) && (GP.Ope.FixedYSEnabled == false)) ||
-                            ((xx < 0) && (yy < 0) && (GP.Ope.FixedUpperLeftEnabeld == false))) {
+                    if ((this.GX === xx) && (this.GY === yy) && (GP.Ope.InputEnabled === true)) {
+                        if (((xx < 0) && (yy >= 0) && (GP.Ope.FixedXSEnabled === false)) ||
+                            ((xx >= 0) && (yy < 0) && (GP.Ope.FixedYSEnabled === false)) ||
+                            ((xx < 0) && (yy < 0) && (GP.Ope.FixedUpperLeftEnabeld === false))) {
                             //固定部分が編集できない状態
                         } else {
                             this.Print_Grid_Data();
@@ -3547,7 +3547,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     } else {
                         this.GX = xx;
                         this.GY = yy;
-                        if ((xx >= 0) && (yy >= 0) && (GP.Ope.InputEnabled == false)) {
+                        if ((xx >= 0) && (yy >= 0) && (GP.Ope.InputEnabled === false)) {
                             let CellLeft = GP.FixedObjectNameDataWidth();
                             for (let i = GP.LeftCell; i < xx; i++) {
                                 CellLeft += GP.DataItemData[i].Width;
@@ -3570,9 +3570,9 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         const H = GP.LeftCell;
         const omuX=GP.MouseUpX;
         const omuY=GP.MouseUpY;
-        if (GP.MouseDownX != -this.Grid_Total.FixedObjectName_n) {
+        if (GP.MouseDownX !== -this.Grid_Total.FixedObjectName_n) {
             if (this.TimerVX < GP.FixedObjectNameDataWidth()) {
-                if (H == 0) {
+                if (H === 0) {
                     GP.MouseUpX = this.GetGridX(this.TimerVX, false);
                 } else {
                     GP.LeftCell = H - 1;
@@ -3592,7 +3592,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         if (GP.MouseDownY >= -this.Grid_Total.FixedDataItem_n + this.Grid_Total.FixedDataItem_n2) {
             let sa;
             if (this.TimerVY < GP.FixedDataItemHeight()) {
-                if (V == 0) {
+                if (V === 0) {
                     GP.MouseUpY = this.GetGridY(this.TimerVY, false);
                 } else {
                     sa = Math.floor((GP.FixedDataItemHeight() - this.TimerVY) / 10) + 1;
@@ -3630,7 +3630,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     break;
             }
         }
-        if ((GP.TopCell != V) || (GP.LeftCell != H)||(omuX != GP.MouseUpX) || (omuY != GP.MouseUpY)) {
+        if ((GP.TopCell !== V) || (GP.LeftCell !== H)||(omuX !== GP.MouseUpX) || (omuY !== GP.MouseUpY)) {
             this.Print_Grid_Data();
 
         }
@@ -3781,7 +3781,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 T = this.GridResize.TopY
                 H = (Y - T) + 1
                 H = Math.max(2, H)
-                if (GP.SelectedF == true) {
+                if (GP.SelectedF === true) {
                     const rect = GP.MouseUpDownRect();
                     S1 = rect.top;
                     s2 = rect.bottom;
@@ -3804,7 +3804,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 T = this.GridResize.LeftX;
                 w = (X - T) + 1;
                 w = Math.max(3, w);
-                if (GP.SelectedF == true) {
+                if (GP.SelectedF === true) {
                     const rect = GP.MouseUpDownRect();
                     S1 = rect.left;
                     s2 = rect.right;
@@ -3901,7 +3901,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     break;
                 }
             }
-            if ((ZaroLine_F == false) && (GridX !== undefined && GridX < -this.Grid_Total.FixedObjectName_n + this.Grid_Total.FixedObjectName_n2)) {
+            if ((ZaroLine_F === false) && (GridX !== undefined && GridX < -this.Grid_Total.FixedObjectName_n + this.Grid_Total.FixedObjectName_n2)) {
                 GridX = -this.Grid_Total.FixedObjectName_n + this.Grid_Total.FixedObjectName_n2;
             }
         } else {
@@ -3931,7 +3931,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     break;
                 }
             }
-            if ((ZaroLine_F == false) && (GridY !== undefined && GridY < -this.Grid_Total.FixedDataItem_n + this.Grid_Total.FixedDataItem_n2)) {
+            if ((ZaroLine_F === false) && (GridY !== undefined && GridY < -this.Grid_Total.FixedDataItem_n + this.Grid_Total.FixedDataItem_n2)) {
                 GridY = -this.Grid_Total.FixedDataItem_n + this.Grid_Total.FixedDataItem_n2;
             }
         } else {
@@ -3950,7 +3950,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 
     Undo = () => {
         const n=this.UndoArray.length-1;
-        if(n==-1){
+        if(n===-1){
             return;
         }
         const itm = this.UndoArray[n];
@@ -4030,7 +4030,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 this.Delete_Layer(itm.Layer);
                 this.Set_SSTAB_Name();
                 let nnt;
-                if (itm.Layer == this.Grid_Total.LayerNum) {
+                if (itm.Layer === this.Grid_Total.LayerNum) {
                     nnt = itm.Layer - 1;
                 } else {
                     nnt = itm.Layer;
@@ -4100,7 +4100,7 @@ class scrollBar {
     let btnMDownF = false;
     let btnDownTimer: ReturnType<typeof setInterval> | undefined;
     let btnDownID: string = "";
-    if (type == 0) {//縦
+    if (type === 0) {//縦
         frame = Generic.createNewDiv(ParentObj, "", "", "", x, y, size, length, "background-color:" + backCol, undefined);
         const btnMinusCanvas = Generic.createNewCanvas(frame, "tateMinus", "", 0, 0, size, size , undefined, "");
         btnMinusCanvas.addEventListener('mousedown', btnMdown);
@@ -4183,7 +4183,7 @@ class scrollBar {
         slength = length - size*2;
         sliderSize = Math.max(areaRange / maxValue * slength, size);
         slideArea = slength - sliderSize;
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             frame.style.height = length.px();
             btnPlusCanvas.style.top = (length - size ).px();
             slideFrame.style.height =slength.px();
@@ -4197,7 +4197,7 @@ class scrollBar {
 
     /**表示非表示 */
     this.setVisibility = (visiflag: boolean) => {
-        if (visiflag == true) {
+        if (visiflag === true) {
             addEvent();
             frame.style.display = "inline";
         } else {
@@ -4266,7 +4266,7 @@ class scrollBar {
         addEvent();
     }
     function setSliderPosition() {
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             slider.style.top = (position / maxValue * slideArea).px()
             slider.style.height = sliderSize.px();
         } else {
@@ -4276,7 +4276,7 @@ class scrollBar {
     }
 
     function btnMdown(e: MouseEvent) {
-        if (btnMDownF == false) {
+        if (btnMDownF === false) {
             btnMDownF = true;
             btnDownID = (e.target as HTMLElement).id;
             btnDownTimer = setInterval(timerButton, 50)
@@ -4306,13 +4306,13 @@ class scrollBar {
                 slider.style.left = (position / maxValue * slideArea).px()
                 break;
         }
-        if (opos != position) {
+        if (opos !== position) {
             changeEventCall(position);
         }
     }
 
     function btnMup(e: MouseEvent) {
-        if (btnMDownF == true) {
+        if (btnMDownF === true) {
             btnMDownF = false;
             clearInterval(btnDownTimer);
             timerButton();
@@ -4322,14 +4322,14 @@ class scrollBar {
 
     function wheel(e: WheelEvent) {
         const opos = position;
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             position += smallChange * e.deltaY;
         } else {
             position += smallChange * e.deltaX;
         }
         position = Math.max(position, 0);
         position = Math.min(position, maxValue);
-        if (opos != position) {
+        if (opos !== position) {
             setSliderPosition();
             changeEventCall(position);
         }
@@ -4361,14 +4361,14 @@ class scrollBar {
             e = event.changedTouches[0];
         }
 
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             mdownPos = e.clientY - slideFrame.getBoundingClientRect().y;
         } else {
             mdownPos = e.clientX - slideFrame.getBoundingClientRect().x;
         }
         mdownF = true;
         const sliderInF = false;
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             // mdownPos = p.y;
             const p1 = slider.style.top.removePx();
             const pos = mdownPos ?? 0;
@@ -4402,11 +4402,11 @@ class scrollBar {
         } else {
             e = event.changedTouches[0];
         }
-        if ((mdownF == false) || (sliderInPosition != 0)) {
+        if ((mdownF === false) || (sliderInPosition !== 0)) {
             return;
         }
         let mdMovePos;
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             mdMovePos = e.clientY - slideFrame.getBoundingClientRect().y;
         } else {
             mdMovePos = e.clientX - slideFrame.getBoundingClientRect().x;
@@ -4415,7 +4415,7 @@ class scrollBar {
         let bpos = mDownsliderInPosition - moveAmount;
         bpos = Math.min(bpos, slideArea);
         bpos = Math.max(bpos, 0);
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             slider.style.top = bpos.px();
         } else {
             slider.style.left = bpos.px()
@@ -4432,16 +4432,16 @@ class scrollBar {
             e = event.changedTouches[0];
         }
         let mdUpPos: number;
-        if (type == 0) {//縦
+        if (type === 0) {//縦
             mdUpPos = e.clientY - slideFrame.getBoundingClientRect().y;
         } else {
             mdUpPos = e.clientX - slideFrame.getBoundingClientRect().x;
         }
 
         if (Math.abs(mdUpPos - mdownPos) < 5) {
-            if (sliderInPosition != 0) {
-                if (type == 0) {//縦
-                    if (sliderInPosition == -1) {
+            if (sliderInPosition !== 0) {
+                if (type === 0) {//縦
+                    if (sliderInPosition === -1) {
                         position -= largeChange;
                         position = Math.max(position, 0);
                     } else {
@@ -4450,7 +4450,7 @@ class scrollBar {
                     }
                     slider.style.top = (position / maxValue * slideArea).px();
                 } else {//横
-                    if (sliderInPosition == -1) {
+                    if (sliderInPosition === -1) {
                         position -= largeChange;
                         position = Math.max(position, 0);
                     } else {

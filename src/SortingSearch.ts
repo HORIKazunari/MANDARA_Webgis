@@ -52,7 +52,7 @@ export class clsSortingSearch {
         const DataNumberArray: number[] = [];
         const DPosition = this.Search_Data_Multi(SearchValue);
         EQn = DPosition.Num_of_Equal_Data;
-        if (EQn != -1) {
+        if (EQn !== -1) {
             for (let i = 0; i < EQn; i++) {
                 DataNumberArray.push(this.SortNumber[DPosition.firstPosition + i]);
             }
@@ -63,7 +63,7 @@ export class clsSortingSearch {
     SearchData_One(SearchValue: number) {
         /// <summary>指定した検索値と等しいデータ番号を一つ返す</summary>
         const DPosition = this.Search_Data_Multi(SearchValue);
-        if (DPosition.Num_of_Equal_Data == -1) {
+        if (DPosition.Num_of_Equal_Data === -1) {
             return -1;
         } else {
             return this.SortNumber[DPosition.firstPosition];
@@ -175,7 +175,7 @@ export class clsSortingSearch {
         //'-------------------------
 
         const retV: { Num_of_Equal_Data: number; firstPosition: number } = {Num_of_Equal_Data: -1, firstPosition: -1};
-        if (this.DataNum == 0) {
+        if (this.DataNum === 0) {
             return retV;
         }
         let f = true;
@@ -183,18 +183,18 @@ export class clsSortingSearch {
         let oh = mxx + 1;
         let ooh = -1;
         let H = Math.floor(mxx / 2);
-        while (this.Sortrr[H] != SearchValue) {
+        while (this.Sortrr[H] !== SearchValue) {
             if (SearchValue < this.Sortrr[H]) {
                 oh = H;
                 H = Math.floor((ooh + H) / 2);
-                if (oh == H) {
+                if (oh === H) {
                     f = false;
                     break;
                 }
             } else {
                 ooh = H;
                 H = Math.floor((oh + H) / 2);
-                if (ooh == H) {
+                if (ooh === H) {
                     f = false;
                     break;
                 }
@@ -202,13 +202,13 @@ export class clsSortingSearch {
 
         }
     
-        if (f == false) {
+        if (f === false) {
             return retV;
         } else {
             if (H > 0) {
-                while (this.Sortrr[H - 1] == SearchValue) {
+                while (this.Sortrr[H - 1] === SearchValue) {
                     H--;
-                    if (H == 0) {
+                    if (H === 0) {
                         break;
                     }
                 }
@@ -216,9 +216,9 @@ export class clsSortingSearch {
             retV.firstPosition = H;
 
             if (H < this.DataNum) {
-                while (this.Sortrr[H] == SearchValue) {
+                while (this.Sortrr[H] === SearchValue) {
                     H++;
-                    if (H == this.DataNum) {
+                    if (H === this.DataNum) {
                         break;
                     }
                 }
@@ -233,7 +233,7 @@ export class clsSortingSearch {
         SameV.length = 0;
         let f = false;
         for (let i = 1; i < this.DataNum; i++) {
-            if ((this.Sortrr[i - 1] == this.Sortrr[i]) && (f == false)) {
+            if ((this.Sortrr[i - 1] === this.Sortrr[i]) && (f === false)) {
                 SameV.push(this.Sortrr[i]);
                 f = true;
             } else {
@@ -248,7 +248,7 @@ export class clsSortingSearch {
         const EachV: { value: number; num: number }[] = [];
         let n = 1;
         for (let i = 1; i < this.DataNum; i++) {
-            if (this.Sortrr[i - 1] != this.Sortrr[i]) {
+            if (this.Sortrr[i - 1] !== this.Sortrr[i]) {
                 EachV.push({value: this.Sortrr[i - 1], num: n});
                 n = 0;
             }

@@ -46,9 +46,9 @@ class clsDraw {
         const C_Rect = new rectangle(new point(X, Y), new size(xw, yw * an));
 
         let f = false;
-        if (ScrData.SampleBoxFlag == false) {
+        if (ScrData.SampleBoxFlag === false) {
             const screenRect = ScrData.ScrRectangle ?? new rectangle(0, 0, 0, 0);
-            if (spatial.Compare_Two_Rectangle_Position_turned(C_Rect, Font_P.Kakudo ?? 0, screenRect) != cstRectangle_Cross.cstOuter) {
+            if (spatial.Compare_Two_Rectangle_Position_turned(C_Rect, Font_P.Kakudo ?? 0, screenRect) !== cstRectangle_Cross.cstOuter) {
                 f = true;
             } else {
                 f = false;
@@ -57,19 +57,19 @@ class clsDraw {
             f = true;
         }
 
-        if (f == true) {
+        if (f === true) {
             let TH;
-            if (ScrData.SampleBoxFlag == false) {
+            if (ScrData.SampleBoxFlag === false) {
                 TH = ScrData.Get_Length_On_Screen(Font_P.Size);
             } else {
                 TH = Font_P.Size;
             }
             let npw = 1
-            if (Font_P.FringeF == true) {
+            if (Font_P.FringeF === true) {
                 npw = Math.max(TH * (Font_P.FringeWidth ?? 50) / 100 / 2, 3);
             }
             let ita_plus = 0;
-            if (Font_P.italic == true) {
+            if (Font_P.italic === true) {
                 ita_plus = TH / 5;
             }
            clsDrawTile.Draw_Tile_RoundBox(g, new rectangle(X - npw, X + xw + npw - 1 + ita_plus, Y - npw, Y + yw * an + npw - 1), Font_P.Back, Font_P.Kakudo ?? 0, ScrData);
@@ -86,19 +86,19 @@ class clsDraw {
 
     static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: Screen_info) {
         let TH;
-        if (ScrData.SampleBoxFlag == false) {
+        if (ScrData.SampleBoxFlag === false) {
             TH = ScrData.Get_Length_On_Screen(P_Font.Size);
         } else {
             TH = P_Font.Size;
         }
         let ftext = "";
-        if (P_Font.italic == true) {
+        if (P_Font.italic === true) {
             ftext += "italic ";
         }
-        if (P_Font.bold == true) {
+        if (P_Font.bold === true) {
             ftext += "bold ";
         }
-        //if (P_Font.Underline == true) {
+        //if (P_Font.Underline === true) {
         //    ftext += "underline ";
         //}
         ftext += TH + "px " + "'" + P_Font.Name + "' ";
@@ -107,11 +107,11 @@ class clsDraw {
         g.fillStyle = P_Font.Color?.toRGBA() ?? 'black';
         g.lineCap = "round";
         g.lineJoin = "round";
-        if ((P_Font.Kakudo ?? 0) != 0) {
+        if ((P_Font.Kakudo ?? 0) !== 0) {
             g.save();
             g.translate(P.x, P.y);
             g.rotate(-(P_Font.Kakudo ?? 0) * Math.PI / 180);
-            if (P_Font.FringeF == true) {
+            if (P_Font.FringeF === true) {
                 const w = Math.max(TH * (P_Font.FringeWidth ?? 50) / 100 / 2, 1);
                 g.lineWidth = w;
                 g.strokeStyle = P_Font.FringeColor?.toRGBA() ?? 'white';
@@ -120,7 +120,7 @@ class clsDraw {
             g.fillText(Tx, 0, 0);
             g.restore();
         } else {
-            if (P_Font.FringeF == true) {
+            if (P_Font.FringeF === true) {
                 const w = Math.max(TH * (P_Font.FringeWidth ?? 50) / 100 / 2, 1);
                 g.lineWidth = w;
                 g.strokeStyle = P_Font.FringeColor?.toRGBA() ?? 'white';
@@ -145,7 +145,7 @@ class clsDraw {
         let Mxw = 0;
         T = String(T);
         do {
-            if (T.mid(i, 1) == chrLF) {
+            if (T.mid(i, 1) === chrLF) {
                 i += 1;
                 Out_Text.push(subText);
                 subText = "";
@@ -170,7 +170,7 @@ class clsDraw {
             }
         } while (i <= T.length)
         Out_Text.push(subText);
-        if (Orikaesi_F == false) {
+        if (Orikaesi_F === false) {
             Out_Text.splice(1, Out_Text.length - 1);
         }
         return {
@@ -219,11 +219,11 @@ class clsDraw {
 
         g.beginPath();
         g.arc(Point.x, Point.y, r, 0, 2 * Math.PI, false);
-        if (InnerColor != undefined) {
+        if (InnerColor !== undefined) {
             g.fillStyle = InnerColor;
             g.fill();
         }
-        if (BorderColor != undefined) {
+        if (BorderColor !== undefined) {
             g.strokeStyle = BorderColor;
             g.lineWidth = width;
             g.stroke();
@@ -231,7 +231,7 @@ class clsDraw {
     }
     static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info) {
 
-        if (LinePat != undefined) {
+        if (LinePat !== undefined) {
             const lc: CanvasLineCap[] = ['butt', 'square', 'round'];
             const lj: CanvasLineJoin[] = ['miter', 'bevel', 'round'];
             g.lineCap = lc[LinePat.Edge_Connect_Pattern.lineCap] as CanvasLineCap;
@@ -252,15 +252,15 @@ class clsDraw {
                 }
             }
         }
-        if (Tile != undefined) {
-            if (Tile.BlankF == false) {
+        if (Tile !== undefined) {
+            if (Tile.BlankF === false) {
                 g.closePath();
                 g.fillStyle = Tile.Color.toRGBA();
                 g.fill();
             }
         }
-        if (LinePat != undefined) {
-            if (LinePat.BlankF == false) {
+        if (LinePat !== undefined) {
+            if (LinePat.BlankF === false) {
                 g.stroke();
             }
         }
@@ -273,12 +273,12 @@ class clsDraw {
 class clsDrawLine {
     static Line(g: CanvasRenderingContext2D, LinePat: Tile_Property, d1: point | point[], d2?: point | Screen_info, d3?: Screen_info) {
 
-        if (LinePat.BlankF == true) {
+        if (LinePat.BlankF === true) {
             return;
         }
         let pxy = [];
         let ScrData;
-        if ((d1 instanceof point) == true) {
+        if ((d1 instanceof point) === true) {
             pxy = [d1, d2];
             ScrData = d3;
         } else {
@@ -355,13 +355,13 @@ class clsDrawLine {
 
         //線の幅を求める
         let LineW = LPat.Width;
-        if (LPat.BlankF == true) {
+        if (LPat.BlankF === true) {
             LineW = 0;
         }
 
         //a:矢印の底辺の長さの半分
         let a = ScrData.STDWsize * ((LineW * DArrow.LWidthRatio + DArrow.WidthPlus) / 2) / 100 * ScrData.GSMul;
-        if (Check_F == true) {
+        if (Check_F === true) {
             a = a * 0.95;
         }
         //c:矢印の頂点から底辺へ垂線の長さ
@@ -398,7 +398,7 @@ class clsDrawLine {
         g.fillStyle = "rgb(255, 255, 255)";
         g.fillRect(0, 0, w, h);
         ScrData.SampleBoxFlag = true;
-        if (Lpat.BlankF == true) {
+        if (Lpat.BlankF === true) {
             const Font =  clsBase.Font();
             Font.Size = 13;
             clsDraw.print(g, "透明", new point(w / 2, h / 2), Font , enmHorizontalAlignment.Center, enmVerticalAlignment.Center, ScrData);
@@ -414,7 +414,7 @@ class clsDrawTile {
 
     static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property) {
 
-        if(T.BlankF==false){
+        if(T.BlankF===false){
             const Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
             clsDraw.DrawPolyPolygon(g, Polydata, T.Color.toRGBA())
 
@@ -425,15 +425,15 @@ class clsDrawTile {
     static Draw_Tile_RoundBox(g: CanvasRenderingContext2D, _BoundaryRect: rectangle, Back: Back_Property, Kakudo: number, ScrData: Screen_info) {
 
 
-        if ((Back.Tile.BlankF == true) && (Back.Line.BlankF == true)) {
+        if ((Back.Tile.BlankF === true) && (Back.Line.BlankF === true)) {
             return;
         }
         const BoundaryRect=_BoundaryRect.Clone();
-        if (Back.Padding != 0) {
+        if (Back.Padding !== 0) {
             const w = ScrData.Get_Length_On_Screen(Back.Padding);
             BoundaryRect.inflate(w, w);
         }
-        if (Back.Round == 0) {
+        if (Back.Round === 0) {
             this.Draw_Tile_Box(g, BoundaryRect, Back.Line, Back.Tile, Kakudo,  ScrData);
             return;
         }
@@ -448,18 +448,18 @@ class clsDrawTile {
         Array.prototype.push.apply(pxy, pxy3);
         Array.prototype.push.apply(pxy, pxy4);
         pxy.push(pxy[0]);
-        if (Kakudo != 0) {
+        if (Kakudo !== 0) {
             const cp = BoundaryRect.centerP();
             for (let i = 0; i < cn; i++) {
                 pxy[i] = spatial.Trans2D(cp, pxy[i], -Kakudo);
             }
         }
 
-        if (Back.Tile.BlankF == false) {
+        if (Back.Tile.BlankF === false) {
             const Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
             clsDraw.DrawPolyPolygon(g, Polydata, Back.Tile.Color.toRGBA());
         }
-        if (Back.Line.BlankF == false) {
+        if (Back.Line.BlankF === false) {
             clsDrawLine.Line(g, Back.Line, pxy, ScrData);
         }
     }
@@ -468,11 +468,11 @@ class clsDrawTile {
     static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info) {
 
         const pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
-        if (T.BlankF == false) {
+        if (T.BlankF === false) {
             const Polydata = { Pon: 1, pxy: pxy, nPolyP: [pxy.length] };
             clsDraw.DrawPolyPolygon(g, Polydata, T.Color.toRGBA());
         }
-        if (L.BlankF == false) {
+        if (L.BlankF === false) {
             clsDrawLine.Line(g, L, pxy, ScrData);
         }
     }
@@ -486,12 +486,12 @@ class clsDrawTile {
         const g = picBox.getContext('2d');
         g.fillStyle = "rgb(255, 255, 255)";
         g.fillRect(0, 0, w, h);
-        if (BG.Padding != 0) {
+        if (BG.Padding !== 0) {
             const wp = ScrData.Get_Length_On_Screen(BG.Padding);
             rect.inflate(-wp, -wp);
         }
         ScrData.SampleBoxFlag = true;
-        if (BG.Tile.BlankF == true) {
+        if (BG.Tile.BlankF === true) {
             const Font = clsBase.Font();
             Font.Size = 13;
             clsDraw.print(g, "透明", new point(w / 2, h / 2), Font, enmHorizontalAlignment.Center, enmVerticalAlignment.Center, ScrData);
@@ -589,7 +589,7 @@ class clsDrawMarkFan {
             d.name = Mark_XY_Split[0];
             d.stac = [];
             for (let j = 1; j < Mark_XY_Split.length; j++) {
-                if (Mark_XY_Split[j] != "") {
+                if (Mark_XY_Split[j] !== "") {
                     (d.stac as number[]).push(Number(Mark_XY_Split[j]));                
                 }
             }
@@ -619,7 +619,7 @@ class clsDrawMarkFan {
                     switch (Shape) {
                         case 0: {
                             let Circle_Tile;
-                            if (mk.stac[n + 4] == 1) {
+                            if (mk.stac[n + 4] === 1) {
                                 Circle_Tile = Mark.Tile;
                             } else {
                                 Circle_Tile = clsBase.Tile();
@@ -640,13 +640,13 @@ class clsDrawMarkFan {
                                 const ln = mk.stac[n];
                                 let ln2 = 0;
                                 n++;
-                                if (ln == -1) { //円の場合
+                                if (ln === -1) { //円の場合
                                     const P2 = Position.Clone();
                                     P2.offset(mk.stac[n] * r / 100, mk.stac[n + 1] * r / 100);
                                     const en_xy = this.Get_DAEN_Peri_XY(P2, r * mk.stac[n + 2] / 100, r * mk.stac[n + 3] / 100, Mark.WordFont.Kakudo, ScrData);
                                     n += 4;
-                                    if (en_xy != undefined) {
-                                        if ((pdaen % 2) == 1) { //内部円の場合は反転する（中抜けポリゴン）
+                                    if (en_xy !== undefined) {
+                                        if ((pdaen % 2) === 1) { //内部円の場合は反転する（中抜けポリゴン）
                                             en_xy.reverse();
                                         }
                                         pdaen++;
@@ -693,8 +693,8 @@ class clsDrawMarkFan {
             }
             case enmMarkPrintType.Word: {
                 const W_Font = Mark.WordFont.Clone();
-                if (r == 0) { r = 1 }
-                if (ScrData.SampleBoxFlag == false) {
+                if (r === 0) { r = 1 }
+                if (ScrData.SampleBoxFlag === false) {
                     W_Font.Size = ScrData.Get_Length_On_BaseMap(r * 2);
                 } else {
                     W_Font.Size = r * 2;
@@ -708,16 +708,16 @@ class clsDrawMarkFan {
 
     static Draw_DAEN(g: CanvasRenderingContext2D, Position: point, XR: number, YR: number, Kakudo: number, L: Tile_Property, T: Tile_Property, Real_Circle_F: boolean, ScrData: Screen_info) {
 
-        if ((XR == 0) || (YR == 0)) { return }
+        if ((XR === 0) || (YR === 0)) { return }
 
         let inf;
-        if ((XR == YR) && (Real_Circle_F == true)) {
+        if ((XR === YR) && (Real_Circle_F === true)) {
             //楕円が真円で内部がベタ塗りか空白、線が実線または透明の場合
             const C_Rect = new rectangle(new point(Position.x - XR, Position.y - YR), new size(XR * 2, YR * 2));
 
-            if (ScrData.SampleBoxFlag == false) {
+            if (ScrData.SampleBoxFlag === false) {
                 const screenRect = ScrData.ScrRectangle ?? new rectangle(0, 0, 0, 0);
-                if (spatial.Compare_Two_Rectangle_Position_turned(C_Rect, Kakudo, screenRect) == cstRectangle_Cross.cstOuter) {
+                if (spatial.Compare_Two_Rectangle_Position_turned(C_Rect, Kakudo, screenRect) === cstRectangle_Cross.cstOuter) {
                     return false;
                 }
             }
@@ -725,10 +725,10 @@ class clsDrawMarkFan {
             const w = ScrData.Get_Line_Width(L.Width);
             let incol = T.Color.toRGBA();
             let linecol = L.Color.toRGBA();
-            if (T.BlankF == true) {
+            if (T.BlankF === true) {
                 incol = undefined;
             }
-            if (L.BlankF == true) {
+            if (L.BlankF === true) {
                 linecol = undefined;
             }
             clsDraw.Ellipse(g, Position, XR, incol, linecol, w);
@@ -736,7 +736,7 @@ class clsDrawMarkFan {
         } else {
             //円の周の座標を計算する必要あり.
             const pxy = this.Get_DAEN_Peri_XY(Position, XR, YR, Kakudo, ScrData);
-            if (pxy != undefined) {
+            if (pxy !== undefined) {
                 const nPolyn = [pxy.length];
                 clsDraw.Draw_Tile_and_Paint_and_Line(g, pxy, nPolyn, 1, T, L, ScrData);
                 inf = true;
@@ -759,20 +759,20 @@ class clsDrawMarkFan {
             point2.offset(Position.x,  Position.y);
             pxy.push( point2);
             let f = false;
-            if (ScrData.SampleBoxFlag == false) {
-                if (Generic.Check_Point_in_screen(pxy[n], ScrData, 1) == true) {
+            if (ScrData.SampleBoxFlag === false) {
+                if (Generic.Check_Point_in_screen(pxy[n], ScrData, 1) === true) {
                     f = true;
                 }
             } else {
                 f = true;
             }
-            if (f == true) {
+            if (f === true) {
                 ff = true;
             }
             n++;
         } while (n * ST < Math.PI * 2)
         pxy.push(pxy[0].Clone());
-        if (ff == true) {
+        if (ff === true) {
             return pxy;
         } else {
             return undefined;
@@ -795,10 +795,10 @@ class clsDrawMarkFan {
         const w = ScrData.Get_Line_Width(Lpat.Width);
         let InnerColor = Tile.Color.toRGBA();
         let BorderColor = Lpat.Color.toRGBA();
-        if (Tile.BlankF == true) {
+        if (Tile.BlankF === true) {
             InnerColor = undefined;
         }
-        if (Lpat.BlankF == true) {
+        if (Lpat.BlankF === true) {
             BorderColor = undefined;
         }
         start_p -= 2 * Math.PI / 4;
@@ -807,11 +807,11 @@ class clsDrawMarkFan {
         g.moveTo(centerP.x, centerP.y);
         g.arc(centerP.x, centerP.y, r, start_p, end_p, false);
         g.closePath();
-        if (InnerColor != undefined) {
+        if (InnerColor !== undefined) {
             g.fillStyle = InnerColor;
             g.fill();
         }
-        if (BorderColor != undefined) {
+        if (BorderColor !== undefined) {
             g.strokeStyle = BorderColor;
             g.lineWidth = w;
             g.stroke();
@@ -823,7 +823,7 @@ class clsSpline {
     static Spline_Get(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
 
 
-        if (ln == 2) {
+        if (ln === 2) {
             const p = [];
             p[0] = ScrData.Get_SxSy_With_3D(Line_XY[0]);
             p[1] = ScrData.Get_SxSy_With_3D(Line_XY[1]);
@@ -831,12 +831,12 @@ class clsSpline {
         }
 
         let lpf = false;
-        if ((Line_XY[Ls].x == Line_XY[Ls + ln - 1].x) && (Line_XY[Ls].y == Line_XY[Ls + ln - 1].y)) {
+        if ((Line_XY[Ls].x === Line_XY[Ls + ln - 1].x) && (Line_XY[Ls].y === Line_XY[Ls + ln - 1].y)) {
             lpf = true;
         }
         let clf;
         const SPP = [];
-        if (lpf == true) {
+        if (lpf === true) {
             for (let k = 0; k < ln; k++) {
                 SPP.push(Line_XY[Ls + k].Clone());
             }
@@ -859,7 +859,7 @@ class clsSpline {
         let fa;
         let fa2;
         let n = 0;
-        if (clf == true) {
+        if (clf === true) {
             fa = 1;
             fa2 = mxt - 1;
         } else {
@@ -873,8 +873,8 @@ class clsSpline {
                 n++;
             }
         }
-        if (lpf == true) {
-            if (pxy[n - 1].Equals(pxy[0]) == false) {
+        if (lpf === true) {
+            if (pxy[n - 1].Equals(pxy[0]) === false) {
                 pxy[n - 1] = pxy[0].Clone();
             }
         } else {
@@ -889,7 +889,7 @@ class clsSpline {
 
 
         let lpf;
-        if (Line_XY[Ls].Equals(Line_XY[Ls + ln - 1]) == true) {
+        if (Line_XY[Ls].Equals(Line_XY[Ls + ln - 1]) === true) {
             lpf = true;
         }
 
@@ -897,7 +897,7 @@ class clsSpline {
         for (let k = 0; k < ln; k++) {
             SPP[k] = Line_XY[Ls + k].Clone();
         }
-        if (lpf == false) {
+        if (lpf === false) {
             for (let k = 0; k <= 3; k++) {
                 SPP.push(SPP[k].Clone());
             }
@@ -919,7 +919,7 @@ class clsSpline {
         let n = 0;
         let fa;
         let fa2;
-        if (clf == true) {
+        if (clf === true) {
             fa = 1;
             fa2 = mxt - 1;
         } else {
@@ -933,7 +933,7 @@ class clsSpline {
                 n++;
             }
         }
-        if (pxy[n - 1].Equals(pxy[0]) == false) {
+        if (pxy[n - 1].Equals(pxy[0]) === false) {
             pxy[n - 1] = pxy[0].Clone();
         }
         ln = n;
@@ -968,10 +968,10 @@ class clsSpline {
     static Blend(i: number, k: number, T: number, Kvalue: number, Maxpt: number): number {
 
 
-        if (k == 1) {
+        if (k === 1) {
             if ((this.Knot(i, Kvalue, Maxpt) <= T) && (T < this.Knot(i + 1, Kvalue, Maxpt))) {
                 return 1;
-            } else if ((T == (Maxpt - Kvalue + 2)) && (this.Knot(i, Kvalue, Maxpt) <= T) && (T <= this.Knot(i + 1, Kvalue, Maxpt))) {
+            } else if ((T === (Maxpt - Kvalue + 2)) && (this.Knot(i, Kvalue, Maxpt) <= T) && (T <= this.Knot(i + 1, Kvalue, Maxpt))) {
                 return 1;
             } else {
                 return 0;
@@ -981,7 +981,7 @@ class clsSpline {
         let Number;
         let value1;
         let denom = this.Knot(i + k - 1, Kvalue, Maxpt) - this.Knot(i, Kvalue, Maxpt);
-        if (denom == 0) {
+        if (denom === 0) {
             value1 = 0;
         } else {
             Number = (T - this.Knot(i, Kvalue, Maxpt)) * this.Blend(i, k - 1, T, Kvalue, Maxpt);
@@ -990,7 +990,7 @@ class clsSpline {
 
         let value2;
         denom = this.Knot(i + k, Kvalue, Maxpt) - this.Knot(i + 1, Kvalue, Maxpt);
-        if (denom == 0) {
+        if (denom === 0) {
             value2 = 0;
         } else {
             Number = (this.Knot(i + k, Kvalue, Maxpt) - T) * this.Blend(i + 1, k - 1, T, Kvalue, Maxpt);
@@ -1077,14 +1077,14 @@ class clsTileMap {
             self.xhr[n].responseType = "blob";
             self.xhr[n].onerror = function () {
                 getTileNum++;
-                if (getTileNum == numofTile) {
+                if (getTileNum === numofTile) {
                     if (typeof afterDrawFunction === 'function') {
                         afterDrawFunction();
                     }
                 }
     }
             self.xhr[n].onload = function () {
-                if (self.xhr[n].status == 200) {
+                if (self.xhr[n].status === 200) {
                     const oURL = URL.createObjectURL(this.response);
                     const image = new Image();
                     image.src = oURL;
@@ -1092,15 +1092,15 @@ class clsTileMap {
                         URL.revokeObjectURL(oURL);
                         g.drawImage(image, 0, 0, 256, 256, destRect.left, destRect.top, destRect.width(), destRect.height());
                         getTileNum++;
-                        if (getTileNum == numofTile) {
+                        if (getTileNum === numofTile) {
                             if (typeof afterDrawFunction === 'function') {
                                 afterDrawFunction();
                             }
                         }
                     };
-                }else if (self.xhr[n].status == 404) {
+                }else if (self.xhr[n].status === 404) {
                     getTileNum++;
-                    if (getTileNum == numofTile) {
+                    if (getTileNum === numofTile) {
                         if (typeof afterDrawFunction === 'function') {
                             afterDrawFunction();
                         }
@@ -1136,7 +1136,7 @@ class clsTileMap {
         for (const i in this.TileMapData) {
             const data = this.TileMapData[i];
             const opt = data.opt as JsonObject;
-            if (opt.id == id) {
+            if (opt.id === id) {
                 return data;
             }
         }
@@ -1161,7 +1161,7 @@ class clsTileMap {
         for(const i in this.TileMapData){
             const data = this.TileMapData[i];
             const opt = data.opt as JsonObject;
-            if(opt.tag==tag){
+            if(opt.tag===tag){
                 tiles.push(data)
             };
         }
@@ -1214,7 +1214,7 @@ class clsTileMap {
                 xx = retV.x;
                 yy = retV.y;
                 let ry;
-                if (TileMap.ReverseF == true) {
+                if (TileMap.ReverseF === true) {
                     ry = 2 ** ZoomLevel - yy - 1;
                 } else {
                     ry = yy;
@@ -1239,7 +1239,7 @@ class clsTileMap {
         // let hplus = EndP.y - StartP.y + 1;
         // for (let x = StartP.x; x <= EndP.x; x++) {
         //     for (let y = StartP.y; y <= EndP.y; y++) {
-        //         if ((x != EndP.x) && (y != EndP.y)) {
+        //         if ((x !== EndP.x) && (y !== EndP.y)) {
         //             d = tileList_Data[n];
         //             d.ScrPosition.right = tileList_Data[n + hplus].ScrPosition.left ;
         //             let h = tileList_Data[n + 1].ScrPosition.top - d.ScrPosition.top;

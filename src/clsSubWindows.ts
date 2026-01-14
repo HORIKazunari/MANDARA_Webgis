@@ -194,7 +194,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     rangeStyle.left = "50px";
     colorPickerObj.appendChild(rangeNameObj);
     let ocol;
-    if(OriginControl!=undefined){
+    if(OriginControl!==undefined){
         ocol = Generic.RGBAfromElement(OriginControl);
     }else{
         ocol=clsBase.ColorWhite();
@@ -245,11 +245,11 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     }
 
     function buttonOK() {
-        if (OriginControl != undefined) {
+        if (OriginControl !== undefined) {
             OriginControl.style.backgroundColor = document.getElementById('ColorPickerColorPic').style.backgroundColor;
         }
-        if (okEvent != undefined) {
-            if (OriginControl != undefined) {
+        if (okEvent !== undefined) {
+            if (OriginControl !== undefined) {
                 okEvent(event_point);
             } else {
                 okEvent(Generic.RGBAfromElement(document.getElementById('ColorPickerColorPic')));
@@ -458,7 +458,7 @@ function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void
     tileTypeChange(v);
 
     function tileTypeChange(v: number) {
-        if (v == 0) {
+        if (v === 0) {
             newTile.BlankF = true;
             colBox.style.visibility = "hidden";
         } else {
@@ -555,7 +555,7 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
     }
 
     function buttonOK(e: MouseEvent) {
-        if (Generic.checkFontExist(name.value)== false){
+        if (Generic.checkFontExist(name.value)=== false){
             Generic.alert(new point(e.clientX, e.clientY),"フォント名「"+name.value + "」は使えません。");
             return;
         }
@@ -587,7 +587,7 @@ function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
     const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
     const md=state.attrData.getSoloMode(Layernum,DataNum);
     let mkc: { Flag: boolean; Data: number };
-    if (md == enmSoloMode_Number.ClassMarkMode) {
+    if (md === enmSoloMode_Number.ClassMarkMode) {
         mkc = data.ClassMarkMD;
     } else {
         mkc = data.MarkCommon.Inner_Data;
@@ -652,11 +652,11 @@ function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption:
     Generic.createNewCheckBox(pnlStart_Arrow,Start_Arrow_Caption,"",Arrow.Start_Arrow_F,0,0,undefined, function(obj: HTMLInputElement){newArrow.Start_Arrow_F=obj.checked},"");
     const pnlEnd_Arrow=Generic.createNewDiv(backDiv,"","","",120,40,100,30,"","");
     Generic.createNewCheckBox(pnlEnd_Arrow,End_Arrow_Caption,"",Arrow.End_Arrow_F,0,0,undefined, function(obj: HTMLInputElement){newArrow.End_Arrow_F=obj.checked},"");
-    if(Start_Arrow_Caption==""){
+    if(Start_Arrow_Caption===""){
         pnlEnd_Arrow.style.left=pnlStart_Arrow.style.left;
         pnlStart_Arrow.setVisibility(false);
     }
-    if(End_Arrow_Caption==""){
+    if(End_Arrow_Caption===""){
         pnlEnd_Arrow.setVisibility(false);
     }
 
@@ -682,11 +682,11 @@ function clsSelectData(event: MouseEvent, _attrData: clsAttrData, Layernum: numb
     const backDiv = Generic.set_backDiv("", "データ項目選択", 230, 330, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
     const titles = _attrData.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, -1);
-    if (Array.isArray(PreAstarisk) == true) {
+    if (Array.isArray(PreAstarisk) === true) {
         for (const n in PreAstarisk) {
             const i = PreAstarisk[n];
             const tx=titles[i];
-            if (tx.left(1) != "*") {
+            if (tx.left(1) !== "*") {
                 const sp = tx.indexOf(":");
                 titles[i] = "*" + titles[i].mid(sp, titles[i].length - sp);
             }
@@ -777,7 +777,7 @@ function frmPrint_backImageSet(_attrData: clsAttrData, okEvent: () => void) {
         let seln = 0;
         for (const i in tlist) {
             list.push({ value: tlist[i].opt.id, text: tlist[i].opt.id });
-            if (tlist[i].opt.id == firstID) {
+            if (tlist[i].opt.id === firstID) {
                 seln = parseInt(i);
             }
         }
@@ -837,7 +837,7 @@ function graphModeEn_Obi() {
             }, "");
     }
 
-    if (state.attrData.nowGraph().GraphMode == enmGraphMode.StackedBarGraph) {
+    if (state.attrData.nowGraph().GraphMode === enmGraphMode.StackedBarGraph) {
         const gbStackGraphSetting = Generic.createNewFrame(backDiv, "", "", 180, 150, 150, 100, "帯グラフ表示");
         const StackedBarDirectionList = [{ value: enmStackedBarChart_Direction.Vertical, text: "縦" },
         { value: enmStackedBarChart_Direction.Horizontal, text: "横" }];
@@ -915,13 +915,13 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     const pnlLon=Generic.createNewDiv(backDiv,"","","",15,100,280,50,"");
     Generic.createNewSpan(pnlLat,"緯度","","",0,15,"",undefined);
     Generic.createNewSpan(pnlLon,"経度","","",0,15,"",undefined);
-    if(BoxF==true){
+    if(BoxF===true){
         const pnlNorthSouth=Generic.createNewDiv(pnlLat,"","","",30,0,60,50,"",undefined);
         const pnlEastWest=Generic.createNewDiv(pnlLon,"","","",30,0,60,50,"",undefined);
         Generic.createNewRadioButtonList(pnlNorthSouth,"latNorthSouth",[{value:0,text:"北緯"},{value:1,text:"南緯"}],0,5,undefined,20,(LatLon.lat>=0)?0:1,undefined,"");
         Generic.createNewRadioButtonList(pnlEastWest,"lonEastWest",[{value:0,text:"東経"},{value:1,text:"西経"}],0,5,undefined,20,(LatLon.lon>=0)?0:1,undefined,"");
     }
-    if (clsSettingData.Ido_Kedo_Print_Pattern == enmLatLonPrintPattern.DegreeMinuteSecond) {
+    if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
         const LatLonDMS = LatLon.toDegreeMinuteSecond();
         Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLonDMS.LatitudeDMS.Degree), "latDBox", 90, 15, undefined, 50, undefined, "");
         Generic.createNewWordNumberInput(pnlLat, "", "分", LatLonDMS.LatitudeDMS.Minute, "latMBox", 170, 15, undefined, 30, undefined, "");
@@ -935,7 +935,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
         Generic.createNewWordNumberInput(pnlLon, "", "度", Math.abs(LatLon.lon), "lonDegreeBox", 90, 15, undefined, 100, undefined, ""); 
     }
     function buttonOK(){
-        if (clsSettingData.Ido_Kedo_Print_Pattern == enmLatLonPrintPattern.DegreeMinuteSecond) {
+        if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
             const dms = new strLatLonDegreeMinuteSecond();
             dms.LatitudeDMS.Degree = Number(document.getElementById("latDBox").value);
             dms.LatitudeDMS.Minute = Number(document.getElementById("latMBox").value);
@@ -943,20 +943,20 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
             dms.LongitudeDMS.Degree = Number(document.getElementById("lonDBox").value);
             dms.LongitudeDMS.Minute = Number(document.getElementById("lonMBox").value);
             dms.LongitudeDMS.Second = Number(document.getElementById("lonSox").value);
-            if (Generic.getRadioCheckByValue("latNorthSouth") == 1) {
+            if (Generic.getRadioCheckByValue("latNorthSouth") === 1) {
                 dms.LatitudeDMS.Degree = -dms.LatitudeDMS.Degree;
             }
-            if (Generic.getRadioCheckByValue("lonEastWest") == 1) {
+            if (Generic.getRadioCheckByValue("lonEastWest") === 1) {
                 dms.LongitudeDMS.Degree = -dms.LongitudeDMS.Degree;
             }
             LatLon=dms.toLatLon();
         }else{
             LatLon.lat=Number(document.getElementById("latDegreeBox").value);
             LatLon.lon=Number(document.getElementById("lonDegreeBox").value);
-            if (Generic.getRadioCheckByValue("latNorthSouth") == 1) {
+            if (Generic.getRadioCheckByValue("latNorthSouth") === 1) {
                 LatLon.lat = -LatLon.lat;
             }
-            if (Generic.getRadioCheckByValue("lonEastWest") == 1) {
+            if (Generic.getRadioCheckByValue("lonEastWest") === 1) {
                 LatLon.lon = -LatLon.lon;
             }
         }
@@ -1127,7 +1127,7 @@ function frmPrintOption(firstTab: number = 0) {
     const tab04 = Generic.createNewFrame(tab.panel[0], "", "", 365, 95, 190, 190, "総描");
     Generic.createNewCheckBox(tab04,"自動設定","",atv.SouByou.Auto,15,12,100,function(ob: HTMLInputElement){
         atv.SouByou.Auto=ob.checked;
-       Generic.setDisabled( soubyouManual,(ob.checked==true));
+       Generic.setDisabled( soubyouManual,(ob.checked===true));
     },"");
     const autoLst=[{ value: 1, text: "弱"},{ value: 2, text: "中"},{ value: 3, text: "強"},{ value: 4, text: "最強"}];
     const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,tab04,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v: number){
@@ -1142,7 +1142,7 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewCheckBox(soubyouManual, "ループ間引き", "", atv.SouByou.LoopAreaF, 5, 70,undefined,  function (obj: HTMLInputElement) { atv.SouByou.LoopAreaF = obj.checked; }, "");
     Generic.createNewWordNumberInput(soubyouManual, "最小取得サイズ", Generic.getScaleUnitStrings(undefined, atv.MapScale.Unit) + "<sup>2</sup>", def_LoopSize, "", 10, 92, undefined,40,
         function (obj: HTMLInputElement, v: number) { atv.SouByou.LoopSize = v / ConvScaleValue; }, "");
-    Generic.setDisabled( soubyouManual,(atv.SouByou.Auto==true));
+    Generic.setDisabled( soubyouManual,(atv.SouByou.Auto===true));
 
     /**背景・描画●●●●●●●●●●●●●●●●●●●●● */
     const tab10 = Generic.createNewFrame(tab.panel[1], "", "", 15, 10, 260, 80, "ウインドウ内余白");
@@ -1225,7 +1225,7 @@ function frmPrintOption(firstTab: number = 0) {
 
     const gbtab12Interval = Generic.createNewFrame(tab12, "", "", 10, 120, 170, 100, "間隔");
     const txtLatLonIntData = Generic.createNewDiv(gbtab12Interval, "", "", "grayFrame", 10, 15, 140, 35, "padding:5px;", undefined);
-    if (state.attrData.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+    if (state.attrData.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
         const retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false);
         txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
     }
@@ -1237,7 +1237,7 @@ function frmPrintOption(firstTab: number = 0) {
             txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
         })
     }, "padding-top:0;padding-bottom:0");
-    if(state.attrData.TotalData.ViewStyle.Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido){
+    if(state.attrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido){
         Generic.setDisabled(tab12,true);//緯度経度でない場合はdisabledに設定
     }
 
@@ -1338,11 +1338,11 @@ function frmPrintOption(firstTab: number = 0) {
     const lLK = state.attrData.GetAllMapLineKindName();
     const lLKList = [];
     for (let i = 0; i < lLK.length; i++) {
-        const cv = (atvl.Line_Visible_Number_STR.mid(i, 1) == "1");
+        const cv = (atvl.Line_Visible_Number_STR.mid(i, 1) === "1");
         lLKList.push({ text: lLK[i], checked: cv });
     }
     Generic.createNewCheckListBox(tabLegend.panel[3], "", lLKList, 20, 45, 150, 150, function (num: number, checked: boolean) {
-        atvl.Line_Visible_Number_STR = atvl.Line_Visible_Number_STR.midReplace(num, (checked == true) ? "1" : "0");
+        atvl.Line_Visible_Number_STR = atvl.Line_Visible_Number_STR.midReplace(num, (checked === true) ? "1" : "0");
     }, "");
     const MapLegendLine_DummyKind = Generic.createNewWordDivCanvas(tabLegend.panel[3], "", "背景", 190, 45, undefined, function (e: MouseEvent) {
         clsBackgroundPatternSet(e, atvl.Back, backGet, state.attrData);
@@ -1492,10 +1492,10 @@ function frmMainCopyDataSettings(okEvent: () => void) {
         const oData=originData.selectedIndex;
         const Otype  = state.attrData.LayerData[oLay].atrData.Data[oData].DataType;
         let astn = -1;
-            if( oLay== dLay){
+            if( oLay=== dLay){
                 astn = oData;
             }
-        state.attrData.Set_DataTitle_to_CheckedListBox(destData,dLay,false,true, Otype == enmAttDataType.Normal, Otype == enmAttDataType.Category, Otype == enmAttDataType.Strings, astn);
+        state.attrData.Set_DataTitle_to_CheckedListBox(destData,dLay,false,true, Otype === enmAttDataType.Normal, Otype === enmAttDataType.Category, Otype === enmAttDataType.Strings, astn);
     }
 
     function buttonOK(){
@@ -1515,7 +1515,7 @@ function frmMainCopyDataSettings(okEvent: () => void) {
         for(const i in checked){
             const n  = checked[i];
             state.attrData.Set_Legend(Dlyaer, n, state.attrData.LayerData[OLayer].atrData.Data[OData], ClassCopyF, MarkCopyF, MarkSizeValueCopyF, MarkCopyF,
-                                 ContourCopyF, ClassCopyF, ClassCopyF, MarkCopyF,MarkCopyF,  ODOriginCopyF, (Dlyaer == OLayer));
+                                 ContourCopyF, ClassCopyF, ClassCopyF, MarkCopyF,MarkCopyF,  ODOriginCopyF, (Dlyaer === OLayer));
             }
         okEvent();
     }
@@ -1597,7 +1597,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         switch (tab.selectedIndex) {
             case 0: {
                 const checked = layerSoloData.getChecked().checkedArray;
-                if (checked.length == 0) {
+                if (checked.length === 0) {
                     return;
                 }
                 const LayerNum = cboLayerSolo.selectedIndex;
@@ -1609,7 +1609,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
                     dt.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
                     dt.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
                     dt.SoloMode = Generic.getRadioCheckByValue("soloModeSelect");
-                    if (state.attrData.Check_Enable_SoloMode(dt.SoloMode, LayerNum, n) == true) {
+                    if (state.attrData.Check_Enable_SoloMode(dt.SoloMode, LayerNum, n) === true) {
                         DataItem.push(dt);
                     } else {
                         emes += state.attrData.Get_DataTitle(LayerNum, n, false) + "は" + Generic.getSolomodeStrings(dt.SoloMode) + "モードで表示できません。" + "\n";
@@ -1619,7 +1619,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
             case 1: {
                 const checked = layerGraphData.getChecked().checkedArray;
-                if (checked.length == 0) {
+                if (checked.length === 0) {
                     return;
                 }
                 const LayerNum = cboLayerGraph.selectedIndex;
@@ -1636,7 +1636,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
             case 2: {
                 const checked = layerLabelData.getChecked().checkedArray;
-                if (checked.length == 0) {
+                if (checked.length === 0) {
                     return;
                 }
                 const LayerNum = cboLayerLabel.selectedIndex;
@@ -1653,7 +1653,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
             case 3: {
                 const checked = overlayData.getChecked().checkedArray;
-                if (checked.length == 0) {
+                if (checked.length === 0) {
                     return;
                 }
                 for (let i = 0; i < checked.length; i++) {
@@ -1667,7 +1667,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
         }
         SetListView()
-        if (emes != "") {
+        if (emes !== "") {
             Generic.createMsgBox("エラー", emes, true);
         }
     }
@@ -1770,11 +1770,11 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     }
     cboLonData.addSelectList(items, 0, true,true);
     cboLatData.addSelectList(items, 0, true,true);
-    if (state.attrData.TotalData.ViewStyle.Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido) {
+    if (state.attrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
         Generic.enableRadioByValue("markPositionOperation", 2, false);
         Generic.enableRadioByValue("markPositionOperation", 7, false);
     }
-    if (al.Shape != enmShape.PolygonShape) {
+    if (al.Shape !== enmShape.PolygonShape) {
         Generic.enableRadioByValue("markPositionOperation", 3, false);
         Generic.enableRadioByValue("markPositionOperation", 8, false);
         return;
@@ -1804,18 +1804,18 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
             case 7: {//属性データをラベル表示位置に設定
                 const lat = cboLatData.selectedIndex -1;
                 const lon = cboLonData.selectedIndex - 1;
-                if ((lat == -1) && (lon == -1)) {
+                if ((lat === -1) && (lon === -1)) {
                     Generic.alert(undefined, "選択されていません。");
                     return;
                 }
-                if (lat != -1) {
+                if (lat !== -1) {
                     const ald = al.atrData.Data[lat];
                     if ((ald.Statistics.Max > 90) || (ald.Statistics.Min < -90)) {
                         Generic.alert(undefined, ald.Title + "の最大値・最小値が90/-90を超えています。");
                         return;
                     }
                 }
-                if (lon != -1) {
+                if (lon !== -1) {
                     const ald = al.atrData.Data[lon];
                     if ((ald.Statistics.Max > 180) || (ald.Statistics.Min < -180)) {
                         Generic.alert(undefined, ald.Title + "の最大値・最小値が180/-180を超えています。");
@@ -1837,14 +1837,14 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
                     }
                 }
 
-                if (lat != -1) {
+                if (lat !== -1) {
                     const Data = state.attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lat);
                     for (let i = 0; i < Data.length; i++) {
                         OriPos[Data[i].ObjLocation].y = Number(Data[i].DataValue);
                     }
                 }
 
-                if (lon != -1) {
+                if (lon !== -1) {
                     const Data = state.attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lon);
                     for (let i = 0; i < Data.length; i++) {
                         OriPos[Data[i].ObjLocation].x = Number(Data[i].DataValue);
@@ -1897,8 +1897,8 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
             case 8: {//重心をラベル表示位置に設定
                 for (let i = 0; i < Objn; i++) {
                     const retV = state.attrData.Get_ObjectGravityPoint(Layernum, i);
-                    if (retV.ok == true) {
-                        if (mode == 3) {
+                    if (retV.ok === true) {
+                        if (mode === 3) {
                             al.atrObject.atrObjectData[i].Symbol = retV.gpoint;
                         } else {
                             al.atrObject.atrObjectData[i].Label = retV.gpoint;
@@ -1906,7 +1906,7 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
                     }
                 }
                 Generic.clear_backDiv();
-                if (mode == 3) {
+                if (mode === 3) {
                     Generic.alert(undefined, "記号表示位置をオブジェクトの重心に設定しました。");
                 } else {
                     Generic.alert(undefined, "ラベル表示位置をオブジェクトの重心に設定しました。");
@@ -1933,7 +1933,7 @@ function frmMain_ConditionSettings(okEvent: () => void){
     Generic.createNewSpan(backDiv,"条件設定","","",15,40,"",undefined);
     Generic.createNewButton(backDiv,"設定変更","",15,275,function(){
         const n  = clbList.selectedIndex;
-        if (n == -1){
+        if (n === -1){
             Generic.createMsgBox("","条件設定を選択して下さい。",false);
             return;
         }
@@ -1967,7 +1967,7 @@ function frmMain_ConditionSettings(okEvent: () => void){
     }, "width:80px");
     Generic.createNewButton(backDiv, "削除", "", 205, 275, function (e: MouseEvent) { 
         const n  = clbList.selectedIndex;
-        if (n == -1){
+        if (n === -1){
             Generic.alert(new point(e.clientX, e.clientY),"条件設定を選択して下さい。");
             return;
         }
@@ -2030,14 +2030,14 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         setStep(n);
     }, "");
     Generic.createNewButton(backDiv, "段階削除", "", 250, 140, function (e: MouseEvent) {
-        if (ConItem.Condition_Class.length == 1) {
+        if (ConItem.Condition_Class.length === 1) {
             Generic.alert(new point(e.clientX, e.clientY),"これ以上削除できません。");
             return;
         }
         const n = cboStep.selectedIndex;
         Generic.confirm(new point(e.clientX, e.clientY), cboStep.options[n].text + "を削除します。", function () {
             let newn;
-            if (n == cboStep.options.length - 1) {
+            if (n === cboStep.options.length - 1) {
                 newn = n - 1;
             } else {
                 newn = n;
@@ -2062,17 +2062,17 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     Generic.createNewRadioButtonList(grAndOr, "rdoAndOr", [{ value: enmConditionAnd_Or._And, text: "AND" }, { value: enmConditionAnd_Or.Or, text: "OR" }], 15, 10, undefined, 30, 0, undefined, "");
     Generic.createNewButton(grPanel, "項目削除", "", 310, 90, function (e: MouseEvent) {
         const n = cboStep.selectedIndex;
-        if (ListView.getRowNumber() == 0) {
+        if (ListView.getRowNumber() === 0) {
             return;
         }
         const selRow = ListView.selectedRow;
-        if (selRow == -1) {
+        if (selRow === -1) {
             Generic.alert(new point(e.clientX, e.clientY),"項目を選択して下さい。");
         } else {
             let  newRow=ListView.selectedRow;
             ConItem.Condition_Class[n].Condition.splice(selRow, 1);
             ListViewSet();
-            newRow=(newRow == ListView.getRowNumber()) ? newRow-1:newRow;
+            newRow=(newRow === ListView.getRowNumber()) ? newRow-1:newRow;
             ListView.selectRow(newRow);
         }
     }, "");
@@ -2102,7 +2102,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         Lim.Data = cboData.selectedIndex;
         Lim.Val = txtValue.value;
         Lim.Condition = cboCondition.getValue();
-        if (state.attrData.Get_DataType(ConItem.Layer, Lim.Data) == enmAttDataType.Normal) {
+        if (state.attrData.Get_DataType(ConItem.Layer, Lim.Data) === enmAttDataType.Normal) {
             if (isNaN(Lim.Val)) {
                 Generic.alert(new point(e.clientX, e.clientY),"数値以外の文字が含まれています。");
                 return;
@@ -2268,8 +2268,8 @@ function frmMain_Culc(okEvent: () => void) {
     const cboDensityData = Generic.createNewSelect(backDiv, [], -1, "", 100, 415, false, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 5) }, "width:150px");//密度
     state.attrData.Set_DataTitle_to_cboBox(cboDensityData, LayerNum, -1, true, true, false, false);
 
-    cboDensityData.disabled = (state.attrData.LayerData[LayerNum].Shape != enmShape.PolygonShape);
-    Generic.enableRadioByValue("dataCulMethod",5, (state.attrData.LayerData[LayerNum].Shape == enmShape.PolygonShape));
+    cboDensityData.disabled = (state.attrData.LayerData[LayerNum].Shape !== enmShape.PolygonShape);
+    Generic.enableRadioByValue("dataCulMethod",5, (state.attrData.LayerData[LayerNum].Shape === enmShape.PolygonShape));
 
     function buttonOK(e: MouseEvent) {
         const n = state.attrData.Get_ObjectNum(LayerNum)
@@ -2285,7 +2285,7 @@ function frmMain_Culc(okEvent: () => void) {
             case 0: {
                 const retV = sumDataItem.getChecked();
                 const seln = retV.checkedArray.length;
-                if (seln == 0) {
+                if (seln === 0) {
                     Generic.alert(undefined, "加算するデータを選択して下さい。");
                     return;
                 }
@@ -2300,27 +2300,27 @@ function frmMain_Culc(okEvent: () => void) {
                     const dt = retV.checkedArray[i];
                     Unit = state.attrData.Get_DataUnit(LayerNum, dt);
                     Title += state.attrData.Get_DataTitle(LayerNum, dt, false);
-                    if (i != seln - 1) {
+                    if (i !== seln - 1) {
                         Title += "＋";
                     }
                     const v = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt);
                     const mis = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt);
                     for (let j = 0; j < n; j++) {
-                        if (mis[j] == false) {
+                        if (mis[j] === false) {
                             sumv[j] += v[j];
                             sumf[j] = true;
                         }
                     }
                 }
                 for (let i = 0; i < n; i++) {
-                    if (sumf[i] == true) {
+                    if (sumf[i] === true) {
                         Data_Val_STR[i] = String(sumv[i] + plusVal);
                     } else {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     }
                 }
-                if (plusVal != 0) {
+                if (plusVal !== 0) {
                     Title += "＋" + String(plusVal);
                 }
                 Title += "（和）";
@@ -2330,13 +2330,13 @@ function frmMain_Culc(okEvent: () => void) {
             case 1: {
                 const dt1 = cboDif1.selectedIndex;
                 const dt2 = cboDif2.selectedIndex - 1;
-                if ((dt1 == -1) || (dt2 == -2)) {
+                if ((dt1 === -1) || (dt2 === -2)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
                 const inputValue = Number(txtMinusInput.value);
-                if (dt2 == -1) {
-                    if (inputValue == 0) {
+                if (dt2 === -1) {
+                    if (inputValue === 0) {
                         Generic.alert(undefined, "数値を入力して下さい。");
                         return;
                     }
@@ -2347,7 +2347,7 @@ function frmMain_Culc(okEvent: () => void) {
                 const v2 = retV.dataArray;
                 const mis2 = retV.misArray;
                 for (let i = 0; i < n; i++) {
-                    if ((mis1[i] == true) || (mis2[i] == true)) {
+                    if ((mis1[i] === true) || (mis2[i] === true)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
@@ -2357,9 +2357,9 @@ function frmMain_Culc(okEvent: () => void) {
                 Title = state.attrData.Get_DataTitle(LayerNum, dt1, false) + "－";
                 Unit = state.attrData.Get_DataUnit(LayerNum, dt1);
                 note = state.attrData.Get_DataTitle(LayerNum, dt1, false) + "から";
-                if (dt2 != -1) {
+                if (dt2 !== -1) {
                     Title += state.attrData.Get_DataTitle(LayerNum, dt2, false) + "(差)";
-                    if (state.attrData.Get_DataUnit(LayerNum, dt1) != state.attrData.Get_DataUnit(LayerNum, dt2)) {
+                    if (state.attrData.Get_DataUnit(LayerNum, dt1) !== state.attrData.Get_DataUnit(LayerNum, dt2)) {
                         Unit = "";
                     }
                     note += state.attrData.Get_DataTitle(LayerNum, dt2, false) + "を引いた値。";
@@ -2373,13 +2373,13 @@ function frmMain_Culc(okEvent: () => void) {
             case 2: {
                 const dt1 = cboMulti1.selectedIndex;
                 const dt2 = cboMulti2.selectedIndex - 1;
-                if ((dt1 == -1) || (dt2 == -2)) {
+                if ((dt1 === -1) || (dt2 === -2)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
                 const inputValue = Number(txtMultiInput.value);
-                if (dt2 == -1) {
-                    if (inputValue == 0) {
+                if (dt2 === -1) {
+                    if (inputValue === 0) {
                         Generic.alert(undefined, "数値を入力して下さい。");
                         return;
                     }
@@ -2391,7 +2391,7 @@ function frmMain_Culc(okEvent: () => void) {
                 const mis2 = retV.misArray;
 
                 for (let i = 0; i < n; i++) {
-                    if ((mis1[i] == true) || (mis2[i] == true)) {
+                    if ((mis1[i] === true) || (mis2[i] === true)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
@@ -2401,9 +2401,9 @@ function frmMain_Culc(okEvent: () => void) {
                 Title = state.attrData.Get_DataTitle(LayerNum, dt1, false) + "×";
                 Unit = state.attrData.Get_DataUnit(LayerNum, dt1);
                 note = state.attrData.Get_DataTitle(LayerNum, dt1, false) + "に";
-                if (dt2 != -1) {
+                if (dt2 !== -1) {
                     Title += state.attrData.Get_DataTitle(LayerNum, dt2, false) + "(積)";
-                    if (state.attrData.Get_DataUnit(LayerNum, dt1) != state.attrData.Get_DataUnit(LayerNum, dt2)) {
+                    if (state.attrData.Get_DataUnit(LayerNum, dt1) !== state.attrData.Get_DataUnit(LayerNum, dt2)) {
                         Unit = "";
                     }
                     note += state.attrData.Get_DataTitle(LayerNum, dt2, false) + "をかけた値。";
@@ -2415,7 +2415,7 @@ function frmMain_Culc(okEvent: () => void) {
             }
             case 5: {
                 const dt = cboDensityData.selectedIndex;
-                if (dt == -1) {
+                if (dt === -1) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
@@ -2423,12 +2423,12 @@ function frmMain_Culc(okEvent: () => void) {
                 const mis = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt);
                 for (let i = 0; i < n; i++) {
                     const area = state.attrData.GetObjMenseki(LayerNum, i)
-                    if ((area.menseki == 0) || (mis[i] == true)) {
+                    if ((area.menseki === 0) || (mis[i] === true)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
                         const dv = v[i] / area.menseki;
-                        Data_Val_STR[i] ==String(Number(Generic.Figure_Using(dv, state.attrData.LayerData[LayerNum].atrData.Data[dt].Statistics.AfterDecimalNum + 1)));
+                        Data_Val_STR[i] ===String(Number(Generic.Figure_Using(dv, state.attrData.LayerData[LayerNum].atrData.Data[dt].Statistics.AfterDecimalNum + 1)));
                     }
                 }
                 Title = state.attrData.Get_DataTitle(LayerNum, dt, false) + "（密度）";
@@ -2439,18 +2439,18 @@ function frmMain_Culc(okEvent: () => void) {
             case 3: {
                 const dt1 = cbonumeratorData.selectedIndex - 1;
                 const dt2 = cboDenominatorData.selectedIndex - 1;
-                if ((dt1 == -2) || (dt2 == -2)) {
+                if ((dt1 === -2) || (dt2 === -2)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
-                if ((dt1 == -1) && (dt2 == -1)) {
+                if ((dt1 === -1) && (dt2 === -1)) {
                     Generic.alert(undefined, "数値同士ではできません。");
                     return;
                 }
                 const inputValue1 = Number(txtnumeratorData.value);
                 const inputValue2 = Number(txtDenominatorDataBox.value);
 
-                if (((dt1 == -1) && (inputValue1 == 0)) || ((dt2 == -1) && (inputValue2 == 0))) {
+                if (((dt1 === -1) && (inputValue1 === 0)) || ((dt2 === -1) && (inputValue2 === 0))) {
                     Generic.alert(undefined, "数値を設定して下さい");
                     return;
                 }
@@ -2469,7 +2469,7 @@ function frmMain_Culc(okEvent: () => void) {
                 let dt2AfterDecimalNum;
                 let dt1BeforeDecimalNum;
                 let dt2BeforeDecimalNum;
-                if (dt1 != -1) {
+                if (dt1 !== -1) {
                     dt1AfterDecimalNum = ad.Data[dt1].Statistics.AfterDecimalNum;
                     dt1BeforeDecimalNum = ad.Data[dt1].Statistics.BeforeDecimalNum;
                 } else {
@@ -2477,7 +2477,7 @@ function frmMain_Culc(okEvent: () => void) {
                     dt1BeforeDecimalNum = deci.BeforeDecimal;
                     dt1AfterDecimalNum = deci.AfterDecimal;
                 }
-                if (dt2 != -1) {
+                if (dt2 !== -1) {
                     dt2AfterDecimalNum = ad.Data[dt2].Statistics.AfterDecimalNum;
                     dt2BeforeDecimalNum = ad.Data[dt2].Statistics.BeforeDecimalNum;
                 } else {
@@ -2491,15 +2491,15 @@ function frmMain_Culc(okEvent: () => void) {
                 
                 for (let i = 0; i < n; i++) {
                     let keta2 = keta
-                    if ((mis1[i] == true) || (mis2[i] == true) || (v2[i] == 0)) {
+                    if ((mis1[i] === true) || (mis2[i] === true) || (v2[i] === 0)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
                         let dv = v1[i] / v2[i];
-                        if (per == true) {
+                        if (per === true) {
                             dv *= 100;
                         }
-                        if ((Math.abs(dv) < 1) && (v1[i] != 0)) {
+                        if ((Math.abs(dv) < 1) && (v1[i] !== 0)) {
                             //1未満の場合は，0が続かなくなった箇所から桁数を数える
                             let vv = Math.abs(dv);
                             let nketa = 1;
@@ -2513,11 +2513,11 @@ function frmMain_Culc(okEvent: () => void) {
                     }
                 }
                 Unit = "";
-                if (chkPercent.checked == true) {
+                if (chkPercent.checked === true) {
                     Unit = "％";
                 }
 
-                if (dt1 != -1) {
+                if (dt1 !== -1) {
                     Title = state.attrData.Get_DataTitle(LayerNum, dt1, false) + "÷";
                     note += state.attrData.Get_DataTitle(LayerNum, dt1, false) + "を";
                 } else {
@@ -2525,7 +2525,7 @@ function frmMain_Culc(okEvent: () => void) {
                     note += inputValue1.toString() + "を";
                 }
 
-                if (dt2 != -1) {
+                if (dt2 !== -1) {
                     Title += state.attrData.Get_DataTitle(LayerNum, dt2, false);
                     note += state.attrData.Get_DataTitle(LayerNum, dt2, false) + "で除した値。";
                 } else {
@@ -2537,7 +2537,7 @@ function frmMain_Culc(okEvent: () => void) {
             case 4: {
                 const dt1 = cboStartData.selectedIndex;
                 const dt2 = cboEndData.selectedIndex;
-                if ((dt1 == -1) || (dt2 == -1)) {
+                if ((dt1 === -1) || (dt2 === -1)) {
                     Generic.alert(undefined, "データ項目を選択して下さい。");
                     return;
                 }
@@ -2546,7 +2546,7 @@ function frmMain_Culc(okEvent: () => void) {
                 const v2 = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, dt2);
                 const mis2 = state.attrData.Get_Missing_Value_DataArray(LayerNum, dt2);
                 for (let i = 0; i < n; i++) {
-                    if ((mis1[i] == true) || (mis2[i] == true) || (v1[i] == 0)) {
+                    if ((mis1[i] === true) || (mis2[i] === true) || (v1[i] === 0)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
@@ -2571,7 +2571,7 @@ function frmMain_Culc(okEvent: () => void) {
         function setDataArray(LayerNum: number, data: number, inputValue: string) {
             let dataArray = [];
             let misArray = [];
-            if (data != -1) {
+            if (data !== -1) {
                 dataArray = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, data);
                 misArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, data);
             } else {
@@ -2609,7 +2609,7 @@ function frmMain_GetDistance(okEvent: () => void){
     Generic.createNewSpan(backDiv,"距離の取得元","","",15,40,"",undefined);
     Generic.createNewButton(backDiv, "消去", "", 15, 205, function () {
         const n=lbList.selectedIndex;
-        if(n!=-1){
+        if(n!==-1){
             lbList.removeList(n, 1);
         }
     },"")
@@ -2627,17 +2627,17 @@ function frmMain_GetDistance(okEvent: () => void){
             lbList.addList([{text:tx,value:posd}],lbList.length);
         })
     },"")
-    btnLlatlon.disabled  = (state.attrData.TotalData.ViewStyle.Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido);
+    btnLlatlon.disabled  = (state.attrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido);
     Generic.createNewButton(backDiv, "レイヤ内オブジェクトから追加", "", 15, 260, function () {
         frmMain_LayeObjectSelect(true,LayerNum,undefined,function(Lay: number,DummyF: boolean,sel: number[]){
             const pos=[];
             for(const i in sel){
                 let tx  = "";
                 const posd = new pos_info();
-                if (Lay != LayerNum) {
+                if (Lay !== LayerNum) {
                     tx = state.attrData.LayerData[Lay].Name + ":"
                 }
-                if (DummyF == false) {
+                if (DummyF === false) {
                     tx += state.attrData.Get_KenObjName(Lay, sel[i]);
                     posd.type = DisType.LayerObject;
                     posd.lay = Lay;
@@ -2665,7 +2665,7 @@ function frmMain_GetDistance(okEvent: () => void){
 
     function buttonOK(e: MouseEvent) {
         const n = lbList.length;
-        if (n == 0) {
+        if (n === 0) {
             Generic.alert(new point(e.clientX, e.clientY), "距離の取得元がありません。");
             return;
         }
@@ -2688,7 +2688,7 @@ function frmMain_GetDistance(okEvent: () => void){
                     }
                     case DisType.LayerDummy: {
                         const L = state.attrData.LayerData[LayerNum];
-                        if((L.Type==enmLayerType.DefPoint)||(L.Type==enmLayerType.Mesh)){
+                        if((L.Type===enmLayerType.DefPoint)||(L.Type===enmLayerType.Mesh)){
                             d = L.MapFileData.Distance_ObjectCenterP(L.atrObject.atrObjectData[j].CenterPoint, pos[i].objpos, L.Time);
                         }else{
                             d = L.MapFileData.Distance_Object(state.attrData.Get_KenObjCode(LayerNum, j), pos[i].objpos, L.Time, L.Time);
@@ -2725,13 +2725,13 @@ function frmMain_GetDistance(okEvent: () => void){
                             Min_Dis[i] = allD;
                             Min_Dis_ObjName[i] = "";
                             for (let j = 0; j < n; j++) {
-                                if ((LayerNum == pos[j].lay) && (i == pos[j].objpos)&&(pos[j].type==DisType.LayerObject)) {
+                                if ((LayerNum === pos[j].lay) && (i === pos[j].objpos)&&(pos[j].type===DisType.LayerObject)) {
                                 }else{
                                     //同一オブジェクトでなければ
                                     if (Min_Dis[i] > dis[j][i]) {
                                         Min_Dis[i] = dis[j][i];
                                         Min_Dis_ObjName[i] = lbText[j];
-                                    } else if (Min_Dis[i] == dis[j][i]) {
+                                    } else if (Min_Dis[i] === dis[j][i]) {
                                         Min_Dis_ObjName[i] += "/" + lbText[j];
                                     }
                                 }
@@ -2779,9 +2779,9 @@ function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: 
     changeLayer(DefSelectObjectNumber);
 
     function changeLayer(v: Event | number) {
-        v=(v==undefined)?0:v;
+        v=(v===undefined)?0:v;
         const L = selectLayer.selectedIndex;
-        if(chkDumyObjectSelect.checked==true){
+        if(chkDumyObjectSelect.checked===true){
             state.attrData.Set_DummyObjectName_to_selectBox(lstObject,L,v);
         }else{
             state.attrData.Set_ObjectName_to_selectBox(lstObject,L,v);
@@ -2791,7 +2791,7 @@ function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: 
         const L = selectLayer.selectedIndex;
         const Dummy_SelectF = chkDumyObjectSelect.checked;
         const selObj = lstObject.selectedIndex;
-        if(selObj==-1){
+        if(selObj===-1){
             Generic.alert(undefined,"オブジェクトが選択されていません。");
             return;
         }
@@ -2815,7 +2815,7 @@ function frmMain_LayeObjectSelect(Dummy_Select_EnableF: boolean, DefLayerNum: nu
 
     function changeLayer() {
         const L = selectLayer.selectedIndex;
-        if (chkDumyObjectSelect.checked == true) {
+        if (chkDumyObjectSelect.checked === true) {
             state.attrData.Set_DummyObjectName_to_checkedListBox(lbObject, L, undefined);
         } else {
             state.attrData.Set_ObjectName_to_checkedListBox(lbObject, L, undefined);
@@ -2837,12 +2837,12 @@ function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, Canc
     const ttlBox = Generic.createNewWordTextInput(backDiv, "タイトル", "", TTL, "", 15, 70, 50, 250, undefined, "");
     const unitBox = Generic.createNewWordTextInput(backDiv, "単位", "", UNT, "", 15, 100, 50, 250, undefined, "");
     const noteBox = Generic.createNewWordTextInput(backDiv, "注", "", Note, "", 15, 130, 50, 250, undefined, "");
-    if ((UNT.toUpperCase() == "CAT") || (UNT.toUpperCase() == "STR")) {
+    if ((UNT.toUpperCase() === "CAT") || (UNT.toUpperCase() === "STR")) {
         ttlBox.disabled = true;
     }
     function buttonOK(e: MouseEvent) {
         const retV = { title: ttlBox.value, unit: unitBox.value, note: noteBox.value };
-        if (retV.title == "") {
+        if (retV.title === "") {
             Generic.alert(new point(e.clientX, e.clientY), "タイトルを設定してください。");
             return;
         }
@@ -2885,9 +2885,9 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     { value: bufMode.Distance, text: "バッファ距離を設定して内部のオブジェクトを検索する" }];
     Generic.createNewRadioButtonList(gbMethod, "rbSearchMethod", rbSearchMethod, 10, 20, 150, 40, bufMode.ObjectInPolygon,
         function (v: number) {
-            chkObjectCount.disabled = (v == bufMode.ParentObject);
-            chkObjNameOut.disabled = (v == bufMode.ParentObject);
-            registDiv.setVisibility((v != bufMode.ParentObject));
+            chkObjectCount.disabled = (v === bufMode.ParentObject);
+            chkObjNameOut.disabled = (v === bufMode.ParentObject);
+            registDiv.setVisibility((v !== bufMode.ParentObject));
     });
     const txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", "", "", 40, 130, undefined, 100, 
         function(){Generic.checkRadioByValue("rbSearchMethod",bufMode.Distance);
@@ -2917,12 +2917,12 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     const disE = state.attrData.LayerData[LayerNum].MapFileData.Map.Detail.DistanceMeasurable;
     Generic.enableRadioByValue("rbSearchMethod", bufMode.Distance, disE);
     Generic.setDisabled(txtBuffer, disE);
-    if (state.attrData.LayerData[LayerNum].Shape == enmShape.PolygonShape) {
+    if (state.attrData.LayerData[LayerNum].Shape === enmShape.PolygonShape) {
         Generic.enableRadioByValue("rbSearchMethod", bufMode.ObjectInPolygon, true);
         Generic.checkRadioByValue("rbSearchMethod", bufMode.ObjectInPolygon);
     } else {
         Generic.enableRadioByValue("rbSearchMethod", bufMode.ObjectInPolygon, false);
-        if (disE == true) {
+        if (disE === true) {
             Generic.checkRadioByValue("rbSearchMethod", bufMode.Distance);
         } else {
             Generic.alert(undefined, "レイヤで使用する地図データに、距離の計測ができない設定がしてあります。");
@@ -2937,7 +2937,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     function setDataList(){
         const L=cboHandledLayer.selectedIndex;
         const n=Generic.getRadioCheckByValue("rbSearchMethod");
-        state.attrData.Set_DataTitle_to_CheckedListBox(selectDataItem, L, false, true, true, true, (n==bufMode.ParentObject));
+        state.attrData.Set_DataTitle_to_CheckedListBox(selectDataItem, L, false, true, true, true, (n===bufMode.ParentObject));
     }
 
     function checkError(e: MouseEvent) {
@@ -2945,36 +2945,36 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let efm = "";
         const L2 = cboHandledLayer.selectedIndex;
         const rd = Generic.getRadioCheckByValue("rbSearchMethod");
-        if ((rd == bufMode.Distance) || (rd == bufMode.ObjectInPolygon)) {
-            if ((chkObjNameOut.checked == false) && (chkObjectCount.checked == false) && (chkObjectData.checked == false)){
+        if ((rd === bufMode.Distance) || (rd === bufMode.ObjectInPolygon)) {
+            if ((chkObjNameOut.checked === false) && (chkObjectCount.checked === false) && (chkObjectData.checked === false)){
                 efm += "出力項目を指定してください。\n";
                 ef = true;
             }
         }
         const Dis = Number(txtBuffer.value);
-        if ((Dis <= 0) && (rd == bufMode.Distance)) {
+        if ((Dis <= 0) && (rd === bufMode.Distance)) {
             efm += "バッファ距離を指定してください。\n";
             ef = true
         }
-        if (chkObjectData.checked == true) {
-            if (selectDataItem.getChecked().checkedArray.length == 0) {
+        if (chkObjectData.checked === true) {
+            if (selectDataItem.getChecked().checkedArray.length === 0) {
                 efm += "集計データ項目が選択されていません。\n";
                 ef = true
             }
         }
-        if ((rd == bufMode.ParentObject) && (state.attrData.LayerData[L2].Shape != enmShape.PolygonShape)) {
+        if ((rd === bufMode.ParentObject) && (state.attrData.LayerData[L2].Shape !== enmShape.PolygonShape)) {
             efm += "検索対象レイヤは面形状のものを指定してください。\n";
             ef = true;
         }
-        if (ef == true) {
+        if (ef === true) {
             Generic.alert(new point(e.clientX, e.clientY), efm);
         }  
         return ef;
     }
 
     function buttonOK(e: MouseEvent) {
-        if (checkError(e) == false) {
-            if (Buffering() == true) {
+        if (checkError(e) === false) {
+            if (Buffering() === true) {
                 okEvent(e);
             }
         }
@@ -2991,13 +2991,13 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let F_ObjectCount; 
         const ObjCount_STR=[];
         const ObjName_STR=[];
-        if((chkObjectCount.checked == true)&&(chkObjectCount.disabled == false) ){
+        if((chkObjectCount.checked === true)&&(chkObjectCount.disabled === false) ){
             F_ObjectCount = true;
         }else{
             F_ObjectCount = false;
         }
         let F_objNameOut ;
-        if((chkObjNameOut.checked == true)&&(chkObjNameOut.disabled == false )){
+        if((chkObjNameOut.checked === true)&&(chkObjNameOut.disabled === false )){
             F_objNameOut = true;
         }else{
             F_objNameOut = false;
@@ -3010,14 +3010,14 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         const Inner_Object_Num: number[] = [];
         let Shukei_V;
         let Add_Data: number[] = [];
-        if(chkObjectData.checked == true ){
+        if(chkObjectData.checked === true ){
             RegistMode=cboRegistMode.getValue();
             F_ObjectData = true;
             Add_Data=selectDataItem.getChecked().checkedArray;
             Rdn = Add_Data.length;
             let PlusDataNum  = 0;
             for(let i=0 ;i<  Rdn ;i++){
-                if((state.attrData.Get_DataType(L2, Add_Data[i]) == enmAttDataType.Category)&&((BufferMode == bufMode.Distance)||(BufferMode == bufMode.ObjectInPolygon)) ){
+                if((state.attrData.Get_DataType(L2, Add_Data[i]) === enmAttDataType.Category)&&((BufferMode === bufMode.Distance)||(BufferMode === bufMode.ObjectInPolygon)) ){
                     const pn  = state.attrData.Get_DivNum(L2, Add_Data[i]);
                     PlusDataNum += pn + 1;
                 }else{
@@ -3038,11 +3038,11 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         for (let i = 0; i < ObjnL1; i++) {  //現在のレイヤのオブジェクトの数
             let BFN = 0
             const InObjNameList = [];
-            if (F_ObjectData == true) {
+            if (F_ObjectData === true) {
                 AggData = [];
                 for (let k = 0; k < Rdn; k++) {
                     const dt=Add_Data[k];
-                    if ((state.attrData.Get_DataType(L2, dt) == enmAttDataType.Category) && ((BufferMode == bufMode.Distance) || (BufferMode == bufMode.ObjectInPolygon))) {
+                    if ((state.attrData.Get_DataType(L2, dt) === enmAttDataType.Category) && ((BufferMode === bufMode.Distance) || (BufferMode === bufMode.ObjectInPolygon))) {
                         const cdata = new category_data();
                         const pn = state.attrData.Get_DivNum(L2, dt);
                         cdata.CateCount.length = pn;
@@ -3059,15 +3059,15 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             }
 
             let CP;
-            if (BufferMode ==bufMode.ParentObject ) {
+            if (BufferMode ===bufMode.ParentObject ) {
                 CP = state.attrData.Get_CenterP(L1, i);
             }
             for (let j = 0; j < ObjnL2; j++) {//検索対象レイヤのオブジェクトの数
                 let concheck = true;
-                if (chkConF == true) {
+                if (chkConF === true) {
                     concheck = state.attrData.Check_Condition(L2, j)
                 }
-                if (concheck == true) {
+                if (concheck === true) {
                     let f;
                     switch (BufferMode) {
                         case bufMode.Distance: {
@@ -3091,29 +3091,29 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                             break;
                         }
                     }
-                    if (f == true) {
+                    if (f === true) {
                         switch (BufferMode) {
                             case bufMode.Distance:
                             case bufMode.ObjectInPolygon: {
                                 //バッファ距離を設定して内部のオブジェクトを探索する
                                 //面領域内部のオブジェクトを探索する
                                 BFN++;
-                                if (F_objNameOut == true) {
+                                if (F_objNameOut === true) {
                                     InObjNameList.push(state.attrData.Get_KenObjName(L2, j));
                                 }
-                                if (F_ObjectData == true) {
+                                if (F_ObjectData === true) {
                                     //データの集計
                                     for (let k = 0; k < Rdn; k++) {
-                                        if (state.attrData.Get_DataType(L2, Add_Data[k]) == enmAttDataType.Category) {
+                                        if (state.attrData.Get_DataType(L2, Add_Data[k]) === enmAttDataType.Category) {
                                             const ct = state.attrData.Get_Categoly(L2, Add_Data[k], j)
                                             const cdata = AggData[k];
-                                            if (ct != -1) {
+                                            if (ct !== -1) {
                                                 cdata.CateCount[ct]++;
                                             } else {
                                                 cdata.CateCount[cdata.CateCount.length - 1]++;
                                             }
                                         } else {
-                                            if (state.attrData.Check_Missing_Value(L2, Add_Data[k], j) == false) {
+                                            if (state.attrData.Check_Missing_Value(L2, Add_Data[k], j) === false) {
                                                 const V = Number(state.attrData.Get_Data_Value(L2, Add_Data[k], j, ""));
                                                 const nd = AggData[k];
                                                 nd.add += V;
@@ -3134,7 +3134,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                             case bufMode.ParentObject: {
                                 //元レイヤのオブジェクトを含むオブジェクトを検索する
                                 Buf2_Obj_Str[i] = state.attrData.Get_KenObjName(L2, j);
-                                if (F_ObjectData == true) {
+                                if (F_ObjectData === true) {
                                     //データの集計
                                     for (let k = 0; k < Rdn; k++) {
                                         Shukei_V[k][i] = state.attrData.Get_Data_Value(L2, Add_Data[k], j, "");
@@ -3147,26 +3147,26 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                     }
                 }
             }
-            if(F_objNameOut == true ){
+            if(F_objNameOut === true ){
                 ObjName_STR[i] =InObjNameList.join('/');
             }
 
-            if(F_ObjectCount == true ){
+            if(F_ObjectCount === true ){
                 ObjCount_STR[i] = BFN.toString();
             }
 
-            if((F_ObjectData == true)&&((BufferMode == bufMode.Distance)||(BufferMode == bufMode.ObjectInPolygon)) ){
+            if((F_ObjectData === true)&&((BufferMode === bufMode.Distance)||(BufferMode === bufMode.ObjectInPolygon)) ){
                 //含まれるオブジェクトの属性データ集計
                 let n  = 0;
                 for(let k  = 0  ;k< Rdn ;k++){
-                    if(state.attrData.Get_DataType(L2, Add_Data[k]) == enmAttDataType.Category ){
+                    if(state.attrData.Get_DataType(L2, Add_Data[k]) === enmAttDataType.Category ){
                         const cdata  = AggData[k];
                         for(let k2  = 0  ;k2< cdata.CateCount.length ;k2++){
                             Shukei_V[n][i]= cdata.CateCount[k2].toString();
                             n ++;
                         }
                     }else{
-                        if(Inner_Object_Num[k] == 0 ){
+                        if(Inner_Object_Num[k] === 0 ){
                             //含まれるオブジェクトがない場合は欠損値
                             Shukei_V[n][i] = undefined;
                         }else{
@@ -3199,10 +3199,10 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
 
         //-----
         let Note  = "空間検索機能で作成";
-        if ((chkConF == true) && (state.attrData.Check_Condition_UMU(L2) == true)) {
+        if ((chkConF === true) && (state.attrData.Check_Condition_UMU(L2) === true)) {
             Note += "\n" + state.attrData.Get_Condition_Info(L2);
         }
-        if (BufferMode == bufMode.ParentObject) {
+        if (BufferMode === bufMode.ParentObject) {
             let TTL;
             let UNT;
             TTL = state.attrData.LayerData[L2].Name + "レイヤに含まれているオブジェクト";
@@ -3211,8 +3211,8 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         } else {
             let TTL;
             let UNT;
-            if (F_ObjectCount == true) {
-                if (BufferMode == bufMode.Distance) {
+            if (F_ObjectCount === true) {
+                if (BufferMode === bufMode.Distance) {
                     TTL = "バッファ" + Dis.toString() + scaleUnit.getText() + "に含まれるオブジェクト数"
                 } else {
                     TTL = state.attrData.LayerData[L2].Name + "のオブジェクト数"
@@ -3220,8 +3220,8 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                 UNT = ""
                 state.attrData.Add_One_Data_Value(L1, TTL, "", Note, ObjCount_STR, false);
             }
-            if (F_objNameOut == true) {
-                if (BufferMode == bufMode.Distance) {
+            if (F_objNameOut === true) {
+                if (BufferMode === bufMode.Distance) {
                     TTL = "バッファ" + Dis.toString() + scaleUnit.getText() + "に含まれるオブジェクト名";
                 } else {
                     TTL = "含まれる" + state.attrData.LayerData[L2].Name + "のオブジェクト名";
@@ -3231,7 +3231,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             }
         }
 
-        if (F_ObjectData == true) {
+        if (F_ObjectData === true) {
             let TTL;
             let UNT;
             let n = 0;
@@ -3239,20 +3239,20 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                 const k = Add_Data[i]
                 TTL = state.attrData.LayerData[L2].Name + "：" + state.attrData.Get_DataTitle(L2, k, false);
                 UNT = state.attrData.Get_DataUnit(L2, k);
-                if (BufferMode == bufMode.Distance) {
+                if (BufferMode === bufMode.Distance) {
                     TTL += ":バッファ"+ Dis.toString() + scaleUnit.getText();
                 }
-                if ((BufferMode == bufMode.Distance) || (BufferMode == bufMode.ObjectInPolygon)) {
-                    if (state.attrData.Get_DataType(L2, k) == enmAttDataType.Category) {
+                if ((BufferMode === bufMode.Distance) || (BufferMode === bufMode.ObjectInPolygon)) {
+                    if (state.attrData.Get_DataType(L2, k) === enmAttDataType.Category) {
                         const PData = state.attrData.LayerData[L2].atrData.Data[k];
                         const Class_div = PData.SoloModeViewSettings.Class_Div;
                         let ctn = state.attrData.Get_DivNum(L2, k);
-                        if (state.attrData.Get_DataMissingNum(L2, k) != 0) {
+                        if (state.attrData.Get_DataMissingNum(L2, k) !== 0) {
                             ctn++;
                         }
                         for (let j = 0; j < ctn; j++) {
                             let fu;
-                            if ((state.attrData.Get_DataMissingNum(L2, k) != 0) && (j == ctn - 1)) {
+                            if ((state.attrData.Get_DataMissingNum(L2, k) !== 0) && (j === ctn - 1)) {
                                 fu = "欠損値";
                             } else {
                                 fu = Class_div[j].Value;
@@ -3343,7 +3343,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
         e.preventDefault();
         const files = e.dataTransfer!.files; // FileList object.
         const file = files[0];
-        if (Generic.getExtension(file.name).toLowerCase() != "mpfj") {
+        if (Generic.getExtension(file.name).toLowerCase() !== "mpfj") {
             Generic.alert(undefined,"地図ファイルではありません。拡張子mpfjのファイルをドロップしてください。");
         }else{
             getFile(file);
@@ -3427,9 +3427,9 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
     Generic.createNewSpan(backDiv, "検索するオブジェクト名", "", "", 10, 40, "", undefined);
     const objNameBox = Generic.createNewInput(backDiv, "text", initParapeter.ObjName, "", 20, 60, undefined, "width:160px");
     objNameBox.onkeydown = function (e: KeyboardEvent) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             change();
-        }else if(e.keyCode == 9){
+        }else if(e.keyCode === 9){
             btnSearch.focus();
             e.preventDefault();
         }
@@ -3487,11 +3487,11 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
         for(let Smode  = 0 ;Smode<= 1;Smode++){
             for (let i = 0; i < MapData.Map.Kend; i++) {
                 const mpObj = MapData.MPObj[i];
-                if ((SelF[i] == false) && (lstObjGroup.getCheckedStatus(mpObj.Kind) == true) && (ChkShapeBoxSelected[mpObj.Shape] == true)) {
+                if ((SelF[i] === false) && (lstObjGroup.getCheckedStatus(mpObj.Kind) === true) && (ChkShapeBoxSelected[mpObj.Shape] === true)) {
                     const f = false;
                     for (let j = 0; j < mpObj.NumOfNameTime; j++) {
                         const mpobjN = mpObj.NameTimeSTC[j];
-                        if (clsTime.checkDurationIn(mpobjN.SETime, Time) == true) {
+                        if (clsTime.checkDurationIn(mpobjN.SETime, Time) === true) {
                             const objComp = mpobjN.NamesList.concat();
                             for (let k = 0; k < mpobjN.NamesList.length; k++) {
                                 objComp[k] = Generic.ObjName_Kanji_Compatible(objComp[k]).newObjname;
@@ -3499,21 +3499,21 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
                             let okf = false;
                             switch (Smode) {
                                 case 0:
-                                    if (objComp.indexOf(tx) != -1) {
+                                    if (objComp.indexOf(tx) !== -1) {
                                         okf = true;
                                     }
                                     break;
                                 case 1:
                                     for (let k = 0; k < mpobjN.NamesList.length; k++) {
-                                        if (objComp[k] != undefined) {
-                                            if (objComp[k].indexOf(tx) != -1) {
+                                        if (objComp[k] !== undefined) {
+                                            if (objComp[k].indexOf(tx) !== -1) {
                                                 okf = true;
                                             }
                                         }
                                     }
                                     break;
                             }
-                            if (okf == true) {
+                            if (okf === true) {
                                 SelF[i] = true;
                                 const obj = new condidateInfo();
                                 obj.ObjCode = i;
@@ -3527,7 +3527,7 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
         }
         lbList.removeAll();
         const n  = candidateObject.length;
-        if(n == 0 ){
+        if(n === 0 ){
             const msgText = "検索条件に当てはまるオブジェクトは見つかりませんでした。"
             Generic.alert(undefined,msgText);
         }else{
@@ -3548,11 +3548,11 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
         let maxOname=0;
         const copyObjname=[];
         for (let i = 0; i < MapData.Map.OBKNum; i++) {
-            if (lstObjGroup.getCheckedStatus(i) == true) {
+            if (lstObjGroup.getCheckedStatus(i) === true) {
                 const onl=MapData.ObjectKind[i].ObjectNameList;
                 maxOname = Math.max(maxOname, onl.length);
                 for (let j = 0; j < onl.length; j++) {
-                    if (copyObjname[j] == undefined) {
+                    if (copyObjname[j] === undefined) {
                         copyObjname[j] = onl[j];
                     } else {
                         copyObjname[j] += "/" + onl[j];
@@ -3568,7 +3568,7 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
         function copyMode(obj: HTMLInputElement){
             let copyTx = "";
             for (let i = 0; i < candidateObject.length; i++) {
-                if (lbList.getCheckedStatus(i) == true) {
+                if (lbList.getCheckedStatus(i) === true) {
                     copyTx += MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[obj.value] + "\n";
                 }
             }
@@ -3605,23 +3605,23 @@ function frmPrint_DummyObjectGroup(){
     Generic.createNewButton(gbDummyList, "削除", "", 115, 150,
         function () {
             const n = lstDummyItem.selectedIndex;
-            if (n != -1) {
+            if (n !== -1) {
                 Dummy[selLayer.selectedIndex].splice(n, 1);
                 lstDummyItem.removeList(n, 1);
             }
         }, "width:60px");
     const txtDummy = Generic.createNewInput(gbDummyList, "text", "", "", 10, 185, undefined, "width:100px");
     txtDummy.addEventListener('keydown',txtKeyDown) ;
-     function txtKeyDown (e: KeyboardEvent) {if (e.keyCode == 13) { btnAdd.click(); } }
+     function txtKeyDown (e: KeyboardEvent) {if (e.keyCode === 13) { btnAdd.click(); } }
     const btnAdd=Generic.createNewButton(gbDummyList, "追加", "", 115, 180,
         function (e: MouseEvent) {
             const tx = txtDummy.value;
-            if (tx == "") {
+            if (tx === "") {
                 txtDummy.removeEventListener('keydown',txtKeyDown) ;
                 Generic.alert(undefined, "オブジェクト名を入力して下さい。",function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
                 return;
             }else{
-                if(AddDummyObject([tx])==true){
+                if(AddDummyObject([tx])===true){
                     txtDummy.value="";
                 }
             }
@@ -3692,7 +3692,7 @@ function frmPrint_DummyObjectGroup(){
     function showPointMark() {
         const lineHeight = 30;
         let DOPMark = DummyObjectPointMark[selMapFIle.getText()];
-        if(DOPMark==undefined){
+        if(DOPMark===undefined){
             DOPMark=[];
         }
         const DOPnum = DOPMark.length;
@@ -3719,20 +3719,20 @@ function frmPrint_DummyObjectGroup(){
         const OKCodeName = [] //strDummyObjectName_and_Code)
         for (const i in str) {
             const objName = str[i];
-            if (objName != "") {
+            if (objName !== "") {
                 const code = state.attrData.Get_ObjectCode_from_ObjName(LayerNum, objName);
-                if (code == -1) {
+                if (code === -1) {
                     emes += "/" + objName;
                 } else {
                     let f = true;
                     for (let j = 0; j < Dummy[LayerNum].length; j++) {
-                        if (Dummy[LayerNum][j].code == code) {
+                        if (Dummy[LayerNum][j].code === code) {
                             emesUsed += "/" + objName;
                             f = false;
                             break;
                         }
                     }
-                    if (f == true) {
+                    if (f === true) {
                         const d = new strDummyObjectName_and_Code();
                         d.code = code;
                         d.Name = objName;
@@ -3744,15 +3744,15 @@ function frmPrint_DummyObjectGroup(){
         }
         Dummy[LayerNum] = Dummy[LayerNum].concat(OKCodeName);
 
-        if(emes != "" ){
+        if(emes !== "" ){
             txtDummy.removeEventListener('keydown',txtKeyDown);
             Generic.alert(undefined,"以下のオブジェクトは見つかりません。" + emes,function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
         }
-        if(emesUsed != "" ){
+        if(emesUsed !== "" ){
             txtDummy.removeEventListener('keydown',txtKeyDown);
             Generic.alert(undefined,"以下のオブジェクトは既にダミーオブジェクトに入っています。" + emesUsed,function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
         }
-        return ((emes == "") && (emesUsed == ""));         
+        return ((emes === "") && (emesUsed === ""));         
     }
 
     function setDummyObjectList() {

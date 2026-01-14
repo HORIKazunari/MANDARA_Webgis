@@ -327,7 +327,7 @@ class Line_Time_Data {
     }
 
     Equals(LT: Line_Time_Data): boolean {
-        if (LT.Kind == this.Kind) {
+        if (LT.Kind === this.Kind) {
             if (LT.SETime.Equals(this.SETime)) {
                 return true;
             }
@@ -618,13 +618,13 @@ class clsMapdata {
 
     Save_Object(EditingObject: strObj_Data, checkObjectmaxMinFlaf: boolean) {
 
-        if (EditingObject.Number == -1) {
+        if (EditingObject.Number === -1) {
             //新規オブジェクト
             EditingObject.Number = this.Map.Kend;
             this.Map.Kend++;
         }
         this.MPObj[EditingObject.Number] = EditingObject.Clone();
-        if (checkObjectmaxMinFlaf == true) {
+        if (checkObjectmaxMinFlaf === true) {
             this.Check_Obj_Maxmin(this.MPObj[EditingObject.Number], true);
         }
     }
@@ -635,7 +635,7 @@ class clsMapdata {
         let newf;
         SEpoint.push(EditingLine.PointSTC[0].Clone());
         SEpoint.push(EditingLine.PointSTC[EditingLine.NumOfPoint-1].Clone());
-        if (EditingLine.Number == -1) {
+        if (EditingLine.Number === -1) {
             //新規
             EditingLine.Number = this.Map.ALIN;
             this.Map.ALIN++;
@@ -647,16 +647,16 @@ class clsMapdata {
         }
         EditingLine.Connect = this.Check_Line_Connect(EditingLine);
         this.MPLine[EditingLine.Number] = EditingLine.Clone();
-        if (checkLineMaxMinFlag == true) {
+        if (checkLineMaxMinFlag === true) {
             this.Check_Line_Maxmin(EditingLine.Number, true);
         }
 
-        if ((newf == false) && (checkRelatedObjectShapeFlag == true)) {
+        if ((newf === false) && (checkRelatedObjectShapeFlag === true)) {
             //当該ラインを使用するオブジェクトの形状チェック
             for (let i = 0; i < this.Map.Kend; i++) {
                 const ob = this.MPObj[i];
                 for (let j = 0; j < ob.NumOfLine; j++) {
-                    if (ob.LineCodeSTC[j].LineCode == EditingLine.Number) {
+                    if (ob.LineCodeSTC[j].LineCode === EditingLine.Number) {
                         ob.Shape = this.Check_Obj_Shape_AllTime(ob);
                         break;
                     }
@@ -664,7 +664,7 @@ class clsMapdata {
             }
         }
 
-        if (checkRelatedLineFlag == true) {
+        if (checkRelatedLineFlag === true) {
             this.Check_Related_Line(SEpoint, EditingLine.Number);
         }
     }
@@ -674,20 +674,20 @@ class clsMapdata {
         const n = SEpoint.length;
         for (let i = 0; i < this.Map.ALIN; i++) {
             const ml = this.MPLine[i];
-            if ((i != exCode) && (ml.NumOfPoint > 0)) {
+            if ((i !== exCode) && (ml.NumOfPoint > 0)) {
                 let f = false;
                 for (let j = 0; j < n; j++) {
-                    if (SEpoint[j].Equals(ml.PointSTC[0]) == true) {
+                    if (SEpoint[j].Equals(ml.PointSTC[0]) === true) {
                         f = true;
                         break;
-                    } else if (SEpoint[j].Equals(ml.PointSTC[ml.NumOfPoint - 1]) == true) {
+                    } else if (SEpoint[j].Equals(ml.PointSTC[ml.NumOfPoint - 1]) === true) {
                         f = true
                         break;
                     }
                 }
-                if (f == true) {
+                if (f === true) {
                     const ct = this.Check_Line_Connect(ml, exCode);
-                    if (ct != ml.Connect) {
+                    if (ct !== ml.Connect) {
                         ml.Connect = ct;
                     }
                 }
@@ -718,29 +718,29 @@ class clsMapdata {
 
     //指定したラインの他ラインとの接続状況の詳細を返す
     Check_Line_Connect_Detail(Line: strLine_Data, exclusion_code = -1) {
-        if (Line.NumOfPoint == 0) {
+        if (Line.NumOfPoint === 0) {
             return 0;
         }
 
         const XY1 = Line.PointSTC[0];
         const XY2 = Line.PointSTC[Line.NumOfPoint - 1];
 
-        if (XY1.Equals(XY2) == true) {
+        if (XY1.Equals(XY2) === true) {
             return 4;
         }
 
         let ret_v = 0;
         for (let i = 0; i < this.Map.ALIN; i++) {
-            if ((i != exclusion_code) && (i != Line.Number)) {
+            if ((i !== exclusion_code) && (i !== Line.Number)) {
                 const ml = this.MPLine[i];
                 const n = ml.NumOfPoint;
                 if (n > 0) {
                     const pxy1 = ml.PointSTC[0];
                     const pxy2 = ml.PointSTC[n - 1];
-                    if ((pxy1.Equals(XY1) == true) || (pxy2.Equals(XY1) == true)) {
+                    if ((pxy1.Equals(XY1) === true) || (pxy2.Equals(XY1) === true)) {
                         ret_v = (ret_v) || (1);
                     }
-                    if ((pxy1.Equals(XY2) == true) || (pxy2.Equals(XY2) == true)) {
+                    if ((pxy1.Equals(XY2) === true) || (pxy2.Equals(XY2) === true)) {
                         ret_v = (ret_v) || (2);
                     }
                 }
@@ -752,7 +752,7 @@ class clsMapdata {
     //同じオブジェクトグループ名の番号を返す見つからなかった場合-1
     Get_ObjectGroupNumber_By_Name(Name: string) {
         for (let i = 0; i < this.Map.OBKNum; i++) {
-            if (this.ObjectKind[i].Name == Name) {
+            if (this.ObjectKind[i].Name === Name) {
                 return i;
             }
         }
@@ -775,8 +775,8 @@ class clsMapdata {
     Get_Objects_by_Group(ObjGroup: number, Time: strYMD) {
         const Get_Objects = [];
         for (let i = 0; i < this.Map.Kend; i++) {
-            if (this.MPObj[i].Kind == ObjGroup) {
-                if (this.CheckEnableObject(this.MPObj[i], Time) == true) {
+            if (this.MPObj[i].Kind === ObjGroup) {
+                if (this.CheckEnableObject(this.MPObj[i], Time) === true) {
                     Get_Objects.push(i);
                 }
             }
@@ -844,7 +844,7 @@ class clsMapdata {
         }
 
         let LoopF = false;
-        if (PointXY[0].Equals(PointXY[FirstPointNum - 1]) == true) {
+        if (PointXY[0].Equals(PointXY[FirstPointNum - 1]) === true) {
             LoopF = true;
         } else {
             LoopF = false;
@@ -858,16 +858,16 @@ class clsMapdata {
             Cng_f = false;
             for (let k = 0; k <= 1; k++) {
                 FirstPointNum = ts;
-                if (k == 1) {
+                if (k === 1) {
                     Push_point[1] = PointXY[1].Clone();
                 }
                 n = 1 + k;
-                if ((LoopF == true) && (FirstPointNum <= 8)) {
+                if ((LoopF === true) && (FirstPointNum <= 8)) {
                     break;
                 }
                 for (let j = 1 + k; j <= FirstPointNum - 3; j += 2) {
                     let D;
-                    if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+                    if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                         D = spatial.Distance_Ido_Kedo_XY_Point(PointXY[j], PointXY[j + 1], this.Map.Zahyo);
                     } else {
                         D = spatial.Distance_Point(PointXY[j], PointXY[j + 1]) / this.Map.SCL;
@@ -882,7 +882,7 @@ class clsMapdata {
                         n += 2;
                     }
                 }
-                if (((FirstPointNum % 2 == 1) && (k == 0)) || ((FirstPointNum % 2 == 0) && (k == 1))) {
+                if (((FirstPointNum % 2 === 1) && (k === 0)) || ((FirstPointNum % 2 === 0) && (k === 1))) {
                     Push_point[n] = PointXY[FirstPointNum - 2].Clone();
                     n++;
                 }
@@ -895,7 +895,7 @@ class clsMapdata {
                 }
                 ts = n;
             }
-        } while (Cng_f == true);
+        } while (Cng_f === true);
         return PointXY;
     }
     
@@ -924,7 +924,7 @@ class clsMapdata {
         const Okind = this.Get_OneObjectGroup_Parameter(Name, Shape, this.Map.OBKNum, this.Map.LpNum, Mesh, type);
         this.ObjectKind.push(Okind);
         for (let i = 0; i < this.Map.OBKNum; i++) {
-            if (this.ObjectKind[i].ObjectType == enmObjectGoupType_Data.AggregationObject) {
+            if (this.ObjectKind[i].ObjectType === enmObjectGoupType_Data.AggregationObject) {
                 this.ObjectKind[i].UseObjectGroup.push(false);
             }
         }
@@ -942,7 +942,7 @@ class clsMapdata {
         Okind.DefTimeAttDataNum = 0;
         Okind.ObjectNameNum = 1;
         Okind.ObjectNameList = ["オブジェクト名1"];
-        if (type == enmObjectGoupType_Data.AggregationObject) {
+        if (type === enmObjectGoupType_Data.AggregationObject) {
             Okind.UseLineType.length = (Math.max(ObkNum, 0));
         } else {
             Okind.UseLineType.length = (Math.max(LpNum - 1, 0));
@@ -1026,7 +1026,7 @@ class clsMapdata {
     }
     //オブジェクトの重心を求める。面形状でない場合はundefinedを返す
     GetObjGraviityXY(ObjData: strObj_Data, L_Time: strYMD) {
-        if (ObjData.Shape != enmShape.PolygonShape) {
+        if (ObjData.Shape !== enmShape.PolygonShape) {
             //ポリゴンでない場合は求めない
             return undefined;
         }
@@ -1034,9 +1034,9 @@ class clsMapdata {
         let GPoint = new point();
         const retV: JsonValue = this.Menseki(ObjData,  L_Time);
         const xy2=retV.gpoint;
-        if (retV.menseki == -1) {
+        if (retV.menseki === -1) {
             return false;
-        } else if (retV.menseki == 0) {
+        } else if (retV.menseki === 0) {
             GPoint = xy2.Clone();
         } else {
             //重心がオブジェクト内部に収まるかチェック
@@ -1046,7 +1046,7 @@ class clsMapdata {
                 Fringe_Line.push(ELine[j].LineCode);
             }
             const retV: JsonValue = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
-            if (retV.ok == true) {
+            if (retV.ok === true) {
                 GPoint = xy2.Clone();
             } else {
                 //入らない場合
@@ -1058,7 +1058,7 @@ class clsMapdata {
                 }
                 let mw = Cross_x[1] - Cross_x[0];
                 let mww = 0;
-                if (crn % 2 == 1) {
+                if (crn % 2 === 1) {
                     crn -= 1;
                 }
                 if (crn >= 4) {
@@ -1082,13 +1082,13 @@ class clsMapdata {
         let Obj_rect = new rectangle();
         for (let i = 0; i < ObjData.NumOfCenterP; i++) {
             const p = ObjData.CenterPSTC[i].Position;
-            if (i == 0) {
+            if (i === 0) {
                 Obj_rect = new rectangle(p);
             } else {
                 Obj_rect = spatial.getCircumscribedRectangle(p, Obj_rect);
             }
         }
-        if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
+        if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
             if (ObjData.NumOfLine > 0) {
                 for (let i = 0; i < ObjData.NumOfLine; i++) {
                     Obj_rect = spatial.getCircumscribedRectangle(this.MPLine[ObjData.LineCodeSTC[i].LineCode].Circumscribed_Rectangle, Obj_rect);
@@ -1098,23 +1098,23 @@ class clsMapdata {
             const AggObs = this.Get_MpObj_used_AggregateObject(ObjData, clsTime.GetNullYMD());
             for (let i = 0; i < AggObs.length; i++) {
                 const m = this.MPObj[AggObs[i]];
-                if (this.ObjectKind[m.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
+                if (this.ObjectKind[m.Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
                     Obj_rect = spatial.getCircumscribedRectangle(m.Circumscribed_Rectangle, Obj_rect);
                 }
             }
         }
         ObjData.Circumscribed_Rectangle = Obj_rect;
-        if (MapRectCheckF == true) {
+        if (MapRectCheckF === true) {
             this.Check_MapCircumscribedRectangle(oldObjRect, Obj_rect);
         }
     }
     Check_MapCircumscribedRectangle(oldRect: rectangle, newRect: rectangle) {
-        if (spatial.Compare_Two_Rectangle_Position(this.Map.Circumscribed_Rectangle, newRect) != cstRectangle_Cross.cstInclusion) {
+        if (spatial.Compare_Two_Rectangle_Position(this.Map.Circumscribed_Rectangle, newRect) !== cstRectangle_Cross.cstInclusion) {
             //内部に含まれない場合はUNIONで外接四角形を求める
             this.Map.Circumscribed_Rectangle = spatial.Get_Rectangle_Union(this.Map.Circumscribed_Rectangle, newRect);
         } else {
             //newRectが内部に含まれる場合
-            if (spatial.Check_TwoRectangele_Inner_Contact(this.Map.Circumscribed_Rectangle, oldRect) == true) {
+            if (spatial.Check_TwoRectangele_Inner_Contact(this.Map.Circumscribed_Rectangle, oldRect) === true) {
                 //oldRectが地図データの外周の一部だった場合は再計算
                 this.Map.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle();
             }
@@ -1132,7 +1132,7 @@ class clsMapdata {
     Check_Line_Maxmin(Lcode: number, MapRectCheckF: boolean) {
         const oldRect = this.MPLine[Lcode].Circumscribed_Rectangle;
         this.MPLine[Lcode].Circumscribed_Rectangle = spatial.getCircumscribedRectangle(this.MPLine[Lcode].PointSTC);
-        if (MapRectCheckF == true) {
+        if (MapRectCheckF === true) {
             this.Check_MapCircumscribedRectangle(oldRect, this.MPLine[Lcode].Circumscribed_Rectangle);
         }
 
@@ -1148,30 +1148,30 @@ class clsMapdata {
         let Emes = "";
         let SeFlOb = -1;
         for (let i = 0; i < this.Map.OBKNum; i++) {
-            if (ObjSel[i] == true) {
-                if (SeFlOb == -1) {
+            if (ObjSel[i] === true) {
+                if (SeFlOb === -1) {
                     SeFlOb = i;
                 } else {
-                    if (this.ObjectKind[i].Shape != this.ObjectKind[SeFlOb].Shape) {
+                    if (this.ObjectKind[i].Shape !== this.ObjectKind[SeFlOb].Shape) {
                         Emes = "異なる形状のオブジェクトグループが選択されています。";
                         f = false;
                         break;
                     }
-                    if (check_objType == true) {
-                        if (this.ObjectKind[i].ObjectType != this.ObjectKind[SeFlOb].ObjectType) {
+                    if (check_objType === true) {
+                        if (this.ObjectKind[i].ObjectType !== this.ObjectKind[SeFlOb].ObjectType) {
                             Emes = "異なるオブジェクトのタイプのオブジェクトグループが選択されています。";
                             f = false;
                             break;
                         }
                     }
-                    if (check_objNameListNum == true) {
-                        if (this.ObjectKind[i].ObjectNameNum != this.ObjectKind[SeFlOb].ObjectNameNum) {
+                    if (check_objNameListNum === true) {
+                        if (this.ObjectKind[i].ObjectNameNum !== this.ObjectKind[SeFlOb].ObjectNameNum) {
                             Emes = "オブジェクト名リスト数が異なるオブジェクトグループが選択されています。";
                             f = false;
                             break;
                         } else {
                             for (let j = 0; j < this.ObjectKind[i].ObjectNameNum; j++) {
-                                if (this.ObjectKind[i].ObjectNameList(j) != this.ObjectKind[SeFlOb].ObjectNameList[j]) {
+                                if (this.ObjectKind[i].ObjectNameList(j) !== this.ObjectKind[SeFlOb].ObjectNameList[j]) {
                                     Emes = "オブジェクト名リストの名称が異なるオブジェクトグループが選択されています。";
                                     f = false;
                                     i = this.Map.OBKNum - 1
@@ -1180,14 +1180,14 @@ class clsMapdata {
                             }
                         }
                     }
-                    if (this.ObjectKind[i].DefTimeAttDataNum != this.ObjectKind[SeFlOb].DefTimeAttDataNum) {
+                    if (this.ObjectKind[i].DefTimeAttDataNum !== this.ObjectKind[SeFlOb].DefTimeAttDataNum) {
                         Emes = "初期属性数が異なるオブジェクトグループが選択されています。";
                         f = false;
                         break;
                     } else {
                         for (let j = 0; j < this.ObjectKind[i].DefTimeAttDataNum; j++) {
-                            if ((this.ObjectKind[i].DefTimeAttSTC[j].attData.Title != this.ObjectKind[SeFlOb].DefTimeAttSTC[j].attData.Title) ||
-                                (this.ObjectKind[i].DefTimeAttSTC[j].attData.Unit != this.ObjectKind[SeFlOb].DefTimeAttSTC[j].attData.Unit)) {
+                            if ((this.ObjectKind[i].DefTimeAttSTC[j].attData.Title !== this.ObjectKind[SeFlOb].DefTimeAttSTC[j].attData.Title) ||
+                                (this.ObjectKind[i].DefTimeAttSTC[j].attData.Unit !== this.ObjectKind[SeFlOb].DefTimeAttSTC[j].attData.Unit)) {
                                 Emes = "初期属性のタイトルまたは単位が異なるオブジェクトグループが選択されています。";
                                 f = false;
                                 i = this.Map.OBKNum - 1;
@@ -1212,7 +1212,7 @@ class clsMapdata {
     Boundary_Arrange_Sub(ELine: Array<JsonObject>): boundArrangeData {
         let boundArrange = new boundArrangeData();
         const NL = ELine.length;
-        if (NL == 0) {
+        if (NL === 0) {
             boundArrange.Pon = 0;
             return boundArrange;
         }
@@ -1235,11 +1235,11 @@ class clsMapdata {
         const ml = this.MPLine[L_Code];
         let men;
         const PN = ml.NumOfPoint;
-        if (PN == 0) {
+        if (PN === 0) {
             return -1;
         }
         const PE = PN - 1;
-        if (ml.PointSTC[PE].Equals(ml.PointSTC[0]) == true) {
+        if (ml.PointSTC[PE].Equals(ml.PointSTC[0]) === true) {
             const pxy =Generic.ArrayClone( ml.PointSTC);
             pxy.push(ml.PointSTC[1].Clone());
             men = spatial.Get_Hairetu_Menseki(pxy, this.Map);
@@ -1271,14 +1271,14 @@ class clsMapdata {
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map);
         }
         let m;
-        if (Pon == 1) {
+        if (Pon === 1) {
             m = mens[0]
         } else {
             const TotalInOut: number[] = [];
             const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             for (let i = 0; i < Pon; i++) {
-                if ((TotalInOut[i] % 2) == 1) {
+                if ((TotalInOut[i] % 2) === 1) {
                     //何かのポリゴンに奇数回含まれるポリゴンは中抜け
                     mens[i] = -mens[i];
                 } else {
@@ -1291,7 +1291,7 @@ class clsMapdata {
 
     //ポリゴンごとの面積を求めて、中抜け等を判定して全体の面積を返す（重心つき）
     Menseki_Sub(badata: boundArrangeData) {
-        // if ((GXY instanceof boundArrangeData) == true) {
+        // if ((GXY instanceof boundArrangeData) === true) {
         //     return this.Menseki_sub2(GXY);
         // }
         let GXY=new point();
@@ -1321,7 +1321,7 @@ class clsMapdata {
                     xx += wsw[j] * (LXY2[j].x + LXY2[j + 1].x)
                     yy += wsw[j] * (LXY2[j].y + LXY2[j + 1].y)
                 }
-                if (w != 0) {
+                if (w !== 0) {
                     gp[i] =new point( (a + xx / w) / 3, (b + yy / w) / 3);
                 }
             }
@@ -1330,7 +1330,7 @@ class clsMapdata {
                 gp[i] = LXY2[0];
             } else {
                 mens[i] = spatial.Get_Hairetu_Menseki( LXY2, this.Map);
-                if (((mens[i] < 0.0000000001) && (gp[i] == undefined) ) || w == 0) {
+                if (((mens[i] < 0.0000000001) && (gp[i] === undefined) ) || w === 0) {
                     //幅のないポリゴンはポイント座標で重心
                     let xx = 0;
                     let yy = 0;
@@ -1343,7 +1343,7 @@ class clsMapdata {
             }
         }
         let m;
-        if (Pon == 1) {
+        if (Pon === 1) {
             m = mens[0]
             GXY = gp[0];
         } else {
@@ -1352,7 +1352,7 @@ class clsMapdata {
             m = 0;
             let sm = 0;
             for (let i = 0; i < Pon; i++) {
-                if ((TotalInOut[i] % 2) == 1) {
+                if ((TotalInOut[i] % 2) === 1) {
                     //何かのポリゴンに奇数回含まれるポリゴンは中抜け
                     mens[i] = -mens[i];
                 } else {
@@ -1379,7 +1379,7 @@ class clsMapdata {
 
         const Fringe_Line = [];
         const f = this.Check_Point_in_oneObject_Box(obj, x, y);
-        if (f == true) {
+        if (f === true) {
             const ELine = this.Get_EnableMPLine(obj, LAY_Time);
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
@@ -1399,8 +1399,8 @@ class clsMapdata {
             obj = Obj_ObjNumber;
         }
         let f = false;
-        if (obj.Shape != enmShape.PointShape) {
-            if (spatial.Check_PointInBox(new point(x, y), 0, obj.Circumscribed_Rectangle) == true) {
+        if (obj.Shape !== enmShape.PointShape) {
+            if (spatial.Check_PointInBox(new point(x, y), 0, obj.Circumscribed_Rectangle) === true) {
                 f = true;
             }
         }
@@ -1439,18 +1439,18 @@ class clsMapdata {
 
             for (let j = 0; j < n; j++) {
                 const LCD = Otags[j];
-                if (LCD != i) {
+                if (LCD !== i) {
                     const Fringe_Line = [];
                     for (let k = 0; k < Arrange_LineCode[LCD][1]; k++) {
                         Fringe_Line.push(Fringe[Arrange_LineCode[LCD][0] + k].code);
                     }
                     const retV = this.Check_Point_in_Polygon_LineCode(X, Y, Fringe_Line);
-                    if (retV.ok == true) {
+                    if (retV.ok === true) {
                         const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
                         const x2 = ML.PointSTC[1].x;
                         const y2 = ML.PointSTC[1].y;
                         const retV2 = this.Check_Point_in_Polygon_LineCode(x2, y2, Fringe_Line);
-                        if (retV2.ok == true) {
+                        if (retV2.ok === true) {
                             //iがjの中に含まれる場合は(i,j)を1に
                             InOut[i][LCD] = 1;
                             TotalInOutNum[i]++;
@@ -1496,11 +1496,11 @@ class clsMapdata {
             const Fr = Fringe[Arrange_LineCode[Num][0] + i];
             const PN = this.Get_Coords_by_LineCode(Fr.code, Get_Coords_Data, Fr.Direction, XYS, getStep);
             for (let j = 0; j < PN; j++) {
-                if ((n == 0) || (Equal_XY_Get_F == true)) {
+                if ((n === 0) || (Equal_XY_Get_F === true)) {
                     poxy.push( XYS[j]);
                     n++;
                 } else {
-                    if (poxy[n - 1].Equals(XYS[j]) == true) {
+                    if (poxy[n - 1].Equals(XYS[j]) === true) {
                     } else {
                         poxy.push(XYS[j]);
                         n++;
@@ -1528,12 +1528,12 @@ class clsMapdata {
         let fe;
         let fst;
         const ML = this.MPLine[LCode];
-        if ((getStep + 1 >= ML.NumOfPoint) && (ML.PointSTC[0].Equals(ML.PointSTC[ML.NumOfPoint - 1]) == true)) {
+        if ((getStep + 1 >= ML.NumOfPoint) && (ML.PointSTC[0].Equals(ML.PointSTC[ML.NumOfPoint - 1]) === true)) {
             //ループで2地点となって点になるのをふせぐ
             getStep = 1;
         }
         XYS.length = ML.NumOfPoint;
-        if (P_Dir == 1) {
+        if (P_Dir === 1) {
             fs = 0;
             fe = ML.NumOfPoint - 1;
             fst = getStep;
@@ -1545,7 +1545,7 @@ class clsMapdata {
 
         let n = 0
         let lastp = fs
-        for (let i = fs; i != fe+fst; i += fst) {
+        for (let i = fs; i !== fe+fst; i += fst) {
             let xy;
             switch (Get_Coords_Data) {
                 case 0:
@@ -1566,7 +1566,7 @@ class clsMapdata {
             XYS[n] = xy;
             n++;
         }
-        if (lastp != fe) {
+        if (lastp !== fe) {
             let xy;
             switch (Get_Coords_Data) {
                 case 0:
@@ -1589,18 +1589,18 @@ class clsMapdata {
     //指定されたオブジェクトで、指定された時期に使用可能なライン番号を返す
     Get_EnableMPLine(ObjData_objNum: number, Time: strYMD) {
         let ObjData;
-        if ((ObjData_objNum instanceof strObj_Data) == false) {
+        if ((ObjData_objNum instanceof strObj_Data) === false) {
             ObjData = this.MPObj[ObjData_objNum];
         } else {
             ObjData = ObjData_objNum;
         }
 
         let LCode: JsonValue[] = [];
-        if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
+        if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
             const AggObs = this.Get_MpObj_used_AggregateObject(ObjData, Time);
             for (let i = 0; i < AggObs.length; i++) {
                 const lc = AggObs[i];
-                if (this.ObjectKind[this.MPObj[lc].Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
+                if (this.ObjectKind[this.MPObj[lc].Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
                     const E_LCode = this.Get_EnableMPLine_Normal(this.MPObj[lc], Time);
                     LCode = LCode.concat(E_LCode);
                 }
@@ -1624,10 +1624,10 @@ class clsMapdata {
     Get_MpObj_used_AggregateObject_Sub(ObjData: strObj_Data, Time: strYMD) {
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             const lc = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time)
-            if (lc != -1) {
-                if (this.CheckEnableObject(this.MPObj[lc], Time) == true) {
+            if (lc !== -1) {
+                if (this.CheckEnableObject(this.MPObj[lc], Time) === true) {
                     this.Enable_MPObjStac.push(lc);
-                    if (this.ObjectKind[this.MPObj[lc].Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
+                    if (this.ObjectKind[this.MPObj[lc].Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
                         //集成オブジェクトを参照している場合はさらに再帰処理
                         this.Get_MpObj_used_AggregateObject_Sub(this.MPObj[lc], Time)
                     }
@@ -1638,11 +1638,11 @@ class clsMapdata {
 
     //ラインコードスタックのラインが指定時期に利用できるかをチェック、利用できる場合はラインコード番号を返し，そうでない場合は－１を返す
     Check_Enable_LineCode(Lcode_Stac: number[], Time: strYMD) {
-        if ((Lcode_Stac.NumOfTime == 0) || (Time.nullFlag() == true)) {
+        if ((Lcode_Stac.NumOfTime === 0) || (Time.nullFlag() === true)) {
             return Lcode_Stac.LineCode;
         } else {
             for (let i = 0; i < Lcode_Stac.NumOfTime; i++) {
-                if (clsTime.checkDurationIn(Lcode_Stac.Times[i], Time) == true) {
+                if (clsTime.checkDurationIn(Lcode_Stac.Times[i], Time) === true) {
                     return Lcode_Stac.LineCode;
                 }
             }
@@ -1652,11 +1652,11 @@ class clsMapdata {
     //ラインが指定時期に利用できるかをチェック,利用できる場合は線種番号そうでない場合は-1を返す
     Check_Enable_Line(MpLine: strLine_Data, Check_Time: strYMD) {
         let L_K = -1;
-        if (Check_Time.nullFlag() == true) {
+        if (Check_Time.nullFlag() === true) {
             L_K = MpLine.LineTimeSTC[0].Kind;
         } else {
             for (let i = 0; i < MpLine.NumOfTime; i++) {
-                if (clsTime.checkDurationIn(MpLine.LineTimeSTC[i].SETime, Check_Time) == true) {
+                if (clsTime.checkDurationIn(MpLine.LineTimeSTC[i].SETime, Check_Time) === true) {
                     L_K = MpLine.LineTimeSTC[i].Kind;
                     break;
                 }
@@ -1668,7 +1668,7 @@ class clsMapdata {
     //指定したオブジェクトで、指定した時間に利用できるライン番号を戻し、その要素を返す
     Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: strYMD) {
         const Enable_LCode = [];
-        if (Time.nullFlag() == true) {
+        if (Time.nullFlag() === true) {
             for (let i = 0; i < ObjData.NumOfLine; i++) {
                 const ls = ObjData.LineCodeSTC[i];
                 const d = new EnableMPLine_Data();
@@ -1678,21 +1678,21 @@ class clsMapdata {
             }
             return Enable_LCode;
         } else {
-            if (this.CheckEnableObject(ObjData, Time) == false) {
+            if (this.CheckEnableObject(ObjData, Time) === false) {
                 return undefined;
             }
         }
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             let L_K, f;
             const L_Code = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time);
-            if (L_Code != -1) {
+            if (L_Code !== -1) {
                 L_K = this.Check_Enable_Line(this.MPLine[L_Code], Time);
-                if (L_K != -1) {
+                if (L_K !== -1) {
                     f = true;
                 }
-                if (f == true) {
-                    if (this.Map.Time_Mode == true) {
-                        if (this.ObjectKind[ObjData.Kind].UseLineType[L_K] == true) {
+                if (f === true) {
+                    if (this.Map.Time_Mode === true) {
+                        if (this.ObjectKind[ObjData.Kind].UseLineType[L_K] === true) {
                             const d = new EnableMPLine_Data();
                             d.LineCode = L_Code;
                             d.Kind = L_K;
@@ -1715,7 +1715,7 @@ class clsMapdata {
     //指定した時間に指定したオブジェクトが存在する場合trueを返す
     CheckEnableObject(ObjData: strObj_Data, Time: strYMD) {
         for (let i = 0; i < ObjData.NumOfNameTime; i++) {
-            if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) == true) {
+            if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) === true) {
                 return true;
             }
         }
@@ -1727,7 +1727,7 @@ class clsMapdata {
         this.ObjectKind[objG].DefTimeAttDataNum = 0;
         this.DefTimeAttSTC = [];
         for (let i = 0; i < this.Map.Kend; i++) {
-            if (this.MPObj[i].Kind == objG) {
+            if (this.MPObj[i].Kind === objG) {
                 this.MPObj[i].DefTimeAttValue = [];
             }
         }
@@ -1743,7 +1743,7 @@ class clsMapdata {
                 LP.Pat = lk.ObjGroup[j].Pattern;
                 LP.LKind = i;
                 LP.LkindPatNum = j;
-                LP.Name = (j == 0) ? lk.Name : "-" + this.ObjectKind[lk.ObjGroup[j].GroupNumber].Name;
+                LP.Name = (j === 0) ? lk.Name : "-" + this.ObjectKind[lk.ObjGroup[j].GroupNumber].Name;
                 LPC.push(LP);
             }
         }
@@ -1763,23 +1763,23 @@ class clsMapdata {
         const ob = this.MPObj[ObjCode];
         const ogp = ob.Kind;
         let Value;
-        if (this.Map.Time_Mode == false) {
+        if (this.Map.Time_Mode === false) {
             return ob.DefTimeAttValue[defNumber].Data[0].Value;
         } else {
-            if (Time.nullFlag() == true) {
+            if (Time.nullFlag() === true) {
                 return undefined;
             }
             const dev = ob.DefTimeAttValue[defNumber];
             const n = dev.Data.length;
 
-            if (n == 0) {
+            if (n === 0) {
                 return undefined;
             }
             switch (this.ObjectKind[ogp].DefTimeAttSTC[defNumber].Type) {
                 case enmDefTimeAttDataType.PointData:
                     //時点データの場合
                     for (let i = 0; i < n; i++) {
-                        if (dev.Data[i].Span.StartTime.Equals(Time) == true) {
+                        if (dev.Data[i].Span.StartTime.Equals(Time) === true) {
                             //同じ時点のデータがあった場合
                             return dev.Data[i].Value;
                         }
@@ -1796,7 +1796,7 @@ class clsMapdata {
                             let minDay;
                             for (let i = 0; i < n; i++) {
                                 const daten = Math.abs(clsTime.getDifference(dev.Data[i].Span.StartTime, Time));
-                                if (ff == true) {
+                                if (ff === true) {
                                     minDay = daten;
                                     Value = dev.Data[i].Value;
                                 } else {
@@ -1815,7 +1815,7 @@ class clsMapdata {
                                 const span = new Start_End_Time_data();
                                 span.StartTime = dev.Data[i].Span.StartTime;
                                 span.EndTime = dev.Data[i + 1].Span.StartTime;
-                                if (clsTime.checkDurationIn(span, Time) == true) {
+                                if (clsTime.checkDurationIn(span, Time) === true) {
                                     const v1 = Number(dev.Data[i].Value.replace(",", ""));
                                     const v2 = Number(dev.Data[i + 1].Value.replace(",", ""));
                                     const vsa = v2 - v1;
@@ -1834,7 +1834,7 @@ class clsMapdata {
                                 case enmDefPointAttDataExtraValue.interpolation_NearestValue:
                                     //間に挟まれていない場合は近い値
 
-                                    if (dev.Data[0].Span.StartTime.nullFlag() == true) {
+                                    if (dev.Data[0].Span.StartTime.nullFlag() === true) {
                                         return dev.Data[0].Value;
                                     } else {
                                         const d1 = Math.abs(clsTime.getDifference(dev.Data[0].Span.StartTime, Time));
@@ -1842,7 +1842,7 @@ class clsMapdata {
                                         if (d1 < d2) {
                                             return dev.Data[0].Value;
                                         } else {
-                                            if (dev.Data[n - 1].Value == null) {
+                                            if (dev.Data[n - 1].Value === null) {
                                                 return undefined;
                                             } else {
                                                 return dev.Data[n - 1].Value;
@@ -1857,7 +1857,7 @@ class clsMapdata {
                 case enmDefTimeAttDataType.SpanData:
                     //期間データの場合
                     for (let i = 0; i < dev.Data.length ; i++) {
-                        if (clsTime.checkDurationIn(dev.Data[i].Span, Time) == true) {
+                        if (clsTime.checkDurationIn(dev.Data[i].Span, Time) === true) {
                             return dev.Data[i].Value;
                         }
                     }
@@ -1872,20 +1872,20 @@ class clsMapdata {
     Distance_Object(O_Code1: number, O_Code2: number, Time1: clsTime, Time2: clsTime) {
         let P1;
         let P2;
-        if (this.MPObj[O_Code2].Shape == enmShape.LineShape) {
+        if (this.MPObj[O_Code2].Shape === enmShape.LineShape) {
             [O_Code1, O_Code2] = [O_Code2, O_Code1];
             [Time1, Time2] = [Time2, Time1];
         }
 
         let d;
-        if (this.MPObj[O_Code1].Shape == enmShape.LineShape) {
+        if (this.MPObj[O_Code1].Shape === enmShape.LineShape) {
             //一方が線オブジェクトの場合
             P2 = this.Get_Enable_CenterP(O_Code2, Time2);
             d = this.Get_Distance_Between_ObjectLine_and_Point(O_Code1, Time1, P2);
         } else {
             P1 = this.Get_Enable_CenterP(O_Code1, Time1);
             P2 = this.Get_Enable_CenterP(O_Code2, Time2);
-            if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, this.Map.Zahyo);
             } else {
                 d = spatial.Distance_Point(P1, P2) / this.Map.SCL;
@@ -1896,12 +1896,12 @@ class clsMapdata {
 
     Distance_ObjectCenterP(CP: point, O_Code1: number,  Time1: clsTime) {
         let d;
-        if (this.MPObj[O_Code1].Shape == enmShape.LineShape) {
+        if (this.MPObj[O_Code1].Shape === enmShape.LineShape) {
             //一方が線オブジェクトの場合
             d = this.Get_Distance_Between_ObjectLine_and_Point(O_Code1, Time1, CP);
         } else {
             const P1 = this.Get_Enable_CenterP(O_Code1, Time1);
-            if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 d = spatial.Distance_Ido_Kedo_XY_Point(CP, P1, this.Map.Zahyo);
             } else {
                 d = spatial.Distance_Point(CP, P1) / this.Map.SCL;
@@ -1927,10 +1927,10 @@ class clsMapdata {
                 let nearP;
                 const DD = spatial.Distance_PointLine2(P, ml.PointSTC[j], ml.PointSTC[j + 1]);
                 let dist = DD.distance;
-                if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+                if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     dist = spatial.Distance_Ido_Kedo_XY(P, DD.nearP, this.Map.Zahyo)
                 }
-                if (f == false) {
+                if (f === false) {
                     mind = dist;
                     f = true;
                 } else {
@@ -1940,7 +1940,7 @@ class clsMapdata {
                 }
             }
         }
-        if (this.Map.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+        if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
             return mind;
         } else {
             return mind / this.Map.SCL;
@@ -1956,11 +1956,11 @@ class clsMapdata {
             const ReMovePoint = [];
             ReMovePoint[0] = ml.PointSTC[0].Clone();
             for (let j = 1; j < ml.NumOfPoint; j++) {
-                if (ml.PointSTC[j - 1].Equals(ml.PointSTC[j]) != true) {
+                if (ml.PointSTC[j - 1].Equals(ml.PointSTC[j]) !== true) {
                     ReMovePoint.push(ml.PointSTC[j].Clone());
                 }
             }
-            if (ml.NumOfPoint != ReMovePoint.length) {
+            if (ml.NumOfPoint !== ReMovePoint.length) {
                 ml.PointSTC = ReMovePoint;
                 ml.NumOfPoint = ReMovePoint.length;
             }
@@ -1969,7 +1969,7 @@ class clsMapdata {
 
 /** 指定された線の共通部分を抽出して、位相構造化する。変更があった場合trueを返す */
     TopologyStructure_SameLine(TopologyLineList: number[]) {
-        if (TopologyLineList == undefined) {
+        if (TopologyLineList === undefined) {
             //全ライン
             TopologyLineList = [];
             for (let i = 0; i < this.Map.ALIN; i++) {
@@ -1992,7 +1992,7 @@ class clsMapdata {
                 do {
                     const ODALIN1 = this.Map.ALIN;
                     f = this.TopologyStructure_Two_SameLine(i, j);
-                    if (f == true) {
+                    if (f === true) {
                         if (ODALIN1 > this.Map.ALIN) {
                             //二つのラインが全く同じで、片方が削除された場合
                             TopologyLineList.splice(jcount, 1);
@@ -2012,7 +2012,7 @@ class clsMapdata {
                         }
                         Result = true;
                     }
-                } while (f == true)
+                } while (f === true)
                 jcount++;
             }
             icount++;
@@ -2025,30 +2025,30 @@ class clsMapdata {
 
         const mLine1 = this.MPLine[LCode1];
         const mLine2 = this.MPLine[LCode2];
-        if (spatial.Compare_Two_Rectangle_Position_Inflated(mLine1.Circumscribed_Rectangle, mLine2.Circumscribed_Rectangle, 0.0001) == cstRectangle_Cross.cstOuter) {
+        if (spatial.Compare_Two_Rectangle_Position_Inflated(mLine1.Circumscribed_Rectangle, mLine2.Circumscribed_Rectangle, 0.0001) === cstRectangle_Cross.cstOuter) {
             //ラインが重ならない場合
             return false;
         }
         //時間設定が同じかチェック
-        if (mLine1.NumOfTime != mLine2.NumOfTime) {
+        if (mLine1.NumOfTime !== mLine2.NumOfTime) {
             return false;
         } else {
             for (let i = 0; i < mLine1.NumOfTime; i++) {
-                if (mLine1.LineTimeSTC[i].Equals(mLine2.LineTimeSTC[i]) == false) {
+                if (mLine1.LineTimeSTC[i].Equals(mLine2.LineTimeSTC[i]) === false) {
                     //時間設定・線種が異なる場合
                     return false;
                 }
             }
         }
 
-        if (this.Check_Points_Of_Two_Lines(LCode1, LCode2) == true) {
+        if (this.Check_Points_Of_Two_Lines(LCode1, LCode2) === true) {
             //全く同じラインだった場合
             for (let i = 0; i < this.Map.Kend; i++) {
                 const mo = this.MPObj[i];
-                if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
+                if (this.ObjectKind[mo.Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
                     for (let j = 0; j < mo.NumOfLine; j++) {
                         const mol = mo.LineCodeSTC[j];
-                        if (mol.LineCode == LCode2) {
+                        if (mol.LineCode === LCode2) {
                             mol.LineCode = LCode1;
                         }
                     }
@@ -2072,9 +2072,9 @@ class clsMapdata {
         let f = false;
         for (let i = 0; i < PNum1; i++) {
             const retV = PointIndex.GetSamePointNumber(XYstac1[i].x, XYstac1[i].y);
-            if (retV.ObjectNumber != -1) {
+            if (retV.ObjectNumber !== -1) {
                 f = this.TopologyStructure_Two_SameLine_Check(LCode1, LCode2, PNum1, PNum2, i, retV.ObjectNumber, XYstac1, XYstac2);
-                if (f == true) {
+                if (f === true) {
                     break;
                 }
             }
@@ -2095,7 +2095,7 @@ class clsMapdata {
         //同一方向で、同じ座標が続くか調べる
         let naH2;
         let naH1 = this.TopologyStructure_Two_SameLine_sub(S1, s2, 1, 1, PNum1, PNum2, XYstac1, XYstac2);
-        if (naH1 == 1) {
+        if (naH1 === 1) {
             //同一方向で続いていない場合、線2を逆方向にたどる
             naH1 = this.TopologyStructure_Two_SameLine_sub(S1, s2, 1, -1, PNum1, PNum2, XYstac1, XYstac2);
             naH2 = -naH1;
@@ -2104,26 +2104,26 @@ class clsMapdata {
         }
 
         const Loop1F = XYstac1[0].Equals(XYstac1[PNum1 - 1]);
-        if ((S1 == 0) && (Loop1F == true)) {
+        if ((S1 === 0) && (Loop1F === true)) {
             let j;
             let nRev1;
             //線1がループで､始点が一致箇所の場合
-            if (naH1 == 1) {
+            if (naH1 === 1) {
                 //始点からはたどれない場合は終点から逆方向へ
                 nRev1 = -this.TopologyStructure_Two_SameLine_sub(PNum1 - 1, s2, -1, 1, PNum1, PNum2, XYstac1, XYstac2);
-                if (nRev1 == -1) {
+                if (nRev1 === -1) {
                     return false;
                 }
 
                 naH2 = -nRev1;
-                if (nRev1 == -1) {
+                if (nRev1 === -1) {
                     //同一方向で続いていない場合、線2を逆方向にたどる
                     nRev1 = -this.TopologyStructure_Two_SameLine_sub(PNum1 - 1, s2, -1, -1, PNum1, PNum2, XYstac1, XYstac2);
                     naH2 = nRev1;
                 }
                 JointPnum = Math.abs(nRev1);
                 j = PNum1 - JointPnum;
-                if (PNum1 == Math.abs(nRev1)) {
+                if (PNum1 === Math.abs(nRev1)) {
                     //１周分続く場合
                     naH1 = PNum1;
                 } else {
@@ -2131,7 +2131,7 @@ class clsMapdata {
                 }
                 this.TopologyStructure_Two_SameLine_Cutsub(s2, naH2, PNum2, NewPnum2, XYstac2);
             } else {
-                if (PNum1 == naH1) {
+                if (PNum1 === naH1) {
                     //１周分続く場合
                     JointPnum = naH1;
                     this.TopologyStructure_Two_SameLine_Cutsub(s2, naH2, PNum2, NewPnum2, XYstac2);
@@ -2166,7 +2166,7 @@ class clsMapdata {
                 }
             }
         } else {
-            if (naH1 == 1) {
+            if (naH1 === 1) {
                 return false;
             }
             JointPnum = naH1;
@@ -2184,14 +2184,14 @@ class clsMapdata {
 
         //ラインを保存
         let PushLine = new strLine_Data();
-        if ((Math.abs(naH1) != PNum1) && (NewPnum1.A != 1)) { //NewPnum1a!=1は、特殊なパターンでラインの点が1つになってしまう場合があるため
+        if ((Math.abs(naH1) !== PNum1) && (NewPnum1.A !== 1)) { //NewPnum1a!==1は、特殊なパターンでラインの点が1つになってしまう場合があるため
             PushLine = this.MPLine[LCode1].Clone();
             PushLine.NumOfPoint = NewPnum1.A;
             PushLine.PointSTC = Generic.ArrayClone(NewPnum1.NewXYstacA);
             this.Save_Line(PushLine, false, false, true);
         }
 
-        if ((Math.abs(naH2) != PNum2) && (NewPnum2.A != 1)) { //NewPnum1.A!=2は、特殊なパターンでラインの点が1つになってしまう場合があるため
+        if ((Math.abs(naH2) !== PNum2) && (NewPnum2.A !== 1)) { //NewPnum1.A!==2は、特殊なパターンでラインの点が1つになってしまう場合があるため
             PushLine = this.MPLine[LCode2].Clone();
             PushLine.NumOfPoint = NewPnum2.A;
             PushLine.PointSTC = Generic.ArrayClone(NewPnum2.NewXYstacA);
@@ -2199,7 +2199,7 @@ class clsMapdata {
         }
 
 
-        if ((JointPnum != PNum1) && (JointPnum != PNum2)) {
+        if ((JointPnum !== PNum1) && (JointPnum !== PNum2)) {
             PushLine = this.MPLine[LCode1].Clone();
             PushLine.Number = -1;
             PushLine.NumOfPoint = JointPnum;
@@ -2208,9 +2208,9 @@ class clsMapdata {
             this.Topology_Line_Object_Shori(LCode1, this.Map.ALIN - 1);
             this.Topology_Line_Object_Shori(LCode2, this.Map.ALIN - 1);
         } else {
-            if (JointPnum == PNum1) {
+            if (JointPnum === PNum1) {
                 this.Topology_Line_Object_Shori(LCode2, LCode1);
-            } else if (JointPnum == PNum2) {
+            } else if (JointPnum === PNum2) {
                 this.Topology_Line_Object_Shori(LCode1, LCode2);
             }
         }
@@ -2241,7 +2241,7 @@ class clsMapdata {
 
         const LoopF = OldXY[0].Equals(OldXY[OldPNum - 1]);
         NewPnum.B = -1;
-        if (LoopF == true) {
+        if (LoopF === true) {
             //線がループの場合
             let Start;
             NewPnum.A = OldPNum - Math.abs(JointNum) + 1;
@@ -2301,8 +2301,8 @@ class clsMapdata {
                 Start2 = Start_JointPoint;
                 End2 = Start_JointPoint + JointNum - 1;
             }
-            if ((Start2 == 0) || (End2 == OldPNum - 1)) {
-                if (OldPNum == JointNum) {
+            if ((Start2 === 0) || (End2 === OldPNum - 1)) {
+                if (OldPNum === JointNum) {
                     //全体が共有されている場合
                     NewPnum.A = OldPNum;
                     NewPnum.NewXYstacA = Generic.ArrayClone(OldXY);
@@ -2310,13 +2310,13 @@ class clsMapdata {
                     //始点又は終点まで共有されている場合
                     NewPnum.A = OldPNum - Math.abs(JointNum) + 1;
                     let j = 0;
-                    if (Start2 != 0) {
+                    if (Start2 !== 0) {
                         for (let i = 0; i <= Start2; i++) {
                             NewPnum.NewXYstacA[j] = OldXY[i].Clone();
                             j++;
                         }
                     }
-                    if (End2 != OldPNum - 1) {
+                    if (End2 !== OldPNum - 1) {
                         for (let i = End2; i < OldPNum; i++) {
                             NewPnum.NewXYstacA[j] = OldXY[i].Clone();
                             j++;
@@ -2349,19 +2349,19 @@ class clsMapdata {
         const Loop1F = XYstac1[0].Equals(XYstac1[PNum1 - 1]);
         const Loop2F = XYstac2[0].Equals(XYstac2[PNum2 - 1]);
         let n = 0;
-        while (XYstac1[i].Equals(XYstac2[j]) == true) {
+        while (XYstac1[i].Equals(XYstac2[j]) === true) {
             i += ip;
             j += jp;
             n++;
             if (i >= PNum1) {
-                if (Loop1F == true) {
+                if (Loop1F === true) {
                     i = 1;
                 } else {
                     break;
                 }
             }
             if (j >= PNum2) {
-                if (Loop2F == true) {
+                if (Loop2F === true) {
                     j = 1;
                     jp = 1;
                 } else {
@@ -2369,14 +2369,14 @@ class clsMapdata {
                 }
             }
             if (i < 0) {
-                if (Loop1F == true) {
+                if (Loop1F === true) {
                     i = PNum1 - 2;
                 } else {
                     break;
                 }
             }
             if (j < 0) {
-                if (Loop2F == true) {
+                if (Loop2F === true) {
                     j = PNum2 - 2;
                 } else {
                     break;
@@ -2398,31 +2398,31 @@ class clsMapdata {
         const PNum1 = mLine1.NumOfPoint;
         const PNum2 = mLine2.NumOfPoint;
         let f2 = false;
-        if (PNum1 == PNum2) {
+        if (PNum1 === PNum2) {
             const f = mLine1.Circumscribed_Rectangle.Equals(mLine2.Circumscribed_Rectangle);
-            if (f == true) {
-                if ((this.Check_Line_Loop(LC1) == true) && (this.Check_Line_Loop(LC2) == true)) {
+            if (f === true) {
+                if ((this.Check_Line_Loop(LC1) === true) && (this.Check_Line_Loop(LC2) === true)) {
                     //ループの場合
                     //最初に座標が一致するポイントを取得
                     let s2 = -1
                     for (let i = 0; i < PNum2; i++) {
-                        if (mLine1.PointSTC[0].Equals(mLine2.PointSTC[i]) == true) {
+                        if (mLine1.PointSTC[0].Equals(mLine2.PointSTC[i]) === true) {
                             s2 = i;
                             i = PNum2;
                         }
                     }
-                    if (s2 == -1) {
+                    if (s2 === -1) {
                         f2 = false;
                     } else {
                         let s2p;
-                        if (s2 == 0) {
-                            if (mLine1.PointSTC[1].Equals(mLine2.PointSTC[1]) == true) {
+                        if (s2 === 0) {
+                            if (mLine1.PointSTC[1].Equals(mLine2.PointSTC[1]) === true) {
                                 s2p = 1;
                             } else {
                                 s2p = -1;
                             }
                         } else {
-                            if (mLine1.PointSTC[1].Equals(mLine2.PointSTC[s2 - 1]) == true) {
+                            if (mLine1.PointSTC[1].Equals(mLine2.PointSTC[s2 - 1]) === true) {
                                 s2p = -1;
                             } else {
                                 s2p = 1;
@@ -2431,7 +2431,7 @@ class clsMapdata {
                         f2 = true;
                         let i = 0;
                         let j = s2;
-                        while ((f2 == true) && (i < PNum1)) {
+                        while ((f2 === true) && (i < PNum1)) {
                             f2 = mLine1.PointSTC[i].Equals(mLine2.PointSTC[j]);
                             i++;
                             j = j + s2p;
@@ -2444,10 +2444,10 @@ class clsMapdata {
                     }
                 } else {
                     //ループでない場合
-                    if (mLine1.PointSTC[0].Equals(mLine2.PointSTC[0]) == true) {
+                    if (mLine1.PointSTC[0].Equals(mLine2.PointSTC[0]) === true) {
                         f2 = true
                         for (let i = 1; i < PNum1; i++) {
-                            if (mLine1.PointSTC[i].Equals(mLine2.PointSTC[i]) == false) {
+                            if (mLine1.PointSTC[i].Equals(mLine2.PointSTC[i]) === false) {
                                 f2 = false;
                                 break;
                             }
@@ -2455,7 +2455,7 @@ class clsMapdata {
                     } else if (mLine1.PointSTC[0].Equals(mLine2.PointSTC[PNum1 - 1])) {
                         f2 = true;
                         for (let i = 1; i < PNum1; i++) {
-                            if (mLine1.PointSTC[i].Equals(mLine2.PointSTC[PNum1 - 1 - i]) == false) {
+                            if (mLine1.PointSTC[i].Equals(mLine2.PointSTC[PNum1 - 1 - i]) === false) {
                                 f2 = false;
                                 break;
                             }
@@ -2496,9 +2496,9 @@ class clsMapdata {
             C_Mpline[LCode[i]] = -1;
         }
 
-        if (UsedLine_Delete_F == false) {
+        if (UsedLine_Delete_F === false) {
             for (let i = 0; i < this.Map.ALIN; i++) {
-                if (C_Mpline[i] == -1) {
+                if (C_Mpline[i] === -1) {
                     if (this.MPLine[i].NumOfLineUse > 0) {
                         C_Mpline[i] = 0;
                     }
@@ -2508,7 +2508,7 @@ class clsMapdata {
 
         let n = 0
         for (let i = 0; i < this.Map.ALIN; i++) {
-            if (C_Mpline[i] == -1) {
+            if (C_Mpline[i] === -1) {
                 RealDeleteLineCode[n] = i;
                 n++;
             } else {
@@ -2524,10 +2524,10 @@ class clsMapdata {
 
         for (let i = 0; i < this.Map.Kend; i++) {
             const mo = this.MPObj[i];
-            if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
+            if (this.ObjectKind[mo.Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
                 n = 0;
                 for (let j = 0; j < mo.NumOfLine; j++) {
-                    if (C_Mpline[mo.LineCodeSTC[j].LineCode] == -1) {
+                    if (C_Mpline[mo.LineCodeSTC[j].LineCode] === -1) {
                         n++;
                     } else {
                         mo.LineCodeSTC[j].LineCode = C_Mpline[mo.LineCodeSTC[j].LineCode];
@@ -2536,19 +2536,19 @@ class clsMapdata {
                 }
                 if (n > 0) {
                     mo.NumOfLine -= n;
-                    if (mo.NumOfLine == 0) {
+                    if (mo.NumOfLine === 0) {
                         mo.LineCodeSTC = [];
                     } else {
                         mo.LineCodeSTC.length = mo.NumOfLine;
                     }
-                    if ((UsedLine_Delete_F == true) && (Check_ObjectShape_F == true)) {
+                    if ((UsedLine_Delete_F === true) && (Check_ObjectShape_F === true)) {
                         mo.Shape = this.Check_Obj_Shape_AllTime(this.MPObj[i]);
                     }
                 }
             }
         }
         this.Check_ALl_Line_Connect()
-        if (MapRectCheckF == true) {
+        if (MapRectCheckF === true) {
             this.Map.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle()
         }
         return RealDeleteLineCode;
@@ -2565,7 +2565,7 @@ class clsMapdata {
     Check_Obj_Shape_AllTime(ObjData: strObj_Data, CutPoint: point | undefined = undefined) {
         //オブジェクト名の有効期間の開始と終了時期での形状チェック
 
-        if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
+        if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
             return this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD, CutPoint);
         }
 
@@ -2580,11 +2580,11 @@ class clsMapdata {
         }
 
         for (let i = 0; i < obtn; i++) {
-            if (OT[i].StartTithis.nullFlag == false) {
+            if (OT[i].StartTithis.nullFlag === false) {
                 SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].StartTime, CutPoint);
                 SHN++;
             }
-            if (OT[i].EndTithis.nullFlag == false) {
+            if (OT[i].EndTithis.nullFlag === false) {
                 SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].EndTime, CutPoint);
                 SHN++;
             }
@@ -2612,33 +2612,33 @@ class clsMapdata {
         for (let i = 0; i < n; i++) {
             const v = TimeSort.DataPositionValue_Integer[i];
             const T = clsTime.GetYMDfromValue(v);
-            if ((T as Record<string, boolean>).nullFlag == false) {
-                if (n2 == 0) {
-                    if (OT[0].StartTithis.nullFlag == true) {
+            if ((T as Record<string, boolean>).nullFlag === false) {
+                if (n2 === 0) {
+                    if (OT[0].StartTithis.nullFlag === true) {
                         GT[0] = clsTime.getYesterday(T);
                         n2 = 1;
                     }
                     GT[n2] = T;
                     n2++;
                 } else {
-                    if (GT[n2 - 1].Equals(T) == false) {
+                    if (GT[n2 - 1].Equals(T) === false) {
                         GT[n2] = T;
                         n2++;
                     }
                 }
             }
         }
-        if (OT[obtn - 1].EndTithis.nullFlag == true) {
-            if (n2 != 0) {
+        if (OT[obtn - 1].EndTithis.nullFlag === true) {
+            if (n2 !== 0) {
                 GT[n2] = clsTime.getTomorrow(GT[n2 - 1]);
                 n2++;
             }
         }
 
         for (let i = 0; i < n2; i++) {
-            if (GT[i].nullFlag == false) {
+            if (GT[i].nullFlag === false) {
                 for (let j = 0; j < obtn; j++) {
-                    if (clsTime.checkDurationIn(OT[j], GT[i]) == true) {
+                    if (clsTime.checkDurationIn(OT[j], GT[i]) === true) {
                         SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, GT[i], CutPoint);
                         SHN++;
                     }
@@ -2646,7 +2646,7 @@ class clsMapdata {
             }
         }
 
-        if (SHN == 0) {
+        if (SHN === 0) {
             SHP[0] = this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD, CutPoint);
             SHN = 1;
         }
@@ -2659,9 +2659,9 @@ class clsMapdata {
 
         let sp;
         //チェックした期間内に、複数の形状が含まれている場合は、優先的に点＞線＞面が返される
-        if (SHF[enmShape.PolygonShape] != 0) { sp = enmShape.PolygonShape }
-        if (SHF[enmShape.LineShape] != 0) { sp = enmShape.LineShape }
-        if (SHF[enmShape.PointShape] != 0) { sp = enmShape.PointShape }
+        if (SHF[enmShape.PolygonShape] !== 0) { sp = enmShape.PolygonShape }
+        if (SHF[enmShape.LineShape] !== 0) { sp = enmShape.LineShape }
+        if (SHF[enmShape.PointShape] !== 0) { sp = enmShape.PointShape }
         return sp;
     }
 
@@ -2675,7 +2675,7 @@ class clsMapdata {
     // <returns></returns>
     // <remarks></remarks>
     Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: strYMD, CutPoint: point) {
-        if (this.ObjectKind[ObjData.Kind].ObjectType == enmObjectGoupType_Data.AggregationObject) {
+        if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
             //集成オブジェクトタイプの場合
             const OBShape = new Array(3);
             OBShape.fill(0);
@@ -2683,9 +2683,9 @@ class clsMapdata {
                 OBShape[this.MPObj[ObjData.LineCodeSTC[i].LineCode].Shape]++;
             }
 
-            if ((OBShape[enmShape.LineShape] == 0) && (OBShape[enmShape.PolygonShape] == 0)) {
+            if ((OBShape[enmShape.LineShape] === 0) && (OBShape[enmShape.PolygonShape] === 0)) {
                 return enmShape.PointShape;
-            } else if ((this.ObjectKind[ObjData.Kind].Shape == enmShape.LineShape) || (OBShape[enmShape.LineShape] > 0)) {
+            } else if ((this.ObjectKind[ObjData.Kind].Shape === enmShape.LineShape) || (OBShape[enmShape.LineShape] > 0)) {
                 return enmShape.LineShape;
             } else {
                 return enmShape.PolygonShape;
@@ -2716,11 +2716,11 @@ class clsMapdata {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;
-        if(NL == 0 ){
+        if(NL === 0 ){
             return -1;
         }
 
-        if(this.ObjectKind[ObjData.Kind].Shape == enmShape.LineShape ){
+        if(this.ObjectKind[ObjData.Kind].Shape === enmShape.LineShape ){
             return 0;
         }
 
@@ -2739,7 +2739,7 @@ class clsMapdata {
                 stxy = ml.PointSTC[0];
                 exy = ml.PointSTC[ml.NumOfPoint - 1];
             
-            if(exy.Equals(stxy) == true ){
+            if(exy.Equals(stxy) === true ){
                 NL --;
                 polyn ++;
             }else{
@@ -2747,13 +2747,13 @@ class clsMapdata {
                 k ++;
             }
         }
-        if(k == 0 ){
+        if(k === 0 ){
             return polyn;
         }
 
         let Contf  = false;
         for(let i  = 0;i<NL;i++){
-            if(Contf == false ){
+            if(Contf === false ){
                 const ml= this.MPLine[Fringe[i]];
                     stxy = ml.PointSTC[0].Clone();
                     exy = ml.PointSTC[ml.NumOfPoint - 1].Clone();
@@ -2762,19 +2762,19 @@ class clsMapdata {
             Contf = false
             for (let j = i + 1; j < NL; j++) {
                 const ml = this.MPLine[Fringe[j]];
-                if (ml.PointSTC[0].Equals(exy) == true) {
+                if (ml.PointSTC[0].Equals(exy) === true) {
                     exy = ml.PointSTC[ml.NumOfPoint - 1].Clone();
                     Contf = true;
                     [Fringe[j], Fringe[i + 1]] = [Fringe[i + 1], Fringe[j]];
                     break;
-                } else if (ml.PointSTC[ml.NumOfPoint - 1].Equals(exy) == true) {
+                } else if (ml.PointSTC[ml.NumOfPoint - 1].Equals(exy) === true) {
                     exy = ml.PointSTC[0].Clone();
                     Contf = true;
                     [Fringe[j], Fringe[i + 1]] = [Fringe[i + 1], Fringe[j]];
                     break;
                 }
             }
-            if(Contf == false ){
+            if(Contf === false ){
                 if(exy.Equals(stxy) ){
                     polyn ++;
                 }else{
@@ -2799,7 +2799,7 @@ class clsMapdata {
         for (let i = 0; i < Map.ALIN; i++) {
             const ml = this.MPLine[i];
             if (ml.NumOfPoint > 0) {
-                if (ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]) == true) {
+                if (ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]) === true) {
                     ml.Connect = 3;
                 } else {
                     ml.Connect = 0;
@@ -2807,7 +2807,7 @@ class clsMapdata {
                         const SamePointData: Record<string, unknown> = {};
                         const n = PointIndex.GetSamePointNumberArray(ml.PointSTC[j * (ml.NumOfPoint - 1)].x, ml.PointSTC[j * (ml.NumOfPoint - 1)].y, SamePointData)
                         for (let k = 0; k < n; k++) {
-                            if (SamePointData.ObjectNumber[k] != i) {
+                            if (SamePointData.ObjectNumber[k] !== i) {
                                 ml.Connect++;
                                 break;
                             }
@@ -2826,11 +2826,11 @@ class clsMapdata {
             ObjData = ObjInfo;
         }
 
-        if (this.CheckEnableObject(ObjData, Time) == false) {
+        if (this.CheckEnableObject(ObjData, Time) === false) {
             return undefined;
         }
         for (let i = 0; i < ObjData.NumOfCenterP; i++) {
-            if (clsTime.checkDurationIn(ObjData.CenterPSTC[i].SETime, Time) == true) {
+            if (clsTime.checkDurationIn(ObjData.CenterPSTC[i].SETime, Time) === true) {
                 return ObjData.CenterPSTC[i].Position.Clone();
             }
         }
@@ -2856,10 +2856,10 @@ class clsMapdata {
     Object_LineCode_Add(Search_LineCode: number, AddLineNum: number, Add_LineCode: number[]){
         for (let i = 0; i < this.Map.Kend; i++) {
             const mo = this.MPObj[i];
-            if (this.ObjectKind[mo.Kind].ObjectType == enmObjectGoupType_Data.NormalObject) {
+            if (this.ObjectKind[mo.Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
                 const n = mo.NumOfLine;
                 for (let j = 0; j < n; j++) {
-                    if (mo.LineCodeSTC[j].LineCode == Search_LineCode) {
+                    if (mo.LineCodeSTC[j].LineCode === Search_LineCode) {
                         this.Move_LineCodeStac(i, n + AddLineNum, n);
                         for (let k = 0; k < AddLineNum; k++) {
                             mo.LineCodeSTC[k + n] = mo.LineCodeSTC[j].Clone();
@@ -2878,14 +2878,14 @@ class clsMapdata {
         const dif = New_NumOfLine - Old_NumOfLine;
         mo.NumOfLine = mo.NumOfLine + dif;
 
-        if (dif != 0) {
+        if (dif !== 0) {
             if (dif > 0) {
                 for (let i = Old_NumOfLine; i < mo.NumOfLine; i++) {
                     mo.LineCodeSTC[i] = new LineCodeStac_Data();
                     mo.LineCodeSTC[i].NumOfTime = 0;
                 }
             } else {
-                if (mo.NumOfLine == 0) {
+                if (mo.NumOfLine === 0) {
                     mo.LineCodeSTC.length = [];
                 } else {
                     mo.LineCodeSTC.length = mo.NumOfLine;
@@ -2904,21 +2904,21 @@ class clsMapdata {
         ObjData = ObjInfo;
     }
     let n;
-    if (Time.nullFlag() == true) {
+    if (Time.nullFlag() === true) {
         n = ObjData.NumOfNameTime - 1;
     } else {
         n = -1;
         for (let i = 0; i < ObjData.NumOfNameTime; i++) {
-            if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) == true) {
+            if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) === true) {
                 n = i;
                 break;
             }
         }
-        if ((n == -1) && (NoDataLastGetF == true)) {
+        if ((n === -1) && (NoDataLastGetF === true)) {
             n = ObjData.NumOfNameTime - 1;
         }
     }
-    if (n == -1) {
+    if (n === -1) {
         return undefined;
     } else {
         return Generic.ArrayShallowCopy(ObjData.NameTimeSTC[n].NamesList);
@@ -3026,14 +3026,14 @@ class clsMapdata {
         o.NumOfSuc = s.NumOfSuc;
         o.NumOfLine = s.NumOfLine;
         o.Circumscribed_Rectangle = this.cnvJsonRect(s.Circumscribed_Rectangle, mdrmjFlag);
-        if (s.DefTimeAttValue != null) {
+        if (s.DefTimeAttValue !== null) {
             for (let j = 0; j < s.DefTimeAttValue.length; j++) {
                 const d = new strDefTimeAttData_Info();
-                if (s.DefTimeAttValue[j].Data != null) {
+                if (s.DefTimeAttValue[j].Data !== null) {
                     for (let k = 0; k < s.DefTimeAttValue[j].Data.length; k++) {
                         d.Data[k] = new strDefTimeAttDataEach_Info();
                         d.Data[k].Span = this.cnvJsonStart_End_Time_data(s.DefTimeAttValue[j].Data[k].Span);
-                        if (s.DefTimeAttValue[j].Data[k].Value == null) {
+                        if (s.DefTimeAttValue[j].Data[k].Value === null) {
                             d.Data[k].Value = undefined;
                         } else {
                             d.Data[k].Value = s.DefTimeAttValue[j].Data[k].Value;
@@ -3089,7 +3089,7 @@ class clsMapdata {
 
     private cnvJsonFont(jsonf: JsonObject, mdrmjFlag: boolean) {
         const newf = new Font_Property();
-        if (mdrmjFlag == false) {
+        if (mdrmjFlag === false) {
             newf.Color = this.cnvJsonColor(jsonf.Body.Color);
             newf.Size = jsonf.Body.Size;
             newf.italic = jsonf.Body.italic;
@@ -3120,7 +3120,7 @@ class clsMapdata {
 
     private cnvJsonRect(jsonr: JsonObject, mdrmjFlag: boolean) {
         const newr = new rectangle();
-        if (mdrmjFlag == false) {
+        if (mdrmjFlag === false) {
             newr.left = jsonr.Left;
             newr.right = jsonr.Right;
             newr.top = jsonr.Top;
@@ -3143,7 +3143,7 @@ class clsMapdata {
 
     private cnvJsonPoint(jsonp: JsonObject, mdrmjFlag: boolean) {
         const newp = new point();
-        if (mdrmjFlag == false) {
+        if (mdrmjFlag === false) {
             newp.x = jsonp.X;
             newp.y = jsonp.Y;
         } else {
@@ -3163,7 +3163,7 @@ class clsMapdata {
     }
     private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new LineEdge_Connect_Pattern_Data_Info();
-        if (mdrmjFlag == false) {
+        if (mdrmjFlag === false) {
             const lc = ['round', 'square','butt' ];
             const lj = [  'round','bevel','miter'];
             nt.lineCap = lc[json.Edge_Pattern];
@@ -3176,12 +3176,12 @@ class clsMapdata {
     }
     private cnvJsonLine_Property(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new Line_Property();
-        if (mdrmjFlag == false) {
+        if (mdrmjFlag === false) {
             nt.Width = json.BasicLine.SolidLine.Width;
             nt.Color = this.cnvJsonColor(json.BasicLine.SolidLine.Color);
             nt.Edge_Connect_Pattern = this.cnvJsonLineEdge_Connect_Pattern_Data_Info(json.Edge_Connect_Pattern, mdrmjFlag);
-            if ((json.BasicLine.pattern != -1) || (json.CrossLine.XLine_f == true) || (
-                (json.ParallelLine.P_Line_f == true) && (json.ParallelLine.InnerColor_f == true))) {
+            if ((json.BasicLine.pattern !== -1) || (json.CrossLine.XLine_f === true) || (
+                (json.ParallelLine.P_Line_f === true) && (json.ParallelLine.InnerColor_f === true))) {
                 nt.BlankF = false;
             } else {
                 nt.BlankF = true;
@@ -3197,8 +3197,8 @@ class clsMapdata {
 
     private cnvJsonTile_Property(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new Tile_Property();
-        if (mdrmjFlag == false) {
-            nt.BlankF = (json.TileCode == 7);
+        if (mdrmjFlag === false) {
+            nt.BlankF = (json.TileCode === 7);
             nt.Color = this.cnvJsonColor(json.Line.BasicLine.SolidLine.Color);
         } else {
             nt.BlankF = json.BlankF;

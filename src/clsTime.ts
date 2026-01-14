@@ -45,7 +45,7 @@ class clsTime  {
 
     static YMDtoString(YMD: strYMD) {
 
-        if (YMD.nullFlag() == true) {
+        if (YMD.nullFlag() === true) {
             return "未設定";
         } else {
             return YMD.toString();
@@ -70,11 +70,11 @@ class clsTime  {
     static StartEndtoString(StartEnd: Start_End_Time_data) {
 
         let txs = "";
-        if (StartEnd.StartTime.nullFlag() == true) {
+        if (StartEnd.StartTime.nullFlag() === true) {
             txs = "開始";
         }
         txs += this.YMDtoString(StartEnd.StartTime) + "-";
-        if (StartEnd.EndTime.nullFlag() == true) {
+        if (StartEnd.EndTime.nullFlag() === true) {
             txs += "終了";
         }
         txs += this.YMDtoString(StartEnd.EndTime);
@@ -83,13 +83,13 @@ class clsTime  {
     static checkDurationIn(duration: Start_End_Time_data, Point: strYMD) {
 
         //現時点が指定の期間に含まれているかどうかをチェックし、含まれている場合にtrue
-        if ((Point.nullFlag() == true) || (duration.StartTime.nullFlag() == true) && (duration.EndTime.nullFlag() == true)) {
+        if ((Point.nullFlag() === true) || (duration.StartTime.nullFlag() === true) && (duration.EndTime.nullFlag() === true)) {
             return true;
         } else {
             const time = Point.toDate();
             switch (duration.StartTime.nullFlag()) {
                 case true:
-                    if(duration.EndTime.nullFlag() == true) {
+                    if(duration.EndTime.nullFlag() === true) {
                         return true;
                     }else{
                         const etime = duration.EndTime.toDate();
@@ -98,7 +98,7 @@ class clsTime  {
                     break;
                 case false:
                     const stime = duration.StartTime.toDate();
-                    if (duration.EndTime.nullFlag() == true) {
+                    if (duration.EndTime.nullFlag() === true) {
                         return (stime <= time);
                     } else {
                         const etime =duration.EndTime.toDate();
@@ -153,20 +153,20 @@ class Font_Property {
     
     toContextFont(ScrData: Screen_info): { font: string | undefined; height: number } {
         let TH: number;
-        if (ScrData.SampleBoxFlag == false) {
+        if (ScrData.SampleBoxFlag === false) {
             TH = ScrData.Get_Length_On_Screen(this.Size ?? 0);
         } else {
             TH = this.Size ?? 0;
         }
-        if (TH == 0) {
+        if (TH === 0) {
             return { font: undefined, height: TH };
         }
 
         let ftext = TH + "px " + "'" + this.Name + "' ";
-        if (this.bold == true) {
+        if (this.bold === true) {
             ftext += "bold ";
         }
-        if (this.italic == true) {
+        if (this.italic === true) {
             ftext += "italic ";
         }
         return { font: ftext, height: TH };

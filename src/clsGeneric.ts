@@ -290,11 +290,11 @@ export class TKY2JGDInfo_Impl {
 
         const P2 = x * x + y * y;
         const p = Math.sqrt(P2);
-        if (p == 0) {
+        if (p === 0) {
             return;
         }
         let ALradV: number;
-        if (x == 0) {
+        if (x === 0) {
             ALradV = this.HAF_PI;
         } else {
             ALradV = Math.atan(y / x);
@@ -406,7 +406,7 @@ export class TKY2JGDInfo_Impl {
     }
 }
 
-class spatial {
+export class spatial {
 
     /**メッシュコードから投影変換した四角形を返す */
     static Get_MeshCode_Rectangle(Meshcode: string, MeshType: number, refOrigin: number, refDestZahyo: Zahyo_info) {
@@ -459,50 +459,50 @@ class spatial {
         let bx2 = LBP2.x
         let by2 = LBP2.y
         //２点が同一、または２線が平行の場合は戻る
-        if (((ax2 == ax1) && (bx2 == bx1)) || ((ay2 == ay1) && (by2 == by1)) || (
-            (ax1 == bx1) && (ay1 == by1)) || ((ax2 == bx1) && (ay2 == by1)) || ((ax1 == bx2) && (ay1 == by2)) || ((ax2 == bx2) && (ay2 == by2))) {
+        if (((ax2 === ax1) && (bx2 === bx1)) || ((ay2 === ay1) && (by2 === by1)) || (
+            (ax1 === bx1) && (ay1 === by1)) || ((ax2 === bx1) && (ay2 === by1)) || ((ax1 === bx2) && (ay1 === by2)) || ((ax2 === bx2) && (ay2 === by2))) {
             return undefined;
         }
 
-        if ((ax2 == ax1) || (bx2 == bx1)) {
+        if ((ax2 === ax1) || (bx2 === bx1)) {
             //どちらかがY軸に平行の場合
-            if (bx2 == bx1) {
+            if (bx2 === bx1) {
                 //B線の場合はAB入れ替えてA線を平行に
                 [bx1, ax1] = [ax1, bx1];
                 [bx2, ax2] = [ax2, bx2];
                 [by1, ay1] = [ay1, by1];
                 [by2, ay2] = [ay2, by2];
             }
-            if (Generic.Check_Two_Value_In(ax1, bx1, bx2) == chvValue_on_twoValue.chvIN) {
+            if (Generic.Check_Two_Value_In(ax1, bx1, bx2) === chvValue_on_twoValue.chvIN) {
                 //交点のY座標を求める
                 const BL = (by2 - by1) / (bx2 - bx1);
                 const bm = by1 - BL * bx1;
                 const px = ax1;
                 const py = BL * px + bm;
-                if ((Generic.Check_Two_Value_In(py, ay1, ay2) != chvValue_on_twoValue.chvOuter) && (
-                    Generic.Check_Two_Value_In(py, by1, by2) != chvValue_on_twoValue.chvOuter)) {
+                if ((Generic.Check_Two_Value_In(py, ay1, ay2) !== chvValue_on_twoValue.chvOuter) && (
+                    Generic.Check_Two_Value_In(py, by1, by2) !== chvValue_on_twoValue.chvOuter)) {
                     //Y座標がAB線の内部だったら交差
                     return new point(px, py);;
                 }
             }
             return undefined;
-        } else if ((ay2 == ay1) || (by2 == by1)) {
+        } else if ((ay2 === ay1) || (by2 === by1)) {
             //どちらかがX軸に平行の場合
-            if (by2 == by1) {
+            if (by2 === by1) {
                 //B線の場合はAB入れ替えてA線を平行に
                 [bx1, ax1] = [ax1, bx1];
                 [bx2, ax2] = [ax2, bx2];
                 [by1, ay1] = [ay1, by1];
                 [by2, ay2] = [ay2, by2];
             }
-            if (Generic.Check_Two_Value_In(ay1, by1, by2) != chvValue_on_twoValue.chvOuter) {
+            if (Generic.Check_Two_Value_In(ay1, by1, by2) !== chvValue_on_twoValue.chvOuter) {
                 //交点のX座標を求める
                 const BL = (by2 - by1) / (bx2 - bx1);
                 const bm = by1 - BL * bx1;
                 const py = ay1;
                 const px = (py - bm) / BL;
-                if ((Generic.Check_Two_Value_In(px, ax1, ax2) != chvValue_on_twoValue.chvOuter) && (
-                    Generic.Check_Two_Value_In(px, bx1, bx2) != chvValue_on_twoValue.chvOuter)) {
+                if ((Generic.Check_Two_Value_In(px, ax1, ax2) !== chvValue_on_twoValue.chvOuter) && (
+                    Generic.Check_Two_Value_In(px, bx1, bx2) !== chvValue_on_twoValue.chvOuter)) {
                     //X座標がAB線の内部だったら交差
                     return new point(px, py);
                 }
@@ -511,7 +511,7 @@ class spatial {
         } else {
             const AL = (ay2 - ay1) / (ax2 - ax1);
             const BL = (by2 - by1) / (bx2 - bx1);
-            if (AL == BL) {
+            if (AL === BL) {
                 //傾きが等しいと交差しない
                 return undefined;
             }
@@ -519,11 +519,11 @@ class spatial {
             const bm = by1 - BL * bx1;
             const px = (bm - AM) / (AL - BL);
             const py = AL * px + AM;
-            if (((ax1 == px) && (ay1 == py)) || ((ax2 == px) && (ay2 == py)) || ((bx1 == px) && (by1 == py)) || ((bx2 == px) && (by2 == py))) {
+            if (((ax1 === px) && (ay1 === py)) || ((ax2 === px) && (ay2 === py)) || ((bx1 === px) && (by1 === py)) || ((bx2 === px) && (by2 === py))) {
             } else {
-                if ((Generic.Check_Two_Value_In(px, ax1, ax2) != chvValue_on_twoValue.chvOuter) && (Generic.Check_Two_Value_In(py, ay1, ay2) != chvValue_on_twoValue.chvOuter)) {
-                    if ((Generic.Check_Two_Value_In(px, bx1, bx2) != chvValue_on_twoValue.chvOuter) && (
-                        Generic.Check_Two_Value_In(py, by1, by2) != chvValue_on_twoValue.chvOuter)) {
+                if ((Generic.Check_Two_Value_In(px, ax1, ax2) !== chvValue_on_twoValue.chvOuter) && (Generic.Check_Two_Value_In(py, ay1, ay2) !== chvValue_on_twoValue.chvOuter)) {
+                    if ((Generic.Check_Two_Value_In(px, bx1, bx2) !== chvValue_on_twoValue.chvOuter) && (
+                        Generic.Check_Two_Value_In(py, by1, by2) !== chvValue_on_twoValue.chvOuter)) {
                         //交点が２線の内部だったら交差
                         return new point(px, py);
                     }
@@ -543,17 +543,17 @@ class spatial {
     static Get_Vec_Point(VecX: number, VecY: number, Dis: number, CenterFlag: boolean) {
 
             let D ;
-            if(CenterFlag ==true ){
+            if(CenterFlag ===true ){
                 D = Dis / 2;
             }else{
                 D = Dis;
             }
     
             let x2 , y2 ;
-            if(VecX == 0 ){
+            if(VecX === 0 ){
                 x2 = 0;
                 y2 = D * Math.sign(VecY);
-            }else if(VecY == 0 ){
+            }else if(VecY === 0 ){
                 x2 = D * Math.sign(VecX);
                 y2 = 0;
             }else{
@@ -591,7 +591,7 @@ class spatial {
             const LinePoints = PolyLine[p];
             for (let i = 0; i < LinePoints.length-1; i++) {
                 const cret = Get_CrossXPoint(checkPoint, LinePoints[i], LinePoints[i + 1]);
-                if (cret.ok == true) {
+                if (cret.ok === true) {
                     CrossPoint_X.push(cret.CrossX);
                 }
             }
@@ -624,7 +624,7 @@ class spatial {
             if(( (ay <= y)&&(y < by))||( (by <= y)&&(y < ay) )){
                 const BX  = LinePoint2.x;
                 const ax  = LinePoint1.x;
-                if( ay == by ){
+                if( ay === by ){
                     CrossX = ax;
                 }else{
                     CrossX = (ax - BX) / (ay - by) * (y - ay) + ax;
@@ -707,30 +707,30 @@ class spatial {
         const v8 = Number(MeshCode.substr(10, 1));
         let Ido = id1 / 1.5 + (id2 / 8) * (40 / 60) + (id3 / 10) * (5 / 60);
         let kdo = kd1 + 100 + (kd2 / 8) + (kd3 / 10) * (7.5 / 60);
-        if (Mesh_Size == enmMesh_Number.mhOne_Tenth) {
+        if (Mesh_Size === enmMesh_Number.mhOne_Tenth) {
             Ido = Ido + V2 * (30 / 3600) / 10;
             kdo = kdo + V4 * (45 / 3600) / 10;
         } else {
-            if ((V2 == 3) || (V2 == 4)) {
+            if ((V2 === 3) || (V2 === 4)) {
                 //1/2メッシュの北側
                 Ido = Ido + (15 / 3600);
             }
-            if ((V2 == 2) || (V2 == 4)) {
+            if ((V2 === 2) || (V2 === 4)) {
                 //1/2メッシュの東側
                 kdo = kdo + (22.5 / 3600);
             }
-            if ((V4 == 3) || (V4 == 4)) {
+            if ((V4 === 3) || (V4 === 4)) {
                 //1/4メッシュの北側
                 Ido = Ido + (7.5 / 3600);
             }
-            if ((V4 == 2) || (V4 == 4)) {
+            if ((V4 === 2) || (V4 === 4)) {
                 //1/4メッシュの東側
                 kdo = kdo + (11.25 / 3600);
             }
-            if ((v8 == 3) || (v8 == 4)) {
+            if ((v8 === 3) || (v8 === 4)) {
                 Ido = Ido + (3.75 / 3600);
             }
-            if ((v8 == 2) || (v8 == 4)) {
+            if ((v8 === 2) || (v8 === 4)) {
                 kdo = kdo + (5.625 / 3600);
             }
         }
@@ -849,7 +849,7 @@ class spatial {
     //測地系をチェックして、違っていたら変換して返す
     static ConvertRefSystemLatLon(P1: latlon, OriginRefSystem: number, DestRefSystem: number) {
 
-        if (OriginRefSystem == DestRefSystem) {
+        if (OriginRefSystem === DestRefSystem) {
             return P1;
         } else {
         //測地系が違う場合は、データ中の緯度経度を地図の測地系に合わせて変換して代表点に
@@ -886,7 +886,7 @@ class spatial {
         const ST = 1 / (r * 2 / 5);
         const pxy = [];
 
-        if (((start_p == 0) && (end_p == Math.PI * 2)) || (CenterLineF == false)) {
+        if (((start_p === 0) && (end_p === Math.PI * 2)) || (CenterLineF === false)) {
         } else {
             pxy[0] = CP;
         }
@@ -899,7 +899,7 @@ class spatial {
             }
         }
         pxy.push(new point(r * Math.sin(end_p) + CP.x, -r * Math.cos(end_p) + CP.y));
-        if ((start_p == 0) && (end_p == Math.PI * 2) || (CenterLineF == false)) {
+        if ((start_p === 0) && (end_p === Math.PI * 2) || (CenterLineF === false)) {
         } else {
             pxy.push(CP.Clone());
         }
@@ -912,13 +912,13 @@ class spatial {
         let x2, y2;
         const LatLon = new latlon();
 
-        if (MapZahyo_Info.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) {
+        if (MapZahyo_Info.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) {
             let Ellip12;
             //平面直角座標系の場合は緯度経度に変換
-            if (MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_tokyo) {
+            if (MapZahyo_Info.System === enmZahyo_System_Info.Zahyo_System_tokyo) {
                 Ellip12 = 1;
             } else {
-                if (MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_World) {
+                if (MapZahyo_Info.System === enmZahyo_System_Info.Zahyo_System_World) {
                     Ellip12 = 2;
                 }
             }
@@ -931,7 +931,7 @@ class spatial {
             LatLon.lon = oxy.x;
         }
 
-        if(MapZahyo_Info.System == enmZahyo_System_Info.Zahyo_System_tokyo ){
+        if(MapZahyo_Info.System === enmZahyo_System_Info.Zahyo_System_tokyo ){
         //日本測地系の場合は世界測地系に変換
             const inputLatLon = new latlon();
             inputLatLon.lat = LatLon.lat;
@@ -945,7 +945,7 @@ class spatial {
     //地図座標を新しい設定の地図座標に変換する
     static Get_Reverse_and_Convert_XY(OldP: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info) {
 
-        if (oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_No_Mode) {
+        if (oldMapZahyo.Mode === enmZahyo_mode_info.Zahyo_No_Mode) {
             return OldP;
         } else {
             let XY2;
@@ -954,8 +954,8 @@ class spatial {
             if (!P2) {
                 return OldP;
             }
-            if ((newMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) && (oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
-                if (newMapZahyo.System != oldMapZahyo.System) {
+            if ((newMapZahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) && (oldMapZahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+                if (newMapZahyo.System !== oldMapZahyo.System) {
                     //二つとも緯度経度座標で、測地系が違う場合
                     switch (oldMapZahyo.System) {
                         case enmZahyo_System_Info.Zahyo_System_tokyo:
@@ -970,22 +970,22 @@ class spatial {
                     }
                     P2 = (XY2 as {toPoint: () => point}).toPoint();
                 }
-            } else if ((oldMapZahyo.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (newMapZahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+            } else if ((oldMapZahyo.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (newMapZahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
                 //元が平面直角、新規が緯度経度の場合、
 
                 let Ellip12;
                 const Kei = oldMapZahyo.HeimenTyokkaku_KEI_Number;
-                if (oldMapZahyo.System == enmZahyo_System_Info.Zahyo_System_tokyo) {
+                if (oldMapZahyo.System === enmZahyo_System_Info.Zahyo_System_tokyo) {
                     Ellip12 = 1;
                 } else {
-                    if (oldMapZahyo.System == enmZahyo_System_Info.Zahyo_System_World) {
+                    if (oldMapZahyo.System === enmZahyo_System_Info.Zahyo_System_World) {
                         Ellip12 = 2;
                     }
                     const y2 = { value: 0 };
                     const x2 = { value: 0 };
                     TKY2JGD.doCalcXy2bl(Ellip12, Kei, P2.y, P2.x, y2, x2);
                     XY2 = new latlon(y2.value, x2.value);
-                    if (newMapZahyo.System != oldMapZahyo.System) {
+                    if (newMapZahyo.System !== oldMapZahyo.System) {
                         //さらに測地系が違う場合
                         switch (oldMapZahyo.System) {
                             case enmZahyo_System_Info.Zahyo_System_tokyo:
@@ -1008,11 +1008,11 @@ class spatial {
     /** 世界測地系の緯度経度の座標を、地図ファイルの測地系が日本測地系だった場合、日本測地系の緯度経度に変換、平面直角座標系の場合は変換不可*/
     static Get_ReverseWorld_IdoKedo(oLatLon: latlon, MapZahyo: Zahyo_info) {
 
-        if (MapZahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido) {
+        if (MapZahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
             alert("平面直角は不可")
         }
 
-        if (MapZahyo.System == enmZahyo_System_Info.Zahyo_System_tokyo) {
+        if (MapZahyo.System === enmZahyo_System_Info.Zahyo_System_tokyo) {
             //日本測地系の場合は変換
             const xy2 = TKY2JGD.ITRF94toTokyo97(oLatLon);
             return xy2;
@@ -1048,7 +1048,7 @@ class spatial {
         let Eline2_n = 0
         const Eline2: number[] = [];
         for (let i = 0; i < LieneNum; i++) {
-            if (spxy[i].Equals(epxy[i]) == true) {
+            if (spxy[i].Equals(epxy[i]) === true) {
                 const fr = new Fringe_Line_Info();
                 fr.code = i;
                 fr.Direction = 1;
@@ -1071,9 +1071,9 @@ class spatial {
         let exy;
         while (Eline2_i < Eline2_n) {
             f = false;
-            if (Contf == false) {
+            if (Contf === false) {
                 for (let i = 0; i < Eline2_n; i++) {
-                    if (Eline2[i] != -1) {
+                    if (Eline2[i] !== -1) {
                         boundArrange.Arrange_LineCode[Pon]=[fnl,1]
                         const LineNO: number = Eline2[i];
                         Eline2[i] = -1;
@@ -1099,13 +1099,13 @@ class spatial {
             const k2: {ObjectNumber: number, Tag: number, PointNumber: number} = PointIndex.GetSamePointNumber(exy.x, exy.y);
             const LINENO2: number = k2.Tag;
             const PointNumber: number = k2.PointNumber;
-            if (k2.ObjectNumber != -1) {
+            if (k2.ObjectNumber !== -1) {
                 Contf = true;
                 Eline2[k2.ObjectNumber] = -1;
                 boundArrange.Arrange_LineCode[Pon][1]++;
                 const fr = new Fringe_Line_Info();
                 fr.code = LINENO2;
-                if (PointNumber == 0) {
+                if (PointNumber === 0) {
                     const newExy = epxy[LINENO2];
                     if (!newExy) {
                         f = false;
@@ -1135,18 +1135,18 @@ class spatial {
                 f = false;
                 break;
             }
-            if (exy.Equals(stxy) == true) {
+            if (exy.Equals(stxy) === true) {
                 Contf = false;
                 Pon++;
                 f = true;
             } else {
-                if (Contf == false) {
+                if (Contf === false) {
                     f = false;
                     break;
                 }
             }
         }
-        if (f == false) {
+        if (f === false) {
             boundArrange.Pon = 0;
         } else {
             boundArrange.Pon = Pon;
@@ -1158,7 +1158,7 @@ class spatial {
 
         const n = XY.length ;
         const xy2 =Generic.ArrayClone(XY);
-        if (MapDataMap.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+        if (MapDataMap.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
             //投影法が正積図法でない場合は座標を正積図法のものに変換
             switch (MapDataMap.Zahyo.Projection) {
                 case enmProjection_Info.prjSeikyoEntou:
@@ -1182,7 +1182,7 @@ class spatial {
         }
         switch (MapDataMap.Zahyo.Mode) {
             case enmZahyo_mode_info.Zahyo_No_Mode:
-                if (MapDataMap.SCL != 0) {
+                if (MapDataMap.SCL !== 0) {
                     men = Math.abs(men / (MapDataMap.SCL * MapDataMap.SCL) / 2);
                 } else {
                     men = Math.abs(men / 2);
@@ -1202,7 +1202,7 @@ class spatial {
 
     static CheckTwoPoint(xy1: point, xy2: point): boolean { //2つの座標が同じか調べる
 
-        if ((xy1.x == xy2.x) && (xy1.y == xy2.y)) {
+        if ((xy1.x === xy2.x) && (xy1.y === xy2.y)) {
             return true;
         } else {
             return false;
@@ -1220,7 +1220,7 @@ class spatial {
 
 
         let newRec;
-        if ((point_rectangle instanceof Array) == true) {
+        if ((point_rectangle instanceof Array) === true) {
             //地点配列の外接四角形
             newRec = new rectangle(point_rectangle[0].x, undefined, point_rectangle[0].y, point_rectangle[0].y);
             for (let i = 1; i < point_rectangle.length; i++) {
@@ -1236,7 +1236,7 @@ class spatial {
                 return new rectangle(0, 0, 0, 0);
             }
             newRec = Circumscribed_Rectangle.Clone();
-            if ((point_rectangle instanceof point) == true) {
+            if ((point_rectangle instanceof point) === true) {
                 const xy = point_rectangle;
                 if (Circumscribed_Rectangle.left > xy.x) newRec.left = xy.x;
                 if (Circumscribed_Rectangle.top > xy.y) newRec.top = xy.y;
@@ -1269,7 +1269,7 @@ class spatial {
     static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle) {//ポイントが四角形の中に入るかどうかチェック
 
         let ckP = checkXY.Clone();
-        if (Kakudo != 0) {
+        if (Kakudo !== 0) {
             const rcp = Rect.centerP();
             ckP.offset(-rcp.x, -rcp.y);
             ckP=this.Trans2D(ckP, Kakudo, 0);
@@ -1323,7 +1323,7 @@ class spatial {
         if ((typeof P2) === 'number') {
             const r = P2;
             return new rectangle(P1.x - r, P1.x + r, P1.y - r, P1.y + r);
-        } else if ((P2 instanceof size) == true) {
+        } else if ((P2 instanceof size) === true) {
             return new rectangle(P1.x - P2.width, P1.x + P2.width, P1.y - P2.height, P1.y + P2.height);
         } else {
             return new rectangle(Math.min(P1.x, P2.x), Math.max(P1.x, P2.x), Math.min(P1.y, P2.y), Math.max(P1.y, P2.y));
@@ -1334,7 +1334,7 @@ class spatial {
     //2つの四角形の上下左右端1つでも一致する場合true
     static Check_TwoRectangele_Inner_Contact(Rec1: rectangle, Rec2: rectangle): boolean {
 
-        if ((Rec1.left == Rec2.left) || (Math.abs(Rec1.right - Rec2.right) < 0.000001) || (Rec1.top == Rec2.top) || (Math.abs(Rec1.bottom - Rec2.bottom) < 0.000001)) {
+        if ((Rec1.left === Rec2.left) || (Math.abs(Rec1.right - Rec2.right) < 0.000001) || (Rec1.top === Rec2.top) || (Math.abs(Rec1.bottom - Rec2.bottom) < 0.000001)) {
             return true;
         } else {
             return false;
@@ -1447,7 +1447,7 @@ class spatial {
         pxy.push(new point(x2, y1));
         pxy.push(new point(x2, y2));
         pxy.push(new point(x1, y2));
-        if (Kakudo != 0) {
+        if (Kakudo !== 0) {
             const cp = Rect.centerP();
             for (let i = 0; i < 3; i++) {
                 pxy[i] = spatial.Trans2D(cp, pxy[i], -Kakudo);
@@ -1472,7 +1472,7 @@ class spatial {
         const d1 = this.Distance(X, Y, ax, ay);
         const d2 = this.Distance(X, Y, BX, BY);
         let D;
-        if (xs == 0) {
+        if (xs === 0) {
             if ((Math.min(ay, BY) <= Y) && (Y <= Math.max(ay, BY))) {
                 D = Math.abs(X - ax);
                 Nearest_pointX = ax;
@@ -1480,7 +1480,7 @@ class spatial {
             } else {
                 po = 1;
             }
-        } else if (Ys == 0) {
+        } else if (Ys === 0) {
             if ((Math.min(ax, BX) <= X) && (Y <= Math.max(ax, BX))) {
                 D = Math.abs(Y - ay);
                 Nearest_pointX = X;
@@ -1504,7 +1504,7 @@ class spatial {
             }
         }
 
-        if (po == 1) {
+        if (po === 1) {
             if (d1 < d2) {
                 D = d1;
                 Nearest_pointX = ax;
@@ -1568,7 +1568,7 @@ class spatial {
                     }
                     case enmProjection_Info.prjMollweide: {
                         const theata = this.newtonMollweide(oy);
-                        if (theata != undefined) {
+                        if (theata !== undefined) {
                             const x = EarthR * Math.sqrt(2) / 90 * (ox - MPDataMapZahyo.CenterXY.x) * Math.cos(theata);
                             const y = -EarthR * Math.sqrt(2) * Math.sin(theata);
                             return new point(x, y);
@@ -1579,7 +1579,7 @@ class spatial {
                     }
                     case enmProjection_Info.prjEckert4: {
                         const theata = this.newtonEckert4(oy);
-                        if (theata != undefined) {
+                        if (theata !== undefined) {
                             const x = EarthR * 0.4222382 * ((ox - MPDataMapZahyo.CenterXY.x) * Math.PI / 180) * (1 + Math.cos(theata));
                             const y = -EarthR * 1.3265044 * Math.sin(theata);
                             return new point(x, y);
@@ -1631,26 +1631,26 @@ class spatial {
         /// <param name="OriginMap">もともとの座標系</param>  
         /// <param name="ConvertMap">変換予定の座標系</param>  
         /// </signature>
-        if (((OriginMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode)) ||
-            ((OriginMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode))) {
+        if (((OriginMap.Mode === enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode !== enmZahyo_mode_info.Zahyo_No_Mode)) ||
+            ((OriginMap.Mode !== enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode === enmZahyo_mode_info.Zahyo_No_Mode))) {
             const mes = "座標系の設定していないデータと、設定してあるデータを重ねることはできません。";
             return { ok: false, emes: mes };
         }
-        if (((OriginMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode)) ||
-            ((OriginMap.Mode != enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode == enmZahyo_mode_info.Zahyo_No_Mode))) {
+        if (((OriginMap.Mode === enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode !== enmZahyo_mode_info.Zahyo_No_Mode)) ||
+            ((OriginMap.Mode !== enmZahyo_mode_info.Zahyo_No_Mode) && (ConvertMap.Mode === enmZahyo_mode_info.Zahyo_No_Mode))) {
             const mes = "座標系の設定していないデータと、設定してあるデータを重ねることはできません。";
             return { ok: false, emes: mes };
         }
-        if ((OriginMap.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (ConvertMap.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+        if ((OriginMap.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (ConvertMap.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
             const mes =  "平面直角座標系のデータ上に緯度経度座標系のデータは追加できません。";
             return { ok: false, emes: mes };
         }
-        if ((OriginMap.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (OriginMap.Mode == enmZahyo_mode_info.Zahyo_HeimenTyokkaku)) {
-            if (ConvertMap.HeimenTyokkaku_KEI_Number != OriginMap.HeimenTyokkaku_KEI_Number) {
+        if ((OriginMap.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (OriginMap.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku)) {
+            if (ConvertMap.HeimenTyokkaku_KEI_Number !== OriginMap.HeimenTyokkaku_KEI_Number) {
                 const mes =  "平面直角座標系の系番号が違います。";
                 return { ok: false, emes: mes };
             }
-            if (ConvertMap.System != OriginMap.System) {
+            if (ConvertMap.System !== OriginMap.System) {
                 const mes =  "平面直角座標系の測地系が違います。";
                 return { ok: false, emes: mes };
             }
@@ -1910,7 +1910,7 @@ export class Generic {
         const L = CheckWords.length;
         let V = 0;
         for (let i = 0; i < Words.length; i++) {
-            if (Words[i].left(L) == CheckWords) {
+            if (Words[i].left(L) === CheckWords) {
                 V = Math.max(Math.floor(Number(Words[i].mid(L, undefined))), V);
             }
         }
@@ -1929,14 +1929,14 @@ export class Generic {
         for(let i  = 0 ;i< Word_Compatible.length;i++){
             for(let j  = 1 ;j< Word_Compatible[i].length;j++){
                 const k  =objName.indexOf(Word_Compatible[i].mid( j, 1));
-                if(k != -1 ){
+                if(k !== -1 ){
                     objName=objName.midReplace( k, Word_Compatible[i].left(1));
                     f = true;
                 }
             }
         }
 
-        if(clsSettingData.KatakanaCheck == true ){
+        if(clsSettingData.KatakanaCheck === true ){
             const katakana=Generic.Array2Dimension(3,2, undefined); 
             katakana[0][ 0] = "ヴァ"
             katakana[0][ 1] = "バ"
@@ -1946,7 +1946,7 @@ export class Generic {
             katakana[2][ 1] = "ベ"
             for(let i  = 0 ;i<= 2;i++){
                 const k  = objName.indexOf(katakana[i][ 0]);
-                if(k != -1 ){
+                if(k !== -1 ){
                     objName = objName.midReplace(katakana[i][0], katakana[i][1]);
                     f = true;
                 }
@@ -1954,10 +1954,10 @@ export class Generic {
         }
 
         //新字体旧字体比較
-        if(clsSettingData.SinKyuCharacter == true ){
+        if(clsSettingData.SinKyuCharacter === true ){
             for(let j  = 1 ;j<  objName.length;j++){
                 const k  = oldCharacter.indexOf( objName.mid( j, 1));
-                if(k != -1 ){
+                if(k !== -1 ){
                     objName =objName.midReplace(j,  newCharacter.mid( k, 1));
                     f = true;
                 }
@@ -1990,15 +1990,15 @@ export class Generic {
 
         const CUT = [];
         const vbQuate = String.fromCharCode(34);
-        if (Wo.length == 0) {
+        if (Wo.length === 0) {
             return [""];
         }
         switch (Spliter) {
             case " ": { //スペース区切り
-                if (Wo == " ".repeat(Wo.length)) {
+                if (Wo === " ".repeat(Wo.length)) {
                     return [""];
                 }
-                while (Wo.left( 1) == " ") {
+                while (Wo.left( 1) === " ") {
                     Wo = Wo.mid(1, undefined);
                 }
                 Wo += " ";
@@ -2006,21 +2006,21 @@ export class Generic {
                 let ST = 0;
                 for (let i = 0; i < Wo.length; i++) {
                     const w = Wo.mid(i, 1);
-                    if (w == vbQuate) {
+                    if (w === vbQuate) {
                         qua_f = !qua_f;
                     }
                     switch (w) {
                         case " ": {
-                            if (qua_f == false) {
+                            if (qua_f === false) {
                                 let Cutw = Wo.mid( ST, i - ST);
-                                if (Cutw.left(1) == vbQuate) {
+                                if (Cutw.left(1) === vbQuate) {
                                     Cutw = Cutw.mid(1, undefined);
                                 }
-                                if (Cutw.right(1) == vbQuate) {
+                                if (Cutw.right(1) === vbQuate) {
                                     Cutw = Cutw.left(Cutw.length - 1);
                                 }
                                 CUT.push(Cutw);
-                                while (Wo.mid(i, 1) == " ") {
+                                while (Wo.mid(i, 1) === " ") {
                                     i++;
                                 }
                                 ST = i;
@@ -2045,15 +2045,15 @@ export class Generic {
                         case vbQuate: {
                             qua_f = !qua_f;
                             wf = true;
-                            if (qua_f == true) {
+                            if (qua_f === true) {
                                 ST = i;
                             }
                             break;
                         }
                         case ",": {
-                            if (qua_f == false) {
+                            if (qua_f === false) {
                                 let Cutw;
-                                if (wf == false) {
+                                if (wf === false) {
                                     Cutw = Wo.mid(ST, i - ST).trim();
                                     ST = i + 1
                                 } else {
@@ -2097,7 +2097,7 @@ export class Generic {
                 Generic.unzipFile(file, unzipOk, unzipError);
                 function unzipOk(data: {[key: string]: Uint8Array}) {
                     const key = Object.keys(data)[0];
-                    if(ext=="mpfj"){
+                    if(ext==="mpfj"){
                         readCall(JSON.parse(Generic.utf8ArrayToStr(data[key]))) ;
                     }else{
                         readCall(Generic.utf8ArrayToStr(data[key])) ;
@@ -2152,25 +2152,25 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const gsize = Generic.getDivSize(promptText, 270, "");
         const fheight = (gsize.height) + 130;
         const alertObj = Generic.set_backDiv("", "MANDARA JS", 300, fheight, true, true, buttonOK, 0.2, false,true,cancelCall);
-        if (event_point != undefined) {
+        if (event_point !== undefined) {
             Generic.Set_Box_Position_in_Browser(event_point, alertObj);
         }
         this.createNewDiv(alertObj, promptText, "", "", 15, 40, 270, undefined, "", undefined);
         const inbox = Generic.createNewInput(alertObj, 'text', defoText, "", 15, gsize.height + 50, undefined, "width:270px;text-align:"+textAlign);
          inbox.select();
         inbox.onkeydown = function (e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
                 const children = alertObj.childNodes;
                 for (const i in children) {
-                    if ((children[i] as HTMLInputElement).name == "ok") {
+                    if ((children[i] as HTMLInputElement).name === "ok") {
                         (children[i] as HTMLInputElement).focus();
                         break;
                     }
                 }
-            }else if(e.keyCode == 27){
+            }else if(e.keyCode === 27){
                 const children = alertObj.childNodes;
                 for (const i in children) {
-                    if ((children[i] as HTMLInputElement).name == "cancel") {
+                    if ((children[i] as HTMLInputElement).name === "cancel") {
                         (children[i] as HTMLInputElement).click();
                         break;
                     }
@@ -2190,7 +2190,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const fheight=(gsize.height)+100;
         const fw=250;
         const confirmObj = Generic.set_backDiv("", "MANDARA JS",fw, fheight, false, false, undefined, 0.2,false);
-        if(event_point!=undefined){
+        if(event_point!==undefined){
             Generic.Set_Box_Position_in_Browser(event_point, confirmObj);
         }
         this.createNewDiv(confirmObj,text,"","",15,40,220,undefined,"",undefined);
@@ -2217,7 +2217,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const gsize=Generic.getDivSize(text,220,"");
         const fheight=(gsize.height)+100;
         const alertObj = Generic.set_backDiv("", "MANDARA JS",250, fheight, true, false, buttonOK, 0.2,false,true,returnFunction);
-        if(event_point!=undefined){
+        if(event_point!==undefined){
             Generic.Set_Box_Position_in_Browser(event_point, alertObj);
         }
         this.createNewDiv(alertObj,text,"","",15,40,220,undefined,"",undefined);
@@ -2284,7 +2284,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let out = "";
         let i = 0;
         let char1, char2, char3;
-        if(array[0]==239){
+        if(array[0]===239){
             i=3;
         }
         while (i < len) {
@@ -2412,7 +2412,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static getDivSize(text: string, width: number | undefined, styleinfo: string) {
 
         const t = this.createNewDiv(document.body, text, "", "", 0, 0, "", "", styleinfo + ";visibility:hidden", undefined);
-        if (width != undefined) {
+        if (width !== undefined) {
             t.style.width = width.px();
         }
         const w = t.offsetWidth;
@@ -2432,10 +2432,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             dd1 = dd2;
         }
         poxy.push(DestP.Clone());
-        if (OriginP.y == DestP.y) {
+        if (OriginP.y === DestP.y) {
             poxy.push(new point(ControlP.x - Math.sqrt(dd1) * 0.75, ControlP.y));
             poxy.push(new point(ControlP.x + Math.sqrt(dd1) * 0.75, ControlP.y));
-        } else if (OriginP.x == DestP.x) {
+        } else if (OriginP.x === DestP.x) {
             poxy.push(new point(ControlP.x, ControlP.y - Math.sqrt(dd1) * 0.75));
             poxy.push(new point(ControlP.x, ControlP.y + Math.sqrt(dd1) * 0.75));
         } else {
@@ -2455,7 +2455,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         const tx = this.createNewNumberInput(ParentObj, defoValue, ID, x + hsw, y, width, onChange, styleinfo);
-        if (footWord != "") {
+        if (footWord !== "") {
             Generic.createNewSpan(ParentObj, footWord, "", "", x + width + hsw + 5, y + 3, "", undefined);
         }
         return tx;
@@ -2484,12 +2484,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         box.numberCheck = true;//数字のチェックをしない場合はfalseにする
         box.onchange = function () {
             let v = box.value;         
-            if (box.numberCheck == false) {
+            if (box.numberCheck === false) {
                 if(typeof onChange==='function'){
                     onChange(box, Number(v));
                 }
             } else {
-                if (isNaN(Number(v)) == false) {
+                if (isNaN(Number(v)) === false) {
                     const nv = Number(v);
                     box.preValue = nv;
                     if(typeof onChange==='function'){
@@ -2497,7 +2497,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     }
                 } else {
                     v=Generic.convValue(v);
-                    if (isNaN(Number(v)) == false) {
+                    if (isNaN(Number(v)) === false) {
                         const nv = Number(v);
                         box.value = String(nv);
                         box.preValue = nv;
@@ -2634,15 +2634,15 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     f = false;
                     break;
                 } else {
-                    if (v != "") {
-                        if (isNaN(Number(v)) == true) {
+                    if (v !== "") {
+                        if (isNaN(Number(v)) === true) {
                                 f = false;
                             break;
                         }
                     }
                 }
             }
-            if (f == false) {
+            if (f === false) {
                 //文字列のデータ項目の場合
                 for (let j = 0; j < ObjNum; j++) {
                     SS.Add(aData[j][i]);
@@ -2681,7 +2681,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static getExtension(filename: string){
 
         const n=filename.lastIndexOf(".");
-        if(n==-1){
+        if(n===-1){
             return "";
         }else{
             return filename.mid(n+1,filename.length);
@@ -2693,7 +2693,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const hn = filename.lastIndexOf("/");//スラッシュ
         let tx = "";
-        if ((hn == -1)) {
+        if ((hn === -1)) {
             tx = filename;
         } else {
             tx = filename.mid(hn + 1,undefined);
@@ -2707,11 +2707,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const n = filename.lastIndexOf(".");
         const hn = filename.lastIndexOf("/");//スラッシュ
         let tx = "";
-        if ((n == -1) && (hn == -1)) {
+        if ((n === -1) && (hn === -1)) {
             tx = filename;
-        } else if (n == -1) {
+        } else if (n === -1) {
             tx = filename.right(filename.length - (hn + 1));
-        } else if (hn == -1) {
+        } else if (hn === -1) {
             tx = filename.left(n);
         } else {
             tx = filename.mid(hn + 1, n - hn);
@@ -2725,13 +2725,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         /// <signature>
         /// <summary>ファイル保存</summary>
         /// </signature> 
-        if (fileName == null) {
+        if (fileName === null) {
             fileName = "textfile.txt";
         }
         const blob = new Blob([text], {
             type: "text/plain"
         });
-        if (window.navigator.msSaveBlob != null) {
+        if (window.navigator.msSaveBlob !== null) {
             window.navigator.msSaveBlob(blob, fileName);
         } else {
             const a = document.createElement("a");
@@ -2747,7 +2747,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let retPS: {x: string, y: string} = {x: "", y: ""};
         switch (MPDataMapZahyo.Mode) {
             case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
-                if (Header_Flag == true) {
+                if (Header_Flag === true) {
                     retPS.x = "Y:";
                     retPS.y = "X:";
                 }
@@ -2756,7 +2756,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 break;
             }
             case enmZahyo_mode_info.Zahyo_No_Mode: {
-                if (Header_Flag == true) {
+                if (Header_Flag === true) {
                     retPS.x = "X:";
                     retPS.y = "Y:";
                 }
@@ -2785,7 +2785,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const P = Pos.Clone();
         const retPS = {x: "", y: ""};
 
-        if( Header_Flag == true ){
+        if( Header_Flag === true ){
             if( P.y < 0 ){
                 retPS.y = "南緯";
             }else{
@@ -2813,7 +2813,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             retPS.x = "";
             retPS.y = "";
         }
-        if (clsSettingData.Ido_Kedo_Print_Pattern == enmLatLonPrintPattern.DegreeMinuteSecond) {
+        if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
             const LatLonDMS = new latlon(P.y,P.x).toDegreeMinuteSecond();
             const o = LatLonDMS.LongitudeDMS;
             retPS.x += String(o.degree) + "度" + String(o.minute) + "分" + o.second.toFixed(4) + "秒"
@@ -2911,7 +2911,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static getScaleUnitStrings(Value: number | undefined, scl: number) {
 
         let vs;
-        if(Value==undefined){
+        if(Value===undefined){
             vs="";
         }else{
             vs = Value.toString();
@@ -2930,20 +2930,20 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 return vs + "inch";
                 break;
             case enmScaleUnit.feet:
-                if (Value == 1) {
+                if (Value === 1) {
                     return "1 foot";
                 } else {
                     return vs + "feet";
                 }
                 break;
             case enmScaleUnit.yard:
-                if (Value == 1) {
+                if (Value === 1) {
                     return "1 yard";
                 } else {
                     return vs + " yards";
                 }
             case enmScaleUnit.mile:
-                if (Value == 1) {
+                if (Value === 1) {
                     return "1 mile";
                 } else {
                     return vs + " miles";
@@ -3009,7 +3009,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const k2 = bcol.indexOf(")");
         const cola = bcol.slice(k1 + 1, k2);
         const RGB = cola.split(",");
-        if (RGB.length == 4) {
+        if (RGB.length === 4) {
             opa = parseFloat(RGB[3]);
         }
         opa *= 256;
@@ -3035,7 +3035,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             x = e_point.clientX; //ページ内でのマウスカーソル位置を取得
             y = e_point.clientY;
         }
-        if (x == 'undefined' && 'pageX' in e_point && 'pageY' in e_point) {
+        if (x === 'undefined' && 'pageX' in e_point && 'pageY' in e_point) {
             x = e_point.pageX;
             y = e_point.pageY;
         } else {
@@ -3118,10 +3118,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //selectのアイテム削除後に、次のインデックスを指定する
     static ListIndex_Reset(select: HTMLSelectElement, Old_n: number) {
 
-        if (select.options.length == 0) {
+        if (select.options.length === 0) {
             return;
         }
-        if (Old_n == select.options.length) {
+        if (Old_n === select.options.length) {
             select.selectedIndex = Old_n - 1;
         } else {
             select.selectedIndex = Old_n;
@@ -3193,19 +3193,19 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const ncode = [];
         for (let i = 0; i < lc.length; i++) {
             const k = lc[i].LineCode;
-            if (k != -1) {
+            if (k !== -1) {
                 for (let j = i+1; j < lc.length; j++) {
-                    if (k == lc[j].LineCode) {
+                    if (k === lc[j].LineCode) {
                         lc[j].LineCode = -1;
                         //面形状の場合は重複するラインは使用しない
                         //線形上の場合は、最初の1回だけ使用する
-                        if (Shape == enmShape.PolygonShape) {
+                        if (Shape === enmShape.PolygonShape) {
                             lc[i].LineCode = -1;
                         }
                     }
                 }
             }
-            if (lc[i].LineCode != -1) {
+            if (lc[i].LineCode !== -1) {
                 ncode.push(lc[i]);
             }
         }
@@ -3217,23 +3217,23 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let dtype;
         const UTitle = Title.toUpperCase();
-        if (UTitle == "URL") {
+        if (UTitle === "URL") {
             dtype = enmAttDataType.URL;
-        } else if (UTitle == "URL_NAME") {
+        } else if (UTitle === "URL_NAME") {
             dtype = enmAttDataType.URL_Name;
-        } else if (UTitle == "LON") {
+        } else if (UTitle === "LON") {
             dtype = enmAttDataType.Lon;
-        } else if (UTitle == "LAT") {
+        } else if (UTitle === "LAT") {
             dtype = enmAttDataType.Lat;
-        } else if (UTitle == "PLACE") {
+        } else if (UTitle === "PLACE") {
             dtype = enmAttDataType.Place;
-        } else if (UTitle == "ARRIVAL") {
+        } else if (UTitle === "ARRIVAL") {
             dtype = enmAttDataType.Arrival;
-        } else if (UTitle == "DEPARTURE") {
+        } else if (UTitle === "DEPARTURE") {
             dtype = enmAttDataType.Departure;
-        } else if (Unit.toUpperCase() == "CAT") {
+        } else if (Unit.toUpperCase() === "CAT") {
             dtype = enmAttDataType.Category;
-        } else if (Unit.toUpperCase() == "STR") {
+        } else if (Unit.toUpperCase() === "STR") {
             dtype = enmAttDataType.Strings;
         } else {
             dtype = enmAttDataType.Normal;
@@ -3250,10 +3250,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let Unit=defoUnit;
         switch (dtype) {
             case enmAttDataType.Normal:
-                if ((defoTitle.toUpperCase() == "URL") || (defoTitle.toUpperCase() == "URL_NAME")) {
+                if ((defoTitle.toUpperCase() === "URL") || (defoTitle.toUpperCase() === "URL_NAME")) {
                     Title = "データ" + Title
                 }
-                if ((defoUnit.toUpperCase() == "CAT") || (defoUnit.toUpperCase() == "STR")) {
+                if ((defoUnit.toUpperCase() === "CAT") || (defoUnit.toUpperCase() === "STR")) {
                     Unit = ""
                 }
                 break;
@@ -3293,7 +3293,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //オブジェクトが同じかどうか調べる
     static equal<T>(objecta: T, objectb: T) {
 
-        return (JSON.stringify(objecta) == JSON.stringify(objectb))
+        return (JSON.stringify(objecta) === JSON.stringify(objectb))
     }
     static Clone<T>(odata: T): T {
 
@@ -3308,7 +3308,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**Cloneメソッドを持つオブジェクトの配列をコピーする */ 
     static ArrayClone<T extends {Clone(): T}>(array: T[]): T[] | undefined {
 
-        if (array.length==0){
+        if (array.length===0){
             return [];
         }
         if (typeof array[0].Clone !== 'function') {
@@ -3350,7 +3350,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if (window.innerWidth) {
             return window.innerWidth;
         }
-        else if (document.documentElement && document.documentElement.clientWidth != 0) {
+        else if (document.documentElement && document.documentElement.clientWidth !== 0) {
             return document.documentElement.clientWidth;
         }
         else if (document.body) {
@@ -3365,7 +3365,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if (window.innerHeight) {
             return window.innerHeight;
         }
-        else if (document.documentElement && document.documentElement.clientHeight != 0) {
+        else if (document.documentElement && document.documentElement.clientHeight !== 0) {
             return document.documentElement.clientHeight;
         }
         else if (document.body) {
@@ -3390,7 +3390,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let Xw: number;
         let Yw: number;
         
-        if (win2p == "on") {
+        if (win2p === "on") {
             if (new2?.closed === false) {
                 new2.close();
             }
@@ -3450,16 +3450,16 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const sdv = [];
         const n = ST.length;
         for (let i = 0; i < n - 1; i++) {
-            if (sdv[i] == undefined) {
+            if (sdv[i] === undefined) {
                 for (let j = i + 1; j < n; j++) {
-                    if ((ST[i] == ST[j]) && (sdv[j] == undefined)) {
+                    if ((ST[i] === ST[j]) && (sdv[j] === undefined)) {
                         sdv[j] = true;
                     }
                 }
             }
         }
         for (let i = 0; i < n; i++) {
-            if (sdv[i] == undefined) {
+            if (sdv[i] === undefined) {
                 ST2.push(ST[i]);
             }
         }
@@ -3480,16 +3480,16 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const BL = EndCol.b - B1;
         let cf = 0;
         if (n >= 3) {
-            if (EndCol.toHex() == '#ffffff') {
+            if (EndCol.toHex() === '#ffffff') {
                 cf = 1;
             }
-            if (StartCol.toHex() == '#ffffff') {
+            if (StartCol.toHex() === '#ffffff') {
                 cf = -1
             }
         }
         for (let i = 0; i < n; i++) {
             let v = i / (n - 1);
-            if ((i >= 1) && (i <= n - 2) && (cf != 0)) {
+            if ((i >= 1) && (i <= n - 2) && (cf !== 0)) {
                 v = v + 1 / (2 * (n - 1)) * cf;
             }
             const a = a1 + AL * v;
@@ -3519,7 +3519,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     //最大値と最小値を指定の区分数で切りのよい数字で区切る
     static WIC(CUTN: number, Max: number, Min: number) {
 
-        if (Max == Min) {
+        if (Max === Min) {
             return { max: Max + 1, min: Min - 1, step: 1 }
         }
         const ret: {step: number, min: number, max: number} = {step: 0, min: 0, max: 0};
@@ -3528,14 +3528,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let f = 1;
         const deci = this.Figure_Arrange(Max);
         const deci2 = this.Figure_Arrange(Min);
-        if (deci.BeforeDecimal + deci2.BeforeDecimal == 0) {
+        if (deci.BeforeDecimal + deci2.BeforeDecimal === 0) {
             const f = 10 ** deci2.AfterDecimal;
             Max = Max * f;
             Min = Min * f;
             H = H * f;
         } else {
             const deci3 = this.Figure_Arrange(H);
-            if (deci3.BeforeDecimal == 0) {
+            if (deci3.BeforeDecimal === 0) {
                 f = 10 ** deci3.AfterDecimal;
                 Max = Max * f;
                 Min = Min * f;
@@ -3549,7 +3549,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         b = 10 ** (deci5.BeforeDecimal - 1);
         const w2 = w;
         w = Math.floor(w / b) * b
-        if (w == 0) {
+        if (w === 0) {
             w = w2 / b;
         }
         b = 10 ** (deci4.BeforeDecimal - 1);
@@ -3578,16 +3578,16 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let Left, Right;
 
-        if (Value == 0) {
+        if (Value === 0) {
             Left = 1;
         } else {
             Left = Math.floor(Math.log10(Math.abs(Value))) + 1;
         }
         const b = String(Value);
         const c = b.indexOf(".");
-        if ((c == -1) || (b.indexOf("E+") != -1)) {
+        if ((c === -1) || (b.indexOf("E+") !== -1)) {
             Right = 0;
-        } else if (b.indexOf("E-") != -1) {
+        } else if (b.indexOf("E-") !== -1) {
             Right = b.length - b.indexOf("E") + Math.floor(Number(b.slice(b.indexOf("-") + 1)));
         } else {
             Right = b.slice(c + 1).length;
@@ -3604,7 +3604,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const retv = this.Figure_Arrange(val);
         let L = retv.BeforeDecimal;
         const r = retv.AfterDecimal;
-        if (L == 0) {
+        if (L === 0) {
             L = 1;
         }
         if (val < 0) {
@@ -3623,7 +3623,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         
         let Comma_Num;
-        if (Comma_f == true) {
+        if (Comma_f === true) {
             Comma_Num = Math.floor((LeftOfDecimalPoint - 1) / 3);
         } else {
             Comma_Num = 0;
@@ -3633,12 +3633,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             Num++;
         }
         let FL = " ".repeat(LeftOfDecimalPoint);
-        if (Comma_f == true) {
+        if (Comma_f === true) {
             FL += Math.floor(Value).toLocaleString();
         } else {
             FL += String(Math.floor(Value));
         }
-        if (RightOfDecimaplPoint != 0) {
+        if (RightOfDecimaplPoint !== 0) {
             FL += "." + Number(Value).toFixed(RightOfDecimaplPoint).split(".")[1];
         }
         FL = FL.right(Num);
@@ -3650,7 +3650,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const retArray = [];
         for (const key in Original_Array) {
-            if (Original_Array[key] == Specified_Value) {
+            if (Original_Array[key] === Specified_Value) {
                 retArray.push(key);
             }
         }
@@ -3661,7 +3661,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let n = 0;
         for (const key in Original_Array) {
-            if (Original_Array[key] == Specified_Value) {
+            if (Original_Array[key] === Specified_Value) {
                 n++;
             }
         }
@@ -3747,14 +3747,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         obj.innerHTML = innerHtml;
         obj.style.top = y.px();
         obj.style.left = x.px();
-        if (width != undefined) {
+        if (width !== undefined) {
             if ((typeof width) === 'string') {
                 obj.style.width = width;
             } else {
                 obj.style.width = width.px();
             }
         }
-        if (height != undefined) {
+        if (height !== undefined) {
             if ((typeof height) === 'string') {
                 obj.style.height = height;
             } else {
@@ -3779,7 +3779,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let sy = y;
         for (let i = 0; i < list.length; i++) {
-            this.createNewRadioButton(ParentObj, list[i].text, "radio" + name + i, name, (list[i].value == defoCheckValue), list[i].value, x, sy, wordWidth, onClick, styleinfo);
+            this.createNewRadioButton(ParentObj, list[i].text, "radio" + name + i, name, (list[i].value === defoCheckValue), list[i].value, x, sy, wordWidth, onClick, styleinfo);
             if (Array.isArray(yplus)) {
                 sy += yplus[i];
             } else {
@@ -3794,7 +3794,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         ok.addEventListener('change', change);
         ok.value = String(value);
         ok.setAttribute("name", name);
-        if (checked == true) {
+        if (checked === true) {
             ok.setAttribute("checked", "")
         }
         const asize = Generic.getDivSize(text, wordWidth, "");
@@ -3805,7 +3805,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             const target = e?.target as (HTMLElement & {tag?: string}) | null;
             if (!target) { return; }
             const obj = target.tag ? document.getElementById(target.tag) as unknown as HTMLInputElement | null : null;
-            if (obj?.disabled == false) {
+            if (obj?.disabled === false) {
                 obj.checked = true;
                 change();
             }
@@ -3814,7 +3814,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         function change(){
             if (typeof (onClick) === "function") {
                 let v: string | number = ok.value;
-                if (isNaN(Number(v))==false){
+                if (isNaN(Number(v))===false){
                     v=Number(v);
                 }
                 onClick(v as RadioValue);
@@ -3829,10 +3829,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
             let v: string | number = rd[i].value;
-            if ((isNaN(Number(v)) == false) && (isNaN(Number(value)) == false)) {
+            if ((isNaN(Number(v)) === false) && (isNaN(Number(value)) === false)) {
                 v = Number(v);
             }
-            if (v == value) {
+            if (v === value) {
                 rd[i].disabled = !enabled;
                 break;
             }
@@ -3844,10 +3844,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
             let v: string | number = rd[i].value;
-            if ((isNaN(Number(v)) == false) && (isNaN(Number(value)) == false)) {
+            if ((isNaN(Number(v)) === false) && (isNaN(Number(value)) === false)) {
                 v = Number(v);
             }
-            if (v == value) {
+            if (v === value) {
                 rd[i].checked = true;
                 break;
             }
@@ -3859,9 +3859,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const rd = document.getElementsByName(name);
         for (let i = 0; i < rd.length; i++) {
-            if (rd[i].checked==true) {
+            if (rd[i].checked===true) {
                 let v: string | number = rd[i].value;
-                if (isNaN(Number(v))==false){
+                if (isNaN(Number(v))===false){
                     v=Number(v);
                 }
                 return v;
@@ -3875,13 +3875,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static createNewCheckBox(ParentObj: HTMLElement, text: string, ID: string, checked: boolean, x: number, y: number, wordWidth: number, onClick: ((obj: HTMLInputElement) => void) | undefined, styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "checkbox", "", ID, x, y, undefined, styleinfo);
-        if (checked == true) {
+        if (checked === true) {
             ok.setAttribute("checked", "")
         }
         ok.onchange = change;
         this.createNewWordWidthDiv(ParentObj, "", text, x + 20, y, 18, wordWidth, spnClick);
         function spnClick() {
-            if(ok.disabled==false){
+            if(ok.disabled===false){
                 ok.checked = !ok.checked;
                 change();
                 }
@@ -3901,7 +3901,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         styleinfo = "width:" + String(boxWidth) + "px;" + styleinfo;
         const tx = this.createNewInput(ParentObj, "text", defoText, ID, x + hsw, y, undefined, styleinfo);
         tx.onchange = onChange;
-        if (footWord != "") {
+        if (footWord !== "") {
             Generic.createNewSpan(ParentObj, footWord, "", "", x + boxWidth + hsw + 5, y + 3, "", undefined);
         }
         return tx;
@@ -3944,7 +3944,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /** 改行つきDIV作成*/
     static createNewWordWidthDiv(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, lineHeight: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, styleinfo: string = "") {
 
-        if (word == "") {
+        if (word === "") {
             return 0;
         } else {
             const asize = Generic.getDivSize(word, wordWidth,styleinfo);
@@ -3968,10 +3968,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static setTileDiv(tileDiv: HTMLElement, Tile: {BlankF: boolean, Color: colorRGBA}) {
 
         const trans = tileDiv.children;
-        if(trans.length==0){
+        if(trans.length===0){
             return;
         }
-        if (Tile.BlankF == true) {
+        if (Tile.BlankF === true) {
            trans[0].style.display = "inline";
             tileDiv.style.backgroundColor = 'white';
         } else {
@@ -4015,7 +4015,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static createNewSizeSelect(ParentObj: HTMLElement, defoValue: number, ID: string, preWord: string, x: number, y: number, preWordWidth: number, valueType: number[] | number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, percentShowF: boolean = true) {
 
         let cboCodeList=[];
-        if( valueType instanceof Array==true){
+        if( valueType instanceof Array===true){
             for (const i　in valueType) {
                 cboCodeList.push(valueType[i]);
             }
@@ -4059,7 +4059,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const lineH =21;
         const sw =this.createNewWordWidthDiv(ParentObj,"",preWord,x,y,lineH,preWordWidth,undefined);
         const sInput=this.createNewNumberComboBox(ParentObj,defoValue,ID, cboCodeList,x+sw,y,60,10,onChange );
-        if(percentShowF==true){
+        if(percentShowF===true){
             Generic.createNewSpan(ParentObj, "%", "", "", x+sw+65, y+3, "", undefined);
         }
         return sInput;
@@ -4101,7 +4101,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, lineH, headWordWidth, undefined,divStyle);
         let xx=x;
         let yy=y;
-        if(selectPosition==0){
+        if(selectPosition===0){
             xx= x + hsw;
         }else{
             xx+=15;
@@ -4119,10 +4119,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.multiple = multipleFlag;
         sbox.onchange =function(){
             const nochange=false;
-            if((typeof onChange==='function')&&(nochange==false)){
+            if((typeof onChange==='function')&&(nochange===false)){
                 let sel;
                 let v;
-                if(multipleFlag==false){
+                if(multipleFlag===false){
                     sel=sbox.selectedIndex;
                     v=sbox.getValue ? sbox.getValue() : undefined;
                 }else{
@@ -4137,7 +4137,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.setAttribute("size", String(size));
         sbox.addEventListener("mouseenter", mouseEnter, false);
         sbox.addEventListener("mouseleave", mouseLeave, false);
-        if (list != undefined) {
+        if (list !== undefined) {
             const listItems: ListItem[] = list.map(item => ({value: item, text: item}));
             sbox.addSelectList?.(listItems, firstSelectIndex, true, astariskNonF);
             sbox.selectedIndex = firstSelectIndex;
@@ -4153,7 +4153,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
         }
         function mouseLeave(this: HTMLSelectElement, e: MouseEvent) {
-            if (sbox.tooltip == 'true') {
+            if (sbox.tooltip === 'true') {
                 this.parentNode.removeChild(this.parentNode.lastChild);
                 sbox.tooltip = '';
             }
@@ -4499,38 +4499,38 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const hiddenWindow = function () {
             const winAny = window as Record<string, any>;
             winAny.setVisibility?.(false) ;
-            if(XmarkCall !=undefined){
+            if(XmarkCall !==undefined){
                 XmarkCall();
             }
         }
         const window = Generic.createNewDiv(document.body, "", ID, Class, x, y, width, height, "border: solid 1px; border-radius:5px; background-color:white; overflow:hidden; ", "");
         let pl="padding-left:40px;"
-        if(menuMarkF==false){
+        if(menuMarkF===false){
             pl="padding-left:15px;"
         }
         const hd = Generic.createNewDiv(window, "", "", title, 0, 0, '100%', state.scrMargin.top-3, "padding-top:3px;background-color: gray;color:#ffffff;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"+pl, "");
         hd.name = "header";
         window.maxSizeFlag=false;
-        if (footer_Flag == true) {
+        if (footer_Flag === true) {
             const ft = Generic.createNewDiv(window, "", footerID, "", 0, 0, 100, state.scrMargin.bottom, "background-color: #dddddd;color:#000000;font-size:13px;padding-left:10px;padding-top:5px", "");
             ft.bottomRightPositionFixed=true;
             ft.relativePosition=new point(-1,state.scrMargin.bottom);
             ft.name = "footer";
         }
-        if (XmarkF == true) {
+        if (XmarkF === true) {
             this.createXmark(window, hiddenWindow, 14);
         }
-        if (menuMarkF == true) {
+        if (menuMarkF === true) {
             const menuHandler = menuCall ? function(this: HTMLCanvasElement, e: MouseEvent) {
                 const rect = this.getBoundingClientRect();
                 menuCall(new point(rect.right, rect.bottom));
             } : null;
             this.createMenuMark(window, menuHandler, 14);
         }
-        if (maxButtonF == true) {
+        if (maxButtonF === true) {
             const cs=this.createMaxButton(window, resizeWindow, 14);
             cs.rightPositionFixed=true;
-            if(XmarkF==true){
+            if(XmarkF===true){
                 cs.relativePosition=new point(cs.width*2+38,0);
             }else{
                 cs.relativePosition=new point(cs.width+14,0);
@@ -4547,7 +4547,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 2;
                 ctx.strokeRect(2, 2,w-4,w-4);
-                if (window.maxSizeFlag == false) {
+                if (window.maxSizeFlag === false) {
                     ctx.strokeRect(2, 7,Math.floor(w/2),Math.floor(w/2));//小さい四角を追加
                     window.oldpos=new rectangle(new point(window.style.left.removePx(),window.style.top.removePx()),
                         new size(window.style.width.removePx(),window.style.height.removePx()));
@@ -4574,7 +4574,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         window.setTitle = function (title) {
             const cnode = this.childNodes;
             for (let i = 0; i < cnode.length; i++) {
-                if (cnode[i].name == 'header') {
+                if (cnode[i].name === 'header') {
                     cnode[i].innerHTML = title;
                     break;
                 }
@@ -4637,7 +4637,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
         };
 
-        if (outerClickF == true) {
+        if (outerClickF === true) {
             d.onclick = deletediv;
             d.ontouchstart=deletediv;
         }
@@ -4650,17 +4650,17 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         d.style.width = '100%';
         d.style.height = '100%';
         d.style.opacity = "0.5";
-        if (opacity != undefined) {
+        if (opacity !== undefined) {
             d.style.opacity = String(opacity);
         }
         document.body.appendChild(d)
 
         let w = browserWidth * 0.9;
-        if (innerWidth != undefined) {
+        if (innerWidth !== undefined) {
             w = typeof innerWidth === 'number' ? innerWidth : Number(innerWidth);
         }
         let h = browserHeight * 0.8// / 2
-        if (innerHeight != undefined) {
+        if (innerHeight !== undefined) {
             h = typeof innerHeight === 'number' ? innerHeight : Number(innerHeight);
         }
         const state = appState();
@@ -4675,20 +4675,20 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
 
         let bux = w;
-        if (cancelButtonF == true) {
+        if (cancelButtonF === true) {
             const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, h - 35, cancelButton, "width:70px;height:23px");
             ele.bottomRightPositionFixed=true;
             ele.relativePosition=new point(80,30);
             ele.name="cancel";
             bux -= 60;
         }
-        if (okButtonF == true) {
-            if (okCall == undefined) {
+        if (okButtonF === true) {
+            if (okCall === undefined) {
                 okCall = () => deletediv(undefined);
             }
             const ele=Generic.createNewButton(dup, "OK", "", bux - 90, h - 35, () => okButton(), "width:60px;height:23px");
             ele.bottomRightPositionFixed=true;
-            if (cancelButtonF == true) {
+            if (cancelButtonF === true) {
                 ele.relativePosition=new point(150,30);
             }else{
                 ele.relativePosition=new point(90,30);
@@ -4697,7 +4697,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         function cancelButton(): void {
             deletediv(undefined);
-            if(cancelCall!=undefined){
+            if(cancelCall!==undefined){
                 cancelCall();
             }
         }
@@ -4760,7 +4760,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 binary += x;
             }
             let binary10;
-            if (binary.slice(-1) == "1") {
+            if (binary.slice(-1) === "1") {
                 binary10 = ~(parseInt(binary, 2));
             } else {
                 binary10 = parseInt(binary, 2);
@@ -4768,11 +4768,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             binary10 /= 2;
             const val = binary10 / 100000;
 
-            if (cflag == 0) {
+            if (cflag === 0) {
                 sc.lat = val;
             } else {
                 sc.lon = val;
-                if (n == 0) {
+                if (n === 0) {
                     cood[n] = [];
                     cood[n].push(sc.lat);
                     cood[n].push(sc.lon);
@@ -4798,7 +4798,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         //チェックする値が二つの数字の中間であればtrue
 
-        if ((CheckV == V1) || (CheckV == V2)) {
+        if ((CheckV === V1) || (CheckV === V2)) {
             return chvValue_on_twoValue.chvJust;
         } else if (V1 < V2) {
             if ((V1 < CheckV) && (CheckV < V2)) {
@@ -4814,7 +4814,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static Angle(si: number, co: number): number {//角度を求める
 
         let AngleV;
-        if (co == 0) {
+        if (co === 0) {
             AngleV = 90;
         } else {
             AngleV = Math.atan(Math.abs(si / co)) * 180 / Math.PI;
@@ -4867,7 +4867,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         for (const index in baseFonts) {
             s.style.fontFamily = checkFont + ',' + baseFonts[index];
             h.appendChild(s);
-            const matched = (s.offsetWidth != defaultWidth[baseFonts[index]] || s.offsetHeight != defaultHeight[baseFonts[index]]);
+            const matched = (s.offsetWidth !== defaultWidth[baseFonts[index]] || s.offsetHeight !== defaultHeight[baseFonts[index]]);
             h.removeChild(s);
             detected = detected || matched;
         }
@@ -4884,7 +4884,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             div.onmouseover =function(){
                 const rect=div.getBoundingClientRect();
                 const oldm=document.getElementById("popmenu");
-                if(oldm!=undefined){
+                if(oldm!==undefined){
                     document.body.removeChild(oldm);
                 }
                 Generic.ceatePopupMenu(data.child,new point(rect.left,rect.bottom));
@@ -4911,7 +4911,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const deletediv = function () {
             //メニューを消す
             const nd=document.getElementById("popmenu");
-            if(nd!=undefined){
+            if(nd!==undefined){
                 document.body.removeChild(nd);
             }
             //トップメニューがある場合は色をそろえる
@@ -4925,7 +4925,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         function mnudicclivk(e: MouseEvent | TouchEvent): void {
             e.stopPropagation();
             e.preventDefault();
-            if(touchf==true){//タッチした直後はクリックスルー
+            if(touchf===true){//タッチした直後はクリックスルー
                 touchf=false;
             }else{
                 deletediv();
@@ -4960,7 +4960,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         let subn = 0;
         for (const i in list) {
             const data = list[i];
-            if (data.caption == "-") {
+            if (data.caption === "-") {
                 const md = this.createNewDiv(mainMenu, "", "", "popMenu", 10, Number(lineh) * Number(i) + Number(lineh) / 2, mainw + 20, 2, "", undefined);
                 md.style.backgroundColor = '#dddddd';
             } else {
@@ -4970,7 +4970,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     for (const j in subMenu) {
                         subMenu[j].style.visibility = 'hidden';
                     }
-                    if ((data.hasOwnProperty('child'))&&(md.enabled==true)) {
+                    if ((data.hasOwnProperty('child'))&&(md.enabled===true)) {
                         subMenu[md.submenunum].style.visibility = 'visible';
                     }
                 }
@@ -4981,7 +4981,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     for (const j in subMenu) {
                         subMenu[j].style.visibility = 'hidden';
                     }
-                    if ((data.hasOwnProperty('child'))&&(md.enabled==true)) {
+                    if ((data.hasOwnProperty('child'))&&(md.enabled===true)) {
                         subMenu[md.submenunum].style.visibility = 'visible';
                     }
                 }
@@ -4990,14 +4990,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 }
                 let enabled=true;
                 if (data.hasOwnProperty('enabled')) {
-                    if(data.enabled==false){
+                    if(data.enabled===false){
                         md.style.color="#888888";
                         enabled=false;
                     }
                 }
                 md.enabled=enabled;
                 if (data.hasOwnProperty('event')) {
-                    if (enabled==true) {
+                    if (enabled===true) {
                         md.onclick = function (e: MouseEvent) {
                             deletediv();
                             if (data.event) {
@@ -5026,7 +5026,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 }
                 if (data.hasOwnProperty('checked')) {
                     let tx = "";
-                    if (data.checked == true) {
+                    if (data.checked === true) {
                         tx = "✓";
                     }
                     this.createNewDiv(md, tx, "", "", 0, 0, 20, lineh, "", "");
@@ -5061,7 +5061,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 }
                 for (const j in cdata) {
                     const data = cdata[j];
-                    if (data.caption == "-") {
+                    if (data.caption === "-") {
                         const md = this.createNewDiv(smenu, "", "", "popMenu1", 10, lineh * Number(j) + lineh / 2, w  + 30, 2, "", "");
                         md.style.backgroundColor = '#dddddd';
                     } else {
@@ -5075,12 +5075,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                         }
                         let enabled=true;
                         if (data.hasOwnProperty('enabled')) {
-                            if(data.enabled==false){
+                            if(data.enabled===false){
                                 md.style.color="#888888";
                                 enabled=false;
                             }
                         }
-                        if ((data.hasOwnProperty('event'))&&(enabled==true)) {
+                        if ((data.hasOwnProperty('event'))&&(enabled===true)) {
                             md.onclick = function () {
                                 deletediv();
                                 if (data.event) {
@@ -5106,7 +5106,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                         }
                         if (data.hasOwnProperty('checked')) {
                             let tx = "";
-                            if (data.checked == true) {
+                            if (data.checked === true) {
                                 tx = "✓";
                             }
                             this.createNewDiv(md, tx, "", "", 0, 0, 20, lineh, "", "");
@@ -5156,12 +5156,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         for (const i in menuObj) {
             if (menuObj[i].hasOwnProperty(property)) {
-                if ((menuObj[i] as Record<string, any>)[property] == pname) {
+                if ((menuObj[i] as Record<string, any>)[property] === pname) {
                     return menuObj[i];
                 }
                 if (menuObj[i].child) {
                     const v = this.getPopMenuObj(menuObj[i].child!, property, pname);
-                    if (v != undefined) {
+                    if (v !== undefined) {
                         return v;
                     }
                 }
@@ -5218,8 +5218,8 @@ export class CheckedListBox {
         this.w = (this.allh < height - 2) ? width - 2 : width - (state.scrMargin.scrollWidth ?? 0) - 1;
         this.frame = Generic.createNewDiv(ParentObj, "", Class, "grayFrame", x, y, width, height - 24, ovy + "overflow-x:hidden;background-color:white;user-Select:none");
         const allSelFrame = Generic.createNewDiv(ParentObj, "", "", "", x, y + (height - 22), this.w, 22, "");
-        Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, () => { this.allChange(true); if (onChange != undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
-        Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, () => { this.allChange(false); if (onChange != undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
+        Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, () => { this.allChange(true); if (onChange !== undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
+        Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, () => { this.allChange(false); if (onChange !== undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
         this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w, this.allh, "");
         const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
             ? (list as string[]).map(item => ({text: item, value: item}))
@@ -5229,7 +5229,7 @@ export class CheckedListBox {
 
     /**リ1つ追加 */
     add(soloData: string | {text: string; value: string; checked?: boolean}, pos: number | undefined = undefined): void {
-        if (pos == undefined) {
+        if (pos === undefined) {
             pos = this.length;
         }
         const dataObj = typeof soloData === 'string' ? {text: soloData, value: soloData} : soloData;
@@ -5275,11 +5275,11 @@ export class CheckedListBox {
     }
 
     private _removeList(pos: number, delNum: number): void {
-        if (this.lBox.length == 0) {
+        if (this.lBox.length === 0) {
             return;
         }
         for (let i = 0; i < delNum; i++) {
-            if (this.selectedIndex == (i + pos)) {
+            if (this.selectedIndex === (i + pos)) {
                 this.setIndexColor(-1);
             }
             this.inFrame.removeChild(this.lBox[i + pos].word);
@@ -5291,22 +5291,22 @@ export class CheckedListBox {
 
     private _addList(lst: {text: string; value: string; checked?: boolean}[], pos: number, styleinfo: string = ""): void {
         const osel = this.selectedIndex;
-        const newsel = (osel == -1) ? -1 : osel + lst.length;
+        const newsel = (osel === -1) ? -1 : osel + lst.length;
         if (osel >= pos) {
             this.setIndexColor(-1);
         }
         for (let i = 0; i < lst.length; i++) {
             const ypos = (i + pos) * this.lineH;
-            const asfdisabled = (lst[i].text.left(1) == "*");
+            const asfdisabled = (lst[i].text.left(1) === "*");
             const cbox = Generic.createNewInput(this.inFrame, "checkbox", "", "", 3, ypos, undefined, "");
             cbox.checked = lst[i].checked;
             cbox.disabled = asfdisabled;
             const change = (e: Event) => {
                 const obj = e.target as HTMLInputElement;
                 const newSel = Number(obj.tag);
-                if (this.selectedIndex != newSel) {
+                if (this.selectedIndex !== newSel) {
                     this.setIndexColor(newSel);
-                    if (this.twoStepCheckF == true) {
+                    if (this.twoStepCheckF === true) {
                         this.lBox[newSel].checked = !this.lBox[newSel].checked;
                         return;
                     }
@@ -5319,7 +5319,7 @@ export class CheckedListBox {
             cbox.onchange = change;
             const wordDiv: HTMLElement = Generic.createNewDiv(this.inFrame, lst[i].text, "", "", 20, ypos, undefined, undefined, styleinfo + ";padding-left:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap",
                 function (e: MouseEvent) {
-                    if (asfdisabled == false) {
+                    if (asfdisabled === false) {
                         cbox.checked = !cbox.checked;
                         change(e as Event);
                     }
@@ -5334,11 +5334,11 @@ export class CheckedListBox {
     }
 
     private setIndexColor(newSel: number): void {
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex !== -1) {
             this.lBox[this.selectedIndex].word.style.backgroundColor = "#ffffff";
         }
         this.selectedIndex = newSel;
-        if (newSel != -1) {
+        if (newSel !== -1) {
             this.lBox[newSel].word.style.backgroundColor = "#e1e1ff";
         }
     }
@@ -5357,7 +5357,7 @@ export class CheckedListBox {
 
     private allChange(checked: boolean): void {
         for (let i = 0; i < this.lBox.length; i++) {
-            if (this.lBox[i].disabled == false) {
+            if (this.lBox[i].disabled === false) {
                 this.lBox[i].checked = checked;
             }
         }
@@ -5417,7 +5417,7 @@ export class ListBox {
 
     /**1つ追加 */
     add(soloData: string | {text: string; value: string}, pos: number | undefined = undefined): void {
-        if (pos == undefined) {
+        if (pos === undefined) {
             pos = this.length;
         }
         const dataObj = typeof soloData === 'string' ? {text: soloData, value: soloData} : soloData;
@@ -5426,7 +5426,7 @@ export class ListBox {
 
     /**リストを配列で追加 */
     addList(list: string[] | {text: string; value: string}[], pos: number | undefined = undefined): void {
-        if (pos == undefined) {
+        if (pos === undefined) {
             pos = this.length;
         }
         const dataList = Array.isArray(list) && typeof list[0] === 'string' 
@@ -5447,7 +5447,7 @@ export class ListBox {
 
     /**選択要素を指定 */
     setSelectedIndex(newIndex: number): void {
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex !== -1) {
             this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
         }
         this.selectedIndex = newIndex;
@@ -5456,7 +5456,7 @@ export class ListBox {
     }
 
     getText(): string | undefined {
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex !== -1) {
             return this.lBox[this.selectedIndex].innerText;
         } else {
             return undefined;
@@ -5472,7 +5472,7 @@ export class ListBox {
     }
 
     getValue(): string | undefined {
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex !== -1) {
             return this.lBox[this.selectedIndex].value;
         } else {
             return undefined;
@@ -5500,10 +5500,10 @@ export class ListBox {
             return;
         }
         let dest = row - 1;
-        dest = (dest == -1) ? this.lBox.length - 1 : dest;
+        dest = (dest === -1) ? this.lBox.length - 1 : dest;
         [this.lBox[row].innerText, this.lBox[dest].innerHTML] = [this.lBox[dest].innerText, this.lBox[row].innerHTML];
         [this.lBox[row].value, this.lBox[dest].value] = [this.lBox[dest].value, this.lBox[row].value];
-        if (row == this.selectedIndex) {
+        if (row === this.selectedIndex) {
             this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
             this.selectedIndex = dest;
             this.lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
@@ -5515,10 +5515,10 @@ export class ListBox {
             return;
         }
         let dest = row + 1;
-        dest = (dest == this.lBox.length) ? 0 : dest;
+        dest = (dest === this.lBox.length) ? 0 : dest;
         [this.lBox[row].innerText, this.lBox[dest].innerHTML] = [this.lBox[dest].innerText, this.lBox[row].innerHTML];
         [this.lBox[row].value, this.lBox[dest].value] = [this.lBox[dest].value, this.lBox[row].value];
-        if (row == this.selectedIndex) {
+        if (row === this.selectedIndex) {
             this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
             this.selectedIndex = dest;
             this.lBox[this.selectedIndex].style.backgroundColor = "#e1e1e1";
@@ -5526,17 +5526,17 @@ export class ListBox {
     }
 
     private _addList(lst: Array<{text: string, value: string}>, pos: number): void {
-        if (lst.length == 0) {
+        if (lst.length === 0) {
             return;
         }
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex !== -1) {
             this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
         }
         this.selectedIndex = pos;
         for (const i in lst) {
             const div = Generic.createNewDiv(this.inFrame, lst[i].text, "", this.Class, 3, Number(i) * this.lineH, this.w, this.lineH, this.styleinfo + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background-color:white",
                 (e: MouseEvent) => {
-                    if (this.selectedIndex != -1) {
+                    if (this.selectedIndex !== -1) {
                         this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
                     }
                     const obj = e.target as HTMLElement & {tag: string};
@@ -5554,10 +5554,10 @@ export class ListBox {
     }
 
     private _removeList(pos: number, delNum: number): void {
-        if (this.lBox.length == 0) {
+        if (this.lBox.length === 0) {
             return;
         }
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex !== -1) {
             this.lBox[this.selectedIndex].style.backgroundColor = "#ffffff";
         }
         for (let i = 0; i < delNum; i++) {
@@ -5672,18 +5672,18 @@ export class ListViewTable {
                                 break;
                             }
                         }
-                        if (this.bpos == -1) {
+                        if (this.bpos === -1) {
                             this.tbh!.style.cursor = 'default';
                         }
                         break;
                     }
                     case mousePointingSituations.down as number: {
-                        if (this.bpos != -1) {
+                        if (this.bpos !== -1) {
                             const target = e.target as HTMLElement;
                             const x = target.offsetLeft + e.offsetX;
                             const w = x - this.tbh!.rows[0].cells[this.bpos].offsetLeft;
                             this.tbh!.rows[0].cells[this.bpos].style.width = w.px();
-                            if (this.tb.rows[0] != undefined) {
+                            if (this.tb.rows[0] !== undefined) {
                                 this.tb.rows[0].cells[this.bpos].style.width = w.px();
                             }
                         }
@@ -5707,7 +5707,7 @@ export class ListViewTable {
                 for (let j = 0; j < hdata.length; j++) {
                     const newCell = row.insertCell(-1);
                     newCell.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-                    if ((this.headXStyleinfo[j] != undefined)) {
+                    if ((this.headXStyleinfo[j] !== undefined)) {
                         newCell.setAttribute("style", this.headXStyleinfo[j]);
                     }
                     newCell.innerHTML = hdata[j][i];
@@ -5757,7 +5757,7 @@ export class ListViewTable {
                     const newtd = row.insertCell(-1);
                     newtd.innerHTML = data[j][i];
                     newtd.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-                    if (this.normalXStyleinfo[j] != undefined) {
+                    if (this.normalXStyleinfo[j] !== undefined) {
                         newtd.setAttribute("style", this.normalXStyleinfo[j]);
                     }
                     newtd.onclick = clickTBody;
@@ -5775,14 +5775,14 @@ export class ListViewTable {
     }
 
     selectRow(newSelRow: number): void {
-        if (this.rowselFlag == true) {
+        if (this.rowselFlag === true) {
             if ((this.selectedRow >= 0) && (this.selectedRow < this.tb.rows.length)) {
                 for (let i = 0; i < this.tb.rows[this.selectedRow].cells.length; i++) {
                     this.tb.rows[this.selectedRow].cells[i].style.backgroundColor = this.oldBG[i];
                 }
             }
             this.oldBG = [];
-            if (newSelRow != -1) {
+            if (newSelRow !== -1) {
                 for (let i = 0; i < this.tb.rows[newSelRow].cells.length; i++) {
                     this.oldBG.push(this.tb.rows[newSelRow].cells[i].style.backgroundColor);
                     this.tb.rows[newSelRow].cells[i].style.backgroundColor = "#e1e1e1";
@@ -5802,7 +5802,7 @@ export class ListViewTable {
             const newtd = row.insertCell(-1);
             newtd.innerHTML = plusData[j];
             newtd.setAttribute("style", "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-            if (this.normalXStyleinfo[j] != undefined) {
+            if (this.normalXStyleinfo[j] !== undefined) {
                 newtd.setAttribute("style", this.normalXStyleinfo[j]);
             }
             newtd.onclick = (e: MouseEvent) => {
@@ -5813,11 +5813,11 @@ export class ListViewTable {
                     this.onclick(row.rowIndex);
                 }
             };
-            if ((this.headNum > 0) && (rn == 0)) {
+            if ((this.headNum > 0) && (rn === 0)) {
                 newtd.style.width = this.tbh!.rows[0].cells[j].style.width;
             }
         }
-        if (rowInsertPos == 0) {
+        if (rowInsertPos === 0) {
             this.selectedRow++;
         }
         this.selectRow(rowpos);
@@ -5830,9 +5830,9 @@ export class ListViewTable {
     /**selectedRowの行削除 */
     deleteRow(): void {
         const rowPos = this.selectedRow;
-        if (rowPos == -1) { return; }
+        if (rowPos === -1) { return; }
         this.tbody!.deleteRow(rowPos);
-        if (this.tb!.rows.length == 0) {
+        if (this.tb!.rows.length === 0) {
             this.selectedRow = -1;
         } else {
             const newsel = Math.min(this.selectedRow, this.tb!.rows.length - 1);
@@ -5866,7 +5866,7 @@ export class ListViewTable {
         const rowPos = this.selectedRow;
         const celln = this.tb!.rows[rowPos].cells.length;
         const dest = rowPos - 1;
-        if (dest == -1) {
+        if (dest === -1) {
             const stac = [];
             for (let i = 0; i < celln; i++) {
                 stac.push(this.tb!.rows[rowPos].cells[i].innerHTML);
@@ -5892,7 +5892,7 @@ export class ListViewTable {
         const rowPos = this.selectedRow;
         const celln = this.tb!.rows[rowPos].cells.length;
         const dest = rowPos + 1;
-        if (dest == maxrow) {
+        if (dest === maxrow) {
             const stac = [];
             for (let i = 0; i < celln; i++) {
                 stac.push(this.tb!.rows[rowPos].cells[i].innerHTML);
@@ -5925,7 +5925,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     const cnode = this.childNodes;
     for (let i = 0; i < cnode.length; i++) {
         const child = cnode[i] as HTMLCanvasElement & {name?: string};
-        if (child.name == 'maxButton') {
+        if (child.name === 'maxButton') {
             const ctx = child.getContext("2d");
             if (!ctx) continue;
             const w=child.width;
@@ -5933,13 +5933,13 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
             ctx.strokeStyle = "#ffffff";
             ctx.lineWidth = 2;
             ctx.strokeRect(2, 2,w-4,w-4);
-            if (MaxFlag == false) {
+            if (MaxFlag === false) {
                 ctx.strokeRect(2, 7,Math.floor(w/2),Math.floor(w/2));//小さい四角を追加
             }
             break;
         }
     }
-    if(MaxFlag==true){
+    if(MaxFlag===true){
         (this as Record<string, any>).maxSizeFlag=false;
     }else{
         (this as Record<string, any>).maxSizeFlag=true;
@@ -6067,7 +6067,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
             checkF = false;
         }
         //ムーブイベントにコールバック
-        if (checkF == true) {
+        if (checkF === true) {
             this.removeEventListener("mousemove", mmovef, false);
             this.parentElement.addEventListener("mousemove", mmove, false);
             this.parentElement.addEventListener("touchmove", mmove, false);
@@ -6077,7 +6077,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
     //マウスカーソルが動いたときに発火
     function mmove(e: MouseEvent) {
-        if(mdownF==false){
+        if(mdownF===false){
             return;
         }
         //同様にマウスとタッチの差異を吸収
@@ -6162,10 +6162,10 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
                 }
                 break;
         }
-        if(mode!='move'){
+        if(mode!=='move'){
             Generic.moveInnerElement(targetEle);
         }
-        if (mode != 'move') {
+        if (mode !== 'move') {
             targetEle.maxSizeFlag = false;
             //リサイズ中に発生するコールバック
             if(typeof movingCall  === 'function'){
@@ -6190,7 +6190,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
     //マウスボタンが上がったら発火
     function mup(e: MouseEvent) {
-        if(mdownF==false){
+        if(mdownF===false){
             return;
         }
 
@@ -6201,7 +6201,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         this.parentElement.removeEventListener("touchmove", mmove, false);
         targetEle.removeEventListener("mouseup", mup, false);
         targetEle.removeEventListener("touchend", mup, false);
-        if (mode != 'move') {            
+        if (mode !== 'move') {            
             if(typeof moveEndCall === 'function'){
                 moveEndCall(targetEle);
             }
@@ -6259,16 +6259,16 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 HTMLElement.prototype.removeOne = function () {
     const mx=this.options.length;
     const fSel=parseInt(this.selectedIndex);
-    if(fSel==-1){
+    if(fSel===-1){
         return undefined;
     }
     const v=this.options[fSel].value;
     let newSel=fSel;
     this.remove(fSel);
-    if(mx==1){
+    if(mx===1){
         newSel=-1;
     }else{
-        if(fSel==(mx-1)){
+        if(fSel===(mx-1)){
             newSel=fSel-1;
         }
     }
@@ -6278,23 +6278,23 @@ HTMLElement.prototype.removeOne = function () {
 
 //select要素にリスト追加
 HTMLElement.prototype.addSelectList = function (list: ListItem[], firstSelectIndex: number | undefined, resetF: boolean, astariskNonF: boolean,insertPoint: number | undefined=undefined) {
-    if (resetF == true) {
+    if (resetF === true) {
         this.removeAll();
     }
     for (let j = 0; j < list.length; j++) {
         const opt = document.createElement("option");
         opt.value = String(list[j].value);
         opt.appendChild(document.createTextNode(list[j].text));
-        if ((list[j].text.left(1) == "*") && (astariskNonF == true)) {
+        if ((list[j].text.left(1) === "*") && (astariskNonF === true)) {
             opt.disabled = true;
         }
-        if(insertPoint==undefined){
+        if(insertPoint===undefined){
             this.appendChild(opt);
         }else{
             this.add(opt,insertPoint+j);
         }
     }
-    if (firstSelectIndex != undefined) {
+    if (firstSelectIndex !== undefined) {
         this.selectedIndex = firstSelectIndex;
         this.oldSel=firstSelectIndex;
     }
@@ -6303,7 +6303,7 @@ HTMLElement.prototype.addSelectList = function (list: ListItem[], firstSelectInd
 //select要素の選択テキストを取得
 HTMLElement.prototype.getText = function () {
     const n = this.selectedIndex;
-    if (n == -1) {
+    if (n === -1) {
         return undefined;
     }
     return this.options[n].text;
@@ -6312,11 +6312,11 @@ HTMLElement.prototype.getText = function () {
 //select要素の選択valueを取得
 HTMLElement.prototype.getValue = function () {
     const n = this.selectedIndex;
-    if (n == -1) {
+    if (n === -1) {
         return undefined;
     }
     let v=this.options[n].value;
-    if (isNaN(v)==false){
+    if (isNaN(v)===false){
         v=Number(v);
     }
     return v;
@@ -6326,7 +6326,7 @@ HTMLElement.prototype.getValue = function () {
 HTMLElement.prototype.setSelectText = function (txt: string) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
-        if (this.options[i].text == txt) {
+        if (this.options[i].text === txt) {
             this.selectedIndex = i;
             return true;
             break;
@@ -6346,18 +6346,18 @@ HTMLElement.prototype.setAstarisk = function (value: string | number, astariskAd
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
-        if ((isNaN(Number(v))==false)&&(isNaN(Number(value))==false)){
+        if ((isNaN(Number(v))===false)&&(isNaN(Number(value))===false)){
             v=Number(v);
         }
-        if (v == value) {
+        if (v === value) {
             let tx=this.options[i].text;
-            if(astariskAddF==true){
-                if(tx.left(1)!="*"){
+            if(astariskAddF===true){
+                if(tx.left(1)!=="*"){
                     tx="*"+tx;
                 }
                 this.options[i].disabled = true;
             }else{
-                if(tx.left(1)=="*"){
+                if(tx.left(1)==="*"){
                     tx=tx.mid(1,tx.length-1);
                 }
                 this.options[i].disabled = false;
@@ -6373,10 +6373,10 @@ HTMLElement.prototype.setSelectValue= function (value: string | number) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
-        if ((isNaN(Number(v))==false)&&(isNaN(Number(value))==false)){
+        if ((isNaN(Number(v))===false)&&(isNaN(Number(value))===false)){
             v=Number(v);
         }
-        if (v == value) {
+        if (v === value) {
             this.selectedIndex = i;
             return true;
             break;
@@ -6386,7 +6386,7 @@ HTMLElement.prototype.setSelectValue= function (value: string | number) {
 }
 //要素の表示状態を指定のものに設定
 HTMLElement.prototype.setVisibility = function (visiflag: boolean) {
-    if (visiflag == true) {
+    if (visiflag === true) {
         this.style.display = "inline";
     } else {
         this.style.display = 'none';
@@ -6394,7 +6394,7 @@ HTMLElement.prototype.setVisibility = function (visiflag: boolean) {
 }
 /**要素の表示状態を取得 */
 HTMLElement.prototype.getVisibility = function () {
-    if (this.style.display == "inline"){
+    if (this.style.display === "inline"){
         return true;
     } else {
         return false;
@@ -6405,7 +6405,7 @@ HTMLElement.prototype.getVisibility = function () {
 // @ts-ignore
 HTMLElement.prototype.btnDisabled = function (f) {
     this.disabled = f;
-    if (f == true) {
+    if (f === true) {
         this.className = "btnDisable";
     } else {
         this.className = "";
@@ -6444,7 +6444,7 @@ interface String {
     mid(start: number, length?: number): string;
 }
 (String.prototype as { mid: (this: string, start: number, length?: number) => string }).mid = function (start: number, length?: number): string {
-    if(length==undefined){
+    if(length===undefined){
         return this.slice(start);
 
     }else{

@@ -155,8 +155,8 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
     for(let i = scripts.length - 1;i >= 0;--i) {
       const src = scripts[i].src;
       const qmark = src.lastIndexOf("?");
-      const l = qmark == -1 ? src.length : qmark;
-      if(src.substr(l - 7, 7) == "base.js") {
+      const l = qmark === -1 ? src.length : qmark;
+      if(src.substr(l - 7, 7) === "base.js") {
         goog.basePath = src.substr(0, l - 7);
         return
       }
@@ -236,7 +236,7 @@ if(!COMPILED && goog.ENABLE_DEBUG_LOADER) {
 }
 goog.typeOf = function(value) {
   const s = typeof value;
-  if(s == "object") {
+  if(s === "object") {
     if(value) {
       if(value instanceof Array) {
         return"array"
@@ -246,20 +246,20 @@ goog.typeOf = function(value) {
         }
       }
       const className = Object.prototype.toString.call((value));
-      if(className == "[object Window]") {
+      if(className === "[object Window]") {
         return"object"
       }
-      if(className == "[object Array]" || typeof value.length === "number" && typeof value.splice !== "undefined" && typeof value.propertyIsEnumerable !== "undefined" && !value.propertyIsEnumerable("splice")) {
+      if(className === "[object Array]" || typeof value.length === "number" && typeof value.splice !== "undefined" && typeof value.propertyIsEnumerable !== "undefined" && !value.propertyIsEnumerable("splice")) {
         return"array"
       }
-      if(className == "[object Function]" || typeof value.call !== "undefined" && typeof value.propertyIsEnumerable !== "undefined" && !value.propertyIsEnumerable("call")) {
+      if(className === "[object Function]" || typeof value.call !== "undefined" && typeof value.propertyIsEnumerable !== "undefined" && !value.propertyIsEnumerable("call")) {
         return"function"
       }
     }else {
       return"null"
     }
   }else {
-    if(s == "function" && typeof value.call === "undefined") {
+    if(s === "function" && typeof value.call === "undefined") {
       return"object"
     }
   }
@@ -272,14 +272,14 @@ goog.isNull = function(val) {
   return val === null
 };
 goog.isDefAndNotNull = function(val) {
-  return val != null
+  return val !== null
 };
 goog.isArray = function(val) {
-  return goog.typeOf(val) == "array"
+  return goog.typeOf(val) === "array"
 };
 goog.isArrayLike = function(val) {
   const type = goog.typeOf(val);
-  return type == "array" || type == "object" && typeof val.length === "number"
+  return type === "array" || type === "object" && typeof val.length === "number"
 };
 goog.isDateLike = function(val) {
   return goog.isObject(val) && typeof val.getFullYear === "function"
@@ -294,11 +294,11 @@ goog.isNumber = function(val) {
   return typeof val === "number"
 };
 goog.isFunction = function(val) {
-  return goog.typeOf(val) == "function"
+  return goog.typeOf(val) === "function"
 };
 goog.isObject = function(val) {
   const type = typeof val;
-  return type == "object" && val != null || type == "function"
+  return type === "object" && val !== null || type === "function"
 };
 goog.getUid = function(obj) {
   return obj[goog.UID_PROPERTY_] || (obj[goog.UID_PROPERTY_] = ++goog.uidCounter_)
@@ -318,11 +318,11 @@ goog.getHashCode = goog.getUid;
 goog.removeHashCode = goog.removeUid;
 goog.cloneObject = function(obj) {
   const type = goog.typeOf(obj);
-  if(type == "object" || type == "array") {
+  if(type === "object" || type === "array") {
     if(obj.clone) {
       return obj.clone()
     }
-    const clone = type == "array" ? [] : {};
+    const clone = type === "array" ? [] : {};
     for(const key in obj) {
       clone[key] = goog.cloneObject(obj[key])
     }
@@ -352,7 +352,7 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
   }
 };
 goog.bind = function(fn, selfObj, var_args) {
-  if(Function.prototype.bind && Function.prototype.bind.toString().indexOf("native code") != -1) {
+  if(Function.prototype.bind && Function.prototype.bind.toString().indexOf("native code") !== -1) {
     goog.bind = goog.bindNative_
   }else {
     goog.bind = goog.bindJs_
@@ -380,7 +380,7 @@ goog.globalEval = function(script) {
     goog.global.execScript(script, "JavaScript")
   }else {
     if(goog.global.eval) {
-      if(goog.evalWorksForGlobals_ == null) {
+      if(goog.evalWorksForGlobals_ === null) {
         goog.global.eval("var _et_ = 1;");
         if(typeof goog.global["_et_"] !== "undefined") {
           delete goog.global["_et_"];
@@ -422,7 +422,7 @@ goog.getCssName = function(className, opt_modifier) {
   };
   let rename;
   if(goog.cssNameMapping_) {
-    rename = goog.cssNameMappingStyle_ == "BY_WHOLE" ? getMapping : renameByParts
+    rename = goog.cssNameMappingStyle_ === "BY_WHOLE" ? getMapping : renameByParts
   }else {
     rename = function(a) {
       return a

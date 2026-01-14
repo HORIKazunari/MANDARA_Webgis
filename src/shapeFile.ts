@@ -147,19 +147,19 @@ export class clsShapefile {
                         this.onError?.(this.tag);
                         return;
                     }
-                    if (prjFile != undefined) {
+                    if (prjFile !== undefined) {
                         const prjReader = new FileReader();
                         prjReader.readAsText(prjFile, 'utf8');
                         prjReader.onload = () => {
                             if (typeof prjReader.result === 'string') {
                                 this.zahyoSettingFlag = this.getPrjFile(prjReader.result);
                             }
-                            if (okf == true) {
+                            if (okf === true) {
                                 onOK(this.tag);
                             }
                         };
                     } else {
-                        if (okf == true) {
+                        if (okf === true) {
                             onOK(this.tag);
                         }
                     }
@@ -177,13 +177,13 @@ export class clsShapefile {
         let prjFile: string | undefined;
         for (const file in unZipData) {
             const ext = Generic.getExtension(file).toLowerCase();
-            if (ext == "shx") { shxFile = file; }
-            if (ext == "shp") { 
+            if (ext === "shx") { shxFile = file; }
+            if (ext === "shp") { 
                 shapeFile = file;
                 this.fileName = Generic.getFilenameWithoutExtension(shapeFile);
              }
-            if (ext == "dbf") { dbfFile = file; }
-            if (ext == "prj") { prjFile = file; }
+            if (ext === "dbf") { dbfFile = file; }
+            if (ext === "prj") { prjFile = file; }
         }
         this.indexData = [];
         if (!shxFile || !shapeFile || !dbfFile) {
@@ -197,7 +197,7 @@ export class clsShapefile {
             this.getShapeFile(Uint8Array.from(shpData).buffer);
             this.getDbfFile(Uint8Array.from(dbfData).buffer, dbfEncode);
         }
-        if (prjFile != undefined) {
+        if (prjFile !== undefined) {
             const prjtx = Generic.utf8ArrayToStr(unZipData[prjFile]);
             this.zahyoSettingFlag = this.getPrjFile(prjtx);
         }
@@ -207,26 +207,26 @@ export class clsShapefile {
     //prjファイル読み込み
     private getPrjFile(Prjtext: string): boolean {
         const FData = Prjtext.toUpperCase();
-        if (FData.indexOf("UNDEFINED") != -1) {
+        if (FData.indexOf("UNDEFINED") !== -1) {
             return false;
         }
 
         let fixf = false;
-        if ((FData.indexOf("D_TOKYO") != -1)) {
+        if ((FData.indexOf("D_TOKYO") !== -1)) {
             //日本測地系
             this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
             this.mapZahyo.System = enmZahyo_System_Info.Zahyo_System_tokyo;
             fixf = true;
         }
 
-        if ((FData.indexOf("D_JGD_2000") != -1) || (FData.indexOf("D_JGD_2011") != -1) ||
-            ((FData.indexOf("D_WGS84") != -1) || (FData.indexOf("D_WGS_1984") != -1))) {
+        if ((FData.indexOf("D_JGD_2000") !== -1) || (FData.indexOf("D_JGD_2011") !== -1) ||
+            ((FData.indexOf("D_WGS84") !== -1) || (FData.indexOf("D_WGS_1984") !== -1))) {
             //'世界測地系
             this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
             this.mapZahyo.System = enmZahyo_System_Info.Zahyo_System_World;
             fixf = true;
         }
-        if ((FData.indexOf("JAPAN_ZONE_") != -1)) {
+        if ((FData.indexOf("JAPAN_ZONE_") !== -1)) {
             //平面直角
             this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
             this.mapZahyo.HeimenTyokkaku_KEI_Number = parseInt(FData.substr(FData.indexOf("JAPAN_ZONE_") + 11, 2));
@@ -255,7 +255,7 @@ export class clsShapefile {
             heimen_Code[18] = HC + "XVII";
             heimen_Code[19] = HC + "XIX";
             for (let i = 19; i > 0; i--) {
-                if ((FData.indexOf(heimen_Code[i].toUpperCase()) != -1)) { //平面直角
+                if ((FData.indexOf(heimen_Code[i].toUpperCase()) !== -1)) { //平面直角
                     this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
                     this.mapZahyo.HeimenTyokkaku_KEI_Number = i;
                     fixf = true;
@@ -343,10 +343,10 @@ export class clsShapefile {
             let czero: number;
             do {
                 czero = retstr.indexOf(String.fromCharCode(0));
-                if (czero != -1) {
+                if (czero !== -1) {
                     retstr = retstr.slice(0, czero) + retstr.slice(czero + 1);
                 }
-            } while (czero != -1)
+            } while (czero !== -1)
 
             return retstr;
         }
@@ -413,7 +413,7 @@ export class clsShapefile {
                 
                 let pos = this.indexData[n].offset * 2;
                 const RecordNumber = dv.getUint32(pos, endian.big)+12;
-                if (RecordNumber == 0) {
+                if (RecordNumber === 0) {
                     break;
                 }
                 switch (shapeType) {
@@ -468,7 +468,7 @@ export class clsShapefile {
         const MapData = new clsMapdata();
         MapData.init_MapData();
         MapData.Add_OneObjectGroup_Parameter(this.fileName, this.shapeS, enmMesh_Number.mhNonMesh, enmObjectGoupType_Data.NormalObject);
-        if (this.shapeS != enmShape.PointShape) {
+        if (this.shapeS !== enmShape.PointShape) {
             const lp = clsBase.Line();
             if (this.indexData.length > 500) {
                 lp.BlankF = true;
@@ -514,13 +514,13 @@ export class clsShapefile {
         }
 
         let unit = [];
-        if (UnitCheckFlag == true) {
+        if (UnitCheckFlag === true) {
             unit = Generic.Check_DataType(this.fieldDT.length, this.indexData.length, this.dataStr);
         } else {
             for (let i = 0; i < this.fieldDT.length; i++) {
                 const fd = this.fieldDT[i];
                 let unt = "";
-                if (fd.StringData_Flag == true) {
+                if (fd.StringData_Flag === true) {
                     unt = "STR";
                 }
                 unit.push(unt);

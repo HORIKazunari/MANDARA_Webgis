@@ -792,7 +792,7 @@ class strData_info {
         dts.MarkSizeMD = this.SoloModeViewSettings.MarkSizeMD.Clone();
         dts.MarkTurnMD = this.SoloModeViewSettings.MarkTurnMD.Clone();
         dts.StringMD = this.SoloModeViewSettings.StringMD.Clone();
-        if (NoValueFlag == false) {
+        if (NoValueFlag === false) {
             dt.Value = this.Value.concat();
         }
         return dt;
@@ -1111,7 +1111,7 @@ class strLayerDataInfo {
     Get_OD_Bezier_RefPoint(ObjPos: number, DataNum: number): { ok: boolean; RefPoint?: point } {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
-            if ((bs.Data == DataNum) && (bs.ObjectPos == ObjPos)){
+            if ((bs.Data === DataNum) && (bs.ObjectPos === ObjPos)){
                 return { ok: true, RefPoint: bs.Point };
             }
         }
@@ -1122,7 +1122,7 @@ class strLayerDataInfo {
     Remove_OD_Bezier(ObjPos: number, DataNum: number): void {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
-            if ((bs.Data == DataNum) && (bs.ObjectPos == ObjPos)){
+            if ((bs.Data === DataNum) && (bs.ObjectPos === ObjPos)){
                 this.ODBezier_DataStac.splice(i,1);
                 return;
             }
@@ -1133,7 +1133,7 @@ class strLayerDataInfo {
     Add_OD_Bezier(ObjPos: number, DataNum: number, RefPoint: point): void {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
-            if ((bs.Data == DataNum) && (bs.ObjectPos == ObjPos)){
+            if ((bs.Data === DataNum) && (bs.ObjectPos === ObjPos)){
                 bs.Point=RefPoint.Clone();
                 return;
             }
@@ -1172,7 +1172,7 @@ class strLayerDataInfo {
     //通常のデータの最初の位置を返す。存在しない場合は-1を返す
     getFirstNormalDataItem(): number {
         for (const i in this.atrData) {
-            if (this.atrData[i].DataType == enmAttDataType.Normal) {
+            if (this.atrData[i].DataType === enmAttDataType.Normal) {
                 return parseInt(i);
             }
         }
@@ -2121,7 +2121,7 @@ class Screen_info {
         this.ScrView = MapAllAreaRect.Clone();
         this.Set_PictureBox_and_CulculateMul(pictureboxSize)
         this.FirstScreenMGMul = this.ScreenMG.Mul;
-        if (SCRViewResetF == false) {
+        if (SCRViewResetF === false) {
             this.ScrView = SCRS;
         }
         
@@ -2149,7 +2149,7 @@ class Screen_info {
         }
         this.ScreenMG.Xplus = (w - xw * this.ScreenMG.Mul) / 2 + Wwidth * this.Screen_Margin.rect.left / 100;
         this.ScreenMG.YPlus = (H - yw * this.ScreenMG.Mul) / 2 + Wheight * this.Screen_Margin.rect.top / 100;
-        if (this.OutputDevide != enmOutputDevice.Printer) {
+        if (this.OutputDevide !== enmOutputDevice.Printer) {
             this.MapScreen_Scale = new rectangle(0, 0, Wwidth, Wheight);
             this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRY(0), this.getSRX(Wwidth), this.getSRY(Wheight));
         } else {
@@ -2163,7 +2163,7 @@ class Screen_info {
 
     //地図サイズに対する表示領域サイズの比を求める
     Get_Screen_BaseMul(): void {
-        if (this.Accessory_Base == enmBasePosition.Screen) {
+        if (this.Accessory_Base === enmBasePosition.Screen) {
             const s = Math.sqrt(this.ScrView.width() * this.ScrView.height());
             this.GSMul = s / this.STDWsize;
         } else {
@@ -2174,7 +2174,7 @@ class Screen_info {
     //画面上のピクセルが地図中の何パーセントに当たるか計算
     Get_Length_On_BaseMap(Pixcel: number): number {
         let a = Pixcel / this.STDWsize * 100 / this.ScreenMG.Mul / this.GSMul;
-        if (this.OutputDevide == enmOutputDevice.Printer) {
+        if (this.OutputDevide === enmOutputDevice.Printer) {
             a = a / this.PrinterMG.Mul;
         }
         return a;
@@ -2182,9 +2182,9 @@ class Screen_info {
 
     //パーセントのサイズが，画面上で何ピクセルかを取得
     Get_Length_On_Screen(Percentage: number): number {
-        if (this.SampleBoxFlag == false) {
+        if (this.SampleBoxFlag === false) {
             let RR = this.STDWsize * Percentage / 100 * this.ScreenMG.Mul * this.GSMul
-            if (this.OutputDevide == enmOutputDevice.Printer) {
+            if (this.OutputDevide === enmOutputDevice.Printer) {
                 RR = RR * this.PrinterMG.Mul
             }
             return (RR);
@@ -2195,7 +2195,7 @@ class Screen_info {
     //最大値に占める指定値の割合に面積比例する画面半径を返す
     Radius(R_Percent: number, Value: number, max_Value: number): number {
         let RR;
-        if (max_Value == 0) {
+        if (max_Value === 0) {
             RR = 0;
         } else {
             RR = this.STDWsize * R_Percent * this.GSMul / 100 * this.ScreenMG.Mul * Math.sqrt(Value) / Math.sqrt(max_Value) / 2;
@@ -2222,7 +2222,7 @@ class Screen_info {
             const Pnum = p1;
             const inXY = p2 as point[];
             const ReverseGetF = p3 as boolean;
-            if (this.ThreeDMode.Set3D_F == true) {
+            if (this.ThreeDMode.Set3D_F === true) {
                 const XYPara = Math.sqrt((this.MapRectangle.width()) ** 2 + (this.MapRectangle.height()) ** 2);
                 const TurnCenter = this.MapRectangle.centerP();
                 const INXY2 = [];
@@ -2234,14 +2234,14 @@ class Screen_info {
                 const nxy = this.getSxSyArray(Pnum, inXY, ReverseGetF, true);
                 return nxy;
             }
-        } else if ((p1 instanceof Array) == true) {
+        } else if ((p1 instanceof Array) === true) {
             const meshP = [];
             for (let i = 0; i < 4; i++) {
                 meshP.push(p1[i].Clone());
             }
             meshP.push(p1[0].Clone());
             return this.Get_SxSy_With_3D(5, meshP, false);
-        } else if ((p1 instanceof rectangle) == true) {
+        } else if ((p1 instanceof rectangle) === true) {
             const rect = p1 as rectangle;
             const meshP: point[] = [];
             meshP[0] = new point(rect.left, rect.top);
@@ -2261,7 +2261,7 @@ class Screen_info {
             }
             const ret = new rectangle(minx, miny, maxx, maxy);
             return ret;
-        } else if ((p1 instanceof point) == true) {
+        } else if ((p1 instanceof point) === true) {
             const P = [(p1 as point).Clone()];
             const Pout = this.Get_SxSy_With_3D(1, P, false);
             return Pout[0];
@@ -2302,7 +2302,7 @@ class Screen_info {
         let j;
         let jp;
         const XY2 = [];
-        if (ReverseGetF == false) {
+        if (ReverseGetF === false) {
             j = 0;
             jp = 1;
         } else {
@@ -2310,20 +2310,20 @@ class Screen_info {
             jp = -1;
         }
 
-        if (SamePointCheck == true) {
+        if (SamePointCheck === true) {
             XY2[0] = this.getSxSy(XY[j]);
             j += jp;
             let newP = 1;
             for (let i = 1; i < n; i++) {
                 const nXY = this.getSxSy(XY[j]);
-                if (nXY.Equals(XY2[newP - 1]) == false) {
+                if (nXY.Equals(XY2[newP - 1]) === false) {
                     //一つ前のポイントとスクリーン座標が違う場合は追加する
                     XY2.push(nXY);
                     newP++;
                 }
                 j += jp;
             }
-            if ((newP == 1) && (n > 1)) {
+            if ((newP === 1) && (n > 1)) {
                 //短い線で1点になってしまう場合
                 newP++;
                 XY2[1] = XY2[0].Clone();
@@ -2355,7 +2355,7 @@ class Screen_info {
 
     //線幅を返す（線幅が0の場合は最小値に）
     Get_Line_Width(Percentage: number): number {
-        if (Percentage == 0) {
+        if (Percentage === 0) {
             return (clsSettingData.MinimumLineWidth*0.2+0.1);
         } else {
             return this.Get_Length_On_Screen(Percentage);
@@ -2694,7 +2694,7 @@ class clsAttrData {
         let n = 0;
         for (let i = 0; i < al.DummyGroup.length; i++) {
             const objg = al.DummyGroup[i];
-            if ((alm.ObjectKind[objg].Shape == shape) || shape == undefined) {
+            if ((alm.ObjectKind[objg].Shape === shape) || shape === undefined) {
                 DummyObjG[objg] = true;
                 n++;
             }
@@ -2716,16 +2716,16 @@ class clsAttrData {
             case enmTotalMode_Number.DataViewMode: {
                 switch (lay.Print_Mode_Layer) {
                     case enmLayerMode_Number.SoloMode: {
-                        if (this.Get_DataNum(Layernum) == 0) {
+                        if (this.Get_DataNum(Layernum) === 0) {
                             mes += "データがありません。" + '\n';
                             LV1E = true;
                         } else {
                             const DataMax = laydata.Statistics.Max;
                             const DataMin = laydata.Statistics.Min;
                             let md = laydata.ModeData;
-                            if ((md == enmSoloMode_Number.ContourMode) && (
-                                (laydata.SoloModeViewSettings.ContourMD.Interval_Mode == enmContourIntervalMode.ClassPaint) || (
-                                    laydata.SoloModeViewSettings.ContourMD.Interval_Mode == enmContourIntervalMode.ClassHatch))) {
+                            if ((md === enmSoloMode_Number.ContourMode) && (
+                                (laydata.SoloModeViewSettings.ContourMD.Interval_Mode === enmContourIntervalMode.ClassPaint) || (
+                                    laydata.SoloModeViewSettings.ContourMD.Interval_Mode === enmContourIntervalMode.ClassHatch))) {
                                 md = enmSoloMode_Number.ClassPaintMode;
                             }
                             switch (md) {
@@ -2733,14 +2733,14 @@ class clsAttrData {
                                 case enmSoloMode_Number.ClassMarkMode:
                                 case enmSoloMode_Number.ClassODMode: {
                                     let ef = 0;
-                                    if (this.Get_DataType(Layernum, DataNum) == enmAttDataType.Normal) {
+                                    if (this.Get_DataType(Layernum, DataNum) === enmAttDataType.Normal) {
                                         for (let i = 0; i < laydata.SoloModeViewSettings.Div_Num - 1; i++) {
                                             const v = laydata.SoloModeViewSettings.Class_Div[i].Value;
                                             const numV = typeof v === 'number' ? v : parseFloat(String(v));
                                             if ((numV > DataMax) || (numV < DataMin)) {
                                                 ef = 2;
                                             }
-                                            if (i != 0) {
+                                            if (i !== 0) {
                                                 const prevV = laydata.SoloModeViewSettings.Class_Div[i - 1].Value;
                                                 const numPrevV = typeof prevV === 'number' ? prevV : parseFloat(String(prevV));
                                                 if (numPrevV <= numV) {
@@ -2749,11 +2749,11 @@ class clsAttrData {
                                             }
                                         }
                                     }
-                                    if (ef == 2) {
+                                    if (ef === 2) {
                                         mes += "区分値の最小値または最大値の値が、データの最小値～最大値の値を越えています。" + '\n';
                                         LV2E = true;
                                     }
-                                    if (ef == 1) {
+                                    if (ef === 1) {
                                         mes += "階級区分の区分値が不正です" + '\n';
                                         LV1E = true;
                                     }
@@ -2791,11 +2791,11 @@ class clsAttrData {
                                                 mes += "強調する等値線：下限値が上限値よりも大きくなっています。";
                                                 LV1E = true;
                                             }
-                                            if ((cmdr.EX_Value_Flag == true) && ((cmdr.EX_Value > DataMax) || (cmdr.top < cmdr.EX_Value))) {
+                                            if ((cmdr.EX_Value_Flag === true) && ((cmdr.EX_Value > DataMax) || (cmdr.top < cmdr.EX_Value))) {
                                                 mes += "一本だけ強調する等値線の値が不正です。"
                                                 LV2E = true;
                                             }
-                                            if (LV1E == false) {
+                                            if (LV1E === false) {
                                                 const contn = Math.floor((Math.max(cmdr.top, DataMax) - Math.min(cmdr.bottom, DataMin)) / cmdr.Interval);
                                                 if (contn > 100) {
                                                     mes += "等値線が" + contn + "本ほど描かれます。" + '\n';
@@ -2805,7 +2805,7 @@ class clsAttrData {
                                             break;
                                         }
                                         case enmContourIntervalMode.SeparateSettings: {
-                                            if (cmd.IrregularNum == 0) {
+                                            if (cmd.IrregularNum === 0) {
                                                 mes += "等値線の値を設定してください。" + '\n';
                                                 LV1E = true;
                                             } else {
@@ -2829,12 +2829,12 @@ class clsAttrData {
                     case enmLayerMode_Number.GraphMode:{
                         const dset  = lay.LayerModeViewSettings.GraphMode.SelectedIndex;
                         const gdata= lay.LayerModeViewSettings.GraphMode.DataSet[dset];
-                        if(gdata.Data.length==0){
+                        if(gdata.Data.length===0){
                             mes += "表示データが設定されていません。" + '\n';
                             LV1E = true;
                             break;
                         }
-                        if((gdata.GraphMode == enmGraphMode.PieGraph)||(gdata.GraphMode == enmGraphMode.StackedBarGraph )){
+                        if((gdata.GraphMode === enmGraphMode.PieGraph)||(gdata.GraphMode === enmGraphMode.StackedBarGraph )){
                                 for(let i  = 0 ;i< gdata.Data.length ;i++){
                                     const a  = gdata.Data[i].DataNumber;
                                     if(lay.atrData.Data[a].Statistics.Min < 0 ){
@@ -2858,7 +2858,7 @@ class clsAttrData {
             case enmTotalMode_Number.OverLayMode: {
                 const oset = this.TotalData.TotalMode.OverLay;
                 const odata = oset.DataSet[oset.SelectedIndex];
-                if (odata.DataItem.length == 0) {
+                if (odata.DataItem.length === 0) {
                     mes += "重ね合わせデータが設定されていません。" + '\n';
                     LV1E = true;
                 }
@@ -2867,7 +2867,7 @@ class clsAttrData {
             case enmTotalMode_Number.SeriesMode: {
                 const sset = this.TotalData.TotalMode.Series;
                 const sdata = sset.DataSet[sset.SelectedIndex];
-                if (sdata.DataItem.length == 0) {
+                if (sdata.DataItem.length === 0) {
                     mes += "連続表示データが設定されていません。" + '\n';
                     LV1E = true;
                 }
@@ -2875,10 +2875,10 @@ class clsAttrData {
             }
         }
 
-        if (LV1E == true) {
+        if (LV1E === true) {
             return { Print_Enable: enmPrint_Enable.UnPrintable, message: mes };
         } else {
-            if (LV2E == true) {
+            if (LV2E === true) {
                 return { Print_Enable: enmPrint_Enable.Printable_with_Error, message: mes };
             }
         }
@@ -2890,25 +2890,25 @@ class clsAttrData {
 
     const ErrorMessage = "";
     const checkResult = spatial.Check_Zahyo_Projection_Convert_Enabled(this.TotalData.ViewStyle.Zahyo, InsertData.TotalData.ViewStyle.Zahyo);
-    if (checkResult.ok == false) {
+    if (checkResult.ok === false) {
         return { ok: false, ErrorMessage: ErrorMessage };
     }
     const Mfile = InsertData.GetMapFileName();
     const ExtMfile = this.GetMapFileName();
     const LayerPlus = this.TotalData.LV1.Lay_Maxn;
-    if (InsertData.TotalData.LV1.DataSourceType == enmDataSource.MDRMJ) {
+    if (InsertData.TotalData.LV1.DataSourceType === enmDataSource.MDRMJ) {
         for (let i = 0; i < Mfile.length; i++) {
             const newMFname = this.getUniqueMapFileName(Mfile[i]);
             this.MapData.AddExistingMapData(InsertData.SetMapFile(Mfile[i]), newMFname);
             for (let j = 0; j < InsertData.TotalData.LV1.Lay_Maxn; j++) {
-                if (InsertData.LayerData[j].MapFileName.toUpperCase() == Mfile[i].toUpperCase()) {
+                if (InsertData.LayerData[j].MapFileName.toUpperCase() === Mfile[i].toUpperCase()) {
                     InsertData.LayerData[j].MapFileName = newMFname;
                 }
             }
         }
     } else {
         for (let i = 0; i < Mfile.length; i++) {
-            if (ExtMfile.indexOf(Mfile[i]) == -1) {
+            if (ExtMfile.indexOf(Mfile[i]) === -1) {
                 this.MapData.AddExistingMapData(InsertData.SetMapFile(Mfile[i]), Mfile[i]);
             }
         }
@@ -2917,7 +2917,7 @@ class clsAttrData {
     InsertData.Convert_Zahyo(this.TotalData.ViewStyle.Zahyo);
     this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo);
 
-    if (InsertData.TotalData.LV1.Comment != "") {
+    if (InsertData.TotalData.LV1.Comment !== "") {
         this.TotalData.LV1.Comment += "\n" + InsertData.TotalData.LV1.FileName + "を挿入" + "\n" +
             InsertData.TotalData.LV1.Comment
 
@@ -2926,12 +2926,12 @@ class clsAttrData {
     const nLayer = this.TotalData.LV1.Lay_Maxn + InsertData.TotalData.LV1.Lay_Maxn;
     for (let i = 0; i < InsertData.TotalData.LV1.Lay_Maxn; i++) {
         const il = InsertData.LayerData[i];
-        if ((il.Name == "") && (InsertData.TotalData.LV1.Lay_Maxn > 1)) {
+        if ((il.Name === "") && (InsertData.TotalData.LV1.Lay_Maxn > 1)) {
             il.Name = (i + 1).toString();
         }
-        if (AddMapFileNameF == true) {
-            if (il.Name != "") {
-                if (InsertData.TotalData.LV1.FileName != "") {
+        if (AddMapFileNameF === true) {
+            if (il.Name !== "") {
+                if (InsertData.TotalData.LV1.FileName !== "") {
                     il.Name = InsertData.TotalData.LV1.FileName + "：" + il.Name;
                 }
             } else {
@@ -2954,7 +2954,7 @@ class clsAttrData {
             const d = lttd.DataItem[j].Clone();
             d.Layer += LayerPlus;
             lttd.DataItem[j] = d
-            if ((itt.OverLay.DataSet.length == 1) && (itt.OverLay.DataSet[0].DataItem.length == 0) && (itt.OverLay.DataSet[0].title == "")) {
+            if ((itt.OverLay.DataSet.length === 1) && (itt.OverLay.DataSet[0].DataItem.length === 0) && (itt.OverLay.DataSet[0].title === "")) {
             } else {
                 this.TotalData.TotalMode.OverLay.DataSet.push(lttd.Clone());
             }
@@ -2969,7 +2969,7 @@ class clsAttrData {
             d.Layer += LayerPlus;
             ltts.DataItem[j] = d;
         }
-        if ((itt.Series.DataSet.length == 1) && (itt.Series.DataSet[0].DataItem.length == 0) && (itt.Series.DataSet[0].title == "")) {
+        if ((itt.Series.DataSet.length === 1) && (itt.Series.DataSet[0].DataItem.length === 0) && (itt.Series.DataSet[0].title === "")) {
         } else {
             this.TotalData.TotalMode.Series.DataSet.push(ltts.Clone());
         }
@@ -2982,7 +2982,7 @@ class clsAttrData {
     }
 
     for (let i = 0; i < Mfile.length; i++) {
-        if (ExtMfile.indexOf(Mfile[i]) == -1) {
+        if (ExtMfile.indexOf(Mfile[i]) === -1) {
             if (Object.keys(itv.DummyObjectPointMark).length > 0) {
                 this.TotalData.ViewStyle.DummyObjectPointMark[Mfile[i]] = itv.DummyObjectPointMark[Mfile[i]];
             }
@@ -3005,37 +3005,37 @@ class clsAttrData {
     //     switch( true
     //         case TypeOf FigStac Is clsAttrData.strFig_Word_Data
     //             let FigData As clsAttrData.strFig_Word_Data = DirectCast(FigStac, clsAttrData.strFig_Word_Data)
-    //             if(FigData.Data.Layer != 0 ){
+    //             if(FigData.Data.Layer !== 0 ){
     //                 FigData.Data.Layer += LayerPlus
     //             }
     //             this.TotalData.FigureStac.Add(FigData)
     //         case TypeOf FigStac Is clsAttrData.strFig_Line_Data
     //             let FigData As clsAttrData.strFig_Line_Data = DirectCast(FigStac, clsAttrData.strFig_Line_Data)
-    //             if(FigData.Data.Layer != 0 ){
+    //             if(FigData.Data.Layer !== 0 ){
     //                 FigData.Data.Layer += LayerPlus
     //             }
     //             this.TotalData.FigureStac.Add(FigData)
     //         case TypeOf FigStac Is clsAttrData.strFig_Rectangle_Data
     //             let FigData As clsAttrData.strFig_Rectangle_Data = DirectCast(FigStac, clsAttrData.strFig_Rectangle_Data)
-    //             if(FigData.Data.Layer != 0 ){
+    //             if(FigData.Data.Layer !== 0 ){
     //                 FigData.Data.Layer += LayerPlus
     //             }
     //             this.TotalData.FigureStac.Add(FigData)
     //         case TypeOf FigStac Is clsAttrData.strFig_Circle_data
     //             let FigData As clsAttrData.strFig_Circle_data = DirectCast(FigStac, clsAttrData.strFig_Circle_data)
-    //             if(FigData.Data.Layer != 0 ){
+    //             if(FigData.Data.Layer !== 0 ){
     //                 FigData.Data.Layer += LayerPlus
     //             }
     //             this.TotalData.FigureStac.Add(FigData)
     //         case TypeOf FigStac Is clsAttrData.strFig_Point_Data
     //             let FigData As clsAttrData.strFig_Point_Data = DirectCast(FigStac, clsAttrData.strFig_Point_Data)
-    //             if(FigData.Data.Layer != 0 ){
+    //             if(FigData.Data.Layer !== 0 ){
     //                 FigData.Data.Layer += LayerPlus
     //             }
     //             this.TotalData.FigureStac.Add(FigData)
     //         case TypeOf FigStac Is clsAttrData.strFig_gazo_data
     //             let FigData As clsAttrData.strFig_gazo_data = DirectCast(FigStac, clsAttrData.strFig_gazo_data)
-    //             if(FigData.Data.Layer != 0 ){
+    //             if(FigData.Data.Layer !== 0 ){
     //                 FigData.Data.Layer += LayerPlus
     //             }
     //             this.TotalData.FigureStac.Add(FigData)
@@ -3054,7 +3054,7 @@ class clsAttrData {
         const oldZahyo = this.TotalData.ViewStyle.Zahyo;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             const li = this.LayerData[i];
-            if ((li.Type != enmLayerType.Trip) && (li.Type != enmLayerType.Trip_Definition)) {
+            if ((li.Type !== enmLayerType.Trip) && (li.Type !== enmLayerType.Trip_Definition)) {
                 //記号・ラベル表示位置
                 for (let j = 0; j < li.atrObject.ObjectNum; j++) {
                     const lia = li.atrObject.atrObjectData[j];
@@ -3067,7 +3067,7 @@ class clsAttrData {
                     li.ODBezier_DataStac[j].Point = spatial.Get_Reverse_and_Convert_XY(li.ODBezier_DataStac[j].Point, oldZahyo, newZahyo);
                 }
             }
-            if (li.Type == enmLayerType.Mesh) {
+            if (li.Type === enmLayerType.Mesh) {
                 for (let j = 0; j < li.atrObject.ObjectNum; j++) {
                     const lia = li.atrObject.atrObjectData[j];
                     for (let k = 0; k <= 3; k++) {
@@ -3141,33 +3141,33 @@ class clsAttrData {
         for (let i = 0; i < PicUpMode.length; i++) {
             for (let j = 0; j < Ov_Data.length; j++) {
                 const ovd = Ov_Data[j].Clone();
-                if (this.LayerData[ovd.Layer].Shape == PicUpShape[i]) {
+                if (this.LayerData[ovd.Layer].Shape === PicUpShape[i]) {
                     switch (ovd.Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode:
-                            if (PicUpMode[i].indexOf(String(ovd.Mode)) != -1) {
+                            if (PicUpMode[i].indexOf(String(ovd.Mode)) !== -1) {
                                 Sub_Over.push(ovd);
                             }
                             break;
                         case enmLayerMode_Number.GraphMode: {
                             const d = this.LayerData[ovd.Layer].LayerModeViewSettings.GraphMode.DataSet[ovd.DataNumber];
-                            if (PicUpMode[i].indexOf("A") != -1) {
-                                if ((d.GraphMode == enmGraphMode.PieGraph) || (d.GraphMode == enmGraphMode.StackedBarGraph) || (d.GraphMode == enmGraphMode.BarGraph)) {
+                            if (PicUpMode[i].indexOf("A") !== -1) {
+                                if ((d.GraphMode === enmGraphMode.PieGraph) || (d.GraphMode === enmGraphMode.StackedBarGraph) || (d.GraphMode === enmGraphMode.BarGraph)) {
                                     Sub_Over.push(ovd);
                                 }
-                            } else if (PicUpMode[i].indexOf("B") != -1) {
-                                if (d.GraphMode == enmGraphMode.LineGraph) {
+                            } else if (PicUpMode[i].indexOf("B") !== -1) {
+                                if (d.GraphMode === enmGraphMode.LineGraph) {
                                     Sub_Over.push(ovd);
                                 }
                             }
                             break;
                         }
                         case enmLayerMode_Number.LabelMode:
-                            if (PicUpMode[i].indexOf("C") != -1) {
+                            if (PicUpMode[i].indexOf("C") !== -1) {
                                 Sub_Over.push(ovd)
                             }
                             break;
                         case enmLayerMode_Number.TripMode:
-                            // if(InStr(PicUpMode[i], "D") != 0 ){
+                            // if(InStr(PicUpMode[i], "D") !== 0 ){
                             //     Sub_Over.push(Ov_Data[j])
                             // }
                             break;
@@ -3177,7 +3177,7 @@ class clsAttrData {
         }
 
         // for (let i = 0; i < Ov_Data.Count; i++) {　タイルは使用しない
-        //     if (Ov_Data[i].TileMapf == true) {
+        //     if (Ov_Data[i].TileMapf === true) {
         //         Sub_Over.splice(i,0, Ov_Data[i].Clone())
         //     }
         // }
@@ -3187,10 +3187,10 @@ class clsAttrData {
     Check_Missing_Value(Layernum: number, DataNumber: number, objNumber: number): boolean {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber];
-        if ((ad.MissingValueNum == 0) || (ad.MissingF == false)) {
+        if ((ad.MissingValueNum === 0) || (ad.MissingF === false)) {
             return false;
         } else {
-            if (ad.Value[objNumber] == undefined ){
+            if (ad.Value[objNumber] === undefined ){
                 return true;
             } else {
                 return false;
@@ -3215,8 +3215,8 @@ class clsAttrData {
         copyMarkCommonInnerDataF: boolean): void {
 
         const ls =this.LayerData[D_Layer].atrData.Data[D_DataNum].SoloModeViewSettings;
-        if ((ClassPaintF == true) || (ClassMarkF == true) || (ClassODF == true)) {
-            if (O_Data.DataType == enmAttDataType.Normal) {
+        if ((ClassPaintF === true) || (ClassMarkF === true) || (ClassODF === true)) {
+            if (O_Data.DataType === enmAttDataType.Normal) {
                 //通常のデータの場合
                 const p = O_Data.SoloModeViewSettings.Div_Num;
                 ls.Class_Div.length = p;
@@ -3225,27 +3225,27 @@ class clsAttrData {
                 }
                 ls.Div_Num = O_Data.SoloModeViewSettings.Div_Num;
                 ls.Div_Method = O_Data.SoloModeViewSettings.Div_Method;
-                if (ls.Div_Method == enmDivisionMethod.Free) {
+                if (ls.Div_Method === enmDivisionMethod.Free) {
                     for (j = 0; j < p; j++) {
                         ls.Class_Div[j].Value = O_Data.SoloModeViewSettings.Class_Div[j].Value;
                     }
                 } else {
                     this.Set_Div_Value(D_Layer, D_DataNum);
                 }
-                if (ClassPaintF == true) {
+                if (ClassPaintF === true) {
                     ls.ClassPaintMD = O_Data.SoloModeViewSettings.ClassPaintMD.Clone();
                     for (j = 0; j < p; j++) {
                         ls.Class_Div[j].PaintColor = O_Data.SoloModeViewSettings.Class_Div[j].PaintColor;
                     }
                 }
-                if (ClassMarkF == true) {
+                if (ClassMarkF === true) {
                     ls.ClassMarkMD = O_Data.SoloModeViewSettings.ClassMarkMD.Clone();
                     for (j = 0; j < p; j++) {
                         ls.Class_Div[j].ClassMark = O_Data.SoloModeViewSettings.Class_Div[j].ClassMark;
                     }
                 }
-                if (ClassODF == true) {
-                    if (ClassODOriginCopyF == true) {
+                if (ClassODF === true) {
+                    if (ClassODOriginCopyF === true) {
                         ls.ClassODMD = O_Data.SoloModeViewSettings.ClassODMD.Clone();
                     } else {
                         ls.ClassODMD.Arrow = O_Data.SoloModeViewSettings.ClassODMD.Arrow.Clone();
@@ -3254,15 +3254,15 @@ class clsAttrData {
                         ls.Class_Div[j].ODLinePat = O_Data.SoloModeViewSettings.Class_Div[j].ODLinePat.Clone();
                     }
                 }
-            } else if (O_Data.DataType == enmAttDataType.Category) {
+            } else if (O_Data.DataType === enmAttDataType.Category) {
                 //カテゴリーデータの場合
-                if (ClassPaintF == true) {
+                if (ClassPaintF === true) {
                     ls.ClassPaintMD = O_Data.SoloModeViewSettings.ClassPaintMD.Clone();
                 }
-                if (ClassMarkF == true) {
+                if (ClassMarkF === true) {
                     ls.ClassMarkMD = O_Data.SoloModeViewSettings.ClassMarkMD.Clone();
                 }
-                if (ClassODF == true) {
+                if (ClassODF === true) {
                     ls.ClassODMD = O_Data.SoloModeViewSettings.ClassODMD.Clone();
                 }
                 const P1 = O_Data.SoloModeViewSettings.Div_Num;
@@ -3285,17 +3285,17 @@ class clsAttrData {
                 let caten = 0;
                 for (j = 0; j < P1; j++) {
                     const k = Con_CateStr.indexOf(O_CateStr[j]);
-                    if (k != -1) {
+                    if (k !== -1) {
                         const o_Class_Div_Temp = O_Data.SoloModeViewSettings.Class_Div[j]
                         const ald = ls.Class_Div[caten];
                         ald.Value = o_Class_Div_Temp.Value;
-                        if (ClassPaintF == true) {
+                        if (ClassPaintF === true) {
                             ald.PaintColor = o_Class_Div_Temp.PaintColor.Clone();
                         }
-                        if (ClassMarkF == true) {
+                        if (ClassMarkF === true) {
                             ald.ClassMark = o_Class_Div_Temp.ClassMark.Clone();
                         }
-                        if (ClassODF == true) {
+                        if (ClassODF === true) {
                             ald.ODLinePat = o_Class_Div_Temp.ODLinePat.Clone();
                         }
                         caten++;
@@ -3303,13 +3303,13 @@ class clsAttrData {
                     }
                 }
                 for (j = 0; j < P2; j++) {
-                    if (okf[j] == false) {
+                    if (okf[j] === false) {
                         ls.Class_Div[caten] = Con_Class_Div_Temp[j];
                         caten++;
                     }
                 }
-                if (ClassODF == true) {
-                    if (ClassODOriginCopyF == true) {
+                if (ClassODF === true) {
+                    if (ClassODOriginCopyF === true) {
                         ls.ClassODMD = O_Data.SoloModeViewSettings.ClassODMD.Clone();
                     } else {
                         ls.ClassODMD.Arrow = O_Data.SoloModeViewSettings.ClassODMD.Arrow.Clone();
@@ -3317,9 +3317,9 @@ class clsAttrData {
                 }
             }
         }
-        if ((MarkSizeF == true) || (MarkBlockF == true) || (StringModeF == true) || (MarkBarF == true)) {
+        if ((MarkSizeF === true) || (MarkBlockF === true) || (StringModeF === true) || (MarkBarF === true)) {
             const alm = ls.MarkCommon;
-            if (copyMarkCommonInnerDataF == true) {
+            if (copyMarkCommonInnerDataF === true) {
                 alm.Inner_Data = O_Data.SoloModeViewSettings.MarkCommon.Inner_Data;
             }
             alm.LegendMinusWord = O_Data.SoloModeViewSettings.MarkCommon.LegendMinusWord;
@@ -3327,26 +3327,26 @@ class clsAttrData {
             alm.MinusLineColor = O_Data.SoloModeViewSettings.MarkCommon.MinusLineColor.Clone();
             alm.MinusTile = O_Data.SoloModeViewSettings.MarkCommon.MinusTile.Clone();
         }
-        if (MarkSizeF == true) {
+        if (MarkSizeF === true) {
             ls.MarkSizeMD.MaxValueMode = O_Data.SoloModeViewSettings.MarkSizeMD.MaxValueMode;
-            if (ls.MarkSizeMD.MaxValueMode == enmMarkSizeValueMode.UserDefinition) {
+            if (ls.MarkSizeMD.MaxValueMode === enmMarkSizeValueMode.UserDefinition) {
                 ls.MarkSizeMD.MaxValue = O_Data.SoloModeViewSettings.MarkSizeMD.MaxValue;
             }
             ls.MarkSizeMD.Mark = O_Data.SoloModeViewSettings.MarkSizeMD.Mark.Clone();
-            if (MarkSizeValueCopyF == true) {
+            if (MarkSizeValueCopyF === true) {
                 ls.MarkSizeMD.Value = O_Data.SoloModeViewSettings.MarkSizeMD.Value.concat();
             }
         }
-        if (MarkBlockF == true) {
+        if (MarkBlockF === true) {
             ls.MarkBlockMD = O_Data.SoloModeViewSettings.MarkBlockMD.Clone();
         }
-        if (ContourF == true) {
+        if (ContourF === true) {
             ls.ContourMD = O_Data.SoloModeViewSettings.ContourMD.Clone();
         }
-        if (StringModeF == true) {
+        if (StringModeF === true) {
             ls.StringMD = O_Data.SoloModeViewSettings.StringMD.Clone();
         }
-        if (MarkBarF == true) {
+        if (MarkBarF === true) {
             ls.MarkBarMD = O_Data.SoloModeViewSettings.MarkBarMD.Clone();
         }
     }
@@ -3374,7 +3374,7 @@ class clsAttrData {
                 break;
             }
         }
-        if (inData != -1) {
+        if (inData !== -1) {
             //内部データの値
             SoloProperty += SeparataString + this.Get_DataTitle(LayerNum, inData, false) + SeparataString +
                 this.Get_Data_Value(LayerNum, inData, objNumber, this.TotalData.ViewStyle.Missing_Data.Text) +
@@ -3398,7 +3398,7 @@ class clsAttrData {
         }
 
         let savedata;
-        if (MDRMJFlag == false) {
+        if (MDRMJFlag === false) {
             savedata = {
                 TotalData: this.TotalData,
                 LayerData: this.LayerData,
@@ -3432,7 +3432,7 @@ class clsAttrData {
 
     //ある地点がオブジェクト内部に入るかどうかを調べる
     Check_Point_in_Kencode_OneObject(Layernum: number, ObjNum: number, MapP: point): boolean {
-        if (this.LayerData[Layernum].Type == enmLayerType.Mesh) {
+        if (this.LayerData[Layernum].Type === enmLayerType.Mesh) {
             const meshP =Generic.ArrayClone( this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
             meshP.push(meshP[0].Clone());
             const ap =[];
@@ -3450,7 +3450,7 @@ class clsAttrData {
                 case enmKenCodeObjectstructure.SyntheticObj: {
                     // @ts-expect-error TS2304: Cannot find name 'Check_Point_in_Kencode_oneObject_Box'.
                     const f = Check_Point_in_Kencode_oneObject_Box(Layernum, ObjNum, MapP.x, MapP.y);
-                    if (f == true) {
+                    if (f === true) {
                         const ELine = this.Get_Enable_KenCode_MPLine(Layernum, ObjNum)
                         const Fringe_Line = [];
                         for (let j = 0; j < ELine.length; j++) {
@@ -3468,7 +3468,7 @@ class clsAttrData {
     Get_ClassFrequency(Layernum: number, DataNum: number, ConditionCheck: boolean): {ok: boolean, frequency?: number[]} {
         const ld = this.LayerData[Layernum].atrData.Data[DataNum];
         const ldd = ld.SoloModeViewSettings;
-        if (ld.DataType == enmAttDataType.Category) {
+        if (ld.DataType === enmAttDataType.Category) {
         } else {
             for (let i = 0; i < ldd.Div_Num - 2; i++) {
                 const v = ldd.Class_Div[i + 1].Value;
@@ -3482,12 +3482,12 @@ class clsAttrData {
         const Freqency = new Array(ldd.Div_Num).fill(0);
         for (let i = 0; i < cate.length; i++) {
             let f = true;
-            if (ConditionCheck == true) {
+            if (ConditionCheck === true) {
                 f = this.Check_Condition(Layernum, i);
             }
-            if (f == true) {
+            if (f === true) {
                 const cateValue = Number(cate[i]);
-                if (cateValue == -1) {
+                if (cateValue === -1) {
                     MissFreq++;
                 } else {
                     Freqency[cateValue]++;
@@ -3499,7 +3499,7 @@ class clsAttrData {
 
     //Backgroundの余白部分のピクセル数を取得
     Get_PaddingPixcel(back: BackGround_Box_Property): number {
-        if ((back.Line.BlankF == true) && (back.Tile.BlankF == true)) {
+        if ((back.Line.BlankF === true) && (back.Tile.BlankF === true)) {
             return 0;
         } else {
             return this.TotalData.ViewStyle.ScrData.Get_Length_On_Screen(back.Padding);
@@ -3547,10 +3547,10 @@ class clsAttrData {
     Get_Data_Value(Layernum: number, DataNum: number, Obj: number, Missing_word: string): string | number {
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         const v = ad.Value[Obj];
-        if (ad.MissingF == false) {
+        if (ad.MissingF === false) {
             return v;
         } else {
-            if (v == undefined) {
+            if (v === undefined) {
                 return Missing_word;
             } else {
                 return v;
@@ -3562,7 +3562,7 @@ class clsAttrData {
     //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
     Get_Length_On_Screen(Percentage: number): string {
         const s = this.TotalData.ViewStyle.ScrData;
-        if (s.SampleBoxFlag == false) {
+        if (s.SampleBoxFlag === false) {
             const RR = s.STDWsize * Percentage / 100 * s.ScreenMG.Mul * s.GSMul;
             return parseInt(RR.toString()).toString();
         } else {
@@ -3634,7 +3634,7 @@ class clsAttrData {
             ST.Add(Number(MV[i].DataValue));
         }
         ST.AddEnd();
-        if ((n % 2) == 1) {
+        if ((n % 2) === 1) {
             //奇数個の場合
             return ST.DataPositionRevValue(n2);
         } else {
@@ -3656,7 +3656,7 @@ class clsAttrData {
     }
     //既存地図ファイル追加
     AddExistingMapData(MData: clsMapdata, MapFileName: string): void {
-        if (this.MapData == undefined) {
+        if (this.MapData === undefined) {
             this.MapData = new clsAttrMapData();
         }
         this.MapData.AddExistingMapData(MData, MapFileName);
@@ -3664,13 +3664,13 @@ class clsAttrData {
     //同じ名前の地図ファイルが存在する場合、別名をつけて返す
     getUniqueMapFileName(checkMfile: string): string {
         const ExtMfile = this.GetMapFileName();
-        if (ExtMfile.indexOf(checkMfile) == -1) {
+        if (ExtMfile.indexOf(checkMfile) === -1) {
             return checkMfile;
         } else {
             let Omfile, n = 1;
             do
                 Omfile = checkMfile + n.toString();
-            while (ExtMfile.indexOf(Omfile) != -1)
+            while (ExtMfile.indexOf(Omfile) !== -1)
             return Omfile;
         }
     }
@@ -3694,7 +3694,7 @@ class clsAttrData {
     Check_Enable_SoloMode(Solo_md: number, Layernum: number, DataNum: number): boolean {
         switch (this.LayerData[Layernum].atrData.Data[DataNum].DataType) {
             case enmAttDataType.Strings:
-                if (Solo_md != enmSoloMode_Number.StringMode) {
+                if (Solo_md !== enmSoloMode_Number.StringMode) {
                     return false;
                 }
                 break;
@@ -3713,7 +3713,7 @@ class clsAttrData {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Normal:
                 case enmLayerType.Mesh:
-                if (this.LayerData[Layernum].Shape == enmShape.LineShape) {
+                if (this.LayerData[Layernum].Shape === enmShape.LineShape) {
                     switch (Solo_md) {
                         case enmSoloMode_Number.ClassHatchMode:
                         case enmSoloMode_Number.ClassMarkMode:
@@ -3786,7 +3786,7 @@ class clsAttrData {
             mv.AttMapCompass.Position.y = mr.top + H * 0.1;
         }
 
-        if (mv.ScrData.Accessory_Base == enmBasePosition.Screen) {
+        if (mv.ScrData.Accessory_Base === enmBasePosition.Screen) {
             this.Change_Acc_Position_by_Accessory_Base_Set_Screen()
         }
     }
@@ -3855,7 +3855,7 @@ class clsAttrData {
 
     getMpLineDrawn(MapFileName: string, LineCode: number): boolean | undefined {
         const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
-        if (LinePoint[LineCode] == undefined) {
+        if (LinePoint[LineCode] === undefined) {
             return undefined;
         } else {
             return this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn;
@@ -3886,9 +3886,9 @@ class clsAttrData {
         let xy = [];
         const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
         const MPSubLinePointXY = LinePoint[LineCode];
-        if (MPSubLinePointXY != undefined) {
-            if (MPSubLinePointXY.GetF == true) {
-                if (ReverseF == MPSubLinePointXY.ReverseF) {
+        if (MPSubLinePointXY !== undefined) {
+            if (MPSubLinePointXY.GetF === true) {
+                if (ReverseF === MPSubLinePointXY.ReverseF) {
                     xy = Generic.ArrayClone(MPSubLinePointXY.Point);
                 } else {
                     //反転コピー
@@ -3926,7 +3926,7 @@ class clsAttrData {
     AddPointObjectKindUsed(MapFilename: string, ObjKindNumber: number, MK: Mark_Property): void {
         for(const i in this.TempData.PointObjectKindUsedStack){
             const Ob=this.TempData.PointObjectKindUsedStack[i];
-            if(( Ob.MapFileName== MapFilename )&&( Ob.ObjectKindNumber == ObjKindNumber) ){
+            if(( Ob.MapFileName=== MapFilename )&&( Ob.ObjectKindNumber === ObjKindNumber) ){
                 //記録済み
                 return;
             }
@@ -3950,18 +3950,18 @@ class clsAttrData {
     //データ読み込み後の共通初期化
     initTotalData_andOther(): void {
         const DourceType = this.TotalData.LV1.DataSourceType;
-        if ((DourceType == enmDataSource.CSV) ||
-            (DourceType == enmDataSource.Clipboard) ||
-            (DourceType == enmDataSource.Viwer) ||
-            (DourceType == enmDataSource.Shapefile) ||
-            (DourceType == enmDataSource.DataEdit)) {
+        if ((DourceType === enmDataSource.CSV) ||
+            (DourceType === enmDataSource.Clipboard) ||
+            (DourceType === enmDataSource.Viwer) ||
+            (DourceType === enmDataSource.Shapefile) ||
+            (DourceType === enmDataSource.DataEdit)) {
             this.TotalData.initTotalData();
             const tv = this.TotalData.ViewStyle;
             tv.AttMapCompass = this.SetMapFile("").Map.MapCompass.Clone();
             tv.MapScale.Visible = this.SetMapFile("").Map.Detail.ScaleVisible;
             tv.MapScale.Unit = this.SetMapFile("").Map.SCL_U;
             this.Check_Vector_Object();
-            if (this.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            if (this.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 //緯度経度の場合の経緯線設定
                 const w = this.TempData.MapAreaLatLon.width();
                 let v;
@@ -4023,7 +4023,7 @@ class clsAttrData {
                     const XYSize = Math.sqrt(obn) / 4;
                     LD.PrtSpatialIndex = new clsSpatialIndexSearch(SpatialPointType.SPILine, true, mrect, mrect.width() / XYSize);
                     for (let j = 0; j < obn; j++) {
-                        if (LD.Type == enmLayerType.Mesh) {
+                        if (LD.Type === enmLayerType.Mesh) {
                             LD.PrtSpatialIndex.AddLine(4, LD.atrObject.atrObjectData[j].MeshPoint, j)
                         } else {
                             const ELine = this.Get_Enable_KenCode_MPLine(i, j);
@@ -4130,17 +4130,17 @@ class clsAttrData {
             let FirstF = false;
             let ScrRect = new rectangle();
             const ld = this.LayerData[i];
-            if (ld.Type != enmLayerType.Trip_Definition) {
+            if (ld.Type !== enmLayerType.Trip_Definition) {
                 const MapFileData = ld.MapFileData;
                 const LayerTime = ld.Time;
-                if (this.TotalData.ViewStyle.Dummy_Size_Flag == true) {
+                if (this.TotalData.ViewStyle.Dummy_Size_Flag === true) {
 
                     for (let j = 0; j < MapFileData.Map.Kend; j++) {
                         const mp = MapFileData.MPObj[j];
-                        if (ld.DummyGroup.indexOf(mp.Kind) != -1) {
+                        if (ld.DummyGroup.indexOf(mp.Kind) !== -1) {
                             const cxy = MapFileData.Get_Enable_CenterP(j, LayerTime);
-                            if (cxy != undefined) {
-                                if (FirstF == false) {
+                            if (cxy !== undefined) {
+                                if (FirstF === false) {
                                     ScrRect = new rectangle(cxy);
                                     FirstF = true;
                                 } else {
@@ -4151,9 +4151,9 @@ class clsAttrData {
                     }
                     for (let j = 0; j < ld.Dummy.length; j++) {
                         const ocode = ld.Dummy[j].code;
-                        if (FirstF == false) {
+                        if (FirstF === false) {
                             const cxy = MapFileData.Get_Enable_CenterP(ocode, LayerTime);
-                            if (cxy != undefined) {
+                            if (cxy !== undefined) {
                                 ScrRect = new rectangle(cxy);
                                 FirstF = true;
                             }
@@ -4166,7 +4166,7 @@ class clsAttrData {
                         case enmLayerType.Mesh:{
                             for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                                 const Rect =ld.atrObject.atrObjectData[j].MeshRect;
-                                if (FirstF == false) {
+                                if (FirstF === false) {
                                     ScrRect = Rect;
                                     FirstF = true;
                                 }
@@ -4177,7 +4177,7 @@ class clsAttrData {
                         case enmLayerType.DefPoint:{
                             for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                                 const p = ld.atrObject.atrObjectData[j].CenterPoint;
-                                if (FirstF == false) {
+                                if (FirstF === false) {
                                     ScrRect = new rectangle(p);
                                     FirstF = true;
                                 }
@@ -4190,7 +4190,7 @@ class clsAttrData {
                                 const ocode = ld.atrObject.atrObjectData[j].MpObjCode;
                                 switch (ld.atrObject.atrObjectData[j].Objectstructure) {
                                     case enmKenCodeObjectstructure.MapObj:
-                                        if (FirstF == false) {
+                                        if (FirstF === false) {
                                             const cxy = ld.atrObject.atrObjectData[j].CenterPoint;
                                             ScrRect = new rectangle(cxy, new size(0, 0));;
                                             FirstF = true;
@@ -4207,17 +4207,17 @@ class clsAttrData {
                     }
                 }
             }
-            if (i == 0) {
+            if (i === 0) {
                 TotalScrRect = ScrRect.Clone();     
             }else{
                 TotalScrRect=spatial.getCircumscribedRectangle(TotalScrRect, ScrRect);
             }
         }
-        if (TotalScrRect.left == TotalScrRect.right) {
+        if (TotalScrRect.left === TotalScrRect.right) {
             TotalScrRect.left = TotalScrRect.left - 1;
             TotalScrRect.right = TotalScrRect.left + 2;
         }
-        if (TotalScrRect.top == TotalScrRect.bottom) {
+        if (TotalScrRect.top === TotalScrRect.bottom) {
             TotalScrRect.top = TotalScrRect.top - 1;
             TotalScrRect.bottom = TotalScrRect.top + 2;
         }
@@ -4352,7 +4352,7 @@ class clsAttrData {
     get_DataLatLonBox(): rectangle {
         let IdoKedoRect = new rectangle();
         const Zahyo = this.TotalData.ViewStyle.Zahyo;
-        if (Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido) {
+        if (Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
             return IdoKedoRect;
         }
         switch (Zahyo.Projection) {
@@ -4370,15 +4370,15 @@ class clsAttrData {
         const LineCheck = {}// Dictionary(Of String, Boolean())
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             const ld = this.LayerData[i];
-            if (ld.Type != enmLayerType.Trip_Definition) {
+            if (ld.Type !== enmLayerType.Trip_Definition) {
                 const MapFileData = ld.MapFileData;
-                if (Object.keys(LineCheck).indexOf(ld.MapFileName) == -1) {
+                if (Object.keys(LineCheck).indexOf(ld.MapFileName) === -1) {
                     const LineL = new Array(MapFileData.Map.ALIN).fill(false);
                     (LineCheck as Record<string, unknown>)[ld.MapFileName] = LineL;
                 }
                 const LC = (LineCheck as Record<string, unknown>)[ld.MapFileName];
                 const LayerTime = ld.Time;
-                if (this.TotalData.ViewStyle.Dummy_Size_Flag == true) {
+                if (this.TotalData.ViewStyle.Dummy_Size_Flag === true) {
                     //ダミー領域も範囲に含む場合
                     const dmObj: number[] = [];
                     if (ld.DummyGroup.length > 0) {
@@ -4387,7 +4387,7 @@ class clsAttrData {
                             ObjGIndex[ld.DummyGroup[j]] = true;
                         }
                         for (let j = 0; j < MapFileData.Map.Kend; j++) {
-                            if (ObjGIndex[MapFileData.MPObj[j].Kind] == true) {
+                            if (ObjGIndex[MapFileData.MPObj[j].Kind] === true) {
                                 dmObj.push(j);
                             }
                         }
@@ -4397,14 +4397,14 @@ class clsAttrData {
                         dmObj.push(ocode);
                     }
                     for (let j = 0; j < dmObj.length; j++) {
-                        if (MapFileData.MPObj[j].Shape == enmShape.PointShape) {
+                        if (MapFileData.MPObj[j].Shape === enmShape.PointShape) {
                             const cp = MapFileData.Get_Enable_CenterP(dmObj[j], LayerTime);
                             const cp2 = spatial.Get_Reverse_XY(cp, Zahyo);
                             LLRect = spatial.getCircumscribedRectangle(cp2, LLRect);
                         } else {
                             const ELine = MapFileData.Get_EnableMPLine(dmObj[j], LayerTime);
                             for (let k = 0; k < ELine.length; k++) {
-                                if (LC[ELine[k].LineCode] == false) {
+                                if (LC[ELine[k].LineCode] === false) {
                                     LLRect=this.getLinelatLon(MapFileData, ELine[k].LineCode, LLRect);
                                     LC[ELine[k].LineCode] = true;
                                 }
@@ -4438,14 +4438,14 @@ class clsAttrData {
                     }
                     case enmLayerType.Normal: {
                         for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
-                            if (ld.Shape == enmShape.PointShape) {
+                            if (ld.Shape === enmShape.PointShape) {
                                 const p = spatial.Get_Reverse_XY(ld.atrObject.atrObjectData[j].CenterPoint, Zahyo)
                                 LLRect = spatial.getCircumscribedRectangle(p, LLRect)
                             } else {
                                 const ELine = this.Get_Enable_KenCode_MPLine(i, j)
                                 for (let k = 0; k < ELine.length; k++) {
                                     const cd = ELine[k].LineCode;
-                                    if (LC[cd] == false) {
+                                    if (LC[cd] === false) {
                                         LLRect=this.getLinelatLon(MapFileData, cd, LLRect);
                                         LC[cd] = true;
                                     }
@@ -4473,28 +4473,28 @@ class clsAttrData {
     //MANDARAファイルデータを開く
     OpenNewMandaraFile(MapDataList: clsMapdata[], attrText: string, filename: string, ext: string): { ok: boolean; emes: string } {
         let retv;
-        if (ext == "clipboard") {
+        if (ext === "clipboard") {
             retv = this.SetDataFromClipBoard(MapDataList, attrText)
             this.TotalData.LV1.DataSourceType = enmDataSource.Clipboard;
             this.TotalData.LV1.FileName = "Clipboard";
         }
-        if (ext == "csv") {
+        if (ext === "csv") {
             retv = this.SetDataFromClipBoard(MapDataList, attrText);
             this.TotalData.LV1.DataSourceType = enmDataSource.CSV;
             this.TotalData.LV1.FileName = filename;
         }
         
-        if (ext == "mdrj") {
+        if (ext === "mdrj") {
             retv = this.SetDataFromMDRJ(MapDataList, attrText);
             this.TotalData.LV1.DataSourceType = enmDataSource.MDRJ;
             this.TotalData.LV1.FileName = filename;
         }
-        if (ext == "mdrmj") {
+        if (ext === "mdrmj") {
             retv = this.SetDataFromMDRJ(MapDataList, attrText);
             this.TotalData.LV1.DataSourceType = enmDataSource.MDRMJ;
             this.TotalData.LV1.FileName = filename;
         }
-        if (retv.ok == true) {
+        if (retv.ok === true) {
             this.initTotalData_andOther();
         }
         return retv;
@@ -4562,8 +4562,8 @@ class clsAttrData {
         }
         const lp = vs.LatLonLine_Print;
         const olp = oldvs.LatLonLine_Print;
-        if(olp.Lat_Interval==undefined){olp.Lat_Interval=1;}
-        if(olp.Lon_Interval==undefined){olp.Lon_Interval=1;}
+        if(olp.Lat_Interval===undefined){olp.Lat_Interval=1;}
+        if(olp.Lon_Interval===undefined){olp.Lon_Interval=1;}
         lp.Lat_Interval = olp.Lat_Interval;
         lp.Lon_Interval = olp.Lon_Interval;
         lp.LPat = cnvLineProperty(olp.LPat);
@@ -4578,7 +4578,7 @@ class clsAttrData {
         vs.DataNote = cnvDataNode(oldvs.DataNote);
         vs.Missing_Data = cnvMissingData(oldvs.Missing_Data);
         vs.PointPaint_Order = oldvs.PointPaint_Order;
-        if(vs.PointPaint_Order==undefined){//試作版0.0のmdrjファイルの問題への対処
+        if(vs.PointPaint_Order===undefined){//試作版0.0のmdrjファイルの問題への対処
             vs.PointPaint_Order=enmPointOnjectDrawOrder.LowerToUpperCategory;
         }
         vs.Screen_Back = cnvScreen_Back(oldvs.Screen_Back);
@@ -4605,7 +4605,7 @@ class clsAttrData {
         let mpfileEr="";
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             const fname = this.LayerData[i].MapFileName.toUpperCase();
-            if (this.MapData.CheckMapfileExists(fname) == true) {
+            if (this.MapData.CheckMapfileExists(fname) === true) {
                 this.LayerData[i].MapFileData = this.MapData.SetMapFile(fname);
                 this.LayerData[i].MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(fname);
             } else {
@@ -4617,7 +4617,7 @@ class clsAttrData {
                         tx = state.preReadMapFile[fname];
                         break;
                 } 
-                if (tx != "") {
+                if (tx !== "") {
                     const mapdata = new clsMapdata();
                     mapdata.openJsonMapData(tx as JsonObject);
                     this.MapData.AddExistingMapData(mapdata, fname);
@@ -4628,7 +4628,7 @@ class clsAttrData {
                 }
             }
         }
-        if(mpfileEr!=""){
+        if(mpfileEr!==""){
             return { ok: false, emes: mpfileEr };
         }
 
@@ -4643,11 +4643,11 @@ class clsAttrData {
             for (let j = 0; j < mpk; j++) {
                 const mapLkind = this.SetMapFile(saveLPat.MapFileName[i]).LineKind[j]
                 for (let k = 0; k < saveLPat.LpatNumByMapfile[i]; k++) {
-                    if (saveLPat.Lpat[ct + k].Name == mapLkind.Name) {
-                        if (mapLkind.NumofObjectGroup != saveLPat.Lpat[ct + k].NumofObjectGroup) {
+                    if (saveLPat.Lpat[ct + k].Name === mapLkind.Name) {
+                        if (mapLkind.NumofObjectGroup !== saveLPat.Lpat[ct + k].NumofObjectGroup) {
                         } else {
                             for (let og = 0; og < mapLkind.NumofObjectGroup; og++) {
-                                if(mapLkind.ObjGroup[og].GroupNumber==saveLPat.Lpat[ct + k].ObjGroup[og].GroupNumber){
+                                if(mapLkind.ObjGroup[og].GroupNumber===saveLPat.Lpat[ct + k].ObjGroup[og].GroupNumber){
                                     mapLkind.ObjGroup[og].Pattern=cnvLineProperty( saveLPat.Lpat[ct + k].ObjGroup[og].Pattern);
                                 }
                             }
@@ -4657,14 +4657,14 @@ class clsAttrData {
                     }
                 }
             }
-            if ((setN != mpk) || (setN != saveLPat.LpatNumByMapfile[i])) {
+            if ((setN !== mpk) || (setN !== saveLPat.LpatNumByMapfile[i])) {
                 ObjectErrorMessage = "地図ファイル" + saveLPat.MapFileName[i] + "の線種が変更されています。" + "\n"
             }
             ct += saveLPat.LpatNumByMapfile[i];
         }
         
         //投影法の設定
-        if (this.TotalData.ViewStyle.Zahyo.Projection != this.MapData.SetMapFile("").Map.Zahyo.Projection) {
+        if (this.TotalData.ViewStyle.Zahyo.Projection !== this.MapData.SetMapFile("").Map.Zahyo.Projection) {
             const MapFileList = state.attrData.GetMapFileName();
             for (let i = 0; i < MapFileList.length; i++) {
                 state.attrData.SetMapFile(MapFileList[i]).Convert_ZahyoMode(this.TotalData.ViewStyle.Zahyo);
@@ -4774,7 +4774,7 @@ class clsAttrData {
                 dts.ClassODMD = new strClassODMode_data();
                 Object.assign(dts.ClassODMD, odts.ClassODMD);
                 dts.ClassODMD.Arrow = cnvArrow((odts.ClassODMD as JsonObject).Arrow as JsonObject);
-                if(dts.ClassODMD.Dummy_ObjectFlag==undefined){
+                if(dts.ClassODMD.Dummy_ObjectFlag===undefined){
                     dts.ClassODMD.Dummy_ObjectFlag=false;
                 }
                 dts.ClassPaintMD = new strClassPaint_Data();
@@ -4814,7 +4814,7 @@ class clsAttrData {
                 dts.MarkBarMD.InnerTile = cnvTileProperty(odtsMarkBarMD.InnerTile as JsonObject);
                 dts.MarkBarMD.FrameLinePat = cnvLineProperty(odtsMarkBarMD.FrameLinePat as JsonObject);
                 dts.MarkBarMD.scaleLinePat = cnvLineProperty(odtsMarkBarMD.scaleLinePat as JsonObject);
-                if(dts.MarkBarMD.BarShape==undefined){
+                if(dts.MarkBarMD.BarShape===undefined){
                     dts.MarkBarMD.BarShape = enmMarkBarShape.bar;
                 }
                 dts.MarkBlockMD = new strMarkBlock_Data();
@@ -5008,7 +5008,7 @@ class clsAttrData {
         function cnvSouByou(oldSB: JsonObject) {
             const sb = new strSouByou_Info();
             Object.assign(sb, oldSB);
-            if (sb.Auto==undefined){
+            if (sb.Auto===undefined){
                 sb.Auto=false;
                 sb.AutoDegree=2;
             }
@@ -5018,10 +5018,10 @@ class clsAttrData {
         function cnvValueShow(oldvs: JsonObject) {
             const sv = new strValueShow_Info();
             Object.assign(sv, oldvs);
-            if (sv.DecimalNumber == undefined) {
+            if (sv.DecimalNumber === undefined) {
                 sv.DecimalNumber = 0;
             }
-            if (sv.DecimalSepaF == undefined) {
+            if (sv.DecimalSepaF === undefined) {
                 sv.DecimalSepaF = false;
             }
             sv.ValueFont = cnvFontProperty(oldvs.ValueFont as JsonObject);
@@ -5122,7 +5122,7 @@ class clsAttrData {
             mlb.Visible = oldMLBase2.Visible as boolean;
             mlb.Comma_f = oldMLBase2.Comma_f as boolean;
             mlb.ModeValueInScreenFlag = oldMLBase2.ModeValueInScreenFlag as boolean;
-            if (mlb.ModeValueInScreenFlag == undefined) {
+            if (mlb.ModeValueInScreenFlag === undefined) {
                 mlb.ModeValueInScreenFlag = false;
             }
             const mlc = MapLegend.ClassMD;
@@ -5137,7 +5137,7 @@ class clsAttrData {
             const oldMLClassMDBoundaryLine = oldMLClassMD.ClassBoundaryLine as JsonObject;
             mlc.ClassBoundaryLine.Visible = oldMLClassMDBoundaryLine.Visible as boolean;
             mlc.ClassBoundaryLine.LPat = cnvLineProperty(oldMLClassMDBoundaryLine.LPat as JsonObject);
-            if (oldMLClassMD.CategorySeparate_f == undefined) {
+            if (oldMLClassMD.CategorySeparate_f === undefined) {
                 oldMLClassMD.CategorySeparate_f = false;
             }
             mlc.CategorySeparate_f = oldMLClassMD.CategorySeparate_f as boolean;
@@ -5207,9 +5207,9 @@ class clsAttrData {
             fnt.FringeColor = cnvColorProperty(oldFont.FringeColor as JsonObject);
             fnt.Back = cnvBackGround_Box_Property(oldFont.Back as JsonObject);
             //フォントの有無チェック
-            if(fnt.Name && existFont.indexOf(fnt.Name)==-1){
-                if(nonExistFont.indexOf(fnt.Name)==-1){
-                    if(Generic.checkFontExist(fnt.Name)==true){
+            if(fnt.Name && existFont.indexOf(fnt.Name)===-1){
+                if(nonExistFont.indexOf(fnt.Name)===-1){
+                    if(Generic.checkFontExist(fnt.Name)===true){
                         existFont.push(fnt.Name);
                     }else{
                         nonExistFont.push(fnt.Name);
@@ -5264,10 +5264,10 @@ class clsAttrData {
         const retv = this.ReadAttrDataOneLine(attrText);
         let ObjectErrorMessage = '';
         let f = true;
-        if (retv.ok == true) {
+        if (retv.ok === true) {
             this.TotalData.ViewStyle.Zahyo = this.MapData.GetPrestigeZahyoMode();
             const retv2 = this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo);
-            if (retv2.ok == false) {
+            if (retv2.ok === false) {
                 ObjectErrorMessage += "地図ファイルの座標系・測地系を統一できません。" + '\n' + retv2.emes;
                 f = false;
             }
@@ -5286,12 +5286,12 @@ class clsAttrData {
         let LayerTypeTripDefinitionExists = false;
         let OK_Flag = true;
         let TotalMissing=false;
-        let Map_readed = (this.MapData.GetNumOfMapFile()!=0);
+        let Map_readed = (this.MapData.GetNumOfMapFile()!==0);
         for (let i = 0; i < STR.length; i++) {
             const tb = STR[i].indexOf('\t');
             const cm = STR[i].indexOf(',');
             let splitter='\t';
-            if ((tb == -1) && (cm != -1)) {
+            if ((tb === -1) && (cm !== -1)) {
                 splitter = ",";
             }
             const CutS=Generic.String_Cut(STR[i],splitter);
@@ -5303,13 +5303,13 @@ class clsAttrData {
                 case "MAP": {
                     if (2 <= CutN) {
                         for (let i = 1; i < CutN; i++) {
-                            if(CutS[i]!=""){
+                            if(CutS[i]!==""){
                                 const fu =Generic.getFilenameWithoutExtension( CutS[i].toUpperCase())+".MPFJ";
                                 switch (fu) {//既存地図ファイルを使用
                                     case "JAPAN.MPFJ":
                                     case "日本緯度経度.MPFJ":
                                     case "WORLD.MPFJ": {
-                                        if (this.MapData.CheckMapfileExists(fu) == false) {
+                                        if (this.MapData.CheckMapfileExists(fu) === false) {
                                             if (state.preReadMapFile[fu]) {
                                                 const mapdata = new clsMapdata();
                                                 mapdata.openJsonMapData(state.preReadMapFile[fu]);
@@ -5323,7 +5323,7 @@ class clsAttrData {
                                         break;
                                     }
                                     default:{
-                                        if (this.MapData.CheckMapfileExists(fu) == false) {
+                                        if (this.MapData.CheckMapfileExists(fu) === false) {
                                             ObjectErrorMessage+="地図ファイル" + CutS[i] + "を読み込んでください。";
                                             return { ok: false, emes: ObjectErrorMessage };
                                         }
@@ -5337,7 +5337,7 @@ class clsAttrData {
                 }
                 case "COMMENT": {
                     if (2 <= CutN) {
-                        if (lay == -1) {
+                        if (lay === -1) {
                             this.TotalData.LV1.Comment += CutS[1] + '\n';
                         }
                         LayerReading.Comment_Temp += CutS[1];
@@ -5353,25 +5353,25 @@ class clsAttrData {
                     break;
                 }
                 case "TITLE": {
-                    if (lay == -1) {
+                    if (lay === -1) {
                         lay = 0;
                     }
                     LayerReading.TTL = Array.from(CutS);
                     break;
                 }
                 case "UNIT": {
-                    if (lay == -1) {
+                    if (lay === -1) {
                         lay = 0;
                     }
                     LayerReading.UNT = Array.from(CutS);
                     break;
                 }
                 case "DATA_MISSING": {
-                    if (lay == -1) {
+                    if (lay === -1) {
                         lay = 0;
                     }
                     for (let j = 0; j < CutN; j++) {
-                        if (CutS[j].toUpperCase() == "ON") {
+                        if (CutS[j].toUpperCase() === "ON") {
                             LayerReading.DTMis[j] = true;
                         } else {
                             LayerReading.DTMis[j] = false;
@@ -5380,7 +5380,7 @@ class clsAttrData {
                     break;
                 }
                 case "NOTE": {
-                    if (lay == -1) {
+                    if (lay === -1) {
                         lay = 0;
                     }
                     LayerReading.Note = Array.from(CutS);
@@ -5415,7 +5415,7 @@ class clsAttrData {
                                 break;
                             }
                             case "TRIP_DEFINITION": {
-                                if (LayerTypeTripDefinitionExists == true) {
+                                if (LayerTypeTripDefinitionExists === true) {
                                     ObjectErrorMessage += "移動主体定義レイヤは１つしか設定できません。" + '\n';
                                     return { ok: false, emes: ObjectErrorMessage };
                                 }
@@ -5512,7 +5512,7 @@ class clsAttrData {
                                             ObjectErrorMessage += "メッシュの種類の設定が不正です。" + CutS[2] + '\n';
                                             return;
                                     }
-                                    if (LayerReading.Shape == enmShape.NotDeffinition) {
+                                    if (LayerReading.Shape === enmShape.NotDeffinition) {
                                         LayerReading.Shape = enmShape.PolygonShape;
                                     }
                                     LayerReading.ReferenceSystem = enmZahyo_System_Info.Zahyo_System_World;
@@ -5547,16 +5547,16 @@ class clsAttrData {
                 case "LAYER": {
                     lay += 1;
                     if (1 <= lay) {
-                        if ((LayerReading.TTL == undefined) || (LayerReading.ObjectDataStac == undefined)) {
+                        if ((LayerReading.TTL === undefined) || (LayerReading.ObjectDataStac === undefined)) {
                             alert("レイヤのデータがありません：" + LayerReading.Name);
                             return { ok: false, emes: ObjectErrorMessage };
                         }
                         const retv = this.Set_Data_from_String(LayerReading, TotalMissing);
                         OK_Flag = OK_Flag && retv.ok;
                         LayerError += retv.emes;
-                        if (LayerError != "") {
+                        if (LayerError !== "") {
                             ObjectErrorMessage += "エラー／レイヤ:";
-                            if (LayerReading.Name == "") {
+                            if (LayerReading.Name === "") {
                                 ObjectErrorMessage += (this.TotalData.LV1.Lay_Maxn).toString() + '\n';
                             } else {
                                 ObjectErrorMessage += LayerReading.Name + '\n';
@@ -5573,11 +5573,11 @@ class clsAttrData {
                     if (3 <= CutN) {
                         LayerReading.MapFile = CutS[2];
                     }
-                    if ((LayerReading.MapFile != "") && (Generic.getExtension(LayerReading.MapFile) == "")) {
+                    if ((LayerReading.MapFile !== "") && (Generic.getExtension(LayerReading.MapFile) === "")) {
                         LayerReading.MapFile += ".MPFJ";
                     }
-                    if (LayerReading.MapFile != "") {
-                        if (this.MapData.CheckMapfileExists(LayerReading.MapFile) == false) {
+                    if (LayerReading.MapFile !== "") {
+                        if (this.MapData.CheckMapfileExists(LayerReading.MapFile) === false) {
                             alert("レイヤ" + LayerReading.Name + "の地図ファイルを読み込んでください。");
                             return { ok: false, emes: ObjectErrorMessage };
                         }
@@ -5585,10 +5585,10 @@ class clsAttrData {
                     break;
                 }
                 case "TIME": {
-                    if (lay == -1) {
+                    if (lay === -1) {
                         lay = 0;
                     }
-                    if (LayerReading.Time.nullFlag() == true) {
+                    if (LayerReading.Time.nullFlag() === true) {
                         if (2 <= CutN) {
                             let cngTimeF = false;
                             CutS[1].replace(",", "");
@@ -5624,13 +5624,13 @@ class clsAttrData {
                                     }
                                 }
                             }
-                            if (Y != -1) {
-                                if (clsTime.Check_YMD_Correct(Y, m, d) == false) {
+                            if (Y !== -1) {
+                                if (clsTime.Check_YMD_Correct(Y, m, d) === false) {
                                     alert("TIMEタグの時期設定が不正です。");
                                     return { ok: false, emes: ObjectErrorMessage };
                                 }
                                 LayerReading.Time = new strYMD(Y, m, d);
-                                if (cngTimeF == true) {
+                                if (cngTimeF === true) {
                                     LayerError += "TIMEタグの時期は修正されました:" + LayerReading.Time.toString() + '\n';
                                 }
                             }
@@ -5644,7 +5644,7 @@ class clsAttrData {
                 }
                 case "MISSING": {
                     if (2 <= CutN) {
-                        if (CutS[1].toUpperCase() == "ON") {
+                        if (CutS[1].toUpperCase() === "ON") {
                             TotalMissing = true;
                         } else {
                             TotalMissing = false;
@@ -5653,22 +5653,22 @@ class clsAttrData {
                     break;
                 }
                 default: {
-                    if ((lay == -1) && (Map_readed == false)) {
+                    if ((lay === -1) && (Map_readed === false)) {
                         return { ok: false, emes: ObjectErrorMessage };
                     }
-                    if (Map_readed == false) {
+                    if (Map_readed === false) {
                         ObjectErrorMessage += "データの先頭にMAPタグが見つかりません。\n";
                         return { ok: false, emes: ObjectErrorMessage };
                     }
-                    if ((this.MapData.SetMapFile(LayerReading.MapFile).Map.Time_Mode == true) &&
-                        (LayerReading.Type != enmLayerType.Trip_Definition)) {
-                        if (LayerReading.Time.nullFlag() == true) {
+                    if ((this.MapData.SetMapFile(LayerReading.MapFile).Map.Time_Mode === true) &&
+                        (LayerReading.Type !== enmLayerType.Trip_Definition)) {
+                        if (LayerReading.Time.nullFlag() === true) {
                             LayerError += "使用する地図ファイルは、時空間モードで作成されています。" + '\n' + "レイヤごとにTIMEタグを使用して属性データの時期を指定してください。" + '\n';
                             ObjectErrorMessage += LayerError;
                             return { ok: false, emes: ObjectErrorMessage };
                         }
                     }
-                    if (lay == -1) {
+                    if (lay === -1) {
                         lay = 0;
                     }
                     LayerReading.ObjectDataStac.push(CutS);
@@ -5679,19 +5679,19 @@ class clsAttrData {
         const retv = this.Set_Data_from_String(LayerReading, TotalMissing);
         OK_Flag = OK_Flag && retv.ok;
         LayerError += retv.emes;
-        if (LayerError != "") {
+        if (LayerError !== "") {
             ObjectErrorMessage += "エラー／レイヤ:";
-            if (LayerReading.Name == "") {
+            if (LayerReading.Name === "") {
                 ObjectErrorMessage += (this.TotalData.LV1.Lay_Maxn).toString() + '\n';
             } else {
                 ObjectErrorMessage += LayerReading.Name + '\n';
             }
             ObjectErrorMessage += LayerError + '\n';
         }
-        if ((lay == -1) ){
+        if ((lay === -1) ){
             return { ok: false, emes: ObjectErrorMessage };
         }
-        if (this.TotalData.LV1.Lay_Maxn == 0) {
+        if (this.TotalData.LV1.Lay_Maxn === 0) {
             return { ok: false, emes: ObjectErrorMessage };
         }
         return { ok: OK_Flag, emes: ObjectErrorMessage };
@@ -5732,7 +5732,7 @@ class clsAttrData {
         for (let i = 0; i < LayerReadingObjectDataStac.length; i++) {
             MxData = Math.max(MxData, LayerReadingObjectDataStac[i].length);
         }
-        if (MxData == 0) {
+        if (MxData === 0) {
             return { ok: false, emes: "タグ・オブジェクトが存在しません。" + '\n' };
         }
         const DN_Str = Generic.Array2Dimension(MxData, LayerReadingObjectDataStac.length);
@@ -5740,7 +5740,7 @@ class clsAttrData {
         const Get_Obj = [];//strObject_Data_Info / strTripObjData_Info / string
         let MeshCodeLen = 0;
         const LayerReadingType = LayerReading.Type as number;
-        if (LayerReadingType == enmLayerType.Mesh) {
+        if (LayerReadingType === enmLayerType.Mesh) {
             MeshCodeLen = Generic.getMeshCodeLength(LayerReading.MeshType as number) ?? 0;
         }
 
@@ -5751,10 +5751,10 @@ class clsAttrData {
             switch (LayerReadingType) {
                 case (enmLayerType.Normal): {
                     code = MapFileObjectNameSearch.Get_KenToCode(OBName, LayerReading.Time);
-                    if (code == -1) {
+                    if (code === -1) {
                         No_Object_Name.push(OBName);
                     } else if (code !== undefined) {
-                        if (Object_Use_Check[code] == true) {
+                        if (Object_Use_Check[code] === true) {
                             Over_Lap_Object.push(OBName);
                             code = -1;
                         } else {
@@ -5764,7 +5764,7 @@ class clsAttrData {
                     break;
                 }
                 case (enmLayerType.Mesh): {
-                    if (OBName.length != MeshCodeLen) {
+                    if (OBName.length !== MeshCodeLen) {
                         No_Object_Name.push(OBName);
                         code = -1;
                     } else {
@@ -5786,13 +5786,13 @@ class clsAttrData {
                 default:
                     code = 0;
             }
-            if (code != -1) {
-                if ((LayerReadingType == enmLayerType.Mesh) || (LayerReadingType == enmLayerType.Normal) || (LayerReadingType == enmLayerType.DefPoint)) {
+            if (code !== -1) {
+                if ((LayerReadingType === enmLayerType.Mesh) || (LayerReadingType === enmLayerType.Normal) || (LayerReadingType === enmLayerType.DefPoint)) {
                     const d = new strObject_Data_Info();
                     d.MpObjCode = code;
                     d.Name = OBName;
                     d.Objectstructure = enmKenCodeObjectstructure.MapObj;
-                    if (LayerReadingType == enmLayerType.Normal) {
+                    if (LayerReadingType === enmLayerType.Normal) {
                         const layerTime = LayerReading.Time;
                         d.CenterPoint = MapFileData.Get_Enable_CenterP(code, layerTime);
                         d.Symbol = d.CenterPoint;
@@ -5810,7 +5810,7 @@ class clsAttrData {
                 DN_Str[j - 1][Get_Obj.length - 1] = T;
             }
         }
-        if( MapFileData.Map.Zahyo.Mode != enmZahyo_mode_info.Zahyo_Ido_Keido ){
+        if( MapFileData.Map.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido ){
             switch (LayerReading.Type) {
                 case (enmLayerType.Mesh): {
                     E_Mes = "メッシュレイヤの場合は、緯度経度情報つきの地図ファイルを使用して下さい。" + '\n';
@@ -5849,7 +5849,7 @@ class clsAttrData {
         }
 
         const Object_num = Get_Obj.length;
-        if (Object_num == 0) {
+        if (Object_num === 0) {
             E_Mes = "有効なオブジェクトがありません。";
             return { ok: false, emes: E_Mes };
         }
@@ -5859,21 +5859,21 @@ class clsAttrData {
             layerTime, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj);
 
         const Laye_Shape_Emes = this.Check_LayerShape();
-        if (Laye_Shape_Emes != "") {
+        if (Laye_Shape_Emes !== "") {
             E_Mes += Laye_Shape_Emes + '\n';
         }
 
-        if ((LayerReading.UNT as string[]).length==0) {
+        if ((LayerReading.UNT as string[]).length===0) {
             LayerReading.UNT = new Array(MxData).fill("");
         }
-        if ((LayerReading.TTL as string[]).length == 0) {
+        if ((LayerReading.TTL as string[]).length === 0) {
             LayerReading.TTL = new Array(MxData).fill("");
         }
 
-        if ((LayerReading.DTMis as JsonValue[]).length == 0) {
+        if ((LayerReading.DTMis as JsonValue[]).length === 0) {
             LayerReading.DTMis = new Array(MxData).fill(TotalMissing);
         }
-        if ((LayerReading.Note as string[]).length == 0) {
+        if ((LayerReading.Note as string[]).length === 0) {
             LayerReading.Note = new Array(MxData).fill("");
         }
 
@@ -5887,7 +5887,7 @@ class clsAttrData {
         for (let i = 0; i < LayerReadingDummyTemp.length; i++) {
             const DCS = LayerReadingDummyTemp[i];
             for (let j = 1; j < DCS.length; j++) {
-                if (DCS[j] != "") {
+                if (DCS[j] !== "") {
                     DummmyObjNamesList.push(DCS[j]);
                 }
             }
@@ -5898,14 +5898,14 @@ class clsAttrData {
         for (let i = 0; i < LayerReadingDummyOBKTemp.length; i++) {
             const DCS = LayerReadingDummyOBKTemp[i];
             for (let j = 1; j < DCS.length; j++) {
-                if (DCS[j] != "") {
+                if (DCS[j] !== "") {
                     DummmyObjGroupNamesList.push(DCS[j]);
                 }
             }
         }
         const NowLay = this.TotalData.LV1.Lay_Maxn - 1;
         const Emes = this.Set_Dummy_and_Group(NowLay, DummmyObjNamesList, DummmyObjGroupNamesList);
-        if (Emes != "") {
+        if (Emes !== "") {
             E_Mes += "ダミーオブジェクト指定で地図ファイルに含まれないものがあります。" + '\n' + Emes
         }
         const retv = this.Set_STRData_To_Cell(NowLay, MxData - 1, LayerReading.TTL as string[], LayerReading.UNT as string[], LayerReading.DTMis as JsonValue[], LayerReading.Note as string[], DN_Str);
@@ -5932,11 +5932,11 @@ class clsAttrData {
         let PlaceGet = -1;
         for (let i = 0; i < DataNum; i++) {
             const Uttl = TTL[i].toUpperCase();
-            if (Uttl == "URL") {
+            if (Uttl === "URL") {
                 DataItemNotF[i] = true;
                 URLData[URLDataNum] = i;
                 URLDataNum += 1;
-            } else if (Uttl == "URL_NAME") {
+            } else if (Uttl === "URL_NAME") {
                 DataItemNotF[i] = true;
                 URL_NameData[URL_NameDataNum] = i;
                 URL_NameDataNum += 1;
@@ -5947,35 +5947,35 @@ class clsAttrData {
                         //移動データのデータは通常のデータに入れない
                         switch (Uttl) {
                             case ("LAT"): {
-                                if (LatPosition == -1) {
+                                if (LatPosition === -1) {
                                     LatPosition = i;
                                 }
                                 DataItemNotF[i] = true;
                                 break;
                             }
                             case ("LON"): {
-                                if (LonPosition == -1) {
+                                if (LonPosition === -1) {
                                     LonPosition = i;
                                 }
                                 DataItemNotF[i] = true;
                                 break;
                             }
                             case ("PLACE"): {
-                                if (PlaceGet == -1) {
+                                if (PlaceGet === -1) {
                                     PlaceGet = i;
                                 }
                                 DataItemNotF[i] = true;
                                 break;
                             }
                             case ("ARRIVAL"): {
-                                if (ArrivalGet == -1) {
+                                if (ArrivalGet === -1) {
                                     ArrivalGet = i;
                                 }
                                 DataItemNotF[i] = true;
                                 break;
                             }
                             case ("DEPARTURE"): {
-                                if (DepartureGet == -1) {
+                                if (DepartureGet === -1) {
                                     DepartureGet = i;
                                 }
                                 DataItemNotF[i] = true;
@@ -5986,13 +5986,13 @@ class clsAttrData {
                     }
                     case (enmLayerType.DefPoint): {
                         //地点定義レイヤ
-                        if (Uttl == "LAT") {
-                            if (LatPosition == -1) {
+                        if (Uttl === "LAT") {
+                            if (LatPosition === -1) {
                                 LatPosition = i;
                             }
                             DataItemNotF[i] = true;
-                        } else if (Uttl == "LON") {
-                            if (LonPosition == -1) {
+                        } else if (Uttl === "LON") {
+                            if (LonPosition === -1) {
                                 LonPosition = i;
                             }
                             DataItemNotF[i] = true;
@@ -6003,7 +6003,7 @@ class clsAttrData {
             }
         }
         //リンク
-        if ((L.Type != enmLayerType.Trip) && (L.Type != enmLayerType.Trip_Definition)) {
+        if ((L.Type !== enmLayerType.Trip) && (L.Type !== enmLayerType.Trip_Definition)) {
             for (let i = 0; i < ObjNum; i++) {
                 const O = L.atrObject.atrObjectData[i];
                 O.HyperLinkNum = 0;
@@ -6011,7 +6011,7 @@ class clsAttrData {
                 if (0 < URL_NameDataNum) {
                     for (let j = 0; j < URLDataNum; j++) {
                         const T = DN_Str[URLData[j]][i];
-                        if (T != "") {
+                        if (T !== "") {
                             const u = new strURL_Data();
                             u.Address = T;
                             u.Name = DN_Str[URL_NameData[j]][i];
@@ -6023,30 +6023,30 @@ class clsAttrData {
             }
         }
         //移動データの処理
-        if (L.Type == enmLayerType.Trip) {
+        if (L.Type === enmLayerType.Trip) {
             let posTagF = false;
-            if ((LatPosition != -1) && (LonPosition != -1)) {
+            if ((LatPosition !== -1) && (LonPosition !== -1)) {
                 L.TripType = enmTripPositionType.LatLon;
                 posTagF = true;
-            } else if (PlaceGet != -1) {
+            } else if (PlaceGet !== -1) {
                 L.TripType = enmTripPositionType.ObjectSet;
                 posTagF = true;
             } else {
                 ErrorMes += "移動データレイヤの位置指定のタグ（LAT,LON,PLACE）が指定されていません。" + '\n';
             }
-            if (ArrivalGet == -1) {
+            if (ArrivalGet === -1) {
                 ErrorMes += "移動データレイヤの到着時間タグ（ARRIVAL）が指定されていません。" + '\n';
             }
-            if (DepartureGet == -1) {
+            if (DepartureGet === -1) {
                 ErrorMes += "移動データレイヤの出発時間タグ（DEPARTURE）が指定されていません。" + '\n';
             }
-            if ((ArrivalGet == -1) || (DepartureGet == -1) || (posTagF == false)) {
+            if ((ArrivalGet === -1) || (DepartureGet === -1) || (posTagF === false)) {
                 return { ok: false, emes: ErrorMes };
             }
 
             for (let j = 0; j < L.atrObject.ObjectNum; j++) {
                 const TD = L.atrObject.TripObjData[j];
-                if (L.TripType == enmTripPositionType.ObjectSet) {
+                if (L.TripType === enmTripPositionType.ObjectSet) {
                     TD.PositionObjName = DN_Str[PlaceGet][j];
                 } else {
                     TD.PositionObjName = "";
@@ -6059,7 +6059,7 @@ class clsAttrData {
         }
 
         //メッシュレイヤの処理
-        if (L.Type == enmLayerType.Mesh) {
+        if (L.Type === enmLayerType.Mesh) {
             for (let j = 0; j < L.atrObject.ObjectNum; j++) {
                 const O = L.atrObject.atrObjectData[j];
                 const mapZahyo = this.SetMapFile("").Map.Zahyo;
@@ -6074,28 +6074,28 @@ class clsAttrData {
         }
 
         //地点定義レイヤの処理
-        if (L.Type == enmLayerType.DefPoint) {
-            if (LonPosition == -1) {
+        if (L.Type === enmLayerType.DefPoint) {
+            if (LonPosition === -1) {
                 ErrorMes += "地点定義レイヤの経度（LONタグ）が指定されていません。" + '\n';
             }
-            if (LatPosition == -1) {
+            if (LatPosition === -1) {
                 ErrorMes += "地点定義レイヤの経度（LATタグ）が指定されていません。" + '\n';
             }
-            if ((LonPosition == -1) || (LatPosition == -1)) {
+            if ((LonPosition === -1) || (LatPosition === -1)) {
                 return { ok: false, emes: ErrorMes };
             }
             let valE = false;
             for (let j = 0; j < L.atrObject.ObjectNum; j++) {
                 const O = L.atrObject.atrObjectData[j];
                 let lonV = Number(Generic.convValue(DN_Str[LonPosition][j]));
-                if (isNaN(lonV) == true) {
+                if (isNaN(lonV) === true) {
                     ErrorMes += "地点定義レイヤの経度で数字以外の地点があります。(" + O.Name + ":" + DN_Str[LonPosition][j] + ")" + '\n';
                     valE = true;
                     lonV=0;
                 }
 
                 let latV = Number(Generic.convValue(DN_Str[LatPosition][j]));
-                if (isNaN(latV) == true) {
+                if (isNaN(latV) === true) {
                     ErrorMes += "地点定義レイヤの緯度で数字以外の地点があります。(" + O.Name + ":" + DN_Str[LatPosition][j] + ")" + '\n';
                     valE = true;
                     latV=0;
@@ -6113,7 +6113,7 @@ class clsAttrData {
                 O.Label = O.CenterPoint;
                 O.Visible = true;
             }
-            if (valE == true) {
+            if (valE === true) {
                 return { ok: false, emes: ErrorMes };
             }
         }
@@ -6121,20 +6121,20 @@ class clsAttrData {
         let addErMes = "";
         const Data_Val_STR = new Array(ObjNum);
         for (let i = 0; i < DataNum; i++) {
-            if (DataItemNotF[i] == false) {
+            if (DataItemNotF[i] === false) {
                 for (let j = 0; j < ObjNum; j++) {
                     Data_Val_STR[j] = DN_Str[i][j];
                 }
                 const Dtype = Generic.getAttDataType_From_TitleUnit(TTL[i], UNT[i]);
-                if (Dtype == enmAttDataType.Normal) {
+                if (Dtype === enmAttDataType.Normal) {
                     for (let j = 0; j < ObjNum; j++) {
-                        if (Data_Val_STR[j] != "") {
+                        if (Data_Val_STR[j] !== "") {
                             Data_Val_STR[j] = Data_Val_STR[j].replace(/,/g, "");
                         }
-                        if ((isNaN(Data_Val_STR[j]) == true)||(Data_Val_STR[j] === "")) {
+                        if ((isNaN(Data_Val_STR[j]) === true)||(Data_Val_STR[j] === "")) {
                             if (Data_Val_STR[j] === "") {
-                                if (DTMissing[i] == false) {
-                                    if ((TTL[i] != "") || (UNT[i] != "")) {
+                                if (DTMissing[i] === false) {
+                                    if ((TTL[i] !== "") || (UNT[i] !== "")) {
                                         addErMes += "欠損値設定でないデータ項目に空白データがあります。0に設定されます。(" + TTL[i] + ")" + '\n';
                                         Data_Val_STR[j] = "0";
                                     }
@@ -6150,18 +6150,18 @@ class clsAttrData {
                     }
                 }
                 const missingValue = (typeof DTMissing[i] === 'boolean' && DTMissing[i]) ? true : false;
-                if (this.Add_One_Data_Value(Layernum, TTL[i], UNT[i], Note[i], Data_Val_STR, missingValue) == false) {
-                    if (TTL[i] != "") {
+                if (this.Add_One_Data_Value(Layernum, TTL[i], UNT[i], Note[i], Data_Val_STR, missingValue) === false) {
+                    if (TTL[i] !== "") {
                         addErMes += TTL[i] +"はデータ値がないため取得できませんでした。" + '\n';
                     }
                 }
             }
 
         }
-        if (addErMes.length != 0) {
+        if (addErMes.length !== 0) {
             ErrorMes += addErMes;
         }
-        if ((this.Get_DataNum(Layernum) == 0) && (L.Type != enmLayerType.Trip)) {
+        if ((this.Get_DataNum(Layernum) === 0) && (L.Type !== enmLayerType.Trip)) {
             this.Add_One_Data_Value(Layernum, "地図表示", "CAT", "", new Array(ObjNum).fill(''), false)
             switch (L.Shape){
                 case (enmShape.PointShape):{
@@ -6183,21 +6183,21 @@ class clsAttrData {
     //レイヤにダミーオブジェクトとグループを設定する
     Set_Dummy_and_Group(LayerNum: number, Dummy: string[], DummyGroup: string[]): string {
         const L = this.LayerData[LayerNum];
-        if (L.Type == enmLayerType.Trip_Definition) {
+        if (L.Type === enmLayerType.Trip_Definition) {
             return "";
         }
         let DummyEmes = "";
-        if (Dummy != undefined) {
+        if (Dummy !== undefined) {
             L.Dummy=[];
             for (let i = 0; i < Dummy.length; i++) {
                 const k = L.MapFileObjectNameSearch.Get_KenToCode(Dummy[i], L.Time);
-                if (k != -1) {
+                if (k !== -1) {
                     const d=new strDummyObjectName_and_Code();
                     d.code=k;
                     d.Name=Dummy[i];
                     L.Dummy.push(d);
                 } else {
-                    if (DummyEmes != "") {
+                    if (DummyEmes !== "") {
                         DummyEmes += "/";
                     }
                     DummyEmes += Dummy[i];
@@ -6206,21 +6206,21 @@ class clsAttrData {
         }
 
         let DummyGroupEmes = "";
-        if (DummyGroup != undefined) {
+        if (DummyGroup !== undefined) {
             L.DummyGroup=[];
             for (let i = 0; i < DummyGroup.length; i++) {
                 const k = L.MapFileData.Get_ObjectGroupNumber_By_Name(DummyGroup[i]);
-                if (k != -1) {
+                if (k !== -1) {
                     L.DummyGroup.push(k);
                 } else {
-                    if (DummyGroupEmes != "") {
+                    if (DummyGroupEmes !== "") {
                         DummyGroupEmes += "/";
                     }
                     DummyGroupEmes += DummyGroup[i];
                 }
             }
         }
-        if ((DummyEmes != "") && (DummyGroupEmes != "")){
+        if ((DummyEmes !== "") && (DummyGroupEmes !== "")){
             DummyEmes += '\n';
         }
         const Emes = DummyEmes + DummyGroupEmes;
@@ -6245,10 +6245,10 @@ class clsAttrData {
             let fobk = 0;
             const UseMap = this.SetMapFile(String(layData.MapfileName));
             for (let i = 0; i < UseMap.Map.Kend; i++) {
-                if (layData.UseObjectKind[UseMap.MPObj[i].Kind] == true) {
+                if (layData.UseObjectKind[UseMap.MPObj[i].Kind] === true) {
                     fobk = UseMap.MPObj[i].Kind;
                     const objName = UseMap.Get_Enable_ObjectName(i, layData.Time, false);
-                    if (objName != undefined && typeof objName !== 'string') {
+                    if (objName !== undefined && typeof objName !== 'string') {
                         const CP = UseMap.Get_Enable_CenterP(i, layData.Time);
                         const ob = new strObject_Data_Info();
                         ob.MpObjCode = i;
@@ -6271,7 +6271,7 @@ class clsAttrData {
             const objn = Get_Obj.length;
             this.Add_one_Layer(layData.Name, enmLayerType.Normal, enmMesh_Number.mhNonMesh, layshape, String(layData.MapfileName), layData.Time,
                 enmZahyo_System_Info.Zahyo_System_No, "", objn, Get_Obj);
-            if (UseMap.ObjectKind[fobk].DefTimeAttDataNum == 0) {
+            if (UseMap.ObjectKind[fobk].DefTimeAttDataNum === 0) {
                 //初期属性が無い場合の色の設定
 
                 this.Add_One_Data_Value(LayN, "地図表示", "CAT", "", new Array(objn).fill(''), false)
@@ -6287,20 +6287,20 @@ class clsAttrData {
                     const Data_Val = [];
                     for (let k = 0; k < objn; k++) {
                         let v = UseMap.Get_DefTimeAttrValue(Get_Obj[k].MpObjCode, j, layData.Time);
-                        if((attData.MissingF==true)&&(v=="")){
+                        if((attData.MissingF===true)&&(v==="")){
                             v = undefined;
                         }
-                        if (v == undefined) {
+                        if (v === undefined) {
                             misf = true;
                         }
                         Data_Val.push(v);
                     }
-                    if((attData.MissingF==true)&&(misf == false)){
+                    if((attData.MissingF===true)&&(misf === false)){
                         misf=true;
                     }
                     this.Add_One_Data_Value(LayN, attData.Title, attData.Unit, attData.Note, Data_Val, misf);
                 }
-                if (DeleteDefDataFlag == true) {
+                if (DeleteDefDataFlag === true) {
                     UseMap.DeleteAllDefAttrData(fobk);
                 }
             }
@@ -6311,7 +6311,7 @@ class clsAttrData {
         this.TotalData.LV1.FileName =Generic.getFilenameWithoutExtension( this.LayerData[0].MapFileName);
         this.TotalData.LV1.FullPath = this.TotalData.LV1.FileName;
         this.initTotalData_andOther();
-        if (noAttrData == true) {
+        if (noAttrData === true) {
             this.TotalData.ViewStyle.MapLegend.Base.Visible = false;
             this.TotalData.ViewStyle.MapTitle.Visible = false;
         }
@@ -6327,7 +6327,7 @@ class clsAttrData {
             switch (L.Type) {
                 case (enmLayerType.Normal): {
                     const sp = this.Check_LayerShape_Sub(i);
-                    if (sp.emes != "") {
+                    if (sp.emes !== "") {
                         EMes += sp.emes;
                     }
                     switch (L.Shape) {
@@ -6336,14 +6336,14 @@ class clsAttrData {
                             break;
                         }
                         case (enmShape.PolygonShape): {
-                            if (sp.shape != enmShape.PolygonShape) {
+                            if (sp.shape !== enmShape.PolygonShape) {
                                 EMes += "面形状に指定されましたが、" + Generic.ConvertShapeEnumString(sp.shape) + "形状に設定されました。" + '\n';
                                 L.Shape = sp.shape;
                             }
                             break;
                         }
                         case (enmShape.LineShape): {
-                            if (sp.shape == enmShape.PointShape) {
+                            if (sp.shape === enmShape.PointShape) {
                                 EMes += "線形状に指定されましたが、" + Generic.ConvertShapeEnumString(sp.shape) + "形状に設定されました。" + '\n';
                                 L.Shape = sp.shape;
                             }
@@ -6357,7 +6357,7 @@ class clsAttrData {
                     break;
                 }
                 case (enmLayerType.Mesh): {
-                    if (L.Shape == enmShape.NotDeffinition) {
+                    if (L.Shape === enmShape.NotDeffinition) {
                         L.Shape = enmShape.PolygonShape;
                     }
                     break;
@@ -6381,7 +6381,7 @@ class clsAttrData {
         for (let j = 0; j < L.atrObject.ObjectNum; j++) {
             let D;
             const O = L.atrObject.atrObjectData[j];
-            if (O.Objectstructure == enmKenCodeObjectstructure.MapObj) {
+            if (O.Objectstructure === enmKenCodeObjectstructure.MapObj) {
                 D = L.MapFileData.MPObj[O.MpObjCode].Shape;
             } else {
                 D = L.atrObject.MPSyntheticObj[O.MpObjCode].Shape;
@@ -6408,12 +6408,12 @@ class clsAttrData {
             for (let j = 0; j < L.atrObject.ObjectNum; j++) {
                 let D;
                 const O = L.atrObject.atrObjectData[j];
-                if (O.Objectstructure == enmKenCodeObjectstructure.MapObj) {
+                if (O.Objectstructure === enmKenCodeObjectstructure.MapObj) {
                     D = L.MapFileData.MPObj[O.MpObjCode].Shape;
                 } else {
                     D = L.atrObject.MPSyntheticObj[O.MpObjCode].Shape;
                 }
-                if (D != shmaxN) {
+                if (D !== shmaxN) {
                     EMes += L.atrObject.atrObjectData[j].Name + "(" + Generic.ConvertShapeEnumString(D) + ")" + '\n';
                 }
             }
@@ -6425,19 +6425,19 @@ class clsAttrData {
     LinePatternCheck(): void {
         for (let Lay = 0; Lay < this.TotalData.LV1.Lay_Maxn; Lay++) {
             const LD = this.LayerData[Lay];
-            if (LD.Type != enmLayerType.Trip_Definition) {
+            if (LD.Type !== enmLayerType.Trip_Definition) {
                 const MapFileData = LD.MapFileData;
                 for (let i = 0; i < MapFileData.Map.LpNum; i++) {
                     const lk = MapFileData.LineKind[i];
                     if (lk.NumofObjectGroup >= 2) {
                         for (let j = 1; j < lk.NumofObjectGroup; j++) {
                             const Ltmp = [];
-                            if ((lk.ObjGroup[j].UseOnly == false) || ((lk.ObjGroup[j].UseOnly == true) && (LD.DummyGroup.indexOf(lk.ObjGroup[j].GroupNumber) !=-1))) {
+                            if ((lk.ObjGroup[j].UseOnly === false) || ((lk.ObjGroup[j].UseOnly === true) && (LD.DummyGroup.indexOf(lk.ObjGroup[j].GroupNumber) !==-1))) {
                                 for (let k = 0; k < MapFileData.Map.Kend; k++) {
-                                    if (MapFileData.MPObj[k].Kind == lk.ObjGroup[j].GroupNumber) {
+                                    if (MapFileData.MPObj[k].Kind === lk.ObjGroup[j].GroupNumber) {
                                         const ELine = MapFileData.Get_EnableMPLine(k, LD.Time)
                                         for (const k2 in ELine) {
-                                            if (ELine[k2].Kind == i) {
+                                            if (ELine[k2].Kind === i) {
                                                 Ltmp[ELine[k2].LineCode] = true;
                                             }
                                         }
@@ -6447,15 +6447,15 @@ class clsAttrData {
                                 //データで使われている場合に限る
                                 for (let k = 0; k < LD.atrObject.ObjectNum; k++) {
                                     let obk;
-                                    if (LD.atrObject.atrObjectData[k].Objectstructure == enmKenCodeObjectstructure.MapObj) {
+                                    if (LD.atrObject.atrObjectData[k].Objectstructure === enmKenCodeObjectstructure.MapObj) {
                                         obk = MapFileData.MPObj[LD.atrObject.atrObjectData[k].MpObjCode].Kind;
                                     } else {
                                         obk = LD.atrObject.MPSyntheticObj[LD.atrObject.atrObjectData[k].MpObjCode].Kind;
                                     }
-                                    if (obk == lk.ObjGroup[j].GroupNumber) {
+                                    if (obk === lk.ObjGroup[j].GroupNumber) {
                                         const ELine = this.Get_Enable_KenCode_MPLine(Lay, k);
                                         for (const k2 in ELine) {
-                                            if (ELine[k2].Kind == i) {
+                                            if (ELine[k2].Kind === i) {
                                                 Ltmp[ELine[k2].LineCode] = true;
                                             }
                                         }
@@ -6463,7 +6463,7 @@ class clsAttrData {
                                 }
                             }
                             for (let k = 0; k < MapFileData.Map.ALIN; k++) {
-                                if ((Ltmp[k] == true) && (LD.ObjectGroupRelatedLine[k] == undefined)) {
+                                if ((Ltmp[k] === true) && (LD.ObjectGroupRelatedLine[k] === undefined)) {
                                     LD.ObjectGroupRelatedLine[k] = j;
                                 }
                             }
@@ -6495,9 +6495,9 @@ class clsAttrData {
         const ELineStock = [];
         const mp = LD.atrObject.MPSyntheticObj[SO_Code];
         for (let i = 0; i < mp.NumOfObject; i++) {
-            if (mp.Objects[i].Draw_F == true) {
+            if (mp.Objects[i].Draw_F === true) {
                 const c = mp.Objects[i].code;
-                if (c != -1) {
+                if (c !== -1) {
                     const ELine = LD.MapFileData.Get_EnableMPLine(c, Time);
                     for (const j in ELine) {
                         ELineStock.push(ELine[j]);
@@ -6512,24 +6512,24 @@ class clsAttrData {
     //オブジェクトが画面内に入るかどうかチェック
     Check_screen_Kencode_In(Layernum: number, ObjNum: number): boolean {
         const rect = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
-        if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
+        if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F === true) {
             const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.topLeft());
             const turnRect2 = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.bottomRight());
             const turnRectFull = new rectangle(turnRect, turnRect2);
             const formSize = this.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
             const screct = new rectangle(new point(0, 0), new size(formSize.width(), formSize.height()));
             const relation = spatial.Compare_Two_Rectangle_Position(turnRectFull, screct);
-            if (relation == cstRectangle_Cross.cstOuter) {
+            if (relation === cstRectangle_Cross.cstOuter) {
                 return false;
             } else {
-                if (relation == cstRectangle_Cross.cstInclusion) {
+                if (relation === cstRectangle_Cross.cstInclusion) {
                     return false;
                 } else {
                     return true;
                 }
             }
         } else {
-            if (spatial.Compare_Two_Rectangle_Position(rect, this.TotalData.ViewStyle.ScrData.ScrRectangle) == cstRectangle_Cross.cstOuter) {
+            if (spatial.Compare_Two_Rectangle_Position(rect, this.TotalData.ViewStyle.ScrData.ScrRectangle) === cstRectangle_Cross.cstOuter) {
 
                 return false;
             } else {
@@ -6540,23 +6540,23 @@ class clsAttrData {
         //地図ファイル中のオブジェクトが画面内に入るかどうかチェック
     Check_Screen_Objcode_In(Layernum: number, ObjCode: number): boolean {
         const rect = this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
-        if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F == true) {
+        if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F === true) {
             const turnRect = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.topLeft());
             const turnRect2 = this.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(rect.bottomRight());
             const turnRectFull = new rectangle(turnRect, turnRect2);
             const screct = new rectangle(0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width(), 0, this.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height());
             const relation = spatial.Compare_Two_Rectangle_Position(turnRectFull, screct);
-            if (relation == cstRectangle_Cross.cstOuter) {
+            if (relation === cstRectangle_Cross.cstOuter) {
                 return false;
             } else {
-                if (relation == cstRectangle_Cross.cstInclusion) {
+                if (relation === cstRectangle_Cross.cstInclusion) {
                     return false;
                 } else {
                     return true;
                 }
             }
         } else {
-            if (spatial.Compare_Two_Rectangle_Position(rect, this.TotalData.ViewStyle.ScrData.ScrRectangle) == cstRectangle_Cross.cstOuter) {
+            if (spatial.Compare_Two_Rectangle_Position(rect, this.TotalData.ViewStyle.ScrData.ScrRectangle) === cstRectangle_Cross.cstOuter) {
                 return false;
             } else {
                 return true;
@@ -6566,8 +6566,8 @@ class clsAttrData {
 
     //指定の画面座標の中心点と半径の領域が画面に入る場合はtrue
     Check_Screen_In(CenterP: point | rectangle, R?: number): boolean {
-        if ((CenterP instanceof rectangle) == true){
-            if (spatial.Compare_Two_Rectangle_Position(CenterP, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) != cstRectangle_Cross.cstOuter) {
+        if ((CenterP instanceof rectangle) === true){
+            if (spatial.Compare_Two_Rectangle_Position(CenterP, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) !== cstRectangle_Cross.cstOuter) {
                 return true;
         } else {
             return false;
@@ -6575,7 +6575,7 @@ class clsAttrData {
         } else {
             const R_val = R ?? 0;
             const C_Rect = new rectangle(new point(CenterP.x - R_val, CenterP.y - R_val), new size(R_val * 2, R_val * 2));
-            if (spatial.Compare_Two_Rectangle_Position(C_Rect, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) != cstRectangle_Cross.cstOuter) {
+            if (spatial.Compare_Two_Rectangle_Position(C_Rect, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) !== cstRectangle_Cross.cstOuter) {
                 return true;
             } else {
                 return false;
@@ -6585,27 +6585,27 @@ class clsAttrData {
 
     Add_One_Data_Value(Layernum: number, TTL: string, UNT: string, Note: string, Dn_Val_str: (string | number | undefined)[], Missing_F: boolean): boolean {
 
-        if(TTL == null){TTL=""}
-        if(UNT == null){UNT=""}
+        if(TTL === null){TTL=""}
+        if(UNT === null){UNT=""}
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         
-        if (((TTL == "") && (UNT == "")) || ((UNT.toUpperCase() != "STR") && (UNT.toUpperCase()) != "CAT")) {
+        if (((TTL === "") && (UNT === "")) || ((UNT.toUpperCase() !== "STR") && (UNT.toUpperCase()) !== "CAT")) {
             let f = false;
             let f2=false;
             for (let i = 0; i < ObjNum; i++) {
-                if (Dn_Val_str[i] != undefined) {
+                if (Dn_Val_str[i] !== undefined) {
                     f = true
                     break;
                 }
-                if (Dn_Val_str[i] != undefined) {
+                if (Dn_Val_str[i] !== undefined) {
                     f2 = true
                     break;
                 }
             }
-            if (f == false) {
+            if (f === false) {
                 return false;
             }
-            if ((f2 == false)&&(TTL=="")) {
+            if ((f2 === false)&&(TTL==="")) {
                 return false;
             }
 
@@ -6616,12 +6616,12 @@ class clsAttrData {
         newD.MissingF = Missing_F;
         newD.Unit = UNT;
         newD.Title = TTL;
-        newD.Note = (Note == null) ? "": Note;
+        newD.Note = (Note === null) ? "": Note;
         newD.DataType = Dtype;
         // newD.SoloModeViewSettings.Div_Num = 0;
-        if (Dtype == enmAttDataType.Normal) {
+        if (Dtype === enmAttDataType.Normal) {
             for (let i = 0; i < Dn_Val_str.length; i++) {
-                if (Dn_Val_str[i] != undefined) {
+                if (Dn_Val_str[i] !== undefined) {
                     const val = Dn_Val_str[i];
                     if (typeof val === 'string' && isNaN(Number(val))) {
                         let sv = val.replace(/,/g, "");
@@ -6655,10 +6655,10 @@ class clsAttrData {
     //レイヤ名を取得する。レイヤが1つでレイヤ名が空白の場合は""を返す
     Get_Layer_Name(Layernum: number, CR_F=false): string {
         let ln = "";
-        if ((this.TotalData.LV1.Lay_Maxn == 1) && (this.LayerData[Layernum].Name == "")) {
+        if ((this.TotalData.LV1.Lay_Maxn === 1) && (this.LayerData[Layernum].Name === "")) {
         } else {
             ln = "レイヤ:" + this.LayerData[Layernum].Name +  '\n';
-            if (CR_F == true) {
+            if (CR_F === true) {
                 ln +=   '\n';
             }
         } return ln;
@@ -6668,7 +6668,7 @@ class clsAttrData {
     Get_Condition_Info(Layernum: number): JsonObject {
         let ST1 = "表示オブジェクト限定:"
 
-        if (this.Check_ObjectLimitation(Layernum) == true) {
+        if (this.Check_ObjectLimitation(Layernum) === true) {
             ST1 += "あり";
         } else {
             ST1 += "なし";
@@ -6677,7 +6677,7 @@ class clsAttrData {
         let st2 = "";
         for (let ic = 0; ic < this.TotalData.Condition.length; ic++) {
             const tc = this.TotalData.Condition[ic];
-            if ((tc.Enabled == true) && (tc.Layer == Layernum)) {
+            if ((tc.Enabled === true) && (tc.Layer === Layernum)) {
                 st2 += this.Get_Layer_Name(Layernum)
                 st2 += tc.Name + "\n"
                 for (let i = 0; i < this.TotalData.Condition[ic].Condition_Class.length; i++) {
@@ -6689,8 +6689,8 @@ class clsAttrData {
                             st2 += "データ項目：" + this.Get_DataTitle(Layernum, tcc2.Data, false) + "／";
                             st2 += tcc2.Val + "／";
                             st2 += Generic.getConditionString(tcc2.Condition);
-                            if (j != tcc.Condition.length-1) {
-                                if (tcc.And_OR == enmConditionAnd_Or._And) {
+                            if (j !== tcc.Condition.length-1) {
+                                if (tcc.And_OR === enmConditionAnd_Or._And) {
                                     st2 += "　かつ";
                                 } else {
                                     st2 += "　または";
@@ -6703,7 +6703,7 @@ class clsAttrData {
                 st2 += "\n";
             }
         }
-        if (st2 != "") {
+        if (st2 !== "") {
             st2 = "属性検索設定" + "\n" + "\n" + st2;
         } else {
             st2 = "属性検索設定なし" + "\n";
@@ -6715,11 +6715,11 @@ class clsAttrData {
     //指定したレイヤに条件設定または表示オブジェクト限定が有効に設定されているかを調べる
     Check_Condition_UMU(Layernum: number): boolean {
         for (let i = 0; i < this.TotalData.Condition.length; i++) {
-            if ((this.TotalData.Condition[i].Enabled == true) && (this.TotalData.Condition[i].Layer == Layernum)) {
+            if ((this.TotalData.Condition[i].Enabled === true) && (this.TotalData.Condition[i].Layer === Layernum)) {
                 return true;
             }
         }
-        if (this.Check_ObjectLimitation(Layernum) == true) {
+        if (this.Check_ObjectLimitation(Layernum) === true) {
             return true;
         }
         return false;
@@ -6727,9 +6727,9 @@ class clsAttrData {
 
     //**指定したレイヤに表示オブジェクト限定が有効に設定されているかを調べる */
     Check_ObjectLimitation(Layernum: number): boolean {
-        if (this.TotalData.ViewStyle.ObjectLimitationF == true) {
+        if (this.TotalData.ViewStyle.ObjectLimitationF === true) {
             for (let i = 0; i < this.Get_ObjectNum(Layernum); i++) {
-                if (this.LayerData[Layernum].atrObject.atrObjectData[i].Visible == false) {
+                if (this.LayerData[Layernum].atrObject.atrObjectData[i].Visible === false) {
                     return true;
                 }
             }
@@ -6749,8 +6749,8 @@ class clsAttrData {
     Get_Condition_Ok_Num(Layernum: number): number {
         let n = 0;
         for (let j = 0; j < this.Get_ObjectNum(Layernum); j++) {
-            if ((this.TotalData.ViewStyle.ObjectLimitationF == false) || (this.LayerData[Layernum].atrObject.atrObjectData[j].Visible == true)) {
-                if (this.Check_Condition(Layernum, j) == true) {
+            if ((this.TotalData.ViewStyle.ObjectLimitationF === false) || (this.LayerData[Layernum].atrObject.atrObjectData[j].Visible === true)) {
+                if (this.Check_Condition(Layernum, j) === true) {
                     n++;
                 }
             }
@@ -6760,7 +6760,7 @@ class clsAttrData {
 
     //属性検索条件･オブジェクト限定のチェック
     Check_Condition(Layernum: number, Obj: number): boolean {
-        if ((this.LayerData[Layernum].atrObject.atrObjectData[Obj].Visible == false) && (this.TotalData.ViewStyle.ObjectLimitationF == true)) {
+        if ((this.LayerData[Layernum].atrObject.atrObjectData[Obj].Visible === false) && (this.TotalData.ViewStyle.ObjectLimitationF === true)) {
             return false;
         }
 
@@ -6768,10 +6768,10 @@ class clsAttrData {
         const td = this.TotalData.Condition;
         for (let ic = 0; ic < td.length; ic++) {
             const d = td[ic];
-            if ((d.Enabled == true) && (d.Layer == Layernum)) {
+            if ((d.Enabled === true) && (d.Layer === Layernum)) {
                 for (let i = 0; i < d.Condition_Class.length; i++) {
                     const tdc = d.Condition_Class[i];
-                    if (tdc.And_OR == enmConditionAnd_Or._And) {
+                    if (tdc.And_OR === enmConditionAnd_Or._And) {
                         af = true;
                     } else {
                         af = false;
@@ -6780,7 +6780,7 @@ class clsAttrData {
                         let f;
                         const tdcc = tdc.Condition[j];
                         const V = this.Get_Data_Value(Layernum, tdcc.Data, Obj, "\t");
-                        if (V == "\t") {
+                        if (V === "\t") {
                             //欠損値の場合
                             f = false;
                         } else {
@@ -6798,7 +6798,7 @@ class clsAttrData {
                                             if (V <= tdcc.Val) { f = true }
                                             break;
                                         case enmCondition.Equal:
-                                            if (V == tdcc.Val) { f = true }
+                                            if (V === tdcc.Val) { f = true }
                                             break;
                                         case enmCondition.GreaterEqual:
                                             if (V >= tdcc.Val) { f = true }
@@ -6807,19 +6807,19 @@ class clsAttrData {
                                             if (V > tdcc.Val) { f = true }
                                             break;
                                         case enmCondition.NotEqual:
-                                            if (V != tdcc.Val) { f = true }
+                                            if (V !== tdcc.Val) { f = true }
                                             break;
                                         case enmCondition.Include:
-                                            if (strV.indexOf(strVal) != -1) { f = true }
+                                            if (strV.indexOf(strVal) !== -1) { f = true }
                                             break;
                                         case enmCondition.Exclude:
-                                            if (strV.indexOf(strVal) == -1) { f = true }
+                                            if (strV.indexOf(strVal) === -1) { f = true }
                                             break;
                                         case enmCondition.Head:
-                                            if (strV.substring(0, strVal.length) == strVal) { f = true }
+                                            if (strV.substring(0, strVal.length) === strVal) { f = true }
                                             break;
                                         case enmCondition.Foot:
-                                            if (strV.substring(strV.length - strVal.length) == strVal) { f = true }
+                                            if (strV.substring(strV.length - strVal.length) === strVal) { f = true }
                                             break;
                                     }
                                     break;
@@ -6836,7 +6836,7 @@ class clsAttrData {
                                             if (av <= valNum) { f = true }
                                             break;
                                         case enmCondition.Equal:
-                                            if (av == valNum) { f = true }
+                                            if (av === valNum) { f = true }
                                             break;
                                         case enmCondition.GreaterEqual:
                                             if (av >= valNum) { f = true }
@@ -6845,43 +6845,43 @@ class clsAttrData {
                                             if (av > valNum) { f = true }
                                             break;
                                         case enmCondition.NotEqual:
-                                            if (av != valNum) { f = true }
+                                            if (av !== valNum) { f = true }
                                             break;
                                         case enmCondition.Include:
-                                            if (String(V).indexOf(String(tdcc.Val)) != -1) { f = true }
+                                            if (String(V).indexOf(String(tdcc.Val)) !== -1) { f = true }
                                             break;
                                         case enmCondition.Exclude:
-                                            if (String(V).indexOf(String(tdcc.Val)) == -1) { f = true }
+                                            if (String(V).indexOf(String(tdcc.Val)) === -1) { f = true }
                                             break;
                                         case enmCondition.Head:
-                                            if (String(V).substring(0, String(tdcc.Val).length) == String(tdcc.Val)) { f = true }
+                                            if (String(V).substring(0, String(tdcc.Val).length) === String(tdcc.Val)) { f = true }
                                             break;
                                         case enmCondition.Foot:
-                                            if (String(V).substring(String(V).length - String(tdcc.Val).length) == String(tdcc.Val)) { f = true }
+                                            if (String(V).substring(String(V).length - String(tdcc.Val).length) === String(tdcc.Val)) { f = true }
                                             break;
                                     }
                                     break;
                                 }
                             }
                         }
-                        if (tdc.And_OR == enmConditionAnd_Or._And) {
-                            if (f == false) {
+                        if (tdc.And_OR === enmConditionAnd_Or._And) {
+                            if (f === false) {
                                 af = false;
                                 break;
                             }
                         } else {
-                            if (f == true) {
+                            if (f === true) {
                                 af = true;
                                 break;
                             }
                         }
                     }
-                    if (af == false) {
+                    if (af === false) {
                         break;
                     }
                 }
             }
-            if (af == false) {
+            if (af === false) {
                 break;
             }
         }
@@ -6894,7 +6894,7 @@ class clsAttrData {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         let DT: JsonValue[] = [];
-        if (ad.EnableValueNum == 0) {
+        if (ad.EnableValueNum === 0) {
             return DT;
         }
         switch (ad.DataType) {
@@ -6904,7 +6904,7 @@ class clsAttrData {
             }
             case enmAttDataType.Normal: {
                 for (let i = 0; i < ObjNum; i++) {
-                    if (ad.Value[i] != undefined) {
+                    if (ad.Value[i] !== undefined) {
                         DT[i] =Number( ad.Value[i]);
                     } else {
                         DT[i] = ad.Statistics.Min - 1;
@@ -6921,11 +6921,11 @@ class clsAttrData {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let dt =[];
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
-        if ((ad.MissingValueNum == 0) || (ad.MissingF == false)) {
+        if ((ad.MissingValueNum === 0) || (ad.MissingF === false)) {
              dt = new Array(ObjNum).fill(false);
         } else {
             for (let i = 0; i < ObjNum; i++) {
-                dt[i] = (ad.Value[i] == undefined);
+                dt[i] = (ad.Value[i] === undefined);
             }
         }
         return dt;
@@ -6946,7 +6946,7 @@ class clsAttrData {
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         const Div_Num = ad.SoloModeViewSettings.Div_Num;
         let sj: number = -1;
-        if (ad.Value[Objectnum] == undefined) {
+        if (ad.Value[Objectnum] === undefined) {
             sj = -1;
         } else {
             switch (ad.DataType) {
@@ -6963,7 +6963,7 @@ class clsAttrData {
                 }
                 case enmAttDataType.Category: {
                     for (let j = 0; j < Div_Num; j++) {
-                        if (ad.Value[Objectnum] == ad.SoloModeViewSettings.Class_Div[j].Value) {
+                        if (ad.Value[Objectnum] === ad.SoloModeViewSettings.Class_Div[j].Value) {
                             sj = j;
                             break;
                         }
@@ -6980,7 +6980,7 @@ class clsAttrData {
         const data = this.LayerData[Layernum].atrData.Data[DataNum];
         const lay = this.LayerData[Layernum];
 
-        if (data.EnableValueNum == 0) {
+        if (data.EnableValueNum === 0) {
             return;
         }
         const DType = data.DataType;
@@ -6988,7 +6988,7 @@ class clsAttrData {
         const DataMin = data.Statistics.Min;
         //ペイント
         const pmd = data.SoloModeViewSettings.ClassPaintMD;
-        if (lay.Type == enmLayerType.Trip_Definition) {
+        if (lay.Type === enmLayerType.Trip_Definition) {
             pmd.color1 = new colorRGBA([255, 255, 0, 255]);
             pmd.color2 = new colorRGBA([255, 0, 0, 255]);
         } else {
@@ -7009,26 +7009,26 @@ class clsAttrData {
                 break;
             case enmLayerType.Normal:
                 const d = lay.atrObject.atrObjectData[0].MpObjCode;
-                if (lay.MapFileData.ObjectKind[lay.MapFileData.MPObj[d].Kind].Mesh != enmMesh_Number.mhNonMesh) {
+                if (lay.MapFileData.ObjectKind[lay.MapFileData.MPObj[d].Kind].Mesh !== enmMesh_Number.mhNonMesh) {
                     meshF = true;
                 }
                 break;
         }
-        if (DType == enmAttDataType.Strings) {
+        if (DType === enmAttDataType.Strings) {
             m = enmSoloMode_Number.StringMode;
-        } else if ((DType == enmAttDataType.Category) || (lay.Shape != enmShape.PolygonShape) || (data.Unit == "") || (meshF == true)) {
+        } else if ((DType === enmAttDataType.Category) || (lay.Shape !== enmShape.PolygonShape) || (data.Unit === "") || (meshF === true)) {
             m = enmSoloMode_Number.ClassPaintMode;
         } else {
             const t = data.Title.toUpperCase();
             for (let i = 0; i < Class_Mode_Title.length; i++) {
-                if (t.indexOf(Class_Mode_Title[i].toUpperCase()) != -1) {
+                if (t.indexOf(Class_Mode_Title[i].toUpperCase()) !== -1) {
                     m = enmSoloMode_Number.ClassPaintMode;
                     break;
                 }
             }
             const u = data.Unit.toUpperCase();
             for (let i = 0; i < Class_Mode_unit.length; i++) {
-                if (u.indexOf(Class_Mode_unit[i].toUpperCase()) != -1) {
+                if (u.indexOf(Class_Mode_unit[i].toUpperCase()) !== -1) {
                     m = enmSoloMode_Number.ClassPaintMode;
                     break;
                 }
@@ -7037,7 +7037,7 @@ class clsAttrData {
         data.ModeData = m;
         data.SoloModeViewSettings.Div_Method = enmDivisionMethod.Free;
 
-        if (DType == enmAttDataType.Category) {
+        if (DType === enmAttDataType.Category) {
             //'カテゴリーデータの階級区分
             const cateData = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
             const n = cateData.length;
@@ -7070,7 +7070,7 @@ class clsAttrData {
             while(dk<=cdiv.max){
                 dk=cdiv.min+cdiv.step*cn;
                 cn++;
-                if (((dk > DataMin) && (dk < DataMax)) || (DataMax == DataMin)) {
+                if (((dk > DataMin) && (dk < DataMax)) || (DataMax === DataMin)) {
                     zn.push(dk);
                 }
             }
@@ -7082,11 +7082,11 @@ class clsAttrData {
             }
             data.SoloModeViewSettings.Class_Div.push(new strClass_Div_data());
             data.SoloModeViewSettings.Div_Num = DVN + 1;
-            if (lay.Type != enmLayerType.Trip) {
+            if (lay.Type !== enmLayerType.Trip) {
                 //記号の大きさモードの凡例値
                 let mzn = [];
                 let h = {};
-                if (DataMax != DataMin) {
+                if (DataMax !== DataMin) {
                     let Max, Min;
                     if (DataMin < 0) {
                         Min = 0;
@@ -7134,7 +7134,7 @@ class clsAttrData {
                 const mmd = data.SoloModeViewSettings.MarkSizeMD;
                 mmd.Value[0] = mzn[(h as Record<string, number>).h1];
                 mmd.Value[1] = mzn[(h as Record<string, number>).h2];
-                if (zn[3] == 0) {
+                if (zn[3] === 0) {
                     mmd.Value[2] = mzn[(h as Record<string, number>).h2] / 2;
                 } else {
                     mmd.Value[2] = mzn[(h as Record<string, number>).h3];
@@ -7143,7 +7143,7 @@ class clsAttrData {
                 mmd.Value[4] = 0;
                 mmd.MaxValueMode = 0;
                 mmd.MaxValue = Math.max(Math.abs(DataMax), Math.abs(DataMin));
-                if (lay.Shape == enmShape.LineShape) {
+                if (lay.Shape === enmShape.LineShape) {
                     mmd.LineShape.LineWidth = 1;
                     mmd.LineShape.Color = new colorRGBA([0, 0, 0]);
                     mmd.LineShape.LineEdge = clsBase.LineEdge();;
@@ -7222,7 +7222,7 @@ class clsAttrData {
         smd.WordTurnF = true;
         this.Twocolort(Layernum, DataNum);
 
-        if ((DType == enmAttDataType.Normal) && (lay.Shape != enmShape.LineShape)) {
+        if ((DType === enmAttDataType.Normal) && (lay.Shape !== enmShape.LineShape)) {
             const sv = data.SoloModeViewSettings;
             const ctm = sv.ContourMD;
             ctm.Interval_Mode = 2;
@@ -7247,16 +7247,16 @@ class clsAttrData {
         }
         this.Set_Class_Div(Layernum, DataNum, 0);
 
-        if ((lay.Type != enmLayerType.Trip) && (lay.Type != enmLayerType.Trip_Definition)) {
+        if ((lay.Type !== enmLayerType.Trip) && (lay.Type !== enmLayerType.Trip_Definition)) {
             const odm = data.SoloModeViewSettings.ClassODMD;
             odm.O_object = 0;
             odm.o_Layer = Layernum;
             odm.Dummy_ObjectFlag = false;
             odm.Arrow = clsBase.Arrow();
             for (let kk = 0; kk < this.TotalData.LV1.Lay_Maxn; kk++) {
-                if ((this.LayerData[kk].Type != enmLayerType.Trip) && (this.LayerData[kk].Type != enmLayerType.Trip_Definition)) {
+                if ((this.LayerData[kk].Type !== enmLayerType.Trip) && (this.LayerData[kk].Type !== enmLayerType.Trip_Definition)) {
                     for (let k = 0; k < this.LayerData[kk].atrObject.ObjectNum; k++) {
-                        if (lay.atrData.Data[DataNum].Title.indexOf(this.LayerData[kk].atrObject.atrObjectData[k].Name) != -1) {
+                        if (lay.atrData.Data[DataNum].Title.indexOf(this.LayerData[kk].atrObject.atrObjectData[k].Name) !== -1) {
                             odm.O_object = k;
                             odm.o_Layer = kk;
                             kk = this.TotalData.LV1.Lay_Maxn;
@@ -7272,7 +7272,7 @@ class clsAttrData {
     //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
     Get_InnerTile(InnerData: JsonValue, Layernum: number, CategoryPos: number): JsonValue {
         let t;
-        if (CategoryPos == -1) {
+        if (CategoryPos === -1) {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
         } else {
             t = clsBase.Tile();
@@ -7299,15 +7299,15 @@ class clsAttrData {
 
             const w = 1;
             let col = cs.PaintColor;
-            if (col.Equals(clsBase.ColorWhite()) == true){
+            if (col.Equals(clsBase.ColorWhite()) === true){
                 col = new colorRGBA([200, 200, 200]);
             }
             cs.ODLinePat = clsBase.Line();
             cs.ODLinePat.Color = col;
             cs.ODLinePat.Width = w;
             cs.ODLinePat.Edge_Connect_Pattern.Edge_Pattern = enmEdge_Pattern.Flat;
-            if ((j == n - 1) && (this.LayerData[Layernum].atrData.Data[DataNum].DataType == enmAttDataType.Normal) &&
-                (this.LayerData[Layernum].Shape == enmShape.PolygonShape) || (this.LayerData[Layernum].Shape == enmShape.PointShape)) {
+            if ((j === n - 1) && (this.LayerData[Layernum].atrData.Data[DataNum].DataType === enmAttDataType.Normal) &&
+                (this.LayerData[Layernum].Shape === enmShape.PolygonShape) || (this.LayerData[Layernum].Shape === enmShape.PointShape)) {
                 cs.ODLinePat.BlankF=true;
             }
         }
@@ -7317,7 +7317,7 @@ class clsAttrData {
     Twocolort(Layernum: number, DataNum: number): void {
         const pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         const n = pms.Div_Num;
-        if (n == 1) {
+        if (n === 1) {
             pms.Class_Div[0].PaintColor = pms.ClassPaintMD.color1;
         } else {
             const coldata = Generic.TwoColorGradation(pms.ClassPaintMD.color1, pms.ClassPaintMD.color2, n);
@@ -7342,7 +7342,7 @@ class clsAttrData {
         let ColData = [];// colorARGB
         const gradPoint = Number(GradationPoint4);
 
-        if (Color_cng_n == gradPoint) { return; }
+        if (Color_cng_n === gradPoint) { return; }
 
         const sv = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         if (Color_cng_n < gradPoint) {
@@ -7415,7 +7415,7 @@ class clsAttrData {
     Get_ObjectGravityPoint(Layernum: number, ObjNumber: number): point {
         const lay = this.LayerData[Layernum];
         const LO = lay.atrObject.atrObjectData[ObjNumber];
-        if (lay.Type == enmLayerType.Mesh) {
+        if (lay.Type === enmLayerType.Mesh) {
             let px = LO.MeshPoint[0].x;
             let py = LO.MeshPoint[0].y;
             for (let i = 1; i <= 4; i++) {
@@ -7440,7 +7440,7 @@ class clsAttrData {
     GetObjMenseki(Layernum: number, ObjNumber: number): number {
         const lay=this.LayerData[Layernum];
         const LO = lay.atrObject.atrObjectData[ObjNumber];
-        if (lay.Type == enmLayerType.Mesh) {
+        if (lay.Type === enmLayerType.Mesh) {
             const p = [];
             for (let i = 0; i < LO.MeshPoint.length; i++) {
                 p.push(LO.MeshPoint[i]);
@@ -7474,14 +7474,14 @@ class clsAttrData {
                 break;
         }
         const NL = ELine.length;
-        if (NL == 0) {
+        if (NL === 0) {
             return -1;
         }
         const za=this.TotalData.ViewStyle.Zahyo;
         let D = 0;
         for (let i = 0; i < NL; i++) {
             const ml = lay.MapFileData.MPLine[ELine[i].LineCode];
-            if (za.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            if (za.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 for (let j = 0; j < ml.NumOfPoint - 1; j++) {
                     D += spatial.Distance_Ido_Kedo_XY_Point(ml.PointSTC[j], ml.PointSTC[j + 1], za);
                 }
@@ -7491,7 +7491,7 @@ class clsAttrData {
                 }
             }
         }
-        if (za.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+        if (za.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
         } else {
             D = D / lay.MapFileData.Map.SCL;
         }
@@ -7518,7 +7518,7 @@ class clsAttrData {
                     SortV.Add(Number(EnableDT[i].DataValue));
                 }
                 SortV.AddEnd();
-                if (v == enmDivisionMethod.Quantile) {
+                if (v === enmDivisionMethod.Quantile) {
                     const divvStp = SortV.NumofData() / div_num;
                     let i = 0;
                     let divv = divvStp;
@@ -7578,7 +7578,7 @@ class clsAttrData {
     }
 
     Get_Att_Missing_Num(LayerNum: number, DataNum: number): number {
-        if (this.LayerData[LayerNum].atrData.Data[DataNum].MissingF == false) {
+        if (this.LayerData[LayerNum].atrData.Data[DataNum].MissingF === false) {
             return 0;
         } else {
             return Generic.Count_Specified_Value_Array(this.LayerData[LayerNum].atrData.Data[DataNum].Value, undefined);
@@ -7590,10 +7590,10 @@ class clsAttrData {
         const ObjNum = this.LayerData[LayerNum].atrObject.ObjectNum;
         const DT = [];
         const LD = this.LayerData[LayerNum].atrData.Data[DataNum];
-        if (LD.EnableValueNum == 0) {
+        if (LD.EnableValueNum === 0) {
             return undefined;
         }
-        if ((LD.MissingF == false) || (LD.MissingValueNum == 0)) {
+        if ((LD.MissingF === false) || (LD.MissingValueNum === 0)) {
             for (let i = 0; i < ObjNum; i++) {
                 DT[i] = new strObjLocation_and_Data_info();
                 DT[i].ObjLocation = i;
@@ -7603,7 +7603,7 @@ class clsAttrData {
         } else {
             let n = 0;
             for (let i = 0; i < ObjNum; i++) {
-                if (LD.Value[i] != undefined) {
+                if (LD.Value[i] !== undefined) {
                     DT[n] = new strObjLocation_and_Data_info();
                     DT[n].ObjLocation = i;
                     DT[n].DataValue = LD.Value[i];
@@ -7648,7 +7648,7 @@ class clsAttrData {
         const items = [];
         for (let i = 0; i < graph.DataSet.length; i++) {
             let tx = graph.DataSet[i].title;
-            if (tx == "") {
+            if (tx === "") {
                 tx = "データセット" + (i + 1).toString();
             }
             items.push({ value: i, text: tx });
@@ -7662,7 +7662,7 @@ class clsAttrData {
         const items = [];
         for (let i = 0; i < lbl.DataSet.length; i++) {
             let tx = lbl.DataSet[i].title;
-            if (tx == "") {
+            if (tx === "") {
                 tx = "データセット" + (i + 1).toString();
             }
             items.push({ value: i, text: tx });
@@ -7676,7 +7676,7 @@ class clsAttrData {
         const items = [];
         for (let i = 0; i < over.DataSet.length; i++) {
             let tx = over.DataSet[i].title;
-            if (tx == "") {
+            if (tx === "") {
                 tx = "データセット" + (i + 1).toString();
             }
             items.push({ value: i, text: tx });
@@ -7698,26 +7698,26 @@ class clsAttrData {
             const d = ad.Data[i];
             let itm = d.Title;
             let hd = "";
-            if (Number_Print_F == true) {
-                if (i == Special_Astarisk_Num) {
+            if (Number_Print_F === true) {
+                if (i === Special_Astarisk_Num) {
                     hd = "*";
                 } else {
                     hd = String(i + 1);
                     switch (d.DataType) {
                         case (enmAttDataType.Normal): {
-                            if (Normal_F == false) {
+                            if (Normal_F === false) {
                                 hd = "*"
                             }
                             break;
                         }
                         case (enmAttDataType.Category): {
-                            if (Category_f == false) {
+                            if (Category_f === false) {
                                 hd = "*";
                             }
                             break;
                         }
                         case (enmAttDataType.Strings): {
-                            if (String_f == false) {
+                            if (String_f === false) {
                                 hd = "*";
                             }
                             break;
@@ -7733,7 +7733,7 @@ class clsAttrData {
 
     Get_DataTitle(Layernum: number, DataNum: number, PreFixDataNumberFlag: boolean): string {
         let tx = this.LayerData[Layernum].atrData.Data[DataNum].Title;
-        if (PreFixDataNumberFlag == true) {
+        if (PreFixDataNumberFlag === true) {
             tx = (DataNum + 1) + ":" + tx;
         }
         return tx;
@@ -7763,10 +7763,10 @@ class clsAttrData {
 
     Get_DataUnit_With_Kakko(Layernum: number, DataNum: number): string {
         let tx = "";
-        if (this.LayerData[Layernum].atrData.Data[DataNum].DataType == enmAttDataType.Normal) {
+        if (this.LayerData[Layernum].atrData.Data[DataNum].DataType === enmAttDataType.Normal) {
             tx = this.Get_DataUnit(Layernum, DataNum);
         }
-        if (tx != "") {
+        if (tx !== "") {
             tx = "(" + tx + ")"
         }
         return tx;
@@ -7793,7 +7793,7 @@ class clsAttrData {
         const seriesDataSetList = [];
         for (let i = 0; i < series.DataSet.length; i++) {
             let tx = series.DataSet[i].title;
-            if (tx == "") {
+            if (tx === "") {
                 tx = "データセット" + (i + 1).toString();
             }
             seriesDataSetList.push({ value: i, text: tx });
@@ -7813,11 +7813,11 @@ class clsAttrData {
         for (let i = 0; i < DataSetItemArray.length; i++) {
             const di = DataSetItemArray[i] as JsonObject;
             seriesData[0] = Number((i + 1).toString());
-            if (di.Print_Mode_Total == enmTotalMode_Number.OverLayMode) {
+            if (di.Print_Mode_Total === enmTotalMode_Number.OverLayMode) {
                 const over = this.TotalData.TotalMode.OverLay;
                 seriesData[1] = Number("重ね合わせ表示モード".length); // Convert to number
                 let T = over.DataSet[over.SelectedIndex].title;
-                if (T == "") {
+                if (T === "") {
                     T = "データセット" + Number(Number(di.Data) + 1);
                 }
                 seriesData[2] = Number(T.length);
@@ -7833,7 +7833,7 @@ class clsAttrData {
                     case enmLayerMode_Number.GraphMode: {
                         seriesData[2] = "グラフ表示".length; // Convert string to number
                         let T = this.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.Data].title;
-                        if (T == "") {
+                        if (T === "") {
                             T = "データセット" + String(Number(di.Data) + 1);
                         }
                         seriesData[3] = T;
@@ -7842,7 +7842,7 @@ class clsAttrData {
                     case enmLayerMode_Number.LabelMode: {
                         seriesData[2] = "ラベル表示".length; // Convert string to number
                         let T = this.LayerData[di.Layer].LayerModeViewSettings.LabelMode.DataSet[di.Data].title;
-                        if (T == "") {
+                        if (T === "") {
                             T = "データセット" + String(Number(di.Data) + 1);
                         }
                         seriesData[3] = T;
@@ -7860,7 +7860,7 @@ class clsAttrData {
     Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: JsonValue): void {
         //レイヤの追加
         const NewL = new strLayerDataInfo();
-        if (LayerMapFile == "") {
+        if (LayerMapFile === "") {
             LayerMapFile = this.MapData.GetPrestigeMapFileName();
         }
         NewL.MapFileName = LayerMapFile;
@@ -7895,7 +7895,7 @@ class clsAttrData {
             switch (this.LayerData[i].Type) {
                 case enmLayerType.Normal: {
                     if (this.LayerData[i].atrObject.NumOfSyntheticObj > 0) {
-                        if ((NormalF == true) && (syntheticF == true)) {
+                        if ((NormalF === true) && (syntheticF === true)) {
                             f = true;
                         } else {
                             f = false;
@@ -7912,7 +7912,7 @@ class clsAttrData {
                     f = MeshF;
                     break;
             }
-            if (f == false) { fall = true }
+            if (f === false) { fall = true }
             const d = { value: i, text:f ?  state.attrData.LayerData[i].Name: "*"+state.attrData.LayerData[i].Name}
             lst.push(d);
         }
@@ -7987,12 +7987,12 @@ class clsAttrData {
     Distance_Kencode_Point(Layernum: number, Obj: number, Point: point): number {
         const L = this.LayerData[Layernum];
         let v: JsonValue;
-        if (L.Shape == enmShape.LineShape) {
+        if (L.Shape === enmShape.LineShape) {
             v = this.Get_Distance_Kencode_Between_ObjectLine_and_Point(Layernum, Obj, Point);
         } else {
             const p1 = this.Get_CenterP(Layernum, Obj);
             const z = this.TotalData.ViewStyle.Zahyo;
-            if (z.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            if (z.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 const PS = spatial.Get_Reverse_XY(Point, z);
                 const P2 = spatial.Get_Reverse_XY(p1, z);
                 v = spatial.Distance_Ido_Kedo_LatLon(PS.toLatlon(), P2.toLatlon());
@@ -8009,26 +8009,26 @@ class clsAttrData {
         let P2;
         let d;
         const z = this.TotalData.ViewStyle.Zahyo;
-        if (this.MapData.SetMapFile(MapFile).MPObj[ObjCode2].Shape == enmShape.LineShape) {
-            if (this.LayerData[LayNum1].Shape != enmShape.LineShape) {
+        if (this.MapData.SetMapFile(MapFile).MPObj[ObjCode2].Shape === enmShape.LineShape) {
+            if (this.LayerData[LayNum1].Shape !== enmShape.LineShape) {
                 P1 = this.Get_CenterP(LayNum1, ObjNum1);
                 d = this.MapData.SetMapFile(MapFile).Get_Distance_Between_ObjectLine_and_Point(ObjCode2, Time, P1);
             } else {
                 this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(P1, ObjCode2, Time);
-                if (P1 && P2 && z.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+                if (P1 && P2 && z.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, z);
                 } else if (P1 && P2) {
                     d = spatial.Distance_Point(P1, P2) / this.MapData.SetMapFile("").Map.SCL;
                 }
             }
         } else {
-            if (this.LayerData[LayNum1].Shape == enmShape.LineShape) {
+            if (this.LayerData[LayNum1].Shape === enmShape.LineShape) {
                 P1 = this.Get_CenterP(LayNum1, ObjNum1);
                 d = this.Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum1, ObjNum1, P2);
             } else {
                 P1 = this.Get_CenterP(LayNum1, ObjNum1);
                 this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(P2, ObjCode2, Time);
-                if (P1 && P2 && z.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+                if (P1 && P2 && z.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, z);
                 } else if (P1 && P2) {
                     d = spatial.Distance_Point(P1, P2) / this.MapData.SetMapFile("").Map.SCL;
@@ -8043,19 +8043,19 @@ class clsAttrData {
         let P1;
         let P2;
 
-        if (this.LayerData[LayNum2].Shape == enmShape.LineShape) {
+        if (this.LayerData[LayNum2].Shape === enmShape.LineShape) {
             [ObjNum1, ObjNum2] = [ObjNum2, ObjNum1];
             [LayNum1, LayNum2] = [LayNum2, LayNum1];
         }
         let d;
-        if (this.LayerData[LayNum1].Shape == enmShape.LineShape) {
+        if (this.LayerData[LayNum1].Shape === enmShape.LineShape) {
             //一方が線オブジェクトの場合
             P2 = this.Get_CenterP(LayNum2, ObjNum2);
             d = this.Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum1, ObjNum1, P2);
         } else {
             P1 = this.Get_CenterP(LayNum1, ObjNum1);
             P2 = this.Get_CenterP(LayNum2, ObjNum2);
-            if (this.TotalData.ViewStyle.Zahyo.Mode == enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            if (this.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                 d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, this.TotalData.ViewStyle.Zahyo);
             } else {
                 d = spatial.Distance_Point(P1, P2) / this.MapData.SetMapFile("").Map.SCL;
@@ -8083,7 +8083,7 @@ class clsAttrData {
                 const obn = ObjectDeleteCheck[i];
                 let n = 0;
                 for (let j = 0; j < obn.length; j++) {
-                    if (obn[j] == false) {
+                    if (obn[j] === false) {
                         ObjConv[j] = n;
                         n++;
                     } else {
@@ -8100,7 +8100,7 @@ class clsAttrData {
                 const obn = ObjectDeleteCheck[i];
                 const GetList = [];
                 for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
-                    if (obn[j] == false) {
+                    if (obn[j] === false) {
                         GetList.push(j);
                     }
                 }
@@ -8108,7 +8108,7 @@ class clsAttrData {
                 ld.atrObject.ObjectNum = newObjN
                 for (let j = 0; j < newObjN; j++) {
                     const fromObj = GetList[j];
-                    if (fromObj != j) {
+                    if (fromObj !== j) {
                         ld.atrObject.atrObjectData[j] = ld.atrObject.atrObjectData[fromObj].Clone();
                     }
                     for (let k = 0; k < this.Get_DataNum(i); k++) {
@@ -8124,9 +8124,9 @@ class clsAttrData {
                     this.SetIniHanrei(i, k);
                     this.Set_Legend(i, k, oldData, true, true, true, true, true, true, true, true, true, true, true);
                     ld.atrData.Data[k].ModeData = oldMode;
-                    if (oldData.DataType != enmAttDataType.Strings) {
+                    if (oldData.DataType !== enmAttDataType.Strings) {
                         const ldc = ld.atrData.Data[k].SoloModeViewSettings.ClassODMD;
-                        if (ldc.Dummy_ObjectFlag == false) {
+                        if (ldc.Dummy_ObjectFlag === false) {
                             if (LayerDelNum[ldc.o_Layer] > 0) {
                                 ldc.O_object = ConvObj[ldc.o_Layer][ldc.O_object];
                             }
@@ -8152,11 +8152,11 @@ class clsAttrData {
                 ObjGIndex[ld.DummyGroup[j]] = true;
             }
             for (let j = 0; j < ld.MapFileData.Map.Kend; j++) {
-                if (ObjGIndex[ld.MapFileData.MPObj[j].Kind] == true) {
+                if (ObjGIndex[ld.MapFileData.MPObj[j].Kind] === true) {
                     const ELine = ld.MapFileData.Get_EnableMPLine( j, ld.Time);
                     for (let k = 0; k < ELine.length; k++) {
                         const Lcode = ELine[k].LineCode;
-                        if (LoopLineArea[Lcode] == 0) {
+                        if (LoopLineArea[Lcode] === 0) {
                             const men = ld.MapFileData.Get_LoopLine_Menseki(Lcode);
                             LoopLineArea[Lcode] = men;
                             this.TempData.SoubyouLayerEnable[i] = true;
@@ -8167,11 +8167,11 @@ class clsAttrData {
             //ダミーオブジェクトのチェック
             for (let j = 0; j < ld.Dummy.length; j++) {
                 const c = ld.Dummy[j].code;
-                if (ld.MapFileData.MPObj[c].Shape != enmShape.PointShape) {
+                if (ld.MapFileData.MPObj[c].Shape !== enmShape.PointShape) {
                     const ELine = ld.MapFileData.Get_EnableMPLine(c, ld.Time);
                     for (let k = 0; k < ELine.length; k++) {
                         const Lcode = ELine[k].LineCode;
-                        if (LoopLineArea[Lcode] == 0) {
+                        if (LoopLineArea[Lcode] === 0) {
                             const men = ld.MapFileData.Get_LoopLine_Menseki(Lcode);
                             LoopLineArea[Lcode] = men;
                             this.TempData.SoubyouLayerEnable[i] = true;
@@ -8180,7 +8180,7 @@ class clsAttrData {
                     break;
                 }
             }
-            if (ld.Type == enmLayerType.Normal) {
+            if (ld.Type === enmLayerType.Normal) {
                 switch (ld.Shape) {
                     case enmShape.PointShape:
                         break;
@@ -8195,14 +8195,14 @@ class clsAttrData {
                             const ELine = this.Get_Enable_KenCode_MPLine( i, j);
                             for (let k = 0; k < ELine.length; k++) {
                                 LUse[ELine[k].LineCode]++;
-                                if (LUse[ELine[k].LineCode] == 2) {
+                                if (LUse[ELine[k].LineCode] === 2) {
                                     this.TempData.SoubyouLayerEnable[i] = true;
                                     j = ld.atrObject.ObjectNum;
                                     break;
                                 }
                             }
                         }
-                        if (this.TempData.SoubyouLayerEnable[i] == true) {
+                        if (this.TempData.SoubyouLayerEnable[i] === true) {
                             //ループオブジェクトの中で、最後に残す一番面積の大きいループを決める
                             for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                                 const ELine = this.Get_Enable_KenCode_MPLine( i, j);
@@ -8211,17 +8211,17 @@ class clsAttrData {
                                 for (let k = 0; k < ELine.length; k++) {
                                     const Lcode = ELine[k].LineCode;
                                     let men = LoopLineArea[Lcode];
-                                    if (men == 0) {
+                                    if (men === 0) {
                                         men = ld.MapFileData.Get_LoopLine_Menseki(Lcode);
                                         LoopLineArea[Lcode] = men;
                                     }
-                                    if (men == -1) {
+                                    if (men === -1) {
                                         LoopOnlyf = false;
                                     } else {
                                         Loop_mens.Add(men);
                                     }
                                 }
-                                if (LoopOnlyf == true) {
+                                if (LoopOnlyf === true) {
                                     Loop_mens.AddEnd();
                                     const lnum = Loop_mens.DataPositionRev(0);
                                     LoopLineArea[ELine[lnum].LineCode] = -2;
@@ -8259,12 +8259,12 @@ class clsAttrMapData {
         const key = MapFileName.toUpperCase();
         this.attrMapData[key] = MapData;
         this.Object_Name_Search[key] = new clsObjectNameSearch(MapData, true);
-        if (Object.keys(this.attrMapData).length == 1) {
+        if (Object.keys(this.attrMapData).length === 1) {
             this.Prestage_MapFileName = key;
         }
     }
     SetMapFile(MapFileName: string): clsMapdata | undefined {
-        if (MapFileName == "") {
+        if (MapFileName === "") {
             return this.attrMapData[this.Prestage_MapFileName];
         } else {
             //存在しない場合はundefined
@@ -8272,7 +8272,7 @@ class clsAttrMapData {
         }
     }
     SetObject_Name_Search(MapFileName: string): clsObjectNameSearch | undefined {
-        if (MapFileName == "") {
+        if (MapFileName === "") {
             return this.Object_Name_Search[this.Prestage_MapFileName];
         } else {
             //存在しない場合はundefined
@@ -8292,7 +8292,7 @@ class clsAttrMapData {
     //地図ファイルの有無を調べる
     CheckMapfileExists(MapFileName: string): boolean {
         const fname = Object.keys(this.attrMapData);
-        if (fname.indexOf(MapFileName) == -1) {
+        if (fname.indexOf(MapFileName) === -1) {
             return false;
         } else {
             return true;
@@ -8308,14 +8308,14 @@ class clsAttrMapData {
         const self = this;
         Object.keys(this.attrMapData).forEach(function (key) {
             const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo as Zahyo_info, self.attrMapData[key].Map.Zahyo as Zahyo_info);
-            if (retv.ok == false) { 
+            if (retv.ok === false) { 
                 f = false;
                 emes += key + ":" + retv.emes + '\n';
             }
         });
-        if (f == true) {
+        if (f === true) {
             Object.keys(this.attrMapData).forEach(function (key) {
-                if (Generic.equal(self.attrMapData[key].Map.Zahyo as Zahyo_info, Zahyo as Zahyo_info) == false) {
+                if (Generic.equal(self.attrMapData[key].Map.Zahyo as Zahyo_info, Zahyo as Zahyo_info) === false) {
                     self.attrMapData[key].Convert_ZahyoMode(Zahyo as Zahyo_info);
                 }
             });
@@ -8332,7 +8332,7 @@ class clsAttrMapData {
             const cmap = this.attrMapData[key];
             const PointObk = [];
             for (let i = 0; i < cmap.Map.OBKNum; i++) {
-                if(cmap.ObjectKind[i].Shape == enmShape.PointShape){
+                if(cmap.ObjectKind[i].Shape === enmShape.PointShape){
                     PointObk.push(cmap.ObjectKind[i].Name);
                 }
             }
@@ -8348,7 +8348,7 @@ class clsAttrMapData {
         let n = 0;
         for (const key in this.attrMapData) {
             const cmap = this.attrMapData[key];
-            if (key != MapFileName.toUpperCase()) {
+            if (key !== MapFileName.toUpperCase()) {
                 n += cmap.Get_TotalLineKind_Num();
             } else {
                 for (let j = 0; j < lineKindNum; j++) {
@@ -8404,13 +8404,13 @@ class clsAttrMapData {
 
     /**指定した地図ファイルを削除 */
     RemoveMapData(mapFileName: string): void {
-        if(mapFileName == "" ){
+        if(mapFileName === "" ){
             mapFileName = this.Prestage_MapFileName
         }
         delete this.attrMapData[mapFileName];
         delete this.Object_Name_Search[mapFileName];
-        if(mapFileName == this.Prestage_MapFileName ){
-            if(Object.keys(this.attrMapData).length == 0 ){
+        if(mapFileName === this.Prestage_MapFileName ){
+            if(Object.keys(this.attrMapData).length === 0 ){
                 this.Prestage_MapFileName = ""
             }else{
                 this.Prestage_MapFileName = Object.keys(this.attrMapData)[0];
@@ -8445,8 +8445,8 @@ class clsObjectNameSearch {
                 const nstc = MapData.MPObj[i].NameTimeSTC[j];
                 for (let k = 0; k < nstc.NamesList.length; k++) {
                     let nam = nstc.NamesList[k];
-                    if (nam != "") {
-                        if (this.checkObjectNameKanjiCompatibleFF == true) {
+                    if (nam !== "") {
+                        if (this.checkObjectNameKanjiCompatibleFF === true) {
                             const retV=Generic.ObjName_Kanji_Compatible(nam);
                             nam=retV.newObjname;
                         }
@@ -8480,17 +8480,17 @@ class clsObjectNameSearch {
 
     Get_KenToCode(ObjName: string, Time: strYMD): number {
         //オブジェクト名からオブジェクト番号を取得する。見つからなかった場合-1を返す
-        if (ObjName == "") {
+        if (ObjName === "") {
             return -1;
         }
-        if (this.checkObjectNameKanjiCompatibleFF  == true) {
+        if (this.checkObjectNameKanjiCompatibleFF  === true) {
             const retV=Generic.ObjName_Kanji_Compatible(ObjName);
             ObjName=retV.newObjname;
         }
         const DataList = this.Object_Name_Search.SearchData_Array(ObjName);
         for (const i in DataList) {
             const j = DataList[i];
-            if (clsTime.checkDurationIn(this.Object_Name_Stac_for_Search_O_Code[j].SETime, Time) == true) {
+            if (clsTime.checkDurationIn(this.Object_Name_Stac_for_Search_O_Code[j].SETime, Time) === true) {
                 return this.Object_Name_Stac_for_Search_O_Code[j].ObjCode;
             }
         }
