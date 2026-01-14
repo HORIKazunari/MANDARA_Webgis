@@ -74,20 +74,58 @@ export default tseslint.config(
       '@typescript-eslint/prefer-optional-chain': 'warn',
       '@typescript-eslint/strict-boolean-expressions': 'off', // 厳密すぎるので無効化
       
-      // 命名規則
+      // 命名規則（段階的に厳格化）
       '@typescript-eslint/naming-convention': ['warn',
         {
           selector: 'variable',
           format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
-          leadingUnderscore: 'allow'
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+          // レガシーコード対応: アンダースコア区切りを一時的に許可
+          filter: {
+            regex: '^(.*_.*|[A-Z][a-z]*(_[A-Z][a-z]*)*)$',
+            match: false
+          }
         },
         {
           selector: 'function',
-          format: ['camelCase', 'PascalCase']
+          format: ['camelCase', 'PascalCase'],
+          leadingUnderscore: 'allow'
         },
         {
-          selector: 'typeLike',
+          selector: 'parameter',
+          format: ['camelCase', 'PascalCase'],
+          leadingUnderscore: 'allow'
+        },
+        {
+          selector: 'class',
+          format: ['PascalCase'],
+          // レガシーコード: clsで始まるクラス名を許可
+          custom: {
+            regex: '^(cls)?[A-Z]',
+            match: true
+          }
+        },
+        {
+          selector: 'interface',
+          format: ['PascalCase'],
+          // I始まりのインターフェース名を許可
+          custom: {
+            regex: '^I?[A-Z]',
+            match: true
+          }
+        },
+        {
+          selector: 'typeAlias',
           format: ['PascalCase']
+        },
+        {
+          selector: 'enum',
+          format: ['PascalCase']
+        },
+        {
+          selector: 'enumMember',
+          format: ['PascalCase', 'UPPER_CASE']
         }
       ],
       
