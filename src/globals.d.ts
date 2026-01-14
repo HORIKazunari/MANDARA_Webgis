@@ -313,13 +313,23 @@ interface IAttrData {
                     Clone?: () => unknown;
                 };
             };
-            AccessoryGroupBox?: BackGround_Box_Property;
+            AccessoryGroupBox: {
+                Visible: boolean;
+                Back: BackGround_Box_Property;
+                Title: boolean;
+                Comapss: boolean;
+                Scale: boolean;
+                Legend: boolean;
+                Note: boolean;
+                LinePattern: boolean;
+                ObjectGroup: boolean;
+            }; // strAccessoryGroupBox_Info from clsAttrData.ts
             Zahyo: Zahyo_info;
             LatLonLine_Print?: {
                 LPat: Line_Property;
                 OuterPat: Line_Property;
                 Equator: Line_Property;
-                [key: string]: any;
+                [key: string]: JsonValue;
             };
             TileMapView: {
                 Visible: boolean;
@@ -327,7 +337,7 @@ interface IAttrData {
                 TileMapDataSet?: strTileMapViewInfo; // strTileMapViewInfo from clsAttrData.ts
                 AlphaValue?: number;
             };
-            Missing_Data?: {
+            Missing_Data: {
                 Print_Flag: boolean;
                 Text: string;
                 PaintTile: Tile_Property;
@@ -335,10 +345,11 @@ interface IAttrData {
                 BlockMark: Mark_Property;
                 ClassMark: Mark_Property;
                 MarkBar: Mark_Property;
+                TurnMark: Mark_Property;
                 Label: string;
                 LineShape: Line_Property;
-                Clone?: () => unknown;
-            };
+                Clone?: () => JsonObject;
+            }; // strMissing_set from clsAttrData.ts
             SouByou?: {
                 Auto?: boolean;
                 ThinningPrint_F?: boolean;
@@ -348,7 +359,13 @@ interface IAttrData {
                 [key: string]: JsonValue;
             }; // strSoubyou_Data_Info
             DummyObjectPointMark?: strDummyObjectPointMark_Info[]; // strDummyObjectPointMark_Info[] from clsAttrData.ts
-            // Screen_Back?: BackGround_Box_Property; // 削除：実際の型はstrScreen_Back_dataで、clsAttrData.tsで定義
+            Screen_Back: {
+                MapAreaFrameLine: Line_Property;
+                ScreenFrameLine: Line_Property;
+                ScreenAreaBack: Tile_Property;
+                MapAreaBack: Tile_Property;
+                ObjectInner: Tile_Property;
+            }; // strScreen_Back_data from clsAttrData.ts
             PointPaint_Order?: number; // enmPointOnjectDrawOrder
             ValueShow?: {
                 ObjNameVisible?: boolean;
@@ -389,7 +406,7 @@ interface IAttrData {
                 ContourStacPos?: number;
                 ClickMapPos?: point;
                 DataIndex?: number;
-                [key: string]: any;
+                [key: string]: JsonValue;
             };
             MultiObjects?: strLocationSearchObject[];
         };
@@ -581,7 +598,7 @@ interface IAttrData {
     Get_Padding_Pixcel?: (back: BackGround_Box_Property) => number;
     Get_Paddin_Pixcel?: (back: BackGround_Box_Property) => number; // typo variant
     Radius?: (size: number, arg2?: number, arg3?: number) => number;
-    [key: string]: any;
+    [key: string]: JsonValue;
     
     // MapData関連
     MapData: {
@@ -637,7 +654,9 @@ interface IOverLayDataItem {
 interface IOverLayDataItemElement {
     Layer: number;
     DataNumber: number;
-    Print_Mode_Layer: number;
+    Print_Mode_Layer: number; // enmLayerMode_Number
+    Mode?: number; // enmSoloMode_Number or other mode
+    Legend_Print_Flag?: boolean;
     Clone?: () => IOverLayDataItemElement;
     [key: string]: JsonValue;
 }
@@ -654,13 +673,13 @@ interface ISeriesDatasetInfo {
 interface ILayerDataInfo {
     Name: string;
     MapFileName: string;
-    MapFileData: any; // clsMapdata
-    MapFileObjectNameSearch: any; // clsObjectNameSearch
+    MapFileData: clsMapdata;
+    MapFileObjectNameSearch: clsObjectNameSearch;
     Shape: number; // enmShape
     Type: number; // enmLayerType
     MeshType: number; // enmMesh_Number
     ReferenceSystem: number; // enmZahyo_System_Info
-    Time: any; // strYMD
+    Time: strYMD;
     Comment: string;
     TripTimeSpan: number; // 移動時間のスパン（数値）
     TripType: number; // enmTripPositionType
@@ -675,8 +694,8 @@ interface ILayerDataInfo {
     ODBezier_DataStac: ODBezier_Data[];
     // Methods
     Remove_OD_Bezier?: (objPos: number, dataNum: number) => void;
-    Get_OD_Bezier_RefPoint?: (index: number, dataNum: number) => any;
-    [key: string]: any;
+    Get_OD_Bezier_RefPoint?: (index: number, dataNum: number) => JsonObject;
+    [key: string]: JsonValue;
 }
 
 // オブジェクト情報（拡張版）
@@ -713,13 +732,13 @@ interface ISoloModeViewSettings {
     ClassODMode: IClassODMode;
     ClassODMD: IClassODMD;
     ContourMode: IContourMode;
-    TripMode: any;
-    StringMode: any;
-    MarkSizeMD: any;
-    MarkBlockMD: any;
-    MarkBarMD: any;
-    ClassMarkMode: any;
-    MarkTurnMode: any;
+    TripMode: JsonObject;
+    StringMode: JsonObject;
+    MarkSizeMD: JsonObject;
+    MarkBlockMD: JsonObject;
+    MarkBarMD: JsonObject;
+    ClassMarkMode: JsonObject;
+    MarkTurnMode: JsonObject;
     Class_Div: strClass_Div_data[];
     Div_Num: number;
     [key: string]: JsonValue;
@@ -741,7 +760,7 @@ interface IMarkSizeMode {
     MaxValue?: number;
     Value?: number[];
     Mark?: Mark_Property;
-    LineShape?: any;
+    LineShape?: Line_Property;
     Clone?: () => IMarkSizeMode;
     [key: string]: JsonValue;
 }
@@ -822,7 +841,7 @@ interface IClassODMD {
 interface ILayerModeViewSettings {
     GraphMode: IGraphMode;
     LabelMode: ILabelMode;
-    PointLineShape: any;
+    PointLineShape: JsonObject;
     PolygonDummy_ClipSet_F: boolean;
     [key: string]: JsonValue;
 }
@@ -1095,7 +1114,7 @@ declare class rectangle {
     top: number;
     right: number;
     bottom: number;
-    constructor(left_point?: point | number, right_size?: size | number, top?: number, bottom?: number);
+    constructor(left_point?: point | number, right_size?: point | size | number, top?: number, bottom?: number);
     Clone(): rectangle;
     centerP(): point;
     size(): size;
@@ -1818,14 +1837,14 @@ declare const strDefTimeAttDataEach_Info: { new(...args: JsonValue[]): any; [key
 declare const strDefTimeAttData_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
 
 interface Zahyo_info {
-    Mode: number;
-    System: number;
-    HeimenTyokkaku_KEI_Number: number;
-    Projection: number;
+    Mode: number; // enmZahyo_mode_info (必須プロパティに変更)
+    System: number; // enmZahyo_System_Info (必須プロパティに変更)
+    HeimenTyokkaku_KEI_Number: number; // 平面直角座標系の系番号 (必須プロパティに変更)
+    Projection: number; // enmProjection_Info (必須プロパティに変更)
     CenterXY: point;
     Zahyo?: Zahyo_info; // 自己参照（実装で使用されている場合）
     Clone(): Zahyo_info;
-    [key: string]: any; // 柔軟性のため追加
+    [key: string]: JsonValue;
 }
 declare const Zahyo_info: {
     new(): Zahyo_info;

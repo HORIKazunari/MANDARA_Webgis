@@ -385,10 +385,10 @@ class EnableMPLine_Data {
  * Description placeholder
  */
 class Zahyo_info {
-    Mode?: number;
-    System?: number;
-    HeimenTyokkaku_KEI_Number?: number;
-    Projection?: number;
+    Mode: number = 0; // enmZahyo_mode_info (デフォルト値を設定)
+    System: number = 0; // enmZahyo_System_Info (デフォルト値を設定)
+    HeimenTyokkaku_KEI_Number: number = 0; // 平面直角座標系の系番号 (デフォルト値を設定)
+    Projection: number = 0; // enmProjection_Info (デフォルト値を設定)
     CenterXY: point = new point();
 
     Clone(): Zahyo_info {
