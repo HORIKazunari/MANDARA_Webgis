@@ -27,7 +27,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     elem.addEventListener("mouseleave", mup, false);
     
     const mousewheelevent: string = 'onwheel' in document ? 'wheel' : 'onmousewheel' in document ? 'mousewheel' : 'DOMMouseScroll';
-    elem.addEventListener(mousewheelevent, onWheel, false);
+    elem.addEventListener(mousewheelevent, onWheel as EventListener, false);
     const g: CanvasRenderingContext2D = elem.getContext('2d')!;
 
     //出力画面でのキー操作
@@ -454,7 +454,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                 const retV = Check_Acc(mouseUpPosition);
                                 if (retV.type === Check_Acc_Result.NoAccessory) {
                                     const av = state.attrData.TotalData.ViewStyle;
-                                    const mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: JsonValue[]}> = [];
+                                    const mnuAccPopupVisible: MenuItem[] = [];
                                     if (av.ScrData.ThreeDMode.Set3D_F === false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
@@ -504,14 +504,14 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     }
                                     if(state.attrData.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido){
                                         const pmnu: MenuItem = {caption: "この地点のWeb地図を表示", enabled: true, child: [
-                                            { caption: "Googleマップ", event: showWebMap },
-                                            { caption: "YAHOO!地図", event:  showWebMap},
-                                            { caption: "Mapion", event:  showWebMap},
-                                            { caption: "MapFan", event:  showWebMap},
-                                            { caption: "地理院地図", event:  showWebMap},
-                                            { caption: "今昔マップ", event:  showWebMap}
+                                            { caption: "Googleマップ", event: showWebMap } as MenuItem,
+                                            { caption: "YAHOO!地図", event:  showWebMap} as MenuItem,
+                                            { caption: "Mapion", event:  showWebMap} as MenuItem,
+                                            { caption: "MapFan", event:  showWebMap} as MenuItem,
+                                            { caption: "地理院地図", event:  showWebMap} as MenuItem,
+                                            { caption: "今昔マップ", event:  showWebMap} as MenuItem
                                         ]};
-                                        mnuAccPopupVisible.push(pmnu as MenuItem);
+                                        mnuAccPopupVisible.push(pmnu);
                                         function showWebMap(data: MenuItem, e?: Event) {
                                             const state = appState();
                                             const p = vs.ScrData.getSRXY(mouseDownPosition);
@@ -550,7 +550,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                     }
                                 } else {
                                     //飾り上で右クリックメニュー
-                                    const mnuAccPopupVisible = [];
+                                    const mnuAccPopupVisible: MenuItem[] = [];
                                     switch (retV.type) {
                                         case Check_Acc_Result.Compass:
                                             mnuAccPopupVisible.push({ caption: "方位非表示", event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap) } });
@@ -648,7 +648,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         MouseDownF = false;
 
-        function Loc_Data_Menu(mnuAccPopupVisible: Array<{caption: string, event?: Function, checked?: boolean, child?: JsonValue[]}>) {
+        function Loc_Data_Menu(mnuAccPopupVisible: MenuItem[]) {
             const state = appState();
             const alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {

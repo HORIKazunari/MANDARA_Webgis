@@ -6,7 +6,7 @@ import type { JsonValue } from './types';
 export {};
 
 // イベントコールバックの型定義
-interface EventCallbacks {
+export interface EventCallbacks {
     evtChange_Data?: () => void;
     evtChange_FixedXS?: () => void;
     evtChange_FixedYS?: () => void;

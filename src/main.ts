@@ -108,30 +108,45 @@ function init(): void {
     state.frmPrint.label3 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
     
     // プロパティウィンドウ生成
-    state.propertyWindow = Generic.createWindow(
+    const propertyWindowBase = Generic.createWindow(
         "", "", "プロパティ", 350, 50, 200, 250, 
         false, false, null, true, 
         null, false, "", false, 
         undefined
-    ) as IPropertyWindow;
+    );
+    
+    // IPropertyWindow型として拡張
+    state.propertyWindow = Object.assign(propertyWindowBase, {
+        copyButton: document.createElement('input') as HTMLInputElement,
+        rightPositionFixed: false,
+        relativePosition: new point(0, 0),
+        fixed: false,
+        nextVisible: false
+    } as Partial<IPropertyWindow>) as IPropertyWindow;
     
     state.propertyWindow.dragBorder?.(undefined, undefined);
     state.propertyWindow.setTitle?.("プロパティ");
-    state.propertyWindow.pnlProperty = Generic.createNewDiv(
-        state.propertyWindow, "", "", "", 0, state.scrMargin.top, 
-        '100%', 240, "background-color:#eeeeee;overflow:hidden", ""
-    );
+    state.propertyWindow.pnlProperty = Object.assign(
+        Generic.createNewDiv(
+            state.propertyWindow as ExtendedHTMLDivElement, "", "", "", 0, state.scrMargin.top, 
+            '100%', 240, "background-color:#eeeeee;overflow:hidden", ""
+        ) as ExtendedHTMLDivElement,
+        { oObject: undefined, oLayer: undefined, oData: undefined, objInfo: undefined }
+    ) as ExtendedHTMLDivElement & { objInfo?: Record<string, unknown> & ExtendedHTMLDivElement; oObject?: number; oLayer?: number; oData?: number; };
     state.propertyWindow.pnlProperty.sizeFixed = true;
     state.propertyWindow.pnlProperty.relativeSize = new size(0, 70);
-    state.propertyWindow.pnlProperty.objInfo = Generic.createNewDiv(
-        state.propertyWindow.pnlProperty, "", "", "", 0, 0, 
-        '100%', 90, "padding:5px;background-color:white", ""
-    );
+    state.propertyWindow.pnlProperty.objInfo = Object.assign(
+        Generic.createNewDiv(
+            state.propertyWindow.pnlProperty as ExtendedHTMLDivElement, "", "", "", 0, 0, 
+            '100%', 90, "padding:5px;background-color:white", ""
+        ) as ExtendedHTMLDivElement,
+        {} as Record<string, unknown>
+    ) as ExtendedHTMLDivElement & Record<string, unknown>;
     state.propertyWindow.pnlProperty.oObject = -1;
     state.propertyWindow.pnlProperty.oLayer = -1;
     state.propertyWindow.pnlProperty.oData = -1;
     state.propertyWindow.copyButton = Generic.createNewButton(
-        state.propertyWindow, "コピー", "", 30, 0, 
+        state.propertyWindow as ExtendedHTMLDivElement, "コピー", "", 30, 0, 
         () => state.frmPrint.copyProperty?.(), ""
     );
     state.propertyWindow.copyButton.bottomPositionFixed = true;

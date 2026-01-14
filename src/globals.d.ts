@@ -86,7 +86,7 @@ interface HTMLElement {
     innerText?: string;
     checked?: boolean;
     
-    // カスタムプロパティ（データ保持用）
+    // カスタムプロパティ(データ保持用)
     oldSel?: number; // addSelectList で使用される選択位置記憶用
     preValue?: number; // setNumberValue で使用される前回の値
     objInfo?: Record<string, unknown>; // カスタムデータ保持用
@@ -974,11 +974,7 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
     relativePosition: point;
     fixed: boolean;
     nextVisible: boolean;
-    pnlProperty?: HTMLDivElement;
-    objInfo?: HTMLElement;
-    oObject?: number;
-    oLayer?: number;
-    oData?: number;
+    pnlProperty?: ExtendedHTMLDivElement & { objInfo?: Record<string, unknown> & ExtendedHTMLDivElement; oObject?: number; oLayer?: number; oData?: number; };
     // HTMLDivElementのプロパティを継承
     dragBorder?: (arg1: MouseEvent, arg2: HTMLElement) => void;
     getVisibility?: () => boolean;

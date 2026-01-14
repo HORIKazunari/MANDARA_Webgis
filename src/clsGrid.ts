@@ -1,6 +1,6 @@
 import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
-import { gridControl } from './clsGridControl';
+import { gridControl, type EventCallbacks } from './clsGridControl';
 import type { JsonObject, JsonValue } from './types';
 
 type LayerTypeValue = (typeof enmLayerType)[keyof typeof enmLayerType];
@@ -179,7 +179,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         evtChange_Layer:Change_Layer//レイヤ名の変更、レイヤの移動などで発生
       }
     setIniform();
-    ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as unknown as Function);
+    ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as EventCallbacks);
     if (newDataFlag === true) {
         ktGrid.addLayer("新しいレイヤ", 0, 5, 50);
         ktGrid.setLayerData(0, GridLayerData.Shape, enmShape.NotDeffinition);
@@ -283,7 +283,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             check_DataKind_and_Allignment(i);
             ktGrid.setLayerData(i, GridLayerData.MapFile, al.MapFileName);
             ktGrid.setLayerData(i, GridLayerData.Shape, al.Shape);
-            ktGrid.setLayerData(i, GridLayerData.Time, al.Time);
+            ktGrid.setLayerData(i, GridLayerData.Time, al.Time as unknown as JsonValue);
             ktGrid.setLayerData(i, GridLayerData.OldIndex, i);
             ktGrid.setLayerData(i, GridLayerData.Type, al.Type);
             ktGrid.setLayerData(i, GridLayerData.Mesh, al.MeshType);

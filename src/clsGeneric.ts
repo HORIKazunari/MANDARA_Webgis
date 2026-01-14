@@ -3403,11 +3403,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ボタン作成
-    static createNewButton(ParentObj: HTMLElement, text: string, ID: string, x: number, y: number, onClick: (event: MouseEvent) => void, styleinfo: string = "") {
+    static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: (event: MouseEvent) => void, styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
         ok.addEventListener('click', onClick);
-        ParentObj.appendChild(ok);
+        (ParentObj as HTMLElement).appendChild(ok);
         return ok;
     }
 
@@ -3718,7 +3718,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    static createNewDiv(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, width: number | string | undefined, height: number | string | undefined, styleinfo: string, onclick?: ((event: MouseEvent) => void) | string): HTMLDivElement {
+    static createNewDiv(ParentObj: HTMLElement | ExtendedHTMLDivElement, innerHtml: string, ID: string, Class: string, x: number, y: number, width: number | string | undefined, height: number | string | undefined, styleinfo: string, onclick?: ((event: MouseEvent) => void) | string): HTMLDivElement {
 
         /// <signature>
         /// <summary>div要素を作成</summary>
@@ -3761,7 +3761,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 obj.style.height = height.px();
             }
         }
-        ParentObj.appendChild(obj);
+        (ParentObj as HTMLElement).appendChild(obj);
         return obj;
     }
 
@@ -3927,7 +3927,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //** input要素作成*/
-    static createNewInput(ParentObj: HTMLElement, type: string, text: string, ID: string, x: number, y: number, onClick: string | undefined, styleinfo: string) {
+    static createNewInput(ParentObj: HTMLElement | ExtendedHTMLDivElement, type: string, text: string, ID: string, x: number, y: number, onClick: string | undefined, styleinfo: string) {
 
         const ok = document.createElement("input");
         ok.setAttribute("type", type);
@@ -3937,7 +3937,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         ok.setAttribute("style", "position:absolute;" + styleinfo);
         ok.style.top = y.px();
         ok.style.left = x.px();
-        ParentObj.appendChild(ok);
+        (ParentObj as HTMLElement).appendChild(ok);
         return ok;
     }
 
@@ -4204,7 +4204,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //Canvas要素を作成
-    static createNewCanvas(ParentObj: HTMLElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, styleinfo: string) {
+    static createNewCanvas(ParentObj: HTMLElement | ExtendedHTMLDivElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, styleinfo: string) {
 
         const canvas = document.createElement("canvas");
         canvas.setAttribute("style", "position:absolute;" + styleinfo);
@@ -4217,7 +4217,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         if (onClick) {
             canvas.addEventListener('click', onClick as EventListener);
         }
-        ParentObj.appendChild(canvas);
+        (ParentObj as HTMLElement).appendChild(canvas);
         return canvas;
     }
 
@@ -4493,7 +4493,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         footerID: string,
         maxButtonF: boolean,
         maxButtonCall: (() => void) | null = null
-    ): HTMLElement {
+    ): ExtendedHTMLDivElement {
 
         const state = appState();
         const hiddenWindow = function () {
@@ -6551,7 +6551,7 @@ export class clsBase {
     static BlancTile(): Tile_Property {
         const tile = new Tile_Property();
         tile.BlankF = true;
-        tile.Color = { R: 255, G: 255, B: 255, A: 0 };
+        tile.Color = new colorRGBA(255, 255, 255, 0);
         return tile;
     }
 
@@ -6559,7 +6559,7 @@ export class clsBase {
     static BlankLine(): Line_Property {
         const line = new Line_Property();
         line.BlankF = true;
-        line.Color = { R: 0, G: 0, B: 0, A: 0 };
+        line.Color = new colorRGBA(0, 0, 0, 0);
         line.Width = 0;
         return line;
     }
@@ -6568,7 +6568,7 @@ export class clsBase {
     static Line(): Line_Property {
         const line = new Line_Property();
         line.BlankF = false;
-        line.Color = { R: 0, G: 0, B: 0, A: 255 };
+        line.Color = new colorRGBA(0, 0, 0, 255);
         line.Width = 1;
         return line;
     }
