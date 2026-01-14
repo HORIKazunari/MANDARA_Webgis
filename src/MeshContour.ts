@@ -138,10 +138,10 @@ class clsMeshContour {
                 let Reverse_f=false;
                 while (fnl < NL) {
                     let js = 0;
-                    if (Contf == false) {
+                    if (Contf === false) {
                         for (let j = 0; j < NL; j++) {
                             //始点の探索
-                            if (Get_Linef[j] == false) {
+                            if (Get_Linef[j] === false) {
                                 Arrange_LineCode[Pon][0] = fnl;
                                 Arrange_LineCode[Pon][1] = 1;
                                 Get_Linef[j] = true;
@@ -160,13 +160,13 @@ class clsMeshContour {
                     Contf = false;
                     //始点Xチェック
                     const LineNO2 = PointIndex.GetSamePointNumber(exy.x, exy.y);
-                    if (LineNO2.ObjectNumber != -1) {
+                    if (LineNO2.ObjectNumber !== -1) {
                         const PointTag = LineNO2.Tag as number;
                         Contf = true;
                         Get_Linef[PointTag] = true;
                         Arrange_LineCode[Pon][1]++;
                         Fringe[fnl].code = PointTag;
-                        if (LineNO2.PointNumber == 0) {
+                        if (LineNO2.PointNumber === 0) {
                             exy = con[i][PointTag].p1.Clone();
                             Fringe[fnl].direction = 1; //順方向
                         } else {
@@ -176,12 +176,12 @@ class clsMeshContour {
                         PointIndex.RemoveObject(PointTag);
                         fnl++;
                     }
-                    if (exy.Equals(stxy) == true) {
+                    if (exy.Equals(stxy) === true) {
                         Contf = false;
                         Pon++;
                     } else {
-                        if (Contf == false) {
-                            if (Reverse_f == false) {
+                        if (Contf === false) {
+                            if (Reverse_f === false) {
                                 //始点も終点もチェックしてない場合は、初期の始点と終点を入れ替えて繰り返す
                                 Reverse_f = true;
                                     const k2 = Arrange_LineCode[Pon][0];
@@ -207,21 +207,21 @@ class clsMeshContour {
                     }
                 }
 
-                if (Contf == true) {
+                if (Contf === true) {
                     Pon++;
                 }
                 for (let j = 0; j < Pon; j++) {
                     Con_LineStac[all_Pon + j] = new contourLineStacInfo(i, Arrange_LineCode[j][1] + 1);
                     const k2 = Arrange_LineCode[j][0];
                     const fk2 = Fringe[k2];
-                    if (fk2.direction == 1) {
+                    if (fk2.direction === 1) {
                         Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p0.Clone(), con[i][fk2.code].p1.Clone());
                     } else {
                         Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p1.Clone(), con[i][fk2.code].p0.Clone());
                     }
                     for (let k = 1; k < Arrange_LineCode[j][1]; k++) {
                         const fk2 = Fringe[k2 + k];
-                        if (fk2.direction == 1) {
+                        if (fk2.direction === 1) {
                             Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p1.Clone());
                         } else {
                             Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p0.Clone());
@@ -361,7 +361,7 @@ class clsMeshContour {
                 const High = Contour_High_M[j] + this.ConValuePlus;
                 const VH1 = V1 - High;
                 const VH2 = V2 - High;
-                if((((VH1 <= 0) && (VH2 >= 0)) || ((VH1 >= 0) && (VH2 <= 0))) && (V1 != V2)) {
+                if((((VH1 <= 0) && (VH2 >= 0)) || ((VH1 >= 0) && (VH2 <= 0))) && (V1 !== V2)) {
                     SepV.push(i + Math.abs(VH1 / (V1 - V2)));
                     if(V1 < V2) {
                         VPC.push(j);
@@ -382,23 +382,23 @@ class clsMeshContour {
         for (let i = 0; i < VPN ; i++) {
             const j = SepVSort.DataPosition(i);
             let f=false;
-            if( i == 0 ){
+            if( i === 0 ){
                 f = true;
             }else{
-                if( SepVSort.DataPositionValue(i - 1) != SepVSort.DataPositionValue(i) ){
+                if( SepVSort.DataPositionValue(i - 1) !== SepVSort.DataPositionValue(i) ){
                     f = true;
                 }
             }
-            if( f == true ){
+            if( f === true ){
                 Vcon[n]=VPC[j];
-                if( Xplus == 1 ){
+                if( Xplus === 1 ){
                     Vpoint[n] = new point(SepV[j], sy);
                 }else{
                     Vpoint[n] = new point(sx, SepV[j]);
                 }
                 n++;
             }else{
-                if(i != VPN - 1) {
+                if(i !== VPN - 1) {
                     n--;
                 }
             }
@@ -422,17 +422,17 @@ class clsMeshContour {
         let C24 = 0;
         let C34 = 0;
         let C13 = 0;
-        if( (((VH1 <= 0)&&(VH2 >= 0)) || ((VH1 >= 0 )&&( VH2 <= 0)) )&&( V1 != V2 )){ C12 = 1; Q ++;}
-        if( (((VH2 <= 0)&&(VH4 >= 0)) || ((VH2 >= 0 )&&( VH4 <= 0)) )&&( V2 != V4 )){ C24 = 1; Q ++;}
-        if( (((VH4 <= 0)&&(VH3 >= 0)) || ((VH4 >= 0 )&&( VH3 <= 0)) )&&( V3 != V4 )){ C34 = 1; Q ++;}
-        if( (((VH1 <= 0)&&(VH3 >= 0)) || ((VH1 >= 0 )&&( VH3 <= 0)) )&&( V1 != V3 )){ C13 = 1; Q ++;}
+        if( (((VH1 <= 0)&&(VH2 >= 0)) || ((VH1 >= 0 )&&( VH2 <= 0)) )&&( V1 !== V2 )){ C12 = 1; Q ++;}
+        if( (((VH2 <= 0)&&(VH4 >= 0)) || ((VH2 >= 0 )&&( VH4 <= 0)) )&&( V2 !== V4 )){ C24 = 1; Q ++;}
+        if( (((VH4 <= 0)&&(VH3 >= 0)) || ((VH4 >= 0 )&&( VH3 <= 0)) )&&( V3 !== V4 )){ C34 = 1; Q ++;}
+        if( (((VH1 <= 0)&&(VH3 >= 0)) || ((VH1 >= 0 )&&( VH3 <= 0)) )&&( V1 !== V3 )){ C13 = 1; Q ++;}
 
         switch (Q) {
             case 2:
                 this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
                 break;
             case 4:
-                if(( V2 == High)&&(V3 == High)){
+                if(( V2 === High)&&(V3 === High)){
                     C12 = 1; C13 = 1;
                     this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
                 }else{
@@ -443,10 +443,10 @@ class clsMeshContour {
                 }
                 break;
             case 3:
-                if(( C12 == 1 )&&( C24 == 1 )&&( V2 == High )){ C12 = 0;}
-                if( (C12 == 1 )&&( C13 == 1 )&&( V1 == High )){ C12 = 0;}
-                if(( C24 == 1 )&&( C34 == 1 )&&( V4 == High )){ C24 = 0;}
-                if(( C34 == 1 )&&( C13 == 1 )&&( V3 == High )){ C13 = 0;}
+                if(( C12 === 1 )&&( C24 === 1 )&&( V2 === High )){ C12 = 0;}
+                if( (C12 === 1 )&&( C13 === 1 )&&( V1 === High )){ C12 = 0;}
+                if(( C24 === 1 )&&( C34 === 1 )&&( V4 === High )){ C24 = 0;}
+                if(( C34 === 1 )&&( C13 === 1 )&&( V3 === High )){ C13 = 0;}
 
                 this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
                 break;
@@ -456,26 +456,26 @@ class clsMeshContour {
     private R2220(mi: number, mj: number, C12: number, C34: number, C24: number, C13: number, VH1: number, VH2: number, VH3: number, VH4: number, V1: number, V2: number, V3: number, V4: number, HK: number, High_CN: number[], con: conPart_info[][]) {
         let T = 0;
         const po: point[] = [];
-        if(C12 == 1 ){
+        if(C12 === 1 ){
             po[T] = new point(mi + Math.abs(VH1 / (V1 - V2)), mj);
             T++;
         }
-        if (C34 == 1) {
+        if (C34 === 1) {
             po[T] = new point(mi + Math.abs(VH3 / (V3 - V4)), mj + 1);
             T++;
         }
-        if (C24 == 1) {
+        if (C24 === 1) {
             po[T] = new point(mi + 1, mj + Math.abs(VH2 / (V2 - V4)));
             T++;
         }
-        if (C13 == 1) {
+        if (C13 === 1) {
             po[T] = new point(mi, mj + Math.abs(VH1 / (V1 - V3)));
             T++;
         }
         if(T < 2 ){
             return; //Tはほぼ常に２で２未満のことはない
         }
-        if(po[0].Equals(po[1])==false){
+        if(po[0].Equals(po[1])===false){
             //二つの座標が同じになってしまう場合は含めない
             const Pon = High_CN[HK];
             con[HK][Pon]=new conPart_info();
@@ -518,7 +518,7 @@ class clsMeshContour {
         let mnv: number | undefined;
         for (let i = 0; i < stp; i++) {
             let h2;
-            if (i == stp - 1) {
+            if (i === stp - 1) {
                 h2 = H + (yw % stp); //ループ最後では余り部分を追加する
             } else {
                 h2 = H + 1; //1メッシュ分重複を持たせる
@@ -526,7 +526,7 @@ class clsMeshContour {
             const py2 = i * H;
             for (let j = 0; j < stp; j++) {
                 let w2;
-                if (j == stp - 1) {
+                if (j === stp - 1) {
                     w2 = w + (xw % stp);//ループ最後では余り部分を追加する
                 } else {
                     w2 = w + 1; //1メッシュ分重複を持たせる
@@ -541,7 +541,7 @@ class clsMeshContour {
                         const px = px2 + kx;
                         const cell = Mesh[px][py];
                         if (cell !== undefined) { //Web等高線メーカーの場合-9999になっているので必要ないが汎用性のため残す
-                            if (f == true) {
+                            if (f === true) {
                                 mxv = cell;
                                 mnv = cell;
                                 f = false;
@@ -571,8 +571,8 @@ class clsMeshContour {
                 mnv = undefined;
                 for (let j = 0; j <= 3; j++) {
                     const Quad_MeshDataSub = this.Quad_MeshData[SP + i + j];
-                    if (Quad_MeshDataSub.LackF == false) {
-                        if (f == true) {
+                    if (Quad_MeshDataSub.LackF === false) {
+                        if (f === true) {
                             mxv = Quad_MeshDataSub.Max;
                             mnv = Quad_MeshDataSub.Min;
                             f = false;
@@ -600,21 +600,21 @@ class clsMeshContour {
 
     private Get_Quad_MeshCell(value: number, Qcell: MortonIndex[], SpaceLevel: number, Scell: number, n: PartitionCounter, max_PartitiopnLevel: number) {
         /// <summary>四分木から等値線にかかるメッシュを抜き出す再帰処理</summary>
-        if (SpaceLevel == 0) {
+        if (SpaceLevel === 0) {
             //初回の呼び出し
             Qcell.length = this.Get_MortonArrayPosition( max_PartitiopnLevel);
             n[0] = 0;
             const Quad_MeshDataSub = this.Quad_MeshData[0];
-            if ((Generic.Check_Two_Value_In(value, Quad_MeshDataSub.Min, Quad_MeshDataSub.Max) != chvValue_on_twoValue.chvOuter) && (Quad_MeshDataSub.LackF == false)) {
+            if ((Generic.Check_Two_Value_In(value, Quad_MeshDataSub.Min, Quad_MeshDataSub.Max) !== chvValue_on_twoValue.chvOuter) && (Quad_MeshDataSub.LackF === false)) {
                 this.Get_Quad_MeshCell(value, Qcell, SpaceLevel + 1, 0, n, max_PartitiopnLevel)
             }
         } else {
             const SP = this.Get_MortonArrayPosition( SpaceLevel);
             for (let i = 0; i <= 3 ; i++) {
                 const Quad_MeshDataSub = this.Quad_MeshData[SP + Scell + i];
-                if ((Generic.Check_Two_Value_In(value, Quad_MeshDataSub.Min, Quad_MeshDataSub.Max) != chvValue_on_twoValue.chvOuter) && (Quad_MeshDataSub.LackF == false)) {
+                if ((Generic.Check_Two_Value_In(value, Quad_MeshDataSub.Min, Quad_MeshDataSub.Max) !== chvValue_on_twoValue.chvOuter) && (Quad_MeshDataSub.LackF === false)) {
                     //該当した場合
-                    if (SpaceLevel == max_PartitiopnLevel - 1) {
+                    if (SpaceLevel === max_PartitiopnLevel - 1) {
                         //最大レベルの場合、四分木線形配列の位置をQcellに記憶
                         Qcell[n[0]] = SP + Scell + i;
                         n[0] ++;
@@ -636,7 +636,7 @@ class clsMeshContour {
             n = Math.floor(ms / Math.pow(2, i));
             i++;
         } while (n >= 20);
-        if (i == 2) {
+        if (i === 2) {
             i = 3;
         }
         return i-1;
