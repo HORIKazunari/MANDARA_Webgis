@@ -6738,7 +6738,7 @@ class clsAttrData {
     }
 
     //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数えて文字列で出力
-    Get_Condition_Ok_Num_Info(Layernum: number): JsonObject {
+    Get_Condition_Ok_Num_Info(Layernum: number): string {
         let T = this.Get_Layer_Name(Layernum,false);
         T += "全オブジェクト数:"+ this.Get_ObjectNum(Layernum).toString()  + '\n';
         T += "条件に適合するオブジェクト数:" + this.Get_Condition_Ok_Num(Layernum).toString() +  '\n' + '\n';
@@ -7341,28 +7341,29 @@ class clsAttrData {
     FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: JsonValue, col: JsonValue): void {
         let ColData = [];// colorARGB
         const gradPoint = Number(GradationPoint4);
+        const colRGBA = col as colorRGBA;
 
         if (Color_cng_n === gradPoint) { return; }
 
         const sv = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         if (Color_cng_n < gradPoint) {
             const n = gradPoint + 1;
-            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color1 as colorRGBA, col, Color_cng_n + 1);
+            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color1 as colorRGBA, colRGBA, Color_cng_n + 1);
             for (let i = 0; i < Color_cng_n; i++) {
                 sv.Class_Div[i].PaintColor = ColData[i] as colorRGBA;
             }
-            ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color3 as colorRGBA, n - Color_cng_n);
+            ColData = Generic.TwoColorGradation(colRGBA, sv.ClassPaintMD.color3 as colorRGBA, n - Color_cng_n);
             for (let i = Color_cng_n; i < n; i++) {
                 sv.Class_Div[i].PaintColor = ColData[i - Color_cng_n] as colorRGBA;
             }
         } else {
             let n = Color_cng_n - gradPoint + 1;
-            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color3 as colorRGBA, col, n);
+            ColData = Generic.TwoColorGradation(sv.ClassPaintMD.color3 as colorRGBA, colRGBA, n);
             for (let i = 0; i < n; i++) {
                 sv.Class_Div[gradPoint + i].PaintColor = ColData[i] as colorRGBA;
             }
             n = sv.Div_Num - Color_cng_n;
-            ColData = Generic.TwoColorGradation(col, sv.ClassPaintMD.color2 as colorRGBA, n);
+            ColData = Generic.TwoColorGradation(colRGBA, sv.ClassPaintMD.color2 as colorRGBA, n);
             for (let i = 0; i < n; i++) {
                 sv.Class_Div[Color_cng_n + i].PaintColor = ColData[i] as colorRGBA;
             }
@@ -7424,14 +7425,14 @@ class clsAttrData {
             }
             px /= 4;
             py /= 4;
-            return { ok: true, gpoint: new point(px, py) };
+            return new point(px, py);
         } else {
             const badata = this.Boundary_Kencode_Arrange(Layernum, ObjNumber);
             if (badata.Pon <= 0) {
-                return { ok: false };
+                return new point(0, 0);
             } else {
                 const v = this.LayerData[Layernum].MapFileData.Menseki_Sub(badata);
-                return { ok: true, gpoint: v.gpoint };
+                return v.gpoint;
             }
         }
     }
@@ -7448,14 +7449,14 @@ class clsAttrData {
             p.push(LO.MeshPoint[0]);
             p.push(LO.MeshPoint[1]);
             const men = spatial.Get_Hairetu_Menseki( p, lay.MapFileData.Map)
-            return {menseki:men};
+            return men;
         } else {
             const badata = this.Boundary_Kencode_Arrange(Layernum, ObjNumber);
             if (badata.Pon <= 0) {
                 return (-1);
             } else {
                 const m = lay.MapFileData.Menseki_Sub(badata);
-                return m;
+                return m.menseki;
             }
         }
     }
@@ -7826,8 +7827,8 @@ class clsAttrData {
                 seriesData[1] = this.LayerData[di.Layer as number].Name;
                 switch (di.Print_Mode_Layer) {
                     case enmLayerMode_Number.SoloMode: {
-                        seriesData[2] = this.Get_DataTitle(di.Layer, di.Data, false);
-                        seriesData[3] = Generic.getSolomodeStrings(di.SoloMode);
+                        seriesData[2] = this.Get_DataTitle(di.Layer as number, di.Data as number, false);
+                        seriesData[3] = Generic.getSolomodeStrings(di.SoloMode as number);
                         break;
                     }
                     case enmLayerMode_Number.GraphMode: {

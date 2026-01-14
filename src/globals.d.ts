@@ -456,7 +456,7 @@ interface IAttrData {
     Get_DataUnit_With_Kakko?: (arg1?: number, arg2?: number) => string;
     Get_PrintError?: () => { Print_Enable: number; message: string };
     Get_Condition_Info?: (layer?: number) => string;
-    Get_Condition_Ok_Num_Info?: (layer?: number) => number;
+    Get_Condition_Ok_Num_Info?: (layer?: number) => string;
     Get_ObjectNum?: (layer?: number) => number;
     Check_Condition?: (layer?: number, index?: number) => boolean;
     Get_KenObjName?: (layer?: number, index?: number) => string;
