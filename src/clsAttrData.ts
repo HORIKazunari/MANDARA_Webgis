@@ -6665,7 +6665,7 @@ class clsAttrData {
     }
 
     /**指定レイヤの条件設定情報を文字列で出力 */
-    Get_Condition_Info(Layernum: number): JsonObject {
+    Get_Condition_Info(Layernum: number): string {
         let ST1 = "表示オブジェクト限定:"
 
         if (this.Check_ObjectLimitation(Layernum) === true) {
@@ -7270,15 +7270,14 @@ class clsAttrData {
     }
 
     //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
-    Get_InnerTile(InnerData: JsonValue, Layernum: number, CategoryPos: number): JsonValue {
+    Get_InnerTile(InnerData: strInner_Data_Info, Layernum: number, CategoryPos: number): JsonValue {
         let t;
         if (CategoryPos === -1) {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
         } else {
             t = clsBase.Tile();
             const layerDataArray = this.LayerData[Layernum].atrData.Data as strData_info[];
-            const innerDataInfo = InnerData as strInner_Data_Info;
-            t.Color = layerDataArray[innerDataInfo.Data].SoloModeViewSettings.Class_Div[CategoryPos].PaintColor.Clone();
+            t.Color = layerDataArray[InnerData.Data].SoloModeViewSettings.Class_Div[CategoryPos].PaintColor.Clone();
         }
         return t;
     }
@@ -7341,7 +7340,7 @@ class clsAttrData {
     FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: JsonValue, col: JsonValue): void {
         let ColData = [];// colorARGB
         const gradPoint = Number(GradationPoint4);
-        const colRGBA = col as colorRGBA;
+        const colRGBA = col as unknown as colorRGBA;
 
         if (Color_cng_n === gradPoint) { return; }
 
@@ -7833,7 +7832,7 @@ class clsAttrData {
                     }
                     case enmLayerMode_Number.GraphMode: {
                         seriesData[2] = "グラフ表示".length; // Convert string to number
-                        let T = this.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.Data].title;
+                        let T = this.LayerData[di.Layer as number].LayerModeViewSettings.GraphMode.DataSet[di.Data as number].title;
                         if (T === "") {
                             T = "データセット" + String(Number(di.Data) + 1);
                         }
@@ -7842,7 +7841,7 @@ class clsAttrData {
                     }
                     case enmLayerMode_Number.LabelMode: {
                         seriesData[2] = "ラベル表示".length; // Convert string to number
-                        let T = this.LayerData[di.Layer].LayerModeViewSettings.LabelMode.DataSet[di.Data].title;
+                        let T = this.LayerData[di.Layer as number].LayerModeViewSettings.LabelMode.DataSet[di.Data as number].title;
                         if (T === "") {
                             T = "データセット" + String(Number(di.Data) + 1);
                         }
