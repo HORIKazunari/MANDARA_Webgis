@@ -519,13 +519,13 @@ interface IAttrData {
     Get_Data_Value?: (Layernum?: number, DataNum?: number, Obj?: number, Missing_word?: string) => string | number;
     Get_DataUnit?: (layer?: number, data?: number) => string;
     Get_DataType?: (layer?: number, data?: number) => number;
-    Get_Missing_Value_DataArray?: (layer?: number, data?: number) => unknown[];
-    Get_Data_Cell_Array_With_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
+    Get_Missing_Value_DataArray?: (layer?: number, data?: number) => boolean[];
+    Get_Data_Cell_Array_With_MissingValue?: (layer?: number, object?: number, data?: number) => number[];
     Add_One_Data_Value?: (Layernum: number, Title: string, Unit: string, Note: string, Data_Val_str: string, Missing_F?: boolean) => boolean;
     Check_Missing_Value?: (layer?: number, object?: number, data?: number) => boolean;
     Check_Enable_SoloMode?: (soloMode?: number, layernum?: number, dataNum?: number) => boolean;
-    Get_CategolyArray?: (layer?: number, data?: number) => unknown[];
-    Get_Categoly?: (layer?: number, data?: number, index?: number) => unknown;
+    Get_CategolyArray?: (layer?: number, data?: number) => number[];
+    Get_Categoly?: (layer?: number, data?: number, index?: number) => number;
     Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], nPolyP: number[], tile: Tile_Property) => void;
     Get_InnerTile?: (layer?: number, object?: number, arg3?: Screen_info) => Tile_Property;
     Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;

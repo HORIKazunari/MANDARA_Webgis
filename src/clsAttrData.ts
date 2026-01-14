@@ -6890,10 +6890,10 @@ class clsAttrData {
 
 
     //データ項目のデータを配列で取得、欠損値は最小値-1に、カテゴリーデータの場合はカテゴリーの位置
-    Get_Data_Cell_Array_With_MissingValue(Layernum: number, DataNum: number): JsonValue[] {
+    Get_Data_Cell_Array_With_MissingValue(Layernum: number, DataNum: number): number[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
-        let DT: JsonValue[] = [];
+        let DT: number[] = [];
         if (ad.EnableValueNum === 0) {
             return DT;
         }
@@ -6917,7 +6917,7 @@ class clsAttrData {
     }
 
     //データ項目のデータが欠損値だった場合にTRUEが入る配列を返す
-    Get_Missing_Value_DataArray(Layernum: number, DataNum: number): JsonValue[] {
+    Get_Missing_Value_DataArray(Layernum: number, DataNum: number): boolean[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let dt =[];
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
