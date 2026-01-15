@@ -234,8 +234,10 @@ class clsDraw {
         if (LinePat !== undefined) {
             const lc: CanvasLineCap[] = ['butt', 'square', 'round'];
             const lj: CanvasLineJoin[] = ['miter', 'bevel', 'round'];
-            g.lineCap = lc[LinePat.Edge_Connect_Pattern.lineCap] as CanvasLineCap;
-            g.lineJoin = lj[LinePat.Edge_Connect_Pattern.lineJoin] as CanvasLineJoin;
+            const lineCapIndex = LinePat.Edge_Connect_Pattern.lineCap as unknown as number;
+            const lineJoinIndex = LinePat.Edge_Connect_Pattern.lineJoin as unknown as number;
+            g.lineCap = lc[lineCapIndex] as CanvasLineCap;
+            g.lineJoin = lj[lineJoinIndex] as CanvasLineJoin;
             g.miterLimit = LinePat.Edge_Connect_Pattern.miterLimit;
             g.strokeStyle = LinePat.Color.toRGBA();
             g.lineWidth = ScrData.Get_Line_Width(LinePat.Width);
@@ -276,14 +278,16 @@ class clsDrawLine {
         if (LinePat.BlankF === true) {
             return;
         }
-        let pxy = [];
-        let ScrData;
-        if ((d1 instanceof point) === true) {
-            pxy = [d1, d2];
+        let pxy: point[];
+        let ScrData: Screen_info | undefined;
+        if ((d1 instanceof point) === true && d2 instanceof point) {
+            pxy = [d1 as point, d2];
             ScrData = d3;
-        } else {
+        } else if (Array.isArray(d1)) {
             pxy = d1;
-            ScrData = d2;
+            ScrData = d2 as Screen_info | undefined;
+        } else {
+            throw new Error("Invalid arguments for Line function");
         }
         this.Draw_SolidPolyLine(g, pxy, LinePat, ScrData);
     }

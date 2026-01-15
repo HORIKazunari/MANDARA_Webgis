@@ -103,7 +103,7 @@ export class TKY2JGDInfo_Impl {
         let Eta2: number, M1: number, N1: number;          //phi1の関数
         let Eta2phi: number, Mphi: number, Nphi: number;   //phi(=B)の関数
         let T: number, T2: number, T4: number, T6: number;
-        let e4: number, e6: number, e8: number, e10: number;
+        let e2: number, e4: number, e6: number, e8: number, e10: number;
         let e12: number, e14: number, e16: number;
         let S1: number, phi1: number, oldphi1: number, icount: number;
         let Bunsi: number, Bunbo: number;
@@ -117,18 +117,18 @@ export class TKY2JGDInfo_Impl {
         EPs.E = epSrc.E ?? 0;
         EPs.namec = epSrc.namec ?? "";
         e2 = EPs.E ?? 0;
-        e4 = e2 * e2
-        e6 = e4 * e2
-        e8 = e4 * e4
-        e10 = e8 * e2
-        e12 = e8 * e4
-        e14 = e8 * e6
-        e16 = e8 * e8
+        e4 = e2 * e2;
+        e6 = e4 * e2;
+        e8 = e4 * e4;
+        e10 = e8 * e2;
+        e12 = e8 * e4;
+        e14 = e8 * e6;
+        e16 = e8 * e8;
 
         //定数項 the same as bl2xy
-        AEE = EPs.a * (1.0 - EPs.E) //a(1-e2)
-        CEE = EPs.a / Math.sqrt(1.0 - EPs.E)   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
-        Ep2 = EPs.E / (1.0 - EPs.E) //e'2(e prime 2) Eta2を計算するため
+        AEE = EPs.a * (1.0 - EPs.E); //a(1-e2)
+        CEE = EPs.a / Math.sqrt(1.0 - EPs.E);   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
+        Ep2 = EPs.E / (1.0 - EPs.E); //e'2(e prime 2) Eta2を計算するため
 
         AJ = 4927697775.0 / 7516192768.0 * e16
         AJ = AJ + 19324305.0 / 29360128.0 * e14
@@ -236,9 +236,9 @@ export class TKY2JGDInfo_Impl {
         // Gamma = Gamma * T;
 
         //縮尺係数の計算 「精密測地網一次基準点測量計算式」P51のmを求める式より
-        const Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
-        const Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
-        const Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
+        Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
+        Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
+        Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
         MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0);
         MMM = MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0);
         MMM = MMM + 1.0;
@@ -3035,7 +3035,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             x = e_point.clientX; //ページ内でのマウスカーソル位置を取得
             y = e_point.clientY;
         }
-        if (x === 'undefined' && 'pageX' in e_point && 'pageY' in e_point) {
+        if (typeof x === 'undefined' && 'pageX' in e_point && 'pageY' in e_point) {
             x = e_point.pageX;
             y = e_point.pageY;
         } else {
@@ -4014,7 +4014,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**サイズ選択用select valueType:配列はそのまま入れる、1（0.1間隔）,2(0.5),3(5),4(10))、onChangeでは要素,オブジェクトと値を返す*/ 
     static createNewSizeSelect(ParentObj: HTMLElement, defoValue: number, ID: string, preWord: string, x: number, y: number, preWordWidth: number, valueType: number[] | number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, percentShowF: boolean = true) {
 
-        let cboCodeList=[];
+        let cboCodeList: number[] = [];
         if( valueType instanceof Array===true){
             for (const i　in valueType) {
                 cboCodeList.push(valueType[i]);
@@ -4126,7 +4126,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     sel=sbox.selectedIndex;
                     v=sbox.getValue ? sbox.getValue() : undefined;
                 }else{
-                    sel=Generic.getMultipleSelectIndex(sbox,0);
+                    sel=Generic.getMultipleSelectIndex(sbox,0) as number[];
                 }
                 onChange(sbox,sel,v);
             }
@@ -4164,11 +4164,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     //
     /**複数選択select要素の選択状態を取得 mode0は選択された番号の配列、mode1は選択をtruefalseを配列で返す */
-    static getMultipleSelectIndex(obj: HTMLSelectElement, mode: number) {
+    static getMultipleSelectIndex(obj: HTMLSelectElement, mode: number): number[] | boolean[] {
 
         const opts = obj.options;
-        const selectedIndex = [];
-        const selected = []
+        const selectedIndex: number[] = [];
+        const selected: boolean[] = [];
         for (let i = 0; i < opts.length; i++) {
             if (opts[i].selected) {
                 selectedIndex.push(i);

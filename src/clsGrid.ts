@@ -209,7 +209,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         if (Mapfiles.length > 0) {
             const adLst = [];
             for (let i = 0; i < Mapfiles.length; i++) {
-                adLst.push({ text: Mapfiles[i], value: i });
+                adLst.push({ text: Mapfiles[i], value: String(i) });
             }
             lstMapFile.addList(adLst, 0);
             for (let i = 0; i < Mapfiles.length; i++) {
@@ -1190,10 +1190,11 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 const n = oldMapfile.indexOf(newMapfile[i]);
                 if (n !== -1) {
                     if (newTV.DummyObjectPointMark[newMapfile[i]]) {
-                        const d = newTV.DummyObjectPointMark[newMapfile[i]] as any;
+                        const d = newTV.DummyObjectPointMark[newMapfile[i]];
+                        const oldD = oldDummy[newMapfile[i]];
                         for (let j = 0; j < d.length; j++) {
-                            d[j].ObjectKindName = oldDummy[newMapfile[i]][j].ObjectKindName;
-                            d[j].Mark = oldDummy[newMapfile[i]][j].Mark.Clone();
+                            d[j].ObjectKindName = oldD[j].ObjectKindName;
+                            d[j].Mark = oldD[j].Mark.Clone();
                         }
                     }
                 }
