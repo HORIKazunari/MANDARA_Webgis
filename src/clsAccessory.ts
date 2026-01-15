@@ -58,30 +58,39 @@ export class clsAccessory {
         const checkScreenIn = state.attrData.Check_Screen_In;
         if(!checkScreenIn || !checkScreenIn(C_Rect) ){
             return false;
-        }else{
-            state.attrData.Draw_Tile_RoundBox(g, C_Rect, lineDummyKind.Back, 0);
-
-            for(let i  = 0 ;i< n ;i++){
-                const lk= LPC[Use_Line_Number[i]];
-                    const Y  = C_Rect.top + i * UH
-                    const x3  = C_Rect.left + state.attrData.Radius(16, 1, 1)
-                    switch( lineDummyKind.Line_Pattern){
-                        case enmCircleMDLegendLine.Zigzag:{
-                            const pxy=[];
-                            for(let j  = 0 ; j<=3;j++){
-                                pxy.push(new point(C_Rect.left + state.attrData.Radius(4.5, 1, 1) * j, Y + UH / 4 + UH / 2 * (j % 2)));
-                            }
-                            state.attrData.Draw_Line(g, lk.Pat,  pxy);
-                            break;
-                        }
-                        case enmCircleMDLegendLine.Straight:
-                            state.attrData.Draw_Line(g, lk.Pat, [new point(C_Rect.left, Y + UH / 2), new point(C_Rect.left + state.attrData.Radius(4.5, 1, 1) * 3, Y + UH / 2)]);
-                            break;
-                        }
-                    state.attrData.Draw_Print(g, lk.Name, new point(x3, Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
-            }
-            return true;
         }
+        
+        const drawTileRoundBox = state.attrData.Draw_Tile_RoundBox;
+        const drawLine = state.attrData.Draw_Line;
+        const drawPrint = state.attrData.Draw_Print;
+        const radiusFunc = state.attrData.Radius;
+        
+        if (!drawTileRoundBox || !drawLine || !drawPrint || !radiusFunc) {
+            return false;
+        }
+        
+        drawTileRoundBox(g, C_Rect, lineDummyKind.Back, 0);
+
+        for(let i  = 0 ;i< n ;i++){
+            const lk= LPC[Use_Line_Number[i]];
+            const Y  = C_Rect.top + i * UH
+            const x3  = C_Rect.left + radiusFunc(16, 1, 1)
+            switch( lineDummyKind.Line_Pattern){
+                case enmCircleMDLegendLine.Zigzag:{
+                    const pxy=[];
+                    for(let j  = 0 ; j<=3;j++){
+                        pxy.push(new point(C_Rect.left + radiusFunc(4.5, 1, 1) * j, Y + UH / 4 + UH / 2 * (j % 2)));
+                    }
+                    drawLine(g, lk.Pat,  pxy);
+                    break;
+                }
+                case enmCircleMDLegendLine.Straight:
+                    drawLine(g, lk.Pat, [new point(C_Rect.left, Y + UH / 2), new point(C_Rect.left + radiusFunc(4.5, 1, 1) * 3, Y + UH / 2)]);
+                    break;
+            }
+            drawPrint(g, lk.Name, new point(x3, Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
+        }
+        return true;
     }
 
     /**点オブジェクトの凡例 */
@@ -171,10 +180,18 @@ export class clsAccessory {
 
 
         const av = state.attrData.TotalData.ViewStyle;
+        if (!av.ScrData?.ThreeDMode || !av.LatLonLine_Print || !av.ScrData.getSxSy) {
+            return;
+        }
         if (av.ScrData.ThreeDMode.Set3D_F === true) {
             return;
         }
         const MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon;
+        if (!MapIdoKedoRect || typeof MapIdoKedoRect.top === 'undefined' || typeof MapIdoKedoRect.bottom === 'undefined' ||
+            typeof MapIdoKedoRect.left === 'undefined' || typeof MapIdoKedoRect.right === 'undefined') {
+            return;
+        }
+        const getSxSy = av.ScrData.getSxSy;
         const iiv = av.LatLonLine_Print.Lat_Interval;
         const s1 = Math.floor(MapIdoKedoRect.top / iiv) ;
         let Start_Ido = iiv * s1;
