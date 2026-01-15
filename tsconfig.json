@@ -17,22 +17,22 @@
 
     /* TypeScript厳密モード */
     "strict": false,                    // 段階的に有効化
-    "noImplicitAny": false,             // any型の暗黙的な使用を一時的に許可
-    "strictNullChecks": false,          // null/undefinedの厳密なチェックを一時的に無効化
+    "noImplicitAny": true,              // any型の暗黙的な使用を検出
+    "strictNullChecks": true,           // null/undefinedの厳密なチェック
     "strictFunctionTypes": true,        // 関数型の厳密なチェック
     "strictBindCallApply": true,        // bind/call/applyの厳密なチェック
-    "noImplicitThis": false,            // thisの暗黙的なanyを一時的に許可
+    "noImplicitThis": true,             // thisの暗黙的なany型を検出
     "alwaysStrict": true,               // strictモードでコンパイル
-    "noImplicitReturns": false,         // 関数の全パスでreturnを一時的に無効化
+    "noImplicitReturns": true,          // 関数の全パスでreturnを強制
     "noFallthroughCasesInSwitch": true, // switchのfallthrough防止
     "useUnknownInCatchVariables": true, // catch句の変数をunknown型に
-    "strictPropertyInitialization": false,  // クラスプロパティの初期化チェックを一時的に無効化
+    "strictPropertyInitialization": true,   // クラスプロパティの初期化チェック
     // "exactOptionalPropertyTypes": true,
     // "noImplicitOverride": true,
     
     /* 未使用変数のチェック */
-    "noUnusedLocals": false,            // 一時的に無効化
-    "noUnusedParameters": false,        // 一時的に無効化
+    "noUnusedLocals": true,             // 未使用のローカル変数を検出
+    "noUnusedParameters": true,         // 未使用のパラメータを検出（_で始まる場合は除外）
     
     /* JavaScript完全排除 */
     "allowJs": false,

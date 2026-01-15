@@ -907,7 +907,7 @@ export class clsAccessory {
                 const H = 1 - (state.attrData.LayerData[Layn2].atrData.Data[a].Statistics.Ave - Ymin) / (Ymax - Ymin);
                 const yy = HeadBoxSize.height + wh * H + TH / 2;
                 const yy2 = HeadBoxSize.height + TH / 2 + (wh * (1 - (-Ymin) / (Ymax - Ymin)));
-                state.attrData.Draw_Tile_Box(g, new rectangle(new point(ALP.x + fsx, ALP.y + yy), new size(stx, yy2 - yy)), gData.Oresen_Bou.Line as any, gData.Data[j].Tile, 0);
+                state.attrData.Draw_Tile_Box(g, new rectangle(new point(ALP.x + fsx, ALP.y + yy), new size(stx, yy2 - yy)), gData.Oresen_Bou.Line, gData.Data[j].Tile, 0);
                 fsx += stx;
             }
         }
@@ -1381,7 +1381,7 @@ export class clsAccessory {
             }
         }
 
-        if ((PData.Statistics.Min < 0) && (MkCommon.Inner_Data.Flag === false) || ((MkCommon.Inner_Data.Mode as any)?.ClassHatch === enmInner_Data_Info_Mode.ClassHatch)) {
+        if ((PData.Statistics.Min < 0) && ((MkCommon.Inner_Data.Flag === false) || (MkCommon.Inner_Data.Mode === enmInner_Data_Info_Mode.ClassHatch))) {
             ys2 += UH;
             const r = UH / 2.2;
             switch (LayerShape) {
@@ -1498,7 +1498,7 @@ export class clsAccessory {
         MP.PrintMark = enmMarkPrintType.Mark;
         MP.ShapeNumber = 0
         MP.Tile = tp.Clone();
-        MP.Line = (LP as any).Clone();
+        MP.Line = LP.Clone();
         MP.WordFont.Back.Tile.BlankF = true;
         MP.WordFont.Back.Line.BlankF = true;
         MP.WordFont.Back.Round = 0;
@@ -1646,10 +1646,10 @@ export class clsAccessory {
         if ((PData.MissingValueNum > 0) && (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag === true)) {
             const vm = state.attrData.TotalData.ViewStyle.Missing_Data;
             let H;
-            if ((vm.ClassMark as any)?.PrintMark === enmMarkPrintType.Word) {
-                H = state.attrData.Get_Length_On_Screen((vm.ClassMark as any)?.WordFont?.Size || 0);
+            if (vm.ClassMark.PrintMark === enmMarkPrintType.Word) {
+                H = state.attrData.Get_Length_On_Screen(vm.ClassMark.WordFont.Size || 0);
             } else {
-                H = state.attrData.Radius((vm.ClassMark as any)?.WordFont?.Size || 0, 1, 1) * 2 ;
+                H = state.attrData.Radius(vm.ClassMark.WordFont.Size || 0, 1, 1) * 2 ;
             }
             ysize2 += H + byh;
         }
@@ -1672,11 +1672,11 @@ export class clsAccessory {
             if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.ClassMarkFrame_Visible === true) {
                 const TilePat = clsBase.Tile();
                 TilePat.Color = new colorRGBA(255, 255, 255, 255);
-                state.attrData.Draw_Tile_Box(g, rect, state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Line as any, TilePat, 0);
+                state.attrData.Draw_Tile_Box(g, rect, state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Line, TilePat, 0);
             }
-            const r = state.attrData.Radius((sv.Class_Div[i] as any)?.ClassMark?.WordFont?.Size || 0, 1, 1);
+            const r = state.attrData.Radius(sv.Class_Div[i].ClassMark.WordFont.Size || 0, 1, 1);
             const p = new point(ALP.x + inBox.width / 2, ALP.y + acumy + ysize[i] / 2 + hu + HeadBoxSize.height);
-            state.attrData.Draw_Mark(g, p, r, (sv.Class_Div[i] as any)?.ClassMark);
+            state.attrData.Draw_Mark(g, p, r, sv.Class_Div[i].ClassMark);
             acumy += ysize[i] + bxwy;
         }
         state.attrData.Draw_Print(g, UnitTx, new point(ALP.x + inBox.width, ALP.y + HeadBoxSize.height), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
@@ -1723,10 +1723,10 @@ export class clsAccessory {
         if ((PData.MissingValueNum > 0) && (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag === true)) {
             const vm = state.attrData.TotalData.ViewStyle.Missing_Data;
             let H;
-            if ((vm.ClassMark as any)?.PrintMark === enmMarkPrintType.Word) {
-                H = state.attrData.Get_Length_On_Screen((vm.ClassMark as any)?.WordFont?.Size || 0);
+            if (vm.ClassMark.PrintMark === enmMarkPrintType.Word) {
+                H = state.attrData.Get_Length_On_Screen(vm.ClassMark.WordFont.Size || 0);
             } else {
-                H = state.attrData.Radius((vm.ClassMark as any)?.WordFont?.Size || 0, 1, 1) * 2 ;
+                H = state.attrData.Radius(vm.ClassMark.WordFont.Size || 0, 1, 1) * 2 ;
             }
             const y2 = ALP.y + inBox.height + byh / 2 + HeadBoxSize.height;
             if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.ClassMarkFrame_Visible === true) {
@@ -1862,7 +1862,7 @@ export class clsAccessory {
                     const H  = Math.max(UH, LW);
                     const Y  = HeadBoxSize.height + UH / 2;
                     let r ;
-                    if((cvi.ODLinePat.Edge_Connect_Pattern as any)?.Edge_Pattern === enmEdge_Pattern.Flat ){
+                    if(cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern === enmEdge_Pattern.Flat ){
                         r = 0;
                     }else{
                         r = LW / 2;
@@ -1890,7 +1890,7 @@ export class clsAccessory {
                 state.attrData.LayerData[Layn2].Shape === enmShape.LineShape) ){
                 const LW  = state.attrData.Get_Length_On_Screen(misv.LineShape.Width);
                 let r ;
-                if((misv.LineShape.Edge_Connect_Pattern as any)?.Edge_Pattern === enmEdge_Pattern.Flat ){
+                if(misv.LineShape.Edge_Connect_Pattern.Edge_Pattern === enmEdge_Pattern.Flat ){
                     r = 0;
                 }else{
                     r = LW / 2;
@@ -1913,7 +1913,7 @@ export class clsAccessory {
         let MoreSTR ;
         let MiddleSTR ;
         const vs = state.attrData.TotalData.ViewStyle;
-        switch( (vs.MapLegend.ClassMD.SeparateClassWords as any)){
+        switch(vs.MapLegend.ClassMD.SeparateClassWords){
             case enmSeparateClassWords.Japanese:
                 UnderSTR = "未満";
                 HifunSTR = "～";

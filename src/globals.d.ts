@@ -310,7 +310,7 @@ interface IAttrData {
                     Visible?: boolean;
                     Font?: Font_Property;
                     MaxWidth?: number;
-                    Clone?: () => unknown;
+                    Clone?: () => JsonObject;
                 };
             };
             AccessoryGroupBox: {
@@ -566,7 +566,7 @@ interface IAttrData {
     GetAllMapLineKindName?: () => string[];
     Get_AllMapLineKind?: () => LPatSek_Info[];
     getDataTitleName?: (Layernum: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => string[];
-    Get_Data_Cell_Array_Without_MissingValue?: (layer?: number, object?: number, data?: number) => unknown[];
+    Get_Data_Cell_Array_Without_MissingValue?: (layer?: number, object?: number, data?: number) => JsonValue[];
     Set_DummyObjectName_to_checkedListBox?: (element: HTMLElement, layerNum?: number, selectedObject?: number) => void;
     Set_DummyObjectName_to_selectBox?: (selbox: HTMLSelectElement, layernum: number, selectedObject: number) => void;
     Get_LayerName?: (layer?: number) => string;
@@ -603,10 +603,10 @@ interface IAttrData {
     // MapData関連
     MapData: {
         SetMapFile: (mapFileName: string) => IMapData;
-        SetObject_Name_Search?: (mapFileName: string) => unknown;
+        SetObject_Name_Search?: (mapFileName: string) => JsonValue;
         CheckMapfileExists?: (mapFileName: string) => boolean;
         AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
-        getAllMapData?: () => unknown;
+        getAllMapData?: () => JsonValue;
         [key: string]: JsonValue;
     };
 }
@@ -889,8 +889,8 @@ interface IMapData {
         NumofObjectGroup: number;
         ObjGroup: strLKOjectGroup_Info[];
         Mesh?: number;
-        Clone?: () => any;
-        [key: string]: any;
+        Clone?: () => JsonObject;
+        [key: string]: JsonValue;
     }>; // LineKind_Data配列
     MPObj?: JsonValue[]; // 地図オブジェクト配列
     [key: string]: JsonValue;
@@ -937,7 +937,7 @@ interface IFrmPrint extends ExtendedHTMLDivElement {
     seriesNextButton?: HTMLInputElement;
     seriesBeforeButton?: HTMLInputElement;
     // HTMLDivElementのプロパティも継承
-    dragBorder?: (arg1?: MouseEvent | undefined, arg2?: ((...args: any[]) => void) | HTMLElement) => void;
+    dragBorder?: (arg1?: MouseEvent | undefined, arg2?: (((...args: JsonValue[]) => void) | HTMLElement)) => void;
     resetMaxButton?: (flag?: boolean) => void;
     // Methods
     windowClose?: () => void;
@@ -945,7 +945,7 @@ interface IFrmPrint extends ExtendedHTMLDivElement {
     PropertyFix?: () => void;
     PrintCursorObjectLine?: (g: CanvasRenderingContext2D, flag: boolean) => void;
     ShowOneObjectProperty?: (layerNum: number, objNum: number, dataIndex: number, printMode: number) => void;
-    ShowOverLayObjectProperty?: (layerNum: number, dataIndex: number, onObject: any[]) => void;
+    ShowOverLayObjectProperty?: (layerNum: number, dataIndex: number, onObject: JsonValue[]) => void;
     savePNG?: (flag?: boolean) => void;
     propertyWindowClose?: () => void;
     copyProperty?: () => void;
@@ -954,7 +954,7 @@ interface IFrmPrint extends ExtendedHTMLDivElement {
     seriesNext?: () => void;
     copyImageWindow?: () => void;
     linePattern?: () => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // プロパティウィンドウ（拡張）
@@ -991,13 +991,13 @@ interface IGeneric {
     Array2Dimension: <T>(dim1num: number, dim2num: number, defoValue?: T) => T[][];
     Array2Clone: (array: JsonValue[]) => JsonValue[];
     ceatePopupMenu: (menu: MenuItem[], position: point) => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // clsPrint クラス（拡張）
 interface IClsPrint {
     printMapScreen: (canvas: HTMLCanvasElement) => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // clsDraw クラス（拡張）
@@ -1007,7 +1007,7 @@ interface IClsDraw {
     Line: (g: CanvasRenderingContext2D, linePat: Tile_Property, arg3: point | point[], arg4?: point | Screen_info, arg5?: Screen_info) => void;
     Draw_Tile_and_Paint_and_Line: (g: CanvasRenderingContext2D, points: point[], nPolyP: number[], polyNum: number, tile: Tile_Property, linePat: Tile_Property, scrData: Screen_info) => void;
     Arrow: (g: CanvasRenderingContext2D, point: point, beforePoint: point, linePat: Tile_Property, arrow: Arrow_Property, scrData: Screen_info) => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 強化されたグローバル変数宣言
@@ -1023,8 +1023,8 @@ declare const clsSettingData: {
     LegendPlusWord: string;
     LegendMinusWord: string;
     LegendBlockmodeWord: string;
-    Clone(): any;
-    [key: string]: any;
+    Clone(): JsonObject;
+    [key: string]: JsonValue;
 };
 declare const clsTime: typeof import('./clsTime').clsTime;
 declare const clsDraw: IClsDraw;
@@ -1046,7 +1046,7 @@ declare class latlon {
 declare const TKY2JGD: {
     Tokyo97toITRF94: (latlonP: latlon) => latlon;
     ITRF94toTokyo97: (latlonP: latlon) => latlon;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }; // kept temporarily; being migrated to ESM import
 // tileMapClass: AppStateで管理（削除済み）
 // preReadMapFile: AppStateで管理（削除済み）
@@ -1272,7 +1272,7 @@ declare class Line_Property {
     BlankF: boolean;
     Width: number;
     Color: colorRGBA;
-    Edge_Connect_Pattern: any; // LineEdge_Connect_Pattern_Data_Info
+    Edge_Connect_Pattern: LineEdge_Connect_Pattern_Data_Info;
     Visible?: boolean; // 表示/非表示フラグ
     Clone(): Line_Property;
     Set_Same_ColorWidth_to_LinePat(Color: colorRGBA, width: number): void;
@@ -1283,7 +1283,7 @@ declare class Tile_Property {
     BlankF: boolean;
     Color: colorRGBA;
     Width?: number; // Line描画時に使用される場合がある
-    Edge_Connect_Pattern?: any; // Line描画時に使用される場合がある
+    Edge_Connect_Pattern?: LineEdge_Connect_Pattern_Data_Info; // Line描画時に使用される場合がある
     Clone(): Tile_Property;
 }
 
@@ -1430,8 +1430,8 @@ declare const enmTotalMode_Number: { DataViewMode: number; OverLayMode: number; 
 declare const enmLatLonPrintPattern: { DegreeMinuteSecond: number; DecimalDegree: number };
 
 declare class LineEdge_Connect_Pattern_Data_Info {
-    lineCap?: string;
-    lineJoin?: string;
+    lineCap?: CanvasLineCap;
+    lineJoin?: CanvasLineJoin;
     miterLimit?: number;
     Edge_Pattern?: number; // enmEdge_Pattern
     Join_Pattern?: number; // enmJoinPattern
@@ -1827,10 +1827,11 @@ declare const enmOutputDevice: { readonly [key: string]: number };
 declare const enmDrawTiming: { readonly [key: string]: number };
 declare const enmLineConnect: { readonly [key: string]: number };
 declare const enmPointOnjectDrawOrder: { readonly [key: string]: number };
-declare const Quad_Mesh_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
-declare const LineCodeStac_Data: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
-declare const strDefTimeAttDataEach_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
-declare const strDefTimeAttData_Info: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
+// レガシーコンストラクタ型（互換性維持のため、戻り値の型をJsonObjectに統一）
+declare const Quad_Mesh_Info: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
+declare const LineCodeStac_Data: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
+declare const strDefTimeAttDataEach_Info: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
+declare const strDefTimeAttData_Info: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
 
 interface Zahyo_info {
     Mode: number; // enmZahyo_mode_info (必須プロパティに変更)
@@ -1872,7 +1873,7 @@ declare const strMap_data: {
 interface EventTarget {
     tag?: string | number;
     selectedIndex?: number;
-    value?: string | number | unknown;
+    value?: JsonValue;
 }
 
 // 関数
@@ -1923,7 +1924,7 @@ declare const enmPrintMouseMode: {
     MultiObjectSelect: 12;
 };
 
-declare const TKY2JGDInfo: { new(): any; Tokyo97toITRF94: (latlonP: latlon) => latlon; ITRF94toTokyo97: (latlonP: latlon) => latlon; [key: string]: any };
+declare const TKY2JGDInfo: { new(): JsonObject; Tokyo97toITRF94: (latlonP: latlon) => latlon; ITRF94toTokyo97: (latlonP: latlon) => latlon; [key: string]: JsonValue };
 
 // String の定義は globals.d.ts の冒頭 (150行目付近) に統合されています
 
@@ -1990,7 +1991,7 @@ interface HTMLCanvasElement {
 
 interface HTMLSelectElement {
     addSelectList?: (items: ListItem[], selectedIndex?: number, resetF?: boolean, astariskNonF?: boolean, insertPoint?: number) => void;
-    getValue?: () => string | number | unknown;
+    getValue?: () => JsonValue;
     getText?: () => string;
     oldSel?: number;
     setSelectValue?: (value: string | number) => void;
@@ -2003,7 +2004,7 @@ interface HTMLSelectElement {
 declare function Check_Print_err(): void;
 
 // Shapefile class
-declare const clsShapefile: { new(...args: JsonValue[]): any; [key: string]: JsonValue };
+declare const clsShapefile: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
 
 // Additional global variables
 declare let picMark: HTMLElement | undefined; // 変更される可能性あり
@@ -2368,72 +2369,72 @@ declare const chvValue_on_twoValue: {
 };
 
 // strScale_Attri型
-declare const strScale_Attri: { new(): any; [key: string]: JsonValue };
+declare const strScale_Attri: { new(): JsonObject; [key: string]: JsonValue };
 
-// clsAttrData.ts の関数コンストラクタ型
-declare const strDegreeMinuteSeconde: { new(...args: any[]): any; [key: string]: JsonValue };
-declare const strLatLonDegreeMinuteSecond: { new(...args: any[]): any; [key: string]: JsonValue };
-declare const Start_End_Time_data: { new(): any; StartTime?: any; EndTime?: any; [key: string]: JsonValue };
-declare const strContourData: { new(): any; [key: string]: JsonValue };
-declare const strMeshPaint: { new(): any; [key: string]: JsonValue };
-declare const strMesh3DPaint: { new(): any; [key: string]: JsonValue };
-declare const strLayerData: { new(): any; [key: string]: JsonValue };
-declare const strLabelDummyData: { new(): any; [key: string]: JsonValue };
-declare const strLabel_Data: { new(): any; [key: string]: JsonValue };
-declare const strGraphData: { new(): any; [key: string]: JsonValue };
-declare const strLabel_Attri: { new(): any; [key: string]: JsonValue };
-declare const strGraph_Attri: { new(): any; [key: string]: JsonValue };
-declare const strOverLay_Attri: { new(): any; [key: string]: JsonValue };
-declare const strTotalData: { new(): any; [key: string]: JsonValue };
-declare const strLinkURL: { new(): any; [key: string]: JsonValue };
-declare const strDataTile: { new(): any; [key: string]: JsonValue };
-declare const strDataTileList: { new(): any; [key: string]: JsonValue };
-declare const strDataObject: { new(): any; [key: string]: JsonValue };
-declare const strDataTitle: { new(): any; [key: string]: JsonValue };
-declare const strDataEdit: { new(): any; [key: string]: JsonValue };
-declare const strDataEditRow: { new(): any; [key: string]: JsonValue };
-declare const strDataEditCell: { new(): any; [key: string]: JsonValue };
-declare const strCategoryData: { new(): any; [key: string]: JsonValue };
-declare const strMaskData: { new(): any; [key: string]: JsonValue };
-declare const strMPLine: { new(): any; [key: string]: JsonValue };
-declare const strMPLineSub: { new(): any; [key: string]: JsonValue };
-declare const strDataStatistics: { new(): any; [key: string]: JsonValue };
-declare const strLegend_Attri: { new(): any; [key: string]: JsonValue };
-declare const strPrint_Mode: { new(): any; [key: string]: JsonValue };
-declare const strSoloData: { new(): any; [key: string]: JsonValue };
-declare const strSeriesData: { new(): any; [key: string]: JsonValue };
-declare const strOverlayData: { new(): any; [key: string]: JsonValue };
-declare const strPaintModeData: { new(): any; [key: string]: JsonValue };
-declare const strMarkData: { new(): any; [key: string]: JsonValue };
-declare const strBarData: { new(): any; [key: string]: JsonValue };
-declare const strPieData: { new(): any; [key: string]: JsonValue };
-declare const strFlowData: { new(): any; [key: string]: JsonValue };
-declare const strTileMarkData: { new(): any; [key: string]: JsonValue };
-declare const strTimeData: { new(): any; [key: string]: JsonValue };
-declare const strViewStyle: { new(): any; [key: string]: JsonValue };
-declare const strScreenData: { new(): any; [key: string]: JsonValue };
-declare const strMapLegend: { new(): any; [key: string]: JsonValue };
-declare const strMapTitle: { new(): any; [key: string]: JsonValue };
-declare const strMapScale: { new(): any; [key: string]: JsonValue };
-declare const strMapNorth: { new(): any; [key: string]: JsonValue };
-declare const strGridLine: { new(): any; [key: string]: JsonValue };
-declare const strBackGround: { new(): any; [key: string]: JsonValue };
-declare const strMapOverLay: { new(): any; [key: string]: JsonValue };
-declare const strCondition: { new(): any; [key: string]: JsonValue };
-declare const strConditionItem: { new(): any; [key: string]: JsonValue };
-declare const strConditionValue: { new(): any; [key: string]: JsonValue };
-declare const strPointObject: { new(): any; [key: string]: JsonValue };
-declare const strPolyObject: { new(): any; [key: string]: JsonValue };
-declare const strLineObject: { new(): any; [key: string]: JsonValue };
-declare const strObjectGroup: { new(): any; [key: string]: JsonValue };
-declare const strAttrValue: { new(): any; [key: string]: JsonValue };
-declare const strThreeD_Mode: { new(): any; [key: string]: JsonValue };
-declare const strPrintFooter: { new(): any; [key: string]: JsonValue };
-declare const strPrintHeader: { new(): any; [key: string]: JsonValue };
-declare const strMapPrint: { new(): any; [key: string]: JsonValue };
-declare const strColorPalette: { new(): any; [key: string]: JsonValue };
-declare const strDivideValue: { new(): any; [key: string]: JsonValue };
-declare const strTripObjData_Info: { new(): any; [key: string]: JsonValue };
+// clsAttrData.ts の関数コンストラクタ型（戻り値をJsonObjectに統一）
+declare const strDegreeMinuteSeconde: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
+declare const strLatLonDegreeMinuteSecond: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
+declare const Start_End_Time_data: { new(): JsonObject; StartTime?: JsonValue; EndTime?: JsonValue; [key: string]: JsonValue };
+declare const strContourData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMeshPaint: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMesh3DPaint: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLayerData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLabelDummyData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLabel_Data: { new(): JsonObject; [key: string]: JsonValue };
+declare const strGraphData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLabel_Attri: { new(): JsonObject; [key: string]: JsonValue };
+declare const strGraph_Attri: { new(): JsonObject; [key: string]: JsonValue };
+declare const strOverLay_Attri: { new(): JsonObject; [key: string]: JsonValue };
+declare const strTotalData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLinkURL: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataTile: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataTileList: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataObject: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataTitle: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataEdit: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataEditRow: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataEditCell: { new(): JsonObject; [key: string]: JsonValue };
+declare const strCategoryData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMaskData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMPLine: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMPLineSub: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDataStatistics: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLegend_Attri: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPrint_Mode: { new(): JsonObject; [key: string]: JsonValue };
+declare const strSoloData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strSeriesData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strOverlayData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPaintModeData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMarkData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strBarData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPieData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strFlowData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strTileMarkData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strTimeData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strViewStyle: { new(): JsonObject; [key: string]: JsonValue };
+declare const strScreenData: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMapLegend: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMapTitle: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMapScale: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMapNorth: { new(): JsonObject; [key: string]: JsonValue };
+declare const strGridLine: { new(): JsonObject; [key: string]: JsonValue };
+declare const strBackGround: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMapOverLay: { new(): JsonObject; [key: string]: JsonValue };
+declare const strCondition: { new(): JsonObject; [key: string]: JsonValue };
+declare const strConditionItem: { new(): JsonObject; [key: string]: JsonValue };
+declare const strConditionValue: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPointObject: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPolyObject: { new(): JsonObject; [key: string]: JsonValue };
+declare const strLineObject: { new(): JsonObject; [key: string]: JsonValue };
+declare const strObjectGroup: { new(): JsonObject; [key: string]: JsonValue };
+declare const strAttrValue: { new(): JsonObject; [key: string]: JsonValue };
+declare const strThreeD_Mode: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPrintFooter: { new(): JsonObject; [key: string]: JsonValue };
+declare const strPrintHeader: { new(): JsonObject; [key: string]: JsonValue };
+declare const strMapPrint: { new(): JsonObject; [key: string]: JsonValue };
+declare const strColorPalette: { new(): JsonObject; [key: string]: JsonValue };
+declare const strDivideValue: { new(): JsonObject; [key: string]: JsonValue };
+declare const strTripObjData_Info: { new(): JsonObject; [key: string]: JsonValue };
 
 interface IObjectKindUsed_Info {
     MapFileName?: string;

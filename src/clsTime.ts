@@ -191,8 +191,8 @@ class BackGround_Box_Property {
 }
 
 class LineEdge_Connect_Pattern_Data_Info {
-    lineCap = "round";
-    lineJoin = "round";
+    lineCap: CanvasLineCap = "round";
+    lineJoin: CanvasLineJoin = "round";
     miterLimit = 10;
     
     Clone(): LineEdge_Connect_Pattern_Data_Info {

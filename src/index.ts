@@ -3,10 +3,10 @@
 	// まずユーティリティ系（圧縮/文字コード/地図補助）を先に読み込む
 	await Promise.all([
 		import('./encoding.min.ts'),
-		import('./zlibrev.js'),
-		import('./japanmap.js'),
-		import('./worldmap.js'),
-		import('./japanLatLonMap.js'),
+		import('./zlibrev.ts'),
+		import('./japanmap.ts'),
+		import('./worldmap.ts'),
+		import('./japanLatLonMap.ts'),
 	]);
 
 	// アプリ本体モジュール群（並列ロード）

@@ -94,10 +94,9 @@ export class AppState {
     public settingModeWindow?: HTMLDivElement;
 
     /**
-     * メニュープロパティウィンドウ
+     * メニュープロパティウィンドウ（チェックボックス要素）
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public mnuPropertyWindow?: any;
+    public mnuPropertyWindow?: HTMLInputElement;
 
     // ==================== コンストラクタ ====================
 
@@ -145,7 +144,7 @@ export class AppState {
     /**
      * ログ出力
      */
-    public log(data: unknown): void {
+    public log(data: JsonValue): void {
         if (!this.logWindow) {
             // Generic クラスは import が必要
             // this.logWindow = Generic.createNewTextarea(...);

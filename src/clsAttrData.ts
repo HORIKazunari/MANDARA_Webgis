@@ -1477,20 +1477,20 @@ interface FigureData {
     Points?: point[]; // Line/Point Data用
     NumOfPoint?: number; // Line Data用（点数）
     Position?: point; // Circle/Point Data用
-    [key: string]: any; // その他のプロパティ
+    [key: string]: JsonValue; // その他のプロパティ
 }
 
 // 有効な地図ラインの型（LineCodeプロパティを持つ）
 interface EnableMPLine {
     LineCode: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // トリップオブジェクトデータの型
 interface TripObjData {
     TripPersonName: string;
     TripPersonCode: number;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // 座標系の結果型
@@ -2637,7 +2637,7 @@ class strSaveLinePat_Info {
     MapNum: number = 0;
     MapFileName: string[] = [];
     LpatNumByMapfile: number[] = [];
-    Lpat: any[] = [];
+    Lpat: strLKOjectGroup_Info[] = [];
 }
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -3607,7 +3607,7 @@ class clsAttrData {
     }
 
         // サンプル記号ボックスに記号を描画
-    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: any): void {
+    Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: Mark_Property): void {
         clsDrawMarkFan.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
@@ -3615,7 +3615,7 @@ class clsAttrData {
         clsDrawLine.Draw_Sample_LineBox?.(picBox, LinePat, this.TotalData.ViewStyle.ScrData);
     }
     //記号描画
-    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: any): void {
+    Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property): void {
         clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
