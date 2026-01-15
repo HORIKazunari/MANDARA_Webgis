@@ -110,26 +110,26 @@ export class TKY2JGDInfo_Impl {
         let YM0: number, N1CosPhi1: number;
         const EPs = new EllipPar();
 
-        M0 = 0.9999;
+        const M0 = 0.9999;
         const epSrc = this.EP[Ellip12] ?? new EllipPar();
         EPs.a = epSrc.a ?? 0;
         EPs.f1 = epSrc.f1 ?? 0;
         EPs.f = epSrc.f ?? 0;
         EPs.E = epSrc.E ?? 0;
         EPs.namec = epSrc.namec ?? "";
-        e2 = EPs.E ?? 0;
-        e4 = e2 * e2
-        e6 = e4 * e2
-        e8 = e4 * e4
-        e10 = e8 * e2
-        e12 = e8 * e4
-        e14 = e8 * e6
-        e16 = e8 * e8
+        const e2 = EPs.E ?? 0;
+        const e4 = e2 * e2
+        const e6 = e4 * e2
+        const e8 = e4 * e4
+        const e10 = e8 * e2
+        const e12 = e8 * e4
+        const e14 = e8 * e6
+        const e16 = e8 * e8
 
         //定数項 the same as bl2xy
-        AEE = EPs.a * (1.0 - EPs.E) //a(1-e2)
-        CEE = EPs.a / Math.sqrt(1.0 - EPs.E)   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
-        Ep2 = EPs.E / (1.0 - EPs.E) //e'2(e prime 2) Eta2を計算するため
+        const AEE = EPs.a * (1.0 - EPs.E) //a(1-e2)
+        const CEE = EPs.a / Math.sqrt(1.0 - EPs.E)   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
+        const Ep2 = EPs.E / (1.0 - EPs.E) //e'2(e prime 2) Eta2を計算するため
 
         AJ = 4927697775.0 / 7516192768.0 * e16
         AJ = AJ + 19324305.0 / 29360128.0 * e14

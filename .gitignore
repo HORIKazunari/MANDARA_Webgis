@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+lint_results.txt
+prefer_const_errors.txt

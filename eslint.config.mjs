@@ -13,6 +13,7 @@ export default tseslint.config(
       '*.cjs',
       'src/.!*',
       'src/encoding.min.ts', // minifyされた外部ライブラリを除外
+      'src/zlibrev.ts', // zlibライブラリコードを除外
       'node_modules/**',
       'dist/**',
       'playwright-report/**'
@@ -26,8 +27,8 @@ export default tseslint.config(
       },
     },
     rules: {
-      // any型の使用を禁止（段階的にerrorに）
-      '@typescript-eslint/no-explicit-any': 'warn', // 段階的にerrorに変更予定
+      // any型の使用を禁止
+      '@typescript-eslint/no-explicit-any': 'error', // any型の新規追加を完全に防止
       
       // 未使用変数の警告
       '@typescript-eslint/no-unused-vars': ['error', { 
