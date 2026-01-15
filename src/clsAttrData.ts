@@ -3465,7 +3465,7 @@ class clsAttrData {
         }
     }
     //階級区分の度数分布を求める。区分値が不正の場合はfalseを返す
-    Get_ClassFrequency(Layernum: number, DataNum: number, ConditionCheck: boolean): {ok: boolean, frequency?: number[]} {
+    Get_ClassFrequency(Layernum: number, DataNum: number, ConditionCheck: boolean): {ok: boolean, frequency?: number[], missFreq?: number} {
         const ld = this.LayerData[Layernum].atrData.Data[DataNum];
         const ldd = ld.SoloModeViewSettings;
         if (ld.DataType === enmAttDataType.Category) {
@@ -3494,7 +3494,7 @@ class clsAttrData {
                 }
             }
         }
-        return { ok: true, frequency: Freqency };
+        return { ok: true, frequency: Freqency, missFreq: MissFreq };
     }
 
     //Backgroundの余白部分のピクセル数を取得

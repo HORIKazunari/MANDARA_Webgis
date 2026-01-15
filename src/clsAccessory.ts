@@ -514,7 +514,7 @@ export class clsAccessory {
         const NT = this.getPrintNote(g);
         state.attrData.Draw_Print(g, NT.note, NT.rect.topLeft(), state.attrData.TotalData.ViewStyle.DataNote.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
-    static getPrintNote(g: CanvasRenderingContext2D): rectangle | undefined {
+    static getPrintNote(g: CanvasRenderingContext2D): { note: string; rect: rectangle } {
         const state = appState();
 
         let nt="";
@@ -2158,7 +2158,7 @@ export class clsAccessory {
         state.attrData.Draw_Tile_RoundBox(g, C_Rect, state.attrData.TotalData.ViewStyle.MapLegend.Base.Back, 0);
     }
 
-    static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): enmClassMode_Meshod {
+    static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): typeof enmClassMode_Meshod {
         const state = appState();
 
         let CMethod = state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Method;
@@ -2169,7 +2169,7 @@ export class clsAccessory {
         return CMethod;
     }
 
-    static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; FreqW: number} {
+    static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; FreqW: number; vn?: number; LL?: number; RR?: number; freqW?: number} {
         const state = appState();
 
         let ww;
@@ -2302,7 +2302,7 @@ export class clsAccessory {
         state.attrData.Draw_Print(g, TI.title, TI.rect.topLeft(), vs.MapTitle.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
 
-    static getPrintTitle(g: CanvasRenderingContext2D): rectangle | undefined {
+    static getPrintTitle(g: CanvasRenderingContext2D): { title: string; rect: rectangle } {
         const state = appState();
 
         let tt;
@@ -2495,7 +2495,7 @@ export class clsAccessory {
 
     }
 
-    static getScaleSub(g: CanvasRenderingContext2D): {SCST: number; scaleMax: string; sxy: point; P_Scl: strScale_Attri; zeroW: number; ScaleLength: number; ScaleMaxW: number; rect: rectangle} {
+    static getScaleSub(g: CanvasRenderingContext2D): {SCST: number; scaleMax: string; sxy: point; P_Scl: typeof strScale_Attri; zeroW: number; ScaleLength: number; ScaleMaxW: number; rect: rectangle} {
         const state = appState();
 
         const retV = {
