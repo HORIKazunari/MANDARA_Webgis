@@ -788,7 +788,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             OverDataset.initData();
             OverDataset.title = oldATO.DataSet[i].title;
             let f;
-            for (let j = 0; j < oldATO.DataSet[i].DataItem.Count; j++) {
+            for (let j = 0; j < oldATO.DataSet[i].DataItem.length; j++) {
                 const overDt = oldATO.DataSet[i].DataItem[j].Clone();
                 f = false;
                 switch (overDt.Print_Mode_Layer) {

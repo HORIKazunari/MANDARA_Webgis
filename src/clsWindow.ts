@@ -3284,7 +3284,7 @@ function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbOverlayDataSetItem, "すべて削除", "", 260, 260,
             function () {
-                attrData.nowOverlay().DataItem = { Count: 0, ItemList: [] } as IOverLayDataItem;
+                attrData.nowOverlay().DataItem = [];
                 overlayListView.clear();
                 gbOverlayItemData?.setVisibility?.(false);
             }, "width:100px");

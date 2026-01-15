@@ -1021,7 +1021,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                     tx4 = "等値線" + cdt.Value.toString() + state.attrData.Get_DataUnit(cdt.Layernum, cdt.DataNum);
                     let conDiv=document.getElementById("contourDataTip");
                     if(conDiv===undefined){
-                        conDiv=Generic.createNewSpan(Frm_Print,tx4,"contourDataTip","",ScreenP.x+5,ScreenP.y+state.scrMargin.top-15,"z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffff",undefined)
+                        conDiv=Generic.createNewSpan(Frm_Print as unknown as HTMLElement,tx4,"contourDataTip","",ScreenP.x+5,ScreenP.y+state.scrMargin.top-15,"z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffff",undefined)
                     }else{
                         conDiv.innerHTML=tx4;
                         conDiv.style.left=(ScreenP.x+5).px();
@@ -1054,7 +1054,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                  case enmTotalMode_Number.OverLayMode: {
                      const ato = state.attrData.TotalData.TotalMode.OverLay;
                      const atod = ato.DataSet[ato.SelectedIndex];
-                     for (let i = 0; i < atod.DataItem.Count; i++) {
+                     for (let i = 0; i < atod.DataItem.length; i++) {
                          const atodi = atod.DataItem[i];
                          if ((atodi.Print_Mode_Layer === enmLayerMode_Number.SoloMode) && (atodi.Mode === enmSoloMode_Number.ContourMode)) {
                              return true;
@@ -1494,11 +1494,11 @@ class frmPrint {
 
         function meshLinePatternClick(e: Event) {
             const state = appState();
-            clsLinePatternSet(e, MeshLpat, LinePatternGet);
+            clsLinePatternSet(e as MouseEvent, MeshLpat, LinePatternGet);
             function LinePatternGet(Lpat: Line_Property) {
                 const state = appState();
                 MeshLpat = Lpat;
-                state.attrData.Draw_Sample_LineBox(e.target, Lpat);
+                state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
             }
         }
         function mapListchange() {
@@ -1543,7 +1543,7 @@ class frmPrint {
                 const target = e.target as HTMLElement;
                 if (!target?.tag) { return; }
                 const n = target.tag as number;
-                clsLinePatternSet(e, NewLineKind[Mpindex][n].Pat, LinePatternGet);
+                clsLinePatternSet(e as MouseEvent, NewLineKind[Mpindex][n].Pat, LinePatternGet);
                 function LinePatternGet(Lpat: Line_Property) {
                     const state = appState();
                     NewLineKind[Mpindex][n].Pat = Lpat;
@@ -1575,8 +1575,8 @@ class frmPrint {
         let gridtx="";
         const cnode = state.propertyWindow.pnlProperty.childNodes;
         for(const i in cnode){
-            if(cnode[i].name==="grid"){
-                gridtx=Generic.getTableValue(cnode[i].table);
+            if((cnode[i] as any).name==="grid"){
+                gridtx=Generic.getTableValue((cnode[i] as any).table);
                 break;
             }
         }

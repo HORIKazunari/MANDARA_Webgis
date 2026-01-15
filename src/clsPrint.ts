@@ -2465,11 +2465,11 @@ console.log(SortSumDataValue)
         }
 
         //最後と最初のオブジェクトの角度を比較する
-        let OI;
-        let a;
+        let OI = 0;
+        let a = 0;
         for (let i = 0; i < n; i++) {
-            if (O_Distance_NoUseF[(AngleSort.DataPosition as number[])[i]] === false) {
-                a = (AngleSort.DataPositionValue as Record<number, unknown>)[i];
+            if (O_Distance_NoUseF[AngleSort.DataPosition(i)] === false) {
+                a = AngleSort.DataPositionValue(i) as number;
                 OI = i;
                 break;
             }
@@ -3168,8 +3168,8 @@ console.log(SortSumDataValue)
                             //曲線近似でない場合
                             if((OD_MD.Arrow.End_Arrow_F === true) && (OD_MD.Arrow.ArrowHeadType === enmArrowHeadType.Fill) && clsDrawLine.Check_Draw_Arrow_Line) {
                                 const Cp = clsDrawLine.Check_Draw_Arrow_Line( DestFP, StartFP, DestFP, StartFP, ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
-                                if(Cp !==undefined) {
-                                    DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Cp as point);
+                                if(Cp !== undefined) {
+                                    DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Cp);
                                 }
                             }
                             state.attrData.Draw_Line(g, ODLinePat, [StartP, DestP]);
@@ -3393,7 +3393,7 @@ console.log(SortSumDataValue)
                         LineShapeLine.Edge_Connect_Pattern = al.LayerModeViewSettings.PointLineShape.LineEdge;
 
                         if (al.Type === enmLayerType.Mesh) {
-                            const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(al.atrObject.atrObjectData[DrawOrder].MeshPoint);
+                            const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(al.atrObject.atrObjectData[DrawOrder].MeshPoint) as point[];
                             state.attrData.Draw_Line(g, LineShapeLine, pxy);
                         } else {
                             const ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
@@ -3526,7 +3526,7 @@ console.log(SortSumDataValue)
                 return;
             }
             if(ad.Type === enmLayerType.Mesh) {
-                pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint);
+                pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint) as point[];
                 pxy.push(pxy[0].Clone())
                 state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
                 return;
@@ -3542,7 +3542,10 @@ console.log(SortSumDataValue)
             if(PatNum === undefined) {
                 PatNum = 0;
             }
-            const Lpat = {BlankF: false, Pattern: {}}; // ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern; // Property not available
+            // Property not available: ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern
+            // 本来のプロパティが取得できないため、この処理はスキップ
+            /*
+            const Lpat = ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern;
             if((Lpat.BlankF===false) && (state.attrData.getMpLineDrawn(MPFileNapa, lc) !== true)) {
                 const pxy = this.Get_PointXY_by_LineCode(Layernum, lc, false);
                 if(pxy !== undefined) {
@@ -3551,6 +3554,7 @@ console.log(SortSumDataValue)
                     state.attrData.setLineKindUseChecked(MPFileNapa, lcc, PatNum, true);
                     }
             }
+            */
         }
     }
 
@@ -3623,7 +3627,10 @@ console.log(SortSumDataValue)
                 Polydata.nPolyP = nPolyP;
                 return Polydata;
             } else {
-                badata = state.attrData.Boundary_Kencode_Arrange(Layernum, O_ObjNum_Code);
+                const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, O_ObjNum_Code);
+                if (badataArray.length > 0) {
+                    badata = badataArray[0] as unknown as boundArrangeData;
+                }
             }
         } else {
             badata = ad.MapFileData.Boundary_Arrange(O_ObjNum_Code, ad.Time);
@@ -3733,7 +3740,7 @@ console.log(SortSumDataValue)
                     if (clsSpline.Spline_Get) pxy = clsSpline.Spline_Get(0, np, spxy, 0.3, av.ScrData);
                 }
             } else {
-                pxy = av.ScrData.Get_SxSy_With_3D(np, spxy, ReverseGetF);
+                pxy = av.ScrData.Get_SxSy_With_3D(np, spxy, ReverseGetF) as point[];
             }
             state.attrData.Set_MPSubLineXY(mpfilename, LCode, pxy, ReverseGetF);
         }
@@ -3773,7 +3780,7 @@ console.log(SortSumDataValue)
                             V = Generic.Figure_Using(Number(V), avv.DecimalNumber);
                         }
                     }
-                    state.attrData.Draw_Print(g, V, pos2, avv.ValueFont, enmHorizontalAlignment.Center, enmVerticalAlignment.Top);
+                    state.attrData.Draw_Print(g, String(V), pos2, avv.ValueFont, enmHorizontalAlignment.Center, enmVerticalAlignment.Top);
                 }
                 break;
             }
@@ -3797,7 +3804,7 @@ console.log(SortSumDataValue)
                             V = Generic.Figure_Using(Number(V), avv.DecimalNumber);
                         }
                     }
-                    state.attrData.Draw_Print(g, V, Pos, avv.ValueFont, enmHorizontalAlignment.Center, opos);
+                    state.attrData.Draw_Print(g, String(V), Pos, avv.ValueFont, enmHorizontalAlignment.Center, opos);
                     break;
                 }
             }
@@ -3854,7 +3861,8 @@ console.log(SortSumDataValue)
                 const r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
                 state.attrData.Draw_Mark(g, OP, r, MK);
                 if(state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Dummy_Point_Visible === true) {
-                    state.attrData.AddPointObjectKindUsed(ad.MapFileName, ok, MK);
+                    const okIndex = Number(ok);
+                    state.attrData.AddPointObjectKindUsed(ad.MapFileName, okIndex, MK);
                 }
             } else {
                 this.Vector_Boundary_Draw(g,  Layernum, code, true);

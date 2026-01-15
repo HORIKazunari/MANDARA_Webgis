@@ -590,7 +590,7 @@ interface IAttrData {
     Set_Class_Div?: (layernum: number, dataNum: number, setStartPos?: number) => void;
     Set_Div_Value?: (layernum: number, dataNum: number) => void;
     SetMapFile?: (mapFileName: string) => IMapData;
-    AddPointObjectKindUsed?: (layer?: number, object?: number, mark?: strDummyObjectPointMark_Info) => strDummyObjectPointMark_Info;
+    AddPointObjectKindUsed?: (MapFilename: string, ObjKindNumber: number, MK: Mark_Property) => void;
     AddExistingMapData?: (mapData: IMapData, mapFileName: string) => void;
     Get_Check_Enable_SoloMode?: (soloMode?: number, layerNum?: number, dataNum?: number) => boolean;
     Draw_Tile_RoundBox?: (g: CanvasRenderingContext2D, boundaryRect: rectangle, back: BackGround_Box_Property, kakudo: number) => void;
@@ -2298,7 +2298,7 @@ declare class spatial {
     static Check_TwoRectangele_Inner_Contact(rect1: rectangle, rect2: rectangle): boolean;
     static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle): boolean;
     static checkAndModifyPointInRect(point: point, rect: rectangle): point;
-    static Check_PsitionReverse_Enable(p1: point, p2: point): boolean;
+    static Check_PsitionReverse_Enable(Position: point, MPDataMapZahyo: Zahyo_info): boolean;
 }
 
 // clsDrawLine と clsDrawMarkFan は clsDraw.ts で実装済み
