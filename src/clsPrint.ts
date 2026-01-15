@@ -20,13 +20,13 @@ interface strInner_Data_Info {
 }
 
 class PolydataInfo {
-    Pon?: number;
+    Pon: number = 0;
     pxy: point[] = []; // point array
     nPolyP: number[] = [];
 }
 
 class boundArrangeData {
-    Pon?: number;
+    Pon: number = 0;
     Fringe: Fringe_Line_Info[] = [];
     Arrange_LineCode: number[][] = [];
 }
@@ -1610,7 +1610,8 @@ console.log(SortSumDataValue)
                             for (let j = 0; j < selGraph.Data.length; j++) {
                                 const Datan = selGraph.Data[j].DataNumber;
                                 if (state.attrData.Check_Missing_Value(Layernum, Datan, SortObjPos) === false) {
-                                    const H = state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "") / SortSumDataValue;
+                                    const dataValue = state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "");
+                                    const H = typeof dataValue === 'number' ? dataValue / SortSumDataValue : 0;
                                     let Rect;
                                     switch (selGraph.En_Obi.StackedBarDirection) {
                                         case enmStackedBarChart_Direction.Vertical:
@@ -1702,13 +1703,15 @@ console.log(SortSumDataValue)
                         const Datan = selGraph.Data[j].DataNumber;
                         if (state.attrData.Check_Missing_Value(Layernum, Datan, i) === false) {
                             const v = state.attrData.Get_Data_Value(Layernum, Datan, i, "");
-                            if (fif === true) {
-                                dataMaxV = v;
-                                dataMinV = v;
-                                fif=false;
-                            } else {
-                                dataMaxV = Math.max(dataMaxV, v);
-                                dataMinV = Math.min(dataMinV, v);
+                            if (typeof v === 'number') {
+                                if (fif === true) {
+                                    dataMaxV = v;
+                                    dataMinV = v;
+                                    fif=false;
+                                } else {
+                                    dataMaxV = Math.max(dataMaxV, v);
+                                    dataMinV = Math.min(dataMinV, v);
+                                }
                             }
                         }
                     }
@@ -1789,7 +1792,8 @@ console.log(SortSumDataValue)
                             for (let j = 0; j < selGraph.Data.length; j++) {
                                 const Datan = selGraph.Data[j].DataNumber;
                                 if (state.attrData.Check_Missing_Value(Layernum, Datan, i) === false) {
-                                    const H = 1 - (state.attrData.Get_Data_Value(Layernum, Datan, i, "") - dataMinV) / (dataMaxV- dataMinV);
+                                    const dataValue = state.attrData.Get_Data_Value(Layernum, Datan, i, "");
+                                    const H = typeof dataValue === 'number' ? 1 - (dataValue - dataMinV) / (dataMaxV- dataMinV) : 0;
                                     const yy = OP.y + wrh * H;
                                     if (ff === true) {
                                         flx1 = fsx;
@@ -1810,7 +1814,8 @@ console.log(SortSumDataValue)
                             for (let j = 0; j < selGraph.Data.length; j++) {
                                 const Datan = selGraph.Data[j].DataNumber;
                                 if (state.attrData.Check_Missing_Value(Layernum, Datan, i) === false) {
-                                    const H = 1 - (state.attrData.Get_Data_Value(Layernum, Datan, i, "")- dataMinV) / (dataMaxV- dataMinV);
+                                    const dataValue = state.attrData.Get_Data_Value(Layernum, Datan, i, "");
+                                    const H = typeof dataValue === 'number' ? 1 - (dataValue - dataMinV) / (dataMaxV- dataMinV) : 0;
                                     const yy = OP.y + wrh * H;
                                     const yy2 = OP.y + (wrh * (1 - (-dataMinV) / (dataMaxV- dataMinV)));
                                     const barRect = new rectangle(fsx, fsx + stx, yy, yy2);
@@ -1883,7 +1888,11 @@ console.log(SortSumDataValue)
                             switch (state.attrData.Get_DataType(Layernum, DataNum)) {
                                 case enmAttDataType.Normal:
                                     const V = state.attrData.Get_Data_Value(Layernum, DataNum, i, "");
-                                    wo2 += Generic.Figure_Using_Solo(V, state.attrData.TotalData.ViewStyle.MapLegend.Base.Comma_f);
+                                    if (typeof V === 'number') {
+                                        wo2 += Generic.Figure_Using_Solo(V, state.attrData.TotalData.ViewStyle.MapLegend.Base.Comma_f);
+                                    } else {
+                                        wo2 += String(V);
+                                    }
                                     if (attLbl.DataValue_Unit_Flag === true) {
                                         wo2 += state.attrData.Get_DataUnit(Layernum, DataNum);
                                     }
@@ -2576,12 +2585,12 @@ console.log(SortSumDataValue)
         const turnF = smd.WordTurnF;
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             if((state.attrData.Check_Condition(LayerNum, i) === true) && (
-                (Missing_DataArray[i] === false) || (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag === true))) {
+                (!Missing_DataArray[i]) || (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag === true))) {
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][i] = true;
                 const tx = state.attrData.Get_Data_Value(LayerNum, DataNum, i, state.attrData.TotalData.ViewStyle.Missing_Data.Label);
                 const CP = al.atrObject.atrObjectData[i].Label;
                 const LP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
-                const atx = tx;
+                const atx = String(tx);
                 const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData)
                 let outTx = d_an2.Out_Text[0];
                 for (let j = 1; j<d_an2.Out_Text.length; j++) {
@@ -2888,8 +2897,8 @@ console.log(SortSumDataValue)
                     break;
                 }
                 case enmMarkBlockArrange.Random: {
-                    if(r === 0 && MK.Tile.Line?.Color) {
-                        const brush = MK.Tile.Line.Color.toRGBA();
+                    if(r === 0 && MK.Line?.Color) {
+                        const brush = MK.Line.Color.toRGBA();
                         g.fillStyle = brush;
                     }
                     if((state.attrData.TempData.DotMap_Temp.DotMapTempResetF === true) || (state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum] === undefined)) {
@@ -3024,12 +3033,12 @@ console.log(SortSumDataValue)
                     const OP = ObjP[kpos];
                     let xs = 0;
                     if (avvs.ObjNameVisible === true) {
-                        g.font = avvs.ObjNameFont.toContextFont(vs.ScrData);
+                        g.font = avvs.ObjNameFont.toContextFont(vs.ScrData).font;
                         xs = g.measureText(name).width;
                     }
                     if (avvs.ValueVisible === true) {
-                        g.font = avvs.ValueFont.toContextFont(vs.ScrData);
-                        xs = Math.max(xs, g.measureText(V).width);
+                        g.font = avvs.ValueFont.toContextFont(vs.ScrData).font;
+                        xs = Math.max(xs, g.measureText(String(V)).width);
                     }
 
                     if ((xs < r * 2) || (al.Shape === enmShape.LineShape)) {
@@ -3149,7 +3158,7 @@ console.log(SortSumDataValue)
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][DrawOrder] = true;
                 const DestFP = al.atrObject.atrObjectData[DrawOrder].CenterPoint;
                 let DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(DestFP);
-                const C_Rect = spatial.getCircumscribedRectangle(DestP, StartP);
+                const C_Rect = spatial.getCircumscribedRectangle([DestP, StartP], undefined);
                 if((state.attrData.Check_Screen_In(C_Rect) === true) && (DestFP.Equals(StartFP) === false)) {
                     const ODLinePat = ad.SoloModeViewSettings.Class_Div[colpos].ODLinePat;
                     if(ODLinePat.BlankF === false) {
@@ -3160,7 +3169,7 @@ console.log(SortSumDataValue)
                             if((OD_MD.Arrow.End_Arrow_F === true) && (OD_MD.Arrow.ArrowHeadType === enmArrowHeadType.Fill) && clsDrawLine.Check_Draw_Arrow_Line) {
                                 const Cp = clsDrawLine.Check_Draw_Arrow_Line( DestFP, StartFP, DestFP, StartFP, ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
                                 if(Cp !==undefined) {
-                                    DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Cp);
+                                    DestP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Cp as point);
                                 }
                             }
                             state.attrData.Draw_Line(g, ODLinePat, [StartP, DestP]);
@@ -3471,7 +3480,7 @@ console.log(SortSumDataValue)
         for (let i = 0; i < Alin; i++) {
             if (StacLine[i] === 2) {
                 const pxy = this.Get_PointXY_by_LineCode(Layernum, i,false);
-                state.attrData.Draw_Line(g, av.MapLegend.ClassMD.ClassBoundaryLine.LPat, pxy);
+                state.attrData.Draw_Line(g, av.MapLegend.ClassMD.ClassBoundaryLine, pxy);
             }
         }
     }
@@ -3599,7 +3608,7 @@ console.log(SortSumDataValue)
         let badata = new boundArrangeData();        
         if(Dummy_F === false) {
             if(state.attrData.LayerData[Layernum].Type === enmLayerType.Mesh) {
-                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint);
+                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint) as point[];
                 const nPolyP = [];
                 nPolyP[0] = pxy.length;
                 if(pxy.length >= 4) {

@@ -216,7 +216,7 @@ interface IAttrData {
                 getSRXY?: (p: point) => point;
                 getSxSy?: (arg1: point, arg2?: point) => point;
                 getSRXYfromRatio?: (p: point) => point;
-                Get_SxSy_With_3D?: (arg1?: point, arg2?: number, arg3?: number) => point;
+                // Get_SxSy_With_3Dはオーバーロードがあるため、Screen_infoクラスの定義を使用
                 ThreeDMode?: {
                     Set3D_F: boolean;
                     Pitch?: number;
@@ -501,8 +501,8 @@ interface IAttrData {
     Get_DataNote?: (layer?: number, data?: number) => string;
     Get_MaxURLNum?: (Layernum?: number) => number;
     Get_KenObjCode?: (Layernum: number, Objectnum: number) => string;
-    Check_screen_Kencode_In?: (kencode: number, time?: strYMD | null) => boolean;
-    Check_Screen_Objcode_In?: (objcode: number, time?: strYMD | null) => boolean;
+    Check_screen_Kencode_In?: (Layernum: number, ObjNum: number) => boolean;
+    Check_Screen_Objcode_In?: (Layernum: number, objcode: number) => boolean;
     Get_DataNum?: (layer?: number) => number;
     
     // 追加プロパティ・メソッド
@@ -528,7 +528,7 @@ interface IAttrData {
     Get_Categoly?: (layer?: number, data?: number, index?: number) => number;
     Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], nPolyP: number[], tile: Tile_Property) => void;
     Get_InnerTile?: (layer?: number, object?: number, arg3?: Screen_info) => Tile_Property;
-    Get_Enable_KenCode_MPLine?: (layer?: number, object?: number) => boolean;
+    Get_Enable_KenCode_MPLine?: (Layernum: number, ObjNum: number) => EnableMPLine[];
     Get_DataMin?: (layer?: number, data?: number) => number;
     Get_DataMax?: (layer?: number, data?: number) => number;
     Get_ClassFrequency?: (layer: number, data: number, conditionCheck: boolean) => {
@@ -556,13 +556,13 @@ interface IAttrData {
     Get_KenCode_Circumscribed_Rectangle?: (layer?: number, object?: number) => rectangle;
     Get_Kencode_Object_Circumscribed_Rectangle?: (layer?: number, object?: number) => rectangle;
     Draw_Arrow?: (context: CanvasRenderingContext2D, point: point, beforePoint: point, linePat: Line_Property, arrow: Arrow_Property) => void;
-    getMpLineDrawn?: (layer?: number, lineCode?: number) => boolean;
-    setMpLineDrawn?: (layer?: number, lineCode?: number, drawn?: boolean) => void;
-    setLineKindUseChecked?: (layer?: number, lineKind?: number, objGroup?: number, checked?: boolean) => void;
+    getMpLineDrawn?: (MapFileName: string, LineCode: number) => boolean | undefined;
+    setMpLineDrawn?: (MapFileName: string, LineCode: number, value: boolean) => void;
+    setLineKindUseChecked?: (MapFileName: string, lineKindNum: number, PatternNum: number, value: boolean) => void;
     ResetMPSubLineDrawn?: (mapFileName?: string) => void;
     ResetMPSubLineXY?: (layer?: number) => void;
-    Get_MPSubLineXY?: (layer?: number, lineCode?: number, objGroup?: number) => point[];
-    Set_MPSubLineXY?: (layer?: number, lineCode?: number, points?: point[], reverse?: boolean) => void;
+    Get_MPSubLineXY?: (MapFileName: string, LineCode: number, ReverseF: boolean) => point[];
+    Set_MPSubLineXY?: (MapFileName: string, LineCode: number, XY: point[], ReverseF: boolean) => void;
     GetAllMapLineKindName?: () => string[];
     Get_AllMapLineKind?: () => LPatSek_Info[];
     getDataTitleName?: (Layernum: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => string[];
@@ -635,18 +635,8 @@ interface IMapLegendW {
 // OverLay DataSet情報（拡張版）
 interface IOverLayDatasetInfo {
     title: string;
-    DataItem: IOverLayDataItem;
+    DataItem: IOverLayDataItemElement[];
     initData?: () => void;
-    [key: string]: JsonValue;
-}
-
-// OverLay DataItem（拡張版）
-interface IOverLayDataItem {
-    Count: number;
-    [index: number]: IOverLayDataItemElement;
-    Clone?: () => IOverLayDataItem;
-    push?: (item: IOverLayDataItemElement) => number;
-    length?: number;
     [key: string]: JsonValue;
 }
 
@@ -657,7 +647,7 @@ interface IOverLayDataItemElement {
     Print_Mode_Layer: number; // enmLayerMode_Number
     Mode?: number; // enmSoloMode_Number or other mode
     Legend_Print_Flag?: boolean;
-    Clone?: () => IOverLayDataItemElement;
+    Clone: () => IOverLayDataItemElement;
     [key: string]: JsonValue;
 }
 
@@ -1154,14 +1144,14 @@ interface IStrLatLonDegreeMinuteSecond {
 
 // ポリゴンデータ情報（clsPrint.tsで実装）
 interface IPolydataInfo {
-    Pon?: number;
+    Pon: number;
     pxy: point[];
     nPolyP: number[];
 }
 
 // 境界整列データ（clsPrint.tsで実装）
 interface IboundArrangeData {
-    Pon?: number;
+    Pon: number;
     Fringe: Fringe_Line_Info[];
     Arrange_LineCode: number[][];
     pxy?: point[];
@@ -1241,6 +1231,9 @@ declare class Screen_info {
     Zahyo: Zahyo_info;
     Screen_Margin: ScreenMargin;
     Get_SxSy_With_3D(p: point): point;
+    Get_SxSy_With_3D(pxy: point[]): point[];
+    Get_SxSy_With_3D(Pnum: number, inXY: point[], ReverseGetF: boolean): point[];
+    Get_SxSy_With_3D(rect: rectangle): rectangle;
     Get_Length_On_Screen(fontSize: number): number;
     Clone(): Screen_info;
 }
@@ -1771,6 +1764,13 @@ declare class clsDrawLine { [key: string]: JsonValue; static Arrow?: (...args: J
 declare class clsDrawTile { [key: string]: JsonValue; static Darw_Sample_BackGroundBox?: (...args: JsonValue[]) => void; static Draw_Poly_Inner?: (...args: JsonValue[]) => void; static Draw_Tile_Box?: (...args: JsonValue[]) => void; static Draw_Tile_RoundBox?: (...args: JsonValue[]) => void; }
 declare class tileList_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class EnableMPLine_Data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+
+// EnableMPLine インターフェース
+interface EnableMPLine {
+    LineCode: number;
+    Kind: number;
+}
+
 declare class strContour_Line_property { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class clsMeshContour { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class Legend2_Atri { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
