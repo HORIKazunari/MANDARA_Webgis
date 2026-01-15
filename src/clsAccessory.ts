@@ -5,22 +5,38 @@ import { appState } from './core/AppState';
 export class clsAccessory {
 
     /**線種の凡例 */
-    static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean){
+    static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean): boolean {
         const state = appState();
 
         const av = state.attrData.TotalData.ViewStyle;
         const LFont  = av.MapLegend.Base.Font;
-        const LPC = state.attrData.Get_AllMapLineKind();
-        const LineKind_Used = state.attrData.Get_LineKindUsedList();
+        const getAllMapLineKind = state.attrData.Get_AllMapLineKind;
+        const getLineKindUsedList = state.attrData.Get_LineKindUsedList;
+        const lineDummyKind = av.MapLegend.Line_DummyKind;
+        
+        if (!getAllMapLineKind || !getLineKindUsedList || !lineDummyKind || !LFont) {
+            return false;
+        }
+        
+        const LPC = getAllMapLineKind();
+        const LineKind_Used = getLineKindUsedList();
         const Use_Line_Number=[]; 
         for(let i  = 0 ;i< LPC.length ;i++){
-            if((LineKind_Used[i] === true) && (av.MapLegend.Line_DummyKind.Line_Visible_Number_STR.charAt(i) === "1" )){
+            if((LineKind_Used[i] === true) && (lineDummyKind.Line_Visible_Number_STR.charAt(i) === "1" )){
                 Use_Line_Number.push(i);
             }
         }
         const n=Use_Line_Number.length;
-        const UH  = state.attrData.Get_Length_On_Screen(LFont.Size);
-        g.font = LFont.toContextFont(av.ScrData).font;
+        const getLengthOnScreen = state.attrData.Get_Length_On_Screen;
+        if (!getLengthOnScreen || !LFont || !LFont.Size) {
+            return false;
+        }
+        const UH  = getLengthOnScreen(LFont.Size);
+        const fontStr = LFont.toContextFont(av.ScrData);
+        if (!fontStr) {
+            return false;
+        }
+        g.font = fontStr.font;
         
         let Xsize  = 0;
         for(let i  = 0 ;i< n ;i++){
@@ -29,6 +45,9 @@ export class clsAccessory {
         Xsize += state.attrData.Radius(16, 1, 1);
         const Ysize  = UH * n;
 
+        if (!HeadBoxSize) {
+            return false;
+        }
         HeadBoxSize.width = Xsize;
         HeadBoxSize.height = Ysize;
 
@@ -36,16 +55,17 @@ export class clsAccessory {
         if(SizeGetOnlyF === true ){
             return false;
         }
-        if(state.attrData.Check_Screen_In(C_Rect) === false ){
+        const checkScreenIn = state.attrData.Check_Screen_In;
+        if(!checkScreenIn || !checkScreenIn(C_Rect) ){
             return false;
         }else{
-            state.attrData.Draw_Tile_RoundBox(g, C_Rect, av.MapLegend.Line_DummyKind.Back, 0);
+            state.attrData.Draw_Tile_RoundBox(g, C_Rect, lineDummyKind.Back, 0);
 
             for(let i  = 0 ;i< n ;i++){
                 const lk= LPC[Use_Line_Number[i]];
                     const Y  = C_Rect.top + i * UH
                     const x3  = C_Rect.left + state.attrData.Radius(16, 1, 1)
-                    switch( av.MapLegend.Line_DummyKind.Line_Pattern){
+                    switch( lineDummyKind.Line_Pattern){
                         case enmCircleMDLegendLine.Zigzag:{
                             const pxy=[];
                             for(let j  = 0 ; j<=3;j++){
@@ -60,24 +80,42 @@ export class clsAccessory {
                         }
                     state.attrData.Draw_Print(g, lk.Name, new point(x3, Y), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
             }
+            return true;
         }
     }
 
     /**点オブジェクトの凡例 */
-    static Draw_PointObject(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, SizeGetOnlyF: boolean) {
+    static Draw_PointObject(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const av = state.attrData.TotalData.ViewStyle;
 
         const LFont = av.MapLegend.Base.Font;
-        const UH = state.attrData.Get_Length_On_Screen(LFont.Body.Size);
-        g.font = LFont.toContextFont(av.ScrData).font;
+        const lineDummyKind = av.MapLegend.Line_DummyKind;
+        
+        if (!LFont?.Body) {
+            return false;
+        }
+        
+        const getLengthOnScreen = state.attrData.Get_Length_On_Screen;
+        if (!getLengthOnScreen || !LFont.Body?.Size) {
+            return false;
+        }
+        
+        const UH = getLengthOnScreen(LFont.Body.Size);
+        const fontStr = LFont.toContextFont(av.ScrData);
+        if (!fontStr) {
+            return false;
+        }
+        g.font = fontStr.font;
         let mxw1 = 0;
         let mxw2 = 0;
         let Ys = 0;
-        for (const i in state.attrData.TempData.PointObjectKindUsedStack) {
-            const pok = state.attrData.TempData.PointObjectKindUsedStack[i];
-            const w1 = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
+        const pointObjectStack = state.attrData.TempData.PointObjectKindUsedStack;
+        for (const pok of pointObjectStack) {
+            const radiusFunc = state.attrData.Radius;
+            if (!radiusFunc) continue;
+            const w1 = radiusFunc(pok.Mark.WordFont.Size, 1, 1) * 3;
             mxw1 = Math.max(mxw1, w1);
             mxw2 = Math.max(mxw2, g.measureText(pok.ObjectKindName).width);
             Ys += Math.max(UH, w1);
@@ -91,24 +129,35 @@ export class clsAccessory {
             return false;
         }
         const C_Rect = new rectangle(ALP, HeadBoxSize);
-        if (state.attrData.Check_Screen_In(C_Rect) === false) {
+        const checkScreenIn = state.attrData.Check_Screen_In;
+        if (!checkScreenIn || !checkScreenIn(C_Rect)) {
             return false;
         }
-        state.attrData.Draw_Tile_RoundBox(g, C_Rect, av.MapLegend.Line_DummyKind.Back, 0);
+        if (!lineDummyKind) {
+            return false;
+        }
+        const drawTileRoundBox = state.attrData.Draw_Tile_RoundBox;
+        const drawMark = state.attrData.Draw_Mark;
+        const drawPrint = state.attrData.Draw_Print;
+        const radiusFunc = state.attrData.Radius;
+        if (!drawTileRoundBox || !drawMark || !drawPrint || !radiusFunc) {
+            return false;
+        }
+        drawTileRoundBox(g, C_Rect, lineDummyKind.Back, 0);
         Ys = 0;
-        for (const i in state.attrData.TempData.PointObjectKindUsedStack) {
-            const pok = state.attrData.TempData.PointObjectKindUsedStack[i];
-            const r = state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1) * 3;
+        for (const pok of pointObjectStack) {
+            const r = radiusFunc(pok.Mark.WordFont.Size, 1, 1) * 3;
             const s = Math.max(r, UH);
             mxw2 = Math.max(mxw2, g.measureText(pok.ObjectKindName).width);
-            state.attrData.Draw_Mark(g, new point(ALP.x + mxw1 / 2, ALP.y + Ys + s / 2), state.attrData.Radius(pok.Mark.WordFont.Size, 1, 1), pok.Mark);
-            state.attrData.Draw_Print(g, pok.ObjectKindName, new point(ALP.x + mxw1, ALP.y + Ys + s / 2), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
+            drawMark(g, new point(ALP.x + mxw1 / 2, ALP.y + Ys + s / 2), radiusFunc(pok.Mark.WordFont.Size, 1, 1), pok.Mark);
+            drawPrint(g, pok.ObjectKindName, new point(ALP.x + mxw1, ALP.y + Ys + s / 2), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
             Ys += s;
         }
+        return true;
     }
 
     /** 飾りグループボックス表示*/
-    static AccGroupBoxDraw(g: CanvasRenderingContext2D){
+    static AccGroupBoxDraw(g: CanvasRenderingContext2D): void {
         const state = appState();
 
         const Agb = state.attrData.TotalData.ViewStyle.AccessoryGroupBox;
@@ -117,7 +166,7 @@ export class clsAccessory {
         }
     }
     /**経緯線表示 */
-    static LatLonLine_Print(g: CanvasRenderingContext2D) {
+    static LatLonLine_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
 
@@ -302,7 +351,7 @@ export class clsAccessory {
     }
 
 
-    static Legend_print(g: CanvasRenderingContext2D, Legend_No: number, SizeGetOnlyF: boolean) {
+    static Legend_print(g: CanvasRenderingContext2D, Legend_No: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[Legend_No];
         const vs = state.attrData.TotalData.ViewStyle;
@@ -398,7 +447,7 @@ export class clsAccessory {
                             case enmSoloMode_Number.StringMode:
                                 screen_in = this.Draw_StringMode(g, ALP, BoxSize, UTX, Layn2, datn2, SizeGetOnlyF);
                                 break;
-                            case enmSoloMode_Number.ContourMode:
+                            case enmSoloMode_Number.ContourMode: {
                                 const PushMisF = vs.Missing_Data.Print_Flag;
                                 //等値線モードの場合は欠損値の凡例を表示しない
                                 vs.Missing_Data.Print_Flag = false;
@@ -408,6 +457,8 @@ export class clsAccessory {
                                         break;
                                 }
                                 vs.Missing_Data.Print_Flag = PushMisF;
+                                break;
+                            }
                                 break;
                             case enmSoloMode_Number.ClassMarkMode:
                                 screen_in = this.Draw_ClassMarkMode(g, ALP, BoxSize, UTX, Layn2, datn2, SizeGetOnlyF);
@@ -437,7 +488,7 @@ export class clsAccessory {
     }
 
     //注記表示
-    static Note_Print(g: CanvasRenderingContext2D) {
+    static Note_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
         if (state.attrData.TotalData.ViewStyle.DataNote.Visible === false) {
@@ -446,7 +497,7 @@ export class clsAccessory {
         const NT = this.getPrintNote(g);
         state.attrData.Draw_Print(g, NT.note, NT.rect.topLeft(), state.attrData.TotalData.ViewStyle.DataNote.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
-    static getPrintNote(g: CanvasRenderingContext2D) {
+    static getPrintNote(g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
 
         let nt="";
@@ -537,7 +588,7 @@ export class clsAccessory {
     }
 
     /**円グラフで、凡例の表示方法が円一つの場合で円グラフの周囲にデータ項目名を並べる場合の凡例 */
-    static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean) {
+    static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -651,7 +702,7 @@ export class clsAccessory {
 
 
     /**グラフ表示モードの円・帯グラフ */
-    static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean) {
+    static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
         const LFont = vs.MapLegend.Base.Font;
@@ -796,7 +847,7 @@ export class clsAccessory {
     }
 
     /**折れ線・棒グラフモード */
-    static Draw_Multi_Oresen(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean) {
+    static Draw_Multi_Oresen(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         if (state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible === false) {
@@ -944,7 +995,7 @@ export class clsAccessory {
     }
     
     /**記号の数モードの凡例 */
-    static Draw_MarkBlockMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean){
+    static Draw_MarkBlockMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1076,7 +1127,7 @@ export class clsAccessory {
     }
 
     /**棒の高さモードの凡例 */
-    static Draw_MarkBarMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_MarkBarMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1214,7 +1265,7 @@ export class clsAccessory {
     }
 
     //記号の大きさモードの凡例
-    static Draw_MarkSizeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_MarkSizeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1456,14 +1507,14 @@ export class clsAccessory {
 
         return true;
     }
-    static getLegendMinusWord(s: string) {
+    static getLegendMinusWord(s: string): string {
         if (s === "") {
             return clsSettingData.LegendMinusWord;
         } else {
             return s;
         }
     }
-    static getLegendPlusWord(s: string) {
+    static getLegendPlusWord(s: string): string {
         if (s === "") {
             return clsSettingData.LegendPlusWord;
         } else {
@@ -1472,7 +1523,7 @@ export class clsAccessory {
     }
 
     //記号モードの凡例数値を並べ替えて返す
-    static Get_CircleModeLegendValue(Layernum: number, DataNum: number) {
+    static Get_CircleModeLegendValue(Layernum: number, DataNum: number): number[] {
         const state = appState();
 
         const lval = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.MarkSizeMD.Value;
@@ -1491,7 +1542,7 @@ export class clsAccessory {
     }
 
     //円をコンパクトにまとめる凡例を描き、幅を返す
-    static OverCircle_Print(g: CanvasRenderingContext2D, pos: point, RMAX: number, va: number[], UnitTx: string, EN_Size: number, LP: Line_Property, tp: Tile_Property, Print_Flag: boolean) {
+    static OverCircle_Print(g: CanvasRenderingContext2D, pos: point, RMAX: number, va: number[], UnitTx: string, EN_Size: number, LP: Line_Property, tp: Tile_Property, Print_Flag: boolean): size {
         const state = appState();
 
         const MP = new Mark_Property();
@@ -1543,7 +1594,7 @@ export class clsAccessory {
         return new size(xss, Ys);
     }
 
-    static UNIT_P(g: CanvasRenderingContext2D, pos: point, V: number, UnitTx: string, i: number, print_f: boolean) {
+    static UNIT_P(g: CanvasRenderingContext2D, pos: point, V: number, UnitTx: string, i: number, print_f: boolean): number {
         const state = appState();
 
         const vsm = state.attrData.TotalData.ViewStyle.MapLegend;
@@ -1561,7 +1612,7 @@ export class clsAccessory {
     }
 
     //文字モードの凡例
-    static Draw_StringMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_StringMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1593,7 +1644,7 @@ export class clsAccessory {
     }
 
     //階級記号モードの凡例
-    static Draw_ClassMarkMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_ClassMarkMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1753,7 +1804,7 @@ export class clsAccessory {
     }
 
     //線モードと線形状オブジェクトのペイントモードの凡例
-    static Draw_ClassODModeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_ClassODModeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2];
@@ -1950,7 +2001,7 @@ export class clsAccessory {
     }
 
     //ペイントモードの線形状
-    static Draw_ClassPaint_LineShape(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_ClassPaint_LineShape(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2]
@@ -1979,7 +2030,7 @@ export class clsAccessory {
         return screen_in_f;
     }
     //ペイントモードの凡例
-    static Draw_ClassPaintHatchMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean) {
+    static Draw_ClassPaintHatchMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -2084,13 +2135,13 @@ export class clsAccessory {
         HeadBoxSize.height = ysize2;
         return true;
     }
-    static LegendBoxBack(g: CanvasRenderingContext2D, C_Rect: rectangle) {
+    static LegendBoxBack(g: CanvasRenderingContext2D, C_Rect: rectangle): void {
         const state = appState();
 
         state.attrData.Draw_Tile_RoundBox(g, C_Rect, state.attrData.TotalData.ViewStyle.MapLegend.Base.Back, 0);
     }
 
-    static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean) {
+    static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): enmClassMode_Meshod {
         const state = appState();
 
         let CMethod = state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Method;
@@ -2101,7 +2152,7 @@ export class clsAccessory {
         return CMethod;
     }
 
-    static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean) {
+    static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; FreqW: number} {
         const state = appState();
 
         let ww;
@@ -2223,7 +2274,7 @@ export class clsAccessory {
     }
 
     //タイトル表示
-    static Title_Print(g: CanvasRenderingContext2D) {
+    static Title_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -2234,7 +2285,7 @@ export class clsAccessory {
         state.attrData.Draw_Print(g, TI.title, TI.rect.topLeft(), vs.MapTitle.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
 
-    static getPrintTitle(g: CanvasRenderingContext2D) {
+    static getPrintTitle(g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
 
         let tt;
@@ -2299,7 +2350,7 @@ export class clsAccessory {
     }
 
     //方位表示
-    static Compass_print(g: CanvasRenderingContext2D) {
+    static Compass_print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -2354,7 +2405,7 @@ export class clsAccessory {
     }
 
     //スケール表示
-    static Scale_Print(g: CanvasRenderingContext2D) {
+    static Scale_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
         const scdata = this.getScaleSub(g);
@@ -2427,7 +2478,7 @@ export class clsAccessory {
 
     }
 
-    static getScaleSub(g: CanvasRenderingContext2D) {
+    static getScaleSub(g: CanvasRenderingContext2D): {SCST: number; scaleMax: string; sxy: point; P_Scl: strScale_Attri; zeroW: number; ScaleLength: number; ScaleMaxW: number; rect: rectangle} {
         const state = appState();
 
         const retV = {
@@ -2536,7 +2587,7 @@ export class clsAccessory {
     }
 
     //方位記号の外接四角形領域取得
-    static GetCompassRect(g: CanvasRenderingContext2D) {
+    static GetCompassRect(g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -2552,21 +2603,21 @@ export class clsAccessory {
     }
 
     //タイトルの外接四角形領域取得
-    static GetTitleRect(g: CanvasRenderingContext2D) {
+    static GetTitleRect(g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
         const v = this.getPrintTitle(g);
         return v.rect;
     }
 
     //注の外接四角形領域取得
-    static GetNoteRect(g: CanvasRenderingContext2D) {
+    static GetNoteRect(g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
         const v = this.getPrintNote(g);
         return v.rect;
     }
 
     //スケールの外接四角形領域取得
-    static GetScaleRect(g: CanvasRenderingContext2D) {
+    static GetScaleRect(g: CanvasRenderingContext2D): rectangle {
         const state = appState();
         const v = this.getScaleSub(g);
         return v.rect;

@@ -176,17 +176,17 @@ export class TKY2JGDInfo_Impl {
         GJ = GJ + 3003.0 / 2097152.0 * e12
         HJ = 765765.0 / 469762048.0 * e16
         HJ = HJ + 45045.0 / 117440512.0 * e14
-        IJ = 765765.0 / 7516192768.0 * e16
+        const IJ = 765765.0 / 7516192768.0 * e16
 
 
-        B1 = this.XY_Genten[Kei].lat * this.deg2rad;
-        L1 = this.XY_Genten[Kei].lon * this.deg2rad;
+        const B1 = this.XY_Genten[Kei].lat * this.deg2rad;
+        const L1 = this.XY_Genten[Kei].lon * this.deg2rad;
 
   
 
         //赤道からの子午線長の計算
-        S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
-        M = S0 + X / M0;
+        const S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
+        const M = S0 + X / M0;
 
         //Baileyの式による異性緯度（isometric latitude）phi1の計算。
         //「精密測地網一次基準点測量計算式」P57の11.(1)の式から。
@@ -204,15 +204,15 @@ export class TKY2JGDInfo_Impl {
         } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)); //本では1e-12で十分　iterationの回数は４回
 
         //何度も使う式を変数に代入
-        YM0 = Y / M0;
-        T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
-        T2 = T * T;
-        T4 = T2 * T2;
-        T6 = T4 * T2;
-        Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
-        M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0);
-        N1 = CEE / Math.sqrt(1.0 + Eta2);
-        N1CosPhi1 = N1 * Math.cos(phi1);
+        const YM0 = Y / M0;
+        const T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
+        const T2 = T * T;
+        const T4 = T2 * T2;
+        const T6 = T4 * T2;
+        const Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
+        // const M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0); // 未使用
+        const N1 = CEE / Math.sqrt(1.0 + Eta2);
+        const N1CosPhi1 = N1 * Math.cos(phi1);
 
         //緯度Bの計算 「精密測地網一次基準点測量計算式」P51のphiを求める式より
         b = ((1385.0 + 3633.0 * T2 + 4095 * T4 + 1575.0 * T6) / (40320.0 * N1 ** 8.0)) * YM0 ** 8.0;
@@ -230,23 +230,24 @@ export class TKY2JGDInfo_Impl {
         L = L + L1;
 
         //子午線収差角の計算 「精密測地網一次基準点測量計算式」P51のγを求める式より
-        Gamma = ((1.0 + T2) * (2.0 + 3.0 * T2) / (15.0 * N1 ** 5.0)) * (Y / M0) ** 5.0;
-        Gamma = Gamma - ((1.0 + T2 - Eta2) / (3.0 * N1 ** 3.0)) * (Y / M0) ** 3.0;
-        Gamma = Gamma + (1.0 / N1) * Y / M0;
-        Gamma = Gamma * T;
+        // Gamma変数は未使用のためコメントアウト
+        // let Gamma = ((1.0 + T2) * (2.0 + 3.0 * T2) / (15.0 * N1 ** 5.0)) * (Y / M0) ** 5.0;
+        // Gamma = Gamma - ((1.0 + T2 - Eta2) / (3.0 * N1 ** 3.0)) * (Y / M0) ** 3.0;
+        // Gamma = Gamma + (1.0 / N1) * Y / M0;
+        // Gamma = Gamma * T;
 
         //縮尺係数の計算 「精密測地網一次基準点測量計算式」P51のmを求める式より
-        Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
-        Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
-        Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
+        const Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
+        const Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
+        const Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
         MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0);
         MMM = MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0);
         MMM = MMM + 1.0;
         MMM = MMM * M0;
 
         //出力
-        Bdeg = b * this.rad2deg;
-        Ldeg = L * this.rad2deg;
+        const Bdeg = b * this.rad2deg;
+        const Ldeg = L * this.rad2deg;
 
         return new latlon(Bdeg, Ldeg);
     }
@@ -2312,10 +2313,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**UTF8文字列をバイト配列に変換 */
      static strToUtf8Array(str: string): Uint8Array {
 
-        let n = str.length,
-            idx = -1,
-            bytes = [],
-            i, j, c;
+        const n = str.length;
+        let idx = -1;
+        const bytes = [];
+        let i, j, c;
 
         for (i = 0; i < n; ++i) {
             c = str.charCodeAt(i);

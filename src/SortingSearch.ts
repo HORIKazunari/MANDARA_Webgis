@@ -8,50 +8,49 @@ export class clsSortingSearch {
     private DataNum: number = 0;
     DataPositionValue_Integer: number[] = [];
 
-    init() {
+    init(): void {
         this.SortNumber = [];
         this.Sortrr = [];
         this.DataPositionValue_Integer = [];
         this.DataNum = 0;
     }
 
-    NumofData() {
+    NumofData(): number {
         return this.DataNum;
     }
 
     /**元のデータのPositionのソート後の先頭からの位置を返す */
-    getAfterSortPosition(originalPosition: number) {
+    getAfterSortPosition(originalPosition: number): number {
         return this.SortNumber.indexOf(originalPosition);
     }
 
     /**元のデータのPositionのソート後の後ろからの位置を返す */
-    getAfterSortPositionRev(originalPosition: number) {
+    getAfterSortPositionRev(originalPosition: number): number {
         return (this.DataNum - 1 - this.SortNumber.lastIndexOf(originalPosition));
     }
     
-    SameValue_Number() {
+    SameValue_Number(): number {
         /// <summary>データ中に同じ値がどれだけあるか返す</summary>
         const SV: number[] = [];
         return this.Get_Same_value(SV);
     }
     
     /**重複しない個別の値とそれぞれの数のオブジェクトの配列を返す */
-    EachValue_Array() {
+    EachValue_Array(): { value: number; num: number }[] {
         return this.Get_Each_value();
     }
     
-    SameValue_Array(SameValueArray: number[]) {
+    SameValue_Array(SameValueArray: number[]): number {
         /// <summary>データ中の同じ値が含まれているケースを配列で返す</summary>
         const n = this.Get_Same_value(SameValueArray);
         return n;
     }
     
-    SearchData_Array(SearchValue: number) {
+    SearchData_Array(SearchValue: number): number[] {
         /// <summary>指定した検索値と等しいデータ番号を配列で返す</summary>
-        let EQn: number;
         const DataNumberArray: number[] = [];
         const DPosition = this.Search_Data_Multi(SearchValue);
-        EQn = DPosition.Num_of_Equal_Data;
+        const EQn = DPosition.Num_of_Equal_Data;
         if (EQn !== -1) {
             for (let i = 0; i < EQn; i++) {
                 DataNumberArray.push(this.SortNumber[DPosition.firstPosition + i]);
@@ -60,7 +59,7 @@ export class clsSortingSearch {
         return DataNumberArray;
     }
 
-    SearchData_One(SearchValue: number) {
+    SearchData_One(SearchValue: number): number {
         /// <summary>指定した検索値と等しいデータ番号を一つ返す</summary>
         const DPosition = this.Search_Data_Multi(SearchValue);
         if (DPosition.Num_of_Equal_Data === -1) {
@@ -70,45 +69,45 @@ export class clsSortingSearch {
         }
     }
 
-    DataPosition(Order: number) {
+    DataPosition(Order: number): number {
         /// <summary>指定した順位のデータ番号を返す</summary>
         return this.SortNumber[Order];
     }
     
-    DataPositionRev(OrderReverse: number) {
+    DataPositionRev(OrderReverse: number): number {
         /// <summary>指定した逆順位のデータ番号を返す</summary>
         return this.SortNumber[this.DataNum - OrderReverse - 1];
     }
 
-    DataPositionValue(Order: number) {
+    DataPositionValue(Order: number): number {
         /// <summary>指定した順位のデータ値を返す</summary>
         return this.Sortrr[Order];
     }
 
-    DataPositionRevValue(OrderReverse: number) {
+    DataPositionRevValue(OrderReverse: number): number {
         /// <summary>指定した逆順位のデータ値を返す</summary>
         const n = this.DataNum - OrderReverse - 1;
         return this.Sortrr[n];
     }
     
-    Add(Value: number) {
+    Add(Value: number): void {
         /// <summary>データの追加</summary>
         this.Sortrr.push(Value);
     }
 
-    AddRange(ValueArray: number[]) {
+    AddRange(ValueArray: number[]): void {
         this.Sortrr = ValueArray.slice();
         this.AddEnd();
     }
     
-    AddEnd() {
+    AddEnd(): void {
         /// <summary>データの追加終了</summary>
         this.DataNum = this.Sortrr.length;
         this.SortNumber = this.Sorting(this.DataNum);
         this.DataPositionValue_Integer = [...this.Sortrr];
     }
 
-    private Sorting(n: number) {
+    private Sorting(n: number): number[] {
         //'===========================================================
         //'ShelSort 指定された配列の整数をシェルソート
         //'             （改良挿入法）でソートする
@@ -167,7 +166,7 @@ export class clsSortingSearch {
 
     }
     
-    private Search_Data_Multi(SearchValue: number) {
+    private Search_Data_Multi(SearchValue: number): { Num_of_Equal_Data: number; firstPosition: number } {
         //'-------------------------
         //'SearchValue／探し出すデータ
         //'firstPosition／データの見つかった最初の位置
@@ -228,7 +227,7 @@ export class clsSortingSearch {
         }
     }
 
-    private Get_Same_value(SameV: number[]) {
+    private Get_Same_value(SameV: number[]): number {
         //同じ値が含まれているケースを返す
         SameV.length = 0;
         let f = false;
@@ -243,7 +242,7 @@ export class clsSortingSearch {
         return SameV.length;
     }
 
-    private Get_Each_value() {
+    private Get_Each_value(): { value: number; num: number }[] {
         //重複しない個別の値とそれぞれの数のオブジェクトの配列を返す
         const EachV: { value: number; num: number }[] = [];
         let n = 1;

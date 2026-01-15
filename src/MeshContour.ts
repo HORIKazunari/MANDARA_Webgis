@@ -67,15 +67,15 @@ class clsMeshContour {
         this.Mesh = Generic.Array2Dimension(XMesh_Num, YMesh_Num);
     }
     
-    SetMeshValue(x: number, y: number, Value: number) {
+    SetMeshValue(x: number, y: number, Value: number): void {
         this.Mesh[x][y] = Value;
     }
     
-    GetMeshValue(x: number, y: number) {
+    GetMeshValue(x: number, y: number): number {
         return this.Mesh[x][y];
     }
     
-    Execute_Mesh(ContourNum: number, Contour_High_M: number[], Con_LineStac: contourLineStacInfo[]) {
+    Execute_Mesh(ContourNum: number, Contour_High_M: number[], Con_LineStac: contourLineStacInfo[]): number {
         /// <signature>
         /// <summary>等値線取得、戻り値は等値線ラインの数</summary>
         /// <param name="ContourNum" >取得する等値線の数</param>
@@ -243,7 +243,7 @@ class clsMeshContour {
 
     }
 
-    Execute_FrameGet(GetSide: number, ContourNum: number, Contour_High_M: number[], Frame_LineContour: number[], Frame_Point: point[]) {
+    Execute_FrameGet(GetSide: number, ContourNum: number, Contour_High_M: number[], Frame_LineContour: number[], Frame_Point: point[]): number {
         /// <signature>
         /// <summary>等値線の枠取得、戻り値は等値線ラインの数</summary>
         /// <param name="GetSide" >0左 1上 2右 3下</param>
@@ -314,7 +314,7 @@ class clsMeshContour {
         return vn;
     }
     
-    private GetFrameSub(ContourNum: number, Contour_High_M: number[], sx: number, sy: number, Xplus: number, Yplus: number, LoopNum: number, Vpoint: point[], Vcon: number[]) {
+    private GetFrameSub(ContourNum: number, Contour_High_M: number[], sx: number, sy: number, Xplus: number, Yplus: number, LoopNum: number, Vpoint: point[], Vcon: number[]): number {
         // Contour_High_M[]
         //Vpoint[]:point
         //Vcon[]
@@ -406,7 +406,7 @@ class clsMeshContour {
         return n;
     }
 
-    private Mesh_Sub(con: conPart_info[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, High_CN: number[]) {
+    private Mesh_Sub(con: conPart_info[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, High_CN: number[]): void {
         //メッシュ内で横切る等値線を取得
         const V1 = Mesh[mi][mj] ?? 0;
         const V2 = Mesh[mi + 1][mj] ?? 0;
@@ -453,7 +453,7 @@ class clsMeshContour {
         }
     }
 
-    private R2220(mi: number, mj: number, C12: number, C34: number, C24: number, C13: number, VH1: number, VH2: number, VH3: number, VH4: number, V1: number, V2: number, V3: number, V4: number, HK: number, High_CN: number[], con: conPart_info[][]) {
+    private R2220(mi: number, mj: number, C12: number, C34: number, C24: number, C13: number, VH1: number, VH2: number, VH3: number, VH4: number, V1: number, V2: number, V3: number, V4: number, HK: number, High_CN: number[], con: conPart_info[][]): void {
         let T = 0;
         const po: point[] = [];
         if(C12 === 1 ){
@@ -485,17 +485,17 @@ class clsMeshContour {
             }
     }
 
-    private Get_Sum_geometric_progression(shokou: number, kouhi: number, n: number) {
+    private Get_Sum_geometric_progression(shokou: number, kouhi: number, n: number): number {
         /// <summary>等比数列の和を求める。今は使っていない</summary>
         return shokou * (1 - Math.pow(kouhi, n)) / (1 - kouhi);
     }
 
-    private Get_MortonArrayPosition(n: number) {
+    private Get_MortonArrayPosition(n: number): number {
         /// <summary>四分木線形配列の開始位置。</summary>
         return -(1 - Math.pow(4, n)) / 3;
     }
     
-    private Get_MortonNumberXY(X: number, Y: number, SpaceLevel: number, max_PartitiopnLevel: number) {
+    private Get_MortonNumberXY(X: number, Y: number, SpaceLevel: number, max_PartitiopnLevel: number): number {
         /// <summary>点の座標値と所属する空間レベルから、四分木線形配列の位置を返す</summary>
         const zero ="0".repeat(max_PartitiopnLevel);
         const x2 = (zero + X.toString(2)).right(max_PartitiopnLevel); //X座標を2進数に
@@ -508,7 +508,7 @@ class clsMeshContour {
     }
 
 
-    private Set_MeshQuadTree(Mesh: MeshGrid, xw: number, yw: number, max_PartitiopnLevel: number) {
+    private Set_MeshQuadTree(Mesh: MeshGrid, xw: number, yw: number, max_PartitiopnLevel: number): void {
         /// <summary>メッシュの四分木データをQuad_MeshDataに作成</summary>
 
         const stp = Math.pow(2, max_PartitiopnLevel - 1);
@@ -598,7 +598,7 @@ class clsMeshContour {
 
     }
 
-    private Get_Quad_MeshCell(value: number, Qcell: MortonIndex[], SpaceLevel: number, Scell: number, n: PartitionCounter, max_PartitiopnLevel: number) {
+    private Get_Quad_MeshCell(value: number, Qcell: MortonIndex[], SpaceLevel: number, Scell: number, n: PartitionCounter, max_PartitiopnLevel: number): void {
         /// <summary>四分木から等値線にかかるメッシュを抜き出す再帰処理</summary>
         if (SpaceLevel === 0) {
             //初回の呼び出し
@@ -627,7 +627,7 @@ class clsMeshContour {
         }
     }
 
-    private Get_PartitiopnLevel(xs: number, ys: number) {
+    private Get_PartitiopnLevel(xs: number, ys: number): number {
         /// <summary>四分木の最大分割段階を決める</summary>
         const ms = Math.min(xs, ys);
         let i=1;
