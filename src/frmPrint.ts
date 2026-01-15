@@ -886,7 +886,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData);
+        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData as any);
         const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
         O_LPat.Color=clsBase.ColorRed();

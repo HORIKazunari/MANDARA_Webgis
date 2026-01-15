@@ -1760,7 +1760,7 @@ declare class strCompass_Attri {
     [key: string]: JsonValue; 
     constructor(...args: JsonValue[]); 
 }
-declare class clsDrawLine { [key: string]: JsonValue; static Arrow?: (...args: JsonValue[]) => void; static Line?: (...args: JsonValue[]) => void; static Draw_Sample_LineBox?: (...args: JsonValue[]) => void; static Check_Draw_Arrow_Line?: (...args: JsonValue[]) => boolean; }
+declare class clsDrawLine { [key: string]: JsonValue; static Arrow?: (...args: JsonValue[]) => void; static Line?: (...args: JsonValue[]) => void; static Draw_Sample_LineBox?: (...args: JsonValue[]) => void; static Check_Draw_Arrow_Line?: (OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) => point | undefined; }
 declare class clsDrawTile { [key: string]: JsonValue; static Darw_Sample_BackGroundBox?: (...args: JsonValue[]) => void; static Draw_Poly_Inner?: (...args: JsonValue[]) => void; static Draw_Tile_Box?: (...args: JsonValue[]) => void; static Draw_Tile_RoundBox?: (...args: JsonValue[]) => void; }
 declare class tileList_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class EnableMPLine_Data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }

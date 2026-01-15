@@ -1903,7 +1903,7 @@ console.log(SortSumDataValue)
 
                             }
                             const retV = clsDraw.TextCut_for_print(g, wo2,
-                                attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
+                                attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as any);
                             Array.prototype.push.apply(D_Word_Cut, retV.Out_Text);
                             D_TxHeight = retV.Height;
                         }
@@ -1916,7 +1916,7 @@ console.log(SortSumDataValue)
                     let O_TxHeight = 0;
                     if (attLbl.ObjectName_Print_Flag === true) {
                         const retV = clsDraw.TextCut_for_print(g, state.attrData.Get_KenObjName(Layernum, i),
-                            attLbl.ObjectName_Font, attLbl.ObjectName_Turn_Flag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
+                            attLbl.ObjectName_Font, attLbl.ObjectName_Turn_Flag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as any);
                         O_Word_Cut = retV.Out_Text;
                         O_TxHeight = retV.Height;
                     }
@@ -2591,7 +2591,7 @@ console.log(SortSumDataValue)
                 const CP = al.atrObject.atrObjectData[i].Label;
                 const LP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                 const atx = String(tx);
-                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData)
+                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData as any)
                 let outTx = d_an2.Out_Text[0];
                 for (let j = 1; j<d_an2.Out_Text.length; j++) {
                     outTx += "\n" + d_an2.Out_Text[j];
@@ -3393,7 +3393,8 @@ console.log(SortSumDataValue)
                         LineShapeLine.Edge_Connect_Pattern = al.LayerModeViewSettings.PointLineShape.LineEdge;
 
                         if (al.Type === enmLayerType.Mesh) {
-                            const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(al.atrObject.atrObjectData[DrawOrder].MeshPoint) as point[];
+                            const meshPoint: point[] = al.atrObject.atrObjectData[DrawOrder].MeshPoint;
+                            const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
                             state.attrData.Draw_Line(g, LineShapeLine, pxy);
                         } else {
                             const ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
@@ -3526,7 +3527,8 @@ console.log(SortSumDataValue)
                 return;
             }
             if(ad.Type === enmLayerType.Mesh) {
-                pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint) as point[];
+                const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
+                pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
                 pxy.push(pxy[0].Clone())
                 state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
                 return;
@@ -3612,7 +3614,8 @@ console.log(SortSumDataValue)
         let badata = new boundArrangeData();        
         if(Dummy_F === false) {
             if(state.attrData.LayerData[Layernum].Type === enmLayerType.Mesh) {
-                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint) as point[];
+                const meshPoint: point[] = ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint;
+                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
                 const nPolyP = [];
                 nPolyP[0] = pxy.length;
                 if(pxy.length >= 4) {
@@ -3737,10 +3740,11 @@ console.log(SortSumDataValue)
                     }
                     if (clsSpline.Spline_Get) pxy = clsSpline.Spline_Get(0, np, spxy2, 0.3, av.ScrData);
                 } else {
-                    if (clsSpline.Spline_Get) pxy = clsSpline.Spline_Get(0, np, spxy, 0.3, av.ScrData);
+                    if (clsSpline.Spline_Get) pxy = clsSpline.Spline_Get(0, np, spxy as point[], 0.3, av.ScrData);
                 }
             } else {
-                pxy = av.ScrData.Get_SxSy_With_3D(np, spxy, ReverseGetF) as point[];
+                const spxyPoints: point[] = spxy as point[];
+                pxy = av.ScrData.Get_SxSy_With_3D(np, spxyPoints, ReverseGetF);
             }
             state.attrData.Set_MPSubLineXY(mpfilename, LCode, pxy, ReverseGetF);
         }
