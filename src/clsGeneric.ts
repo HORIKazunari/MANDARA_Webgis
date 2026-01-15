@@ -89,7 +89,7 @@ export class TKY2JGDInfo_Impl {
     }
 
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
-        let M0: number;  //Kei    //系番号，基準子午線の縮尺係数
+        let M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
         let B1: number, L1: number;      //原点の緯度，経度。基本的にradian
         let b: number, L: number;        //求める緯度，経度。基本的にradian
         let Bdeg: number, Ldeg: number;  //求める緯度，経度。基本的にdeg
@@ -103,33 +103,32 @@ export class TKY2JGDInfo_Impl {
         let Eta2: number, M1: number, N1: number;          //phi1の関数
         let Eta2phi: number, Mphi: number, Nphi: number;   //phi(=B)の関数
         let T: number, T2: number, T4: number, T6: number;
-        let e2: number, e4: number, e6: number, e8: number, e10: number;
+        let e4: number, e6: number, e8: number, e10: number;
         let e12: number, e14: number, e16: number;
         let S1: number, phi1: number, oldphi1: number, icount: number;
         let Bunsi: number, Bunbo: number;
         let YM0: number, N1CosPhi1: number;
         const EPs = new EllipPar();
 
-        const M0 = 0.9999;
         const epSrc = this.EP[Ellip12] ?? new EllipPar();
         EPs.a = epSrc.a ?? 0;
         EPs.f1 = epSrc.f1 ?? 0;
         EPs.f = epSrc.f ?? 0;
         EPs.E = epSrc.E ?? 0;
         EPs.namec = epSrc.namec ?? "";
-        const e2 = EPs.E ?? 0;
-        const e4 = e2 * e2
-        const e6 = e4 * e2
-        const e8 = e4 * e4
-        const e10 = e8 * e2
-        const e12 = e8 * e4
-        const e14 = e8 * e6
-        const e16 = e8 * e8
+        e2 = EPs.E ?? 0;
+        e4 = e2 * e2
+        e6 = e4 * e2
+        e8 = e4 * e4
+        e10 = e8 * e2
+        e12 = e8 * e4
+        e14 = e8 * e6
+        e16 = e8 * e8
 
         //定数項 the same as bl2xy
-        const AEE = EPs.a * (1.0 - EPs.E) //a(1-e2)
-        const CEE = EPs.a / Math.sqrt(1.0 - EPs.E)   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
-        const Ep2 = EPs.E / (1.0 - EPs.E) //e'2(e prime 2) Eta2を計算するため
+        AEE = EPs.a * (1.0 - EPs.E) //a(1-e2)
+        CEE = EPs.a / Math.sqrt(1.0 - EPs.E)   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
+        Ep2 = EPs.E / (1.0 - EPs.E) //e'2(e prime 2) Eta2を計算するため
 
         AJ = 4927697775.0 / 7516192768.0 * e16
         AJ = AJ + 19324305.0 / 29360128.0 * e14
@@ -176,17 +175,17 @@ export class TKY2JGDInfo_Impl {
         GJ = GJ + 3003.0 / 2097152.0 * e12
         HJ = 765765.0 / 469762048.0 * e16
         HJ = HJ + 45045.0 / 117440512.0 * e14
-        const IJ = 765765.0 / 7516192768.0 * e16
+        IJ = 765765.0 / 7516192768.0 * e16
 
 
-        const B1 = this.XY_Genten[Kei].lat * this.deg2rad;
-        const L1 = this.XY_Genten[Kei].lon * this.deg2rad;
+        B1 = this.XY_Genten[Kei].lat * this.deg2rad;
+        L1 = this.XY_Genten[Kei].lon * this.deg2rad;
 
   
 
         //赤道からの子午線長の計算
-        const S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
-        const M = S0 + X / M0;
+        S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
+        M = S0 + X / M0;
 
         //Baileyの式による異性緯度（isometric latitude）phi1の計算。
         //「精密測地網一次基準点測量計算式」P57の11.(1)の式から。
@@ -204,15 +203,15 @@ export class TKY2JGDInfo_Impl {
         } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)); //本では1e-12で十分　iterationの回数は４回
 
         //何度も使う式を変数に代入
-        const YM0 = Y / M0;
-        const T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
-        const T2 = T * T;
-        const T4 = T2 * T2;
-        const T6 = T4 * T2;
-        const Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
+        YM0 = Y / M0;
+        T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
+        T2 = T * T;
+        T4 = T2 * T2;
+        T6 = T4 * T2;
+        Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
         // const M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0); // 未使用
-        const N1 = CEE / Math.sqrt(1.0 + Eta2);
-        const N1CosPhi1 = N1 * Math.cos(phi1);
+        N1 = CEE / Math.sqrt(1.0 + Eta2);
+        N1CosPhi1 = N1 * Math.cos(phi1);
 
         //緯度Bの計算 「精密測地網一次基準点測量計算式」P51のphiを求める式より
         b = ((1385.0 + 3633.0 * T2 + 4095 * T4 + 1575.0 * T6) / (40320.0 * N1 ** 8.0)) * YM0 ** 8.0;
@@ -246,8 +245,8 @@ export class TKY2JGDInfo_Impl {
         MMM = MMM * M0;
 
         //出力
-        const Bdeg = b * this.rad2deg;
-        const Ldeg = L * this.rad2deg;
+        Bdeg = b * this.rad2deg;
+        Ldeg = L * this.rad2deg;
 
         return new latlon(Bdeg, Ldeg);
     }

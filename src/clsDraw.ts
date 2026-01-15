@@ -503,7 +503,7 @@ class clsDrawTile {
 
 class MarkInfo {
     name?: string;
-    stac?: JsonValue;
+    stac: number[] = [];
 }
 
 class clsDrawMarkFan {

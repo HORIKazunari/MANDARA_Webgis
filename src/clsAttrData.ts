@@ -809,6 +809,7 @@ class strShowViewerLayerInfo {
 }
 
 class stratrData_Info {
+    [key: string]: number | strData_info[];
     Count: number = 0;//データ項目数
     SelectedIndex: number = 0;//選択中のデータ項目番号
     Data: strData_info[] = [];//strData_info
@@ -2647,7 +2648,7 @@ class clsAttrData {
     LayerData: strLayerDataInfo[];
     TotalData: Total_Data_Info;
     MapData: clsAttrMapData;
-    MPSubLine: strGetLinePointAPI_Info;
+    MPSubLine: Record<string, Record<number, strGetLinePointAPI_Info>>;
     LineKindUse: boolean[];
     private defaultColor: {
         paintMode: colorRGBA[];
@@ -2678,7 +2679,7 @@ class clsAttrData {
         lv.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
 
         this.MapData = new clsAttrMapData(); //clsAttrMapData
-        this.MPSubLine = new strGetLinePointAPI_Info();
+        this.MPSubLine = {};
         this.LineKindUse = []; //Boolean
     }
 
@@ -3836,7 +3837,11 @@ class clsAttrData {
 
     //変換した座標を計算済み座標に登録
     Set_MPSubLineXY(MapFileName: string, LineCode: number, XY: point[], ReverseF: boolean): void {
-        const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
+        const mapKey = MapFileName.toUpperCase();
+        if (!this.MPSubLine[mapKey]) {
+            this.MPSubLine[mapKey] = {};
+        }
+        const LinePoint = this.MPSubLine[mapKey];
         const LP = new strGetLinePointAPI_Info();
         LP.GetF = true;
         LP.ReverseF = ReverseF;
@@ -3847,22 +3852,34 @@ class clsAttrData {
 
     /** MPSubLine.Drawnの値をfalseにする*/
     ResetMPSubLineDrawn(MapFileName: string): void {
-        const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
-        for (let i = 0; i < LinePoint.Length; i++) {
-            LinePoint[i].Drawn = false;
+        const mapKey = MapFileName.toUpperCase();
+        const LinePoint = this.MPSubLine[mapKey];
+        if (!LinePoint) return;
+        for (const lineCode in LinePoint) {
+            if (LinePoint.hasOwnProperty(lineCode)) {
+                LinePoint[lineCode].Drawn = false;
+            }
         }
     }
 
     getMpLineDrawn(MapFileName: string, LineCode: number): boolean | undefined {
-        const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
-        if (LinePoint[LineCode] === undefined) {
+        const mapKey = MapFileName.toUpperCase();
+        const LinePoint = this.MPSubLine[mapKey];
+        if (!LinePoint || LinePoint[LineCode] === undefined) {
             return undefined;
         } else {
-            return this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn;
+            return LinePoint[LineCode].Drawn;
         }
     }
     setMpLineDrawn(MapFileName: string, LineCode: number, value: boolean): void {
-         this.MPSubLine[MapFileName.toUpperCase()][LineCode].Drawn = value;
+        const mapKey = MapFileName.toUpperCase();
+        if (!this.MPSubLine[mapKey]) {
+            this.MPSubLine[mapKey] = {};
+        }
+        if (!this.MPSubLine[mapKey][LineCode]) {
+            this.MPSubLine[mapKey][LineCode] = new strGetLinePointAPI_Info();
+        }
+        this.MPSubLine[mapKey][LineCode].Drawn = value;
     }
 
 
@@ -3882,9 +3899,13 @@ class clsAttrData {
     }
 
     //地図データの保存してある計算済み座標を取得する
-    Get_MPSubLineXY(MapFileName: string, LineCode: number, ReverseF: boolean): point[] {
-        let xy = [];
-        const LinePoint = this.MPSubLine[MapFileName.toUpperCase()];
+    Get_MPSubLineXY(MapFileName: string, LineCode: number, ReverseF: boolean): point[] | undefined {
+        let xy: point[] = [];
+        const mapKey = MapFileName.toUpperCase();
+        const LinePoint = this.MPSubLine[mapKey];
+        if (!LinePoint) {
+            return undefined;
+        }
         const MPSubLinePointXY = LinePoint[LineCode];
         if (MPSubLinePointXY !== undefined) {
             if (MPSubLinePointXY.GetF === true) {
@@ -3916,7 +3937,7 @@ class clsAttrData {
             // for (j = 0; j < this.MapData.SetMapFile(FList[i]).Map.ALIN; j++) {
             //     let d = new strGetLinePointAPI_Info()
             // }
-            this.MPSubLine[FList[i]] = [];//strGetLinePointAPI_Info
+            this.MPSubLine[FList[i]] = {};//strGetLinePointAPI_Info
         }
         this.LineKindUse = [];
         this.TempData.PointObjectKindUsedStack = [];
@@ -4367,16 +4388,16 @@ class clsAttrData {
         const pf = this.LayerData[0].atrObject.atrObjectData[0].CenterPoint.Clone();
         const pf2 = spatial.Get_Reverse_XY(pf, Zahyo);
         let LLRect = new rectangle(pf2, new size(0, 0));
-        const LineCheck = {}// Dictionary(Of String, Boolean())
+        const LineCheck: Record<string, boolean[]> = {} // Dictionary(Of String, Boolean())
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             const ld = this.LayerData[i];
             if (ld.Type !== enmLayerType.Trip_Definition) {
                 const MapFileData = ld.MapFileData;
                 if (Object.keys(LineCheck).indexOf(ld.MapFileName) === -1) {
                     const LineL = new Array(MapFileData.Map.ALIN).fill(false);
-                    (LineCheck as Record<string, unknown>)[ld.MapFileName] = LineL;
+                    LineCheck[ld.MapFileName] = LineL;
                 }
-                const LC = (LineCheck as Record<string, unknown>)[ld.MapFileName];
+                const LC = (LineCheck as Record<string, boolean[]>)[ld.MapFileName];
                 const LayerTime = ld.Time;
                 if (this.TotalData.ViewStyle.Dummy_Size_Flag === true) {
                     //ダミー領域も範囲に含む場合
@@ -4420,10 +4441,10 @@ class clsAttrData {
                             const Meshcode = ld.atrObject.atrObjectData[j].Name;
                             const RectLatLon = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode);
                             const RectPoints = [
-                                RectLatLon[0].toPoint(),
-                                RectLatLon[1].toPoint(),
-                                RectLatLon[2].toPoint(),
-                                RectLatLon[3].toPoint()
+                                RectLatLon.NorthWest?.toPoint() || new point(),
+                                new latlon(RectLatLon.NorthWest?.lat || 0, RectLatLon.SouthEast?.lon || 0).toPoint(),
+                                RectLatLon.SouthEast?.toPoint() || new point(),
+                                new latlon(RectLatLon.SouthEast?.lat || 0, RectLatLon.NorthWest?.lon || 0).toPoint()
                             ];
                             LLRect = spatial.getCircumscribedRectangle(RectPoints, LLRect);
                         }
@@ -7857,7 +7878,7 @@ class clsAttrData {
             }
         }
     }
-    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: JsonValue): void {
+    Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: strObject_Data_Info[]): void {
         //レイヤの追加
         const NewL = new strLayerDataInfo();
         if (LayerMapFile === "") {
@@ -7948,7 +7969,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    Set_ObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects: JsonValue): void {
+    Set_ObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects?: boolean[]): void {
         const objList=[];
         lbox.removeAll();
         const L = this.LayerData[Layernum].atrObject;
@@ -7963,7 +7984,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    Set_DummyObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects: JsonValue): void {
+    Set_DummyObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects?: boolean[]): void {
         const objList=[];
         lbox.removeAll();
         const L=this.LayerData[Layernum].Dummy
@@ -8073,12 +8094,12 @@ class clsAttrData {
     }
 
     /**オブジェクトを削除（移動レイヤ、移動主体定義レイヤ、合成オブジェクト使用レイヤは削除不可 LayerDelNum:レイヤごとの削除数の配列。削除しない場合は0,ObjectDeleteCheck:オブジェクトの数だけの配列で、削除する場合Trueを、全レイヤ分Listに格納） */
-    DeleteObjects(LayerDelNum: number, ObjectDeleteCheck: JsonValue): void {
+    DeleteObjects(LayerDelNum: number[], ObjectDeleteCheck: boolean[][]): void {
         //線モードの起点オブジェクトをチェックするために新旧対応リスト作成
         const LayMax=this.TotalData.LV1.Lay_Maxn;
-        const ConvObj = [];
+        const ConvObj: number[][] = [];
         for (let i = 0; i < LayMax; i++) {
-            const ObjConv = [];
+            const ObjConv: number[] = [];
             if (LayerDelNum[i] > 0) {
                 const obn = ObjectDeleteCheck[i];
                 let n = 0;
