@@ -1173,7 +1173,8 @@ class strLayerDataInfo {
     //通常のデータの最初の位置を返す。存在しない場合は-1を返す
     getFirstNormalDataItem(): number {
         for (const i in this.atrData) {
-            if (this.atrData[i].DataType === enmAttDataType.Normal) {
+            const dataItem = this.atrData[i];
+            if (typeof dataItem !== 'number' && dataItem.DataType === enmAttDataType.Normal) {
                 return parseInt(i);
             }
         }
@@ -4263,7 +4264,7 @@ class clsAttrData {
             }
             case enmSoloMode_Number.MarkSizeMode: {
                 let selDiv = null;
-                const divMarkSize = null;
+                const divMarkSize: null = null;
                 selDiv = divMarkSize;
                 return "記号の大きさモード";
                 break;
@@ -4439,7 +4440,7 @@ class clsAttrData {
                     case enmLayerType.Mesh: {
                         for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                             const Meshcode = ld.atrObject.atrObjectData[j].Name;
-                            const RectLatLon = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode);
+                            const RectLatLon = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode, ld.MeshType);
                             const RectPoints = [
                                 RectLatLon.NorthWest?.toPoint() || new point(),
                                 new latlon(RectLatLon.NorthWest?.lat || 0, RectLatLon.SouthEast?.lon || 0).toPoint(),
@@ -7985,11 +7986,11 @@ class clsAttrData {
 
     /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
     Set_DummyObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects?: boolean[]): void {
-        const objList=[];
+        const objList: {text: string, value: string, checked: boolean}[] = [];
         lbox.removeAll();
         const L=this.LayerData[Layernum].Dummy
         for (let i = 0; i <L.length;i++){
-            const v={text:L[i].Name,checked:false};
+            const v={text:L[i].Name, value:L[i].Name, checked:false};
             if(SelectedObjects !== undefined){
                 v.checked=SelectedObjects[i];
             }

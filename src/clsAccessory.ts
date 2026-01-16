@@ -2212,7 +2212,7 @@ export class clsAccessory {
                 byh: byh,
                 vn: vn,
                 sujiW: sujiW,
-                freqW: freqW,
+                FreqW: freqW,
                 LL: LL,
                 RR: RR
             };
@@ -2284,7 +2284,7 @@ export class clsAccessory {
             byh: byh,
             vn: vn,
             sujiW: sujiW,
-            freqW: FreqW,
+            FreqW: FreqW,
             LL: LL,
             RR: RR
         }

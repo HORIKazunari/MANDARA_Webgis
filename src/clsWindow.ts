@@ -582,7 +582,7 @@ function setting(locSearch: string) {
 
     /**非表示オブジェクトの削除 */
     function mnuDeleteInvisibleObject() {
-        const ObjLive = [];
+        const ObjLive: boolean[][] = [];
         const LayMax = attrData.TotalData.LV1.Lay_Maxn;
         let delN = 0;
         const DelNum = new Array(LayMax).fill(0);
@@ -1843,19 +1843,19 @@ function setting(locSearch: string) {
                             break;
                         }
                         case enmSoloMode_Number.ClassMarkMode: {
-                            const md = attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark;
+                            const md = attrData.nowDataSolo().Class_Div[tgt.tag as number].ClassMark;
                             clsMarkSet(e, mkChange, md, attrData);
                             function mkChange(newMark: Mark) {
-                                attrData.nowDataSolo().Class_Div[tgt.tag].ClassMark = { ...newMark };
+                                attrData.nowDataSolo().Class_Div[tgt.tag as number].ClassMark = { ...newMark };
                                 attrData.Draw_Sample_Mark_Box(tgt, newMark);
                             }
                             break;
                         }
                         case enmSoloMode_Number.ClassODMode: {
-                            const md = attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat;
+                            const md = attrData.nowDataSolo().Class_Div[tgt.tag as number].ODLinePat;
                             clsLinePatternSet(e, md, lineChange);
                             function lineChange(newPat: Line_Property) {
-                                attrData.nowDataSolo().Class_Div[tgt.tag].ODLinePat = { ...newPat };
+                                attrData.nowDataSolo().Class_Div[tgt.tag as number].ODLinePat = { ...newPat };
                                 attrData.Draw_Sample_LineBox(tgt,newPat);
                             }
                             break
@@ -1887,7 +1887,7 @@ function setting(locSearch: string) {
                     const Layernum = attrData.TotalData.LV1.SelectedLayer;
                     const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
                     const ldd = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
-                    const ddata = ldd.Class_Div[dragN].Clone();
+                    const ddata = ldd.Class_Div[dragN as number].Clone();
                     if(dragN < dropN) {
                         for (let i = dragN; i < dropN; i++) {
                             ldd.Class_Div[i] = ldd.Class_Div[i + 1];
@@ -1897,7 +1897,7 @@ function setting(locSearch: string) {
                             ldd.Class_Div[i] = ldd.Class_Div[i - 1];
                         }
                     }
-                    ldd.Class_Div[dropN] = ddata;
+                    ldd.Class_Div[dropN as number] = ddata;
                     SetPictureBox();
                     SetClassDivValueTextBox();
                     setFrequencyLabel();
@@ -1935,7 +1935,7 @@ function setting(locSearch: string) {
                                 ld.atrData.Data[D].Value[i] = newTx;
                             }
                         }
-                        ldd.Class_Div[n].Value = newTx;
+                        ldd.Class_Div[n as number].Value = newTx;
                     }
                     setFrequencyLabel();
                 }
@@ -2478,7 +2478,7 @@ function setting(locSearch: string) {
         { value: enmDivisionMethod.EqualInterval, text: '等間隔' }
         ]
         Generic.createNewWordSelect(gbDivNum, "区分方法", cboDivisionMethodList.map(item => item.text), 0, "cboDivisionMethod", 10, 10, 90, 100, 1, cboDivisionMethodChange, "", "", true);
-        const cboDivisionCountMethodList = [];
+        const cboDivisionCountMethodList: { value: number; text: string; }[] = [];
         for (let i = 0; i < 19; i++) {
             cboDivisionCountMethodList.push({ value: i + 2, text: (i + 2).toString() });
         }
@@ -3702,7 +3702,7 @@ function setting(locSearch: string) {
                         const Layernum = attrData.TotalData.LV1.SelectedLayer;
                         for (let i = 0; i < selectedNumber.length; i++) {
                             selLabel.DataItem.push(selectedNumber[i]);
-                            adList.push({ value: selectedNumber[i], text: attrData.Get_DataTitle(Layernum, selectedNumber[i], true) });
+                            adList.push({ value: String(selectedNumber[i]), text: attrData.Get_DataTitle(Layernum, selectedNumber[i], true) });
                         }
                         lstLabelDataItem.addList(adList, selN);
                     }, preAsta, true, true, true, true);
