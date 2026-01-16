@@ -89,7 +89,7 @@ export class TKY2JGDInfo_Impl {
     }
 
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
-        let M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
+        const M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
         let B1: number, L1: number;      //原点の緯度，経度。基本的にradian
         let b: number, L: number;        //求める緯度，経度。基本的にradian
         let Bdeg: number, Ldeg: number;  //求める緯度，経度。基本的にdeg

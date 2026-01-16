@@ -3870,7 +3870,7 @@ class clsAttrData {
     getMpLineDrawn(MapFileName: string, LineCode: number): boolean | undefined {
         const mapKey = MapFileName.toUpperCase();
         const LinePoint = this.MPSubLine[mapKey];
-        if (!LinePoint || LinePoint[LineCode] === undefined) {
+        if (LinePoint?.[LineCode] === undefined) {
             return undefined;
         } else {
             return LinePoint[LineCode].Drawn;

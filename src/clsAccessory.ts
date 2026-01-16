@@ -28,7 +28,7 @@ export class clsAccessory {
         }
         const n=Use_Line_Number.length;
         const getLengthOnScreen = state.attrData.Get_Length_On_Screen;
-        if (!getLengthOnScreen || !LFont || !LFont.Size) {
+        if (!getLengthOnScreen || !LFont?.Size) {
             return false;
         }
         const UH  = getLengthOnScreen(LFont.Size);
@@ -56,7 +56,7 @@ export class clsAccessory {
             return false;
         }
         const checkScreenIn = state.attrData.Check_Screen_In;
-        if(!checkScreenIn || !checkScreenIn(C_Rect) ){
+        if(!checkScreenIn?.(C_Rect) ){
             return false;
         }
         
@@ -139,7 +139,7 @@ export class clsAccessory {
         }
         const C_Rect = new rectangle(ALP, HeadBoxSize);
         const checkScreenIn = state.attrData.Check_Screen_In;
-        if (!checkScreenIn || !checkScreenIn(C_Rect)) {
+        if (!checkScreenIn?.(C_Rect)) {
             return false;
         }
         if (!lineDummyKind) {
@@ -187,7 +187,7 @@ export class clsAccessory {
             return;
         }
         const MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon;
-        if (!MapIdoKedoRect || typeof MapIdoKedoRect.top === 'undefined' || typeof MapIdoKedoRect.bottom === 'undefined' ||
+        if (typeof MapIdoKedoRect?.top === 'undefined' || typeof MapIdoKedoRect.bottom === 'undefined' ||
             typeof MapIdoKedoRect.left === 'undefined' || typeof MapIdoKedoRect.right === 'undefined') {
             return;
         }
