@@ -3770,19 +3770,19 @@ function frmPrint_DummyObjectGroup(){
 
     function buttonOK() {
         Generic.clear_backDiv();
-        for (let i = 0; i < state.attrData.TotalData.LV1.Lay_Maxn; i++) {
-            const al = state.attrData.LayerData[i];
+        for (let i = 0; i < appState().attrData.TotalData.LV1.Lay_Maxn; i++) {
+            const al = appState().attrData.LayerData[i];
             al.Dummy = Generic.ArrayClone(Dummy[i]);
             al.DummyGroup=Generic.Get_Specified_Value_Array(DummyOBGroup[i],true);
             al.LayerModeViewSettings.PolygonDummy_ClipSet_F = PolygonDummy_ClipSet_F[i];
         }
-        const ado=state.attrData.TotalData.ViewStyle.DummyObjectPointMark;
+        const ado=appState().attrData.TotalData.ViewStyle.DummyObjectPointMark;
         for(const key in DummyObjectPointMark){
             for (const j in DummyObjectPointMark[key]){
                 ado[key][j]=DummyObjectPointMark[key][j];
             }
         }
-        state.attrData.TotalData.ViewStyle.Dummy_Size_Flag = chkDummy_Size.checked;
+        appState().attrData.TotalData.ViewStyle.Dummy_Size_Flag = chkDummy_Size.checked;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 }
