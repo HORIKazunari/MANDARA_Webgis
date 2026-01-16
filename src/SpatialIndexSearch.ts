@@ -508,7 +508,7 @@ class clsSpatialIndexSearch {
             NearestPoint: NearP,
             Distance: mind,
             Num: PStac.length
-        } as const;
+        };
         return return_V;
     }
 
