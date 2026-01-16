@@ -33,16 +33,16 @@ class Layer_Data_InfoCheck {
 
 function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
     const state = appState();
-    const GridLayerData: GridLayerDataInfo = {
-        MapFile: "",
-        Type: "",
-        Shape: "",
-        Time: "",
-        OldIndex: "",
-        Mesh: "",
-        SyntheticObjF: "",
-        Comment: "",
-        ReferenceSystem: ""
+    const GridLayerData = {
+        MapFile: "MapFile" as const,
+        Type: "Type" as const,
+        Shape: "Shape" as const,
+        Time: "Time" as const,
+        OldIndex: "OldIndex" as const,
+        Mesh: "Mesh" as const,
+        SyntheticObjF: "SyntheticObjF" as const,
+        Comment: "Comment" as const,
+        ReferenceSystem: "ReferenceSystem" as const
     };
     let Change_Data = false;
     let ZahyoOk = false; // Boolean
@@ -1777,7 +1777,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         gl.Time = "Time";
         gl.OldIndex = "OldIndex";
         gl.Mesh = "Mesh";
-        gl.SyntheticObjF = "Synthetic";
+        gl.SyntheticObjF = "SyntheticObjF";
         gl.Comment = "Comment";
         gl.ReferenceSystem = "ReferenceSystem";
         Change_Data = false;
@@ -1912,9 +1912,9 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 if (oldFname === repFname) {
                     ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
                     const LTime = ktGrid.getLayerData(i, GridLayerData.Time);
-                    if ((newAttrData.SetMapFile(filename).Map.Time_Mode === true) && (LTime.nullFlag === true)) {
+                    if ((newAttrData.SetMapFile(filename).Map.Time_Mode === true) && (LTime.nullFlag() === true)) {
                         ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetYMD(new Date()) as unknown as JsonValue);
-                    } else if ((newAttrData.SetMapFile(filename).Map.Time_Mode === false) && (LTime.nullFlag === false)) {
+                    } else if ((newAttrData.SetMapFile(filename).Map.Time_Mode === false) && (LTime.nullFlag() === false)) {
                         ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetNullYMD() as unknown as JsonValue);
                     }
                 }

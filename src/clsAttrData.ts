@@ -319,7 +319,7 @@ const enmScaleBarPattern = {
 
 
 //記号の数，大きさ，階級記号，線モードの内部色設定
-class strInner_Data_Info {
+export class strInner_Data_Info {
     Flag: number = 0;
     Data: number = 0;
 
@@ -1172,10 +1172,10 @@ class strLayerDataInfo {
 
     //通常のデータの最初の位置を返す。存在しない場合は-1を返す
     getFirstNormalDataItem(): number {
-        for (const i in this.atrData) {
-            const dataItem = this.atrData[i];
-            if (typeof dataItem !== 'number' && dataItem.DataType === enmAttDataType.Normal) {
-                return parseInt(i);
+        for (let i = 0; i < this.atrData.Data.length; i++) {
+            const dataItem = this.atrData.Data[i];
+            if (dataItem.DataType === enmAttDataType.Normal) {
+                return i;
             }
         }
         return -1;
@@ -1479,7 +1479,6 @@ interface FigureData {
     Points?: point[]; // Line/Point Data用
     NumOfPoint?: number; // Line Data用（点数）
     Position?: point; // Circle/Point Data用
-    [key: string]: JsonValue; // その他のプロパティ
 }
 
 // 有効な地図ラインの型（LineCodeプロパティを持つ）
@@ -1492,13 +1491,20 @@ interface EnableMPLine {
 interface TripObjData {
     TripPersonName: string;
     TripPersonCode: number;
-    [key: string]: JsonValue;
+    PositionObjName: string;
+    LatLon?: latlon;
 }
 
 // 座標系の結果型
 interface ZahyoResult {
     ok: boolean;
     emes?: string;
+}
+
+// データ読み込み結果型
+interface DataLoadResult {
+    ok: boolean;
+    emes: string;
 }
 
 //属性データ全体に関わるデータ（属性データ）
@@ -4520,7 +4526,7 @@ class clsAttrData {
         return retv;
     }
     //mdrjファイルから読み込み
-    SetDataFromMDRJ(MapDataList: clsMapdata[], attrText: string): JsonObject {
+    SetDataFromMDRJ(MapDataList: clsMapdata[], attrText: string): DataLoadResult {
         const state = appState();
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
@@ -5274,7 +5280,7 @@ class clsAttrData {
 }
 
     //クリップボードから読み込み
-    SetDataFromClipBoard(MapDataList: clsMapdata[], attrText: string): JsonObject {
+    SetDataFromClipBoard(MapDataList: clsMapdata[], attrText: string): DataLoadResult {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
@@ -5296,7 +5302,7 @@ class clsAttrData {
     }
 
     //Clipboard,CSVのデータを一行ずつ処理して読み込む
-    ReadAttrDataOneLine(STR: string): JsonObject {
+    ReadAttrDataOneLine(STR: string): DataLoadResult {
         const state = appState();
         let ObjectErrorMessage = '';
         let lay = -1;
@@ -7061,11 +7067,11 @@ class clsAttrData {
             //'カテゴリーデータの階級区分
             const cateData = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
             const n = cateData.length;
-            const Value = [];
+            const Value: (string | number)[] = [];
             for (let i = 0; i < n; i++) {
                 Value[i] = cateData[i].DataValue;
             }
-            const CateValue = Generic.Remove_Same_String(Value);
+            const CateValue = Generic.Remove_Same_String(Value.map(v => String(v)));
             data.Statistics.sa = CateValue.length;
             data.SoloModeViewSettings.Div_Num = CateValue.length;
             data.SoloModeViewSettings.Class_Div = [];
@@ -7290,7 +7296,7 @@ class clsAttrData {
     }
 
     //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
-    Get_InnerTile(InnerData: strInner_Data_Info, Layernum: number, CategoryPos: number): JsonValue {
+    Get_InnerTile(InnerData: strInner_Data_Info, Layernum: number, CategoryPos: number): Tile_Property {
         let t;
         if (CategoryPos === -1) {
             t = this.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();

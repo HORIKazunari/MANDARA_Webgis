@@ -206,7 +206,7 @@ class Grid_Info {
     Ope: Grid_Operation_enable_info = new Grid_Operation_enable_info();
 
     LayerName: string = "";
-    LayerData: string[] = [];
+    LayerData: (string | number)[] = [];
     Ymax: number = 0;
     Xmax: number = 0;
     DataItemData: CellData_Info[] = [];
@@ -1223,11 +1223,21 @@ export class gridControl {
     }
 
     /** レイヤタグを取得：：実行時・取得のみ　設定はAddLayerメソッド */
-    getLayerData(LayerNum: number, key: string) {
-        return this.Grid_Property[LayerNum].LayerData[key as string];
+    getLayerData(LayerNum: number, key: "OldIndex"): number;
+    getLayerData(LayerNum: number, key: "Type"): number;
+    getLayerData(LayerNum: number, key: "Shape"): number;
+    getLayerData(LayerNum: number, key: "Mesh"): number;
+    getLayerData(LayerNum: number, key: "ReferenceSystem"): number;
+    getLayerData(LayerNum: number, key: "SyntheticObjF"): boolean;
+    getLayerData(LayerNum: number, key: "MapFile"): string;
+    getLayerData(LayerNum: number, key: "Comment"): string;
+    getLayerData(LayerNum: number, key: "Time"): strYMD;
+    getLayerData(LayerNum: number, key: string): string | number | boolean | strYMD | JsonValue;
+    getLayerData(LayerNum: number, key: string): string | number | boolean | strYMD | JsonValue {
+        return ((this.Grid_Property[LayerNum].LayerData as unknown) as Record<string, string | number | boolean | JsonValue>)[key];
     }
-    setLayerData(LayerNum: number, key: string, value: JsonValue) {
-        this.Grid_Property[LayerNum].LayerData[key as string] = value;
+    setLayerData(LayerNum: number, key: string, value: string | number | JsonValue) {
+        ((this.Grid_Property[LayerNum].LayerData as unknown) as Record<string, string | number | JsonValue>)[key] = value;
     }
 
     /**現在のレイヤを取得：実行時 */

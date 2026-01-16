@@ -52,7 +52,15 @@
     "inlineSourceMap": false
   },
   "include": ["src/**/*", "playwright.config.ts", "tests/e2e/**/*"],
-  "exclude": ["node_modules", "dist", "src/encoding.min.ts", "public/**/*"],
+  "exclude": [
+    "node_modules", 
+    "dist", 
+    "src/encoding.min.ts", 
+    "public/**/*",
+    "src/japanLatLonMap.ts",
+    "src/japanmap.ts",
+    "src/worldmap.ts"
+  ],
   "ts-node": {
     "compilerOptions": {
       "strict": true,
