@@ -910,8 +910,8 @@ function graphModeOresen_Bou() {
 /**緯度経度の入力 */
 function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon) => void) {
     const backDiv = Generic.set_backDiv("", "緯度経度入力", 300, 200, true, true, buttonOK, 0.2, true);
-    const pnlLat=Generic.createNewDiv(backDiv,"","","",15,40,280,50,"");
-    const pnlLon=Generic.createNewDiv(backDiv,"","","",15,100,280,50,"");
+    const pnlLat=Generic.createNewDiv(backDiv,"","","",15,40,280,50,"",undefined);
+    const pnlLon=Generic.createNewDiv(backDiv,"","","",15,100,280,50,"",undefined);
     Generic.createNewSpan(pnlLat,"緯度","","",0,15,"",undefined);
     Generic.createNewSpan(pnlLon,"経度","","",0,15,"",undefined);
     if(BoxF===true){
@@ -969,7 +969,7 @@ function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Z
     const Zahyo=_Zahyo.Clone();
     const backDiv = Generic.set_backDiv("", "投影法変換", 425, 300, true, true, buttonOK, 0.2, true);
     const gbPresentProjection=Generic.createNewFrame(backDiv,"","",15,40,200,50,"現在の投影法");
-    Generic.createNewDiv( gbPresentProjection,Generic.getStringProjectionEnum(Zahyo.Projection),"","grayFrame",15,15,170,15,"padding:2px;");
+    Generic.createNewDiv( gbPresentProjection,Generic.getStringProjectionEnum(Zahyo.Projection),"","grayFrame",15,15,170,15,"padding:2px;",undefined);
     const gbCenterLon=Generic.createNewFrame(backDiv,"","",15,105,200,135,"中央経線の設定");
     const CenterLonList=[{value:0,text:"変更なし("+Zahyo.CenterXY.x + "度)"},{value:1,text:"地図の中央"},{value:2,text:"指定"}];
     Generic.createNewRadioButtonList(gbCenterLon,"rdCenter",CenterLonList,10,15,undefined,25,0,() => {},"");
@@ -3617,7 +3617,8 @@ function frmPrint_DummyObjectGroup(){
             const tx = txtDummy.value;
             if (tx === "") {
                 txtDummy.removeEventListener('keydown',txtKeyDown) ;
-                Generic.alert(undefined, "オブジェクト名を入力して下さい。",function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
+                Generic.alert(undefined, "オブジェクト名を入力して下さい。");
+                txtDummy.addEventListener('keydown',txtKeyDown);
                 return;
             }else{
                 if(AddDummyObject([tx])===true){
@@ -3745,11 +3746,13 @@ function frmPrint_DummyObjectGroup(){
 
         if(emes !== "" ){
             txtDummy.removeEventListener('keydown',txtKeyDown);
-            Generic.alert(undefined,"以下のオブジェクトは見つかりません。" + emes,function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
+            Generic.alert(undefined,"以下のオブジェクトは見つかりません。" + emes);
+            txtDummy.addEventListener('keydown',txtKeyDown);
         }
         if(emesUsed !== "" ){
             txtDummy.removeEventListener('keydown',txtKeyDown);
-            Generic.alert(undefined,"以下のオブジェクトは既にダミーオブジェクトに入っています。" + emesUsed,function(){txtDummy.addEventListener('keydown',txtKeyDown)} );
+            Generic.alert(undefined,"以下のオブジェクトは既にダミーオブジェクトに入っています。" + emesUsed);
+            txtDummy.addEventListener('keydown',txtKeyDown);
         }
         return ((emes === "") && (emesUsed === ""));         
     }
