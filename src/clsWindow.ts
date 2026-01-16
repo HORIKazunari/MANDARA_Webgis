@@ -4512,7 +4512,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         for (let i = 0; i < okn; i++) {
             let str = mapList[key].ObjectKind[i].Name;
             str += "(" + Generic.ConvertShapeEnumString(mapList[key].ObjectKind[i].Shape) + ")"
-            tx.push({ text: str, checked:d.UseObjectKind[i] });          
+            tx.push({ text: str, value: String(i), checked:d.UseObjectKind[i] });          
         }
         objGList.removeAll();
         objGList.addList(tx, 0);

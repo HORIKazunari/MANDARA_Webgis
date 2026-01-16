@@ -439,7 +439,15 @@ class clsSpatialIndexSearch {
         return SamePointData.length;
     }
 
-    GetNearestLineNumber(x: number, y: number, BaseDistance: number, _ExceptionNumber: number, _ExceptionTag: string | number): { Num: number; Number?: number[]; Tags?: (string | number)[]; Distance?: number[] } {
+    GetNearestLineNumber(x: number, y: number, BaseDistance: number, _ExceptionNumber: number, _ExceptionTag: string | number): { 
+        Num: number; 
+        ObjectPointNumber?: point[];
+        Onumber?: number[]; 
+        PNumber?: number[];
+        Tags?: (string | number)[]; 
+        NearestPoint?: point[];
+        Distance?: number;
+    } {
         
         if (this.ObjectType !== SpatialPointType.SPILine) {
             alert("線以外はできません。");
