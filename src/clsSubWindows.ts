@@ -1129,8 +1129,8 @@ function frmPrintOption(firstTab: number = 0) {
        Generic.setDisabled( soubyouManual,(ob.checked===true));
     },"");
     const autoLst=[{ value: 1, text: "弱"},{ value: 2, text: "中"},{ value: 3, text: "強"},{ value: 4, text: "最強"}];
-    const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,tab04,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v: number){
-        atv.SouByou.AutoDegree=v;
+    const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,-1,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v?: string){
+        atv.SouByou.AutoDegree=v ? parseInt(v) : 0;
     },"");
     cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree);
     Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: HTMLInputElement){atv.SouByou.Spline_F=obj.checked;},"");
