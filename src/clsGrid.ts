@@ -919,7 +919,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
             let d = 0;
             if (L !== -1) {
-                d = R_Conv[L][oldAttr.LayerData[L].atrData.SelectedIndex].Data;
+                d = R_Conv[L][oldAttrData.LayerData[L].atrData.SelectedIndex].Data;
                 if (d === -1) {
                     d = 0;
                 }
@@ -928,20 +928,20 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         }
 
         //選択するレイヤをチェックする
-        const Layn  = R_Layer_Convert[oldAttr.TotalData.LV1.SelectedLayer];
+        const Layn  = R_Layer_Convert[oldAttrData.TotalData.LV1.SelectedLayer];
         if(Layn === -1 ){
             newAttrData.TotalData.LV1.SelectedLayer = 0;
         }else{
             newAttrData.TotalData.LV1.SelectedLayer = Layn;
         }
-        newAttrData.TotalData.LV1.Print_Mode_Total = oldAttr.TotalData.LV1.Print_Mode_Total;
+        newAttrData.TotalData.LV1.Print_Mode_Total = oldAttrData.TotalData.LV1.Print_Mode_Total;
 
     }
 
     /**古いシンボル位置・ラベル位置で変更してあるものがあったら新しい箇所にコピーする */
     function Check_Kencode_XY(NewL: number, OldL: number){
         const newAL = newAttrData.LayerData[NewL];
-        const oldAL = oldAttr.LayerData[OldL];
+        const oldAL = oldAttrData.LayerData[OldL];
         const time = newAL.Time;
         if (newAL.Type === enmLayerType.Normal) {
             if (newAL.MapFileName !== oldAL.MapFileName) {
@@ -956,10 +956,10 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             }
         }
 
-        const oldObjn = oldAttr.Get_ObjectNum(OldL);
+        const oldObjn = oldAttrData.Get_ObjectNum(OldL);
         const sortoldObjName = new clsSortingSearch();
         for (let i = 0; i < oldObjn; i++) {
-            sortoldObjName.Add(oldAttr.Get_KenObjName(OldL, i));
+            sortoldObjName.Add(oldAttrData.Get_KenObjName(OldL, i));
         }
         sortoldObjName.AddEnd();
 
@@ -1013,11 +1013,11 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
 
     /**グリッド上のデータに対応する旧データを設定 */
     function  Get_Data_Refference(){
-        const D_LayerNum = oldAttr.TotalData.LV1.Lay_Maxn;
+        const D_LayerNum = oldAttrData.TotalData.LV1.Lay_Maxn;
 
         const CheckedData=[]// As New List(Of Boolean())
         for(let i  = 0 ;i< D_LayerNum  ;i++){
-            const d=new Array(oldAttr.LayerData[i].atrData.Count) ;
+            const d=new Array(oldAttrData.LayerData[i].atrData.Count) ;
             CheckedData.push(d);
         }
 
@@ -1054,9 +1054,9 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
 
         //同一名称・単位のデータ項目をチェック
         const KouhoTitle = [];// As New List(Of Layer_Data_Info)
-        for (let i = 0; i < oldAttr.TotalData.LV1.Lay_Maxn; i++) {
-            for (let j = 0; j < oldAttr.LayerData[i].atrData.Count; j++) {
-                const O_DTA = oldAttr.LayerData[i].atrData.Data[j];
+        for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
+            for (let j = 0; j < oldAttrData.LayerData[i].atrData.Count; j++) {
+                const O_DTA = oldAttrData.LayerData[i].atrData.Data[j];
                 if ((O_DTA.Title === G_DTA.Title) && (O_DTA.Unit === G_DTA.Unit)) {
                     const dt = new Layer_Data_Info();
                     dt.Layer = i;
@@ -1095,9 +1095,9 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         const Kouho = [];// New List(Of Layer_Data_InfoCheck)
         const Sort_KouhoV = new clsSortingSearch()
 
-        for (let i = 0; i < oldAttr.TotalData.LV1.Lay_Maxn; i++) {
-            for (let j = 0; j < oldAttr.LayerData[i].atrData.Count; j++) {
-                const O_DTA = oldAttr.LayerData[i].atrData.Data[j]
+        for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
+            for (let j = 0; j < oldAttrData.LayerData[i].atrData.Count; j++) {
+                const O_DTA = oldAttrData.LayerData[i].atrData.Data[j]
                 if (O_DTA.DataType === G_DTA.DataType) {
                     let OV = D_CheckDataValue[i][j];
                     let GV = Data_Prop_Value;
@@ -1148,7 +1148,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                 } else {
                         for(let j  = 0 ;j<  i2 ;j++){
                             const kj=Kouho[j];
-                            const O_DTA = oldAttr.LayerData[kj.Layer].atrData.Data[kj.Data];
+                            const O_DTA = oldAttrData.LayerData[kj.Layer].atrData.Data[kj.Data];
                             if((O_DTA.Title === G_DTA.Title)&&(O_DTA.Unit === G_DTA.Unit) ){
                                 BL = kj.Layer;
                                 BD = kj.Data;
@@ -1310,11 +1310,11 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             if (SyntheticObjF === true) {
                 //時系列集計したレイヤの場合は，変更前のオブジェクトコード・合成オブジェクトデータを設定する
 
-                for (let j = 0; j < oldAttr.LayerData[OldLay].atrObject.ObjectNum; j++) {
+                for (let j = 0; j < oldAttrData.LayerData[OldLay].atrObject.ObjectNum; j++) {
                     const gob = Get_Obj[j];
-                    gob.Objectstructure = oldAttr.LayerData[OldLay].atrObject.atrObjectData[j].Objectstructure;
-                    gob.MpObjCode = oldAttr.LayerData[OldLay].atrObject.atrObjectData[j].MpObjCode;
-                    gob.Name = oldAttr.LayerData[OldLay].atrObject.atrObjectData[j].Name;
+                    gob.Objectstructure = oldAttrData.LayerData[OldLay].atrObject.atrObjectData[j].Objectstructure;
+                    gob.MpObjCode = oldAttrData.LayerData[OldLay].atrObject.atrObjectData[j].MpObjCode;
+                    gob.Name = oldAttrData.LayerData[OldLay].atrObject.atrObjectData[j].Name;
                 }
             } else {
                 for (let j = 0; j < LayYMax; j++) {
@@ -1349,13 +1349,13 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             const newAt = newAttrData.LayerData[i];
             newAt.Type = LType;
             if (SyntheticObjF === true) {
-                const n = oldAttr.LayerData[OldLay].atrObject.NumOfSyntheticObj;
+                const n = oldAttrData.LayerData[OldLay].atrObject.NumOfSyntheticObj;
                 newAt.atrObject.NumOfSyntheticObj = n;
                 newAt.atrObject.MPSyntheticObj = [];
                 for (let j = 0; j < n; j++) {
-                    newAt.atrObject.MPSyntheticObj.push(oldAttr.LayerData[OldLay].atrObject.MPSyntheticObj[j].Clone());
+                    newAt.atrObject.MPSyntheticObj.push(oldAttrData.LayerData[OldLay].atrObject.MPSyntheticObj[j].Clone());
                 }
-                newAt.Shape = oldAttr.LayerData[OldLay].Shape;
+                newAt.Shape = oldAttrData.LayerData[OldLay].Shape;
             } else {
                 if (LSP === enmShape.NotDeffinition) {
                     newAt.Shape = newAttrData.Check_LayerShape_Sub(i).shape;

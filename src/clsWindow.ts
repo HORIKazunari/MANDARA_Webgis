@@ -1912,9 +1912,9 @@ function setting(locSearch: string) {
                     const ld = attrData.LayerData[L];
                     const ldd = ld.atrData.Data[D].SoloModeViewSettings;
                     if(attrData.Get_DataType(L, D) !== enmAttDataType.Category) {
-                        ldd.Class_Div[n].Value = v;
+                        ldd.Class_Div[n as number].Value = v;
                     } else {
-                        const oldTx = ldd.Class_Div[n].Value;
+                        const oldTx = ldd.Class_Div[n as number].Value;
                         const newTx = String(v).trim();
                         if((newTx === "")&&(ldd.MissingF === true)) {
                             Generic.alert(undefined,"欠損値設定があるので空白にはできません。")
@@ -4085,7 +4085,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     lst.style.top = (lst.offsetTop + 17).px();
     const lsts = doc.getElementById("divradiozahyoMode2");
     lsts.style.top = (lsts.offsetTop + 20).px();
-    const keiNo = [];
+    const keiNo: {value: number; text: string}[] = [];
     for (let i = 1; i <= 19; i++) {
         keiNo.push({ value: i, text: i.toString() });
     }
@@ -4508,11 +4508,11 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         if (!d?.MapfileName) { return; }
         const key = String(d.MapfileName).toUpperCase();
         const okn = mapList[key].Map.OBKNum;
-        const tx = [];
+        const tx: {text: string; value?: string; checked: boolean}[] = [];
         for (let i = 0; i < okn; i++) {
             let str = mapList[key].ObjectKind[i].Name;
             str += "(" + Generic.ConvertShapeEnumString(mapList[key].ObjectKind[i].Shape) + ")"
-            tx.push({ text: str,checked:d.UseObjectKind[i] });          
+            tx.push({ text: str, checked:d.UseObjectKind[i] });          
         }
         objGList.removeAll();
         objGList.addList(tx, 0);

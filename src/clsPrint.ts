@@ -3881,7 +3881,7 @@ console.log(SortSumDataValue)
         const obk = av.DummyObjectPointMark[MapFIleName];
         for (let i = 0; i < obk.length; i++) {
             if (obk[i].ObjectKindName === ObjectGroupName) {
-                return obk[i].mark;
+                return obk[i].Mark;
             }
         }
     }

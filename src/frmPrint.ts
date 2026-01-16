@@ -1413,7 +1413,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             if (spatial.Check_PointInBox(ScreenP, 0, Acc_Rect) === true) {
                 ata.Push_GroupBoxXY = vs.MapScale.Position.Clone();
                 ata.OriginalGroupBoxRect = Acc_Rect.Clone();
-                return { type: Check_Acc_Result.GroupBox, rect: Acc_Rect };
+                return { type: Check_Acc_Result.GroupBox, rect: Acc_Rect as rectangle };
             }
         }
         return { type: Check_Acc_Result.NoAccessory, rect: undefined };
@@ -1641,7 +1641,7 @@ class frmPrint {
                 break;
             }
         }
-        let data=[];
+        const data: { data: number; label: string }[] = [];
         switch (LayerMode) {
             case enmLayerMode_Number.SoloMode: {
                 headTx = "<b>" + state.attrData.Get_KenObjName(LayerNum, objNumber) + "</b><br>";
