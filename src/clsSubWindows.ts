@@ -1734,7 +1734,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
         }
         Generic.clear_backDiv();
-        okEvent(sel);
+        okEvent();
     }
 }
 
