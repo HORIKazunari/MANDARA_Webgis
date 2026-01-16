@@ -17,7 +17,7 @@
  * ```
  */
 
-import type { MapFileInfo } from '../types';
+import type { MapFileInfo, JsonObject } from '../types';
 import type { TKY2JGDInfo_Impl } from '../clsGeneric';
 
 /**
@@ -76,7 +76,7 @@ export class AppState {
     /**
      * 事前読み込みマップファイル
      */
-    public preReadMapFile: MapFileInfo[] = [];
+    public preReadMapFile: Record<string, JsonObject> = {};
 
     /**
      * スクロールマージン

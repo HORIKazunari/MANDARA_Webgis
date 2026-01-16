@@ -1772,7 +1772,7 @@ export class clsAccessory {
             }
         }
 
-        let retFV;
+        let retFV: {ok: boolean, frequency?: number[], missFreq?: number} | undefined;
         if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.FrequencyPrint === true) {
             //度数分布
             retFV = state.attrData.Get_ClassFrequency(Layn2, datn2, true);
@@ -1807,7 +1807,7 @@ export class clsAccessory {
             state.attrData.Draw_Mark(g, p, state.attrData.Radius(vm.ClassMark.WordFont.Size, 1, 1), vm.ClassMark);
             p = new point(ALP.x + inBox.width + ww / 2, y2 + H / 2);
             state.attrData.Draw_Print(g, vm.Text, p, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Center);
-            if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.FrequencyPrint === true) {
+            if (state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.FrequencyPrint === true && retFV?.missFreq !== undefined) {
                 const cwp = new point();
                 cwp.y = p.y;
                 cwp.x = ALP.x + inBox.width + ww / 2 + sujiW;
@@ -2119,7 +2119,7 @@ export class clsAccessory {
                 state.attrData.Draw_Print(g, fu, cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
             }
         }
-        let retV;
+        let retV: {ok: boolean, frequency?: number[], missFreq?: number} | undefined;
         if (vs.MapLegend.ClassMD.FrequencyPrint === true) {
             //度数分布
             retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
@@ -2142,7 +2142,7 @@ export class clsAccessory {
             const mistxp = new point(ALP.x + bxw + ww / 2, MissRect.top);
             state.attrData.Draw_Print(g, am.Text, mistxp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
 
-            if (vs.MapLegend.ClassMD.FrequencyPrint === true) {
+            if (vs.MapLegend.ClassMD.FrequencyPrint === true && retV?.missFreq !== undefined) {
                 const cwp = new point();
                 cwp.y = MissRect.top;
                 cwp.x = ALP.x + bxw + ww / 2 + sujiW;
@@ -2158,7 +2158,7 @@ export class clsAccessory {
         state.attrData.Draw_Tile_RoundBox(g, C_Rect, state.attrData.TotalData.ViewStyle.MapLegend.Base.Back, 0);
     }
 
-    static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): typeof enmClassMode_Meshod {
+    static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): number {
         const state = appState();
 
         let CMethod = state.attrData.TotalData.ViewStyle.MapLegend.ClassMD.PaintMode_Method;

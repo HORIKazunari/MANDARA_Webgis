@@ -3437,9 +3437,7 @@ class clsAttrData {
         if (this.LayerData[Layernum].Type === enmLayerType.Mesh) {
             const meshP =Generic.ArrayClone( this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
             meshP.push(meshP[0].Clone());
-            const ap =[];
-            ap.push(meshP)
-            const retV=spatial.check_Point_in_Polygon(MapP, ap);
+            const retV=spatial.check_Point_in_Polygon(MapP, meshP);
             return retV.ok;
         } else {
             switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {

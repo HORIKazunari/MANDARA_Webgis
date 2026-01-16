@@ -2266,7 +2266,7 @@ declare class spatial {
     static Distance_Ido_Kedo_XY(P1: point, P2: point, MapDTMapZahyo: Zahyo_info): number;
     static Distance_Ido_Kedo_LatLon(D1: latlon, D2: latlon): number;
     static Line_Cross_Point(LAP1: point, LAP2: point, LBP1: point, LBP2: point): point | undefined;
-    static Get_Ido_Kedo_from_MeshCode(meshcode: string, meshType?: number): latlon;
+    static Get_Ido_Kedo_from_MeshCode(meshcode: string, meshType: number): latlonbox;
     static ConvertRefSystemLatLon(ll: latlon, refOrigin: number, refDest: number): latlon;
     static getCircumscribedRectangle(points: point[] | point | rectangle, margin?: number | rectangle): rectangle;
     static Get_TurnedBox(size: size, angle: number): size;
