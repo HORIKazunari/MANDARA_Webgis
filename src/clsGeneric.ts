@@ -1035,7 +1035,7 @@ export class spatial {
                 boundArrange.Pon = 0;
                 return boundArrange;
                 break;
-            case 1:
+            case 1: {
                 boundArrange.Pon = 1;
                 const fr = new Fringe_Line_Info();
                 fr.code = 0;
@@ -1043,7 +1043,7 @@ export class spatial {
                 boundArrange.Fringe[0] = fr;
                 boundArrange.Arrange_LineCode[0] = [0, 1]
                 return boundArrange;
-                break;
+            }
         }
         const PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false, undefined, undefined);
         let fnl = 0
@@ -1166,7 +1166,7 @@ export class spatial {
             switch (MapDataMap.Zahyo.Projection) {
                 case enmProjection_Info.prjSeikyoEntou:
                 case enmProjection_Info.prjMercator:
-                case enmProjection_Info.prjMiller:
+                case enmProjection_Info.prjMiller: {
                     const RemapZahyo = new Zahyo_info();
                     RemapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
                     RemapZahyo.Projection = enmProjection_Info.prjLambertSeisekiEntou;
@@ -1176,6 +1176,7 @@ export class spatial {
                         xy2[j] = this.Get_Converted_XY(oxy, RemapZahyo);
                     }
                     break;
+                }
             }
         }
 
@@ -1693,22 +1694,22 @@ export class spatial {
                 break;
             case enmZahyo_mode_info.Zahyo_Ido_Keido:
                 switch (mz.Projection) {
-                    case enmProjection_Info.prjSanson:
+                    case enmProjection_Info.prjSanson: {
                         const y = -oy / EarthR * 180 / Math.PI;
                         return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI * Math.cos(y * Math.PI / 180)), y);
-                        break;
+                    }
                     case enmProjection_Info.prjSeikyoEntou:
                         return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI), - oy / EarthR * 180 / Math.PI);
                         break;
-                    case enmProjection_Info.prjMercator:
+                    case enmProjection_Info.prjMercator: {
                         const tx = Math.exp(-oy / EarthR);
                         return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI), 2 * Math.atan(tx) * 180 / Math.PI - 90);
-                        break;
-                    case enmProjection_Info.prjMiller:
+                    }
+                    case enmProjection_Info.prjMiller: {
                         const tx2 = Math.exp(-oy / (EarthR * 1.25));
                         return new point(mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI), Math.atan(tx2) * 5 / 2 * 180 / Math.PI - 45 * 5 / 2);
-                        break;
-                    case enmProjection_Info.prjLambertSeisekiEntou:
+                    }
+                    case enmProjection_Info.prjLambertSeisekiEntou: {
                         newP.x = mz.CenterXY.x + (ox * 180) / (EarthR * Math.PI);
                         const tx3 = -oy / EarthR;
                         if (tx3 >= 1) {
@@ -1719,7 +1720,7 @@ export class spatial {
                             newP.y = Math.atan(tx3 / Math.sqrt(-tx3 * tx3 + 1)) * 180 / Math.PI;
                         }
                         return newP
-                        break;
+                    }
                     case enmProjection_Info.prjMollweide:
                         if (Math.abs(Position.y) > (Math.sqrt(2) * EarthR - 0.001)) {
                             Position.y = (Math.sqrt(2) * EarthR - 0.001) * Math.sign(Position.y);

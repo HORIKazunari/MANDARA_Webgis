@@ -1151,7 +1151,7 @@ class strLayerDataInfo {
         switch (this.Type) {
             case enmLayerType.Normal:
             case enmLayerType.Mesh:
-            case enmLayerType.DefPoint:
+            case enmLayerType.DefPoint: {
                 this.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
                 const ps = new strLayerPointLineShape_Data();
                 ps.LineWidth = 0.5;
@@ -1163,6 +1163,7 @@ class strLayerDataInfo {
                 this.LayerModeViewSettings.LabelMode.initDataSet()
                 this.LayerModeViewSettings.GraphMode.initDataSet()
                 break;
+            }
             case enmLayerType.Trip:
                 break;
             case enmLayerType.Trip_Definition:
@@ -3807,10 +3808,11 @@ class clsAttrData {
             case enmKenCodeObjectstructure.MapObj:
                 badata = this.LayerData[Layernum].MapFileData.Boundary_Arrange(O_Code, this.LayerData[Layernum].Time);
                 break;
-            case enmKenCodeObjectstructure.SyntheticObj:
+            case enmKenCodeObjectstructure.SyntheticObj: {
                 const ELine = this.Get_Enable_KenCode_MPLine( Layernum, ObjNum);
                 badata = this.LayerData[Layernum].MapFileData.Boundary_Arrange_Sub(ELine);
                 break;
+            }
         }
         return badata;
     }
@@ -6508,13 +6510,12 @@ class clsAttrData {
     //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
     Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): EnableMPLine[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
-            case enmKenCodeObjectstructure.MapObj:
+            case enmKenCodeObjectstructure.MapObj: {
                 const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
                 return this.LayerData[Layernum].MapFileData.Get_EnableMPLine(O_Code, this.LayerData[Layernum].Time) as EnableMPLine[];
-                break;
+            }
             case enmKenCodeObjectstructure.SyntheticObj:
                 return this.Get_EnableMPLine_SyntheticObject(Layernum, ObjNum) as EnableMPLine[];
-                break;
         }
     }
     //合成オブジェクトの外周線を返す
@@ -7038,12 +7039,13 @@ class clsAttrData {
             case enmLayerType.Mesh:
                 meshF = true;
                 break;
-            case enmLayerType.Normal:
+            case enmLayerType.Normal: {
                 const d = lay.atrObject.atrObjectData[0].MpObjCode;
                 if (lay.MapFileData.ObjectKind[lay.MapFileData.MPObj[d].Kind].Mesh !== enmMesh_Number.mhNonMesh) {
                     meshF = true;
                 }
                 break;
+            }
         }
         if (DType === enmAttDataType.Strings) {
             m = enmSoloMode_Number.StringMode;
@@ -7296,7 +7298,6 @@ class clsAttrData {
                     }
                 }
             }
-
         }
     }
 
@@ -7407,7 +7408,7 @@ class clsAttrData {
         L.MissingValueNum = this.Get_Att_Missing_Num(Layernum, DataNum);
         L.EnableValueNum = this.LayerData[Layernum].atrObject.ObjectNum - L.MissingValueNum;
         switch (L.DataType) {
-            case enmAttDataType.Normal:
+            case enmAttDataType.Normal: {
                 const EDataNum = L.EnableValueNum as number;
                 if (EDataNum > 0) {
                     const EnableDT = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
@@ -7438,6 +7439,7 @@ class clsAttrData {
                     L.Statistics.STD = Number(Generic.Figure_Using(L.Statistics.STD, Decimal.AfterDecimal + 1));
                 }
                 break;
+            }
         }
     }
 
@@ -7496,10 +7498,11 @@ class clsAttrData {
         const lay=this.LayerData[Layernum];
         let ELine;
         switch (lay.atrObject.atrObjectData[ObjNum].Objectstructure) {
-            case enmKenCodeObjectstructure.MapObj:
+            case enmKenCodeObjectstructure.MapObj: {
                 const O_Code = lay.atrObject.atrObjectData[ObjNum].MpObjCode;
                 ELine = lay.MapFileData.Get_EnableMPLine(O_Code, lay.Time);
                 break;
+            }
             case enmKenCodeObjectstructure.SyntheticObj:
                 ELine = this.Get_Enable_KenCode_MPLine( ObjNum, Layernum);
                 break;
@@ -7543,7 +7546,7 @@ class clsAttrData {
                 return;
                 break;
             case enmDivisionMethod.Quantile://分位数
-            case enmDivisionMethod.AreaQuantile:
+            case enmDivisionMethod.AreaQuantile: {
                const EnableDT = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
                 const SortV = new clsSortingSearch();
                 for (let i = 0; i < EDataNum; i++) {
@@ -7584,6 +7587,7 @@ class clsAttrData {
                     }
                 }
                 break;
+            }
             case enmDivisionMethod.StandardDeviation://標準偏差
                 Div_Value[0] = L.Statistics.Ave + L.Statistics.STD;
                 Div_Value[1] = L.Statistics.Ave + L.Statistics.STD / 2;
@@ -7594,7 +7598,7 @@ class clsAttrData {
                     Div_Value[i] = parseFloat(Generic.Figure_Using(Div_Value[i], L.Statistics.AfterDecimalNum + 1));
                 }
                 break;
-            case enmDivisionMethod.EqualInterval: //等間隔
+            case enmDivisionMethod.EqualInterval: {//等間隔
                 const a = L.Statistics.sa / div_num;
                 for (let i = 0; i < div_num; i++) {
                     Div_Value[i] = L.Statistics.Max - a * (i + 1);
@@ -7603,6 +7607,7 @@ class clsAttrData {
                     Div_Value[i] = parseFloat(Generic.Figure_Using(Div_Value[i], L.Statistics.AfterDecimalNum + 1));
                   }
                 break;
+            }
         }
         for (let i = 0; i < div_num; i++) {
             L.SoloModeViewSettings.Class_Div[i].Value = Div_Value[i];

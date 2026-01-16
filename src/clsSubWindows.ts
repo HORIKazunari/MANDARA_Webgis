@@ -1,5 +1,4 @@
-﻿// @ts-nocheck
-import { appState } from './core/AppState';
+﻿import { appState } from './core/AppState';
 import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
