@@ -3887,4 +3887,4 @@ console.log(SortSumDataValue)
     }
 }
 
-export { clsPrint };
+export { clsPrint, Fringe_Line_Info, boundArrangeData };

@@ -5,6 +5,7 @@ import { clsSortingSearch } from './SortingSearch';
 import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { Start_End_Time_data } from './clsAttrData';
+import { Fringe_Line_Info, boundArrangeData } from './clsPrint';
 import type { JsonObject, JsonValue } from './types';
 
 /** Description placeholder */
@@ -797,7 +798,10 @@ class clsMapdata {
         for (let i = 0; i < this.Map.LpNum; i++) {
             const lk = this.LineKind[i];
             for (let j = 0; j < lk.NumofObjectGroup; j++) {
-                lk.ObjGroup[j].Pattern = LPC[n].Pat.Clone();
+                const pat = LPC[n].Pat as Line_Property;
+                if (pat && typeof pat.Clone === 'function') {
+                    lk.ObjGroup[j].Pattern = pat.Clone();
+                }
                 n += 1
             }
         }
@@ -975,11 +979,12 @@ class clsMapdata {
         Okind.ObjectNameNum = 1;
         Okind.ObjectNameList = ["オブジェクト名1"];
         if (type === enmObjectGoupType_Data.AggregationObject) {
-            Okind.UseLineType.length = (Math.max(ObkNum, 0));
+            const len = Math.max(ObkNum, 0);
+            Okind.UseLineType = new Array(len).fill(false);
         } else {
-            Okind.UseLineType.length = (Math.max(LpNum - 1, 0));
+            const len = Math.max(LpNum - 1, 0);
+            Okind.UseLineType = new Array(len).fill(false);
         }
-        Okind.UseLineType.fill(false);
         return Okind;
     }
 
@@ -1037,7 +1042,9 @@ class clsMapdata {
                     CP = ml.PointSTC[Math.floor(ml.NumOfPoint / 2)];
                     break;
             }
-            mo.CenterPSTC[0].Position = CP;
+            if (CP) {
+                mo.CenterPSTC[0].Position = CP;
+            }
             this.Check_Obj_Maxmin(mo, false);
         }
         this.Map.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle();
@@ -1074,7 +1081,7 @@ class clsMapdata {
         } else {
             //重心がオブジェクト内部に収まるかチェック
             const ELine = this.Get_EnableMPLine(ObjData, L_Time);;
-            const Fringe_Line = [];
+            const Fringe_Line: number[] = [];
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
             }
@@ -1204,7 +1211,7 @@ class clsMapdata {
                             break;
                         } else {
                             for (let j = 0; j < this.ObjectKind[i].ObjectNameNum; j++) {
-                                if (this.ObjectKind[i].ObjectNameList(j) !== this.ObjectKind[SeFlOb].ObjectNameList[j]) {
+                                if (this.ObjectKind[i].ObjectNameList[j] !== this.ObjectKind[SeFlOb].ObjectNameList[j]) {
                                     Emes = "オブジェクト名リストの名称が異なるオブジェクトグループが選択されています。";
                                     f = false;
                                     i = this.Map.OBKNum - 1
@@ -1298,9 +1305,9 @@ class clsMapdata {
         const Fringe = badata.Fringe;
         const mens = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
-            const LXY2: JsonValue[] = [];
+            const LXY2: point[] = [];
             const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
-            (LXY2 as JsonValue[]).push((LXY2 as JsonValue[])[1]);
+            LXY2.push(LXY2[1]);
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map);
         }
         let m;
@@ -1335,9 +1342,9 @@ class clsMapdata {
         const gp = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
 
-            const LXY2: JsonValue[] = [];
+            const LXY2: point[] = [];
             const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
-            (LXY2 as JsonValue[]).push((LXY2 as JsonValue[])[1]);
+            LXY2.push(LXY2[1]);
             let w = 0;
             if (n2 > 2) {
                 //重心の位置を求める
@@ -1496,7 +1503,7 @@ class clsMapdata {
     }
 
     /** 周辺ラインと指定した地点のX軸上の交点を求め、その地点数を返す。ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/ 
-    Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: Fringe_Line_Info[]): PointInPolygonResult {
+    Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: number[]): PointInPolygonResult {
         const P = new point(x, y);
         const CheckLine = [];
 
@@ -1525,7 +1532,7 @@ class clsMapdata {
         poxy.length = 0;
         let n = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
-            const XYS: JsonValue[] = [];
+            const XYS: point[] = [];
             const Fr = Fringe[Arrange_LineCode[Num][0] + i];
             const PN = this.Get_Coords_by_LineCode(Fr.code, Get_Coords_Data, Fr.Direction, XYS, getStep);
             for (let j = 0; j < PN; j++) {
