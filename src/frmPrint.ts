@@ -1413,7 +1413,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
             if (spatial.Check_PointInBox(ScreenP, 0, Acc_Rect) === true) {
                 ata.Push_GroupBoxXY = vs.MapScale.Position.Clone();
                 ata.OriginalGroupBoxRect = Acc_Rect.Clone();
-                return { type: Check_Acc_Result.GroupBox, rect: Acc_Rect };
+                return { type: Check_Acc_Result.GroupBox, rect: Acc_Rect } as { type: Check_Acc_Result; rect: rectangle | undefined };
             }
         }
         return { type: Check_Acc_Result.NoAccessory, rect: undefined };

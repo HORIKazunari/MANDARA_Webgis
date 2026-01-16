@@ -4508,7 +4508,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
         if (!d?.MapfileName) { return; }
         const key = String(d.MapfileName).toUpperCase();
         const okn = mapList[key].Map.OBKNum;
-        const tx: {text: string; value?: string; checked: boolean}[] = [];
+        const tx: {text: string; value: string; checked: boolean}[] = [];
         for (let i = 0; i < okn; i++) {
             let str = mapList[key].ObjectKind[i].Name;
             str += "(" + Generic.ConvertShapeEnumString(mapList[key].ObjectKind[i].Shape) + ")"
