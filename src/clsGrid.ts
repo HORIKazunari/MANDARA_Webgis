@@ -505,7 +505,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             }
         }
 
-        const R_Layer_Convert = new Array(oldAttr.TotalData.LV1.Lay_Maxn).fill(-1);
+        const R_Layer_Convert = new Array(oldAttrData.TotalData.LV1.Lay_Maxn).fill(-1);
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
             if (L !== -1) {
@@ -883,8 +883,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         //ProgressLabel.SetValue TotalData.LV1.Lay_Maxn * 2 + 3
         //属性検索データをチェック
         newAttrData.TotalData.Condition =[];// New List(Of strCondition_DataSet_Info)
-        for(let i  = 0 ;i< oldAttr.TotalData.Condition.length ; i++) {
-            const oldATC = oldAttr.TotalData.Condition[i];
+        for(let i  = 0 ;i< oldAttrData.TotalData.Condition.length ; i++) {
+            const oldATC = oldAttrData.TotalData.Condition[i];
             const oldL = oldATC.Layer;
             const L = R_Layer_Convert[oldL];
             //レイヤが削除された場合は属性検索は削除
