@@ -619,13 +619,13 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: Edge_Property, okEvent: 
     const edgeList = [{ value: 'round', text: "丸い" },
     { value: 'square', text: "四角い" },
     { value: 'butt', text: "たいら" }];
-    Generic.createNewRadioButtonList(edgeFrame, "edgePattern", edgeList, 15, 15,undefined, 22,newEdge.lineCap, edgePatternChange);
+    Generic.createNewRadioButtonList(edgeFrame, "edgePattern", edgeList, 15, 15,undefined, 22,newEdge.lineCap, edgePatternChange, "");
 
     const jointFrame = Generic.createNewFrame(backDiv, "", "", 125, 40, 150, 110, "中間点");
     const jointList = [{ value: 'round', text: "丸い" },
     { value: 'bevel', text: "たいら" },
     { value: 'miter', text: "とがった" }];
-    Generic.createNewRadioButtonList(jointFrame, "jointPattern", jointList, 15, 15,undefined, 22,newEdge.lineJoin, jointPatternChange);
+    Generic.createNewRadioButtonList(jointFrame, "jointPattern", jointList, 15, 15,undefined, 22,newEdge.lineJoin, jointPatternChange, "");
     const limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
 
     function jointPatternChange(v: string) {
@@ -917,8 +917,8 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     if(BoxF===true){
         const pnlNorthSouth=Generic.createNewDiv(pnlLat,"","","",30,0,60,50,"",undefined);
         const pnlEastWest=Generic.createNewDiv(pnlLon,"","","",30,0,60,50,"",undefined);
-        Generic.createNewRadioButtonList(pnlNorthSouth,"latNorthSouth",[{value:0,text:"北緯"},{value:1,text:"南緯"}],0,5,undefined,20,(LatLon.lat>=0)?0:1,undefined,"");
-        Generic.createNewRadioButtonList(pnlEastWest,"lonEastWest",[{value:0,text:"東経"},{value:1,text:"西経"}],0,5,undefined,20,(LatLon.lon>=0)?0:1,undefined,"");
+        Generic.createNewRadioButtonList(pnlNorthSouth,"latNorthSouth",[{value:0,text:"北緯"},{value:1,text:"南緯"}],0,5,undefined,20,(LatLon.lat>=0)?0:1,() => {},"");
+        Generic.createNewRadioButtonList(pnlEastWest,"lonEastWest",[{value:0,text:"東経"},{value:1,text:"西経"}],0,5,undefined,20,(LatLon.lon>=0)?0:1,() => {},"");
     }
     if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
         const LatLonDMS = LatLon.toDegreeMinuteSecond();
@@ -972,7 +972,7 @@ function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Z
     Generic.createNewDiv( gbPresentProjection,Generic.getStringProjectionEnum(Zahyo.Projection),"","grayFrame",15,15,170,15,"padding:2px;");
     const gbCenterLon=Generic.createNewFrame(backDiv,"","",15,105,200,135,"中央経線の設定");
     const CenterLonList=[{value:0,text:"変更なし("+Zahyo.CenterXY.x + "度)"},{value:1,text:"地図の中央"},{value:2,text:"指定"}];
-    Generic.createNewRadioButtonList(gbCenterLon,"rdCenter",CenterLonList,10,15,undefined,25,0,undefined,"");
+    Generic.createNewRadioButtonList(gbCenterLon,"rdCenter",CenterLonList,10,15,undefined,25,0,() => {},"");
     const centerInput=Generic.createNewWordNumberInput(gbCenterLon, "", "度", Zahyo.CenterXY.x, "boxCenterLon", 40, 90,undefined, 120,undefined, "");
 
     const gbProjection=Generic.createNewFrame(backDiv,"","",230,40,180,200,"変換後の投影法");
@@ -2657,7 +2657,7 @@ function frmMain_GetDistance(okEvent: () => void){
     const gbDistance = Generic.createNewFrame(backDiv, "", "", 215, 40, 200, 165, "距離取得方法");
     const rbDisGet = [{ value: 0, text: "取得元からの距離のうち、最も近い距離を取得" },
             { value: 1, text: "取得元それぞれとの距離を取得" }];
-    Generic.createNewRadioButtonList(gbDistance, "rbDisGet", rbDisGet, 10, 30, 150, 50, 0,undefined);
+    Generic.createNewRadioButtonList(gbDistance, "rbDisGet", rbDisGet, 10, 30, 150, 50, 0,() => {},"");
     const scaleList = Generic.getScaleUnit_for_select();
     const atv=appState().attrData.TotalData.ViewStyle.MapScale;
     const scaleUnit=Generic.createNewWordSelect(gbDistance,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
@@ -2887,7 +2887,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             chkObjectCount.disabled = (v === bufMode.ParentObject);
             chkObjNameOut.disabled = (v === bufMode.ParentObject);
             registDiv.setVisibility((v !== bufMode.ParentObject));
-    });
+    },"");
     const txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", "", "", 40, 130, undefined, 100, 
         function(){Generic.checkRadioByValue("rbSearchMethod",bufMode.Distance);
         chkObjectCount.disabled = false;
@@ -3331,7 +3331,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
     }  , false);
 
     //ドロップする場合
-    const dropZone = Generic.createNewDiv(bbox, "地図ファイルをドロップ", "drop-zone", "", 15, 115, 250, 100, "border:dashed 1px;border-color:#888888;border-radius:4px;");
+    const dropZone = Generic.createNewDiv(bbox, "地図ファイルをドロップ", "drop-zone", "", 15, 115, 250, 100, "border:dashed 1px;border-color:#888888;border-radius:4px;", undefined);
     dropZone.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
