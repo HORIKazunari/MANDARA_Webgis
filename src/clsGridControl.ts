@@ -1224,10 +1224,10 @@ export class gridControl {
 
     /** レイヤタグを取得：：実行時・取得のみ　設定はAddLayerメソッド */
     getLayerData(LayerNum: number, key: string) {
-        return this.Grid_Property[LayerNum].LayerData[key];
+        return this.Grid_Property[LayerNum].LayerData[key as string];
     }
     setLayerData(LayerNum: number, key: string, value: JsonValue) {
-        this.Grid_Property[LayerNum].LayerData[key] = value;
+        this.Grid_Property[LayerNum].LayerData[key as string] = value;
     }
 
     /**現在のレイヤを取得：実行時 */

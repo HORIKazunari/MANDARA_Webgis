@@ -2570,7 +2570,7 @@ class strTem {
     Accessory_Temp: AccessoryTemp_Infp = new AccessoryTemp_Infp();
     frmPrint_Temp: frmPrint_temp_info = new frmPrint_temp_info();
     FigurePrinted: boolean[] = []; //Boolean
-    ObjectPrintedCheckFlag: boolean[] = []; //Boolean
+    ObjectPrintedCheckFlag: boolean[][] = []; //Boolean
     PointObjectKindUsedStack: IObjectKindUsed_Info[] = []; //strObjectKindUsed_Info[]
     drawing: boolean | undefined; //boolean描画中
     DotMap_Temp: DotMapTemp_Info = new DotMapTemp_Info();

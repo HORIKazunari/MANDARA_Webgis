@@ -442,7 +442,7 @@ interface IAttrData {
             setF?: boolean;
             [key: string]: JsonValue;
         };
-        ObjectPrintedCheckFlag?: boolean[];
+        ObjectPrintedCheckFlag?: boolean[][];
     };
     LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド

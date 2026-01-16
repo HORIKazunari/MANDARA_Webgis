@@ -507,7 +507,7 @@ class clsSpatialIndexSearch {
             Tags: Tags,
             NearestPoint: NearP,
             Distance: mind,
-            num: PStac.length
+            Num: PStac.length
         }
         return return_V;
     }

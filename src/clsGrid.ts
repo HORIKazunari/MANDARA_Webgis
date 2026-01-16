@@ -49,7 +49,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String
     let D_CheckDataValue: number[][] = []; // List(Of Double())
-    const oldAttr=state.attrData; // clsAttrData
+    const oldAttrData=state.attrData; // clsAttrData
     const gridTopY=150;
     const layerDataWidth=200;
     let gScreenWidth =( Generic.getBrowserWidth()-50*2);
@@ -333,15 +333,15 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             newAttrData.initTotalData_andOther();
             newAttrData.attrGridZahyoSet();
         }else{
-            newAttrData.TotalData.ViewStyle = oldAttr.TotalData.ViewStyle.Clone();
+            newAttrData.TotalData.ViewStyle = oldAttrData.TotalData.ViewStyle.Clone();
             newAttrData.attrGridZahyoSet();
             if(newAttrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido ){
                 newAttrData.TotalData.ViewStyle.TileMapView.Visible = false;
             }
-            const retV=  spatial.Check_Zahyo_Projection_Convert_Enabled(newAttrData.TotalData.ViewStyle.Zahyo, oldAttr.TotalData.ViewStyle.Zahyo);
+            const retV=  spatial.Check_Zahyo_Projection_Convert_Enabled(newAttrData.TotalData.ViewStyle.Zahyo, oldAttrData.TotalData.ViewStyle.Zahyo);
             ZahyoOk=retV.ok ;
             if(ZahyoOk === true ){
-                oldAttr.Convert_Zahyo(newAttrData.TotalData.ViewStyle.Zahyo as unknown as number);
+                oldAttrData.Convert_Zahyo(newAttrData.TotalData.ViewStyle.Zahyo as unknown as number);
             }
             Check_Data();
             Reset_SCRView_Size();
@@ -481,8 +481,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
     function Check_Data() {
         const R_Conv = [];// Layer_Data_Info())
         const r_md = 0;
-        for (let i = 0; i < oldAttr.TotalData.LV1.Lay_Maxn; i++) {
-            const datan = oldAttr.LayerData[i].atrData.Count;
+        for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
+            const datan = oldAttrData.LayerData[i].atrData.Count;
             const d = [];
             for (let j = 0; j < datan; j++) {
                 d[j] = new Layer_Data_Info();
@@ -518,19 +518,19 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             const newAL = newAttrData.LayerData[i];
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
-            const oldAL = oldAttr.LayerData[L];
+            const oldAL = oldAttrData.LayerData[L];
             if (L === -1) {
                 newAL.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
                 //新しいレイヤの場合
             } else {
-                newAL.Print_Mode_Layer = oldAttr.LayerData[L].Print_Mode_Layer;
+                newAL.Print_Mode_Layer = oldAttrData.LayerData[L].Print_Mode_Layer;
                 //グリッドのレイヤに対応する旧レイヤがある場合
                 //グラフモードの凡例をもってくる
                 switch (newAL.Type) {
                     case enmLayerType.DefPoint:
                         break;
                     case enmLayerType.Mesh:
-                        if (newAL.ReferenceSystem === oldAttr.LayerData[L].ReferenceSystem) {
+                        if (newAL.ReferenceSystem === oldAttrData.LayerData[L].ReferenceSystem) {
                             Check_Kencode_XY(i, L);
                         }
                         break;
@@ -620,14 +620,14 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                     const DD = Conv[i][j].Data;
                     const dL = Conv[i][j].Layer;
 
-                    const O_Data = oldAttr.LayerData[dL].atrData.Data[DD];
+                    const O_Data = oldAttrData.LayerData[dL].atrData.Data[DD];
                     if (newAttrData.Check_Enable_SoloMode(O_Data.ModeData, i, j) === true) {
                         newAL.atrData.Data[j].ModeData = O_Data.ModeData;
                     }
 
                     newAttrData.Set_Legend(i, j, O_Data, true, shapeNoChange, shapeNoChange, true, shapeNoChange, true, shapeNoChange, true, true, true, (i === dL));
 
-                    if (newAL.MapFileName !== oldAttr.LayerData[dL].MapFileName) {
+                    if (newAL.MapFileName !== oldAttrData.LayerData[dL].MapFileName) {
                         //地図ファイルが変更された場合に線モードのチェック
                         const newALD = newAL.atrData.Data[j];
                         newALD.SoloModeViewSettings.ClassODMD.O_object = 0;
@@ -647,7 +647,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                         const aOD = O_Data.SoloModeViewSettings.ClassODMD;
                         const odl = aOD.o_Layer;
                         const odo = aOD.O_object;
-                        const oob = oldAttr.Get_KenObjCode(odl, odo); // D_Kencode(odo + D_Layer(odl).Object.Stac).Object.code
+                        const oob = oldAttrData.Get_KenObjCode(odl, odo); // D_Kencode(odo + D_Layer(odl).Object.Stac).Object.code
                         const newALOD = newAL.atrData.Data[j].SoloModeViewSettings.ClassODMD;
                         if (R_Layer_Convert[odl] !== -1) {
                             newALOD.o_Layer = R_Layer_Convert[odl];
@@ -688,8 +688,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
 
         console.log(newAttrData.LayerData[0].atrData.Data)
         //---------------------線モードのベジェ曲線をチェック
-        for(let L  = 0 ;L< oldAttr.TotalData.LV1.Lay_Maxn ; L++) {
-            const oldAL=oldAttr.LayerData[L];
+        for(let L  = 0 ;L< oldAttrData.TotalData.LV1.Lay_Maxn ; L++) {
+            const oldAL=oldAttrData.LayerData[L];
             if((oldAL.Type === enmLayerType.Normal)||(oldAL.Type === enmLayerType.Mesh )){
                 for(let i  = 0 ;i< oldAL.ODBezier_DataStac.length ;i++){
                     const d  = oldAL.ODBezier_DataStac[i].Clone();
@@ -697,7 +697,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
                         const aD  = R_Conv[L][d.Data].Data;
                         const aL  = R_Conv[L][d.Data].Layer;
                         if((aD !== -1)&&(aL !== -1 )){
-                            const oldObj  = oldAttr.Get_KenObjName(L, d.ObjectPos);
+                            const oldObj  = oldAttrData.Get_KenObjName(L, d.ObjectPos);
                             const newObj  = newAttrData.Search_ObjName(aL, oldObj);
                             if((aD !== -1)&&(aL !== -1)&&(newObj !== -1 )){
                                 d.Data = aD;
@@ -775,7 +775,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
 
         //重ね合わせモードのデータをチェック
         const newATO = newAttrData.TotalData.TotalMode.OverLay;
-        const oldATO = oldAttr.TotalData.TotalMode.OverLay;
+        const oldATO = oldAttrData.TotalData.TotalMode.OverLay;
         newATO.initDataSet();
         newATO.Always_Overlay_Index = oldATO.Always_Overlay_Index;
         newATO.SelectedIndex = oldATO.SelectedIndex;
@@ -827,7 +827,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
 
         //連続表示モードのデータをチェック
         const newATS = newAttrData.TotalData.TotalMode.Series;
-        const oldATS = oldAttr.TotalData.TotalMode.Series;
+        const oldATS = oldAttrData.TotalData.TotalMode.Series;
         newATS.initDataSet();
         if (oldATS.DataSet.length !== 0) {
             newATS.DataSet = [];
@@ -1181,11 +1181,11 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         //ダミー点オブジェクトの記号
         newAttrData.initDummuyPointObjectMark();
         const newTV = newAttrData.TotalData.ViewStyle;
-        const oldTV = oldAttr.TotalData.ViewStyle;
+        const oldTV = oldAttrData.TotalData.ViewStyle;
         const oldDummy = oldTV.DummyObjectPointMark;
-        if (newTV.DummyObjectPointMark.length > 0) {
+        if (Object.keys(newTV.DummyObjectPointMark).length > 0) {
             const newMapfile = newAttrData.GetMapFileName();
-            const oldMapfile = oldAttr.GetMapFileName();
+            const oldMapfile = oldAttrData.GetMapFileName();
             for (let i = 0; i < newMapfile.length; i++) {
                 const n = oldMapfile.indexOf(newMapfile[i]);
                 if (n !== -1) {

@@ -2574,7 +2574,7 @@ console.log(SortSumDataValue)
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
         const Missing_DataArray = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
         const InnerDT = ad.SoloModeViewSettings.MarkCommon.Inner_Data;
-        let Category_Array_Inner = [];
+        let Category_Array_Inner: number[] = [];
         if(InnerDT.Flag === true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
@@ -2625,7 +2625,7 @@ console.log(SortSumDataValue)
         this.Vector_Connect_CenterP_To_SymbolPoint(g, LayerNum);
         const MkCommon = ad.SoloModeViewSettings.MarkCommon;
         const InnerDT = MkCommon.Inner_Data;
-        let Category_Array_Inner = [];
+        let Category_Array_Inner: number[] = [];
         if(InnerDT.Flag === true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
@@ -2758,7 +2758,7 @@ console.log(SortSumDataValue)
         const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
         const MkCommon = ad.SoloModeViewSettings.MarkCommon;
         const InnerDT = MkCommon.Inner_Data;
-        let Category_Array_Inner = [];
+        let Category_Array_Inner: number[] = [];
         if(InnerDT.Flag === true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
@@ -2997,7 +2997,7 @@ console.log(SortSumDataValue)
         this.Vector_Dummy_Boundary(g,  LayerNum, true, true);
         const MkCommon = ad.SoloModeViewSettings.MarkCommon;
         const InnerDT = MkCommon.Inner_Data;
-        let Category_Array_Inner = [];
+        let Category_Array_Inner: number[] = [];
         if(InnerDT.Flag === true) {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }

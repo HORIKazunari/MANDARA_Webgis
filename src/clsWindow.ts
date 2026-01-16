@@ -1881,7 +1881,7 @@ function setting(locSearch: string) {
                     //カテゴリーデータの場合、他のカテゴリーをドロップ
                     if (!e.dataTransfer || !e.target) { return; }
                     const oele = doc.getElementById("txtClassValue" + String(e.dataTransfer.getData('abc')));
-                    const dragN = Number(String(oele.tag));
+                    const dragN = Number(String(oele?.tag ?? 0));
                     const dropN = Number((e.target as HTMLElement).tag);
                     if(dropN === dragN) { return; }
                     const Layernum = attrData.TotalData.LV1.SelectedLayer;
