@@ -191,7 +191,6 @@ export class clsAccessory {
             typeof MapIdoKedoRect.left === 'undefined' || typeof MapIdoKedoRect.right === 'undefined') {
             return;
         }
-        const getSxSy = av.ScrData.getSxSy;
         const iiv = av.LatLonLine_Print.Lat_Interval;
         const s1 = Math.floor(MapIdoKedoRect.top / iiv) ;
         let Start_Ido = iiv * s1;
@@ -668,7 +667,7 @@ export class clsAccessory {
                     if ((n2 < 0.25) || (n2 > 0.75)) {
                         Ysmin = Math.min(Ysmin, -p.y - TH);
                         yposi[i] = enmVerticalAlignment.Bottom;
-                    } else if ((n2 = 0.25) || (n2 = 0.75)) {
+                    } else if ((n2 === 0.25) || (n2 === 0.75)) {
                         Ysmax = Math.max(Ysmax, -p.y + TH);
                         yposi[i] = enmVerticalAlignment.Center;
                     } else {

@@ -4,7 +4,8 @@ import { clsTime } from './clsTime';
 import { clsSortingSearch } from './SortingSearch';
 import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
-import type { JsonObject } from './types';
+import { Start_End_Time_data } from './clsAttrData';
+import type { JsonObject, JsonValue } from './types';
 
 /** Description placeholder */
 class Hennyu_Data {
@@ -91,6 +92,18 @@ class LineCodeStac_Data {
 const enmObjectGoupType_Data = {
     NormalObject: 0, //通常のオブジェクト
     AggregationObject: 1//集成オブジェクト
+}
+
+// Menseki関数の戻り値型
+interface MensekiResult {
+    menseki: number;
+    gpoint: point;
+}
+
+// Check_Point_in_Polygon関連の戻り値型
+interface PointInPolygonResult {
+    ok: boolean;
+    CrossPoint_X: number[];
 }
 
 
@@ -441,6 +454,24 @@ class strLKOjectGroup_Info {
     }
 }
 
+//線種名とパターン（地図データ）
+/**
+ * Description placeholder
+ */
+class LineKind_Data {
+    Name?: string;
+    NumofObjectGroup?: number;
+    ObjGroup: strLKOjectGroup_Info[] = [];
+    Mesh?: boolean;
+
+    Clone(): LineKind_Data {
+        const d = new LineKind_Data();
+        Object.assign(d, this);
+        d.ObjGroup = Generic.ArrayClone(this.ObjGroup);
+        return d;
+    }
+}
+
 
 
 //線種をオブジェクトグループ連動を個別に数えた場合に使用
@@ -479,7 +510,7 @@ class clsMapdata {
     Map: strMap_data;
     ObjectKind: strObjectGroup_Data[] = [];
     MPObj: strObj_Data[] = [];
-    LineKind: strLKOjectGroup_Info[] = [];
+    LineKind: LineKind_Data[] = [];
     MPLine: strLine_Data[] = [];
     DefTimeAttSTC: strMPObjDefTimeAttData_Info[] = [];
     NoDataFlag: boolean = false;
@@ -599,9 +630,11 @@ class clsMapdata {
         Obj.Kind = ObjectKindNumber;
         const ok = this.ObjectKind[ObjectKindNumber];
         if (ok.DefTimeAttDataNum > 0) {
-            Obj.DefTimeAttValu = [];
+            Obj.DefTimeAttValue = [];
             for (let i = 0; i < ok.DefTimeAttDataNum; i++) {
-                Obj.DefTimeAttValue.push([]);
+                const attData = new strDefTimeAttData_Info();
+                attData.Data = [];
+                Obj.DefTimeAttValue.push(attData);
             }
         }
         const NL = new Object_NameTimeStac_Data();
@@ -1015,27 +1048,28 @@ class clsMapdata {
             const mo = this.MPObj[i];
             switch (mo.Shape) {
                 case enmShape.PolygonShape:
-                    let CP;
-                    CP = this.GetObjGraviityXY(mo, clsTime.GetNullYMD());
-                    // @ts-expect-error - type narrowing issue
-                    mo.CenterPSTC[0].Position = CP.Clone();
+                    const CP = this.GetObjGraviityXY(mo, clsTime.GetNullYMD());
+                    if (CP && typeof CP !== 'boolean') {
+                        mo.CenterPSTC[0].Position = CP.Clone();
+                    }
             }
             this.Check_Obj_Maxmin(mo, false);
         }
     }
     //オブジェクトの重心を求める。面形状でない場合はundefinedを返す
-    GetObjGraviityXY(ObjData: strObj_Data, L_Time: strYMD) {
+    GetObjGraviityXY(ObjData: strObj_Data, L_Time: strYMD): point | false | undefined {
         if (ObjData.Shape !== enmShape.PolygonShape) {
             //ポリゴンでない場合は求めない
             return undefined;
         }
 
         let GPoint = new point();
-        const retV: JsonValue = this.Menseki(ObjData,  L_Time);
-        const xy2=retV.gpoint;
-        if (retV.menseki === -1) {
+        const retV = this.Menseki(ObjData,  L_Time);
+        if (retV === -1) {
             return false;
-        } else if (retV.menseki === 0) {
+        }
+        const xy2 = retV.gpoint;
+        if (retV.menseki === 0) {
             GPoint = xy2.Clone();
         } else {
             //重心がオブジェクト内部に収まるかチェック
@@ -1044,13 +1078,13 @@ class clsMapdata {
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
             }
-            const retV: JsonValue = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
-            if (retV.ok === true) {
+            const retV2 = this.Check_Point_in_Polygon_LineCode(xy2.x, xy2.y, Fringe_Line);
+            if (retV2.ok === true) {
                 GPoint = xy2.Clone();
             } else {
                 //入らない場合
-                const Cross_x=retV.CrossPoint_X;
-                let crn=Cross_x.length;
+                const Cross_x = retV2.CrossPoint_X;
+                let crn = Cross_x.length;
                 if (crn < 2) {
                     GPoint = this.MPLine[Fringe_Line[0]].PointSTC[0];
                     return false
@@ -1249,7 +1283,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトの面積を重心付きで返す
-    Menseki(ObjData: strObj_Data,  L_Time: strYMD) {
+    Menseki(ObjData: strObj_Data,  L_Time: strYMD): MensekiResult | -1 {
         const badata = this.Boundary_Arrange(ObjData, L_Time);
         if (badata.Pon <= 0) {
             return -1;
@@ -1289,7 +1323,7 @@ class clsMapdata {
     }
 
     //ポリゴンごとの面積を求めて、中抜け等を判定して全体の面積を返す（重心つき）
-    Menseki_Sub(badata: boundArrangeData) {
+    Menseki_Sub(badata: boundArrangeData): MensekiResult {
         // if ((GXY instanceof boundArrangeData) === true) {
         //     return this.Menseki_sub2(GXY);
         // }
@@ -1462,7 +1496,7 @@ class clsMapdata {
     }
 
     /** 周辺ラインと指定した地点のX軸上の交点を求め、その地点数を返す。ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/ 
-    Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: Fringe_Line_Info[]) {
+    Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: Fringe_Line_Info[]): PointInPolygonResult {
         const P = new point(x, y);
         const CheckLine = [];
 
