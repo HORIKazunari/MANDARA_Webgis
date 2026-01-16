@@ -2215,7 +2215,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
         frmTitleSettingsAddingData(Title, Unit, note, true,"",
             function (retV: {title: string, unit: string, note: string}) {
                 appState().attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR, MisF);
-                okEvent(e);
+                okEvent();
             }
         )
     }
@@ -2562,7 +2562,7 @@ function frmMain_Culc(okEvent: () => void) {
         frmTitleSettingsAddingData(Title, Unit, note, true, "計算後の新しいデータ項目",
             function (retV: {title: string, unit: string, note: string}) {
                 appState().attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR, MisF);
-                okEvent(e);
+                okEvent();
             }
         )
 
@@ -2744,7 +2744,7 @@ function frmMain_GetDistance(okEvent: () => void){
                         }                        
                         appState().attrData.Add_One_Data_Value(LayerNum, tx, unt, Note, Data_Val_STR, false);
                         Generic.clear_backDiv();
-                        okEvent(e);
+                        okEvent();
                     }
                 );
                 break;
@@ -2759,7 +2759,7 @@ function frmMain_GetDistance(okEvent: () => void){
                     appState().attrData.Add_One_Data_Value(LayerNum, lbText[j] + "との距離", Generic.getScaleUnitStrings(undefined,Unit), "距離測定機能で作成", Data_Val_STR, false);
                 }
                 Generic.clear_backDiv();
-                okEvent(e);
+                okEvent();
                 break;
             }
         }
