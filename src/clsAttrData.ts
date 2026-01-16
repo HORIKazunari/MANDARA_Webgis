@@ -5612,7 +5612,7 @@ class clsAttrData {
                         if (2 <= CutN) {
                             let cngTimeF = false;
                             CutS[1].replace(",", "");
-                            const Y = Math.floor(CutS[1]);
+                            const Y = Math.floor(Number(CutS[1]));
                             //if (DateTime.MinValue.Year > Y) {
                             //    Y = DateTime.MinValue.Year;
                             //    cngTimeF = true;
@@ -5620,7 +5620,7 @@ class clsAttrData {
                             let m = 1;
                             let d = 1;
                             if (3 <= CutN) {
-                                m = Math.floor(CutS[2]);
+                                m = Math.floor(Number(CutS[2]));
                                 if (m <= 0) {
                                     m = 1;
                                     cngTimeF = true;
@@ -5633,7 +5633,7 @@ class clsAttrData {
                             }
                             if (4 <= CutN) {
                                 const iDaysInMonth = new Date(Y, m, 0).getDate();
-                                d = Math.floor(CutS[3]);
+                                d = Math.floor(Number(CutS[3]));
                                 if (d <= 0) {
                                     d = 1;
                                     cngTimeF = true;
@@ -7646,7 +7646,7 @@ class clsAttrData {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const list = [];
         for(const i in titles){
-            list.push({checked:defoChecked,text:titles[i]});
+            list.push({checked:defoChecked,text:titles[i], value:i});
         }
         CheckedListBox.removeAll();
         CheckedListBox.addList(list, 0);
@@ -7973,7 +7973,7 @@ class clsAttrData {
         lbox.removeAll();
         const L = this.LayerData[Layernum].atrObject;
         for (let i = 0; i <L.ObjectNum;i++){
-            const v={text:L.atrObjectData[i].Name,checked:false};
+            const v={text:L.atrObjectData[i].Name,checked:false, value:String(i)};
             if(SelectedObjects !== undefined){
                 v.checked=SelectedObjects[i];
             }

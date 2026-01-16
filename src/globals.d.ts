@@ -358,7 +358,7 @@ interface IAttrData {
                 LoopSize?: number;
                 [key: string]: JsonValue;
             }; // strSoubyou_Data_Info
-            DummyObjectPointMark?: strDummyObjectPointMark_Info[]; // strDummyObjectPointMark_Info[] from clsAttrData.ts
+            DummyObjectPointMark?: Record<string, strDummyObjectPointMark_Info[]>; // strDummyObjectPointMark_Info[] from clsAttrData.ts
             Screen_Back: {
                 MapAreaFrameLine: Line_Property;
                 ScreenFrameLine: Line_Property;
