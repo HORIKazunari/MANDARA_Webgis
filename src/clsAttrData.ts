@@ -630,7 +630,7 @@ const enmMarkTurnDirection = {
 }
 //記号の回転モード
 interface strMarkTurnMode_Data {
-    Dirction: number;// enmMarkTurnDirection //0:反時計回り　1:時計回り
+    Dirction: number;// enmMarkTurnDirection //0:反時計回り 1:時計回り
     Mark: Mark_Property;
     DegreeLap: number;// Double '一周の値
     Clone(): strMarkTurnMode_Data;
@@ -1406,7 +1406,7 @@ class strBasic_Data {
     Lay_Maxn: number = 0; //Integer
     // 選択中のレイヤ番号
     SelectedLayer: number = 0; //Integer
-    Print_Mode_Total: number = 0; //enmTotalMode_Number '0:データ表示 1:重ね合わせ　2:連続
+    Print_Mode_Total: number = 0; //enmTotalMode_Number '0:データ表示 1:重ね合わせ 2:連続
     Comment: string = ""; //String
     MDRFileVersion: number = 0; //Single
     FileName: string = ""; //String
@@ -2963,6 +2963,7 @@ class clsAttrData {
             d.Layer += LayerPlus;
             lttd.DataItem[j] = d
             if ((itt.OverLay.DataSet.length === 1) && (itt.OverLay.DataSet[0].DataItem.length === 0) && (itt.OverLay.DataSet[0].title === "")) {
+                // 空のデータセットの場合はスキップ
             } else {
                 this.TotalData.TotalMode.OverLay.DataSet.push(lttd.Clone());
             }
@@ -2978,6 +2979,7 @@ class clsAttrData {
             ltts.DataItem[j] = d;
         }
         if ((itt.Series.DataSet.length === 1) && (itt.Series.DataSet[0].DataItem.length === 0) && (itt.Series.DataSet[0].title === "")) {
+            // 空のデータセットの場合はスキップ
         } else {
             this.TotalData.TotalMode.Series.DataSet.push(ltts.Clone());
         }
@@ -3184,7 +3186,7 @@ class clsAttrData {
             }
         }
 
-        // for (let i = 0; i < Ov_Data.Count; i++) {　タイルは使用しない
+        // for (let i = 0; i < Ov_Data.Count; i++) { タイルは使用しない
         //     if (Ov_Data[i].TileMapf === true) {
         //         Sub_Over.splice(i,0, Ov_Data[i].Clone())
         //     }
@@ -3475,6 +3477,7 @@ class clsAttrData {
         const ld = this.LayerData[Layernum].atrData.Data[DataNum];
         const ldd = ld.SoloModeViewSettings;
         if (ld.DataType === enmAttDataType.Category) {
+            // カテゴリデータの場合は処理なし
         } else {
             for (let i = 0; i < ldd.Div_Num - 2; i++) {
                 const v = ldd.Class_Div[i + 1].Value;
@@ -3861,7 +3864,7 @@ class clsAttrData {
         const LinePoint = this.MPSubLine[mapKey];
         if (!LinePoint) return;
         for (const lineCode in LinePoint) {
-            if (LinePoint.hasOwnProperty(lineCode)) {
+            if (Object.prototype.hasOwnProperty.call(LinePoint, lineCode)) {
                 LinePoint[lineCode].Drawn = false;
             }
         }
@@ -4535,7 +4538,7 @@ class clsAttrData {
 
         const odata = JSON.parse(attrText);
         
-        if(odata.hasOwnProperty("mapData")){
+        if(Object.prototype.hasOwnProperty.call(odata, "mapData")){
             //地図データ付属形式
             for(const mapfname in odata.mapData){
                 const mdata = new clsMapdata();
@@ -4671,6 +4674,7 @@ class clsAttrData {
                 for (let k = 0; k < saveLPat.LpatNumByMapfile[i]; k++) {
                     if (saveLPat.Lpat[ct + k].Name === mapLkind.Name) {
                         if (mapLkind.NumofObjectGroup !== saveLPat.Lpat[ct + k].NumofObjectGroup) {
+                            // グループ数が異なる場合は処理なし
                         } else {
                             for (let og = 0; og < mapLkind.NumofObjectGroup; og++) {
                                 if(mapLkind.ObjGroup[og].GroupNumber===saveLPat.Lpat[ct + k].ObjGroup[og].GroupNumber){
@@ -6682,6 +6686,7 @@ class clsAttrData {
     Get_Layer_Name(Layernum: number, CR_F=false): string {
         let ln = "";
         if ((this.TotalData.LV1.Lay_Maxn === 1) && (this.LayerData[Layernum].Name === "")) {
+            // レイヤ1つで空名の場合は空文字列を返す
         } else {
             ln = "レイヤ:" + this.LayerData[Layernum].Name +  '\n';
             if (CR_F === true) {
@@ -7518,6 +7523,7 @@ class clsAttrData {
             }
         }
         if (za.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
+            // 緯度経度モードの場合は処理なし
         } else {
             D = D / lay.MapFileData.Map.SCL;
         }

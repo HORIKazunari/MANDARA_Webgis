@@ -43,10 +43,10 @@ export class TKY2JGDInfo_Impl {
     // Ver.1.1  1999/1/28  (C) Mikio TOBITA 飛田幹男，国土地理院
     // この変換では楕円体高Hはゼロとする
     Tokyo97toITRF94(latlonP: latlon): latlon {
-        // 入力　B1    : 緯度(度)
-        // 　　　L1    : 経度(度)
-        // 出力　B2    : 緯度(度)
-        // 　　　L2    : 経度(度)
+        // 入力 B1    : 緯度(度)
+        // L1    : 経度(度)
+        // 出力 B2    : 緯度(度)
+        // L2    : 経度(度)
         const B1 = latlonP.lat;
         const L1 = latlonP.lon;
 
@@ -200,7 +200,7 @@ export class TKY2JGDInfo_Impl {
             Bunsi = 2.0 * (S1 - M) * (1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) ** 1.5;
             Bunbo = 3.0 * EPs.E * (S1 - M) * Math.sin(phi1) * Math.cos(phi1) * Math.sqrt(1.0 - EPs.E * Math.sin(phi1) * Math.sin(phi1)) - 2.0 * EPs.a * (1.0 - EPs.E);
             phi1 = phi1 + Bunsi / Bunbo;
-        } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)); //本では1e-12で十分　iterationの回数は４回
+        } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)); //本では1e-12で十分 iterationの回数は４回
 
         //何度も使う式を変数に代入
         YM0 = Y / M0;
@@ -520,6 +520,7 @@ export class spatial {
             const px = (bm - AM) / (AL - BL);
             const py = AL * px + AM;
             if (((ax1 === px) && (ay1 === py)) || ((ax2 === px) && (ay2 === py)) || ((bx1 === px) && (by1 === py)) || ((bx2 === px) && (by2 === py))) {
+                // 交点が端点の場合は処理なし
             } else {
                 if ((Generic.Check_Two_Value_In(px, ax1, ax2) !== chvValue_on_twoValue.chvOuter) && (Generic.Check_Two_Value_In(py, ay1, ay2) !== chvValue_on_twoValue.chvOuter)) {
                     if ((Generic.Check_Two_Value_In(px, bx1, bx2) !== chvValue_on_twoValue.chvOuter) && (
@@ -887,6 +888,7 @@ export class spatial {
         const pxy = [];
 
         if (((start_p === 0) && (end_p === Math.PI * 2)) || (CenterLineF === false)) {
+            // 完全な円または中心線なしの場合は処理なし
         } else {
             pxy[0] = CP;
         }
@@ -900,6 +902,7 @@ export class spatial {
         }
         pxy.push(new point(r * Math.sin(end_p) + CP.x, -r * Math.cos(end_p) + CP.y));
         if ((start_p === 0) && (end_p === Math.PI * 2) || (CenterLineF === false)) {
+            // 完全な円または中心線なしの場合は処理なし
         } else {
             pxy.push(CP.Clone());
         }
@@ -2183,7 +2186,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**yes　noの確認 event_point:表示座標*/
+    /**yes noの確認 event_point:表示座標*/
     static confirm(event_point: point | undefined, text: string, yesFunc: (() => void) | undefined, noFunc: (() => void) | undefined) {
 
         const gsize=Generic.getDivSize(text,220,"");
@@ -3555,6 +3558,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         b = 10 ** (deci4.BeforeDecimal - 1);
         H = Math.floor(Min / b) * b;
         if ((H >= 0) || (Max <= 0)) {
+            // 正の値のみまたは負の値のみの場合は処理なし
         } else {
             let H2 = H;
             while (H2 < 0) {
@@ -4981,7 +4985,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     for (const j in subMenu) {
                         subMenu[j].style.visibility = 'hidden';
                     }
-                    if ((data.hasOwnProperty('child'))&&(md.enabled===true)) {
+                    if ((Object.prototype.hasOwnProperty.call(data, 'child'))&&(md.enabled===true)) {
                         subMenu[md.submenunum].style.visibility = 'visible';
                     }
                 }
@@ -4989,7 +4993,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     md.style.backgroundColor = 'white';
                 }
                 let enabled=true;
-                if (data.hasOwnProperty('enabled')) {
+                if (Object.prototype.hasOwnProperty.call(data, 'enabled')) {
                     if(data.enabled===false){
                         md.style.color="#888888";
                         enabled=false;
