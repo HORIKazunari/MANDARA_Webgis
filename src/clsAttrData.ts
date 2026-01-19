@@ -4,7 +4,7 @@ import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
-import { clsMapdata } from './clsMapdata';
+import { clsMapdata, EnableMPLine_Data } from './clsMapdata';
 import type { strLayerInfo } from './clsWindow';
 import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
 

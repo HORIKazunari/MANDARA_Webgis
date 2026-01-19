@@ -1437,7 +1437,7 @@ class clsMapdata {
     }
 
     //ある地点がオブジェクトの外接四角形に入るかどうかを調べる
-    Check_Point_in_oneObject_Box(Obj_ObjNumber: number, x: number, y: number) {
+    Check_Point_in_oneObject_Box(Obj_ObjNumber: number | strObj_Data, x: number, y: number) {
         let obj;
         if ((typeof Obj_ObjNumber) === 'number') {
             obj = this.MPObj[Obj_ObjNumber];
