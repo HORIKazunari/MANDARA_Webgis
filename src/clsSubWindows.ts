@@ -473,7 +473,7 @@ function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void
     }
 }
 
-function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line: LinePattern) => void) {
+function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (line: Line_Property) => void) {
     /// <signature>
     /// <summary>ライン設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -495,7 +495,7 @@ function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line:
 
     function btnPaintLineEdge(e: MouseEvent) {
         clsLineEdgePattern(e, newEdge, okButton);
-        function okButton(retEdge: Edge_Property) {
+        function okButton(retEdge: LineEdge_Connect_Pattern_Data_Info) {
             newEdge = retEdge;
         }
     }
@@ -611,7 +611,7 @@ function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
 }
 
 //線端・中間点接合設定
-function clsLineEdgePattern(event: MouseEvent, edgePat: Edge_Property, okEvent: (edgePat: Edge_Property) => void) {
+function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern_Data_Info, okEvent: (edgePat: LineEdge_Connect_Pattern_Data_Info) => void) {
     const newEdge = edgePat.Clone();
     const backDiv = Generic.set_backDiv("", "線端・中間点接合設定", 290, 200, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -922,11 +922,11 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     }
     if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
         const LatLonDMS = LatLon.toDegreeMinuteSecond();
-        Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLonDMS.LatitudeDMS.Degree), "latDBox", 90, 15, undefined, 50, undefined, "");
-        Generic.createNewWordNumberInput(pnlLat, "", "分", LatLonDMS.LatitudeDMS.Minute, "latMBox", 170, 15, undefined, 30, undefined, "");
+        Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLonDMS.LatitudeDMS.degree), "latDBox", 90, 15, undefined, 50, undefined, "");
+        Generic.createNewWordNumberInput(pnlLat, "", "分", LatLonDMS.LatitudeDMS.minute, "latMBox", 170, 15, undefined, 30, undefined, "");
         Generic.createNewWordNumberInput(pnlLat, "", "秒", LatLonDMS.LatitudeDMS.Second, "latSox", 230, 15, undefined, 30, undefined, "");
-        Generic.createNewWordNumberInput(pnlLon, "", "度", Math.abs(LatLonDMS.LongitudeDMS.Degree), "lonDBox", 90, 15, undefined, 50, undefined, "");
-        Generic.createNewWordNumberInput(pnlLon, "", "分", LatLonDMS.LongitudeDMS.Minute, "lonMBox", 170, 15, undefined, 30, undefined, "");
+        Generic.createNewWordNumberInput(pnlLon, "", "度", Math.abs(LatLonDMS.LongitudeDMS.degree), "lonDBox", 90, 15, undefined, 50, undefined, "");
+        Generic.createNewWordNumberInput(pnlLon, "", "分", LatLonDMS.LongitudeDMS.minute, "lonMBox", 170, 15, undefined, 30, undefined, "");
         Generic.createNewWordNumberInput(pnlLon, "", "秒", LatLonDMS.LongitudeDMS.Second, "lonSox", 230, 15, undefined, 30, undefined, "");
 
     } else {

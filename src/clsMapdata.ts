@@ -5,7 +5,7 @@ import { clsSortingSearch } from './SortingSearch';
 import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { Start_End_Time_data } from './clsAttrData';
-import { Fringe_Line_Info, boundArrangeData } from './clsPrint';
+import { Fringe_Line_Info } from './clsPrint';
 import type { JsonObject, JsonValue } from './types';
 
 /** Description placeholder */
