@@ -231,14 +231,9 @@ export interface MarkConfig {
 }
 
 /**
- * 線パターン設定型
+ * 線パターン設定型（Line_Propertyクラスのエイリアス）
  */
-export interface LinePattern {
-  type?: string;
-  width?: number;
-  color?: ColorValue;
-  [key: string]: JsonValue;
-}
+export type LinePattern = Line_Property;
 
 /**
  * 矢印設定型
@@ -267,9 +262,9 @@ export type ValueCallback<T = JsonValue> = (value: T) => void;
 export type ObjectValueCallback = (obj: HTMLElement, value: JsonValue) => void;
 
 /**
- * マーク型
+ * マーク型（Mark_Propertyクラスのエイリアス）
  */
-export type Mark = JsonObject; // マーク設定を表すオブジェクト
+export type Mark = Mark_Property;
 
 /**
  * タイル型（Tile_Propertyクラスのエイリアス）

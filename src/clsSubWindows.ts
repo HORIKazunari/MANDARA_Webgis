@@ -316,7 +316,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
         clsFontSet(e, mk.WordFont, fontGet, _attrData);
         function fontGet(newFont: Font): void {
             mk.WordFont = newFont;
-            angleBox.value = mk.WordFont.Kakudo;
+            angleBox.value = String(mk.WordFont.Kakudo);
             sizeBox.setNumberValue(mk.WordFont.Size);
             txtWord.style.color = mk.WordFont.Color.toHex();
             mk.Tile.Color = mk.WordFont.Color;

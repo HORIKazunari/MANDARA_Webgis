@@ -3412,7 +3412,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: (event: MouseEvent) => void, styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
-        ok.addEventListener('click', onClick);
+        ok.addEventListener('click', onClick as EventListener);
         (ParentObj as HTMLElement).appendChild(ok);
         return ok;
     }
