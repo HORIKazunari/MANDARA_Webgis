@@ -3025,106 +3025,124 @@ class clsMapdata {
         ok.Mesh = okData.Mesh as number;
         ok.Color = this.cnvJsonColor(okData.Color);
         ok.DefTimeAttDataNum = okData.DefTimeAttDataNum as number;
-        ok.DefTimeAttSTC = okData.DefTimeAttSTC as strMPObjDefTimeAttData_Info[];
         ok.ObjectNameNum = okData.ObjectNameNum as number;
         ok.ObjectNameList = okData.ObjectNameList as string[];
         ok.UseLineType = okData.UseLineType as boolean[];
         ok.UseObjectGroup = okData.UseObjectGroup as boolean[];
         for (let j = 0; j < ok.DefTimeAttDataNum; j++) {
             const da = new strMPObjDefTimeAttData_Info();
-            da.Type = JsonData.ObjectKind[i].DefTimeAttSTC[j].Type;
-            da.attData.Title = JsonData.ObjectKind[i].DefTimeAttSTC[j].attData.Title;
-            da.attData.Unit = JsonData.ObjectKind[i].DefTimeAttSTC[j].attData.Unit;
-            da.attData.MissingF = JsonData.ObjectKind[i].DefTimeAttSTC[j].attData.MissingF;
-            da.attData.Note = JsonData.ObjectKind[i].DefTimeAttSTC[j].attData.Note;
-            da.ExtraValue = JsonData.ObjectKind[i].DefTimeAttSTC[j].ExtraValue;
+            const defTimeAttData = (okData.DefTimeAttSTC as JsonObject[])[j];
+            const attDataObj = defTimeAttData.attData as JsonObject;
+            da.Type = defTimeAttData.Type as number;
+            da.attData.Title = attDataObj.Title as string;
+            da.attData.Unit = attDataObj.Unit as string;
+            da.attData.MissingF = attDataObj.MissingF as boolean;
+            da.attData.Note = attDataObj.Note as string;
+            da.ExtraValue = defTimeAttData.ExtraValue as number;
             ok.DefTimeAttSTC[j] = da;
         }
         this.ObjectKind[i] = ok;
     }
+    const lineKindArray = JsonData.LineKind as JsonObject[];
     for (let i = 0; i < m.LpNum; i++) {
         const lk = new LineKind_Data();
-        lk.Name = JsonData.LineKind[i].Name;
-        lk.NumofObjectGroup = JsonData.LineKind[i].NumofObjectGroup;
-        lk.Mesh = JsonData.LineKind[i].Mesh;
+        const lkData = lineKindArray[i];
+        lk.Name = lkData.Name as string;
+        lk.NumofObjectGroup = lkData.NumofObjectGroup as number;
+        lk.Mesh = lkData.Mesh as boolean;
+        const objGroupArray = lkData.ObjGroup as JsonObject[];
         for (let j = 0; j < lk.NumofObjectGroup; j++) {
             lk.ObjGroup[j] = new strLKOjectGroup_Info();
-            lk.ObjGroup[j].GroupNumber = JsonData.LineKind[i].ObjGroup[j].GroupNumber;
-            lk.ObjGroup[j].UseOnly = JsonData.LineKind[i].ObjGroup[j].UseOnly;
-            lk.ObjGroup[j].Pattern = this.cnvJsonLine_Property(JsonData.LineKind[i].ObjGroup[j].Pattern, mdrmjFlag);
+            lk.ObjGroup[j].GroupNumber = objGroupArray[j].GroupNumber as number;
+            lk.ObjGroup[j].UseOnly = objGroupArray[j].UseOnly as boolean;
+            lk.ObjGroup[j].Pattern = this.cnvJsonLine_Property(objGroupArray[j].Pattern, mdrmjFlag);
         }
         this.LineKind[i] = lk;
     }
 
+    const mpLineArray = JsonData.MPLine as JsonObject[];
     for (let i = 0; i < m.ALIN; i++) {
         const ml = new strLine_Data();
-        ml.Number = JsonData.MPLine[i].Number;
-        ml.NumOfPoint = JsonData.MPLine[i].NumOfPoint;
-        ml.Connect = JsonData.MPLine[i].Connect;
-        ml.NumOfLineUse = JsonData.MPLine[i].NumOfLineUse;
-        ml.Circumscribed_Rectangle = this.cnvJsonRect(JsonData.MPLine[i].Circumscribed_Rectangle, mdrmjFlag);
-        ml.NumOfTime = JsonData.MPLine[i].NumOfTime;
-        ml.Drawn = JsonData.MPLine[i].Drawn;
+        const mlData = mpLineArray[i];
+        ml.Number = mlData.Number as number;
+        ml.NumOfPoint = mlData.NumOfPoint as number;
+        ml.Connect = mlData.Connect as number;
+        ml.NumOfLineUse = mlData.NumOfLineUse as number;
+        ml.Circumscribed_Rectangle = this.cnvJsonRect(mlData.Circumscribed_Rectangle as JsonObject, mdrmjFlag);
+        ml.NumOfTime = mlData.NumOfTime as number;
+        ml.Drawn = mlData.Drawn as boolean;
+        const lineTimeArray = mlData.LineTimeSTC as JsonObject[];
         for (let j = 0; j < ml.NumOfTime; j++) {
             ml.LineTimeSTC[j] = new Line_Time_Data();
-            ml.LineTimeSTC[j].Kind = JsonData.MPLine[i].LineTimeSTC[j].Kind;
-            ml.LineTimeSTC[j].SETime = this.cnvJsonStart_End_Time_data(JsonData.MPLine[i].LineTimeSTC[j].SETime);
+            ml.LineTimeSTC[j].Kind = lineTimeArray[j].Kind as number;
+            ml.LineTimeSTC[j].SETime = this.cnvJsonStart_End_Time_data(lineTimeArray[j].SETime);
         }
+        const pointArray = mlData.PointSTC as JsonValue[];
         for (let j = 0; j < ml.NumOfPoint; j++) {
-            ml.PointSTC[j] = this.cnvJsonPoint(JsonData.MPLine[i].PointSTC[j], mdrmjFlag);
+            ml.PointSTC[j] = this.cnvJsonPoint(pointArray[j], mdrmjFlag);
         }
         this.MPLine[i] = ml;
     }
+    const mpObjArray = JsonData.MPObj as JsonObject[];
     for (let i = 0; i < m.Kend; i++) {
         const o = new strObj_Data();
-        const s = JsonData.MPObj[i];
-        o.Number = s.Number;
-        o.Kind = s.Kind;
-        o.Shape = s.Shape;
-        o.NumOfNameTime = s.NumOfNameTime;
-        o.NumOfCenterP = s.NumOfCenterP;
-        o.NumOfSuc = s.NumOfSuc;
-        o.NumOfLine = s.NumOfLine;
-        o.Circumscribed_Rectangle = this.cnvJsonRect(s.Circumscribed_Rectangle, mdrmjFlag);
+        const s = mpObjArray[i];
+        o.Number = s.Number as number;
+        o.Kind = s.Kind as number;
+        o.Shape = s.Shape as number;
+        o.NumOfNameTime = s.NumOfNameTime as number;
+        o.NumOfCenterP = s.NumOfCenterP as number;
+        o.NumOfSuc = s.NumOfSuc as number;
+        o.NumOfLine = s.NumOfLine as number;
+        o.Circumscribed_Rectangle = this.cnvJsonRect(s.Circumscribed_Rectangle as JsonObject, mdrmjFlag);
         if (s.DefTimeAttValue !== null) {
-            for (let j = 0; j < s.DefTimeAttValue.length; j++) {
+            const defTimeAttArray = s.DefTimeAttValue as JsonObject[];
+            for (let j = 0; j < defTimeAttArray.length; j++) {
                 const d = new strDefTimeAttData_Info();
-                if (s.DefTimeAttValue[j].Data !== null) {
-                    for (let k = 0; k < s.DefTimeAttValue[j].Data.length; k++) {
+                const defTimeAttItem = defTimeAttArray[j];
+                if (defTimeAttItem.Data !== null) {
+                    const dataArray = defTimeAttItem.Data as JsonObject[];
+                    for (let k = 0; k < dataArray.length; k++) {
                         d.Data[k] = new strDefTimeAttDataEach_Info();
-                        d.Data[k].Span = this.cnvJsonStart_End_Time_data(s.DefTimeAttValue[j].Data[k].Span);
-                        if (s.DefTimeAttValue[j].Data[k].Value === null) {
+                        d.Data[k].Span = this.cnvJsonStart_End_Time_data(dataArray[k].Span);
+                        if (dataArray[k].Value === null) {
                             d.Data[k].Value = undefined;
                         } else {
-                            d.Data[k].Value = s.DefTimeAttValue[j].Data[k].Value;
+                            d.Data[k].Value = dataArray[k].Value as number;
                         }
                     }
                 }
                 o.DefTimeAttValue[j] = d;
             }
         }
+        const sucArray = s.SucSTC as JsonObject[];
         for (let j = 0; j < s.NumOfSuc; j++) {
             o.SucSTC[j] = new Object_Succession_Data();
-            o.SucSTC[j].ObjectCode = s.SucSTC[j].ObjectCode;
-            o.SucSTC[j].Time = this.cnvJsonstrYMD(s.SucSTC[j].Time);
+            o.SucSTC[j].ObjectCode = sucArray[j].ObjectCode as number;
+            o.SucSTC[j].Time = this.cnvJsonstrYMD(sucArray[j].Time);
         }
+        const nameTimeArray = s.NameTimeSTC as JsonObject[];
         for (let j = 0; j < s.NumOfNameTime; j++) {
             o.NameTimeSTC[j] = new Object_NameTimeStac_Data();
-            o.NameTimeSTC[j].NamesList = Generic.ArrayShallowCopy(s.NameTimeSTC[j].NamesList);
-            o.NameTimeSTC[j].SETime = this.cnvJsonStart_End_Time_data(s.NameTimeSTC[j].SETime);
+            o.NameTimeSTC[j].NamesList = Generic.ArrayShallowCopy(nameTimeArray[j].NamesList as string[]);
+            o.NameTimeSTC[j].SETime = this.cnvJsonStart_End_Time_data(nameTimeArray[j].SETime);
         }
 
+        const centerPArray = s.CenterPSTC as JsonObject[];
         for (let j = 0; j < s.NumOfCenterP; j++) {
             o.CenterPSTC[j] = new Object_CenterPoint_Data();
-            o.CenterPSTC[j].Position = this.cnvJsonPoint(s.CenterPSTC[j].Position, mdrmjFlag);
-            o.CenterPSTC[j].SETime = this.cnvJsonStart_End_Time_data(s.CenterPSTC[j].SETime)
+            o.CenterPSTC[j].Position = this.cnvJsonPoint(centerPArray[j].Position, mdrmjFlag);
+            o.CenterPSTC[j].SETime = this.cnvJsonStart_End_Time_data(centerPArray[j].SETime)
         }
+        const lineCodeArray = s.LineCodeSTC as JsonObject[];
         for (let j = 0; j < s.NumOfLine; j++) {
             o.LineCodeSTC[j] = new LineCodeStac_Data();
-            o.LineCodeSTC[j].LineCode = s.LineCodeSTC[j].LineCode;
-            o.LineCodeSTC[j].NumOfTime = s.LineCodeSTC[j].NumOfTime;
-            for (let k = 0; k < s.LineCodeSTC[j].Times.length; k++) {
-                o.LineCodeSTC[j].Times[k] = this.cnvJsonStart_End_Time_data(s.LineCodeSTC[j].Times[k]);
+            const lineCodeItem = lineCodeArray[j];
+            o.LineCodeSTC[j].LineCode = lineCodeItem.LineCode as number;
+            o.LineCodeSTC[j].NumOfTime = lineCodeItem.NumOfTime as number;
+            const timesArray = lineCodeItem.Times as JsonValue[];
+            for (let k = 0; k < timesArray.length; k++) {
+                o.LineCodeSTC[j].Times[k] = this.cnvJsonStart_End_Time_data(timesArray[k]);
             }
         }
         this.MPObj[i] = o;
@@ -3142,37 +3160,39 @@ class clsMapdata {
 
     private cnvJsonStart_End_Time_data(json: JsonValue) {
         const nt = new Start_End_Time_data();
-        nt.StartTime = this.cnvJsonstrYMD(json.StartTime);
-        nt.EndTime = this.cnvJsonstrYMD(json.EndTime);
+        const jsonObj = json as JsonObject;
+        nt.StartTime = this.cnvJsonstrYMD(jsonObj.StartTime);
+        nt.EndTime = this.cnvJsonstrYMD(jsonObj.EndTime);
         return nt;
     }
 
     private cnvJsonFont(jsonf: JsonObject, mdrmjFlag: boolean) {
         const newf = new Font_Property();
         if (mdrmjFlag === false) {
-            newf.Color = this.cnvJsonColor(jsonf.Body.Color);
-            newf.Size = jsonf.Body.Size;
-            newf.italic = jsonf.Body.italic;
-            newf.bold = jsonf.Body.bold;
-            newf.Underline = jsonf.Body.Underline;
-            newf.Name = jsonf.Body.Name;
-            newf.Kakudo = jsonf.Body.Kakudo;
-            newf.FringeF = jsonf.Body.FringeF;
-            newf.FringeWidth = jsonf.Body.FringeWidth;
-            newf.FringeColor = this.cnvJsonColor(jsonf.Body.FringeColor);
-            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back);
+            const bodyObj = jsonf.Body as JsonObject;
+            newf.Color = this.cnvJsonColor(bodyObj.Color);
+            newf.Size = bodyObj.Size as number;
+            newf.italic = bodyObj.italic as boolean;
+            newf.bold = bodyObj.bold as boolean;
+            newf.Underline = bodyObj.Underline as boolean;
+            newf.Name = bodyObj.Name as string;
+            newf.Kakudo = bodyObj.Kakudo as number;
+            newf.FringeF = bodyObj.FringeF as boolean;
+            newf.FringeWidth = bodyObj.FringeWidth as number;
+            newf.FringeColor = this.cnvJsonColor(bodyObj.FringeColor);
+            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back as JsonObject);
         } else {
             newf.Color = this.cnvJsonColor(jsonf.Color);
-            newf.Size = jsonf.Size;
-            newf.italic = jsonf.italic;
-            newf.bold = jsonf.bold;
-            newf.Underline = jsonf.Underline;
-            newf.Name = jsonf.Name;
-            newf.Kakudo = jsonf.Kakudo;
-            newf.FringeF = jsonf.FringeF;
-            newf.FringeWidth = jsonf.FringeWidth;
+            newf.Size = jsonf.Size as number;
+            newf.italic = jsonf.italic as boolean;
+            newf.bold = jsonf.bold as boolean;
+            newf.Underline = jsonf.Underline as boolean;
+            newf.Name = jsonf.Name as string;
+            newf.Kakudo = jsonf.Kakudo as number;
+            newf.FringeF = jsonf.FringeF as boolean;
+            newf.FringeWidth = jsonf.FringeWidth as number;
             newf.FringeColor = this.cnvJsonColor(jsonf.FringeColor);
-            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back);
+            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back as JsonObject);
         }
         return newf;
     }
@@ -3181,10 +3201,10 @@ class clsMapdata {
     private cnvJsonRect(jsonr: JsonObject, mdrmjFlag: boolean) {
         const newr = new rectangle();
         if (mdrmjFlag === false) {
-            newr.left = jsonr.Left;
-            newr.right = jsonr.Right;
-            newr.top = jsonr.Top;
-            newr.bottom = jsonr.Bottom;
+            newr.left = jsonr.Left as number;
+            newr.right = jsonr.Right as number;
+            newr.top = jsonr.Top as number;
+            newr.bottom = jsonr.Bottom as number;
         } else {
             Object.assign(newr,jsonr);
         }
@@ -3201,24 +3221,25 @@ class clsMapdata {
         return newc;
     }
 
-    private cnvJsonPoint(jsonp: JsonObject, mdrmjFlag: boolean) {
+    private cnvJsonPoint(jsonp: JsonValue, mdrmjFlag: boolean) {
         const newp = new point();
+        const jsonpObj = jsonp as JsonObject;
         if (mdrmjFlag === false) {
-            newp.x = jsonp.X;
-            newp.y = jsonp.Y;
+            newp.x = jsonpObj.X as number;
+            newp.y = jsonpObj.Y as number;
         } else {
-            newp.x = jsonp.x;
-            newp.y = jsonp.y;
+            newp.x = jsonpObj.x as number;
+            newp.y = jsonpObj.y as number;
         }
         return newp;
     }
 
     private cnvJsonBackGround_Box_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new BackGround_Box_Property();
-        nt.Tile = this.cnvJsonTile_Property(json.Tile, mdrmjFlag);
-        nt.Line = this.cnvJsonLine_Property(json.Line, mdrmjFlag);
-        nt.Round = json.Round;
-        nt.Padding = json.Padding;
+        nt.Tile = this.cnvJsonTile_Property(json.Tile as JsonObject, mdrmjFlag);
+        nt.Line = this.cnvJsonLine_Property(json.Line as JsonObject, mdrmjFlag);
+        nt.Round = json.Round as number;
+        nt.Padding = json.Padding as number;
         return nt
     }
     private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: JsonObject, mdrmjFlag: boolean) {
@@ -3226,31 +3247,36 @@ class clsMapdata {
         if (mdrmjFlag === false) {
             const lc = ['round', 'square','butt' ];
             const lj = [  'round','bevel','miter'];
-            nt.lineCap = lc[json.Edge_Pattern];
-            nt.lineJoin = lj[json.Join_Pattern];
-            nt.miterLimit = json.MiterLimitValue;
+            nt.lineCap = lc[json.Edge_Pattern as number];
+            nt.lineJoin = lj[json.Join_Pattern as number];
+            nt.miterLimit = json.MiterLimitValue as number;
             }else{
                 Object.assign(nt,json);
         }
         return nt;
     }
-    private cnvJsonLine_Property(json: JsonObject, mdrmjFlag: boolean) {
+    private cnvJsonLine_Property(json: JsonValue, mdrmjFlag: boolean) {
         const nt = new Line_Property();
+        const jsonObj = json as JsonObject;
         if (mdrmjFlag === false) {
-            nt.Width = json.BasicLine.SolidLine.Width;
-            nt.Color = this.cnvJsonColor(json.BasicLine.SolidLine.Color);
-            nt.Edge_Connect_Pattern = this.cnvJsonLineEdge_Connect_Pattern_Data_Info(json.Edge_Connect_Pattern, mdrmjFlag);
-            if ((json.BasicLine.pattern !== -1) || (json.CrossLine.XLine_f === true) || (
-                (json.ParallelLine.P_Line_f === true) && (json.ParallelLine.InnerColor_f === true))) {
+            const basicLine = jsonObj.BasicLine as JsonObject;
+            const solidLine = basicLine.SolidLine as JsonObject;
+            const crossLine = jsonObj.CrossLine as JsonObject;
+            const parallelLine = jsonObj.ParallelLine as JsonObject;
+            nt.Width = solidLine.Width as number;
+            nt.Color = this.cnvJsonColor(solidLine.Color);
+            nt.Edge_Connect_Pattern = this.cnvJsonLineEdge_Connect_Pattern_Data_Info(jsonObj.Edge_Connect_Pattern as JsonObject, mdrmjFlag);
+            if ((basicLine.pattern !== -1) || (crossLine.XLine_f === true) || (
+                (parallelLine.P_Line_f === true) && (parallelLine.InnerColor_f === true))) {
                 nt.BlankF = false;
             } else {
                 nt.BlankF = true;
             }
         } else {
-            nt.Width = json.Width;
-            nt.Color = this.cnvJsonColor(json.Color);
-            nt.Edge_Connect_Pattern = this.cnvJsonLineEdge_Connect_Pattern_Data_Info(json.Edge_Connect_Pattern, mdrmjFlag);
-            nt.BlankF= json.BlankF;
+            nt.Width = jsonObj.Width as number;
+            nt.Color = this.cnvJsonColor(jsonObj.Color);
+            nt.Edge_Connect_Pattern = this.cnvJsonLineEdge_Connect_Pattern_Data_Info(jsonObj.Edge_Connect_Pattern as JsonObject, mdrmjFlag);
+            nt.BlankF= jsonObj.BlankF as boolean;
         }
         return nt;
     }
@@ -3259,9 +3285,12 @@ class clsMapdata {
         const nt = new Tile_Property();
         if (mdrmjFlag === false) {
             nt.BlankF = (json.TileCode === 7);
-            nt.Color = this.cnvJsonColor(json.Line.BasicLine.SolidLine.Color);
+            const line = json.Line as JsonObject;
+            const basicLine = line.BasicLine as JsonObject;
+            const solidLine = basicLine.SolidLine as JsonObject;
+            nt.Color = this.cnvJsonColor(solidLine.Color);
         } else {
-            nt.BlankF = json.BlankF;
+            nt.BlankF = json.BlankF as boolean;
             nt.Color = this.cnvJsonColor(json.Color);
         }
         return nt;
@@ -3269,12 +3298,12 @@ class clsMapdata {
 
     private cnvJsonMark_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new Mark_Property();
-        nt.PrintMark = json.PrintMark;
-        nt.ShapeNumber = json.ShapeNumber;
-        nt.Tile = this.cnvJsonTile_Property(json.Tile, mdrmjFlag);
+        nt.PrintMark = json.PrintMark as boolean;
+        nt.ShapeNumber = json.ShapeNumber as number;
+        nt.Tile = this.cnvJsonTile_Property(json.Tile as JsonObject, mdrmjFlag);
         nt.Line = this.cnvJsonLine_Property(json.Line, mdrmjFlag);
-        nt.wordmark = json.wordmark;
-        nt.WordFont = this.cnvJsonFont(json.WordFont, mdrmjFlag);
+        nt.wordmark = json.wordmark as string;
+        nt.WordFont = this.cnvJsonFont(json.WordFont as JsonObject, mdrmjFlag);
         return nt;
     }
 }
