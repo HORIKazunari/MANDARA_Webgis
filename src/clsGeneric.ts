@@ -2481,7 +2481,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
-    static createNewNumberInput(ParentObj: HTMLElement, defoValue: number, ID: string, x: number, y: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, styleinfo: string) {
+    static createNewNumberInput(ParentObj: HTMLElement, defoValue: number, ID: string, x: number, y: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined | null, styleinfo: string) {
 
         const box = this.createNewInput(ParentObj, "text", String(defoValue), ID, x, y, undefined, "width:" + width.px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
         box.preValue = defoValue;
@@ -3409,10 +3409,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ボタン作成
-    static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: (event: MouseEvent) => void, styleinfo: string = "") {
+    static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: ((event: MouseEvent) => void) | ((event: Event) => void), styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
-        ok.addEventListener('click', onClick as EventListener);
+        ok.onclick = onClick as ((event: MouseEvent) => void);
         (ParentObj as HTMLElement).appendChild(ok);
         return ok;
     }
@@ -3782,7 +3782,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
      * @param {*} styleinfo
      * @memberof Generic
      */
-    static createNewRadioButtonList(ParentObj: HTMLElement, name: string, list: RadioListItem[], x: number, y: number, wordWidth: number, yplus: number | number[], defoCheckValue: RadioValue, onClick: (value: RadioValue) => void, styleinfo: string): void {
+    static createNewRadioButtonList(ParentObj: HTMLElement, name: string, list: RadioListItem[], x: number, y: number, wordWidth: number | undefined, yplus: number | number[], defoCheckValue: RadioValue, onClick: (value: RadioValue) => void, styleinfo: string): void {
 
         let sy = y;
         for (let i = 0; i < list.length; i++) {
@@ -3879,7 +3879,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**チェックボックス要素作成 onClickでは要素を返す */
-    static createNewCheckBox(ParentObj: HTMLElement, text: string, ID: string, checked: boolean, x: number, y: number, wordWidth: number, onClick: ((obj: HTMLInputElement) => void) | undefined, styleinfo: string = "") {
+    static createNewCheckBox(ParentObj: HTMLElement, text: string, ID: string, checked: boolean, x: number, y: number, wordWidth: number | undefined, onClick: ((obj: HTMLInputElement) => void) | undefined | null, styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "checkbox", "", ID, x, y, undefined, styleinfo);
         if (checked === true) {
@@ -4019,7 +4019,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**サイズ選択用select valueType:配列はそのまま入れる、1（0.1間隔）,2(0.5),3(5),4(10))、onChangeでは要素,オブジェクトと値を返す*/ 
-    static createNewSizeSelect(ParentObj: HTMLElement, defoValue: number, ID: string, preWord: string, x: number, y: number, preWordWidth: number, valueType: number[] | number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, percentShowF: boolean = true) {
+    static createNewSizeSelect(ParentObj: HTMLElement, defoValue: number, ID: string, preWord: string, x: number, y: number, preWordWidth: number | undefined, valueType: number[] | number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined | null, percentShowF: boolean = true) {
 
         let cboCodeList: number[] = [];
         if( valueType instanceof Array===true){
@@ -4683,7 +4683,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let bux = w;
         if (cancelButtonF === true) {
-            const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, h - 35, cancelButton, "width:70px;height:23px");
+            const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, h - 35, (e: MouseEvent) => cancelButton(), "width:70px;height:23px");
             ele.bottomRightPositionFixed=true;
             ele.relativePosition=new point(80,30);
             ele.name="cancel";
@@ -4693,7 +4693,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             if (okCall === undefined) {
                 okCall = () => deletediv(undefined);
             }
-            const ele=Generic.createNewButton(dup, "OK", "", bux - 90, h - 35, () => okButton(), "width:60px;height:23px");
+            const ele=Generic.createNewButton(dup, "OK", "", bux - 90, h - 35, (e: MouseEvent) => okButton(e), "width:60px;height:23px");
             ele.bottomRightPositionFixed=true;
             if (cancelButtonF === true) {
                 ele.relativePosition=new point(150,30);
@@ -4708,9 +4708,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 cancelCall();
             }
         }
-        function okButton(): void {
+        function okButton(e?: MouseEvent): void {
             if (okCall) {
-                okCall();
+                okCall(e);
             }
         }
         return dup;

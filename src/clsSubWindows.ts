@@ -628,11 +628,11 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern
     Generic.createNewRadioButtonList(jointFrame, "jointPattern", jointList, 15, 15,undefined, 22,newEdge.lineJoin, jointPatternChange, "");
     const limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
 
-    function jointPatternChange(v: string) {
+    function jointPatternChange(v: RadioValue) {
         newEdge.lineJoin = v as CanvasLineJoin;
     }
 
-    function edgePatternChange(v: string) {
+    function edgePatternChange(v: RadioValue) {
         newEdge.lineCap = v as CanvasLineCap;
     }
     function buttonOK() {
