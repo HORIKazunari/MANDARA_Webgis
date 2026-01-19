@@ -1513,7 +1513,7 @@ declare class boundArrangeData {
     Line?: Line_Property;
     Fringe?: Fringe_Line_Info[];
     Arrange_LineCode?: number[][];
-    Pon?: number;
+    Pon: number;
     constructor();
 }
 

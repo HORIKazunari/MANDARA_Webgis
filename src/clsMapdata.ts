@@ -515,7 +515,7 @@ class clsMapdata {
     MPLine: strLine_Data[] = [];
     DefTimeAttSTC: strMPObjDefTimeAttData_Info[] = [];
     NoDataFlag: boolean = false;
-    private Enable_MPObjStac: JsonValue[] = []; // EnableMPOBJ_Data未定義
+    private Enable_MPObjStac: number[] = []; // EnableMPOBJ_Data未定義
 
     constructor() {
         this.Map = new strMap_data();
@@ -798,9 +798,12 @@ class clsMapdata {
         for (let i = 0; i < this.Map.LpNum; i++) {
             const lk = this.LineKind[i];
             for (let j = 0; j < lk.NumofObjectGroup; j++) {
-                const pat = LPC[n].Pat as Line_Property;
-                if (pat && typeof pat.Clone === 'function') {
-                    lk.ObjGroup[j].Pattern = pat.Clone();
+                const patValue = LPC[n].Pat;
+                if (patValue && typeof patValue === 'object' && !Array.isArray(patValue) && 'Clone' in patValue) {
+                    const pat = patValue as unknown as Line_Property;
+                    if (typeof pat.Clone === 'function') {
+                        lk.ObjGroup[j].Pattern = pat.Clone();
+                    }
                 }
                 n += 1
             }
@@ -971,7 +974,7 @@ class clsMapdata {
     Get_OneObjectGroup_Parameter(Name: string, Shape: number, ObkNum: number, LpNum: number, Mesh: boolean, type: number) {
         const Okind = new strObjectGroup_Data();
         Okind.Color = clsBase.ColorWhite();//マップエディタがないので設定不要
-        Okind.Mesh = Mesh;
+        Okind.Mesh = Mesh ? 1 : 0;
         Okind.Name = Name;
         Okind.Shape = Shape;
         Okind.ObjectType = type;
@@ -1080,7 +1083,7 @@ class clsMapdata {
             GPoint = xy2.Clone();
         } else {
             //重心がオブジェクト内部に収まるかチェック
-            const ELine = this.Get_EnableMPLine(ObjData, L_Time);;
+            const ELine = this.Get_EnableMPLine(ObjData as unknown as number, L_Time);
             const Fringe_Line: number[] = [];
             for (let j = 0; j < ELine.length; j++) {
                 Fringe_Line.push(ELine[j].LineCode);
@@ -1249,7 +1252,7 @@ class clsMapdata {
     }
 
     //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange_Sub(ELine: Array<JsonObject>): boundArrangeData {
+    Boundary_Arrange_Sub(ELine: EnableMPLine_Data[]): boundArrangeData {
         let boundArrange = new boundArrangeData();
         const NL = ELine.length;
         if (NL === 0) {
@@ -1265,7 +1268,10 @@ class clsMapdata {
         }
         boundArrange = spatial.BoundaryArrangeGeneral(NL, spxy, epxy);
         for (let i = 0; i < NL; i++) {
-            boundArrange.Fringe[i].code = ELine[boundArrange.Fringe[i].code].LineCode;
+            const fringeCode = boundArrange.Fringe[i].code;
+            if (typeof fringeCode === 'number' && fringeCode < ELine.length) {
+                boundArrange.Fringe[i].code = ELine[fringeCode].LineCode ?? 0;
+            }
         }
         return boundArrange;
     }
@@ -1472,28 +1478,30 @@ class clsMapdata {
             const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
             const X = ML.PointSTC[0].x;
             const Y = ML.PointSTC[0].y;
-            const retRin: JsonValue = SIndex.GetRectIn(X, Y);
-            const n=retRin.number;
-            const Onum =retRin.ObStac;
-            const Otags=retRin.Tags;
+            const retRin = SIndex.GetRectIn(X, Y);
+            if (retRin !== 0) {
+                const n = retRin.number;
+                const Onum = retRin.ObStac;
+                const Otags = retRin.Tags;
 
-            for (let j = 0; j < n; j++) {
-                const LCD = Otags[j];
-                if (LCD !== i) {
-                    const Fringe_Line = [];
-                    for (let k = 0; k < Arrange_LineCode[LCD][1]; k++) {
-                        Fringe_Line.push(Fringe[Arrange_LineCode[LCD][0] + k].code);
-                    }
-                    const retV = this.Check_Point_in_Polygon_LineCode(X, Y, Fringe_Line);
-                    if (retV.ok === true) {
-                        const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
-                        const x2 = ML.PointSTC[1].x;
-                        const y2 = ML.PointSTC[1].y;
-                        const retV2 = this.Check_Point_in_Polygon_LineCode(x2, y2, Fringe_Line);
-                        if (retV2.ok === true) {
-                            //iがjの中に含まれる場合は(i,j)を1に
-                            InOut[i][LCD] = 1;
-                            TotalInOutNum[i]++;
+                for (let j = 0; j < n; j++) {
+                    const LCD = Otags[j];
+                    if (LCD !== i) {
+                        const Fringe_Line = [];
+                        for (let k = 0; k < Arrange_LineCode[LCD][1]; k++) {
+                            Fringe_Line.push(Fringe[Arrange_LineCode[LCD][0] + k].code);
+                        }
+                        const retV = this.Check_Point_in_Polygon_LineCode(X, Y, Fringe_Line);
+                        if (retV.ok === true) {
+                            const ML = this.MPLine[Fringe[Arrange_LineCode[i][0]].code];
+                            const x2 = ML.PointSTC[1].x;
+                            const y2 = ML.PointSTC[1].y;
+                            const retV2 = this.Check_Point_in_Polygon_LineCode(x2, y2, Fringe_Line);
+                            if (retV2.ok === true) {
+                                //iがjの中に含まれる場合は(i,j)を1に
+                                InOut[i][LCD] = 1;
+                                TotalInOutNum[i]++;
+                            }
                         }
                     }
                 }
@@ -1627,7 +1635,7 @@ class clsMapdata {
     }
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン番号を返す
-    Get_EnableMPLine(ObjData_objNum: number, Time: strYMD) {
+    Get_EnableMPLine(ObjData_objNum: number, Time: strYMD): EnableMPLine_Data[] {
         let ObjData;
         if ((ObjData_objNum instanceof strObj_Data) === false) {
             ObjData = this.MPObj[ObjData_objNum];
@@ -1655,7 +1663,7 @@ class clsMapdata {
     }
 
     //集成オブジェクトを構成する元のオブジェクト番号を取得
-    Get_MpObj_used_AggregateObject(ObjData: strObj_Data, Time: strYMD) {
+    Get_MpObj_used_AggregateObject(ObjData: strObj_Data, Time: strYMD): number[] {
         this.Enable_MPObjStac = [];
         this.Get_MpObj_used_AggregateObject_Sub(ObjData, Time)
         return this.Enable_MPObjStac;
@@ -1706,7 +1714,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトで、指定した時間に利用できるライン番号を戻し、その要素を返す
-    Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: strYMD) {
+    Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: strYMD): EnableMPLine_Data[] | undefined {
         const Enable_LCode = [];
         if (Time.nullFlag() === true) {
             for (let i = 0; i < ObjData.NumOfLine; i++) {

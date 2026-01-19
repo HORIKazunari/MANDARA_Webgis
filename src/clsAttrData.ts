@@ -6519,7 +6519,7 @@ class clsAttrData {
         }
     }
     //合成オブジェクトの外周線を返す
-    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): JsonValue[] {
+    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): EnableMPLine[] {
         const LD = this.LayerData[Layernum];
         const SO_Code = LD.atrObject.atrObjectData[ObjNum].MpObjCode;
         const Time = LD.Time;

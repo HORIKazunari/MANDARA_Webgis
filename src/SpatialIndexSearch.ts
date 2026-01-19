@@ -4,6 +4,12 @@
 const Add_or_Remove_Add_Obj = 1;
 const Add_or_Remove_Remove_Obj = 2;
 
+interface GetRectInResult {
+    number: number;
+    Tags: (string | number)[];
+    ObStac: number[];
+}
+
 class GetObjectPointTagInfo {
     ObjectNumber: number;
     PointNumber: number;
@@ -620,7 +626,7 @@ class clsSpatialIndexSearch {
     }
 
     //指定した点が入る四角領域を取得
-    GetRectIn(x: number, y: number) {
+    GetRectIn(x: number, y: number): GetRectInResult | 0 {
         if (this.ObjectType !== SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
             return 0;
