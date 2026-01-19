@@ -378,13 +378,13 @@ class strLine_Data {
 /**
  * Description placeholder
  */
-export class EnableMPLine_Data {
-    LineCode?: number;
-    Kind?: number;
+export class EnableMPLine_Data implements EnableMPLine {
+    LineCode!: number;
+    Kind!: number;
 
     constructor(lcode?: number, Kind?: number) {
-        this.LineCode = lcode;
-        this.Kind = Kind;
+        this.LineCode = lcode ?? 0;
+        this.Kind = Kind ?? 0;
     }
 
     Clone(): EnableMPLine_Data {
@@ -1522,7 +1522,8 @@ class clsMapdata {
                 CheckLine.push(m.PointSTC);
             }
         }
-        return spatial.check_Point_in_Polygon(P, CheckLine);
+        const result = spatial.check_Point_in_Polygon(P, CheckLine);
+        return { ok: result.ok, CrossPoint_X: result.CrossPoint_X || [] };
     }
 
     //オブジェクト内のポリゴンごとの連続した座標を取得する
@@ -1922,7 +1923,7 @@ class clsMapdata {
     }
 
     /**オブジェクト番号で指定、'線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、 */
-    Distance_Object(O_Code1: number, O_Code2: number, Time1: clsTime, Time2: clsTime) {
+    Distance_Object(O_Code1: number, O_Code2: number, Time1: strYMD, Time2: strYMD) {
         let P1;
         let P2;
         if (this.MPObj[O_Code2].Shape === enmShape.LineShape) {
@@ -1947,7 +1948,7 @@ class clsMapdata {
         return d;
     }
 
-    Distance_ObjectCenterP(CP: point, O_Code1: number,  Time1: clsTime) {
+    Distance_ObjectCenterP(CP: point, O_Code1: number,  Time1: strYMD) {
         let d;
         if (this.MPObj[O_Code1].Shape === enmShape.LineShape) {
             //一方が線オブジェクトの場合
@@ -1969,7 +1970,7 @@ class clsMapdata {
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
 
-    Distance_PointMPLineAllay(P: point, LCode: EnableMPLine[]) {
+    Distance_PointMPLineAllay(P: point, LCode: EnableMPLine_Data[]) {
         let mind;
         let f = false;
         for (let i = 0; i < LCode.length; i++) {
@@ -2619,7 +2620,7 @@ class clsMapdata {
         //オブジェクト名の有効期間の開始と終了時期での形状チェック
 
         if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
-            return this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD, CutPoint);
+            return this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD(), CutPoint);
         }
 
         const OT = []; // As Start_End_Time_data
@@ -2633,11 +2634,11 @@ class clsMapdata {
         }
 
         for (let i = 0; i < obtn; i++) {
-            if (OT[i].StartTithis.nullFlag === false) {
+            if (OT[i].StartTime.nullFlag() === false) {
                 SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].StartTime, CutPoint);
                 SHN++;
             }
-            if (OT[i].EndTithis.nullFlag === false) {
+            if (OT[i].EndTime.nullFlag() === false) {
                 SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].EndTime, CutPoint);
                 SHN++;
             }
@@ -2667,7 +2668,7 @@ class clsMapdata {
             const T = clsTime.GetYMDfromValue(v);
             if ((T as Record<string, boolean>).nullFlag === false) {
                 if (n2 === 0) {
-                    if (OT[0].StartTithis.nullFlag === true) {
+                    if (OT[0].StartTime.nullFlag() === true) {
                         GT[0] = clsTime.getYesterday(T);
                         n2 = 1;
                     }
@@ -2681,7 +2682,7 @@ class clsMapdata {
                 }
             }
         }
-        if (OT[obtn - 1].EndTithis.nullFlag === true) {
+        if (OT[obtn - 1].EndTime.nullFlag() === true) {
             if (n2 !== 0) {
                 GT[n2] = clsTime.getTomorrow(GT[n2 - 1]);
                 n2++;

@@ -2275,7 +2275,7 @@ declare class spatial {
     static Trans2D(CP: point, Kakudo_P: number | point, Kakudo?: number): point;
     static Check_Zahyo_Projection_Convert_Enabled(zahyo: Zahyo_info, zahyo2?: Zahyo_info): { ok: boolean; emes: string };
     static Get_Reverse_and_Convert_XY(point: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info): point;
-    static check_Point_in_Polygon(point: point, polygon: point[]): { ok: boolean };
+    static check_Point_in_Polygon(point: point, polygon: point[][]): { ok: boolean; CrossPoint_X: number[] };
     static Compare_Two_Rectangle_Position(rect1: rectangle, rect2: rectangle): number;
     static Compare_Two_Rectangle_Position_turned(rect1: rectangle, angle: number, rect2: rectangle): number;
     static Compare_Two_Rectangle_Position_Inflated(rect1: rectangle, rect2: rectangle, inflate?: number): number;
