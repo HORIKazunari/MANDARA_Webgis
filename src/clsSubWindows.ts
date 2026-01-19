@@ -1132,7 +1132,7 @@ function frmPrintOption(firstTab: number = 0) {
     const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,-1,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v?: string){
         atv.SouByou.AutoDegree=v ? parseInt(v) : 0;
     },"");
-    cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree);
+    cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree.toString());
     Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: HTMLInputElement){atv.SouByou.Spline_F=obj.checked;},"");
     const soubyouManual = Generic.createNewFrame(tab04, "", "", 10, 50, 170, 122, "マニュアル設定");
     Generic.createNewCheckBox(soubyouManual, "ポイント間引き", "", atv.SouByou.ThinningPrint_F, 5, 15,undefined,  function (obj: HTMLInputElement) { atv.SouByou.ThinningPrint_F = obj.checked; }, "");
@@ -1289,7 +1289,7 @@ function frmPrintOption(firstTab: number = 0) {
             clsLinePatternSet(e, atv.MapLegend.ClassMD.PaintMode_Line,
                 function (Lpat: Line_Property) {
                     atv.MapLegend.ClassMD.PaintMode_Line = Lpat;
-                    appState().attrData.Draw_Sample_LineBox(e.target, Lpat);
+                    appState().attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                 });
         });
     appState().attrData.Draw_Sample_LineBox(document.getElementById("PaintMode_Line"), atv.MapLegend.ClassMD.PaintMode_Line);
@@ -1303,7 +1303,7 @@ function frmPrintOption(firstTab: number = 0) {
             clsLinePatternSet(e, atv.MapLegend.ClassMD.ClassBoundaryLine.LPat,
                 function (Lpat: Line_Property) {
                     atv.MapLegend.ClassMD.ClassBoundaryLine.LPat = Lpat;
-                    appState().attrData.Draw_Sample_LineBox(e.target, Lpat);
+                    appState().attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                 });
         });
     appState().attrData.Draw_Sample_LineBox(ClassBoundaryLine, atv.MapLegend.ClassMD.ClassBoundaryLine.LPat);
@@ -1318,7 +1318,7 @@ function frmPrintOption(firstTab: number = 0) {
             clsLinePatternSet(e, atv.MapLegend.MarkMD.MultiEnMode_Line,
                 function (Lpat: Line_Property) {
                     atv.MapLegend.MarkMD.MultiEnMode_Line = Lpat;
-                    appState().attrData.Draw_Sample_LineBox(e.target, Lpat);
+                    appState().attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                 });
         });
     appState().attrData.Draw_Sample_LineBox(ClasMarkMDMultiEnMode_Lines, atv.MapLegend.MarkMD.MultiEnMode_Line);
