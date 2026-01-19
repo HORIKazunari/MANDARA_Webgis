@@ -53,21 +53,21 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
     colorPat.push([new colorRGBA(180, 0, 104), red, yellow, clsBase.ColorGreen(), new colorRGBA(185, 235, 255), blue, new colorRGBA(0, 0, 50)]);
 
     const ConvColor: colorRGBA[][] = [];
-    let maxn = colorPat.length;
-    for (const i in colorPat) {
+    let maxn: number = colorPat.length;
+    for (let i = 0; i < colorPat.length; i++) {
         if (colorPat[i].length > ClassN) {
-            maxn = parseInt(i);
+            maxn = i;
             break;
         }
     }
-    pnlPatternList.style.height = pich * maxn + topMargin * 2;
+    pnlPatternList.style.height = pich * maxn + topMargin * 2 + 'px';
     for (let i = 0; i < maxn; i++) {
         const y = pich * i + topMargin;
         const canvas = Generic.createNewCanvas(pnlPatternList, "", "imgButton", leftMargin, y, picw, pich - 4, selectColor);
         canvas.tag = i;
         let ColData = [];// colorRGBA
         const colcol = []; // colorRGBA
-        for (const j in colorPat[i]) {
+        for (let j = 0; j < colorPat[i].length; j++) {
             colcol.push(colorPat[i][j].Clone());
         }
         const colnum = colorPat[i].length;
@@ -124,7 +124,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     if( event_point instanceof point){
         framepos=event_point.Clone(); 
     }else{
-        OriginControl = event_point.target;
+        OriginControl = event_point.target as HTMLElement;
         framepos=new point(event_point.clientX,event_point.clientY);
     }
      
