@@ -1245,7 +1245,7 @@ class clsMapdata {
     }
 
     //指定したオブジェクトの境界線を面領域を描くような順番に並べ替える
-    Boundary_Arrange(ObjData_objNum: number, Time: strYMD) {
+    Boundary_Arrange(ObjData_objNum: number | strObj_Data, Time: strYMD) {
         const ELine = this.Get_EnableMPLine(ObjData_objNum, Time)
         const boundArrange = this.Boundary_Arrange_Sub(ELine);
         return boundArrange;
@@ -1288,7 +1288,7 @@ class clsMapdata {
         if (ml.PointSTC[PE].Equals(ml.PointSTC[0]) === true) {
             const pxy =Generic.ArrayClone( ml.PointSTC);
             pxy.push(ml.PointSTC[1].Clone());
-            men = spatial.Get_Hairetu_Menseki(pxy, this.Map);
+            men = spatial.Get_Hairetu_Menseki(pxy, this.Map as { Zahyo: Zahyo_info; SCL: number });
         } else {
             men = -1;
         }
@@ -1314,7 +1314,7 @@ class clsMapdata {
             const LXY2: point[] = [];
             const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
             LXY2.push(LXY2[1]);
-            mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map);
+            mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map as { Zahyo: Zahyo_info; SCL: number });
         }
         let m;
         if (Pon === 1) {
@@ -1375,7 +1375,7 @@ class clsMapdata {
             if (n2 < 2) {
                 gp[i] = LXY2[0];
             } else {
-                mens[i] = spatial.Get_Hairetu_Menseki( LXY2, this.Map);
+                mens[i] = spatial.Get_Hairetu_Menseki( LXY2, this.Map as { Zahyo: Zahyo_info; SCL: number });
                 if (((mens[i] < 0.0000000001) && (gp[i] === undefined) ) || w === 0) {
                     //幅のないポリゴンはポイント座標で重心
                     let xx = 0;
@@ -1513,7 +1513,7 @@ class clsMapdata {
     /** 周辺ラインと指定した地点のX軸上の交点を求め、その地点数を返す。ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/ 
     Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: number[]): PointInPolygonResult {
         const P = new point(x, y);
-        const CheckLine = [];
+        const CheckLine: point[][] = [];
 
         for (let j = 0; j < Fringe_Line.length; j++) {
             const m = this.MPLine[Fringe_Line[j]];
@@ -1607,6 +1607,7 @@ class clsMapdata {
                     if (xy.x > 180) {
                         xy.x -= 360;
                     }
+                    break;
                 case 3:
                     xy = spatial.Get_Reverse_XY(ML.PointSTC[i], this.Map.Zahyo);
             }
@@ -1619,12 +1620,14 @@ class clsMapdata {
             switch (Get_Coords_Data) {
                 case 0:
                     xy = ML.PointSTC[fe];
+                    break;
                 case 2:
                     xy = spatial.Get_Reverse_XY(ML.PointSTC[fe], this.Map.Zahyo);
                     xy = spatial.Get_World_IdoKedo(xy, this.Map.Zahyo).toPoint();
                     if (xy.x > 180) {
                         xy.x -= - 360;
                     }
+                    break;
                 case 3:
                     xy = spatial.Get_Reverse_XY(ML.PointSTC[fe], this.Map.Zahyo);
             }
@@ -1635,22 +1638,24 @@ class clsMapdata {
     }
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン番号を返す
-    Get_EnableMPLine(ObjData_objNum: number, Time: strYMD): EnableMPLine_Data[] {
-        let ObjData;
+    Get_EnableMPLine(ObjData_objNum: number | strObj_Data, Time: strYMD): EnableMPLine_Data[] {
+        let ObjData: strObj_Data;
         if ((ObjData_objNum instanceof strObj_Data) === false) {
-            ObjData = this.MPObj[ObjData_objNum];
+            ObjData = this.MPObj[ObjData_objNum as number];
         } else {
             ObjData = ObjData_objNum;
         }
 
-        let LCode: JsonValue[] = [];
+        let LCode: EnableMPLine_Data[] = [];
         if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
             const AggObs = this.Get_MpObj_used_AggregateObject(ObjData, Time);
             for (let i = 0; i < AggObs.length; i++) {
                 const lc = AggObs[i];
                 if (this.ObjectKind[this.MPObj[lc].Kind].ObjectType === enmObjectGoupType_Data.NormalObject) {
                     const E_LCode = this.Get_EnableMPLine_Normal(this.MPObj[lc], Time);
-                    LCode = LCode.concat(E_LCode);
+                    if (E_LCode) {
+                        LCode = LCode.concat(E_LCode);
+                    }
                 }
             }
             if (LCode.length > 0) {
@@ -1685,13 +1690,13 @@ class clsMapdata {
     }
 
     //ラインコードスタックのラインが指定時期に利用できるかをチェック、利用できる場合はラインコード番号を返し，そうでない場合は－１を返す
-    Check_Enable_LineCode(Lcode_Stac: number[], Time: strYMD) {
+    Check_Enable_LineCode(Lcode_Stac: LineCodeStac_Data, Time: strYMD): number {
         if ((Lcode_Stac.NumOfTime === 0) || (Time.nullFlag() === true)) {
-            return Lcode_Stac.LineCode;
+            return Lcode_Stac.LineCode ?? -1;
         } else {
-            for (let i = 0; i < Lcode_Stac.NumOfTime; i++) {
+            for (let i = 0; i < (Lcode_Stac.NumOfTime ?? 0); i++) {
                 if (clsTime.checkDurationIn(Lcode_Stac.Times[i], Time) === true) {
-                    return Lcode_Stac.LineCode;
+                    return Lcode_Stac.LineCode ?? -1;
                 }
             }
         }

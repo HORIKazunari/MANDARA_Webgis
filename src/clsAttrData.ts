@@ -3461,11 +3461,11 @@ class clsAttrData {
                     const f = Check_Point_in_Kencode_oneObject_Box(Layernum, ObjNum, MapP.x, MapP.y);
                     if (f === true) {
                         const ELine = this.Get_Enable_KenCode_MPLine(Layernum, ObjNum)
-                        const Fringe_Line = [];
+                        const Fringe_Line: number[] = [];
                         for (let j = 0; j < ELine.length; j++) {
                             Fringe_Line.push(ELine[j].LineCode);
                         }
-                        const result = this.LayerData[Layernum].MapFileData.Check_Point_in_Polygon_LineCode(MapP.x, MapP.y, ELine);
+                        const result = this.LayerData[Layernum].MapFileData.Check_Point_in_Polygon_LineCode(MapP.x, MapP.y, Fringe_Line);
                         return result.ok;
                     }
                     break;
@@ -6508,18 +6508,18 @@ class clsAttrData {
 
 
     //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
-    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): EnableMPLine[] {
+    Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): EnableMPLine_Data[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
             case enmKenCodeObjectstructure.MapObj: {
                 const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
-                return this.LayerData[Layernum].MapFileData.Get_EnableMPLine(O_Code, this.LayerData[Layernum].Time) as EnableMPLine[];
+                return this.LayerData[Layernum].MapFileData.Get_EnableMPLine(O_Code, this.LayerData[Layernum].Time);
             }
             case enmKenCodeObjectstructure.SyntheticObj:
-                return this.Get_EnableMPLine_SyntheticObject(Layernum, ObjNum) as EnableMPLine[];
+                return this.Get_EnableMPLine_SyntheticObject(Layernum, ObjNum);
         }
     }
     //合成オブジェクトの外周線を返す
-    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): EnableMPLine[] {
+    Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): EnableMPLine_Data[] {
         const LD = this.LayerData[Layernum];
         const SO_Code = LD.atrObject.atrObjectData[ObjNum].MpObjCode;
         const Time = LD.Time;

@@ -528,7 +528,7 @@ interface IAttrData {
     Get_Categoly?: (layer?: number, data?: number, index?: number) => number;
     Draw_Poly_Inner?: (context: CanvasRenderingContext2D, points: point[], nPolyP: number[], tile: Tile_Property) => void;
     Get_InnerTile?: (InnerData: strInner_Data_Info, Layernum: number, CategoryPos: number) => Tile_Property;
-    Get_Enable_KenCode_MPLine?: (Layernum: number, ObjNum: number) => EnableMPLine[];
+    Get_Enable_KenCode_MPLine?: (Layernum: number, ObjNum: number) => EnableMPLine_Data[];
     Get_DataMin?: (layer?: number, data?: number) => number;
     Get_DataMax?: (layer?: number, data?: number) => number;
     Get_ClassFrequency?: (layer: number, data: number, conditionCheck: boolean) => {
