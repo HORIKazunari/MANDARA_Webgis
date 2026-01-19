@@ -1423,7 +1423,7 @@ class clsMapdata {
             obj = Obj_ObjNumber;
         }
 
-        const Fringe_Line = [];
+        const Fringe_Line: number[] = [];
         const f = this.Check_Point_in_oneObject_Box(obj, x, y);
         if (f === true) {
             const ELine = this.Get_EnableMPLine(obj, LAY_Time);
@@ -2766,7 +2766,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標(戻り値)</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_PolyShape_PolygonNum( ObjData: JsonObject ,  L_Time: strYMD ,  CutPoint: JsonObject | undefined  = undefined) {
+    Check_PolyShape_PolygonNum( ObjData: strObj_Data ,  L_Time: strYMD ,  CutPoint: point | undefined  = undefined) {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;
@@ -2778,7 +2778,7 @@ class clsMapdata {
             return 0;
         }
 
-        const Fringe=[];
+        const Fringe: number[] = [];
         for(let i  = 0;i<NL;i++){
             Fringe[i] = ELine[i].LineCode;
         }
@@ -2858,12 +2858,14 @@ class clsMapdata {
                 } else {
                     ml.Connect = 0;
                     for (let j = 0; j < 1; j++) {
-                        const SamePointData: Record<string, unknown> = {};
+                        const SamePointData: { ObjectNumber?: number[] } = {};
                         const n = PointIndex.GetSamePointNumberArray(ml.PointSTC[j * (ml.NumOfPoint - 1)].x, ml.PointSTC[j * (ml.NumOfPoint - 1)].y, SamePointData)
-                        for (let k = 0; k < n; k++) {
-                            if (SamePointData.ObjectNumber[k] !== i) {
-                                ml.Connect++;
-                                break;
+                        if (SamePointData.ObjectNumber) {
+                            for (let k = 0; k < n; k++) {
+                                if (SamePointData.ObjectNumber[k] !== i) {
+                                    ml.Connect++;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -2940,7 +2942,7 @@ class clsMapdata {
                 }
             } else {
                 if (mo.NumOfLine === 0) {
-                    mo.LineCodeSTC.length = [];
+                    mo.LineCodeSTC.length = 0;
                 } else {
                     mo.LineCodeSTC.length = mo.NumOfLine;
                 }
@@ -3108,7 +3110,8 @@ class clsMapdata {
                         if (dataArray[k].Value === null) {
                             d.Data[k].Value = undefined;
                         } else {
-                            d.Data[k].Value = dataArray[k].Value as number;
+                            const val = dataArray[k].Value;
+                            d.Data[k].Value = typeof val === 'number' ? val.toString() : val as string;
                         }
                     }
                 }
@@ -3116,26 +3119,30 @@ class clsMapdata {
             }
         }
         const sucArray = s.SucSTC as JsonObject[];
-        for (let j = 0; j < s.NumOfSuc; j++) {
+        const numOfSuc = s.NumOfSuc as number;
+        for (let j = 0; j < numOfSuc; j++) {
             o.SucSTC[j] = new Object_Succession_Data();
             o.SucSTC[j].ObjectCode = sucArray[j].ObjectCode as number;
             o.SucSTC[j].Time = this.cnvJsonstrYMD(sucArray[j].Time);
         }
         const nameTimeArray = s.NameTimeSTC as JsonObject[];
-        for (let j = 0; j < s.NumOfNameTime; j++) {
+        const numOfNameTime = s.NumOfNameTime as number;
+        for (let j = 0; j < numOfNameTime; j++) {
             o.NameTimeSTC[j] = new Object_NameTimeStac_Data();
             o.NameTimeSTC[j].NamesList = Generic.ArrayShallowCopy(nameTimeArray[j].NamesList as string[]);
             o.NameTimeSTC[j].SETime = this.cnvJsonStart_End_Time_data(nameTimeArray[j].SETime);
         }
 
         const centerPArray = s.CenterPSTC as JsonObject[];
-        for (let j = 0; j < s.NumOfCenterP; j++) {
+        const numOfCenterP = s.NumOfCenterP as number;
+        for (let j = 0; j < numOfCenterP; j++) {
             o.CenterPSTC[j] = new Object_CenterPoint_Data();
             o.CenterPSTC[j].Position = this.cnvJsonPoint(centerPArray[j].Position, mdrmjFlag);
             o.CenterPSTC[j].SETime = this.cnvJsonStart_End_Time_data(centerPArray[j].SETime)
         }
         const lineCodeArray = s.LineCodeSTC as JsonObject[];
-        for (let j = 0; j < s.NumOfLine; j++) {
+        const numOfLine = s.NumOfLine as number;
+        for (let j = 0; j < numOfLine; j++) {
             o.LineCodeSTC[j] = new LineCodeStac_Data();
             const lineCodeItem = lineCodeArray[j];
             o.LineCodeSTC[j].LineCode = lineCodeItem.LineCode as number;
@@ -3245,8 +3252,8 @@ class clsMapdata {
     private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new LineEdge_Connect_Pattern_Data_Info();
         if (mdrmjFlag === false) {
-            const lc = ['round', 'square','butt' ];
-            const lj = [  'round','bevel','miter'];
+            const lc: CanvasLineCap[] = ['round', 'square','butt' ];
+            const lj: CanvasLineJoin[] = [  'round','bevel','miter'];
             nt.lineCap = lc[json.Edge_Pattern as number];
             nt.lineJoin = lj[json.Join_Pattern as number];
             nt.miterLimit = json.MiterLimitValue as number;
@@ -3298,7 +3305,7 @@ class clsMapdata {
 
     private cnvJsonMark_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new Mark_Property();
-        nt.PrintMark = json.PrintMark as boolean;
+        nt.PrintMark = json.PrintMark as number;
         nt.ShapeNumber = json.ShapeNumber as number;
         nt.Tile = this.cnvJsonTile_Property(json.Tile as JsonObject, mdrmjFlag);
         nt.Line = this.cnvJsonLine_Property(json.Line, mdrmjFlag);
