@@ -255,7 +255,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     }
 }
 
-function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: clsAttrData): void {
+function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: IAttrData): void {
     /// <signature>
     /// <summary>記号選択</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -403,7 +403,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
     }
 }
 
-function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Property, okEvent: (back: BackGround_Box_Property) => void, _attrData: clsAttrData) {
+function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Property, okEvent: (back: BackGround_Box_Property) => void, _attrData: IAttrData) {
     /// <signature>
     /// <summary>背景設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -518,7 +518,7 @@ function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (lin
     }
 }
 
-function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void, _attrData: clsAttrData) {
+function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void, _attrData: IAttrData) {
         /// <signature>
     /// <summary>フォント設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -629,11 +629,11 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern
     const limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
 
     function jointPatternChange(v: string) {
-        newEdge.lineJoin =v;
+        newEdge.lineJoin = v as CanvasLineJoin;
     }
 
     function edgePatternChange(v: string) {
-        newEdge.lineCap = v;
+        newEdge.lineCap = v as CanvasLineCap;
     }
     function buttonOK() {
         Generic.clear_backDiv();
@@ -676,7 +676,7 @@ function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption:
 }
 
 /**データ項目選択 PreAstariskはアスタリスクを付けたい番号を配列に入れ、ない場合はundefined、返す値は選択番号リスト配列,選択truefalse配列*/
-function clsSelectData(event: MouseEvent, _attrData: clsAttrData, Layernum: number, okEvent: (checkedStatus: boolean[], checkedArray: number[]) => void, PreAstarisk: number[] | undefined = undefined,
+function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum: number, okEvent: (checkedStatus: boolean[], checkedArray: number[]) => void, PreAstarisk: number[] | undefined = undefined,
     Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true) {
     const backDiv = Generic.set_backDiv("", "データ項目選択", 230, 330, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -706,7 +706,7 @@ function clsSelectData(event: MouseEvent, _attrData: clsAttrData, Layernum: numb
 }
 
 /**出力画面：オブジェクト名・データ値表示 */
-function frmPrint_ObjectValue(_attrData: clsAttrData, okEvent: () => void) {
+function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名・データ値表示", 210, 280, true, true, buttonOK, 0.2, true);
 
     const avs = _attrData.TotalData.ViewStyle.ValueShow.Clone();
@@ -732,7 +732,7 @@ function frmPrint_ObjectValue(_attrData: clsAttrData, okEvent: () => void) {
 }
 
 /**背景表示設定 */
-function frmPrint_backImageSet(_attrData: clsAttrData, okEvent: () => void) {
+function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "背景画像設定", 260, 300, true, true, buttonOK, 0.2, true);
     const avt = _attrData.TotalData.ViewStyle.TileMapView;
     const chkVisible = Generic.createNewCheckBox(backDiv, "背景画像を表示", "", avt.Visible, 15, 40,undefined,  undefined, "");
@@ -924,10 +924,10 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
         const LatLonDMS = LatLon.toDegreeMinuteSecond();
         Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLonDMS.LatitudeDMS.degree), "latDBox", 90, 15, undefined, 50, undefined, "");
         Generic.createNewWordNumberInput(pnlLat, "", "分", LatLonDMS.LatitudeDMS.minute, "latMBox", 170, 15, undefined, 30, undefined, "");
-        Generic.createNewWordNumberInput(pnlLat, "", "秒", LatLonDMS.LatitudeDMS.Second, "latSox", 230, 15, undefined, 30, undefined, "");
+        Generic.createNewWordNumberInput(pnlLat, "", "秒", LatLonDMS.LatitudeDMS.second, "latSox", 230, 15, undefined, 30, undefined, "");
         Generic.createNewWordNumberInput(pnlLon, "", "度", Math.abs(LatLonDMS.LongitudeDMS.degree), "lonDBox", 90, 15, undefined, 50, undefined, "");
         Generic.createNewWordNumberInput(pnlLon, "", "分", LatLonDMS.LongitudeDMS.minute, "lonMBox", 170, 15, undefined, 30, undefined, "");
-        Generic.createNewWordNumberInput(pnlLon, "", "秒", LatLonDMS.LongitudeDMS.Second, "lonSox", 230, 15, undefined, 30, undefined, "");
+        Generic.createNewWordNumberInput(pnlLon, "", "秒", LatLonDMS.LongitudeDMS.second, "lonSox", 230, 15, undefined, 30, undefined, "");
 
     } else {
         Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLon.lat), "latDegreeBox", 90, 15, undefined, 100, undefined, "");
@@ -965,7 +965,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
 }
 
 /**投影法変換 */
-function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Zahyo: ZahyoInfo) => void) {
+function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okEvent: (Zahyo: Zahyo_info) => void) {
     const Zahyo=_Zahyo.Clone();
     const backDiv = Generic.set_backDiv("", "投影法変換", 425, 300, true, true, buttonOK, 0.2, true);
     const gbPresentProjection=Generic.createNewFrame(backDiv,"","",15,40,200,50,"現在の投影法");
@@ -992,7 +992,7 @@ function frmProjectionConvert(_Zahyo: ZahyoInfo, MapRect: rectangle, okEvent: (Z
             case 0:
                 break;
             case 1:
-                Zahyo.CenterXY.x = MapRect.CenterXY().x;
+                Zahyo.CenterXY.x = MapRect.centerP().x;
                 break;
             case 2:
                 Zahyo.CenterXY.x = Number(centerInput.value);
