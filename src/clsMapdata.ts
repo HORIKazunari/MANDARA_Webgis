@@ -2666,7 +2666,7 @@ class clsMapdata {
         for (let i = 0; i < n; i++) {
             const v = TimeSort.DataPositionValue_Integer[i];
             const T = clsTime.GetYMDfromValue(v);
-            if ((T as Record<string, boolean>).nullFlag === false) {
+            if (T.nullFlag() === false) {
                 if (n2 === 0) {
                     if (OT[0].StartTime.nullFlag() === true) {
                         GT[0] = clsTime.getYesterday(T);
@@ -2690,7 +2690,7 @@ class clsMapdata {
         }
 
         for (let i = 0; i < n2; i++) {
-            if (GT[i].nullFlag === false) {
+            if (GT[i].nullFlag() === false) {
                 for (let j = 0; j < obtn; j++) {
                     if (clsTime.checkDurationIn(OT[j], GT[i]) === true) {
                         SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, GT[i], CutPoint);
@@ -2701,7 +2701,7 @@ class clsMapdata {
         }
 
         if (SHN === 0) {
-            SHP[0] = this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD, CutPoint);
+            SHP[0] = this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD(), CutPoint);
             SHN = 1;
         }
 
