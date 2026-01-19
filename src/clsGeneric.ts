@@ -2455,7 +2455,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**前後文字付き数字入力テキストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用 */
-    static createNewWordNumberInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoValue: number, ID: string, x: number, y: number, headWordWidth: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined, styleinfo: string) {
+    static createNewWordNumberInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoValue: number, ID: string, x: number, y: number, headWordWidth: number | undefined, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined | null, styleinfo: string) {
 
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         const tx = this.createNewNumberInput(ParentObj, defoValue, ID, x + hsw, y, width, onChange, styleinfo);
@@ -3902,7 +3902,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**inputText要素作成*/
-    static createNewWordTextInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoText: string, ID: string, x: number, y: number, headWordWidth: number, boxWidth: number, onChange: ((this: HTMLInputElement, ev: Event) => void) | undefined, styleinfo: string) {
+    static createNewWordTextInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoText: string, ID: string, x: number, y: number, headWordWidth: number | undefined, boxWidth: number, onChange: ((this: HTMLInputElement, ev: Event) => void) | undefined | null, styleinfo: string) {
 
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
         styleinfo = "width:" + String(boxWidth) + "px;" + styleinfo;
@@ -3949,7 +3949,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /** 改行つきDIV作成*/
-    static createNewWordWidthDiv(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, lineHeight: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, styleinfo: string = "") {
+    static createNewWordWidthDiv(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, lineHeight: number, wordWidth: number | undefined, onclick: ((event: MouseEvent) => void) | string | undefined | null, styleinfo: string = "") {
 
         if (word === "") {
             return 0;
@@ -3961,7 +3961,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //タイルdivボックス
-    static createNewTileBox(ParentObj: HTMLElement, ID: string, word: string, defoTile: {BlankF: boolean, Color: colorRGBA}, x: number, y: number, wordWidth: number, onclick: ((event: MouseEvent) => void) | string | undefined, tileWidth: number = 45): HTMLElement {
+    static createNewTileBox(ParentObj: HTMLElement, ID: string, word: string, defoTile: {BlankF: boolean, Color: colorRGBA}, x: number, y: number, wordWidth: number | undefined, onclick: ((event: MouseEvent) => void) | string | undefined | null, tileWidth: number = 45): HTMLElement {
 
         const lineH = 23;
         const hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
@@ -3988,7 +3988,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //** 背景Canvasボックス */
-    static createNewWordDivCanvas(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, wordWidth: number, onclick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null) {
+    static createNewWordDivCanvas(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, wordWidth: number, onclick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null | undefined) {
 
         const lineH = 23;
         const hsw = this.createNewWordWidthDiv(ParentObj, "", word, x, y, lineH, wordWidth, undefined);
@@ -4211,7 +4211,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //Canvas要素を作成
-    static createNewCanvas(ParentObj: HTMLElement | ExtendedHTMLDivElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, styleinfo: string) {
+    static createNewCanvas(ParentObj: HTMLElement | ExtendedHTMLDivElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null | undefined, styleinfo: string) {
 
         const canvas = document.createElement("canvas");
         canvas.setAttribute("style", "position:absolute;" + styleinfo);
@@ -4610,7 +4610,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         innerHeight: number | string,
         okButtonF: boolean,
         cancelButtonF: boolean,
-        okCall: (() => void) | undefined, 
+        okCall: ((event?: MouseEvent) => void) | undefined, 
         opacity: number,
         outerClickF: boolean,
         createXmark: boolean = true,
