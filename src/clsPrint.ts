@@ -25,12 +25,6 @@ class PolydataInfo {
     nPolyP: number[] = [];
 }
 
-class boundArrangeData {
-    Pon: number = 0;
-    Fringe: Fringe_Line_Info[] = [];
-    Arrange_LineCode: number[][] = [];
-}
-
 class VecContourStac_Info {
     fnum = 0;
     CNum = 0;

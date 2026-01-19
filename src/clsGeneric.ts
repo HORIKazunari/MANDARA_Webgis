@@ -1,7 +1,7 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
-import { Object_NameTimeStac_Data } from './clsMapdata';
+import { Object_NameTimeStac_Data, EnableMPLine_Data } from './clsMapdata';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
@@ -3190,11 +3190,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
-    static Get_Outer_Mpline_AggregatedObj(LCode: Array<{LineCode: number}>, Shape: number): Array<{LineCode: number}> { //LCode:EnableMPLine_Data
+    static Get_Outer_Mpline_AggregatedObj(LCode: EnableMPLine_Data[], Shape: number): EnableMPLine_Data[] {
 
-        const lc = LCode.map(item => ({LineCode: item.LineCode}));
+        const lc = LCode.map(item => ({LineCode: item.LineCode ?? -1}));
 
-        const ncode = [];
+        const ncode: EnableMPLine_Data[] = [];
         for (let i = 0; i < lc.length; i++) {
             const k = lc[i].LineCode;
             if (k !== -1) {
@@ -3210,7 +3210,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 }
             }
             if (lc[i].LineCode !== -1) {
-                ncode.push(lc[i]);
+                const mpLine = new EnableMPLine_Data();
+                mpLine.LineCode = lc[i].LineCode;
+                ncode.push(mpLine);
             }
         }
         return ncode;

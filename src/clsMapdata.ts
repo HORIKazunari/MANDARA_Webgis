@@ -378,7 +378,7 @@ class strLine_Data {
 /**
  * Description placeholder
  */
-class EnableMPLine_Data {
+export class EnableMPLine_Data {
     LineCode?: number;
     Kind?: number;
 
