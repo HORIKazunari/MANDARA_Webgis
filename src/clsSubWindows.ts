@@ -534,13 +534,13 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
     const name=Generic.createNewWordTextInput(backDiv, "フォント名","",ft.Name,"",15,45,50,100,undefined,"");
     const size = Generic.createNewSizeSelect(backDiv, ft.Size, "", "サイズ", 190, 45,40, 2,function (_obj: HTMLElement, v: number) { ft.Size = v;}, true);
     const colBox = Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
-    const boldBox = Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, "", "");
-    const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  "", "");
+    const boldBox = Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
+    const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
     const Kakudo = Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
     const backColorBox = Generic.createNewWordDivCanvas(backDiv, "", "文字背景", 320, 80,undefined, backClick);
     clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData);
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 115, 380, 40, "縁取り");
-    const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  "", "");
+    const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
     const fringeSizeBox = Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLElement, v: number) { ft.FringeWidth = v;}, true);
     const fringeColBox = Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
 
@@ -626,7 +626,7 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern
     { value: 'bevel', text: "たいら" },
     { value: 'miter', text: "とがった" }];
     Generic.createNewRadioButtonList(jointFrame, "jointPattern", jointList, 15, 15,undefined, 22,newEdge.lineJoin, jointPatternChange, "");
-    const limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, "", "");
+    const limit = Generic.createNewWordNumberInput(jointFrame, "ミッターリミット", "", newEdge.miterLimit, "", 15, 80,undefined, 50, undefined, "");
 
     function jointPatternChange(v: RadioValue) {
         newEdge.lineJoin = v as CanvasLineJoin;
@@ -665,10 +665,10 @@ function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption:
         function (v: number) {newArrow.ArrowHeadType=v }, "");
 
     const sizeFrame = Generic.createNewFrame(backDiv, "", "", 150, 70, 200, 100, "角度・大きさ");
-    Generic.createNewWordNumberInput(sizeFrame, "角度", "度",Arrow.Angle,"",15,10,undefined,60,function(_obj: HTMLElement,v: number){newArrow.Angle=v},"");
+    Generic.createNewWordNumberInput(sizeFrame, "角度", "度",Arrow.Angle,"",15,10,undefined,60,function(_obj: HTMLInputElement,v: number){newArrow.Angle=v},"");
     Generic.createNewSpan(sizeFrame,"矢の最大幅(%)","","",15,45,"",undefined);
-    Generic.createNewWordNumberInput(sizeFrame, "線幅×", "",Arrow.LWidthRatio,"",25,65,undefined,40,function(_obj: HTMLElement,v: number){newArrow.LWidthRatio=v},"");
-    Generic.createNewWordNumberInput(sizeFrame, "＋", "",Arrow.WidthPlus,"",120,65,undefined,40,function(_obj: HTMLElement,v: number){newArrow.WidthPlus=v},"");
+    Generic.createNewWordNumberInput(sizeFrame, "線幅×", "",Arrow.LWidthRatio,"",25,65,undefined,40,function(_obj: HTMLInputElement,v: number){newArrow.LWidthRatio=v},"");
+    Generic.createNewWordNumberInput(sizeFrame, "＋", "",Arrow.WidthPlus,"",120,65,undefined,40,function(_obj: HTMLInputElement,v: number){newArrow.WidthPlus=v},"");
     function buttonOK() {
         Generic.clear_backDiv();
         okEvent(newArrow);
