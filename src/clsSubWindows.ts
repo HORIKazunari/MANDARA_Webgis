@@ -5,7 +5,7 @@ import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from
 // JavaScript source code
 
 //カラーチャート
-function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: colorRGBA[]) => void) {
+function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: colorRGBA[]) => void) {
     const colorChart = Generic.set_backDiv("", "カラーチャート", 260, 400, false, true, undefined, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, colorChart);
     const pnlColorPattern = Generic.createNewDiv(colorChart, "", "", "", 10, appState().scrMargin.top + 10, 240, 310, "overflow-y: scroll;border:solid 1px;border-color:#666666;", "");
@@ -65,8 +65,8 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
         const y = pich * i + topMargin;
         const canvas = Generic.createNewCanvas(pnlPatternList, "", "imgButton", leftMargin, y, picw, pich - 4, selectColor);
         canvas.tag = i;
-        let ColData = [];// colorRGBA
-        const colcol = []; // colorRGBA
+        let ColData: colorRGBA[] = [];
+        const colcol: colorRGBA[] = [];
         for (let j = 0; j < colorPat[i].length; j++) {
             colcol.push(colorPat[i][j].Clone());
         }
@@ -80,7 +80,7 @@ function clsColorChart(event: MouseEvent, ClassN: string, buttonOK: (colors: col
                 ColData = Generic.ThreeColorGradation(colcol[0], colcol[1], colcol[2], ClassN, cp);
                 break;
             default:
-                const pos = [];
+                const pos: number[] = [];
                 for (let j = 0; j < colnum - 1; j++) {
                     pos.push(Math.floor((j / (colnum - 1)) * ClassN));
                 }
@@ -120,7 +120,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     /// </signature>
     
     let OriginControl: HTMLElement | undefined;
-    let framepos;
+    let framepos: point;
     if( event_point instanceof point){
         framepos=event_point.Clone(); 
     }else{
@@ -248,17 +248,14 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
             OriginControl.style.backgroundColor = document.getElementById('ColorPickerColorPic').style.backgroundColor;
         }
         if (okEvent !== undefined) {
-            if (OriginControl !== undefined) {
-                okEvent(event_point);
-            } else {
-                okEvent(Generic.RGBAfromElement(document.getElementById('ColorPickerColorPic')));
-            }
+            const selectedColor = Generic.RGBAfromElement(document.getElementById('ColorPickerColorPic'));
+            okEvent(selectedColor);
         }
         Generic.clear_backDiv();
     }
 }
 
-function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: JsonValue): void {
+function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: clsAttrData): void {
     /// <signature>
     /// <summary>記号選択</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -271,6 +268,26 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
 
     const gbMark = Generic.createNewFrame(backDiv, "", "", 15, appState().scrMargin.top+5, 245, 60, "表示記号");
     const mk = mark.Clone();
+    
+    const markPrintTypeChange = (v: number) => {
+        mk.PrintMark = v;
+        switch (mk.PrintMark) {
+            case (enmMarkPrintType.Mark): {
+                pnlMark.style.visibility = 'visible';
+                pnlWord.style.visibility='hidden';
+                _attrData.Draw_Sample_Mark_Box(picMark, mk);
+                _attrData.Draw_Sample_LineBox(picFrameLine, mk.Line);
+                break;
+            }
+            case (enmMarkPrintType.Word): {
+                pnlMark.style.visibility = 'hidden';
+                pnlWord.style.visibility = 'visible';
+                _attrData.Draw_Sample_Mark_Box(picMark, mk);
+                break;
+            }
+        }
+    };
+    
     const MarkPrintType = [{ value: enmMarkPrintType.Mark, text: "既定記号" },
         { value: enmMarkPrintType.Word, text: "文字記号" }];
     Generic.createNewRadioButtonList(gbMark, "MarkPrintType",MarkPrintType, 10, 10,undefined, 18,mk.PrintMark, markPrintTypeChange, "");
@@ -343,24 +360,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
         }
     }
-    function markPrintTypeChange(v: number) {
-        mk.PrintMark = v;
-        switch (mk.PrintMark) {
-            case (enmMarkPrintType.Mark): {
-                pnlMark.style.visibility = 'visible';
-                pnlWord.style.visibility='hidden';
-                _attrData.Draw_Sample_Mark_Box(picMark, mk);
-                _attrData.Draw_Sample_LineBox(picFrameLine, mk.Line);
-                break;
-            }
-            case (enmMarkPrintType.Word): {
-                pnlMark.style.visibility = 'hidden';
-                pnlWord.style.visibility = 'visible';
-                break;
-            }
-        }
-    }
-
+    
     function buttonOK() {
         mk.WordFont.Kakudo = Number(angleBox.value);
         mk.WordFont.Size = Number(sizeBox.value);
