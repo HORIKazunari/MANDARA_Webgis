@@ -142,7 +142,7 @@ export class clsShapefile {
                             this.getDbfFile(dbfReader.result, dbfEncode);
                         }
                     }
-                    catch (e) {
+                    catch (_e) {
                         okf = false;
                         this.onError?.(this.tag);
                         return;
@@ -357,9 +357,9 @@ export class clsShapefile {
 
             const dv = new DataView(buffer);
 
-            const fcode = dv.getUint32(0, endian.big);
+            const _fcode = dv.getUint32(0, endian.big);
             const flen = dv.getUint32(24, endian.big) * 2 - 100;
-            const fc2 = dv.getUint16(28, endian.little);
+            const _fc2 = dv.getUint16(28, endian.little);
             this.boundingBox.minX = dv.getFloat64(36, endian.little);
             this.boundingBox.minY = dv.getFloat64(44, endian.little);
             this.boundingBox.maxX = dv.getFloat64(52, endian.little);
@@ -379,9 +379,9 @@ export class clsShapefile {
     private getShapeFile(buffer: ArrayBuffer): boolean | undefined {
             const dv = new DataView(buffer);
     
-            const fcode = dv.getUint32(0, endian.big);
-            const flen = dv.getUint32(24, endian.big) * 2 - 100;
-            const fc2 = dv.getUint16(28, endian.little);
+            const _fcode = dv.getUint32(0, endian.big);
+            const _flen = dv.getUint32(24, endian.big) * 2 - 100;
+            const _fc2 = dv.getUint16(28, endian.little);
     
             const shapeType = dv.getUint32(32, endian.little);
             switch (shapeType) {

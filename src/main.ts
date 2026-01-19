@@ -20,7 +20,7 @@ import { Generic } from './clsGeneric';
  */
 import type { JsonValue } from './types';
 
-function logX(data: JsonValue): void {
+function _logX(data: JsonValue): void {
     const state = appState();
     
     if (state.logWindow === undefined) {
@@ -48,7 +48,7 @@ function logX(data: JsonValue): void {
 /**
  * アプリケーション初期化関数
  */
-function init(): void {
+function _init(): void {
     const state = appState();
     
     // コンテキストメニュー無効化
@@ -84,7 +84,7 @@ function init(): void {
     document.body.removeChild(divscr);
     
     // 出力画面生成
-    const frmPrintRef = { windowClose: null as (() => void) | null, resizeMapWindow: null as (() => void) | null };
+    const _frmPrintRef = { windowClose: null as (() => void) | null, resizeMapWindow: null as (() => void) | null };
     state.frmPrint = Generic.createWindow(
         "frmPrint", "", "", 250, 50, 300, 250, 
         false, true, FrmprintMenuClick, true, 
@@ -100,7 +100,7 @@ function init(): void {
     state.frmPrint.picMap.oncontextmenu = (): boolean => false;
     state.frmPrint.addEventListener('mousedown', frmPrintFront);
     state.frmPrint.addEventListener('touchstart', frmPrintFront);
-    state.frmPrint.dragBorder?.(undefined, state.frmPrint.resizeMapWindow as any);
+    state.frmPrint.dragBorder?.(undefined, state.frmPrint.resizeMapWindow as (() => void) | undefined);
     
     const footer: HTMLElement = document.getElementById("printFoot")!;
     state.frmPrint.label1 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
@@ -248,7 +248,7 @@ function frmPrintProjection(): void {
         if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
             (centerLon !== state.attrData.TotalData.ViewStyle.Zahyo.CenterXY.x)) {
             
-            state.attrData?.Convert_Zahyo?.(newZahyo as any);
+            state.attrData?.Convert_Zahyo?.(newZahyo);
             const MapFileList: string[] = state.attrData?.GetMapFileName?.() ?? [];
             
             for (let i = 0; i < MapFileList.length; i++) {
@@ -283,7 +283,7 @@ function frmPrintOptionMenu(): void {
 /**
  * データ値表示ボタン
  */
-function dataValueShow(e?: Event): void {
+function dataValueShow(_e?: Event): void {
     const state = appState();
     frmPrint_ObjectValue(state.attrData, function(): void { 
         clsPrint.printMapScreen(state.frmPrint.picMap); 
@@ -311,13 +311,13 @@ function backImageButton(): void {
 /**
  * 設定画面を前面に
  */
-function settingFront(): void {
+function _settingFront(): void {
     const state = appState();
     
-    state.divMain?.style && (state.divMain.style.zIndex = "2");
-    state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "2");
-    state.frmPrint?.style && (state.frmPrint.style.zIndex = "1");
-    state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "1");
+    state.divMain?.style && (void (state.divMain.style.zIndex = "2"));
+    state.settingModeWindow?.style && (void (state.settingModeWindow.style.zIndex = "2"));
+    state.frmPrint?.style && (void (state.frmPrint.style.zIndex = "1"));
+    state.propertyWindow?.style && (void (state.propertyWindow.style.zIndex = "1"));
 }
 
 /**
@@ -326,10 +326,10 @@ function settingFront(): void {
 function frmPrintFront(): void {
     const state = appState();
     
-    state.divMain?.style && (state.divMain.style.zIndex = "1");
-    state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "1");
-    state.frmPrint?.style && (state.frmPrint.style.zIndex = "2");
-    state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "3");
+    void (state.divMain?.style && (state.divMain.style.zIndex = "1"));
+    void (state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "1"));
+    void (state.frmPrint?.style && (state.frmPrint.style.zIndex = "2"));
+    void (state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "3"));
 }
 
 

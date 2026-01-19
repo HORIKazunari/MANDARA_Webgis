@@ -7,25 +7,25 @@
 // ==================== パターン1: グローバル型の使用 ====================
 // globals.d.ts で定義された型は import 不要
 
-function exampleGlobalTypes(): void {
+function _exampleGlobalTypes(): void {
     // point, rectangle, size など既存のグローバルクラス
-    const p: point = new point(10, 20);
-    const rect: rectangle = new rectangle(0, 100, 0, 50);
-    const sz: size = new size(100, 50);
+    const _p: point = new point(10, 20);
+    const _rect: rectangle = new rectangle(0, 100, 0, 50);
+    const _sz: size = new size(100, 50);
     
     // globals.d.ts に追加したインターフェース
-    const fileData: FileData = {
+    const _fileData: FileData = {
         file: new File([], 'test.txt'),
         name: 'test.txt',
         extension: 'txt'
     };
     
-    const mapFile: MapFileInfo = {
+    const _mapFile: MapFileInfo = {
         name: 'japan.mpfj',
         type: 'mpfj'
     };
     
-    const layer: LayerInfo = {
+    const _layer: LayerInfo = {
         id: 1,
         name: '都道府県',
         visible: true
@@ -43,26 +43,26 @@ import type {
     DialogCallback 
 } from './types';
 
-function exampleModuleTypes(): void {
+function _exampleModuleTypes(): void {
     // イベントハンドラー型
-    const clickHandler: EventHandler<MouseEvent> = (event) => {
-        console.log(event.clientX, event.clientY);
+    const _clickHandler: EventHandler<MouseEvent> = (event) => {
+        console.warn('Example:', event.clientX, event.clientY);
     };
     
     // 辞書型
-    const dataMap: Dictionary<MapFileInfo> = {
+    const _dataMap: Dictionary<MapFileInfo> = {
         'japan': { name: 'japan.mpfj', type: 'mpfj' },
         'world': { name: 'world.mpfj', type: 'mpfj' }
     };
     
     // Null許容型
-    const nullableValue: Nullable<string> = null;
-    const optionalValue: Optional<number> = undefined;
+    const _nullableValue: Nullable<string> = null;
+    const _optionalValue: Optional<number> = undefined;
     
     // コールバック型
-    const callback: DialogCallback = (result, data) => {
+    const _callback: DialogCallback = (result, data) => {
         if (result) {
-            console.log('OK clicked', data);
+            console.warn('OK clicked', data);
         }
     };
 }
@@ -94,7 +94,7 @@ async function loadMapFile(filename: string): Promise<DataLoadResult<MapFileInfo
 }
 
 // DataLoaderジェネリック型の使用例
-const mapLoader: DataLoader<MapFileInfo> = async (file) => {
+const _mapLoader: DataLoader<MapFileInfo> = async (file) => {
     const filename = typeof file === 'string' ? file : file.name;
     return loadMapFile(filename);
 };
