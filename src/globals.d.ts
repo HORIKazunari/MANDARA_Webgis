@@ -540,7 +540,7 @@ interface IAttrData {
     Set_DataTitle_to_CheckedListBox?: (CheckedListBox: CheckedListBox, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
     Get_DivNum?: (layer?: number, data?: number) => number;
     Check_Point_in_Kencode_OneObject?: (layernum: number, objnum: number, mapP: point) => boolean;
-    Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: ISoloModeViewSettings, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
+    Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: IDataItem, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
     Draw_Fan?: (context: CanvasRenderingContext2D, centerP: point, radius: number, startAngle: number, endAngle: number, scrData?: Screen_info, tile?: Tile_Property) => void;
     Get_SxSy_With_3D?: (point: point) => point;
     ClassMD?: strClassMode_Data; // strClassMode_Data (clsAttrData.tsで定義)
