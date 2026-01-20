@@ -485,7 +485,8 @@ interface IAttrData {
     MapData?: IMapData; // clsAttrMapData (clsAttrData.tsで定義)
     DeleteObjects?: (objects: number[], options?: JsonObject) => void;
     Set_DataTitle_to_cboBox?: (cbox: HTMLSelectElement, Layernum?: number, SelectedIndex?: number, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
-    Set_ObjectName_to_checkedListBox?: (selectElement: HTMLElement, layerNum?: number, selectedObject?: number) => void;
+    Set_ObjectName_to_checkedListBox?: (selectElement: CheckedListBox | HTMLElement, layerNum?: number, selectedObject?: number[] | boolean[]) => void;
+    Set_DummyObjectName_to_checkedListBox?: (selectElement: CheckedListBox | HTMLElement, layerNum?: number, selectedObject?: number[] | boolean[]) => void;
     getDummyObjGroupArray?: (Layernum?: number, shape?: number) => { DummyOBGArray: boolean[]; trueNum: number };
     Get_MedianValue?: (layer?: number, data?: number) => number;
     nowLayer?: () => ILayerDataInfo;
@@ -583,7 +584,7 @@ interface IAttrData {
     // 距離計算メソッド
     Distance_Kencode_Point?: (layernum: number, obj: number, point: point) => number;
     Distance_Kencode_Object?: (objNum1: number, objNum2: number, layNum1: number, layNum2: number) => number;
-    Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: IMapData, objCode2: number, time?: strYMD | null) => number;
+    Distance_Kencode_MPObject?: (layNum1: number, objNum1: number, mapFile: string, objCode2: number, time?: strYMD) => number;
     getOneObjectPanelLabelString?: (layernum: number, dataNum: number, objNum: number, separatorString: string) => string;
     getSoloMode?: (layernum: number, dataNum: number) => number;
     Set_Acc_First_Position?: () => void;

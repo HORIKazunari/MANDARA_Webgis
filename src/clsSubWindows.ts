@@ -2233,7 +2233,7 @@ function frmMain_Culc(okEvent: () => void) {
     const rdYplus = [110, 55, 55, 90, 55]
     Generic.createNewRadioButtonList(backDiv, "dataCulMethod", rdList, 20, 50, 50, rdYplus, 0, undefined, "");
 
-    const sumDataItem = new CheckedListBox(backDiv, "", [], 100, 50, 205, 100, false, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 0) });　//足し算
+    const sumDataItem = new CheckedListBox(backDiv, "", [], 100, 50, 205, 100, false, function (index: number) { Generic.checkRadioByValue("dataCulMethod", 0) });　//足し算
     appState().attrData.Set_DataTitle_to_CheckedListBox(sumDataItem, LayerNum, false, true, true, false, false);
     Generic.createNewSpan(backDiv, "数値入力", "", "", 330, 100, "", undefined);
     const txtPlusInput = Generic.createNewNumberInput(backDiv, "", "", 315, 130, 100, undefined, "")
@@ -2684,7 +2684,7 @@ function frmMain_GetDistance(okEvent: () => void){
             return;
         }
         const objn = appState().attrData.LayerData[LayerNum].atrObject.ObjectNum;
-        const dis = Generic.Array2Dimension(n, objn);
+        const dis = Generic.Array2Dimension<number>(n, objn, 0);
         let allD=0;
         const pos = posList; // posListを使用
         for (let i = 0; i < n; i++) {
@@ -2788,17 +2788,18 @@ function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: 
 
     const lstObject = Generic.createNewSelect(backDiv, [], -1, "", 15, 70, false, undefined, "width:200px;", 1, false);
 
-    const chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", (defDummyF & Dummy_Select_EnableF), 15, 105, undefined, changeLayer, "");
+    const chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", !!(defDummyF & Dummy_Select_EnableF), 15, 105, undefined, changeLayer, "");
  
     changeLayer(DefSelectObjectNumber);
 
     function changeLayer(v: Event | number) {
-        v=(v===undefined)?0:v;
+        // Eventの場合は無視、numberの場合のみ処理
+        const selectedValue = typeof v === 'number' ? v : 0;
         const L = selectLayer.selectedIndex;
         if(chkDumyObjectSelect.checked===true){
-            appState().attrData.Set_DummyObjectName_to_selectBox(lstObject,L,v);
+            appState().attrData.Set_DummyObjectName_to_selectBox(lstObject,L,selectedValue);
         }else{
-            appState().attrData.Set_ObjectName_to_selectBox(lstObject,L,v);
+            appState().attrData.Set_ObjectName_to_selectBox(lstObject,L,selectedValue);
         }
     }
     function buttonOK() {
@@ -2867,14 +2868,14 @@ function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, Canc
 
 /**空間検索 */
 function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
-    const normal_data: JsonObject = function () {
-        this.add = 0;
-        this.add2 = 0;
-        this.max = 0;
-        this.min = 0;
+    class NormalData {
+        add: number = 0;
+        add2: number = 0;
+        max: number = 0;
+        min: number = 0;
     }
-    const category_data: JsonObject = function () {
-        this.CateCount = [];
+    class CategoryData {
+        CateCount: number[] = [];
     }
     const bufMode = {
         Distance: 0,
@@ -3057,13 +3058,13 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                 for (let k = 0; k < Rdn; k++) {
                     const dt=Add_Data[k];
                     if ((appState().attrData.Get_DataType(L2, dt) === enmAttDataType.Category) && ((BufferMode === bufMode.Distance) || (BufferMode === bufMode.ObjectInPolygon))) {
-                        const cdata = new category_data();
+                        const cdata = new CategoryData();
                         const pn = appState().attrData.Get_DivNum(L2, dt);
                         cdata.CateCount.length = pn;
                         cdata.CateCount.fill(0);
                         AggData.push(cdata);
                     } else {
-                        const ndata = new normal_data();
+                        const ndata = new NormalData();
                         ndata.max = appState().attrData.LayerData[L2].atrData.Data[dt].Statistics.Min;
                         ndata.min = appState().attrData.LayerData[L2].atrData.Data[dt].Statistics.Max;;
                         AggData.push(ndata);

@@ -7985,7 +7985,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のオブジェクト一覧と初期設定を入れる */
-    Set_ObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects?: boolean[]): void {
+    Set_ObjectName_to_checkedListBox(lbox: CheckedListBox | (HTMLElement & {removeAll: () => void; addList: (list: {text: string; value: string; checked: boolean}[], pos: number) => void}), Layernum: number, SelectedObjects?: boolean[]): void {
         const objList=[];
         lbox.removeAll();
         const L = this.LayerData[Layernum].atrObject;
@@ -8000,7 +8000,7 @@ class clsAttrData {
     }
 
     /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
-    Set_DummyObjectName_to_checkedListBox(lbox: HTMLElement, Layernum: number, SelectedObjects?: boolean[]): void {
+    Set_DummyObjectName_to_checkedListBox(lbox: CheckedListBox | (HTMLElement & {removeAll: () => void; addList: (list: {text: string; value: string; checked: boolean}[], pos: number) => void}), Layernum: number, SelectedObjects?: boolean[]): void {
         const objList: {text: string, value: string, checked: boolean}[] = [];
         lbox.removeAll();
         const L=this.LayerData[Layernum].Dummy
