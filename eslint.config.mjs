@@ -8,8 +8,11 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     ignores: [
-      'tests/e2e/**', 
+      'tests/**',  // テストファイルは別の設定で管理
       'playwright.config.ts',
+      'eslint.config.mjs',  // 設定ファイル自体を除外
+      'vite.config.ts',
+      'vitest.config.ts',
       '*.cjs',
       'src/.!*',
       'src/encoding.min.ts', // minifyされた外部ライブラリを除外
@@ -135,14 +138,6 @@ export default tseslint.config(
       'no-undef': 'off',
     },
   },
-  {
-    // 除外するファイルパターン
-    ignores: [
-      'dist/**',
-      'node_modules/**',
-      'public/**',
-      '*.js',
-      'vite.config.ts'
-    ],
-  }
+  // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
+  // 追加の除外設定は不要
 );

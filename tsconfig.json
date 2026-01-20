@@ -51,7 +51,7 @@
     "sourceMap": false,
     "inlineSourceMap": false
   },
-  "include": ["src/**/*", "playwright.config.ts", "tests/e2e/**/*"],
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules", 
     "dist", 

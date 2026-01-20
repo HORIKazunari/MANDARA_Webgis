@@ -652,7 +652,7 @@ export class clsAccessory {
                     const CeR = Math.PI * 2 * ((i + 0.5) / n);
                     const p = new point(Math.sin(CeR) * rmaxw * 1.3, Math.cos(CeR) * rmaxw * 1.3);
                     const w = g.measureText(state.attrData.Get_DataTitle(Layn2, a, false)).width;
-                    let n2 = (i + 0.5) / n;
+                    const n2 = (i + 0.5) / n;
                     if (n2 < 0.5) {
                         xposi[i] = enmHorizontalAlignment.Left;
                         Xsmax = Math.max(Xsmax, p.x + w);

@@ -3409,10 +3409,10 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //ボタン作成
-    static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: ((event: MouseEvent) => void) | ((event: Event) => void), styleinfo: string = "") {
+    static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: ((event: MouseEvent) => void) | null, styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
-        ok.onclick = onClick as ((event: MouseEvent) => void);
+        ok.onclick = onClick;
         (ParentObj as HTMLElement).appendChild(ok);
         return ok;
     }
