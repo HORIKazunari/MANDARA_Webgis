@@ -3465,12 +3465,12 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
     const cbPolygonShapeEdit = Generic.createNewCheckBox(gbShape, "面", "", initParapeter.polygonShapeChecked, 110, 15, 30, change, "");
     gbShape.disabled = !initParapeter.ShapeChangeEnabled;
     Generic.createNewSpan(backDiv, "オブジェクトグループ", "", "", 10, 180, "", undefined);
-    const lObjGList = [];
+    const lObjGList: {text: string; value: string; checked: boolean}[] = [];
     for (let i = 0; i < MapData.Map.OBKNum; i++) {
-        lObjGList.push({ text: MapData.ObjectKind[i].Name, checked: initParapeter.ObjectGroupChecked[i] });
+        lObjGList.push({ text: MapData.ObjectKind[i].Name, value: String(i), checked: initParapeter.ObjectGroupChecked[i] });
     }
     const lstObjGroup=new CheckedListBox(backDiv, "", lObjGList, 20, 200, 160, 110,false, change, "");
-    lstObjGroup.disabled=!initParapeter.ObjectGroupEnabled;
+    Generic.setDisabled(lstObjGroup.frame, !initParapeter.ObjectGroupEnabled);
     Generic.createNewSpan(backDiv, "時期限定", "", "", 10, 330, "", "");
     const dbdtpTime = Generic.createNewInput(backDiv, "date", initParapeter.Time.toInputDate(), "", 20, 350, "", "width:140px");
     dbdtpTime.disabled = !initParapeter.TimeChangeEnabled;
@@ -3587,17 +3587,21 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
                 }
             }
         }
-        const popmenu =[];
+        const popmenu: MenuItem[] = [];
         for(let i=0;i<maxOname;i++){
-            popmenu.push({ caption: copyObjname[i],value:i, event: copyMode });
+            const index = i; // クロージャのためにキャプチャ
+            popmenu.push({ 
+                caption: copyObjname[i], 
+                event: () => copyMode(index)
+            });
         }
         const mouseEvent = e as MouseEvent;
         Generic.ceatePopupMenu(popmenu, new point(mouseEvent.clientX, mouseEvent.clientY));
-        function copyMode(obj: HTMLInputElement){
+        function copyMode(index: number){
             let copyTx = "";
             for (let i = 0; i < candidateObject.length; i++) {
                 if (lbList.getCheckedStatus(i) === true) {
-                    copyTx += MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[obj.value] + "\n";
+                    copyTx += MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[index] + "\n";
                 }
             }
             Generic.clear_backDiv();
@@ -3634,7 +3638,7 @@ function frmPrint_DummyObjectGroup(){
     appState().attrData.Set_LayerName_to(selLayer,LayerNum);
 
     const gbDummyList = Generic.createNewFrame(gbDummyFrame, "", "", 10, 70, 195, 275, "ダミーオブジェクト");
-    lstDummyItem = new ListBox(gbDummyList, "", [], 10, 15, 165, 125, undefined, "");
+    const lstDummyItem = new ListBox(gbDummyList, "", [], 10, 15, 165, 125, undefined, "");
     Generic.createNewButton(gbDummyList, "削除", "", 115, 150,
         function () {
             const n = lstDummyItem.selectedIndex;
@@ -3663,7 +3667,7 @@ function frmPrint_DummyObjectGroup(){
 
         }, "width:60px");
     Generic.createNewButton(gbDummyList, "オブジェクト名コピーパネル", "", 10, 210, function (e: MouseEvent) {
-        const mp=appState().attrData.LayerData[LayerNum].MapFileData;
+        const mp = appState().attrData.LayerData[LayerNum].MapFileData as unknown as IMapData;
         const init_para = new strFrmCopyObjectName_init_parameter_data();
         init_para.Time = appState().attrData.LayerData[LayerNum].Time;
         init_para.ObjectGroupChecked.length = mp.Map.OBKNum;
