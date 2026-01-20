@@ -2597,47 +2597,55 @@ function frmMain_GetDistance(okEvent: () => void){
         LayerObject : 1,
         LayerDummy : 2,
         MapObject : 3
+    } as const;
+    
+    class PosInfo {
+        xy: point = new point();
+        type: number = 0; // DisType
+        lay: number = 0; // Integer
+        objpos: number = 0; // Integer
+        MapFile: string = ""; // String
+        Time: strYMD | undefined; // strYMD
     }
-    const pos_info: JsonObject =function () {
-        this.xy =new point();
-        this.type ;// DisType
-        this.lay ;// Integer
-        this.objpos ;//  Integer
-        this.MapFile ;//  String
-        this.Time ;//  strYMD
-    }
+    
     const LayerNum=appState().attrData.TotalData.LV1.SelectedLayer;
     const backDiv = Generic.set_backDiv("", "距離測定", 450, 310, true, true, buttonOK, 0.2, true);
     Generic.createNewSpan(backDiv,"距離の取得元","","",15,40,"",undefined);
     const lbList= new ListBox(backDiv, "", [], 15, 65, 175, 135,undefined, "");
+    const posList: PosInfo[] = []; // 位置情報を別途管理
+    
     Generic.createNewSpan(backDiv,"距離の取得元","","",15,40,"",undefined);
     Generic.createNewButton(backDiv, "消去", "", 15, 205, function () {
         const n=lbList.selectedIndex;
         if(n!==-1){
             lbList.removeList(n, 1);
+            posList.splice(n, 1);
         }
     },"")
     Generic.createNewButton(backDiv, "すべて消去", "", 75, 205, function (e: MouseEvent) {
         lbList.removeAll();
+        posList.length = 0;
     },"")
     const btnLlatlon=Generic.createNewButton(backDiv, "緯度経度で指定", "", 15, 235, 
     function (e: MouseEvent) {
         frmLatLonInput(new latlon(0,0), true, function (lp: latlon) {
             const s=Generic.Get_LatLon_Strings(lp, true);
             const tx=s.x + "/" + s.y;
-            const posd =new  pos_info();
+            const posd = new PosInfo();
             posd.xy = lp.toPoint();
             posd.type = DisType.Point;
-            lbList.addList([{text:tx,value:posd}],lbList.length);
+            lbList.addList([tx],lbList.length);
+            posList.push(posd);
         })
     },"")
     btnLlatlon.disabled  = (appState().attrData.TotalData.ViewStyle.Zahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido);
     Generic.createNewButton(backDiv, "レイヤ内オブジェクトから追加", "", 15, 260, function () {
         frmMain_LayeObjectSelect(true,LayerNum,undefined,function(Lay: number,DummyF: boolean,sel: number[]){
-            const pos=[];
+            const textList: string[] = [];
+            const newPosList: PosInfo[] = [];
             for(const i in sel){
                 let tx  = "";
-                const posd = new pos_info();
+                const posd = new PosInfo();
                 if (Lay !== LayerNum) {
                     tx = appState().attrData.LayerData[Lay].Name + ":"
                 }
@@ -2653,9 +2661,11 @@ function frmMain_GetDistance(okEvent: () => void){
                     posd.lay = Lay;
                     posd.objpos = ld.code;
                 }
-                pos.push({text:tx,value:posd});
+                textList.push(tx);
+                newPosList.push(posd);
             }
-            lbList.addList(pos,lbList.length);
+            lbList.addList(textList,lbList.length);
+            posList.push(...newPosList);
         });
     },"")
 
@@ -2676,7 +2686,7 @@ function frmMain_GetDistance(okEvent: () => void){
         const objn = appState().attrData.LayerData[LayerNum].atrObject.ObjectNum;
         const dis = Generic.Array2Dimension(n, objn);
         let allD=0;
-        const pos = lbList.getAllValue();
+        const pos = posList; // posListを使用
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < objn; j++) {
                 let d;

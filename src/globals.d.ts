@@ -574,7 +574,7 @@ interface IAttrData {
     Get_ObjectCode_from_ObjName?: (layer?: number, objName?: string) => number;
     // 追加メソッド
     getSeriesDataSetName?: () => ListItem[];
-    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement | IListViewTable, DataSetItem: ISeriesDatasetInfo) => void;
+    SeriesMode_to_ListViewData?: (seriesListView: HTMLElement | IListViewTable, DataSetItem: strSeries_DataSet_Item_Info[] | JsonValue) => void;
     getGraphTitle?: (layernum: number) => Array<{value: number, text: string}>;
     getLabelTitle?: (layernum: number) => Array<{value: number, text: string}>;
     getOverlayTitle?: () => Array<{value: number, text: string}>;
@@ -654,7 +654,7 @@ interface IOverLayDataItemElement {
 // Series DataSet情報（拡張版）
 interface ISeriesDatasetInfo {
     title: string;
-    DataItem: ISeriesDataItem;
+    DataItem: strSeries_DataSet_Item_Info[] | JsonValue;
     initData?: () => void;
     [key: string]: JsonValue;
 }
@@ -1013,7 +1013,7 @@ interface IClsDraw {
 // 強化されたグローバル変数宣言
 // attrData: AppStateで管理（削除済み）
 declare const Generic: IGeneric;
-declare const clsSettingData: {
+declare let clsSettingData: {
     MinimumLineWidth: number;
     SetFont: string;
     ObjectName_Word_Compatible: string;
