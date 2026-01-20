@@ -2186,7 +2186,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
     }
     function buttonOK(e: MouseEvent) {
         const n = appState().attrData.Get_ObjectNum(LayerNum);
-        const Data_Val_STR = new Array(n);
+        const Data_Val_STR: (string | number | undefined)[] = new Array(n);
         let Title = "";
         const note = "";
         const MisF = false;
@@ -2199,7 +2199,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
             case 0: {
                 for (let i = 0; i < n; i++) {
                     const v = Number((appState().attrData.GetObjMenseki(LayerNum, i) * (ScaleRatio ** 2)).toFixed(6));
-                    Data_Val_STR[i] = v;
+                    Data_Val_STR[i] = v as string | number | undefined;
                 }
                 Title = "計測面積";
                 Unit = Generic.getScaleUnitAreaStrings(ScaleUnit);
@@ -2208,7 +2208,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
             case 1: {
                 for (let i = 0; i < n; i++) {
                     const v =Number(( appState().attrData.Get_ObjectLength(LayerNum, i) * ScaleRatio).toFixed(6));
-                    Data_Val_STR[i] = v;
+                    Data_Val_STR[i] = v as string | number | undefined;
                 }
                 Title = "計測周長";
                 Unit = SUnit;
@@ -2219,7 +2219,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
         Generic.clear_backDiv();
         frmTitleSettingsAddingData(Title, Unit, note, true,"",
             function (retV: {title: string, unit: string, note: string}) {
-                appState().attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR, MisF);
+                appState().attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR as (string | number | undefined)[], MisF);
                 okEvent();
             }
         )
@@ -2277,7 +2277,7 @@ function frmMain_Culc(okEvent: () => void) {
 
     function buttonOK(e: MouseEvent) {
         const n = appState().attrData.Get_ObjectNum(LayerNum)
-        const Data_Val_STR = new Array(n);
+        const Data_Val_STR: (string | number | undefined)[] = new Array(n);
         let Title = "";
 
         let note = "";
@@ -2432,7 +2432,7 @@ function frmMain_Culc(okEvent: () => void) {
                         MisF = true;
                     } else {
                         const dv = v[i] / area;
-                        Data_Val_STR[i] ===String(Number(Generic.Figure_Using(dv, appState().attrData.LayerData[LayerNum].atrData.Data[dt].Statistics.AfterDecimalNum + 1)));
+                        Data_Val_STR[i] = String(Number(Generic.Figure_Using(dv, appState().attrData.LayerData[LayerNum].atrData.Data[dt].Statistics.AfterDecimalNum + 1)));
                     }
                 }
                 Title = appState().attrData.Get_DataTitle(LayerNum, dt, false) + "（密度）";
@@ -2566,13 +2566,13 @@ function frmMain_Culc(okEvent: () => void) {
         Generic.clear_backDiv();
         frmTitleSettingsAddingData(Title, Unit, note, true, "計算後の新しいデータ項目",
             function (retV: {title: string, unit: string, note: string}) {
-                appState().attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR, MisF);
+                appState().attrData.Add_One_Data_Value(LayerNum, retV.title, retV.unit, retV.note, Data_Val_STR as (string | number | undefined)[], MisF);
                 okEvent();
             }
         )
 
         /** 計算するデータを配列に設定*/
-        function setDataArray(LayerNum: number, data: number, inputValue: string) {
+        function setDataArray(LayerNum: number, data: number, inputValue: number) {
             let dataArray = [];
             let misArray = [];
             if (data !== -1) {
@@ -2724,7 +2724,7 @@ function frmMain_GetDistance(okEvent: () => void){
                         unt = retV.unit;
                         Note = retV.note;
                         const Min_Dis = [];
-                        const Min_Dis_ObjName = [];
+                        const Min_Dis_ObjName: (string | number | undefined)[] = [];
                         for (let i = 0; i < objn; i++) {
                             Min_Dis[i] = allD;
                             Min_Dis_ObjName[i] = "";
@@ -2743,7 +2743,7 @@ function frmMain_GetDistance(okEvent: () => void){
                         }
 
                         appState().attrData.Add_One_Data_Value(LayerNum, "最も近い地点／オブジェクト", "CAT", "距離測定機能で作成", Min_Dis_ObjName, false);
-                        const Data_Val_STR = [];
+                        const Data_Val_STR: (string | number | undefined)[] = [];
                         for (let i = 0; i < objn; i++) {
                             Data_Val_STR[i] = Number((Min_Dis[i] * ScaleRatio).toFixed(6));
                         }                        
@@ -2757,7 +2757,7 @@ function frmMain_GetDistance(okEvent: () => void){
             case 1: {
                 //全ての距離取得
                 for (let j = 0; j < n; j++) {
-                    const Data_Val_STR = [];
+                    const Data_Val_STR: (string | number | undefined)[] = [];
                     for (let i = 0; i < objn; i++) {
                         Data_Val_STR[i] = Number((dis[j][i] * ScaleRatio).toFixed(6));
                     }

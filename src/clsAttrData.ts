@@ -1,7 +1,7 @@
 ﻿/// <reference path="globals.d.ts" />
 
 import { appState } from './core/AppState';
-import { Generic } from './clsGeneric';
+import { Generic, CheckedListBox } from './clsGeneric';
 import { clsSortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata, EnableMPLine_Data } from './clsMapdata';
@@ -7659,14 +7659,14 @@ class clsAttrData {
         return this.LayerData[Layernum].atrData.Data[DataNum].Note;
     }
 
-    Set_DataTitle_to_CheckedListBox(CheckedListBox: CheckedListBox, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
+    Set_DataTitle_to_CheckedListBox(checkedListBox: CheckedListBox, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const list = [];
         for(const i in titles){
             list.push({checked:defoChecked,text:titles[i], value:i});
         }
-        CheckedListBox.removeAll();
-        CheckedListBox.addList(list, 0);
+        checkedListBox.removeAll();
+        checkedListBox.addList(list, 0);
     }
 
 
