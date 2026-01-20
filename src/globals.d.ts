@@ -472,7 +472,7 @@ interface IAttrData {
     layerGraph?: (layerNum?: number) => IGraphMode;
     layerLabel?: (layerNum?: number) => ILabelMode;
     Check_Screen_In?: (CenterP: point | rectangle, R?: number) => boolean;
-    Convert_Zahyo?: (zahyo: number) => void;
+    Convert_Zahyo?: (zahyo: Zahyo_info) => void;
     GetMapFileName?: () => string[];
     SetMapFile?: (filename: string) => IMapData;
     Check_Vector_Object?: () => void;

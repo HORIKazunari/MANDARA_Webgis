@@ -341,7 +341,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             const retV=  spatial.Check_Zahyo_Projection_Convert_Enabled(newAttrData.TotalData.ViewStyle.Zahyo, oldAttrData.TotalData.ViewStyle.Zahyo);
             ZahyoOk=retV.ok ;
             if(ZahyoOk === true ){
-                oldAttrData.Convert_Zahyo(newAttrData.TotalData.ViewStyle.Zahyo as unknown as number);
+                oldAttrData.Convert_Zahyo(newAttrData.TotalData.ViewStyle.Zahyo);
             }
             Check_Data();
             Reset_SCRView_Size();

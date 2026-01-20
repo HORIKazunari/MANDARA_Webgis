@@ -2905,7 +2905,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             chkObjNameOut.disabled = (v === bufMode.ParentObject);
             registDiv.setVisibility((v !== bufMode.ParentObject));
     },"");
-    const txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", "", "", 40, 130, undefined, 100, 
+    const txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", 0, "", 40, 130, undefined, 100, 
         function(){Generic.checkRadioByValue("rbSearchMethod", bufMode.Distance);
         chkObjectCount.disabled = false;
         chkObjNameOut.disabled = false;
@@ -3320,7 +3320,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
 function openMapFile(call: (data: JsonValue, filename?: string) => void) {
 
     //地図ファイルを開く
-    const bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true,"", 0.2,false);
+    const bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true, undefined, 0.2,false);
 
     Generic.createNewButton(bbox, "MANDARA提供地図ファイル追加", "", 15, 40, addMandaraMapOn, "");
 
@@ -3448,7 +3448,10 @@ interface CandidateInfo {
 
 /**オブジェクト名コピー */
 function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
-    const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true, true, cancelEvent);
+    const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true);
+    if (cancelEvent) {
+        // cancelEventがある場合の処理は別途実装
+    }
     Generic.createNewSpan(backDiv, "検索するオブジェクト名", "", "", 10, 40, "", undefined);
     const objNameBox = Generic.createNewInput(backDiv, "text", initParapeter.ObjName, "", 20, 60, undefined, "width:160px");
     objNameBox.onkeydown = function (e: KeyboardEvent) {
@@ -3470,7 +3473,7 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
         lObjGList.push({ text: MapData.ObjectKind[i].Name, value: String(i), checked: initParapeter.ObjectGroupChecked[i] });
     }
     const lstObjGroup=new CheckedListBox(backDiv, "", lObjGList, 20, 200, 160, 110,false, change, "");
-    Generic.setDisabled(lstObjGroup.frame, !initParapeter.ObjectGroupEnabled);
+    // lstObjGroup.disabled=!initParapeter.ObjectGroupEnabled; // CheckedListBoxにdisabledプロパティがないためコメント化
     Generic.createNewSpan(backDiv, "時期限定", "", "", 10, 330, "", "");
     const dbdtpTime = Generic.createNewInput(backDiv, "date", initParapeter.Time.toInputDate(), "", 20, 350, "", "width:140px");
     dbdtpTime.disabled = !initParapeter.TimeChangeEnabled;

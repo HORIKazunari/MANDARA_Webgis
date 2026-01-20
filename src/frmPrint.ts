@@ -1458,7 +1458,7 @@ class frmPrint {
     static linePattern(_data: JsonValue, e: Event) {
         const state = appState();
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
-        Generic.Set_Box_Position_in_Browser(e, backDiv);
+        Generic.Set_Box_Position_in_Browser(e as MouseEvent, backDiv);
 
         Generic.createNewSpan(backDiv, "地図ファイル", "", "", 15, 35, "", "");
         const NewLineKind: LPatSek_Info[][] = [];

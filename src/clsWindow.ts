@@ -831,7 +831,7 @@ function setting(locSearch: string) {
                             TTL = title + "Ｙ";
                             break;
                     }
-                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRX.join('\n'), false);
+                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRX, false);
 
                     switch (attrData.TotalData.ViewStyle.Zahyo.Mode) {
                         case enmZahyo_mode_info.Zahyo_No_Mode:
@@ -844,7 +844,7 @@ function setting(locSearch: string) {
                             TTL = title + "Ｘ";
                             break;
                     }
-                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRY.join('\n'), false);
+                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRY, false);
                     selectDataItem?.addSelectList?.([
                         { value: newN, text: attrData.Get_DataTitle(LayerNum, newN, true) },
                         { value: newN + 1, text: attrData.Get_DataTitle(LayerNum, newN + 1, true) }
