@@ -784,12 +784,13 @@ function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
     }
     /**OKボタン */
     function buttonOK() {
-        const d = new strTileMapViewInfo();
-        d.Visible = chkVisible.checked;
-        d.TileMapDataSet = appState().tileMapClass.getTileMapDataById(tileSelect.getValue())
-        d.DrawTiming = Generic.getRadioCheckByValue("drawTiming");
-        d.AlphaValue = parseInt(rangeObj.value) / 100;
-        _attrData.TotalData.ViewStyle.TileMapView = d;
+        const tileMapDataSet = appState().tileMapClass.getTileMapDataById(tileSelect.getValue());
+        _attrData.TotalData.ViewStyle.TileMapView = {
+            Visible: chkVisible.checked,
+            TileMapDataSet: tileMapDataSet,
+            DrawTiming: Generic.getRadioCheckByValue("drawTiming"),
+            AlphaValue: parseInt(rangeObj.value) / 100
+        };
         Generic.clear_backDiv();
         okEvent();
     }
@@ -820,7 +821,7 @@ function graphModeEn_Obi() {
     const lv = [En_Obi.Value1, En_Obi.Value2, En_Obi.Value3];
     for (let i = 0; i < 3; i++) {
         Generic.createNewWordNumberInput(gbGraphLegendValue, "値" + String(i + 1), "",lv[i], "txtGrapgLegendValue" + String(i + 1), 10, i * 30 + 10,undefined, 80,
-            function (obj: HTMLElement, v: number) {
+            function (obj: HTMLInputElement, v: number) {
                 const n = Number(obj.id.right(1)) ;
                 switch (n) {
                     case 1:
@@ -843,7 +844,7 @@ function graphModeEn_Obi() {
         Generic.createNewRadioButtonList(gbStackGraphSetting, "graphStackedBarDirection", StackedBarDirectionList, 10, 10,undefined, 30,En_Obi.StackedBarDirection,
             function (v: number) { En_Obi.StackedBarDirection = v }, "");
         Generic.createNewWordNumberInput(gbStackGraphSetting, "長辺:短辺 = 1 : " ,"", En_Obi.AspectRatio, "", 10, 60,undefined, 30,
-        function(_obj: HTMLElement, v: number){
+        function(_obj: HTMLInputElement, v: number){
             En_Obi.AspectRatio=v;
         },"");
 
@@ -864,7 +865,7 @@ function graphModeOresen_Bou() {
      Generic.createNewSizeSelect(gbSize, Oresen_Bou.Size, "","", 30, 15, 40, 3,
         function (_obj: HTMLElement, v: number) { Oresen_Bou.Size = v; }, "");
     Generic.createNewWordNumberInput(gbSize, "縦:横 = 1 :", "", Oresen_Bou.AspectRatio, "", 15, 50,undefined, 50,
-        function (_obj: HTMLElement, v: number) { Oresen_Bou.AspectRatio = v; }, "");
+        function (_obj: HTMLInputElement, v: number) { Oresen_Bou.AspectRatio = v; }, "");
 
     const gbFrame = Generic.createNewFrame(backDiv, "", "", 15, 150, 150, 135, "枠");
     Generic.createNewWordDivCanvas(gbFrame, "graphFrame", "輪郭線", 15, 15, 40,
@@ -893,11 +894,11 @@ function graphModeOresen_Bou() {
     Generic.createNewRadioButtonList(gbMaxMin, "BarMaxMin", BarMaxMinSetList, 10, 10,undefined, 25,Oresen_Bou.YmaxMinMode,
         function (v: number) { Oresen_Bou.YmaxMinMode = v }, "");
     Generic.createNewWordNumberInput(gbMaxMin, "最大値", "", Oresen_Bou.YMax, "", 30, 60, undefined,90,
-        function (_obj: HTMLElement, v: number) {
+        function (_obj: HTMLInputElement, v: number) {
             Oresen_Bou.YMax = v;
         }, "");
     Generic.createNewWordNumberInput(gbMaxMin, "最小値", "", Oresen_Bou.Ymin, "", 30, 85,undefined, 90,
-        function (_obj: HTMLElement, v: number) {
+        function (_obj: HTMLInputElement, v: number) {
             Oresen_Bou.Ymin = v;
         }, "");
 
@@ -1522,7 +1523,7 @@ function frmMainCopyDataSettings(okEvent: () => void) {
 
 /**連続表示モードにまとめて設定 */
 function frmMain_SetSeriesMode(okEvent: () => void) {
-    let DataItem: SeriesDataItem[] = [];
+    let DataItem: strSeries_DataSet_Item_Info[] = [];
     const backDiv = Generic.set_backDiv("", "連続表示モードにまとめて設定", 790, 390, true, true, buttonOK, 0.2, true);
     const LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     const tablist = ["単独表示", "グラフ表示", "ラベル表示", "重ね合わせ"];
@@ -1961,7 +1962,8 @@ function frmMain_ConditionSettings(okEvent: () => void){
         frmMain_ConditionSettingSub(ConItem,btnOK);
         function btnOK(Con: strCondition_DataSet_Info){
             appState().attrData.TotalData.Condition.push(Con);
-            clbList.addList([{checked:true,text:"【" + appState().attrData.LayerData[Con.Layer].Name + "】" + Con.Name}],clbList.length);
+            const name = "【" + appState().attrData.LayerData[Con.Layer].Name + "】" + Con.Name;
+            clbList.addList([{checked:true, text: name, value: name}],clbList.length);
         }
     }, "width:80px");
     Generic.createNewButton(backDiv, "削除", "", 205, 275, function (e: MouseEvent) { 
