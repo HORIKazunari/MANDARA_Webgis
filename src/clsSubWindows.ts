@@ -1679,7 +1679,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         const titles = appState().attrData.getGraphTitle(lay);
         const list = [];
         for (let i = 0; i < titles.length; i++) {
-            list.push({ checked: false, text: titles[i].text });
+            list.push({ checked: false, text: titles[i].text, value: titles[i].text });
         }
         layerGraphData.removeAll();
         layerGraphData.addList(list, 0);
@@ -1689,7 +1689,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         const titles = appState().attrData.getLabelTitle(lay);
         const list = [];
         for (let i = 0; i < titles.length; i++) {
-            list.push({ checked: false, text: titles[i].text });
+            list.push({ checked: false, text: titles[i].text, value: titles[i].text });
         }
         layerLabelData.removeAll();
         layerLabelData.addList(list, 0);
@@ -1699,7 +1699,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         const titles = appState().attrData.getOverlayTitle();
         const list = [];
         for (let i = 0; i < titles.length; i++) {
-            list.push({ checked: false, text: titles[i].text });
+            list.push({ checked: false, text: titles[i].text, value: titles[i].text });
         }
         overlayData.removeAll();
         overlayData.addList(list, 0);
@@ -1993,7 +1993,7 @@ function frmMain_ConditionSettings(okEvent: () => void){
     const list = [];
     for (let i = 0; i < atc.length; i++) {
         const tx = "【" + appState().attrData.LayerData[atc[i].Layer].Name + "】" + atc[i].Name;
-        list.push({ checked: atc[i].Enabled, text: tx });
+        list.push({ checked: atc[i].Enabled, text: tx, value: tx });
     }
     const clbList = new CheckedListBox(backDiv, "", list, 15, 65, 270, 200, true, undefined);
 
@@ -3538,7 +3538,8 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
             }
             for(let i  = 0;i<n ;i++){
                 const mn= MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac];
-                lbList.addList([{ text: mn.connectNames(), checked: true }], lbList.length);
+                const name = mn.connectNames();
+                lbList.addList([{ text: name, value: name, checked: true }], lbList.length);
             }
         }
     }
