@@ -973,9 +973,9 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
 
 // Generic ユーティリティクラス（拡張）
 interface IGeneric {
-    alert: (event: point | undefined, message: string) => void;
+    alert: (event: point | undefined, message: string, returnFunction?: (() => void) | undefined) => void;
     prompt: (event_point: point | undefined, promptText: string, defoText: string, okCall: (value: string) => void, textAlign?: string, cancelCall?: (() => void) | undefined) => void;
-    confirm: (event: Event, message: string, callback: (confirmed: boolean) => void) => void;
+    confirm: (event_point: point | undefined, text: string, yesFunc: (() => void) | undefined, noFunc: (() => void) | undefined) => void;
     createNewDiv: (parent: HTMLElement, id: string, className: string, innerHTML: string, left: number, top: number, width: number, height: number, style: string, tooltip: string | undefined) => HTMLDivElement;
     createNewButton: (parent: HTMLElement, text: string, className: string, left: number, top: number, onClick: ((event: MouseEvent) => void) | null, style: string) => HTMLButtonElement;
     createNewSpan: (parent: HTMLElement, text: string, className: string, innerHTML: string, left: number, top: number, style: string, tooltip: string | undefined) => HTMLSpanElement;
