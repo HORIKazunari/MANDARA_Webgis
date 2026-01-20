@@ -7659,7 +7659,7 @@ class clsAttrData {
         return this.LayerData[Layernum].atrData.Data[DataNum].Note;
     }
 
-    Set_DataTitle_to_CheckedListBox(CheckedListBox: HTMLElement, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
+    Set_DataTitle_to_CheckedListBox(CheckedListBox: CheckedListBox, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const list = [];
         for(const i in titles){

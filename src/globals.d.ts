@@ -537,7 +537,7 @@ interface IAttrData {
     };
     Get_CenterP?: (layer?: number, object?: number) => point;
     Check_Condition_UMU?: (layer?: number) => boolean;
-    Set_DataTitle_to_CheckedListBox?: (CheckedListBox: HTMLElement, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
+    Set_DataTitle_to_CheckedListBox?: (CheckedListBox: CheckedListBox, Layernum: number, defoChecked?: boolean, Number_Print_F?: boolean, Normal_F?: boolean, Category_f?: boolean, String_f?: boolean, Special_Astarisk_Num?: number) => void;
     Get_DivNum?: (layer?: number, data?: number) => number;
     Check_Point_in_Kencode_OneObject?: (layernum: number, objnum: number, mapP: point) => boolean;
     Set_Legend?: (D_Layer: number, D_DataNum: number, O_Data: ISoloModeViewSettings, ClassPaintF?: boolean, MarkSizeF?: boolean, MarkSizeValueCopyF?: boolean, MarkBlockF?: boolean, ContourF?: boolean, ClassMarkF?: boolean, ClassODF?: boolean, StringModeF?: boolean, MarkBarF?: boolean, ClassODOriginCopyF?: boolean, copyMarkCommonInnerDataF?: boolean) => void;
