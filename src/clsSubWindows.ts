@@ -1538,7 +1538,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         modeNameList[i].text = Generic.getSolomodeStrings(modeNameList[i].value);
     }
     const gbsoloModeSelect = Generic.createNewFrame(tab.panel[0], "", "", 225, 30, 115, 210, "表示モード");
-    Generic.createNewRadioButtonList(gbsoloModeSelect, "soloModeSelect", modeNameList, 10, 10, undefined, 25, enmSoloMode_Number.ClassPaintMode);
+    Generic.createNewRadioButtonList(gbsoloModeSelect, "soloModeSelect", modeNameList, 10, 10, undefined, 25, enmSoloMode_Number.ClassPaintMode, function() {}, "");
 
     const cboLayerGraph = Generic.createNewWordSelect(tab.panel[1], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setGraphModeDataItem, "", "");
     appState().attrData.Set_LayerName_to(cboLayerGraph, LayerNum);
@@ -1572,7 +1572,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
          }
         , "");
-    const seriesHdata = Generic.Array2Dimension(4, 1);
+    const seriesHdata: string[][] = Generic.Array2Dimension(4, 1);
     seriesHdata[0][0] = "順番";
     seriesHdata[1][0] = "レイヤ";
     seriesHdata[2][0] = "データ";
@@ -2051,7 +2051,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     setStep(0);
 
     const grPanel = Generic.createNewFrame(backDiv, "", "", 15, 175, 400, 315, "");
-    const overHdata = Generic.Array2Dimension(3, 1);
+    const overHdata: string[][] = Generic.Array2Dimension(3, 1);
     overHdata[0][0] = "データ項目";
     overHdata[1][0] = "条件値";
     overHdata[2][0] = "条件";
@@ -2060,7 +2060,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         "background-Color:#dddddd;text-align:center", "", ["", "", "width:30%"], ["", "", "width:30%"], true, undefined);
 
     const grAndOr = Generic.createNewFrame(grPanel, "", "", 310, 10, 75, 65, "");
-    Generic.createNewRadioButtonList(grAndOr, "rdoAndOr", [{ value: enmConditionAnd_Or._And, text: "AND" }, { value: enmConditionAnd_Or.Or, text: "OR" }], 15, 10, undefined, 30, 0, undefined, "");
+    Generic.createNewRadioButtonList(grAndOr, "rdoAndOr", [{ value: enmConditionAnd_Or._And, text: "AND" }, { value: enmConditionAnd_Or.Or, text: "OR" }], 15, 10, undefined, 30, 0, function() {}, "");
     Generic.createNewButton(grPanel, "項目削除", "", 310, 90, function (e: MouseEvent) {
         const n = cboStep.selectedIndex;
         if (ListView.getRowNumber() === 0) {
@@ -2085,7 +2085,10 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         }, "", "");
     const txtValue = Generic.createNewWordTextInput(newSettings, "条件値", "", "", "", 15, 45, 60, 150, undefined, "text-align:left");
     const unitSpan = Generic.createNewSpan(newSettings, "", "", "", 235, 45, "", undefined)
-    changeLayer(0,LayerNum, 0);
+    // 初期化処理
+    ConItem.Layer = LayerNum;
+    appState().attrData.Set_DataTitle_to_cboBox(cboData, LayerNum, 0, true, true, true, true);
+    unitSpan.innerHTML = appState().attrData.Get_DataUnit(LayerNum, 0);
     ListViewSet();
 
     const condList = [{ value: enmCondition.Less, text: '' }, { value: enmCondition.LessEqual, text: '' },
