@@ -2198,7 +2198,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
         switch (rv) {
             case 0: {
                 for (let i = 0; i < n; i++) {
-                    const v =Number((appState().attrData.GetObjMenseki(LayerNum, i).menseki * (ScaleRatio ** 2)).toFixed(6));
+                    const v = Number((appState().attrData.GetObjMenseki(LayerNum, i) * (ScaleRatio ** 2)).toFixed(6));
                     Data_Val_STR[i] = v;
                 }
                 Title = "計測面積";
@@ -2427,11 +2427,11 @@ function frmMain_Culc(okEvent: () => void) {
                 const mis = appState().attrData.Get_Missing_Value_DataArray(LayerNum, dt);
                 for (let i = 0; i < n; i++) {
                     const area = appState().attrData.GetObjMenseki(LayerNum, i)
-                    if ((area.menseki === 0) || (mis[i] === true)) {
+                    if ((area === 0) || (mis[i] === true)) {
                         Data_Val_STR[i] = "";
                         MisF = true;
                     } else {
-                        const dv = v[i] / area.menseki;
+                        const dv = v[i] / area;
                         Data_Val_STR[i] ===String(Number(Generic.Figure_Using(dv, appState().attrData.LayerData[LayerNum].atrData.Data[dt].Statistics.AfterDecimalNum + 1)));
                     }
                 }
