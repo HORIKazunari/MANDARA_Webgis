@@ -665,10 +665,10 @@ function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption:
         function (v: number) {newArrow.ArrowHeadType=v }, "");
 
     const sizeFrame = Generic.createNewFrame(backDiv, "", "", 150, 70, 200, 100, "角度・大きさ");
-    Generic.createNewWordNumberInput(sizeFrame, "角度", "度",Arrow.Angle,"",15,10,undefined,60,function(_obj: HTMLInputElement,v: number){newArrow.Angle=v},"");
+    Generic.createNewWordNumberInput(sizeFrame, "角度", "度",Arrow.Angle,"",15,10,undefined,60,function(_obj, v){newArrow.Angle=v},"");
     Generic.createNewSpan(sizeFrame,"矢の最大幅(%)","","",15,45,"",undefined);
-    Generic.createNewWordNumberInput(sizeFrame, "線幅×", "",Arrow.LWidthRatio,"",25,65,undefined,40,function(_obj: HTMLInputElement,v: number){newArrow.LWidthRatio=v},"");
-    Generic.createNewWordNumberInput(sizeFrame, "＋", "",Arrow.WidthPlus,"",120,65,undefined,40,function(_obj: HTMLInputElement,v: number){newArrow.WidthPlus=v},"");
+    Generic.createNewWordNumberInput(sizeFrame, "線幅×", "",Arrow.LWidthRatio,"",25,65,undefined,40,function(_obj, v){newArrow.LWidthRatio=v},"");
+    Generic.createNewWordNumberInput(sizeFrame, "＋", "",Arrow.WidthPlus,"",120,65,undefined,40,function(_obj, v){newArrow.WidthPlus=v},"");
     function buttonOK() {
         Generic.clear_backDiv();
         okEvent(newArrow);
@@ -1049,7 +1049,7 @@ function frmPrintOption(firstTab: number = 0) {
     function(e: MouseEvent){
         clsFontSet(e, atv.MapTitle.Font, function (newFont: Font_Property) { atv.MapTitle.Font = newFont }, appState().attrData);
     },"padding-top:0;padding-bottom:0");
-    Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.MapTitle.MaxWidth,"",30,60,undefined,40,function (obj: HTMLInputElement, v: number) { atv.MapTitle.MaxWidth = v;},"")
+    Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.MapTitle.MaxWidth,"",30,60,undefined,40,function (obj, v) { atv.MapTitle.MaxWidth = v;},"")
     Generic.createNewCheckBox(tab00,"方位表示","",atv.AttMapCompass.Visible,10,90,undefined, function(obj: HTMLInputElement){atv.AttMapCompass.Visible=obj.checked;},"");
     Generic.createNewButton(tab00,"方位設定","",30,113,
         function(v: MouseEvent){
@@ -1135,12 +1135,12 @@ function frmPrintOption(firstTab: number = 0) {
     cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree.toString());
     Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: HTMLInputElement){atv.SouByou.Spline_F=obj.checked;},"");
     const soubyouManual = Generic.createNewFrame(tab04, "", "", 10, 50, 170, 122, "マニュアル設定");
-    Generic.createNewCheckBox(soubyouManual, "ポイント間引き", "", atv.SouByou.ThinningPrint_F, 5, 15,undefined,  function (obj: HTMLInputElement) { atv.SouByou.ThinningPrint_F = obj.checked; }, "");
+    Generic.createNewCheckBox(soubyouManual, "ポイント間引き", "", atv.SouByou.ThinningPrint_F, 5, 15,undefined,  function (obj) { atv.SouByou.ThinningPrint_F = obj.checked; }, "");
     Generic.createNewWordNumberInput(soubyouManual, "取得間隔", Generic.getScaleUnitStrings(undefined, atv.MapScale.Unit), def_PointInterval, "", 10, 37, undefined,50,
-        function (obj: HTMLInputElement, v: number) { atv.SouByou.PointInterval = v / ConvScaleValue; }, "");
-    Generic.createNewCheckBox(soubyouManual, "ループ間引き", "", atv.SouByou.LoopAreaF, 5, 70,undefined,  function (obj: HTMLInputElement) { atv.SouByou.LoopAreaF = obj.checked; }, "");
+        function (obj, v) { atv.SouByou.PointInterval = v / ConvScaleValue; }, "");
+    Generic.createNewCheckBox(soubyouManual, "ループ間引き", "", atv.SouByou.LoopAreaF, 5, 70,undefined,  function (obj) { atv.SouByou.LoopAreaF = obj.checked; }, "");
     Generic.createNewWordNumberInput(soubyouManual, "最小取得サイズ", Generic.getScaleUnitStrings(undefined, atv.MapScale.Unit) + "<sup>2</sup>", def_LoopSize, "", 10, 92, undefined,40,
-        function (obj: HTMLInputElement, v: number) { atv.SouByou.LoopSize = v / ConvScaleValue; }, "");
+        function (obj, v) { atv.SouByou.LoopSize = v / ConvScaleValue; }, "");
     Generic.setDisabled( soubyouManual,(atv.SouByou.Auto===true));
 
     /**背景・描画●●●●●●●●●●●●●●●●●●●●● */

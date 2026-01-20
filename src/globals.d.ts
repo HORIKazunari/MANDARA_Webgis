@@ -973,17 +973,17 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
 
 // Generic ユーティリティクラス（拡張）
 interface IGeneric {
-    alert: (event: Event | undefined, message: string) => void;
+    alert: (event: point | undefined, message: string) => void;
     prompt: (event_point: point | undefined, promptText: string, defoText: string, okCall: (value: string) => void, textAlign?: string, cancelCall?: (() => void) | undefined) => void;
     confirm: (event: Event, message: string, callback: (confirmed: boolean) => void) => void;
     createNewDiv: (parent: HTMLElement, id: string, className: string, innerHTML: string, left: number, top: number, width: number, height: number, style: string, tooltip: string | undefined) => HTMLDivElement;
-    createNewButton: (parent: HTMLElement, text: string, className: string, left: number, top: number, onClick: (e: Event) => void, style: string) => HTMLButtonElement;
+    createNewButton: (parent: HTMLElement, text: string, className: string, left: number, top: number, onClick: ((event: MouseEvent) => void) | null, style: string) => HTMLButtonElement;
     createNewSpan: (parent: HTMLElement, text: string, className: string, innerHTML: string, left: number, top: number, style: string, tooltip: string | undefined) => HTMLSpanElement;
     createNewFrame: (parent: HTMLElement, id: string, className: string, left: number, top: number, width: number, height: number, title: string) => HTMLDivElement;
     createNewCheckBox: (parent: HTMLElement, text: string, className: string, checked: boolean, left: number, top: number, tooltip: string | undefined, onChange: (element: HTMLInputElement) => void, style: string) => HTMLInputElement;
     createNewRadioButtonList: (parent: HTMLElement, name: string, items: JsonValue[], left: number, top: number, tooltip: string | undefined, itemHeight: number, selectedValue: JsonValue, onChange: (value: number) => void, style: string) => void;
-    createNewWordNumberInput: (parent: HTMLElement, label: string, unit: string, value: number, className: string, left: number, top: number, tooltip: string | undefined, inputWidth: number, onChange: (element: HTMLElement, value: number) => void, style: string) => HTMLInputElement;
-    set_backDiv: (id: string, title: string, width: number, height: number, modal: boolean, closeButton: boolean, okButton: (() => void) | number, opacity: number, draggable: boolean, resizable?: boolean) => HTMLDivElement;
+    createNewWordNumberInput: (parent: HTMLElement, label: string, unit: string, value: number, className: string, left: number, top: number, tooltip: string | undefined, inputWidth: number, onChange: ((element: HTMLElement, value: number) => void) | undefined, style: string) => HTMLInputElement;
+    set_backDiv: (id: string, title: string, width: number, height: number, modal: boolean, closeButton: boolean, okButton: ((event?: MouseEvent) => void) | undefined, opacity: number, draggable: boolean, resizable?: boolean) => HTMLDivElement;
     getBrowserWidth: () => number;
     getBrowserHeight: () => number;
     copyText: (text: string) => void;
