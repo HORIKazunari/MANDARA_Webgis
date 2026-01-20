@@ -3021,7 +3021,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let Rdn ;
         let F_ObjectData ;
         let RegistMode;
-        let AggData: number[] = [];
+        let AggData: (CategoryData | NormalData)[] = [];
         const Inner_Object_Num: number[] = [];
         let Shukei_V;
         let Add_Data: number[] = [];
@@ -3122,24 +3122,28 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                                         if (appState().attrData.Get_DataType(L2, Add_Data[k]) === enmAttDataType.Category) {
                                             const ct = appState().attrData.Get_Categoly(L2, Add_Data[k], j)
                                             const cdata = AggData[k];
-                                            if (ct !== -1) {
-                                                cdata.CateCount[ct]++;
-                                            } else {
-                                                cdata.CateCount[cdata.CateCount.length - 1]++;
+                                            if (cdata instanceof CategoryData) {
+                                                if (ct !== -1) {
+                                                    cdata.CateCount[ct]++;
+                                                } else {
+                                                    cdata.CateCount[cdata.CateCount.length - 1]++;
+                                                }
                                             }
                                         } else {
                                             if (appState().attrData.Check_Missing_Value(L2, Add_Data[k], j) === false) {
                                                 const V = Number(appState().attrData.Get_Data_Value(L2, Add_Data[k], j, ""));
                                                 const nd = AggData[k];
-                                                nd.add += V;
-                                                nd.add2 += V ** 2;
-                                                if (V < nd.min) {
-                                                    nd.min = V;
+                                                if (nd instanceof NormalData) {
+                                                    nd.add += V;
+                                                    nd.add2 += V ** 2;
+                                                    if (V < nd.min) {
+                                                        nd.min = V;
+                                                    }
+                                                    if (nd.max < V) {
+                                                        nd.max = V;
+                                                    }
+                                                    Inner_Object_Num[k]++;
                                                 }
-                                                if (nd.max < V) {
-                                                    nd.max = V;
-                                                }
-                                                Inner_Object_Num[k]++;
                                             }
                                         }
                                     }
@@ -3176,9 +3180,11 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                 for(let k  = 0  ;k< Rdn ;k++){
                     if(appState().attrData.Get_DataType(L2, Add_Data[k]) === enmAttDataType.Category ){
                         const cdata  = AggData[k];
-                        for(let k2  = 0  ;k2< cdata.CateCount.length ;k2++){
-                            Shukei_V[n][i]= cdata.CateCount[k2].toString();
-                            n ++;
+                        if (cdata instanceof CategoryData) {
+                            for(let k2  = 0  ;k2< cdata.CateCount.length ;k2++){
+                                Shukei_V[n][i]= cdata.CateCount[k2].toString();
+                                n ++;
+                            }
                         }
                     }else{
                         if(Inner_Object_Num[k] === 0 ){
@@ -3186,25 +3192,27 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                             Shukei_V[n][i] = undefined;
                         }else{
                             const nd =AggData[k];
-                            let V ;
-                            switch( RegistMode){
-                                case registMode.average:
-                                    V = nd.add / Inner_Object_Num[k];
-                                    break;
-                                case registMode.sum:
-                                    V = nd.add;
-                                    break;
-                                case registMode.standard:
-                                    V = Math.sqrt(nd.add2 / Inner_Object_Num[k] - (nd.add / Inner_Object_Num[k]) ** 2);
-                                    break;
-                                case registMode.max:
-                                    V = nd.max;
-                                    break;
-                                case registMode.min:
-                                    V = nd.min;
-                                    break;
+                            if (nd instanceof NormalData) {
+                                let V ;
+                                switch( RegistMode){
+                                    case registMode.average:
+                                        V = nd.add / Inner_Object_Num[k];
+                                        break;
+                                    case registMode.sum:
+                                        V = nd.add;
+                                        break;
+                                    case registMode.standard:
+                                        V = Math.sqrt(nd.add2 / Inner_Object_Num[k] - (nd.add / Inner_Object_Num[k]) ** 2);
+                                        break;
+                                    case registMode.max:
+                                        V = nd.max;
+                                        break;
+                                    case registMode.min:
+                                        V = nd.min;
+                                        break;
+                                }
+                                Shukei_V[n][i] = V.toString();
                             }
-                            Shukei_V[n][i] = V.toString();
                         }
                         n ++;
                     }
