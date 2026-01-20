@@ -7845,8 +7845,8 @@ class clsAttrData {
             // ListViewTableのメソッドを直接使用
             seriesListView.clear();
         }
-        const seriesData: JsonValue[] = [4];
-        const DataSetItemArray = Array.isArray(DataSetItem) ? DataSetItem : DataSetItem as JsonValue[];
+        const seriesData: JsonValue[] = [];
+        const DataSetItemArray = Array.isArray(DataSetItem) ? DataSetItem : [DataSetItem];
         for (let i = 0; i < DataSetItemArray.length; i++) {
             const di = DataSetItemArray[i] as JsonObject;
             seriesData[0] = Number((i + 1).toString());

@@ -3626,7 +3626,7 @@ function frmPrint_DummyObjectGroup(){
     const DummyOBGroup: boolean[][] = [];
     const MapFileList = appState().attrData.GetMapFileName();
     const PolygonDummy_ClipSet_F: boolean[] = [];
-    const DummyObjectPointMark: { [key: string]: JsonValue } = {};//strDummyObjectPointMark_Info
+    const DummyObjectPointMark: { [key: string]: strDummyObjectPointMark_Info[] } = {};
     let LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     for (let i = 0; i < appState().attrData.TotalData.LV1.Lay_Maxn; i++) {
         const al = appState().attrData.LayerData[i];
@@ -3743,13 +3743,14 @@ function frmPrint_DummyObjectGroup(){
             const y = i * lineHeight + 3;
             const lc = Generic.createNewWordDivCanvas(pnlPointMarkList, "", lk.ObjectKindName, 10, y, 100, inePatternClick);
             lc.tag = i;
-            appState().attrData.Draw_Sample_Mark_Box(lc, DOPMark[i].mark);
+            appState().attrData.Draw_Sample_Mark_Box(lc, DOPMark[i].Mark);
             function inePatternClick(e: MouseEvent) {
-                const n = e.target.tag;
+                const target = e.target as HTMLElement & { tag: number };
+                const n = target.tag;
                 clsMarkSet(e, function (newMark: Mark) {
-                    DOPMark[n].mark = newMark;
+                    DOPMark[n].Mark = newMark;
                     appState().attrData.Draw_Sample_Mark_Box(lc, newMark);
-                }, DOPMark[n].mark, appState().attrData);
+                }, DOPMark[n].Mark, appState().attrData);
             }
         }
     }
@@ -3757,7 +3758,7 @@ function frmPrint_DummyObjectGroup(){
     function AddDummyObject(str: string[]){
         let emes  = "";
         let emesUsed  = "";
-        const OKCodeName = [] //strDummyObjectName_and_Code)
+        const OKCodeName: DummyObjectInfo[] = [];
         for (const i in str) {
             const objName = str[i];
             if (objName !== "") {
@@ -3774,11 +3775,12 @@ function frmPrint_DummyObjectGroup(){
                         }
                     }
                     if (f === true) {
-                        const d = new strDummyObjectName_and_Code();
-                        d.code = code;
-                        d.Name = objName;
+                        const d: DummyObjectInfo = {
+                            code: code,
+                            Name: objName
+                        };
                         OKCodeName.push(d);
-                        lstDummyItem.add({ text: d.Name, value: d.code })
+                        lstDummyItem.add({ text: d.Name, value: d.code.toString() })
                     }
                 }
             }
@@ -3805,11 +3807,11 @@ function frmPrint_DummyObjectGroup(){
         lstDummyItem.removeAll();
         chklDummyGroup.removeAll();
         for (let i = 0; i < Dummy[LayerNum].length; i++) {
-            lstDummyItem.add({ text: Dummy[LayerNum][i].Name, value: Dummy[LayerNum][i].code });
+            lstDummyItem.add({ text: Dummy[LayerNum][i].Name, value: Dummy[LayerNum][i].code.toString() });
         }
         const alm = appState().attrData.LayerData[LayerNum].MapFileData;
         for (let i = 0; i < alm.Map.OBKNum; i++) {
-            chklDummyGroup.add({ text: alm.ObjectKind[i].Name, value: i, checked: DummyOBGroup[LayerNum][i] });
+            chklDummyGroup.add({ text: alm.ObjectKind[i].Name, value: i.toString(), checked: DummyOBGroup[LayerNum][i] });
         }
         chkDummyClip.checked = PolygonDummy_ClipSet_F[LayerNum];
     }
