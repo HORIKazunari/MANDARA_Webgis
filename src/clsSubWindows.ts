@@ -1726,10 +1726,11 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
             case 1: {
                 sel=as.DataSet.length
-                const dt =new strSeries_Dataset_Info();
-                dt.title = txtNewDataSet.value;
-                dt.SelectedIndex = 0;
-                dt.DataItem = Generic.ArrayClone( DataItem);
+                const dt: ISeriesDatasetInfo = {
+                    title: txtNewDataSet.value,
+                    SelectedIndex: 0,
+                    DataItem: Generic.ArrayClone(DataItem)
+                };
                 as.DataSet.push(dt);
                 break;
             }
@@ -2788,7 +2789,7 @@ function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: 
 
     const lstObject = Generic.createNewSelect(backDiv, [], -1, "", 15, 70, false, undefined, "width:200px;", 1, false);
 
-    const chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", !!(defDummyF & Dummy_Select_EnableF), 15, 105, undefined, changeLayer, "");
+    const chkDumyObjectSelect = Generic.createNewCheckBox(backDiv, "ダミーオブジェクト選択", "", defDummyF && Dummy_Select_EnableF, 15, 105, undefined, () => changeLayer(0), "");
  
     changeLayer(DefSelectObjectNumber);
 
@@ -2905,7 +2906,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             registDiv.setVisibility((v !== bufMode.ParentObject));
     },"");
     const txtBuffer = Generic.createNewWordNumberInput(gbMethod, "バッファ距離", "", "", "", 40, 130, undefined, 100, 
-        function(){Generic.checkRadioByValue("rbSearchMethod",bufMode.Distance);
+        function(){Generic.checkRadioByValue("rbSearchMethod", bufMode.Distance);
         chkObjectCount.disabled = false;
         chkObjNameOut.disabled = false;
         registDiv.setVisibility(true);
@@ -3039,7 +3040,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                      PlusDataNum ++;
                 }
             }
-            Shukei_V=Generic.Array2Dimension( PlusDataNum , ObjnL1 );
+            Shukei_V=Generic.Array2Dimension<number | string>( PlusDataNum , ObjnL1 , 0);
         }else{
             F_ObjectData = false;
         }
@@ -3296,7 +3297,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                         }
                         appState().attrData.Add_One_Data_Value(L1, TTL, UNT, Note, Data_Val_STR, true);
                         if (RegistMode === registMode.average) {
-                            appState().attrData.Set_Legend(L1, appState().attrData.LayerData[L1].atrData.Count - 1, appState().attrData.LayerData[L2].atrData.Data[k], true, true, true, true, true, true, true, true, true, false, true);
+                            appState().attrData.Set_Legend(L1, appState().attrData.LayerData[L1].atrData.Count - 1, appState().attrData.LayerData[L2].atrData.Data[k], true, true, true, true, true, true, true, true, true, false);
                         }
                         n++;
                     }
@@ -3306,7 +3307,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
                         Data_Val_STR.push(Shukei_V[i][j]);
                     }
                     appState().attrData.Add_One_Data_Value(L1, TTL, UNT, Note, Data_Val_STR, true);
-                    appState().attrData.Set_Legend(L1, appState().attrData.LayerData[L1].atrData.Count - 1, appState().attrData.LayerData[L2].atrData.Data[k], true, true, true, true, true, true, true, true, true, false, true)
+                    appState().attrData.Set_Legend(L1, appState().attrData.LayerData[L1].atrData.Count - 1, appState().attrData.LayerData[L2].atrData.Data[k], true, true, true, true, true, true, true, true, true, false)
                 }
             }
         }
@@ -3419,7 +3420,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
                         break;
                 }
                 Generic.getMapfileByHttpRequest("https://ktgis.net/mdrjs/map/" + serverFile, function (jsonData: object) {
-                    appState().preReadMapFile[fup] = jsonData;                    
+                    appState().preReadMapFile[fup] = jsonData as JsonObject;                    
                     Generic.clear_backDiv();
                     call(appState().preReadMapFile[fup], fup);
                 });
@@ -3430,7 +3431,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
 
 class strFrmCopyObjectName_init_parameter_data {
     ObjName: string = "";
-    Time: JsonValue = clsTime.GetNullYMD();
+    Time: strYMD = clsTime.GetNullYMD();
     TimeChangeEnabled: boolean = true;
     pointShapeChecked: boolean = true;
     lineShapeChecked: boolean = true;
@@ -3440,12 +3441,13 @@ class strFrmCopyObjectName_init_parameter_data {
     ObjectGroupEnabled: boolean = true;
 }
 
+interface CandidateInfo {
+    ObjCode: number;
+    TimeStac: number;
+}
+
 /**オブジェクト名コピー */
-function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
-    const condidateInfo: JsonObject =function(){
-        this.ObjCode;
-        this.TimeStac;
-    }
+function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true, true, cancelEvent);
     Generic.createNewSpan(backDiv, "検索するオブジェクト名", "", "", 10, 40, "", undefined);
     const objNameBox = Generic.createNewInput(backDiv, "text", initParapeter.ObjName, "", 20, 60, undefined, "width:160px");
@@ -3477,7 +3479,7 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
     const lbList = new CheckedListBox(backDiv, "", [], 195, 120, 210, 240, false, undefined,"");
     Generic.createNewButton(backDiv, "コピー", "", 220, 375, copy, "width:100px");
 
-    let candidateObject: JsonValue[] =[];// List(Of condidateInfo)
+    let candidateObject: CandidateInfo[] = [];
 
     function change(){
 
@@ -3538,9 +3540,10 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
                             }
                             if (okf === true) {
                                 SelF[i] = true;
-                                const obj = new condidateInfo();
-                                obj.ObjCode = i;
-                                obj.TimeStac = j;
+                                const obj: CandidateInfo = {
+                                    ObjCode: i,
+                                    TimeStac: j
+                                };
                                 candidateObject.push(obj);
                             }
                         }
@@ -3588,7 +3591,8 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
         for(let i=0;i<maxOname;i++){
             popmenu.push({ caption: copyObjname[i],value:i, event: copyMode });
         }
-        Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
+        const mouseEvent = e as MouseEvent;
+        Generic.ceatePopupMenu(popmenu, new point(mouseEvent.clientX, mouseEvent.clientY));
         function copyMode(obj: HTMLInputElement){
             let copyTx = "";
             for (let i = 0; i < candidateObject.length; i++) {
@@ -3603,20 +3607,25 @@ function frmCopyObjectName(MapData: JsonObject, initParapeter: strFrmCopyObjectN
 
 }
 
+interface DummyObjectInfo {
+    code: number;
+    Name: string;
+}
+
 /**ダミーオブジェクトの設定 */
 function frmPrint_DummyObjectGroup(){
 
-    const Dummy: JsonValue[] = [];//strDummyObjectInfo
-    const DummyOBGroup: JsonValue[] = [];
+    const Dummy: DummyObjectInfo[][] = [];
+    const DummyOBGroup: boolean[][] = [];
     const MapFileList = appState().attrData.GetMapFileName();
-    const PolygonDummy_ClipSet_F: JsonValue[] = [];
+    const PolygonDummy_ClipSet_F: boolean[] = [];
     const DummyObjectPointMark: { [key: string]: JsonValue } = {};//strDummyObjectPointMark_Info
     let LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     for (let i = 0; i < appState().attrData.TotalData.LV1.Lay_Maxn; i++) {
         const al = appState().attrData.LayerData[i];
-        Dummy[i] = Generic.ArrayClone(al.Dummy);
+        Dummy[i] = Generic.ArrayClone(al.Dummy) as DummyObjectInfo[];
         DummyOBGroup[i] = appState().attrData.getDummyObjGroupArray(i).DummyOBGArray;
-        PolygonDummy_ClipSet_F[i] = al.LayerModeViewSettings.PolygonDummy_ClipSet_F
+        PolygonDummy_ClipSet_F[i] = al.LayerModeViewSettings.PolygonDummy_ClipSet_F as boolean;
     }
 
     const backDiv = Generic.set_backDiv("", "ダミーオブジェクト・グループ変更", 650, 430, true, true, buttonOK, 0.2, true, true);
@@ -3771,13 +3780,15 @@ function frmPrint_DummyObjectGroup(){
 
         if(emes !== "" ){
             txtDummy.removeEventListener('keydown',txtKeyDown);
-            Generic.alert(undefined,"以下のオブジェクトは見つかりません。" + emes);
-            txtDummy.addEventListener('keydown',txtKeyDown);
+            Generic.alert(undefined,"以下のオブジェクトは見つかりません。" + emes, () => {
+                txtDummy.addEventListener('keydown',txtKeyDown);
+            });
         }
         if(emesUsed !== "" ){
             txtDummy.removeEventListener('keydown',txtKeyDown);
-            Generic.alert(undefined,"以下のオブジェクトは既にダミーオブジェクトに入っています。" + emesUsed);
-            txtDummy.addEventListener('keydown',txtKeyDown);
+            Generic.alert(undefined,"以下のオブジェクトは既にダミーオブジェクトに入っています。" + emesUsed, () => {
+                txtDummy.addEventListener('keydown',txtKeyDown);
+            });
         }
         return ((emes === "") && (emesUsed === ""));         
     }
@@ -3793,7 +3804,7 @@ function frmPrint_DummyObjectGroup(){
         for (let i = 0; i < alm.Map.OBKNum; i++) {
             chklDummyGroup.add({ text: alm.ObjectKind[i].Name, value: i, checked: DummyOBGroup[LayerNum][i] });
         }
-        chkDummyClip.Checked = PolygonDummy_ClipSet_F[LayerNum];
+        chkDummyClip.checked = PolygonDummy_ClipSet_F[LayerNum];
     }
 
     function buttonOK() {
