@@ -1201,8 +1201,8 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
             }
         }
 
-        const oldTTS  = oldTV.ScrData as any;
-        const newTTS=newTV.ScrData as any;
+        const oldTTS  = oldTV.ScrData;
+        const newTTS=newTV.ScrData;
         if(oldTTS.MapRectangle.Equals(newTTS.MapRectangle) === true ){
             newTTS.ScrData = oldTTS.Clone();
             //地図領域が同じ場合はここまで

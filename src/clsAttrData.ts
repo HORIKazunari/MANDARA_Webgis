@@ -3609,7 +3609,7 @@ class clsAttrData {
     }
 
     Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): void {
-        clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData as any);
+        clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
     Draw_Fan(g: CanvasRenderingContext2D, OP: point, r: number, start_p: number, end_p: number, Lpat: Line_Property, Tile: Tile_Property): void {
@@ -8105,7 +8105,7 @@ class clsAttrData {
     Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum: number, ObjNum: number, P: point): number {
 
         const ELine = this.Get_Enable_KenCode_MPLine(LayNum, ObjNum);
-        const d = this.LayerData[LayNum].MapFileData.Distance_PointMPLineAllay(P,  ELine as any);
+        const d = this.LayerData[LayNum].MapFileData.Distance_PointMPLineAllay(P,  ELine);
         return d;
     }
 
@@ -8488,7 +8488,7 @@ class clsObjectNameSearch {
                             const retV=Generic.ObjName_Kanji_Compatible(nam);
                             nam=retV.newObjname;
                         }
-                        this.Object_Name_Search.Add(nam as any);
+                        this.Object_Name_Search.Add(Number(nam));
                         const dt = new this.ObjNameAndTime_Info();
                         dt.ObjCode = i;
                         dt.SETime = nstc.SETime;
@@ -8525,7 +8525,7 @@ class clsObjectNameSearch {
             const retV=Generic.ObjName_Kanji_Compatible(ObjName);
             ObjName=retV.newObjname;
         }
-        const DataList = this.Object_Name_Search.SearchData_Array(ObjName as any);
+        const DataList = this.Object_Name_Search.SearchData_Array(Number(ObjName));
         for (const i in DataList) {
             const j = DataList[i];
             if (clsTime.checkDurationIn(this.Object_Name_Stac_for_Search_O_Code[j].SETime, Time) === true) {

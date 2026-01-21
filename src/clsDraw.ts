@@ -137,7 +137,7 @@ class clsDraw {
     static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info) {
 
         const Out_Text=[];
-        const thdata = P_Font.toContextFont!(ScrData as any);
+        const thdata = P_Font.toContextFont!(ScrData);
         g.font = thdata.font!;
         let FSize;
         let subText = "";
@@ -764,7 +764,7 @@ class clsDrawMarkFan {
             pxy.push( point2);
             let f = false;
             if (ScrData.SampleBoxFlag === false) {
-                if (Generic.Check_Point_in_screen(pxy[n], ScrData as any, 1) === true) {
+                if (Generic.Check_Point_in_screen(pxy[n], ScrData, 1) === true) {
                     f = true;
                 }
             } else {

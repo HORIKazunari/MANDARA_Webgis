@@ -1870,7 +1870,7 @@ function setting(locSearch: string) {
                 txtNum--;
             }
             const txtStyle = "border:solid 1px;height:" + picClassBoxHeight.px();
-            for (let i = (pnlClassDiv as any).inTxt; i < txtNum; i++) {
+            for (let i = (pnlClassDiv as {inTxt: number}).inTxt; i < txtNum; i++) {
                 const txele=Generic.createNewNumberInput(pnlClassDiv,0,"txtClassValue" + i,picClassBoxWidth + 2, i * picClassBoxHeight, txtClassValueWidth,txeleOnChange,txtStyle);
                 txele.ondragstart = function (e: DragEvent) {
                     if (!e.dataTransfer || !e.target) { return; }
@@ -1887,7 +1887,7 @@ function setting(locSearch: string) {
                     const Layernum = attrData.TotalData.LV1.SelectedLayer;
                     const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
                     const ldd = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
-                    const ddata = ldd.Class_Div[dragN as number].Clone();
+                    const ddata = ldd.Class_Div[dragN].Clone();
                     if(dragN < dropN) {
                         for (let i = dragN; i < dropN; i++) {
                             ldd.Class_Div[i] = ldd.Class_Div[i + 1];
@@ -1897,7 +1897,7 @@ function setting(locSearch: string) {
                             ldd.Class_Div[i] = ldd.Class_Div[i - 1];
                         }
                     }
-                    ldd.Class_Div[dropN as number] = ddata;
+                    ldd.Class_Div[dropN] = ddata;
                     SetPictureBox();
                     SetClassDivValueTextBox();
                     setFrequencyLabel();
@@ -4354,7 +4354,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
             mdata.push(mapList[i]);
         }
         Generic.clear_backDiv();
-        if (okCall) okCall(mdata as any, LayerData as any);
+        if (okCall) okCall(mdata, LayerData);
     }
 }
 
@@ -4616,7 +4616,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
             mdata.push(mapList[i]);
         }
         Generic.clear_backDiv();
-        if (okCall) okCall(mdata as any, LayerData as any);
+        if (okCall) okCall(mdata, LayerData);
 
     }
 }

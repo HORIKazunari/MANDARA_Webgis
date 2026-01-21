@@ -5163,7 +5163,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         for (const i in menuObj) {
             if (menuObj[i].hasOwnProperty(property)) {
-                if ((menuObj[i] as Record<string, any>)[property] === pname) {
+                if ((menuObj[i] as Record<string, string>)[property] === pname) {
                     return menuObj[i];
                 }
                 if (menuObj[i].child) {

@@ -1910,7 +1910,7 @@ console.log(SortSumDataValue)
                     let O_TxHeight = 0;
                     if (attLbl.ObjectName_Print_Flag === true) {
                         const retV = clsDraw.TextCut_for_print(g, state.attrData.Get_KenObjName(Layernum, i),
-                            attLbl.ObjectName_Font, attLbl.ObjectName_Turn_Flag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as any);
+                            attLbl.ObjectName_Font, attLbl.ObjectName_Turn_Flag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
                         O_Word_Cut = retV.Out_Text;
                         O_TxHeight = retV.Height;
                     }
@@ -2585,7 +2585,7 @@ console.log(SortSumDataValue)
                 const CP = al.atrObject.atrObjectData[i].Label;
                 const LP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
                 const atx = String(tx);
-                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData as any)
+                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw,  state.attrData.TotalData.ViewStyle.ScrData)
                 let outTx = d_an2.Out_Text[0];
                 for (let j = 1; j<d_an2.Out_Text.length; j++) {
                     outTx += "\n" + d_an2.Out_Text[j];

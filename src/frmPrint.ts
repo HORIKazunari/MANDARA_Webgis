@@ -397,7 +397,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         } else {
                             stp = mapstep;
                         }
-                        const ag = vs.AccessoryGroupBox as any;
+                        const ag = vs.AccessoryGroupBox as {Title: boolean; Scale: boolean; Note: boolean; NorthSign: boolean; MapLegend: boolean};
                         if (ag.Title === true) {
                             vs.MapTitle.Position.offset(stp.x, stp.y);
                         }
@@ -886,7 +886,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         }
         const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData as any);
+        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData);
         const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
         O_LPat.Color=clsBase.ColorRed();
@@ -1575,8 +1575,8 @@ class frmPrint {
         let gridtx="";
         const cnode = state.propertyWindow.pnlProperty.childNodes;
         for(const i in cnode){
-            if((cnode[i] as any).name==="grid"){
-                gridtx=Generic.getTableValue((cnode[i] as any).table);
+            if((cnode[i] as {name?: string}).name==="grid"){
+                gridtx=Generic.getTableValue((cnode[i] as {table: HTMLTableElement}).table);
                 break;
             }
         }
