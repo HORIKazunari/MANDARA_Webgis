@@ -1,5 +1,5 @@
 ﻿import { clsAccessory } from './clsAccessory';
-import { contourLineStacInfo } from './MeshContour';
+import { ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
 import { clsDraw } from './clsDraw';
 import { clsBase } from './clsGeneric'; // clsBaseを有効化
@@ -1990,7 +1990,7 @@ console.log(SortSumDataValue)
         const Contour_High_M = retConV.Contour_High_M;
         const C_Line_Pat = retConV.C_Line_Pat;
         //メッシュから等高線を抜き出す
-        const Pre_CStac: contourLineStacInfo[] = [];// clsMeshContour.ContourLineStacInfo
+        const Pre_CStac: ContourLineStackInfo[] = [];// clsMeshContour.ContourLineStackInfo
         const ln  = cont.ContourMesh.Execute_Mesh(hn, Contour_High_M, Pre_CStac);
 
         if(ln === 0 ){
@@ -2119,7 +2119,7 @@ console.log(SortSumDataValue)
     }
 
     static ContourPolyBoundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number,
-        Pcon: number, hn: number, Interval_Mode: number, HnPolygon: VecContourStac_Info, Pre_CStac: contourLineStacInfo[], Frame_AllPoint: point[], Spline_flag: boolean, SplineT: number) {
+        Pcon: number, hn: number, Interval_Mode: number, HnPolygon: VecContourStac_Info, Pre_CStac: ContourLineStackInfo[], Frame_AllPoint: point[], Spline_flag: boolean, SplineT: number) {
         const state = appState();
         const spxy = [];
         const epxy = [];

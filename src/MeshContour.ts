@@ -7,18 +7,18 @@ type MeshGrid = MeshCell[][];
 type MortonIndex = number;
 type PartitionCounter = [number];
 
-class Fringe_Line_Info {
+class FringeLineInfo {
     code: number = 0;
     direction: 1 | -1 = 1;
 }
 
 
-class conPart_info {
+class ConPartInfo {
     p0 = new point();
     p1 = new point();
 }
 
-class contourLineStacInfo {
+class ContourLineStackInfo {
     ContourNumber: number;
     NumOfPoint: number;
     points: point[] = [];
@@ -29,7 +29,7 @@ class contourLineStacInfo {
     }
 }
 
-class Quad_Mesh_Info {
+class QuadMeshInfo {
     /// <summary>四分木データの配列に入れる情報</summary>
     Position: rectangle | MortonIndex | null; // rectinfo or number
     Max: number | undefined;
@@ -44,10 +44,10 @@ class Quad_Mesh_Info {
     }
 }
 
-class clsMeshContour {
+class MeshContour {
     /// <summary>メッシュ作成クラス</summary>
     private ConValuePlus = 0.0001;
-    private Quad_MeshData: Quad_Mesh_Info[] = [];
+    private Quad_MeshData: QuadMeshInfo[] = [];
     private PCell: MortonIndex[] = [];
     private XMeshNum: number;
     private YMeshNum: number;
@@ -57,14 +57,14 @@ class clsMeshContour {
     private Yplus: number;
     private Mesh: MeshGrid;
     
-    constructor(XMesh_Num: number, YMesh_Num: number, Xmesh_Size: number, YMesh_Size: number, X_plus: number, Y_Plus: number) {
-        this.XMeshNum = XMesh_Num;
-        this.YMeshNum = YMesh_Num;
-        this.XMeshSize = Xmesh_Size;
-        this.YMeshSize = YMesh_Size;
-        this.Xplus = X_plus;
-        this.Yplus = Y_Plus;
-        this.Mesh = Generic.Array2Dimension(XMesh_Num, YMesh_Num);
+    constructor(xMeshNum: number, yMeshNum: number, xMeshSize: number, yMeshSize: number, xPlus: number, yPlus: number) {
+        this.XMeshNum = xMeshNum;
+        this.YMeshNum = yMeshNum;
+        this.XMeshSize = xMeshSize;
+        this.YMeshSize = yMeshSize;
+        this.Xplus = xPlus;
+        this.Yplus = yPlus;
+        this.Mesh = Generic.Array2Dimension(xMeshNum, yMeshNum);
     }
     
     SetMeshValue(x: number, y: number, Value: number): void {
@@ -75,7 +75,7 @@ class clsMeshContour {
         return this.Mesh[x][y];
     }
     
-    Execute_Mesh(ContourNum: number, Contour_High_M: number[], Con_LineStac: contourLineStacInfo[]): number {
+    Execute_Mesh(ContourNum: number, contourHighM: number[], conLineStack: ContourLineStackInfo[]): number {
         /// <signature>
         /// <summary>等値線取得、戻り値は等値線ラインの数</summary>
         /// <param name="ContourNum" >取得する等値線の数</param>
@@ -89,24 +89,24 @@ class clsMeshContour {
         //'Con_Point() xy座標
 
         const hn = ContourNum;
-        const High_M = Contour_High_M;
-        const max_PartitiopnLevel = this.Get_PartitiopnLevel(this.XMeshNum, this.YMeshNum);
-        const High_CN: number[] = new Array(hn).fill(0); // 等値線の値ごとの等値線部分線分数
-        const con: conPart_info[][] = Array.from({ length: hn }, (): conPart_info[] => []);
-        Con_LineStac.length = 0; // contourLineStacInfo
+        const High_M = contourHighM;
+        const maxPartitionLevel = this.Get_PartitiopnLevel(this.XMeshNum, this.YMeshNum);
+        const highCN: number[] = new Array(hn).fill(0); // 等値線の値ごとの等値線部分線分数
+        const con: ConPartInfo[][] = Array.from({ length: hn }, (): ConPartInfo[] => []);
+        conLineStack.length = 0; // ContourLineStackInfo
   
         //等値線計算中1
-         this.Set_MeshQuadTree(this.Mesh, this.XMeshNum, this.YMeshNum, max_PartitiopnLevel);//線形四分木データをQuad_MeshDataに作成
+         this.Set_MeshQuadTree(this.Mesh, this.XMeshNum, this.YMeshNum, maxPartitionLevel);//線形四分木データをQuad_MeshDataに作成
          const n: PartitionCounter = [0];
          for (let k = 0; k < hn; k++) {
             const High = High_M[k] + this.ConValuePlus;
-            this.Get_Quad_MeshCell(High, this.PCell, 0, 0, n, max_PartitiopnLevel);//Quad_MeshDataから該当するメッシュの範囲を取得
+            this.Get_Quad_MeshCell(High, this.PCell, 0, 0, n, maxPartitionLevel);//Quad_MeshDataから該当するメッシュの範囲を取得
             for (let i = 0; i < n[0]; i++) {
                 const rect = this.Quad_MeshData[this.PCell[i]].Position as rectangle;
                 for (let j = rect.left; j <= rect.right; j++) {
                     for (let k2 = rect.top; k2 <= rect.bottom; k2++) {
                         if(typeof this.Mesh[j][k2] !== 'undefined') {
-                            this.Mesh_Sub(con, this.Mesh, j, k2, k, High, High_CN);
+                            this.Mesh_Sub(con, this.Mesh, j, k2, k, High, highCN);
                         }
                     }
                 }
@@ -115,15 +115,15 @@ class clsMeshContour {
         //等値線計算中2、バラバラの等高線線分を結合する
         let all_Pon = 0;
         for (let i = 0; i < hn; i++) {
-            const NL = High_CN[i];
+            const NL = highCN[i];
             if (0 < NL) {
                 const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false, new rectangle(0, this.XMeshNum, 0, this.YMeshNum));
                 const Arrange_LineCode = Generic.Array2Dimension(NL + 1, 2, 0);
                 for (let j = 0; j < Arrange_LineCode.length; j++) {
                     for (let k = 0; k < Arrange_LineCode[j].length; k++) { Arrange_LineCode[j][k] = 0; }
                 }
-                const Fringe: Fringe_Line_Info[] = new Array(NL + 1);
-                for (let j = 0; j < Fringe.length; j++) { Fringe[j] = new Fringe_Line_Info(); }
+                const Fringe: FringeLineInfo[] = new Array(NL + 1);
+                for (let j = 0; j < Fringe.length; j++) { Fringe[j] = new FringeLineInfo(); }
                 const Get_Linef: boolean[] = new Array(NL + 1);
                 for (let j = 0; j < Get_Linef.length; j++) { Get_Linef[j] = false; }
                 for (let j = 0; j < NL; j++) {
@@ -186,9 +186,9 @@ class clsMeshContour {
                                 Reverse_f = true;
                                     const k2 = Arrange_LineCode[Pon][0];
                                     const Kn = Arrange_LineCode[Pon][1];
-                                    const Fringe_Sub: Fringe_Line_Info[] = new Array(Kn);
+                                    const Fringe_Sub: FringeLineInfo[] = new Array(Kn);
                                 for (let k = 0 ; k < Kn; k++) {
-                                    Fringe_Sub[k]=new Fringe_Line_Info();
+                                    Fringe_Sub[k]=new FringeLineInfo();
                                     Fringe_Sub[k].code = Fringe[k2 + k].code;
                                     Fringe_Sub[k].direction = Fringe[k2 + k].direction;
                                 }
@@ -211,20 +211,20 @@ class clsMeshContour {
                     Pon++;
                 }
                 for (let j = 0; j < Pon; j++) {
-                    Con_LineStac[all_Pon + j] = new contourLineStacInfo(i, Arrange_LineCode[j][1] + 1);
+                    conLineStack[all_Pon + j] = new ContourLineStackInfo(i, Arrange_LineCode[j][1] + 1);
                     const k2 = Arrange_LineCode[j][0];
                     const fk2 = Fringe[k2];
                     if (fk2.direction === 1) {
-                        Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p0.Clone(), con[i][fk2.code].p1.Clone());
+                        conLineStack[all_Pon + j].points.push(con[i][fk2.code].p0.Clone(), con[i][fk2.code].p1.Clone());
                     } else {
-                        Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p1.Clone(), con[i][fk2.code].p0.Clone());
+                        conLineStack[all_Pon + j].points.push(con[i][fk2.code].p1.Clone(), con[i][fk2.code].p0.Clone());
                     }
                     for (let k = 1; k < Arrange_LineCode[j][1]; k++) {
                         const fk2 = Fringe[k2 + k];
                         if (fk2.direction === 1) {
-                            Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p1.Clone());
+                            conLineStack[all_Pon + j].points.push(con[i][fk2.code].p1.Clone());
                         } else {
-                            Con_LineStac[all_Pon + j].points.push(con[i][fk2.code].p0.Clone());
+                            conLineStack[all_Pon + j].points.push(con[i][fk2.code].p0.Clone());
                         }
                     }
                 }
@@ -232,8 +232,8 @@ class clsMeshContour {
             }
         }
         for (let i = 0; i < all_Pon; i++) {
-            for (let j = 0; j < Con_LineStac[i].NumOfPoint; j++) {
-                    const cp = Con_LineStac[i].points[j];
+            for (let j = 0; j < conLineStack[i].NumOfPoint; j++) {
+                    const cp = conLineStack[i].points[j];
                 cp.x = this.Xplus + cp.x / (this.XMeshNum - 1) * this.XMeshSize;
                 cp.y = this.Yplus + cp.y / (this.YMeshNum - 1) * this.YMeshSize;
             }
@@ -243,7 +243,7 @@ class clsMeshContour {
 
     }
 
-    Execute_FrameGet(GetSide: number, ContourNum: number, Contour_High_M: number[], Frame_LineContour: number[], Frame_Point: point[]): number {
+    Execute_FrameGet(GetSide: number, ContourNum: number, contourHighM: number[], frameLineContour: number[], framePoint: point[]): number {
         /// <signature>
         /// <summary>等値線の枠取得、戻り値は等値線ラインの数</summary>
         /// <param name="GetSide" >0左 1上 2右 3下</param>
@@ -257,7 +257,7 @@ class clsMeshContour {
 
         for (let i = 0; i < ContourNum - 1; i++) {
             //等高線が低→高に並べ替えてある必要
-            if(Contour_High_M[i + 1] < Contour_High_M[i]) { return -1;}
+            if(contourHighM[i + 1] < contourHighM[i]) { return -1;}
         }
         let sx = 0;
         let sy = 0;
@@ -290,32 +290,32 @@ class clsMeshContour {
                 break;
         }
         let vn = 0;
-        Frame_LineContour.length = 0; //point
-        Frame_Point.length = 0;
+        frameLineContour.length = 0; //point
+        framePoint.length = 0;
         switch (GetSide) {
             case 0:
-                vn = this.GetFrameSub(ContourNum, Contour_High_M, sx, sy, 0, 1, this.YMeshNum ?? 0, Frame_Point, Frame_LineContour);
+                vn = this.GetFrameSub(ContourNum, contourHighM, sx, sy, 0, 1, this.YMeshNum ?? 0, framePoint, frameLineContour);
                 break;
             case 1:
-                vn = this.GetFrameSub(ContourNum, Contour_High_M, sx, sy, 1, 0, this.XMeshNum ?? 0, Frame_Point, Frame_LineContour);
+                vn = this.GetFrameSub(ContourNum, contourHighM, sx, sy, 1, 0, this.XMeshNum ?? 0, framePoint, frameLineContour);
                 break;
             case 2:
-                vn = this.GetFrameSub(ContourNum, Contour_High_M, ex, sy, 0, 1, this.YMeshNum ?? 0, Frame_Point, Frame_LineContour);
+                vn = this.GetFrameSub(ContourNum, contourHighM, ex, sy, 0, 1, this.YMeshNum ?? 0, framePoint, frameLineContour);
                 break;
             case 3:
-                vn = this.GetFrameSub(ContourNum, Contour_High_M, sx, ey, 1, 0, this.XMeshNum ?? 0, Frame_Point, Frame_LineContour);
+                vn = this.GetFrameSub(ContourNum, contourHighM, sx, ey, 1, 0, this.XMeshNum ?? 0, framePoint, frameLineContour);
                 break;
         }
         for (let i = 0; i < vn; i++) {
-            const cp = Frame_Point[i];
+            const cp = framePoint[i];
             cp.x = this.Xplus + cp.x / (this.XMeshNum - 1) * this.XMeshSize;
             cp.y = this.Yplus + cp.y / (this.YMeshNum - 1) * this.YMeshSize;
         }
         return vn;
     }
     
-    private GetFrameSub(ContourNum: number, Contour_High_M: number[], sx: number, sy: number, Xplus: number, Yplus: number, LoopNum: number, Vpoint: point[], Vcon: number[]): number {
-        // Contour_High_M[]
+    private GetFrameSub(ContourNum: number, contourHighM: number[], sx: number, sy: number, xPlus: number, yPlus: number, LoopNum: number, Vpoint: point[], Vcon: number[]): number {
+        // contourHighM[]
         //Vpoint[]:point
         //Vcon[]
         const SepV: number[] = [];
@@ -329,7 +329,7 @@ class clsMeshContour {
         //始終点のコンターの位置を取得
         let SPN = -1;
         for (let i = ContourNum - 1; i >= 0; i--) {
-            if((Contour_High_M[i] + this.ConValuePlus) <= startVal) {
+            if((contourHighM[i] + this.ConValuePlus) <= startVal) {
                 SPN = i;
                 break;
             }
@@ -337,15 +337,15 @@ class clsMeshContour {
         SepV.push(0);
         VPC.push(SPN);
 
-        const ex = sx + (LoopNum - 1) * Xplus;
-        const ey = sy + (LoopNum - 1) * Yplus;
+        const ex = sx + (LoopNum - 1) * xPlus;
+        const ey = sy + (LoopNum - 1) * yPlus;
         let EPN = -1;
         const endVal = this.Mesh[ex]?.[ey];
         if (endVal === undefined) {
             return 0;
         }
         for (let i = ContourNum - 1; i >= 0; i--) {
-            if((Contour_High_M[i] + this.ConValuePlus) <= endVal) {
+            if((contourHighM[i] + this.ConValuePlus) <= endVal) {
                 EPN = i;
                 break;
             }
@@ -355,10 +355,10 @@ class clsMeshContour {
 
         //コンターの区切り箇所を取得
         for (let i = 0;i<=LoopNum - 2;i++){
-            const V1 = this.Mesh[sx + i * Xplus][ sy + i * Yplus] ?? 0;
-            const V2 = this.Mesh[sx + (i + 1) * Xplus][ sy + (i + 1) * Yplus] ?? 0;
+            const V1 = this.Mesh[sx + i * xPlus][ sy + i * yPlus] ?? 0;
+            const V2 = this.Mesh[sx + (i + 1) * xPlus][ sy + (i + 1) * yPlus] ?? 0;
             for (let j = 0;j< ContourNum ;j++){
-                const High = Contour_High_M[j] + this.ConValuePlus;
+                const High = contourHighM[j] + this.ConValuePlus;
                 const VH1 = V1 - High;
                 const VH2 = V2 - High;
                 if((((VH1 <= 0) && (VH2 >= 0)) || ((VH1 >= 0) && (VH2 <= 0))) && (V1 !== V2)) {
@@ -391,7 +391,7 @@ class clsMeshContour {
             }
             if( f === true ){
                 Vcon[n]=VPC[j];
-                if( Xplus === 1 ){
+                if( xPlus === 1 ){
                     Vpoint[n] = new point(SepV[j], sy);
                 }else{
                     Vpoint[n] = new point(sx, SepV[j]);
@@ -406,7 +406,7 @@ class clsMeshContour {
         return n;
     }
 
-    private Mesh_Sub(con: conPart_info[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, High_CN: number[]): void {
+    private Mesh_Sub(con: ConPartInfo[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, highCN: number[]): void {
         //メッシュ内で横切る等値線を取得
         const V1 = Mesh[mi][mj] ?? 0;
         const V2 = Mesh[mi + 1][mj] ?? 0;
@@ -453,7 +453,7 @@ class clsMeshContour {
         }
     }
 
-    private R2220(mi: number, mj: number, C12: number, C34: number, C24: number, C13: number, VH1: number, VH2: number, VH3: number, VH4: number, V1: number, V2: number, V3: number, V4: number, HK: number, High_CN: number[], con: conPart_info[][]): void {
+    private R2220(mi: number, mj: number, C12: number, C34: number, C24: number, C13: number, VH1: number, VH2: number, VH3: number, VH4: number, V1: number, V2: number, V3: number, V4: number, HK: number, highCN: number[], con: ConPartInfo[][]): void {
         let T = 0;
         const po: point[] = [];
         if(C12 === 1 ){
@@ -477,11 +477,11 @@ class clsMeshContour {
         }
         if(po[0].Equals(po[1])===false){
             //二つの座標が同じになってしまう場合は含めない
-            const Pon = High_CN[HK];
-            con[HK][Pon]=new conPart_info();
+            const Pon = highCN[HK];
+            con[HK][Pon]=new ConPartInfo();
             con[HK][Pon].p0 = po[0].Clone();
             con[HK][Pon].p1= po[1].Clone();
-            High_CN[HK] = Pon + 1;
+            highCN[HK] = Pon + 1;
             }
     }
 
@@ -495,23 +495,23 @@ class clsMeshContour {
         return -(1 - Math.pow(4, n)) / 3;
     }
     
-    private Get_MortonNumberXY(X: number, Y: number, SpaceLevel: number, max_PartitiopnLevel: number): number {
+    private Get_MortonNumberXY(X: number, Y: number, SpaceLevel: number, maxPartitionLevel: number): number {
         /// <summary>点の座標値と所属する空間レベルから、四分木線形配列の位置を返す</summary>
-        const zero ="0".repeat(max_PartitiopnLevel);
-        const x2 = (zero + X.toString(2)).right(max_PartitiopnLevel); //X座標を2進数に
-        const y2 = (zero + Y.toString(2)).right(max_PartitiopnLevel); //Y座標を2進数に
+        const zero ="0".repeat(maxPartitionLevel);
+        const x2 = (zero + X.toString(2)).right(maxPartitionLevel); //X座標を2進数に
+        const y2 = (zero + Y.toString(2)).right(maxPartitionLevel); //Y座標を2進数に
         let Num = "";
-        for(let i = 0;i< max_PartitiopnLevel;i++){
+        for(let i = 0;i< maxPartitionLevel;i++){
             Num +=  y2.substr(i, 1) + x2.substr( i, 1);
         }
         return parseInt(Num, 2) + this.Get_MortonArrayPosition(SpaceLevel);
     }
 
 
-    private Set_MeshQuadTree(Mesh: MeshGrid, xw: number, yw: number, max_PartitiopnLevel: number): void {
+    private Set_MeshQuadTree(Mesh: MeshGrid, xw: number, yw: number, maxPartitionLevel: number): void {
         /// <summary>メッシュの四分木データをQuad_MeshDataに作成</summary>
 
-        const stp = Math.pow(2, max_PartitiopnLevel - 1);
+        const stp = Math.pow(2, maxPartitionLevel - 1);
         const w = Math.floor(xw / stp);//最大分割レベルの横セル数
         const H = Math.floor(yw / stp);//最大分割レベルの縦セル数
         let mxv: number | undefined;
@@ -555,14 +555,14 @@ class clsMeshContour {
                         }
                     }
                 }
-                const mon = this.Get_MortonNumberXY(j, i, max_PartitiopnLevel - 1, max_PartitiopnLevel);
+                const mon = this.Get_MortonNumberXY(j, i, maxPartitionLevel - 1, maxPartitionLevel);
                 //四分木線形配列の最大分割レベルに、当該メッシュの範囲と、最大標高、最低標高を保存
-                this.Quad_MeshData[mon] = new Quad_Mesh_Info(new rectangle(px2, px2 + w2 - 2, i * H, i * H + h2 - 2), mxv ?? 0, mnv ?? 0, f);
+                this.Quad_MeshData[mon] = new QuadMeshInfo(new rectangle(px2, px2 + w2 - 2, i * H, i * H + h2 - 2), mxv ?? 0, mnv ?? 0, f);
             }
         }
 
         //親レベルの最大標高、最低標高を計算
-        for (let k = max_PartitiopnLevel - 1; k >= 1; k--) {
+        for (let k = maxPartitionLevel - 1; k >= 1; k--) {
             const SP = this.Get_MortonArrayPosition(k); //自レベルの四分木線形配列の開始位置
             const SP2 = this.Get_MortonArrayPosition(k - 1);//親レベルの四分木線形配列の開始位置
             for (let i = 0; i < Math.pow(4, k); i += 4) { //子4メッシュで親1メッシュ
@@ -588,7 +588,7 @@ class clsMeshContour {
                 }
                 //親空間レベルの最大／最小値を設定
                 const n = SP2 + Math.floor(i / 4);
-                this.Quad_MeshData[n] = new Quad_Mesh_Info(null, mxv ?? 0, mnv ?? 0, f);
+                this.Quad_MeshData[n] = new QuadMeshInfo(null, mxv ?? 0, mnv ?? 0, f);
                 this.Quad_MeshData[n].Position = n;
                 this.Quad_MeshData[n].LackF = f;
                 this.Quad_MeshData[n].Max = mxv;
@@ -598,15 +598,15 @@ class clsMeshContour {
 
     }
 
-    private Get_Quad_MeshCell(value: number, Qcell: MortonIndex[], SpaceLevel: number, Scell: number, n: PartitionCounter, max_PartitiopnLevel: number): void {
+    private Get_Quad_MeshCell(value: number, Qcell: MortonIndex[], SpaceLevel: number, Scell: number, n: PartitionCounter, maxPartitionLevel: number): void {
         /// <summary>四分木から等値線にかかるメッシュを抜き出す再帰処理</summary>
         if (SpaceLevel === 0) {
             //初回の呼び出し
-            Qcell.length = this.Get_MortonArrayPosition( max_PartitiopnLevel);
+            Qcell.length = this.Get_MortonArrayPosition( maxPartitionLevel);
             n[0] = 0;
             const Quad_MeshDataSub = this.Quad_MeshData[0];
             if ((Generic.Check_Two_Value_In(value, Quad_MeshDataSub.Min, Quad_MeshDataSub.Max) !== chvValue_on_twoValue.chvOuter) && (Quad_MeshDataSub.LackF === false)) {
-                this.Get_Quad_MeshCell(value, Qcell, SpaceLevel + 1, 0, n, max_PartitiopnLevel)
+                this.Get_Quad_MeshCell(value, Qcell, SpaceLevel + 1, 0, n, maxPartitionLevel)
             }
         } else {
             const SP = this.Get_MortonArrayPosition( SpaceLevel);
@@ -614,13 +614,13 @@ class clsMeshContour {
                 const Quad_MeshDataSub = this.Quad_MeshData[SP + Scell + i];
                 if ((Generic.Check_Two_Value_In(value, Quad_MeshDataSub.Min, Quad_MeshDataSub.Max) !== chvValue_on_twoValue.chvOuter) && (Quad_MeshDataSub.LackF === false)) {
                     //該当した場合
-                    if (SpaceLevel === max_PartitiopnLevel - 1) {
+                    if (SpaceLevel === maxPartitionLevel - 1) {
                         //最大レベルの場合、四分木線形配列の位置をQcellに記憶
                         Qcell[n[0]] = SP + Scell + i;
                         n[0] ++;
                     } else {
                         //最大レベルでない場合は、さらに子レベルを調べる
-                        this.Get_Quad_MeshCell(value, Qcell, SpaceLevel + 1, (Scell + i) * 4, n, max_PartitiopnLevel);
+                        this.Get_Quad_MeshCell(value, Qcell, SpaceLevel + 1, (Scell + i) * 4, n, maxPartitionLevel);
                     }
                 }
             }
@@ -643,4 +643,4 @@ class clsMeshContour {
     }
 }
 
-export { contourLineStacInfo, clsMeshContour };
+export { ContourLineStackInfo, MeshContour };
