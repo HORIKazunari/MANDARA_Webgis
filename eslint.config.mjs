@@ -17,6 +17,9 @@ export default tseslint.config(
       'src/.!*',
       'src/encoding.min.ts', // minifyされた外部ライブラリを除外
       'src/zlibrev.ts', // zlibライブラリコードを除外
+      'src/worldmap.ts', // JSON地図データ読み込み専用ファイル
+      'src/japanmap.ts', // JSON地図データ読み込み専用ファイル
+      'src/japanLatLonMap.ts', // JSON地図データ読み込み専用ファイル
       'node_modules/**',
       'dist/**',
       'playwright-report/**'
