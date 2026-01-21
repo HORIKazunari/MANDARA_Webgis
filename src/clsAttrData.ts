@@ -4704,14 +4704,14 @@ class clsAttrData {
         return { ok: true, emes: ObjectErrorMessage };
 
         //-----------------
-        function cnvAccessoryGroupBox(oa: JsonObject){
+        function cnvAccessoryGroupBox(oa: JsonObject): strAccessoryGroupBox_Info {
             const d=new strAccessoryGroupBox_Info();
             Object.assign(d, oa);
             d.Back=cnvBackGround_Box_Property(oa.Back as JsonObject);
             return d;
         }
 
-        function cnvLayerData(oldLay: JsonObject) {
+        function cnvLayerData(oldLay: JsonObject): strLayerDataInfo {
             const oLay = oldLay;
             const ld = new strLayerDataInfo();
             ld.Name = oLay.Name as string;
@@ -4950,21 +4950,21 @@ class clsAttrData {
             return ld;
         }
 
-        function cnvArrow(oa: JsonObject) {
+        function cnvArrow(oa: JsonObject): Arrow_Data {
             const a = new Arrow_Data();
             Object.assign(a, oa);
             return a;
         }
-        function cnvStart_End_Time_data(ot: JsonObject) {
+        function cnvStart_End_Time_data(ot: JsonObject): Start_End_Time_data {
             const nt = new Start_End_Time_data();
             nt.StartTime = cnvTime(ot.StartTime as JsonObject);
             nt.EndTime = cnvTime(ot.EndTime as JsonObject);
             return nt;
         }
-        function cnvTime(oldT: JsonObject) {
+        function cnvTime(oldT: JsonObject): strYMD {
             return new strYMD(oldT.Year as number, oldT.Month as number, oldT.Day as number);
         }
-        function cnvTotalmode(oldTM: JsonObject) {
+        function cnvTotalmode(oldTM: JsonObject): strTotalMode_Info {
             const otmo = oldTM.OverLay as JsonObject;
             const tm = new strTotalMode_Info();
             const tmo = tm.OverLay;
@@ -5005,7 +5005,7 @@ class clsAttrData {
             return tm;
         }
 
-        function cnvCondition(oldC: Array<JsonObject>) {
+        function cnvCondition(oldC: Array<JsonObject>): strCondition_DataSet_Info[] {
             const cd: strCondition_DataSet_Info[] = [];
             for (let i = 0; i < oldC.length; i++) {
                 const od = oldC[i];
@@ -5030,13 +5030,13 @@ class clsAttrData {
             }
             return cd;
         }
-        function cnvTileMapView(oldTV: JsonObject){
+        function cnvTileMapView(oldTV: JsonObject): strTileMapViewInfo {
             const tm = new strTileMapViewInfo();
             Object.assign(tm, oldTV);
             return tm;
         }
 
-        function cnvSouByou(oldSB: JsonObject) {
+        function cnvSouByou(oldSB: JsonObject): strSouByou_Info {
             const sb = new strSouByou_Info();
             Object.assign(sb, oldSB);
             if (sb.Auto===undefined){
@@ -5046,7 +5046,7 @@ class clsAttrData {
             return sb;
         }
 
-        function cnvValueShow(oldvs: JsonObject) {
+        function cnvValueShow(oldvs: JsonObject): strValueShow_Info {
             const sv = new strValueShow_Info();
             Object.assign(sv, oldvs);
             if (sv.DecimalNumber === undefined) {
@@ -5060,7 +5060,7 @@ class clsAttrData {
             return sv;
         }
 
-        function cnvScreen_Setting(oldSS: Array<JsonObject>) {
+        function cnvScreen_Setting(oldSS: Array<JsonObject>): strScreen_Setting_Data_Info[] {
             const ss: strScreen_Setting_Data_Info[] = [];
             for (let i = 0; i < oldSS.length; i++) {
                 const oldItem = oldSS[i];
@@ -5085,7 +5085,7 @@ class clsAttrData {
             return ss;
         }
 
-        function cnvDataNode(oldDN: JsonObject) {
+        function cnvDataNode(oldDN: JsonObject): strNote_Attri {
             const dn = new strNote_Attri();
             dn.Visible = oldDN.Visible as boolean;
             dn.Position = cnvPoint(oldDN.Position as JsonObject);
@@ -5094,7 +5094,7 @@ class clsAttrData {
             return dn;
         }
 
-        function cnvScreen_Back(oldsb: JsonObject) {
+        function cnvScreen_Back(oldsb: JsonObject): strScreen_Back_data {
             const sb = new strScreen_Back_data();
             sb.MapAreaFrameLine = cnvLineProperty(oldsb.MapAreaFrameLine as JsonObject);
             sb.ScreenFrameLine = cnvLineProperty(oldsb.ScreenFrameLine as JsonObject);
@@ -5103,7 +5103,7 @@ class clsAttrData {
             sb.ObjectInner = cnvTileProperty(oldsb.ObjectInner as JsonObject);
             return sb;
         }
-        function cnvMissingData(oldM: JsonObject) {
+        function cnvMissingData(oldM: JsonObject): strMissing_set {
             const m = new strMissing_set();
             m.Print_Flag = oldM.Print_Flag as boolean;
             m.Text = oldM.Text as string;
@@ -5116,7 +5116,7 @@ class clsAttrData {
             m.LineShape = cnvLineProperty(oldM.LineShape as JsonObject);
             return m;
         }
-        function cnvMapTitle(oldTtl: JsonObject) {
+        function cnvMapTitle(oldTtl: JsonObject): strTitle_Attri {
             const ttl = new strTitle_Attri();
             ttl.Visible = oldTtl.Visible as boolean;
             ttl.Position = cnvPoint(oldTtl.Position as JsonObject);
@@ -5124,7 +5124,7 @@ class clsAttrData {
             ttl.Font = cnvFontProperty(oldTtl.Font as JsonObject);
             return ttl;
         }
-        function cnvMapSCL(olsSCL: JsonObject) {
+        function cnvMapSCL(olsSCL: JsonObject): strScale_Attri {
             const scl = new strScale_Attri();
             scl.Visible = olsSCL.Visible as boolean;
             scl.Position = cnvPoint(olsSCL.Position as JsonObject);
@@ -5137,7 +5137,7 @@ class clsAttrData {
             scl.Unit = Number(olsSCL.Unit);
             return scl;
         }
-        function cnvMapLegend(oldML: JsonObject) {
+        function cnvMapLegend(oldML: JsonObject): strLegend_Attri {
             const MapLegend = new strLegend_Attri();
             const mlb = MapLegend.Base;
             const oldMLBase = oldML.Base as JsonObject;
@@ -5192,14 +5192,14 @@ class clsAttrData {
             return MapLegend;
         }
 
-        function cnvPoint(oldP: JsonObject) {
+        function cnvPoint(oldP: JsonObject): point {
             return new point(oldP.x as number, oldP.y as number);
         }
-        function cnvRectgle(orect: JsonObject) {
+        function cnvRectgle(orect: JsonObject): rectangle {
             const rec = new rectangle(orect.left as number, orect.right as number, orect.top as number, orect.bottom as number);
             return rec;
         }
-        function cnvCompass(ovsc: JsonObject) {
+        function cnvCompass(ovsc: JsonObject): strCompass_Attri {
             const vsc = new strCompass_Attri();
             const ovscdirWord = ovsc.dirWord as JsonObject;
             vsc.dirWord.East = ovscdirWord.East as string;
@@ -5214,7 +5214,7 @@ class clsAttrData {
             vsc.Position.y = ovscPosition.y as number;
             return vsc;
         }
-        function cnvMarkProperty(oldMK: JsonObject) {
+        function cnvMarkProperty(oldMK: JsonObject): Mark_Property {
             const mk = new Mark_Property();
             mk.PrintMark = oldMK.PrintMark as number;
             mk.ShapeNumber = oldMK.ShapeNumber as number;
@@ -5224,7 +5224,7 @@ class clsAttrData {
             mk.WordFont = cnvFontProperty(oldMK.WordFont as JsonObject);
             return mk;
         }
-        function cnvFontProperty(oldFont: JsonObject) {
+        function cnvFontProperty(oldFont: JsonObject): Font_Property {
             const fnt = new Font_Property();
             fnt.Color = cnvColorProperty(oldFont.Color as JsonObject);
             fnt.Size = oldFont.Size as number;
@@ -5252,7 +5252,7 @@ class clsAttrData {
             }
             return fnt;
         }
-        function cnvBackGround_Box_Property(oldBK: JsonObject) {
+        function cnvBackGround_Box_Property(oldBK: JsonObject): BackGround_Box_Property {
             const bk = new BackGround_Box_Property();
             bk.Tile = cnvTileProperty(oldBK.Tile as JsonObject)
             bk.Line = cnvLineProperty(oldBK.Line as JsonObject);
@@ -5260,11 +5260,11 @@ class clsAttrData {
             bk.Padding = oldBK.Padding as number;
             return bk;
         }
-        function cnvColorProperty(oldColor: JsonObject) {
+        function cnvColorProperty(oldColor: JsonObject): colorRGBA {
             const col = new colorRGBA();
             return Object.assign(col, oldColor);
         }
-        function cnvLineProperty(oldLine: JsonObject) {
+        function cnvLineProperty(oldLine: JsonObject): Line_Property {
             const line = new Line_Property();
             line.BlankF = oldLine.BlankF as boolean;
             line.Width = oldLine.Width as number;
@@ -5272,11 +5272,11 @@ class clsAttrData {
             line.Edge_Connect_Pattern = cnvLineEdgeProperty(oldLine.Edge_Connect_Pattern as JsonObject);
             return line;
         }
-        function cnvLineEdgeProperty(oldLineEdsge: JsonObject) {
+        function cnvLineEdgeProperty(oldLineEdsge: JsonObject): LineEdge_Connect_Pattern_Data_Info {
             const ledge = new LineEdge_Connect_Pattern_Data_Info();
             return Object.assign(ledge, oldLineEdsge);
         }
-        function cnvTileProperty(oldTile: JsonObject) {
+        function cnvTileProperty(oldTile: JsonObject): Tile_Property {
             const tile = new Tile_Property();
             tile.BlankF = oldTile.BlankF as boolean;
             tile.Color = cnvColorProperty(oldTile.Color as JsonObject);

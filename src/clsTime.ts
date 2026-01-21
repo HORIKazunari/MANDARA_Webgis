@@ -110,15 +110,15 @@ class clsTime  {
         }
     }
 
-    static GetYMD(date: Date) {
+    static GetYMD(date: Date): strYMD {
 
         return new strYMD(date.getFullYear(), date.getMonth()+1, date.getDate());
     }
-    static GetFromInputDate  (value: string) {
+    static GetFromInputDate  (value: string): strYMD {
         const t = value.split("-");
         return new strYMD(Number(t[0]), Number(t[1]), Number(t[2]));
     }
-    static Check_YMD_Correct(y: number, m: number, d: number) {
+    static Check_YMD_Correct(y: number, m: number, d: number): boolean | undefined {
 
         if ((new Date(y, m, 0).getDate() < d) || (m < 1)|| (m > 12) || (d < 1)) {
             return false;
@@ -304,7 +304,7 @@ class Setting_Info {
 
 
 class clsBase {
-    static Arrow() {
+    static Arrow(): Arrow_Data {
 
         const BArrow = new Arrow_Data();
         BArrow.End_Arrow_F = false;
@@ -316,7 +316,7 @@ class clsBase {
         return BArrow;
     }
 
-    static LineEdge  () {
+    static LineEdge  (): LineEdge_Connect_Pattern_Data_Info {
         const base = new LineEdge_Connect_Pattern_Data_Info()
         base.lineCap = "round";
         base.lineJoin = "round";
@@ -324,7 +324,7 @@ class clsBase {
         return base;
 
     }
-    static Line  () {
+    static Line  (): Line_Property {
         const BaseLine = new Line_Property();
         BaseLine.BlankF = false;
         BaseLine.Edge_Connect_Pattern = this.LineEdge();
@@ -333,32 +333,32 @@ class clsBase {
         return BaseLine;
     }
 
-    static BlankLine  () {
+    static BlankLine  (): Line_Property {
         const l = this.Line();
         l.BlankF = true;
         return l;
     }
 
 
-    static BoldLine  () {
+    static BoldLine  (): Line_Property {
         const l = this.Line();
         l.Width = 0.3;
         return l;
     }
-    static Tile  () {
+    static Tile  (): Tile_Property {
         const BaseTile = new Tile_Property();
         BaseTile.BlankF = false;
         BaseTile.Color = new colorRGBA([255, 255, 255]);
         return BaseTile;
     }
-    static BlancTile() {
+    static BlancTile(): Tile_Property {
 
         const BaseTile = new Tile_Property();
         BaseTile.BlankF = true;
         BaseTile.Color = new colorRGBA([255, 255, 255]);
         return BaseTile;
     }
-    static PaintTile(col: colorRGBA) {
+    static PaintTile(col: colorRGBA): Tile_Property {
 
         const BaseTile = new Tile_Property();
         BaseTile.BlankF = false;
@@ -366,7 +366,7 @@ class clsBase {
         return BaseTile;
     }
 
-    static Font  () {
+    static Font  (): Font_Property {
         const Base = new Font_Property();
         Base.Size = 4;
         Base.Color = new colorRGBA([0, 0, 0]);
@@ -388,7 +388,7 @@ class clsBase {
         return Base;
     }
 
-    static Mark  () {
+    static Mark  (): Mark_Property {
         const BMark = new Mark_Property();
         BMark.PrintMark = enmMarkPrintType.Mark;
         BMark.ShapeNumber=0; //Short
@@ -401,33 +401,33 @@ class clsBase {
         return BMark;
     }
 
-    static ColorWhite() {
+    static ColorWhite(): colorRGBA {
 
         return new colorRGBA([255, 255, 255]);
     }
-    static ColorGray() {
+    static ColorGray(): colorRGBA {
 
         return new colorRGBA([125, 125, 125]);
     }
-    static ColorBlack() {
+    static ColorBlack(): colorRGBA {
 
         return new colorRGBA([0, 0, 0]);
     }
-    static ColorBlue() {
+    static ColorBlue(): colorRGBA {
 
         return new colorRGBA([0, 0, 255]);
     }
-    static ColorRed() {
+    static ColorRed(): colorRGBA {
 
         return new colorRGBA([255, 0, 0]);
     }
-    static ColorGreen() {
+    static ColorGreen(): colorRGBA {
 
         return new colorRGBA([0, 255, 0]);
     }
 
 
-    static BlankBackground() {
+    static BlankBackground(): BackGround_Box_Property {
 
         const Back = new BackGround_Box_Property();
         Back.Line.BlankF = true;
@@ -437,7 +437,7 @@ class clsBase {
         return Back;
     }
 
-    static WhiteBackground() {
+    static WhiteBackground(): BackGround_Box_Property {
 
         const Back = new BackGround_Box_Property();
         Back.Line.BlankF = true;

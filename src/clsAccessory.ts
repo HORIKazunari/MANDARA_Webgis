@@ -1971,7 +1971,7 @@ export class Accessory {
     }
 
     //階級区分凡例分離表示の文字
-    static Get_SeparateClassWords(Class_div: strClass_Div_data[], checkN: number, DivNum: number, LL: number, RR: number){
+    static Get_SeparateClassWords(Class_div: strClass_Div_data[], checkN: number, DivNum: number, LL: number, RR: number): string {
         const state = appState();
 
         let UnderSTR ;
