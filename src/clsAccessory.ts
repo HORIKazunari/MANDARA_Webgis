@@ -1671,7 +1671,6 @@ export class clsAccessory {
 
         const retv = this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,false);
         const ww = retv.ww;
-        const hh = retv.hh;
         const hu = retv.hu;
         const bxw = retv.bxw;
         const byh = retv.byh;
@@ -1864,11 +1863,11 @@ export class clsAccessory {
             if (cvi.ODLinePat.BlankF=== false) {
                 const LW = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width)
                 const H = Math.max(UH, LW)
-                let r;
+                let _r;
                 if (cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern ==='butt' ) {
-                    r = state.attrData.Radius(rm, 0, rm);
+                    _r = state.attrData.Radius(rm, 0, rm);
                 } else {
-                    r = state.attrData.Radius(rm, cvi.ODLinePat.Width, rm);
+                    _r = state.attrData.Radius(rm, cvi.ODLinePat.Width, rm);
                 }
                 let fu;
                 if (PData.DataType === enmAttDataType.Category) {
@@ -2603,7 +2602,7 @@ export class clsAccessory {
     }
 
     //方位記号の外接四角形領域取得
-    static GetCompassRect(g: CanvasRenderingContext2D): rectangle | undefined {
+    static GetCompassRect(_g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -2620,21 +2619,18 @@ export class clsAccessory {
 
     //タイトルの外接四角形領域取得
     static GetTitleRect(g: CanvasRenderingContext2D): rectangle | undefined {
-        const state = appState();
         const v = this.getPrintTitle(g);
         return v.rect;
     }
 
     //注の外接四角形領域取得
     static GetNoteRect(g: CanvasRenderingContext2D): rectangle | undefined {
-        const state = appState();
         const v = this.getPrintNote(g);
         return v.rect;
     }
 
     //スケールの外接四角形領域取得
     static GetScaleRect(g: CanvasRenderingContext2D): rectangle {
-        const state = appState();
         const v = this.getScaleSub(g);
         return v.rect;
     }

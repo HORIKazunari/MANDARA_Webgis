@@ -93,7 +93,7 @@ export class TKY2JGDInfo_Impl {
         let B1: number, L1: number;      //原点の緯度，経度。基本的にradian
         let b: number, L: number;        //求める緯度，経度。基本的にradian
         let Bdeg: number, Ldeg: number;  //求める緯度，経度。基本的にdeg
-        let Gamma: number;                 //=γ 子午線収差角。radian
+        let _Gamma: number;                 //=γ 子午線収差角。radian
         let MMM: number;                   //縮尺係数
         let AEE: number, CEE: number, Ep2: number;
         let AJ: number, BJ: number, CJ: number, DJ: number, EJ: number;

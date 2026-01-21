@@ -624,7 +624,7 @@ class strClassODMode_data {
         return d;
     }
 }
-const enmMarkTurnDirection = {
+const _enmMarkTurnDirection = {
     AntiClockwise: 0,
     Clockwise: 1
 }
@@ -799,7 +799,7 @@ class strData_info {
     }
 }
 
-class strShowViewerLayerInfo {
+class _strShowViewerLayerInfo {
     //白地図初期属性データのレイヤ情報
     Name: string = ""; //String
     MapfileName: string = ""; //String
@@ -1053,7 +1053,7 @@ class strDummyObjectName_and_Code {
     }
 }
 
-const enmMoveDirection = {
+const _enmMoveDirection = {
     NextPos: 1,
     PreviousPos: -1
 }
@@ -1483,7 +1483,7 @@ interface FigureData {
 }
 
 // 有効な地図ラインの型（LineCodeプロパティを持つ）
-interface EnableMPLine {
+interface _EnableMPLine {
     LineCode: number;
     [key: string]: JsonValue;
 }
@@ -3598,7 +3598,7 @@ class clsAttrData {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
-    Draw_Tile_Region(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {}
+    Draw_Tile_Region(_g: CanvasRenderingContext2D, _BoundaryRect: rectangle, _L: Line_Property, _T: Tile_Property, _Kakudo: number): void {}
     
     Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_Box?.(g, BoundaryRect, L, T, Kakudo, this.TotalData.ViewStyle.ScrData);
@@ -4272,9 +4272,6 @@ class clsAttrData {
                 break;
             }
             case enmSoloMode_Number.MarkSizeMode: {
-                let selDiv = null;
-                const divMarkSize: null = null;
-                selDiv = divMarkSize;
                 return "記号の大きさモード";
                 break;
             }
@@ -5292,16 +5289,15 @@ class clsAttrData {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
         }
 
-        const str = attrText.split(/\n/);
         const retv = this.ReadAttrDataOneLine(attrText);
-        let ObjectErrorMessage = '';
-        let f = true;
+        let _ObjectErrorMessage = '';
+        let _f = true;
         if (retv.ok === true) {
             this.TotalData.ViewStyle.Zahyo = this.MapData.GetPrestigeZahyoMode();
             const retv2 = this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo);
             if (retv2.ok === false) {
-                ObjectErrorMessage += "地図ファイルの座標系・測地系を統一できません。" + '\n' + retv2.emes;
-                f = false;
+                _ObjectErrorMessage += "地図ファイルの座標系・測地系を統一できません。" + '\n' + retv2.emes;
+                _f = false;
             }
         }
         return { ok: retv.ok, emes: retv.emes };
@@ -7192,7 +7188,7 @@ class clsAttrData {
 
                 const Max = Math.max(Math.abs(DataMax), Math.abs(DataMin));
                 const Min = 0;
-                const ST = 0;
+                const _ST = 0;
                 const mdiv =Generic.WIC(10, Max, Min);
                 const mmb = data.SoloModeViewSettings.MarkBlockMD;
                 if ((mdiv.step < 1) && (mdiv.min >= 1)){
@@ -7539,7 +7535,7 @@ class clsAttrData {
         const v = L.SoloModeViewSettings.Div_Method;
         const EDataNum = L.EnableValueNum;
         const div_num = L.SoloModeViewSettings.Div_Num;
-        const dtype = L.DataType;
+        const _dtype = L.DataType;
         const Div_Value = new Array(div_num);
         switch (v) {
             case enmDivisionMethod.Free:

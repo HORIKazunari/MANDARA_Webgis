@@ -510,7 +510,7 @@ class MarkInfo {
     stac: number[] = [];
 }
 
-class clsDrawMarkFan {
+class _clsDrawMarkFan {
     static mShape: MarkInfo[] = [];
     
     static init() {
@@ -917,7 +917,7 @@ class clsSpline {
         const Maxpt = ln;
         const Kvalue = 3;
         const mxt = Maxpt - 1 - Kvalue + 2;
-        const ln2 = Math.floor(mxt / 0.1) + 2;
+        const _ln2 = Math.floor(mxt / 0.1) + 2;
 
         const pxy = [];
         let n = 0;
@@ -1016,7 +1016,7 @@ class clsSpline {
 }
 
 
-class clsTileMap {
+class _clsTileMap {
     private xhr: XMLHttpRequest[] = [];
     private TileMapData: {[key: string]: JsonObject};
     private LicenseFontData: Font_Property;
