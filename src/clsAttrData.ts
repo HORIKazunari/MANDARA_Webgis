@@ -3677,10 +3677,12 @@ class clsAttrData {
         if (ExtMfile.indexOf(checkMfile) === -1) {
             return checkMfile;
         } else {
-            let Omfile, n = 1;
-            do
+            let Omfile;
+            let n = 1;
+            do {
                 Omfile = checkMfile + n.toString();
-            while (ExtMfile.indexOf(Omfile) !== -1)
+                n++;
+            } while (ExtMfile.indexOf(Omfile) !== -1)
             return Omfile;
         }
     }
@@ -8339,9 +8341,8 @@ class clsAttrMapData {
         let f = true;
         let emes = "";
         //コレクションのループ
-        const self = this;
-        Object.keys(this.attrMapData).forEach(function (key) {
-            const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo as Zahyo_info, self.attrMapData[key].Map.Zahyo as Zahyo_info);
+        Object.keys(this.attrMapData).forEach((key) => {
+            const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(Zahyo as Zahyo_info, this.attrMapData[key].Map.Zahyo as Zahyo_info);
             if (retv.ok === false) { 
                 f = false;
                 emes += key + ":" + retv.emes + '\n';

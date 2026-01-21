@@ -1030,7 +1030,6 @@ class _clsTileMap {
 
     /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
     drawTileMap(g: CanvasRenderingContext2D, TileMap: JsonObject, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
-        const self = this; // thisコンテキストを保存
         if(this.xhr.length>0){
             for(const i in this.xhr){
                 this.xhr[i].abort();

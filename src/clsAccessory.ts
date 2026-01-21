@@ -2170,11 +2170,11 @@ export class clsAccessory {
     static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; FreqW: number; vn?: number; LL?: number; RR?: number; freqW?: number} {
         const state = appState();
 
-        let ww;
-        let hh;
+        let ww = 0;
+        let hh = 0;
         let hu;
         let bxw=0;
-        let byh;
+        let byh = 0;
         let vn;
         let sujiW=0;
         const freqW=0;

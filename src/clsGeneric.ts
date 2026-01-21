@@ -128,6 +128,7 @@ export class TKY2JGDInfo_Impl {
         //定数項 the same as bl2xy
         AEE = EPs.a * (1.0 - EPs.E); //a(1-e2)
         CEE = EPs.a / Math.sqrt(1.0 - EPs.E);   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
+        Ep2 = (CEE / AEE) ** 2 - 1;
         Ep2 = EPs.E / (1.0 - EPs.E); //e'2(e prime 2) Eta2を計算するため
 
         AJ = 4927697775.0 / 7516192768.0 * e16
