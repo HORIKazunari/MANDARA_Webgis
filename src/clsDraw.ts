@@ -5,7 +5,7 @@ import type { JsonObject, JsonValue, JsonArray } from './types';
 
 class clsDraw {
 
-    static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info) {
+    static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info): boolean {
 
 
         const Word_a = Word;
@@ -84,7 +84,7 @@ class clsDraw {
 
     }
 
-    static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: Screen_info) {
+    static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: Screen_info): void {
         let TH;
         if (ScrData.SampleBoxFlag === false) {
             TH = ScrData.Get_Length_On_Screen(P_Font.Size);
@@ -134,7 +134,7 @@ class clsDraw {
 
 
     //指定した幅で文字列を分割して返す
-    static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info) {
+    static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info): { Out_Text: string[]; Height: number; Width: number } {
 
         const Out_Text=[];
         const thdata = P_Font.toContextFont!(ScrData);
@@ -179,7 +179,7 @@ class clsDraw {
     }
 
  
-    static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string) {
+    static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string): void {
         const Pon = Polydata.Pon;
         const pxy = Polydata.pxy;
         const nPolyP = Polydata.nPolyP;
@@ -198,7 +198,7 @@ class clsDraw {
         g.fill("evenodd");
     }
 
-    static ClipPolyPolygon(g: CanvasRenderingContext2D, pxy: point[], AllnPolyP: number[]) {
+    static ClipPolyPolygon(g: CanvasRenderingContext2D, pxy: point[], AllnPolyP: number[]): void {
 
         const Pon = AllnPolyP.length;
         let n = 0;
@@ -215,7 +215,7 @@ class clsDraw {
         g.clip("evenodd");
     }
 
-    static Ellipse(g: CanvasRenderingContext2D, Point: point, r: number, InnerColor: string | undefined, BorderColor: string | undefined, width: number) {
+    static Ellipse(g: CanvasRenderingContext2D, Point: point, r: number, InnerColor: string | undefined, BorderColor: string | undefined, width: number): void {
 
         g.beginPath();
         g.arc(Point.x, Point.y, r, 0, 2 * Math.PI, false);
@@ -229,7 +229,7 @@ class clsDraw {
             g.stroke();
         }
     }
-    static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info) {
+    static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info): void {
 
         if (LinePat !== undefined) {
             const lc: CanvasLineCap[] = ['butt', 'square', 'round'];
@@ -273,7 +273,7 @@ class clsDraw {
 }
 
 class clsDrawLine {
-    static Line(g: CanvasRenderingContext2D, LinePat: Tile_Property, d1: point | point[], d2?: point | Screen_info, d3?: Screen_info) {
+    static Line(g: CanvasRenderingContext2D, LinePat: Tile_Property, d1: point | point[], d2?: point | Screen_info, d3?: Screen_info): void {
 
         if (LinePat.BlankF === true) {
             return;
@@ -292,7 +292,7 @@ class clsDrawLine {
         this.Draw_SolidPolyLine(g, pxy, LinePat, ScrData);
     }
 
-    static Draw_SolidPolyLine(g: CanvasRenderingContext2D, pxy: point[], LinePat: Tile_Property, ScrData: Screen_info) {
+    static Draw_SolidPolyLine(g: CanvasRenderingContext2D, pxy: point[], LinePat: Tile_Property, ScrData: Screen_info): void {
 
         g.lineCap = LinePat.Edge_Connect_Pattern.lineCap;
         g.lineJoin = LinePat.Edge_Connect_Pattern.lineJoin;
@@ -308,7 +308,7 @@ class clsDrawLine {
     }
 
     /**矢印描画 */
-    static Arrow(g: CanvasRenderingContext2D, P: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
+    static Arrow(g: CanvasRenderingContext2D, P: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info): void {
 
         const e2=new point() ;
         const e3 =new point() ;
@@ -339,7 +339,7 @@ class clsDrawLine {
 
     }
 
-    static Check_Draw_Arrow_Line(OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) {
+    static Check_Draw_Arrow_Line(OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info): boolean {
 
         const e2=new point() ;
         const e3=new point() ;
@@ -348,7 +348,7 @@ class clsDrawLine {
         return spatial.Line_Cross_Point(e3, e4, LineP1, LineP2);
     }
 
-    static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info) {
+    static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info): void {
 
 
         const VecX = OP.x - BeforPoint.x;
@@ -394,7 +394,7 @@ class clsDrawLine {
         a2.y = ac.y - newP.y;
     }
 
-    static Draw_Sample_LineBox(picBox: HTMLCanvasElement, Lpat: Tile_Property, ScrData: Screen_info) {
+    static Draw_Sample_LineBox(picBox: HTMLCanvasElement, Lpat: Tile_Property, ScrData: Screen_info): void {
 
         const w = picBox.width;
         const h = picBox.height;
@@ -416,7 +416,7 @@ class clsDrawLine {
 
 class clsDrawTile {
 
-    static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property) {
+    static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property): void {
 
         if(T.BlankF===false){
             const Polydata = { Pon: numPolyP.length, pxy: pxy, nPolyP:numPolyP };
@@ -426,7 +426,7 @@ class clsDrawTile {
     }
 
     //角丸四角形
-    static Draw_Tile_RoundBox(g: CanvasRenderingContext2D, _BoundaryRect: rectangle, Back: Back_Property, Kakudo: number, ScrData: Screen_info) {
+    static Draw_Tile_RoundBox(g: CanvasRenderingContext2D, _BoundaryRect: rectangle, Back: Back_Property, Kakudo: number, ScrData: Screen_info): void {
 
 
         if ((Back.Tile.BlankF === true) && (Back.Line.BlankF === true)) {
@@ -469,7 +469,7 @@ class clsDrawTile {
     }
 
     //タイル四角形描画
-    static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info) {
+    static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info): void {
 
         const pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
         if (T.BlankF === false) {
@@ -482,7 +482,7 @@ class clsDrawTile {
     }
 
     //サンプル背景フレーム表示
-    static Darw_Sample_BackGroundBox(picBox: HTMLCanvasElement, BG: Back_Property, ScrData: Screen_info) {
+    static Darw_Sample_BackGroundBox(picBox: HTMLCanvasElement, BG: Back_Property, ScrData: Screen_info): void {
 
         const w = picBox.width;
         const h = picBox.height;
@@ -513,7 +513,7 @@ class MarkInfo {
 class _clsDrawMarkFan {
     static mShape: MarkInfo[] = [];
     
-    static init() {
+    static init(): void {
 
         //'最初の数値：記号内の要素の数
         //'要素の内訳
@@ -601,13 +601,13 @@ class _clsDrawMarkFan {
         }
     }
 
-    static getMarkShameNum() {
+    static getMarkShameNum(): number {
 
         const n = this.mShape.length;
         return n;
     }
 
-    static Mark_Print(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property, ScrData: Screen_info) {
+    static Mark_Print(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property, ScrData: Screen_info): void {
 
         switch (Mark.PrintMark) {
             case enmMarkPrintType.Mark: {
@@ -710,7 +710,7 @@ class _clsDrawMarkFan {
     }
 
 
-    static Draw_DAEN(g: CanvasRenderingContext2D, Position: point, XR: number, YR: number, Kakudo: number, L: Tile_Property, T: Tile_Property, Real_Circle_F: boolean, ScrData: Screen_info) {
+    static Draw_DAEN(g: CanvasRenderingContext2D, Position: point, XR: number, YR: number, Kakudo: number, L: Tile_Property, T: Tile_Property, Real_Circle_F: boolean, ScrData: Screen_info): boolean | undefined {
 
         if ((XR === 0) || (YR === 0)) { return }
 
@@ -749,7 +749,7 @@ class _clsDrawMarkFan {
         return inf;
     }
 
-    static Get_DAEN_Peri_XY(Position: point,  XR: number,  YR: number, Kakudo: number,  ScrData: Screen_info) {
+    static Get_DAEN_Peri_XY(Position: point,  XR: number,  YR: number, Kakudo: number,  ScrData: Screen_info): point[] | undefined {
 
         const ST = 1 / ((XR + YR) / 5);
         const pxy = [];
@@ -783,7 +783,7 @@ class _clsDrawMarkFan {
         }
     }
 
-    static Draw_Mark_Sample_Box(picMarkBox: HTMLCanvasElement, MK: Mark_Property, ScrData: Screen_info) {
+    static Draw_Mark_Sample_Box(picMarkBox: HTMLCanvasElement, MK: Mark_Property, ScrData: Screen_info): void {
 
         const w = picMarkBox.width;
         const h = picMarkBox.height;
@@ -793,7 +793,7 @@ class _clsDrawMarkFan {
         this.Mark_Print(g, new point(w / 2, h / 2), Math.min(w, h) * 0.4, MK, ScrData);
     }
 
-    static Draw_Fan(g: CanvasRenderingContext2D, centerP: point, r: number, start_p: number, end_p: number, Lpat: Tile_Property, Tile: Tile_Property, ScrData: Screen_info) {
+    static Draw_Fan(g: CanvasRenderingContext2D, centerP: point, r: number, start_p: number, end_p: number, Lpat: Tile_Property, Tile: Tile_Property, ScrData: Screen_info): void {
 
 
         const w = ScrData.Get_Line_Width(Lpat.Width);
@@ -889,7 +889,7 @@ class clsSpline {
         return pxy;
     }
 
-    static Spline_Get_Fill(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
+    static Spline_Get_Fill(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info): point[] {
 
 
         let lpf;
@@ -944,7 +944,7 @@ class clsSpline {
         return pxy;
     }
 
-    static Spline_xy(T: number, Kvalue: number, Maxpt: number, pt: point[]) {
+    static Spline_xy(T: number, Kvalue: number, Maxpt: number, pt: point[]): point {
 
         const P = new point();
 
@@ -1003,7 +1003,7 @@ class clsSpline {
         return value1 + value2;
     }
 
-    static Knot(i: number, Kvalue: number, Maxpt: number) {
+    static Knot(i: number, Kvalue: number, Maxpt: number): number {
 
         if (i < Kvalue) {
             return 0
@@ -1073,7 +1073,7 @@ class _clsTileMap {
             request(d.URL as string, d.ScrPosition as unknown as rectangle);
         }
 
-        function request(url: string, destRect: rectangle) {
+        function request(url: string, destRect: rectangle): void {
             const n = self.xhr.length;
             self.xhr[n] = new XMLHttpRequest();
             self.xhr[n].open('GET', url, true);
