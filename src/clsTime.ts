@@ -7,13 +7,13 @@ import type { JsonValue } from './types';
 import { Start_End_Time_data } from './clsAttrData';
 
 class clsTime  {
-    static GetNullYMD  () {
+    static GetNullYMD(): strYMD {
         const ymd = new strYMD(0, 0, 0)
         return ymd;
     }
 
     // 前日を取得
-    static getYesterday(YMD: strYMD) {
+    static getYesterday(YMD: strYMD): strYMD {
 
         const d = YMD.toDate();
         d.setDate(d.getDate() - 1);
@@ -21,7 +21,7 @@ class clsTime  {
     }
 
     // 翌日を取得
-    static getTomorrow(YMD: strYMD) {
+    static getTomorrow(YMD: strYMD): strYMD {
 
         const d = YMD.toDate();
         d.setDate(d.getDate() + 1);
@@ -29,13 +29,13 @@ class clsTime  {
     }
 
     //指定の日付の間の日数を数える。Time1がTime2より後の場合は負の値
-    static getDifference (Time1: strYMD, Time2: strYMD) {
+    static getDifference (Time1: strYMD, Time2: strYMD): number {
         const day1 = Time1.toDate();
         const day2 = Time2.toDate();
         const termDay = (day2.getTime() - day1.getTime()) / 86400000;
         return termDay;
     }
-    static GetNullStartEndYMD(){
+    static GetNullStartEndYMD(): Start_End_Time_data {
 
         const d=new Start_End_Time_data();
         d.StartTime=this.GetNullYMD();
@@ -43,7 +43,7 @@ class clsTime  {
         return d;
     }
 
-    static YMDtoString(YMD: strYMD) {
+    static YMDtoString(YMD: strYMD): string {
 
         if (YMD.nullFlag() === true) {
             return "未設定";
@@ -53,12 +53,12 @@ class clsTime  {
     }
 
     /**20131116のような年月日をそのまま数値にした値を返す。nullValueの場合は0 */
-    static YMDtoValue(YMD: strYMD) {
+    static YMDtoValue(YMD: strYMD): number {
 
             return YMD.Day + YMD.Month * 100 + YMD.Year * 10000;
     }
 
-    static GetYMDfromValue(value: number){
+    static GetYMDfromValue(value: number): strYMD {
 
         const YMD =new  strYMD();
         const s  = "00000000" + value.toString().right( 8);
@@ -67,7 +67,7 @@ class clsTime  {
         YMD.Day = Number(s.substr(6, 2));
         return YMD;
     }
-    static StartEndtoString(StartEnd: Start_End_Time_data) {
+    static StartEndtoString(StartEnd: Start_End_Time_data): string {
 
         let txs = "";
         if (StartEnd.StartTime.nullFlag() === true) {
@@ -80,7 +80,7 @@ class clsTime  {
         txs += this.YMDtoString(StartEnd.EndTime);
         return txs;
     }
-    static checkDurationIn(duration: Start_End_Time_data, Point: strYMD) {
+    static checkDurationIn(duration: Start_End_Time_data, Point: strYMD): boolean {
 
         //現時点が指定の期間に含まれているかどうかをチェックし、含まれている場合にtrue
         if ((Point.nullFlag() === true) || (duration.StartTime.nullFlag() === true) && (duration.EndTime.nullFlag() === true)) {

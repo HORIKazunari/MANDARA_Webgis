@@ -333,7 +333,7 @@ export class clsShapefile {
 
 
 
-        function Get_WCharData_Binary(Position: number, GetLen: number, encode: string) {
+        function Get_WCharData_Binary(Position: number, GetLen: number, encode: string): string {
             const ubt: number[] = [];
             for (let i = 0; i < GetLen; i++) {
                 ubt.push(dv.getInt8(Position + i));
@@ -455,7 +455,7 @@ export class clsShapefile {
 
     
 
-        function getPointXY(dv: DataView, pos: number) {
+        function getPointXY(dv: DataView, pos: number): point {
             const p = new point();
             p.x = dv.getFloat64(pos, endian.little);
             p.y = dv.getFloat64(pos + 8, endian.little);

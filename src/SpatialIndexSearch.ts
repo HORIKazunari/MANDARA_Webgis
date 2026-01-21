@@ -341,7 +341,7 @@ class SpatialIndexSearchInternal {
         this.Add_Point_Sub(2, XY, TagData);
     }
 
-    AddSinglePoint(XY1: latlon, TagData: string | number) {
+    AddSinglePoint(XY1: latlon, TagData: string | number): void {
         /// <signature>
         /// <summary>地点オブジェクトを追加</summary>
         /// <returns type="Number" >同じ値の数</returns>
@@ -353,7 +353,7 @@ class SpatialIndexSearchInternal {
         const XY = new Array(XY1);
         this.Add_Point_Sub(1, XY, TagData);
     }
-    AddSinglePoint_Array(Num: number, XY: latlon[], TagData: string | number) {
+    AddSinglePoint_Array(Num: number, XY: latlon[], TagData: string | number): void {
         //1地点オブジェクトを配列で追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -365,7 +365,7 @@ class SpatialIndexSearchInternal {
         }
     }
 
-    GetSamePointNumber(x: number, y: number) {
+    GetSamePointNumber(x: number, y: number): GetObjectPointTagInfo {
         /// <signature>
         /// <summary>同じ地点を求め、番号を返す 存在しない場合は-1を返す</summary>
         /// <returns type="Number" >同じ値の数</returns>
@@ -527,7 +527,7 @@ class SpatialIndexSearchInternal {
     }
 
     //近い地点を返す、数と番号（配列）を返す（複数出力） 存在しない場合は-1を返す
-    GetNearPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number = -1, ExceptionTag?: (string | number)[]) {
+    GetNearPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number = -1, ExceptionTag?: (string | number)[]): {num: number; Onumber?: number[]; PNumber?: number[]; Tags?: (string | number)[]; Distance?: number[]} {
         const ObStac: number[] = [];
         const PStac: number[] = [];
         const Distance: number[] = [];
@@ -572,7 +572,7 @@ class SpatialIndexSearchInternal {
         return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance}
     }
 
-    GetNearestPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number, ExceptionTag?: string | number | (string | number)[]) {
+    GetNearestPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number, ExceptionTag?: string | number | (string | number)[]): number | undefined {
         /// <signature>
         /// <summary>最も近い地点を求め、数と番号（配列）を返す（複数出力） 存在しない場合は-1を返す</summary>
         /// <param name="BaseDistance" >基準となる距離</param>
@@ -713,7 +713,7 @@ class SpatialIndexSearchInternal {
         }
     }
 
-    AddLine(Pnum: number, XY: latlon[], TagData: string | number) {
+    AddLine(Pnum: number, XY: latlon[], TagData: string | number): void {
         //線オブジェクト追加
         if (this.ObjectType !== SpatialPointType.SPILine) {
             alert("線以外はできません。");
@@ -722,7 +722,7 @@ class SpatialIndexSearchInternal {
         this.Add_Point_Sub(Pnum, XY , TagData);
     }
 
-    ChangeTagValue(ChangeValue: number, StartRangeValue: number, LastRangeValue: number) {
+    ChangeTagValue(ChangeValue: number, StartRangeValue: number, LastRangeValue: number): void {
         //タグの値を変化させる
         for (let i = 0; i < this.ObjectNum; i++) {
             const tagNum = Number(this.ObjectXY[i].Tag);
@@ -732,7 +732,7 @@ class SpatialIndexSearchInternal {
         }
     }
 
-    AddRect(XY1_rectangle: point | rectangle, XY2_TagData: latlon | string | number, TagData?: string | number) {
+    AddRect(XY1_rectangle: point | rectangle, XY2_TagData: latlon | string | number, TagData?: string | number): void {
         //四角オブジェクト追加
         if (this.ObjectType !== SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
