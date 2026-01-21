@@ -1,5 +1,5 @@
 ﻿
-import { clsSortingSearch } from './SortingSearch';
+import { SortingSearch } from './SortingSearch';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 
 type MeshCell = number | undefined;
@@ -374,7 +374,7 @@ class MeshContour {
         }
         const VPN = SepV.length;
 
-        const SepVSort= new clsSortingSearch();
+        const SepVSort= new SortingSearch();
         SepVSort.AddRange(SepV);
         Vpoint.length = VPN;
         Vcon.length = VPN;

@@ -2,7 +2,7 @@
 
 import { appState } from './core/AppState';
 
-export class clsAccessory {
+export class Accessory {
 
     /**線種の凡例 */
     static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean): boolean {

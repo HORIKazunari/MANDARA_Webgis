@@ -957,7 +957,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         }
 
         const oldObjn = oldAttrData.Get_ObjectNum(OldL);
-        const sortoldObjName = new clsSortingSearch();
+        const sortoldObjName = new SortingSearch();
         for (let i = 0; i < oldObjn; i++) {
             sortoldObjName.Add(oldAttrData.Get_KenObjName(OldL, i));
         }
@@ -1093,7 +1093,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         const Data_Prop_Value = Get_Data_Property_Value(newAttrData, L, D);
 
         const Kouho = [];// New List(Of Layer_Data_InfoCheck)
-        const Sort_KouhoV = new clsSortingSearch()
+        const Sort_KouhoV = new SortingSearch()
 
         for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
             for (let j = 0; j < oldAttrData.LayerData[i].atrData.Count; j++) {

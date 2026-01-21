@@ -1,5 +1,5 @@
 ﻿import { appState } from './core/AppState';
-import { clsAccessory } from './clsAccessory';
+import { Accessory } from './clsAccessory';
 import { clsSpline } from './clsDraw';
 import type { JsonValue } from './types';
 
@@ -247,7 +247,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         P = spatial.checkAndModifyPointInRect(P, new  rectangle(0, 1, 0, 1));
                                     }
                                     vs.AttMapCompass.Position = P;
-                                    clsAccessory.Compass_print(g);
+                                    Accessory.Compass_print(g);
                                     break;
                                 }
                                 case Check_Acc_Result.Title: {
@@ -257,7 +257,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         P = spatial.checkAndModifyPointInRect(P, new  rectangle(0,  1, 0, 1));
                                     }
                                     vs.MapTitle.Position = P;
-                                    clsAccessory.Title_Print(g);
+                                    Accessory.Title_Print(g);
                                     break;
                                 }
                                 case Check_Acc_Result.Scale: {
@@ -267,7 +267,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         P = spatial.checkAndModifyPointInRect(P, new  rectangle(0, 0.95,0, 0.95));
                                     }
                                     vs.MapScale.Position = P;
-                                    clsAccessory.Scale_Print(g);
+                                    Accessory.Scale_Print(g);
                                     break;
                                 }
                                 case Check_Acc_Result.Note: {
@@ -277,7 +277,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         P = spatial.checkAndModifyPointInRect(P, new  rectangle(0,  1, 0, 1));
                                     }
                                     vs.DataNote.Position = P;
-                                    clsAccessory.Note_Print(g);
+                                    Accessory.Note_Print(g);
                                     break;
                                 }
                                 case Check_Acc_Result.Legend: {
@@ -287,7 +287,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         P = spatial.checkAndModifyPointInRect(P, new  rectangle(0, 0.95,0, 0.95));
                                     }
                                     vs.MapLegend.Base.LegendXY[state.attrData.TempData.Accessory_Temp.Edit_Legend] = P;
-                                    clsAccessory.Legend_print(g,  state.attrData.TempData.Accessory_Temp.Edit_Legend, false);
+                                    Accessory.Legend_print(g,  state.attrData.TempData.Accessory_Temp.Edit_Legend, false);
                                     break;
                                 }
                                 case Check_Acc_Result.GroupBox: {
@@ -299,7 +299,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                         rcp = spatial.checkAndModifyPointInRect(rcp, new rectangle(0, 0, vs.ScrData.frmPrint_FormSize.width(), vs.ScrData.frmPrint_FormSize.height()));
                                         atg = new rectangle(rcp.x - atg.width() / 2, rcp.y - atg.height() / 2, atg.width(), atg.height());
                                     }
-                                    clsAccessory.AccGroupBoxDraw(g);
+                                    Accessory.AccGroupBoxDraw(g);
                                     break;
                                 }
                             }

@@ -2,7 +2,7 @@
  * Utility to sort values while keeping track of their original indices.
  * Supports duplicate detection and index lookups after sorting.
  */
-export class clsSortingSearch {
+export class SortingSearch {
     private SortNumber: number[] = [];
     private Sortrr: number[] = [];
     private DataNum: number = 0;
@@ -260,4 +260,4 @@ export class clsSortingSearch {
 
 // Legacy global exposure for existing code paths
 // TODO: progressively replace with explicit imports where used
-(globalThis as typeof globalThis & { clsSortingSearch?: typeof clsSortingSearch }).clsSortingSearch = clsSortingSearch;
+(globalThis as typeof globalThis & { clsSortingSearch?: typeof SortingSearch }).clsSortingSearch = SortingSearch;

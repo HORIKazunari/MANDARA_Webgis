@@ -22,7 +22,7 @@ class GetObjectPointTagInfo {
     }
 }
 
-class Object_Info {
+class ObjectInfo {
     ObjectPointNumber: number; //オブジェクト内のポイント番号
     ObjectNumber: number; //メッシュ内のオブジェクト番号
     
@@ -32,12 +32,12 @@ class Object_Info {
     }
 }
 
-class IndexContents_Info {
+class IndexContentsInfo {
     Num: number = 0; //メッシュ内のオブジェクト数
-    ObjectNumber: Object_Info[] = [];
+    ObjectNumber: ObjectInfo[] = [];
 }
 
-class ObjectXY_Info {
+class ObjectXYInfo {
     Pnum: number;
     Point: latlon[];
     Tag: string | number;
@@ -51,13 +51,13 @@ class ObjectXY_Info {
     }
 }
 
-class clsSpatialIndexSearch {
+class SpatialIndexSearchInternal {
     /// <summary>空間インデックス</summary>
-    private MeshIndex: (IndexContents_Info | undefined)[][] = [];
+    private MeshIndex: (IndexContentsInfo | undefined)[][] = [];
     private XYSize: number = 0;
     private meshw: number = 0;
     private meshh: number = 0;
-    private ObjectXY: ObjectXY_Info[] = [];
+    private ObjectXY: ObjectXYInfo[] = [];
     private ObjectType: SpatialPointType;
     private MeshRect: rectangle = new rectangle();
     private AddEndF: boolean = false;
@@ -67,12 +67,12 @@ class clsSpatialIndexSearch {
     private RectSetF: boolean = false;
     private LineCutNum: number = 0;
     
-    constructor(ObjType: SpatialPointType, ExtraRangeFlag: boolean, Rect?: rectangle, ExtraRange_Size?: number) {
+    constructor(ObjType: SpatialPointType, ExtraRangeFlag: boolean, Rect?: rectangle, extraRangeSize?: number) {
         this.ObjectType = ObjType;
         this.ExtraRangeF = ExtraRangeFlag;
         
-        if (typeof ExtraRange_Size !== 'undefined') {
-            this.ExtraRange = ExtraRange_Size;
+        if (typeof extraRangeSize !== 'undefined') {
+            this.ExtraRange = extraRangeSize;
         }
         
         if (typeof Rect !== 'undefined') {
@@ -257,10 +257,10 @@ class clsSpatialIndexSearch {
 
     private Add_Mesh_PointSub(X: number, Y: number, ObjNum: number, Pointnum: number): void {
         if (typeof this.MeshIndex[X][Y] === "undefined"){
-            this.MeshIndex[X][Y]  = new IndexContents_Info();
+            this.MeshIndex[X][Y]  = new IndexContentsInfo();
         }
         const n = this.MeshIndex[X][Y].Num;
-        this.MeshIndex[X][Y].ObjectNumber[n] = new Object_Info(ObjNum,Pointnum);
+        this.MeshIndex[X][Y].ObjectNumber[n] = new ObjectInfo(ObjNum,Pointnum);
         this.MeshIndex[X][Y].Num++;
     }
 
@@ -306,7 +306,7 @@ class clsSpatialIndexSearch {
         }
     }
     private Add_Point_Sub(Pnum: number, XY: latlon[], TagData: string | number): void {
-        this.ObjectXY[this.ObjectNum] = new ObjectXY_Info(Pnum, XY, TagData,false);
+        this.ObjectXY[this.ObjectNum] = new ObjectXYInfo(Pnum, XY, TagData,false);
         if (this.AddEndF === true) {
             switch (this.ObjectType) {
                 case SpatialPointType.SinglePoint:
@@ -754,4 +754,4 @@ class clsSpatialIndexSearch {
 
 }
 
-export { clsSpatialIndexSearch as SpatialIndexSearch };
+export { SpatialIndexSearchInternal as SpatialIndexSearch };

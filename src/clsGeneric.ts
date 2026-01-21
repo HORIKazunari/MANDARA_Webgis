@@ -1046,7 +1046,7 @@ export class spatial {
                 return boundArrange;
             }
         }
-        const PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false, undefined, undefined);
+        const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false, undefined, undefined);
         let fnl = 0
         let Pon = 0
         let Eline2_n = 0
@@ -2629,7 +2629,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static Check_DataType(DataNum: number, ObjNum: number, aData: string[][]) {
 
         const UNT = [];
-        const SS = new clsSortingSearch();
+        const SS = new SortingSearch();
         for (let i = 0; i < DataNum; i++) {
             let f = true;
             for (let j = 0; j < ObjNum; j++) {
@@ -3678,7 +3678,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**配列中から含まれる要素とその数の一覧の配列[{value: num:}]を返す */
     static getArrayContentsList<T>(originArray: T[]){
 
-        const s=new clsSortingSearch();
+        const s=new SortingSearch();
         s.AddRange(originArray);
         return s.EachValue_Array();
     }

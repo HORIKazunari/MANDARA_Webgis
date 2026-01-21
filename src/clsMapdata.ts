@@ -1,7 +1,7 @@
 import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsTime } from './clsTime';
-import { clsSortingSearch } from './SortingSearch';
+import { SortingSearch } from './SortingSearch';
 import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { Start_End_Time_data } from './clsAttrData';
@@ -1459,7 +1459,7 @@ class clsMapdata {
         const Arrange_LineCode = badata.Arrange_LineCode;
         const Fringe = badata.Fringe;
 
-        const SIndex = new clsSpatialIndexSearch(SpatialPointType.SPIRect, false, undefined, undefined);
+        const SIndex = new SpatialIndexSearch(SpatialPointType.SPIRect, false, undefined, undefined);
 
         TotalInOutNum.length=Polygon_Num;
         TotalInOutNum.fill(0);
@@ -2119,7 +2119,7 @@ class clsMapdata {
         const XYstac2 = mLine2.PointSTC;
 
         //    最初に座標が一致するポイントを取得
-        const PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false, TwoRect);
+        const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false, TwoRect);
         PointIndex.AddSinglePoint_Array(PNum2, XYstac2, -1);
         PointIndex.AddEnd();
 
@@ -2644,7 +2644,7 @@ class clsMapdata {
             }
         }
 
-        const TimeSort = new clsSortingSearch();
+        const TimeSort = new SortingSearch();
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             const ols = ObjData.LineCodeSTC[i];
             for (let j = 0; j < ols.NumOfTime; j++) {
@@ -2842,7 +2842,7 @@ class clsMapdata {
     }
 
     Check_ALl_Line_Connect() {
-        const PointIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, false);
+        const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false);
         for (let i = 0; i < Map.ALIN; i++) {
             const ml = this.MPLine[i];
             if (ml.NumOfPoint > 0) {

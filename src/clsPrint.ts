@@ -1,4 +1,4 @@
-﻿import { clsAccessory } from './clsAccessory';
+﻿import { Accessory } from './clsAccessory';
 import { ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
 import { clsDraw } from './clsDraw';
@@ -6,7 +6,7 @@ import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
 import { Legend2_Atri } from './clsAttrData';
-import { clsSortingSearch } from './SortingSearch';
+import { SortingSearch } from './SortingSearch';
 
 const enmTotalMode_Number = {
     DataViewMode: 0,
@@ -719,7 +719,7 @@ class clsPrint {
         atm.MarkBar_MaxValue = alds.MarkBarMD.MaxValue;
 
 
-        const SortV = new clsSortingSearch();
+        const SortV = new SortingSearch();
         for (let i = 0; i < Objn; i++) {
             if ((ShowF[i] === true) && (Missing_DataArray[i] === false)) {
                 const v = MV_Array[i];
@@ -863,7 +863,7 @@ class clsPrint {
         for (let i = 0; i < Missing_DataArraySub.length; i++) {
             Missing_DataArray[i] = Missing_DataArraySub[i];
         }
-        const MK_Order = new clsSortingSearch();
+        const MK_Order = new SortingSearch();
         const MV_ArraySub = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
         for (let i = 0; i < MV_ArraySub.length; i++) {
             MV_Array[i] = MV_ArraySub[i];
@@ -1013,7 +1013,7 @@ class clsPrint {
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
         if((av.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order === enmLatLonLine_Order.Front) && (av.LatLonLine_Print.Visible === true)) {
-            clsAccessory.LatLonLine_Print(g);
+            Accessory.LatLonLine_Print(g);
         }
 
         const Lpat = av.Screen_Back.MapAreaFrameLine;
@@ -1034,16 +1034,16 @@ class clsPrint {
         const at = state.attrData.TempData.Accessory_Temp;
         const av = state.attrData.TotalData.ViewStyle;
         if(av.AttMapCompass.Visible === true) {
-            at.MapCompass_Rect = clsAccessory.GetCompassRect(g);
+            at.MapCompass_Rect = Accessory.GetCompassRect(g);
         }
         if(av.MapTitle.Visible === true) {
-            at.MapTitle_Rect = clsAccessory.GetTitleRect(g);
+            at.MapTitle_Rect = Accessory.GetTitleRect(g);
             const padw = state.attrData.Get_PaddingPixcel(av.MapTitle.Font.Back);
             at.MapTitle_Rect.inflate(padw, padw);
         }
 
         if(av.DataNote.Visible === true) {
-            at.DataNote_Rect = clsAccessory.GetNoteRect(g);
+            at.DataNote_Rect = Accessory.GetNoteRect(g);
             if(at.DataNote_Rect.width() !== 0) {
                 const padw = state.attrData.Get_PaddingPixcel(av.DataNote.Font.Back);
                 at.DataNote_Rect.inflate(padw, padw);
@@ -1052,12 +1052,12 @@ class clsPrint {
 
         if(av.MapScale.Visible === true) {
             const padw = state.attrData.Get_PaddingPixcel(av.MapScale.Back);
-            at.MapScale_Rect = clsAccessory.GetScaleRect(g);
+            at.MapScale_Rect = Accessory.GetScaleRect(g);
             at.MapScale_Rect.inflate(padw, padw);
         }
         if((av.MapLegend.Base.Visible === true)|| (av.MapLegend.Line_DummyKind.Line_Visible === true)){
             for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
-                clsAccessory.Legend_print(g,  i, true);
+                Accessory.Legend_print(g,  i, true);
             }
         }
 
@@ -1092,14 +1092,14 @@ class clsPrint {
     static Figure_Print(g: CanvasRenderingContext2D, back_gazo_f: boolean) {
         const state = appState();
         if(back_gazo_f === false) {
-            clsAccessory.AccGroupBoxDraw(g);
-            clsAccessory.Scale_Print(g);
-            clsAccessory.Note_Print(g);
-            clsAccessory.Compass_print(g);
-            clsAccessory.Title_Print(g);
+            Accessory.AccGroupBoxDraw(g);
+            Accessory.Scale_Print(g);
+            Accessory.Note_Print(g);
+            Accessory.Compass_print(g);
+            Accessory.Title_Print(g);
             for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
                 if(state.attrData.Check_Screen_In(state.attrData.TempData.Accessory_Temp.MapLegend_W[i].Rect) === true) {
-                    clsAccessory.Legend_print(g, i, false);
+                    Accessory.Legend_print(g, i, false);
                 }
             }
         }
@@ -1512,7 +1512,7 @@ class clsPrint {
         this.Vector_Connect_CenterP_To_SymbolPoint(g, Layernum);
         const obn = al.atrObject.ObjectNum;
 
-        const en_sort = new clsSortingSearch();
+        const en_sort = new SortingSearch();
         for (let i = 0; i < obn; i++) {
             let env = 0;
             for (let j = 0; j < selGraph.Data.length; j++) {
@@ -2328,7 +2328,7 @@ console.log(SortSumDataValue)
         let cend = 3;
 
         //メッシュ点周辺のオブジェクトを検索する
-        const AngleSort = new clsSortingSearch();
+        const AngleSort = new SortingSearch();
         const dir_num = Generic.Array2Dimension(3, 3, 0);
         const dir_c = Generic.Array2Dimension(3, 3, false);
         do {
@@ -3593,7 +3593,7 @@ console.log(SortSumDataValue)
     static ClassMode_Point_Shape_DrawOrder( LayerNum: number, DataNum: number) {
         const state = appState();
         let en_sort = [];
-        const s=new clsSortingSearch();
+        const s=new SortingSearch();
         if(state.attrData.TotalData.ViewStyle.PointPaint_Order !== enmPointOnjectDrawOrder.ObjectOrder) {
             en_sort = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
             s.AddRange(en_sort);

@@ -2964,7 +2964,7 @@ function setting(locSearch: string) {
             //等値線数値の大きい順に並べ替える
             const n = lstcontourSeparateValue.selectedIndex;
             const nsc = attrData.nowDataSolo().ContourMD;
-            const sort = new clsSortingSearch();
+            const sort = new SortingSearch();
             const stac = [];
             const lst = [];
             for (let i = 0; i < nsc.IrregularNum; i++) {
