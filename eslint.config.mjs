@@ -44,13 +44,13 @@ export default tseslint.config(
       'no-var': 'error',
       'prefer-const': 'error',
       
-      // 型安全性の向上
-      '@typescript-eslint/no-unsafe-assignment': 'warn',
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
-      '@typescript-eslint/no-unsafe-call': 'warn',
-      '@typescript-eslint/no-unsafe-return': 'warn',
+      // 型安全性の向上 - 段階的に修正
+      '@typescript-eslint/no-unsafe-assignment': 'warn',      // 大量のため一旦warn
+      '@typescript-eslint/no-unsafe-member-access': 'warn',   // 大量のため一旦warn
+      '@typescript-eslint/no-unsafe-call': 'warn',            // 大量のため一旦warn
+      '@typescript-eslint/no-unsafe-return': 'warn',          // 一旦warn
       
-      // 関数とメソッドの型定義
+      // 関数とメソッドの型定義 - 段階的に修正
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/explicit-function-return-type': ['warn', {
         allowExpressions: true,
@@ -60,8 +60,8 @@ export default tseslint.config(
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       
       // コード品質
-      '@typescript-eslint/no-empty-function': 'warn',
-      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-empty-function': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'eqeqeq': ['error', 'always', { null: 'ignore' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
@@ -74,9 +74,9 @@ export default tseslint.config(
       }],
       
       // null/undefined安全性
-      '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/prefer-nullish-coalescing': 'warn',
-      '@typescript-eslint/prefer-optional-chain': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/strict-boolean-expressions': 'off', // 厳密すぎるので無効化
       
       // 命名規則（段階的に厳格化）

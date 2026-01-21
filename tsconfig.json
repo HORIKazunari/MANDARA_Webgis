@@ -18,7 +18,7 @@
     /* TypeScript厳密モード - 段階的改善のため一時的に緩和 */
     "strict": false,                    // 段階的に有効化
     "noImplicitAny": true,              // ✅ 重要: any型の暗黙的な使用を検出（型安全性の要）
-    "strictNullChecks": false,          // 🔧 一時的にオフ: null/undefinedチェックは段階的に修正
+    "strictNullChecks": true,           // ✅ 有効化: null/undefinedチェックを強化
     "strictFunctionTypes": true,        // 関数型の厳密なチェック
     "strictBindCallApply": true,        // bind/call/applyの厳密なチェック
     "noImplicitThis": false,            // 🔧 一時的にオフ: プロトタイプ拡張の型問題を段階的に修正
