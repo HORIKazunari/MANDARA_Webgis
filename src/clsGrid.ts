@@ -8,7 +8,7 @@ type ShapeValue = (typeof enmShape)[keyof typeof enmShape];
 type MeshNumberValue = (typeof enmMesh_Number)[keyof typeof enmMesh_Number];
 type AttDataTypeValue = (typeof enmAttDataType)[keyof typeof enmAttDataType];
 
-type GridLayerDataInfo = {
+type _GridLayerDataInfo = {
     MapFile: string;
     Type: string;
     Shape: string;
@@ -31,7 +31,7 @@ class Layer_Data_InfoCheck {
     Value = 0; // Double
 }
 
-function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
+function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
     const state = appState();
     const GridLayerData = {
         MapFile: "MapFile" as const,
@@ -44,7 +44,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         Comment: "Comment" as const,
         ReferenceSystem: "ReferenceSystem" as const
     };
-    let Change_Data = false;
+    let _Change_Data = false;
     let ZahyoOk = false; // Boolean
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String
@@ -394,7 +394,7 @@ function clsGrid(newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void)
         ErrorCheck();
     }
     /**表示レイヤを変更した場合に発生 */
-    function Change_LayerSelect(Layer: number, PreviousLayer: number) {
+    function Change_LayerSelect(_Layer: number, _PreviousLayer: number) {
         Set_LayerTypeShape();
         ErrorCheck();
     }

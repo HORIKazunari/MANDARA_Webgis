@@ -17,7 +17,7 @@ import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
 // point プロトタイプメソッドは globals.d.ts で定義済み
 
 
-class point3 {
+class _point3 {
     x: number;
     y: number;
     z: number;
@@ -37,7 +37,7 @@ class strDegreeMinuteSeconde {
 }
 
 //度分秒緯度経度構造体
-class strLatLonDegreeMinuteSecond {
+class _strLatLonDegreeMinuteSecond {
     LatitudeDMS: strDegreeMinuteSeconde;
     LongitudeDMS: strDegreeMinuteSeconde;
 
@@ -192,7 +192,7 @@ const enmProjection_Info = {
 // enmZahyo_mode_info はglobals.d.tsで定義済み
 // cstRectangle_Cross は globals.d.ts で定義済み
 
-class Cross_Line_Data {
+class _Cross_Line_Data {
     BeforPoint: point = new point();
     Point: point = new point();
 }
@@ -354,7 +354,7 @@ class strTileMapViewInfo {
 }
 
 /**取得する個別タイル 旧Watchize_Data_Info*/
-class tileList_Data_Info {
+class _tileList_Data_Info {
     LatLonBox: JsonObject | undefined = undefined;
     ScrPosition: rectangle = new rectangle();
     URL: string = "";

@@ -100,7 +100,7 @@ export class TKY2JGDInfo_Impl {
         let FJ: number, GJ: number, HJ: number, IJ: number;
         let S0: number;                    //赤道から座標原点までの子午線弧長
         let M: number;
-        let Eta2: number, M1: number, N1: number;          //phi1の関数
+        let Eta2: number, _M1: number, N1: number;          //phi1の関数
         let Eta2phi: number, Mphi: number, Nphi: number;   //phi(=B)の関数
         let T: number, T2: number, T4: number, T6: number;
         let e2: number, e4: number, e6: number, e8: number, e10: number;
@@ -240,10 +240,10 @@ export class TKY2JGDInfo_Impl {
         Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
         Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
         Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
-        MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0);
-        MMM = MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0);
-        MMM = MMM + 1.0;
-        MMM = MMM * M0;
+        let _MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0);
+        _MMM = _MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0);
+        _MMM = _MMM + 1.0;
+        _MMM = _MMM * M0;
 
         //出力
         Bdeg = b * this.rad2deg;
@@ -334,7 +334,7 @@ export class TKY2JGDInfo_Impl {
 
     private BLHXYZcalc(Brad: number, ALrad: number, H: number, EP: EllipPar): point3 {
         const a = EP.a;
-        const fi = EP.f1;
+        const _fi = EP.f1;
         const E = EP.E;
         const CB = Math.cos(Brad);
         const SB = Math.sin(Brad);
@@ -617,7 +617,7 @@ export class spatial {
         return retV;
         //水平線アルゴリズムで、線分と調査地点の座標との水平線上のX座標を求める。Y範囲がずれていた場合はfalse
         function Get_CrossXPoint(checkPoint: point, LinePoint1: point, LinePoint2: point) {
-            const x  = checkPoint.x;
+            const _x  = checkPoint.x;
             const y  = checkPoint.y;
             const ay  = LinePoint1.y;
             const by  = LinePoint2.y;
@@ -2109,7 +2109,7 @@ export class Generic {
                     }
                     Generic.clear_backDiv();
                 }
-                function unzipError(err: Error) {
+                function unzipError(_err: Error) {
                     Generic.clear_backDiv();
                     alert(url+"の展開に失敗しました");
                 }
@@ -2320,7 +2320,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const n = str.length;
         let idx = -1;
         const bytes = [];
-        let i, j, c;
+        let i, _j, c;
 
         for (i = 0; i < n; ++i) {
             c = str.charCodeAt(i);
@@ -3402,7 +3402,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 new2.close();
             }
         }
-        win1p = "on";
+        const _win1p = "on";
         Xw = Xv + 50;
         Yw = Yv + 80;
         new2 = window.open(help_url, "_blank", "titlebar=No,status=0,scrollbars=1,resizable=0,width=" + Xw + ",height=" + Yw + "");
