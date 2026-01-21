@@ -464,8 +464,8 @@ interface IAttrData {
     setSoloMode?: (arg1: number, arg2?: number, arg3?: number) => void;
     Get_DataTitle?: (arg1?: number, arg2?: number, arg3?: boolean) => string;
     Get_SelectedDataTitle?: () => string;
-    nowGraph?: () => any; // strGraph_Data (clsAttrData.tsで定義)
-    nowLabel?: () => any; // strLabel_Data (clsAttrData.tsで定義)
+    nowGraph?: () => strGraph_Data; // strGraph_Data (clsAttrData.tsで定義)
+    nowLabel?: () => strLabel_Data; // strLabel_Data (clsAttrData.tsで定義)
     ResetMPSubLineXY?: () => void;
     ResetObjectPrintedCheckFlag?: () => void;
     check_AutoSoubyou_Enable?: (arg1?: number, arg2?: number) => boolean;
@@ -1300,9 +1300,9 @@ declare class Mark_Property {
 }
 
 // 型エイリアス
-type MarkSizeMD = any; // strMarkSize_Data
-type MarkBlockMD = any; // strMarkBlock_Data
-type MapCompass = any; // strMapCompass_Attri
+type MarkSizeMD = strMarkSize_Data; // strMarkSize_Data
+type MarkBlockMD = strMarkBlock_Data; // strMarkBlock_Data
+type MapCompass = strCompass_Attri; // strCompass_Attri
 type color = colorRGBA; // colorRGBAの型エイリアス
 type Color = colorRGBA; // colorRGBA型エイリアス（大文字始まり）
 type Arrow = Arrow_Property; // Arrow_Propertyの型エイリアス

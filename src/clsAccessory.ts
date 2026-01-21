@@ -1999,18 +1999,18 @@ export class clsAccessory {
         const comma_f = vs.MapLegend.Base.Comma_f;
         switch (checkN) {
             case 0:
-                fu = Generic.Figure_Using3((Class_div[checkN] as any)?.Value || Class_div[checkN], LL, RR, comma_f) + MoreSTR;
+                fu = Generic.Figure_Using3((Class_div[checkN] as strClass_Div_data)?.Value || Class_div[checkN], LL, RR, comma_f) + MoreSTR;
                 break;
             case (DivNum - 1):
-                if ((vs.MapLegend.ClassMD.SeparateClassWords as any) === enmSeparateClassWords.Japanese) {
-                    fu = Generic.Figure_Using3((Class_div[checkN - 1] as any)?.Value || Class_div[checkN - 1], LL, RR, comma_f) + UnderSTR;
+                if ((vs.MapLegend.ClassMD.SeparateClassWords as enmSeparateClassWords) === enmSeparateClassWords.Japanese) {
+                    fu = Generic.Figure_Using3((Class_div[checkN - 1] as strClass_Div_data)?.Value || Class_div[checkN - 1], LL, RR, comma_f) + UnderSTR;
                 } else {
-                    fu = UnderSTR + Generic.Figure_Using3((Class_div[checkN - 1] as any)?.Value || Class_div[checkN - 1], LL, RR, comma_f).trim();
+                    fu = UnderSTR + Generic.Figure_Using3((Class_div[checkN - 1] as strClass_Div_data)?.Value || Class_div[checkN - 1], LL, RR, comma_f).trim();
                 }
                 break;
             default:
-                fu = Generic.Figure_Using3((Class_div[checkN] as any)?.Value || Class_div[checkN], LL, RR, comma_f) + HifunSTR +
-                    Generic.Figure_Using3((Class_div[checkN - 1] as any)?.Value || Class_div[checkN - 1], LL, RR, comma_f) + MiddleSTR;
+                fu = Generic.Figure_Using3((Class_div[checkN] as strClass_Div_data)?.Value || Class_div[checkN], LL, RR, comma_f) + HifunSTR +
+                    Generic.Figure_Using3((Class_div[checkN - 1] as strClass_Div_data)?.Value || Class_div[checkN - 1], LL, RR, comma_f) + MiddleSTR;
                 break;
         }
         return fu;
