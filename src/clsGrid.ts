@@ -44,7 +44,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         Comment: "Comment" as const,
         ReferenceSystem: "ReferenceSystem" as const
     };
-    let _Change_Data = false;
+    const _Change_Data = false;
     let ZahyoOk = false; // Boolean
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String

@@ -90,21 +90,15 @@ export class TKY2JGDInfo_Impl {
 
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
         const M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
-        let B1: number, L1: number;      //原点の緯度，経度。基本的にradian
         let b: number, L: number;        //求める緯度，経度。基本的にradian
-        let Bdeg: number, Ldeg: number;  //求める緯度，経度。基本的にdeg
         let _Gamma: number;                 //=γ 子午線収差角。radian
         let MMM: number;                   //縮尺係数
-        let AEE: number, CEE: number, Ep2: number;
+        let Ep2: number;
         let AJ: number, BJ: number, CJ: number, DJ: number, EJ: number;
-        let FJ: number, GJ: number, HJ: number, IJ: number;
-        let S0: number;                    //赤道から座標原点までの子午線弧長
+        let FJ: number, GJ: number, HJ: number;
         let M: number;
-        let Eta2: number, _M1: number, N1: number;          //phi1の関数
-        let Eta2phi: number, Mphi: number, Nphi: number;   //phi(=B)の関数
+        let _M1: number, N1: number;          //phi1の関数
         let T: number, T2: number, T4: number, T6: number;
-        let e2: number, e4: number, e6: number, e8: number, e10: number;
-        let e12: number, e14: number, e16: number;
         let S1: number, phi1: number, oldphi1: number, icount: number;
         let Bunsi: number, Bunbo: number;
         let YM0: number, N1CosPhi1: number;
@@ -116,18 +110,18 @@ export class TKY2JGDInfo_Impl {
         EPs.f = epSrc.f ?? 0;
         EPs.E = epSrc.E ?? 0;
         EPs.namec = epSrc.namec ?? "";
-        e2 = EPs.E ?? 0;
-        e4 = e2 * e2;
-        e6 = e4 * e2;
-        e8 = e4 * e4;
-        e10 = e8 * e2;
-        e12 = e8 * e4;
-        e14 = e8 * e6;
-        e16 = e8 * e8;
+        const e2 = EPs.E ?? 0;
+        const e4 = e2 * e2;
+        const e6 = e4 * e2;
+        const e8 = e4 * e4;
+        const e10 = e8 * e2;
+        const e12 = e8 * e4;
+        const e14 = e8 * e6;
+        const e16 = e8 * e8;
 
         //定数項 the same as bl2xy
-        AEE = EPs.a * (1.0 - EPs.E); //a(1-e2)
-        CEE = EPs.a / Math.sqrt(1.0 - EPs.E);   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
+        const AEE = EPs.a * (1.0 - EPs.E); //a(1-e2)
+        const CEE = EPs.a / Math.sqrt(1.0 - EPs.E);   //C=a*sqr(1+e'2)=a / sqr(1 - e2)
         Ep2 = (CEE / AEE) ** 2 - 1;
         Ep2 = EPs.E / (1.0 - EPs.E); //e'2(e prime 2) Eta2を計算するため
 
@@ -176,16 +170,16 @@ export class TKY2JGDInfo_Impl {
         GJ = GJ + 3003.0 / 2097152.0 * e12
         HJ = 765765.0 / 469762048.0 * e16
         HJ = HJ + 45045.0 / 117440512.0 * e14
-        IJ = 765765.0 / 7516192768.0 * e16
+        const IJ = 765765.0 / 7516192768.0 * e16
 
 
-        B1 = this.XY_Genten[Kei].lat * this.deg2rad;
-        L1 = this.XY_Genten[Kei].lon * this.deg2rad;
+        const B1 = this.XY_Genten[Kei].lat * this.deg2rad;
+        const L1 = this.XY_Genten[Kei].lon * this.deg2rad;
 
   
 
         //赤道からの子午線長の計算
-        S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
+        const S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
         M = S0 + X / M0;
 
         //Baileyの式による異性緯度（isometric latitude）phi1の計算。
@@ -237,17 +231,17 @@ export class TKY2JGDInfo_Impl {
         // Gamma = Gamma * T;
 
         //縮尺係数の計算 「精密測地網一次基準点測量計算式」P51のmを求める式より
-        Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
-        Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
-        Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
+        const Eta2phi = Ep2 * Math.cos(b) * Math.cos(b);     //=η*η。Bはphiと同じ。
+        const Mphi = CEE / Math.sqrt((1.0 + Eta2phi) ** 3.0);
+        const Nphi = CEE / Math.sqrt(1.0 + Eta2phi);
         let _MMM = Y ** 4.0 / (24.0 * Mphi * Mphi * Nphi * Nphi * M0 ** 4.0);
         _MMM = _MMM + Y * Y / (2.0 * Mphi * Nphi * M0 ** 2.0);
         _MMM = _MMM + 1.0;
         _MMM = _MMM * M0;
 
         //出力
-        Bdeg = b * this.rad2deg;
-        Ldeg = L * this.rad2deg;
+        const Bdeg = b * this.rad2deg;
+        const Ldeg = L * this.rad2deg;
 
         return new latlon(Bdeg, Ldeg);
     }
@@ -3392,7 +3386,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static CenterPage(help_url: string, Xv: number, Yv: number) {
 
         const win2p: string = "";
-        let win1p: string = "";
+        const win1p: string = "";
         let new2: Window | null = null;
         let Xw: number;
         let Yw: number;

@@ -406,7 +406,7 @@ class MeshContour {
         return n;
     }
 
-    private Mesh_Sub(con: ConPartInfo[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, highCN: number[]): void {
+    private Mesh_Sub(con: ConPartInfo[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, _highCN: number[]): void {
         //メッシュ内で横切る等値線を取得
         const V1 = Mesh[mi][mj] ?? 0;
         const V2 = Mesh[mi + 1][mj] ?? 0;

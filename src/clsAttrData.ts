@@ -2,7 +2,7 @@
 
 import { appState } from './core/AppState';
 import { Generic, CheckedListBox } from './clsGeneric';
-import { clsSortingSearch } from './SortingSearch';
+import { SortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata, EnableMPLine_Data } from './clsMapdata';
 import type { strLayerInfo } from './clsWindow';
@@ -3636,7 +3636,7 @@ class clsAttrData {
     //データ項目の中央値を求める
     Get_MedianValue(Layernum: number, DataNum: number): number {
 
-        const ST = new clsSortingSearch();
+        const ST = new SortingSearch();
         const MV = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
         const n = MV.length;
         const n2 = Math.floor(n / 2);
@@ -7546,7 +7546,7 @@ class clsAttrData {
             case enmDivisionMethod.Quantile://分位数
             case enmDivisionMethod.AreaQuantile: {
                const EnableDT = this.Get_Data_Cell_Array_Without_MissingValue(Layernum, DataNum);
-                const SortV = new clsSortingSearch();
+                const SortV = new SortingSearch();
                 for (let i = 0; i < EDataNum; i++) {
                     SortV.Add(Number(EnableDT[i].DataValue));
                 }
@@ -8241,7 +8241,7 @@ class clsAttrData {
                             //ループオブジェクトの中で、最後に残す一番面積の大きいループを決める
                             for (let j = 0; j < ld.atrObject.ObjectNum; j++) {
                                 const ELine = this.Get_Enable_KenCode_MPLine( i, j);
-                                const Loop_mens = new clsSortingSearch();
+                                const Loop_mens = new SortingSearch();
                                 let LoopOnlyf = true;
                                 for (let k = 0; k < ELine.length; k++) {
                                     const Lcode = ELine[k].LineCode;
@@ -8456,7 +8456,7 @@ class clsAttrMapData {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 class clsObjectNameSearch {
-    private Object_Name_Search: clsSortingSearch;
+    private Object_Name_Search: SortingSearch;
     private Object_Name_Stac_for_Search_O_Code: InstanceType<clsObjectNameSearch['ObjNameAndTime_Info']>[];
     private checkObjectNameKanjiCompatibleFF: boolean;
 
@@ -8467,7 +8467,7 @@ class clsObjectNameSearch {
 
     constructor(MapData: clsMapdata, CheckKanjiCompatibleFlag: boolean) {
         //オブジェクト名検索用クラス
-        this.Object_Name_Search = new clsSortingSearch();
+        this.Object_Name_Search = new SortingSearch();
         this.Object_Name_Stac_for_Search_O_Code = []; //ObjNameAndTime_Info
         this.checkObjectNameKanjiCompatibleFF = CheckKanjiCompatibleFlag; //Boolean
         // let Name_n = 0
