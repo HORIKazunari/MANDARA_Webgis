@@ -1192,6 +1192,7 @@ class clsPrint {
                     }
                     at.Accessory_Temp.MapLegend_W[0] = atw;
                     break;
+                }
                 case enmTotalMode_Number.OverLayMode: {
                     //重ね合わせモード凡例の設定
                     const ato = state.attrData.TotalData.TotalMode.OverLay;
@@ -3085,6 +3086,7 @@ console.log(SortSumDataValue)
                 state.attrData.Draw_Mark(g, pos, r, MK);
                     return r;
                 break;
+            }
             case enmShape.LineShape:
                 if(state.attrData.Check_screen_Kencode_In(Layernum, kpos) === true) {
                     state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][kpos] = true;

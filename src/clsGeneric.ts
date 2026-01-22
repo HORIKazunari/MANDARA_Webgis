@@ -6204,7 +6204,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
         mdownF=false;
     }
-}
+};
 
 
 
@@ -6220,14 +6220,14 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 (HTMLElement.prototype as Record<string, unknown>).setNumberValue = function (v: number){
     this.preValue=v;
     this.value=v;
-}
+};
 //select要素の子要素を削除
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
 (HTMLElement.prototype as unknown)['removeAll'] = function (): void {
     while (this.lastChild) {
         this.removeChild(this.lastChild);
     }
-}
+};
 
 /**select要素のoptionを入れ替える */
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
@@ -6412,7 +6412,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 // @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要
 (String.prototype as unknown)['removePx'] = function (): number {
     return parseInt(this.substr(0, this.length - 2))
-}
+};
 
 //文字列繰り返し
 // @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要

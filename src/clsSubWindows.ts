@@ -93,6 +93,7 @@ function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: col
                     }
                 }
                 break;
+            }
         }
 
         const ctx = canvas.getContext("2d");

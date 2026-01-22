@@ -1,6 +1,4 @@
-﻿/// <reference path="globals.d.ts" />
-
-import { appState } from './core/AppState';
+﻿import { appState } from './core/AppState';
 import { Generic, CheckedListBox } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';

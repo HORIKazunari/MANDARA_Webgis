@@ -1927,4 +1927,6 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             }
     }
 }
-    
+
+
+}
