@@ -75,11 +75,12 @@ function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: col
             case 2:
                 ColData = Generic.TwoColorGradation(colcol[0], colcol[1], ClassN);
                 break;
-            case 3:
+            case 3: {
                 const cp = Math.floor(ClassN / 2);
                 ColData = Generic.ThreeColorGradation(colcol[0], colcol[1], colcol[2], ClassN, cp);
                 break;
-            default:
+            }
+            default: {
                 const pos: number[] = [];
                 for (let j = 0; j < colnum - 1; j++) {
                     pos.push(Math.floor((j / (colnum - 1)) * ClassN));

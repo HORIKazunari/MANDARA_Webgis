@@ -1040,10 +1040,11 @@ class clsMapdata {
                 case enmShape.PolygonShape:
                     CP = this.GetObjGraviityXY(mo, clsTime.GetNullYMD());
                     break;
-                case enmShape.LineShape:
+                case enmShape.LineShape: {
                     const ml = this.MPLine[mo.LineCodeSTC[0].LineCode];
                     CP = ml.PointSTC[Math.floor(ml.NumOfPoint / 2)];
                     break;
+                }
             }
             if (CP) {
                 mo.CenterPSTC[0].Position = CP;
@@ -1057,11 +1058,13 @@ class clsMapdata {
         for (let i = 0; i < this.Map.Kend; i++) {
             const mo = this.MPObj[i];
             switch (mo.Shape) {
-                case enmShape.PolygonShape:
+                case enmShape.PolygonShape: {
                     const CP = this.GetObjGraviityXY(mo, clsTime.GetNullYMD());
                     if (CP && typeof CP !== 'boolean') {
                         mo.CenterPSTC[0].Position = CP.Clone();
                     }
+                    break;
+                }
             }
             this.Check_Obj_Maxmin(mo, false);
         }
@@ -1845,7 +1848,7 @@ class clsMapdata {
                             //欠損値
                             return undefined;
                             break;
-                        case enmDefPointAttDataExtraValue.NearestValue:
+                        case enmDefPointAttDataExtraValue.NearestValue: {
                             //一番近い値
                             const ff = true;
                             let minDay;
@@ -1863,6 +1866,7 @@ class clsMapdata {
                             }
                             return Value;
                             break;
+                        }
                         case enmDefPointAttDataExtraValue.interpolation_MissingValue:
                         case enmDefPointAttDataExtraValue.interpolation_NearestValue:
                             //間に挟まれた場合は按分
@@ -2057,17 +2061,19 @@ class clsMapdata {
                                 }
                             }
                             break;
-                        } else if (ODALIN1 < this.Map.ALIN) {
-                            //ラインが増えた場合
-                            for (let k = ODALIN1; k < this.Map.ALIN; k++) {
-                                TopologyLineList.push(k);
-                            }
-                        } else {
-                            f = false;
                         }
+                    } else if (ODALIN1 < this.Map.ALIN) {
+                        //ラインが増えた場合
+                        for (let k = ODALIN1; k < this.Map.ALIN; k++) {
+                            TopologyLineList.push(k);
+                        }
+                    } else {
+                        f = false;
+                    }
+                    if (f === true) {
                         Result = true;
                     }
-                } while (f === true)
+                } while (f === true);
                 jcount++;
             }
             icount++;

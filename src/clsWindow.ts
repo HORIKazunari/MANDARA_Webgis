@@ -1054,13 +1054,14 @@ function setting(locSearch: string) {
                         d.Mode = SoloMd;
                         lpf = true;
                         switch (d.Mode) {
-                            case enmSoloMode_Number.ContourMode:
+                            case enmSoloMode_Number.ContourMode: {
                                 const alc = ad.SoloModeViewSettings.ContourMD;
                                 if((alc.Interval_Mode === enmContourIntervalMode.RegularInterval) || (
                                     alc.Interval_Mode === enmContourIntervalMode.SeparateSettings)) {
                                     lpf = false;
                                 }
                                 break;
+                            }
                             case enmSoloMode_Number.MarkTurnMode:
                                 //記号の回転モードは、内部データがある場合のみ凡例を表示
                                 // if(ald.SoloModeViewSettings.MarkCommon.Inner_Data.Flag === false ){
@@ -1251,7 +1252,7 @@ function setting(locSearch: string) {
             ele.addEventListener("click", ComplexModeClick, false);
         }
         switch (pmt) {
-            case enmTotalMode_Number.DataViewMode:
+            case enmTotalMode_Number.DataViewMode: {
                 const currentLayer = typeof attrData.nowLayer === 'function' ? attrData.nowLayer() : attrData.nowLayer;
                 switch (currentLayer.Print_Mode_Layer) {
                     case enmLayerMode_Number.GraphMode:
@@ -1278,6 +1279,7 @@ function setting(locSearch: string) {
                         break;
                 }
                 break;
+            }
             case enmTotalMode_Number.OverLayMode:
                 clearModeIcon();
                 attrData.TotalData.LV1.Print_Mode_Total=pmt;
@@ -1811,11 +1813,12 @@ function setting(locSearch: string) {
         if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.ClassPaintMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●ペイントモード
             switch (layShape) {
-                case enmShape.PointShape:
+                case enmShape.PointShape: {
                     const md = attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
                     const ele = doc.getElementById("picPointMarkSize");
                     attrData.Draw_Sample_Mark_Box(ele, md.PointMark);
                         break;
+                }
                 case enmShape.LineShape:
                     doc.getElementById("cboPaintLineSize").value=attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth;
                     break;
@@ -4232,10 +4235,11 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
                             break;
                     }
                     break;
-                default:
+                default: {
                     const fn = typeof file === 'string' ? file : file.name;
                     er_sub += fn + "は読み込めません。" + '\n';
                     break;
+                }
             }
         }
         function checkSFiles2() {

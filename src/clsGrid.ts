@@ -1129,7 +1129,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
                 BL = Kouho[0].Layer;
                 BD = Kouho[0].Data;
                 break;
-            default:
+            default: {
                 BD = -1;
                 BL = -1;
                 let i2 = 0;
@@ -1734,13 +1734,14 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
                 return n / freq.length;
                 break;
             }
-            case enmAttDataType.Strings:
+            case enmAttDataType.Strings: {
                 let n = 0;
                 for (let i = 0; i < al.atrObject.ObjectNum; i++) {
                     n += _attrData.Get_Data_Value(Layernum, DataNum, i, "").length;
                 }
                 //文字列の長さの平均値
                 return n / al.atrObject.ObjectNum;
+            }
         }
     }
 

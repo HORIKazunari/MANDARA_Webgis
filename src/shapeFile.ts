@@ -487,7 +487,7 @@ export class clsShapefile {
                 case enmShape.PointShape:
                     newObj.CenterPSTC[0].Position  = this.c_Point[n].Clone();
                     break;
-                default:
+                default: {
                     const AlinS = MapData.Map.ALIN;
                     const NumParts = this.pointIndex[n];
                     newObj.NumOfLine = NumParts.length-1;
@@ -509,6 +509,7 @@ export class clsShapefile {
                     }
                     newObj.CenterPSTC[0].Position = MapData.MPLine[newObj.LineCodeSTC[0].LineCode].PointSTC[0].Clone();
                     break;
+                }
             }
             MapData.Save_Object(newObj, false);
         }

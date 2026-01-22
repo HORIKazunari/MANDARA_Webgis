@@ -897,7 +897,7 @@ class clsPrint {
                 normR = al.atrData.Data[DataNum].SoloModeViewSettings.MarkSizeMD.Mark.WordFont.Size;
                 maxv = Math.max(Math.abs(state.attrData.Get_DataMax(LayerNum, DataNum)), Math.abs(state.attrData.Get_DataMin(LayerNum, DataNum)));
                 break;
-            case enmSoloMode_Number.MarkBarMode:
+            case enmSoloMode_Number.MarkBarMode: {
                 misR = state.attrData.Radius(vs.Missing_Data.MarkBar.WordFont.Size, 1, 1);
                 const alm = al.atrData.Data[DataNum].SoloModeViewSettings.MarkBarMD;
                 const w = state.attrData.Get_Length_On_Screen(alm.Width);
@@ -908,6 +908,7 @@ class clsPrint {
                 }
                 normSize = new size(w + wThree, h + wThree);
                 break;
+            }
             case enmSoloMode_Number.MarkTurnMode:
                 misR = state.attrData.Radius(vs.Missing_Data.TurnMark.WordFont.Size, 1, 1);
                 normR = state.attrData.Radius(al.atrData.Data[DataNum].SoloModeViewSettings.MarkTurnMD.Mark.WordFont.Size, 1, 1);
@@ -1133,7 +1134,7 @@ class clsPrint {
             const Datanum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
             at.Accessory_Temp.MapLegend_W.length = 1;
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
-                case enmTotalMode_Number.DataViewMode:
+                case enmTotalMode_Number.DataViewMode: {
                     const atw = new Legend2_Atri();
                     switch (state.attrData.LayerData[Layernum].Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode:
@@ -1191,7 +1192,7 @@ class clsPrint {
                     }
                     at.Accessory_Temp.MapLegend_W[0] = atw;
                     break;
-                case enmTotalMode_Number.OverLayMode:
+                case enmTotalMode_Number.OverLayMode: {
                     //重ね合わせモード凡例の設定
                     const ato = state.attrData.TotalData.TotalMode.OverLay;
                     const atod = ato.DataSet[ato.SelectedIndex];
@@ -1200,6 +1201,7 @@ class clsPrint {
                         n = this.Legend_Data_Set_Over_sub(atod.DataItem[i], n);
                     }
                     break;
+                }
             }
         }
 
@@ -1880,7 +1882,7 @@ console.log(SortSumDataValue)
                             }
                         } else {
                             switch (state.attrData.Get_DataType(Layernum, DataNum)) {
-                                case enmAttDataType.Normal:
+                                case enmAttDataType.Normal: {
                                     const V = state.attrData.Get_Data_Value(Layernum, DataNum, i, "");
                                     if (typeof V === 'number') {
                                         wo2 += Generic.Figure_Using_Solo(V, state.attrData.TotalData.ViewStyle.MapLegend.Base.Comma_f);
@@ -1891,6 +1893,7 @@ console.log(SortSumDataValue)
                                         wo2 += state.attrData.Get_DataUnit(Layernum, DataNum);
                                     }
                                     break;
+                                }
                                 case enmAttDataType.Category, enmAttDataType.Strings:
                                     wo2 += state.attrData.Get_Data_Value(Layernum, DataNum, i, "");
                                     break;
@@ -2206,7 +2209,7 @@ console.log(SortSumDataValue)
             ponpon++;
         }
         switch (Interval_Mode) {
-            case enmContourIntervalMode.ClassPaint:
+            case enmContourIntervalMode.ClassPaint: {
                 const col = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[(hn as number) - (Pcon as number)].PaintColor.toRGBA();
                 const poly = new PolydataInfo();   
                 poly.Pon=ponpon;
@@ -2214,6 +2217,7 @@ console.log(SortSumDataValue)
                 poly.nPolyP=nPolyP;
                 clsDraw.DrawPolyPolygon(g, poly, col);
                 break;
+            }
         }
     }
 
@@ -3069,7 +3073,7 @@ console.log(SortSumDataValue)
         }
         switch (al.Shape) {
             case  enmShape.PointShape:
-            case enmShape.PolygonShape:
+            case enmShape.PolygonShape: {
                 let r;
                 if(MisF === true) {
                     MK = vs.Missing_Data.Mark;

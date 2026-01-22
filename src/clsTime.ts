@@ -96,7 +96,7 @@ class clsTime  {
                         return (time <= etime);
                         }
                     break;
-                case false:
+                case false: {
                     const stime = duration.StartTime.toDate();
                     if (duration.EndTime.nullFlag() === true) {
                         return (stime <= time);
@@ -105,6 +105,7 @@ class clsTime  {
                         return ((stime <= time) && (time <= etime));
                     }
                     break;
+                }
 
             }
         }
