@@ -4967,7 +4967,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     for (const j in subMenu) {
                         subMenu[j].style.visibility = 'hidden';
                     }
-                    if ((data.hasOwnProperty('child'))&&(md.enabled===true)) {
+                    if ((Object.prototype.hasOwnProperty.call(data, 'child'))&&(md.enabled===true)) {
                         subMenu[md.submenunum].style.visibility = 'visible';
                     }
                 }
@@ -4993,7 +4993,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     }
                 }
                 md.enabled=enabled;
-                if (data.hasOwnProperty('event')) {
+                if (Object.prototype.hasOwnProperty.call(data, 'event')) {
                     if (enabled===true) {
                         md.onclick = function (e: MouseEvent) {
                             deletediv();
@@ -5021,14 +5021,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                         }
                     }
                 }
-                if (data.hasOwnProperty('checked')) {
+                if (datObject.prototype.hasOwnProperty.call(a, 'checked')) {
                     let tx = "";
                     if (data.checked === true) {
                         tx = "✓";
                     }
                     this.createNewDiv(md, tx, "", "", 0, 0, 20, lineh, "", "");
                 }
-                if (data.hasOwnProperty('child')) {
+                if (Object.prototype.hasOwnProperty.call(data, 'child')) {
                         this.createNewDiv(md, "‣", "", "", mainw + 20, 0, 10, lineh, "", "");
                         md.submenunum = subn;
                         subn++;
@@ -5044,7 +5044,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         mainMenu.style.zIndex = (maxZindex + 1).toString();
         const subMenu: HTMLDivElement[] = [];
         for (const i in list) {
-            if (list[i].hasOwnProperty('child')) {
+            if (Object.prototype.hasOwnProperty.call(list[i], 'child')) {
                 const smenu = document.createElement("div");
                 mnudiv.appendChild(smenu);
                 const cdata = list[i].child;
@@ -5071,13 +5071,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                             md.style.backgroundColor = 'white';
                         }
                         let enabled=true;
-                        if (data.hasOwnProperty('enabled')) {
+                        if (Object.prototype.hasOwnProperty.call(data, 'enabled')) {
                             if(data.enabled===false){
                                 md.style.color="#888888";
                                 enabled=false;
                             }
                         }
-                        if ((data.hasOwnProperty('event'))&&(enabled===true)) {
+                        if ((Object.prototype.hasOwnProperty.call(data, 'event'))&&(enabled===true)) {
                             md.onclick = function () {
                                 deletediv();
                                 if (data.event) {
@@ -5101,7 +5101,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                                 }
                             }
                         }
-                        if (data.hasOwnProperty('checked')) {
+                        if (Object.prototype.hasOwnProperty.call(data, 'checked')) {
                             let tx = "";
                             if (data.checked === true) {
                                 tx = "✓";
@@ -5152,7 +5152,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static getPopMenuObj(menuObj: MenuItem[], property: string, pname: string): MenuItem | undefined {
 
         for (const i in menuObj) {
-            if (menuObj[i].hasOwnProperty(property)) {
+            if (Object.prototype.hasOwnProperty.call(menuObj[i], property)) {
                 if ((menuObj[i] as Record<string, string>)[property] === pname) {
                     return menuObj[i];
                 }
