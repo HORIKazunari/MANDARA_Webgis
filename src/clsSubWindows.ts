@@ -2741,6 +2741,7 @@ function frmMain_GetDistance(okEvent: () => void){
                             Min_Dis_ObjName[i] = "";
                             for (let j = 0; j < n; j++) {
                                 if ((LayerNum === pos[j].lay) && (i === pos[j].objpos)&&(pos[j].type===DisType.LayerObject)) {
+                                    // 同一オブジェクトの場合はスキップ
                                 }else{
                                     //同一オブジェクトでなければ
                                     if (Min_Dis[i] > dis[j][i]) {

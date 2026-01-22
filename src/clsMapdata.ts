@@ -1550,6 +1550,7 @@ class clsMapdata {
                     n++;
                 } else {
                     if (poxy[n - 1].Equals(XYS[j]) === true) {
+                        // 重複点は追加しない
                     } else {
                         poxy.push(XYS[j]);
                         n++;

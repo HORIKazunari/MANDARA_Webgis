@@ -985,6 +985,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
                 }
                 case enmLayerType.Mesh: {
                     if ((oldN === -1) || (ZahyoOk === false)) {
+                        // データなしまたは座標不正の場合は処理をスキップ
                     } else {
                         naa.CenterPoint = oldALA.CenterPoint.Clone();
                         naa.Symbol = oldALA.Symbol.Clone();
@@ -997,6 +998,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
                 }
                 case enmLayerType.DefPoint: {
                     if ((oldN === -1) || (ZahyoOk === false)) {
+                        // データなしまたは座標不正の場合は処理をスキップ
                     } else {
                         if (naa.defPoint.Equals(oldALA.defPoint)) {
                             naa.CenterPoint = oldALA.CenterPoint.Clone();

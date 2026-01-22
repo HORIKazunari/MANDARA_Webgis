@@ -4817,6 +4817,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             AngleV = Math.atan(Math.abs(si / co)) * 180 / Math.PI;
         }
         if ((0 <= si) && (0 <= co)) {
+            // 第1象限：AngleVはそのまま使用
         } else if ((0 <= si) && (co < 0)) {
             AngleV = 180 - AngleV;
         } else if ((si < 0) && (0 <= co)) {

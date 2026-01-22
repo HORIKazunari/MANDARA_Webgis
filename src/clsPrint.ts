@@ -2353,6 +2353,7 @@ console.log(SortSumDataValue)
                                 const qy = Math.sign(j - yy) + 1;
                                 const meshCell: number[] | undefined = F_Mesh[i]?.[j];
                                 if (!meshCell || (dir_c[qx][qy] === true) || (meshCell[0] === 0)) {
+                                    // メッシュセルがないか、方向がチェック済みか、オブジェクト数が0の場合はスキップ
                                 } else {
                                     dir_num[qx][qy] += meshCell[0];
                                     for (let k = 0; k < meshCell[0]; k++) {
@@ -2403,6 +2404,7 @@ console.log(SortSumDataValue)
                 for (let i = 0; i <= 2; i++) {
                     for (let j = 0; j <= 2; j++) {
                         if ((i === 1) && (j === 1)) {
+                            // 中心セル（現在位置）はスキップ
                         } else {
                             if (dir_c[i][j] === false) {
                                 enf = false;
@@ -3484,7 +3486,7 @@ console.log(SortSumDataValue)
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
         if((ad.Shape === enmShape.LineShape)||(ad.Shape === enmShape.PointShape)|| (ad.Type === enmLayerType.Trip)) {
-
+            // 線形、点形、またはTripタイプの場合は境界線を描画しない
         } else {
             if((ad.Type === enmLayerType.Mesh) && (false)) { // state.attrData.TotalData.ViewStyle.MeshLine.BlankF === true // Property not available
                 //メッシュで透明の場合は描画しない

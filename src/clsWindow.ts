@@ -1009,6 +1009,7 @@ function setting(locSearch: string) {
                                 i = Num;
                             } else if(((StackedGraphMode === enmGraphMode.BarGraph)&&(PresentGraphMode === enmGraphMode.LineGraph)) || (
                                 (StackedGraphMode === enmGraphMode.LineGraph)&&(PresentGraphMode === enmGraphMode.BarGraph))) {
+                                // 棒グラフと折れ線グラフの組み合わせは有効なので続行
                             } else {
                                 if(window.confirm("同一レイヤのグラフモードで重ね合わせ可能な組み合わせは、折れ線グラフと棒グラフのみです。置換します。") === true) {
                                     Index = -1;
@@ -1039,6 +1040,7 @@ function setting(locSearch: string) {
             if(Index === -2) {
                 Generic.alert(undefined,"このデータセットはすでに重ね合わせモードに設定してあります。");
             } else if(Index === -1) {
+                // ユーザーがキャンセルした場合は処理をスキップ
             } else {
 
                 const d = new strOverLay_DataSet_Item_Info();
@@ -3805,7 +3807,9 @@ function setting(locSearch: string) {
                             break;
                         }
                         case enmTotalMode_Number.OverLayMode: {
-                            for (let j = 0; j < attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem.length; j++) { }
+                            for (let j = 0; j < attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem.length; j++) {
+                                // ループでjを最後の値まで進めるための空ループ
+                            }
                             f = attrData.Check_Condition_UMU(attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem[j].Layer);
                             if (f === true) {
                                 break;

@@ -1548,6 +1548,7 @@ export class gridControl {
         this.ctx.restore();
         if (txtF === true) {
             if ((GP.MouseDownX > GP.RightCell) || (GP.MouseDownX < GP.LeftCell) || (GP.MouseDownY > GP.BottomCell) || (GP.MouseDownY < GP.TopCell)) {
+                // 範囲外の場合はテキストボックスを表示しない
             } else {
                 if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(true);
                 this.SetTextBox(GP.MouseDownX, GP.MouseDownY);
@@ -1845,7 +1846,7 @@ export class gridControl {
     }
     RaiseEvent = (call: Function) => {
         if(call !==undefined){
-
+            // イベントハンドラが定義されている場合の処理（現在未実装）
         }
     }
     rightClickmenu = (pos: point) => {
@@ -2899,6 +2900,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             this.removeEventlister();
             Generic.prompt(undefined, "新しい" + this.Grid_Total.LayerCaption + "名", this.Grid_Property[this.Grid_Total.Layer].LayerName, (newLayerName: string) => {
                 if (newLayerName === "") {
+                    // 空文字列の場合は何もしない
                 } else {
                     const UndoData = new Undo_ChangeLayerName();
                     UndoData.Layer = this.Grid_Total.Layer;
@@ -3796,6 +3798,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     S1 = rect.top;
                     s2 = rect.bottom;
                     if ((S1 <= TY) && (TY <= s2)) {
+                        // 範囲内の場合はS1とs2をそのまま使用
                     } else {
                         S1 = TY;
                         s2 = TY;
@@ -3819,6 +3822,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     S1 = rect.left;
                     s2 = rect.right;
                     if ((S1 <= tx) && (tx <= s2)) {
+                        // 範囲内の場合はS1とs2をそのまま使用
                     } else {
                         S1 = tx;
                         s2 = tx;

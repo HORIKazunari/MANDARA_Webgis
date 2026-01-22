@@ -351,6 +351,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.LabelPoint )){
         //シンボル位置／ラベル位置移動
             if (e.which  === 3) {
+                // 右クリックの場合は何もしない
             } else {
                 const tmp = state.attrData.TempData;
                 const P = vs.ScrData.getSRXY(mouseDownPosition);
@@ -1217,6 +1218,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                 }
                 state.attrData.TempData.frmPrint_Temp.OnObject = OnObject;
                 if ((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.MultiObjectswitch) && (L_Print_Mode_Layer === enmLayerMode_Number.SoloMode)){
+                    // 複数オブジェクト切り替えモードかつソロモードの場合の特別処理（現在未実装）
                 }
                 break;
             }
@@ -1303,7 +1305,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
         const OnObject = [];
 
         if (state.attrData.LayerData[Layernum].Type === enmLayerType.Trip) {
-
+            // Tripタイプの場合は特別な処理なし
         } else {
             switch (state.attrData.LayerData[Layernum].Shape) {
                 case (enmShape.PolygonShape): {
