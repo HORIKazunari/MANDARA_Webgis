@@ -5917,7 +5917,7 @@ export class ListViewTable {
 }
 
 //ウインドウの最大化ボタンをリセットする
-// @ts-ignore
+// @ts-ignore - Element.prototypeに動的に追加するメソッドの型定義が不可能
 const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void {
     const cnode = this.childNodes;
     for (let i = 0; i < cnode.length; i++) {
@@ -5942,11 +5942,11 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         (this as Record<string, any>).maxSizeFlag=true;
     }
 };
-// @ts-ignore
+// @ts-ignore - Element.prototypeへのメソッド追加は型システムで警告されるが必要
 (Element.prototype as Record<string, any>)['resetMaxButton'] = resetMaxButtonFunc;
 
 //DIV要素の移動，拡大縮小
-// @ts-ignore
+// @ts-ignore - Element.prototypeに動的に追加するメソッドの型定義が不可能
 (Element.prototype as Record<string, any>)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
     const state = appState();
     let x: number;
@@ -6210,20 +6210,20 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 
 //数値にpxをつける
-// @ts-ignore
+// @ts-ignore - Number.prototypeへのメソッド追加は型システムで警告されるが必要
 (Number.prototype as Record<string, any>)['px'] = function(): string {
     const v = this.toString();
     return v + "px";
 };
 
 /**NumberInputに値を設定する */
-// @ts-ignore
+// @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
 (HTMLElement.prototype as Record<string, any>).setNumberValue = function (v: number){
     this.preValue=v;
     this.value=v;
 }
 //select要素の子要素を削除
-// @ts-ignore
+// @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
 (HTMLElement.prototype as unknown)['removeAll'] = function (): void {
     while (this.lastChild) {
         this.removeChild(this.lastChild);
@@ -6231,7 +6231,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 }
 
 /**select要素のoptionを入れ替える */
-// @ts-ignore
+// @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
 (HTMLElement.prototype as unknown)['optionSwap'] = function(n1?: number, n2?: number): void {
     if (n1 === undefined || n2 === undefined) {
         return;
@@ -6399,7 +6399,7 @@ HTMLElement.prototype.getVisibility = function () {
 }
 
 /**ボタンの使用可／不可の切り替え */
-// @ts-ignore
+// @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
 HTMLElement.prototype.btnDisabled = function (f) {
     this.disabled = f;
     if (f === true) {
@@ -6410,13 +6410,13 @@ HTMLElement.prototype.btnDisabled = function (f) {
 }
 
 //文字からpxをとる
-// @ts-ignore
+// @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要
 (String.prototype as unknown)['removePx'] = function (): number {
     return parseInt(this.substr(0, this.length - 2))
 }
 
 //文字列繰り返し
-// @ts-ignore
+// @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要
 (String.prototype as unknown)['repeatString'] = function (num?: number): string {
     const repeatCount = num ?? 0;
     let str = "";
