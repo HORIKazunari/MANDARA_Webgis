@@ -1269,7 +1269,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         lblTxt += "　ラベル表示モード" + '<br>';
                         break;
                     case enmLayerMode_Number.TripMode:
-                        // lblTxt += "　移動表示モード" + '<br>';
+                        // lblTxt += " 移動表示モード" + '<br>';
                         break;
                 }
                 lblTxt += '<br>';

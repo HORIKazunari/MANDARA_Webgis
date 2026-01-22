@@ -2234,7 +2234,7 @@ function frmMain_Culc(okEvent: () => void) {
     const rdYplus = [110, 55, 55, 90, 55]
     Generic.createNewRadioButtonList(backDiv, "dataCulMethod", rdList, 20, 50, 50, rdYplus, 0, undefined, "");
 
-    const sumDataItem = new CheckedListBox(backDiv, "", [], 100, 50, 205, 100, false, function (index: number) { Generic.checkRadioByValue("dataCulMethod", 0) });　//足し算
+    const sumDataItem = new CheckedListBox(backDiv, "", [], 100, 50, 205, 100, false, function (index: number) { Generic.checkRadioByValue("dataCulMethod", 0) }); //足し算
     appState().attrData.Set_DataTitle_to_CheckedListBox(sumDataItem, LayerNum, false, true, true, false, false);
     Generic.createNewSpan(backDiv, "数値入力", "", "", 330, 100, "", undefined);
     const txtPlusInput = Generic.createNewNumberInput(backDiv, "", "", 315, 130, 100, undefined, "")

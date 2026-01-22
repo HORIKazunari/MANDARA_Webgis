@@ -4013,7 +4013,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let cboCodeList: number[] = [];
         if( valueType instanceof Array===true){
-            for (const i　in valueType) {
+            for (const i in valueType) {
                 cboCodeList.push(valueType[i]);
             }
         }else{
@@ -4494,8 +4494,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const state = appState();
         const hiddenWindow = function () {
-            const winAny = window as Record<string, any>;
-            winAny.setVisibility?.(false) ;
+            window.setVisibility?.(false);
             if(XmarkCall !==undefined){
                 XmarkCall();
             }
@@ -4566,8 +4565,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 maxButtonCall();
             }
         }
-        const winAny = window as Record<string, any>;
-        winAny.setVisibility?.(visibilieF);
+        window.setVisibility?.(visibilieF);
         window.setTitle = function (title) {
             const cnode = this.childNodes;
             for (let i = 0; i < cnode.length; i++) {
@@ -5170,9 +5168,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 };
 
  
-(globalThis as Record<string, any>).Generic = Generic;
+(globalThis as Record<string, unknown>).Generic = Generic;
  
-(globalThis as Record<string, any>).TKY2JGDInfo = new TKY2JGDInfo_Impl();
+(globalThis as Record<string, unknown>).TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 // ESM-friendly export handles
 export const TKY2JGDInfo = new TKY2JGDInfo_Impl();
@@ -5938,17 +5936,17 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
     }
     if(MaxFlag===true){
-        (this as Record<string, any>).maxSizeFlag=false;
+        (this as Record<string, unknown>).maxSizeFlag=false;
     }else{
-        (this as Record<string, any>).maxSizeFlag=true;
+        (this as Record<string, unknown>).maxSizeFlag=true;
     }
 };
 // @ts-ignore - Element.prototypeへのメソッド追加は型システムで警告されるが必要
-(Element.prototype as Record<string, any>)['resetMaxButton'] = resetMaxButtonFunc;
+(Element.prototype as Record<string, unknown>)['resetMaxButton'] = resetMaxButtonFunc;
 
 //DIV要素の移動，拡大縮小
 // @ts-ignore - Element.prototypeに動的に追加するメソッドの型定義が不可能
-(Element.prototype as Record<string, any>)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
+(Element.prototype as Record<string, unknown>)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
     const state = appState();
     let x: number;
     let y: number;
@@ -6212,14 +6210,14 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 //数値にpxをつける
 // @ts-ignore - Number.prototypeへのメソッド追加は型システムで警告されるが必要
-(Number.prototype as Record<string, any>)['px'] = function(): string {
+(Number.prototype as Record<string, unknown>)['px'] = function(): string {
     const v = this.toString();
     return v + "px";
 };
 
 /**NumberInputに値を設定する */
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
-(HTMLElement.prototype as Record<string, any>).setNumberValue = function (v: number){
+(HTMLElement.prototype as Record<string, unknown>).setNumberValue = function (v: number){
     this.preValue=v;
     this.value=v;
 }

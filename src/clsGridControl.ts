@@ -1,5 +1,5 @@
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
-/**　グリッドコントロール用の内部クラス（外部に移動） */
+/** グリッドコントロール用の内部クラス（外部に移動） */
 import { appState } from './core/AppState';
 import type { JsonValue } from './types';
 
@@ -321,7 +321,7 @@ class Grid_Resize_Info {
 }
 
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
-/**　グリッドコントロール */
+/** グリッドコントロール */
 
 export class gridControl {
     top: number;
@@ -1222,7 +1222,7 @@ export class gridControl {
         return this.Grid_Total.LayerNum;
     }
 
-    /** レイヤタグを取得：：実行時・取得のみ　設定はAddLayerメソッド */
+    /** レイヤタグを取得::実行時・取得のみ 設定はAddLayerメソッド */
     getLayerData(LayerNum: number, key: "OldIndex"): number;
     getLayerData(LayerNum: number, key: "Type"): number;
     getLayerData(LayerNum: number, key: "Shape"): number;
@@ -1995,7 +1995,7 @@ export class gridControl {
                 GP.MouseDownX = GP.MouseDownX + r;
                 GP.MouseUpX = GP.MouseUpX + r;
             }
-           　self.SetUndo_InsertColumns("列挿入", ip, r);
+            self.SetUndo_InsertColumns("列挿入", ip, r);
             self.InsertColumns(self.Grid_Total.Layer, ip, r);
             self.eventCall.evtChange_FixedYS();
             self.eventCall.evtChange_Data();
@@ -3055,7 +3055,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                         GP.MouseDown_Mode = 1;
                         this.GridMouseDown = true;
                     } else if ((yy < -this.Grid_Total.FixedDataItem_n + this.Grid_Total.FixedDataItem_n2) && (xx >= 0)) {
-                        //上端の固定部分その２　ClickFixedYS2イベントを発生させる
+                        //上端の固定部分その2 ClickFixedYS2イベントを発生させる
                         GP.MouseDownX = xx;
                         GP.MouseDownY = yy;
                         GP.MouseUpX = xx;
@@ -3669,7 +3669,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         this.hScroll.setPosition( x+1); 
     }
 
-    /** グリッド上のマウスカーソルが列・行の境界線上にあるかどうかを調べる 0を返す/変更できない位置、1/行高変更可、2/列幅変更可　*/
+    /** グリッド上のマウスカーソルが列・行の境界線上にあるかどうかを調べる 0を返す/変更できない位置、1/行高変更可、2/列幅変更可 */
     check_Width_Height_Change = (mx: number, my: number) => {
 
         let i, s
@@ -4069,7 +4069,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 }
 
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
-/**　スクロールバーコントロール type:0縦、type1横　_areaRange:中身の大きさ*/
+/** スクロールバーコントロール type:0縦、type1横 _areaRange:中身の大きさ*/
 class scrollBar {
     setLength: (newLength: number) => void;
     setVisibility: (visiflag: boolean) => void;

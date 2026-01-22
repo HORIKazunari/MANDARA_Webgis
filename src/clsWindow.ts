@@ -4275,9 +4275,9 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
         const data=shapeFiles[fileKey];
         infoFileName.innerHTML=fileKey+".shp";
         let tx="";
-        if(data.shp === true){tx+="shpファイル：あり　"}else{tx+="shpファイル：なし　"};
-        if(data.shx === true){tx+="shxファイル：あり　"}else{tx+="shxファイル：なし　"};
-        if(data.dbf === true){tx+="<br>dbfファイル：あり　"}else{tx+="<br>dbfファイル：なし"　};
+        if(data.shp === true){tx+="shpファイル：あり "}else{tx+="shpファイル：なし "};
+        if(data.shx === true){tx+="shxファイル：あり "}else{tx+="shxファイル：なし "};
+        if(data.dbf === true){tx+="<br>dbfファイル：あり "}else{tx+="<br>dbfファイル：なし" };
         if(data.prj === true){tx+="prj ファイル：あり"}else{tx+="prj ファイル：なし"};
         relatedFile.innerHTML=tx;
         let  zahyo;

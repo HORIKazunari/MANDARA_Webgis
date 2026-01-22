@@ -1897,7 +1897,7 @@ console.log(SortSumDataValue)
 
                             }
                             const retV = clsDraw.TextCut_for_print(g, wo2,
-                                attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as any);
+                                attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
                             Array.prototype.push.apply(D_Word_Cut, retV.Out_Text);
                             D_TxHeight = retV.Height;
                         }
