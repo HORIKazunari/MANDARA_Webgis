@@ -96,12 +96,9 @@ export class TKY2JGDInfo_Impl {
         let Ep2: number;
         let AJ: number, BJ: number, CJ: number, DJ: number, EJ: number;
         let FJ: number, GJ: number, HJ: number;
-        let M: number;
-        let _M1: number, N1: number;          //phi1の関数
-        let T: number, T2: number, T4: number, T6: number;
+        let _M1: number;          //phi1の関数
         let S1: number, phi1: number, oldphi1: number, icount: number;
         let Bunsi: number, Bunbo: number;
-        let YM0: number, N1CosPhi1: number;
         const EPs = new EllipPar();
 
         const epSrc = this.EP[Ellip12] ?? new EllipPar();
@@ -180,7 +177,7 @@ export class TKY2JGDInfo_Impl {
 
         //赤道からの子午線長の計算
         const S0 = this.MeridS(B1, AEE, AJ, BJ, CJ, DJ, EJ, FJ, GJ, HJ, IJ); //赤道から座標原点までの子午線弧長
-        M = S0 + X / M0;
+        const M = S0 + X / M0;
 
         //Baileyの式による異性緯度（isometric latitude）phi1の計算。
         //「精密測地網一次基準点測量計算式」P57の11.(1)の式から。
@@ -198,15 +195,15 @@ export class TKY2JGDInfo_Impl {
         } while ((Math.abs(phi1 - oldphi1) >= 0.00000000000001) && (icount < 100)); //本では1e-12で十分 iterationの回数は４回
 
         //何度も使う式を変数に代入
-        YM0 = Y / M0;
-        T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
-        T2 = T * T;
-        T4 = T2 * T2;
-        T6 = T4 * T2;
-        Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
+        const YM0 = Y / M0;
+        const T = Math.tan(phi1);  //「精密測地網一次基準点測量計算式」P51のt1に等しい
+        const T2 = T * T;
+        const T4 = T2 * T2;
+        const T6 = T4 * T2;
+        const Eta2 = Ep2 * Math.cos(phi1) * Math.cos(phi1);     //=η1*η1
         // const M1 = CEE / Math.sqrt((1.0 + Eta2) ** 3.0); // 未使用
-        N1 = CEE / Math.sqrt(1.0 + Eta2);
-        N1CosPhi1 = N1 * Math.cos(phi1);
+        const N1 = CEE / Math.sqrt(1.0 + Eta2);
+        const N1CosPhi1 = N1 * Math.cos(phi1);
 
         //緯度Bの計算 「精密測地網一次基準点測量計算式」P51のphiを求める式より
         b = ((1385.0 + 3633.0 * T2 + 4095 * T4 + 1575.0 * T6) / (40320.0 * N1 ** 8.0)) * YM0 ** 8.0;
@@ -3388,8 +3385,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const win2p: string = "";
         const win1p: string = "";
         let new2: Window | null = null;
-        let Xw: number;
-        let Yw: number;
         
         if (win2p === "on") {
             if (new2?.closed === false) {
@@ -3397,8 +3392,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
         }
         const _win1p = "on";
-        Xw = Xv + 50;
-        Yw = Yv + 80;
+        const Xw = Xv + 50;
+        const Yw = Yv + 80;
         new2 = window.open(help_url, "_blank", "titlebar=No,status=0,scrollbars=1,resizable=0,width=" + Xw + ",height=" + Yw + "");
         if (parseInt(navigator.appVersion.charAt(0)) >= 3 && new2) { new2.focus(); }
     }
