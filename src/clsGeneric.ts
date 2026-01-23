@@ -2,6 +2,8 @@
 import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
 import { Object_NameTimeStac_Data, EnableMPLine_Data } from './clsMapdata';
+import { SpatialIndexSearch } from './SpatialIndexSearch';
+import { SortingSearch } from './SortingSearch';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
