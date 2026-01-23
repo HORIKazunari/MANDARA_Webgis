@@ -1054,7 +1054,7 @@ export class spatial {
                 Pon++;
                 fnl++;
             } else {
-                PointIndex.AddDoublePoint(spxy[i], epxy[i], i);
+                PointIndex.AddDoublePoint(spxy[i] as unknown as latlon, epxy[i] as unknown as latlon, i);
                 Eline2.push(i);
                 Eline2_n++;
             }
@@ -1093,8 +1093,8 @@ export class spatial {
                 f = false;
                 break;
             }
-            const k2: {ObjectNumber: number, Tag: number, PointNumber: number} = PointIndex.GetSamePointNumber(exy.x, exy.y);
-            const LINENO2: number = k2.Tag;
+            const k2 = PointIndex.GetSamePointNumber(exy.x, exy.y);
+            const LINENO2: number = k2.Tag as number;
             const PointNumber: number = k2.PointNumber;
             if (k2.ObjectNumber !== -1) {
                 Contf = true;
@@ -2643,7 +2643,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             if (f === false) {
                 //文字列のデータ項目の場合
                 for (let j = 0; j < ObjNum; j++) {
-                    SS.Add(aData[j][i]);
+                    SS.Add(Number(aData[j][i]) || 0);
                 }
                 SS.AddEnd()
                 const ctn = SS.EachValue_Array();
@@ -3667,7 +3667,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return n;
     }
     /**配列中から含まれる要素とその数の一覧の配列[{value: num:}]を返す */
-    static getArrayContentsList<T>(originArray: T[]){
+    static getArrayContentsList(originArray: number[]){
 
         const s=new SortingSearch();
         s.AddRange(originArray);
@@ -5154,7 +5154,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         for (const i in menuObj) {
             if (Object.prototype.hasOwnProperty.call(menuObj[i], property)) {
-                if ((menuObj[i] as Record<string, string>)[property] === pname) {
+                if ((menuObj[i] as Record<string, unknown>)[property] === pname) {
                     return menuObj[i];
                 }
                 if (menuObj[i].child) {

@@ -1224,26 +1224,8 @@ declare class Edge_Property {
     Clone(): Edge_Property;
 }
 
-// Screen_info クラス (clsAttrData.tsで実装)
-declare class Screen_info {
-    STDWsize: number;
-    GSMul: number;
-    SampleBoxFlag: boolean;
-    ScrView: rectangle;
-    ScrRectangle: rectangle;
-    MapRectangle: rectangle;
-    MapScreen_Scale: rectangle;
-    ScreenMG: Magnification;
-    PrinterMG: Magnification;
-    Zahyo: Zahyo_info;
-    Screen_Margin: ScreenMargin;
-    Get_SxSy_With_3D(p: point): point;
-    Get_SxSy_With_3D(pxy: point[]): point[];
-    Get_SxSy_With_3D(Pnum: number, inXY: point[], ReverseGetF: boolean): point[];
-    Get_SxSy_With_3D(rect: rectangle): rectangle;
-    Get_Length_On_Screen(fontSize: number): number;
-    Clone(): Screen_info;
-}
+// Screen_info クラスはclsAttrData.tsからimportして使用してください
+// import { Screen_info } from './clsAttrData';
 
 // Font_Property クラス (clsTime.tsで実装)
 declare class Font_Property {

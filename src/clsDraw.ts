@@ -1068,6 +1068,7 @@ class _clsTileMap {
         const tileList_Data = this.Get_TileMap_Image(TileMap, ZoomLevel, ScrLatLonBox, MapZahyo, ScrData);
         const numofTile = tileList_Data.length;
         let getTileNum=0;
+        const self = this; // Capture 'this' for use in nested functions
         for (let i = 0; i < numofTile; i++) {
             const d = tileList_Data[i] as JsonObject;
             request(d.URL as string, d.ScrPosition as unknown as rectangle);
@@ -1149,13 +1150,13 @@ class _clsTileMap {
 
     /**既存タイルマップの中のタグの一覧を取得 */
     getTileMapTagList(): string[] {
-        const tag=[];
+        const tag: string[] = [];
         for(const i in this.TileMapData){
             const data = this.TileMapData[i];
             const opt = data.opt as JsonObject;
-            tag.push(opt.tag);
+            tag.push(opt.tag as string);
         }
-        return Generic.getArrayContentsList(tag);
+        return [...new Set(tag)]; // Remove duplicates
     }
 
     /**指定のタグに一致するタイルマップ一覧を取得 */
