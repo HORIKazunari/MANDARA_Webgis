@@ -1496,7 +1496,7 @@ export class gridControl {
                 Y += GP.FixedDataItemData[j].Height;
             }
             X += GP.DataItemData[i].Width;
-            i++; 1
+            i++;
         } while ((X < picW) && (i < xs))
         if (X >= picW) {
             if (GP.Xmax === 1) {
@@ -1844,7 +1844,7 @@ export class gridControl {
             this.tabbase.tab[i].innerHTML = this.Grid_Property[i].LayerName;
         }
     }
-    RaiseEvent = (call: Function) => {
+    RaiseEvent = (call: (() => void) | undefined) => {
         if(call !==undefined){
             // イベントハンドラが定義されている場合の処理（現在未実装）
         }
@@ -1869,13 +1869,12 @@ export class gridControl {
             { caption: this.Grid_Total.ColumnCaption+"削除", enabled: GPO.GridRowEnabled, event: mnuDeleteCol },
         ];
         Generic.ceatePopupMenu(popmenu, pos);
-        const self = this;
-        function mnuPaste() {
-            if (self.inClipboard !== "") {
-                self.Grid_Paste(self.inClipboard, false);
+        const mnuPaste = (): void => {
+            if (this.inClipboard !== "") {
+                this.Grid_Paste(this.inClipboard, false);
                 return;
             }
-        }
+        };
         /**外部から貼り付け */
         function mnuouterPaste(event: Event){
             self.removeEventlister();
@@ -3096,7 +3095,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 this.Print_Grid_Data();
 
             } else { //右クリック
-                if ((GP.SelectedF = true) && (((GP.MouseDownX <= xx) && (xx <= GP.MouseUpX)) || ((GP.MouseDownX >= xx) && (xx >= GP.MouseUpX))) && (
+                if ((GP.SelectedF === true) && (((GP.MouseDownX <= xx) && (xx <= GP.MouseUpX)) || ((GP.MouseDownX >= xx) && (xx >= GP.MouseUpX))) && (
                     ((GP.MouseDownY <= yy) && (yy <= GP.MouseUpY)) || ((GP.MouseDownY >= yy) && (yy >= GP.MouseUpY)))) {
                     //右クリックで、選択範囲内をクリックした場合は範囲を変更しない
                 } else {
@@ -4095,7 +4094,7 @@ class scrollBar {
         _areaRange: number,
         largeChange: number,
         smallChange: number,
-        changeEventCall: Function | undefined
+        changeEventCall: ((value: number) => void) | undefined
     ) {
 
     let maxValue = _maxValue;

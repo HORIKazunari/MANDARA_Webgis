@@ -521,7 +521,7 @@ class clsPrint {
         if (al.DummyGroup.length > 0) {
             for (let i = 0; i < al.DummyGroup.length; i++) {
                 const ok = al.DummyGroup[i];
-                if (al.MapFileData.ObjectKind[ok].Shape = enmShape.PolygonShape) {
+                if (al.MapFileData.ObjectKind[ok].Shape === enmShape.PolygonShape) {
                     const temp = al.MapFileData.Get_Objects_by_Group(ok, al.Time);
                     for (let j = 0; j < temp.length; j++) {
                         if (state.attrData.Check_Screen_Objcode_In(Layernum, temp[j]) === true) {
@@ -1137,7 +1137,7 @@ class clsPrint {
                 case enmTotalMode_Number.DataViewMode: {
                     const atw = new Legend2_Atri();
                     switch (state.attrData.LayerData[Layernum].Print_Mode_Layer) {
-                        case enmLayerMode_Number.SoloMode:
+                        case enmLayerMode_Number.SoloMode: {
                             //単独・グラフモードの凡例設定
                             const att_Data = state.attrData.LayerData[Layernum].atrData.Data[Datanum];
                             atw.DatN = Datanum;
@@ -1172,6 +1172,7 @@ class clsPrint {
                             }
                             n++;
                             break;
+                        }
                         case enmLayerMode_Number.GraphMode:
                             //グラフモード
                             atw.Layn = Layernum;
@@ -3494,9 +3495,9 @@ console.log(SortSumDataValue)
         if((ad.Shape === enmShape.LineShape)||(ad.Shape === enmShape.PointShape)|| (ad.Type === enmLayerType.Trip)) {
             // 線形、点形、またはTripタイプの場合は境界線を描画しない
         } else {
-            if((ad.Type === enmLayerType.Mesh) && (false)) { // state.attrData.TotalData.ViewStyle.MeshLine.BlankF === true // Property not available
-                //メッシュで透明の場合は描画しない
-            } else {
+            // if((ad.Type === enmLayerType.Mesh) && (false)) { // state.attrData.TotalData.ViewStyle.MeshLine.BlankF === true // Property not available
+            //     //メッシュで透明の場合は描画しない
+            // } else {
                 for (let i = 0; i < ad.atrObject.ObjectNum; i++) {
                     let vf = false;
                     if(state.attrData.TotalData.ViewStyle.InVisibleObjectBoundaryF === true) {
@@ -3509,7 +3510,7 @@ console.log(SortSumDataValue)
                         this.Vector_Boundary_Draw(g,  Layernum, i, false);
                     }
                 }
-            }
+            // }
         }
     }
 
@@ -3518,26 +3519,26 @@ console.log(SortSumDataValue)
         let ELine = []// clsMapData.EnableMPLine_Data
         const ad = state.attrData.LayerData[Layernum];
         let pxy = [];// Point
-        if(false) { // Dummy_F === true
-            if(!(false)) { // state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false
-                return;
-            } else {
-                ELine = []; // ad.MapFileData.Get_EnableMPLine( Obj_Num_code, ad.Time); // Property not available
-            }
-        } else {
-            if(state.attrData.Check_screen_Kencode_In(Layernum, Obj_Num_code) === false) {
-                return;
-            }
-            if(ad.Type === enmLayerType.Mesh) {
-                const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
-                pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
-                pxy.push(pxy[0].Clone())
-                state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
-                return;
-            } else {
-                ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code);
-            }
+        // if(false) { // Dummy_F === true
+        //     if(!(false)) { // state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false
+        //         return;
+        //     } else {
+        //         ELine = []; // ad.MapFileData.Get_EnableMPLine( Obj_Num_code, ad.Time); // Property not available
+        //     }
+        // } else {
+        if(state.attrData.Check_screen_Kencode_In(Layernum, Obj_Num_code) === false) {
+            return;
         }
+        if(ad.Type === enmLayerType.Mesh) {
+            const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
+            pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
+            pxy.push(pxy[0].Clone());
+            state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
+            return;
+        } else {
+            ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code);
+        }
+        // }
         const MPFileNapa = ad.MapFileName;
         for (let j = 0; j < ELine.length; j++) {
             const lc = ELine[j].LineCode;
@@ -3722,15 +3723,15 @@ console.log(SortSumDataValue)
             //まだ計算していないライン
             let np = ad.MapFileData.MPLine[LCode].NumOfPoint;
             pxy = [];
-            let spxy = Generic.ArrayClone(ad.MapFileData.MPLine[LCode].PointSTC);
+            const spxy = Generic.ArrayClone(ad.MapFileData.MPLine[LCode].PointSTC);
             if ((av.SouByou.Auto === true) || (av.SouByou.ThinningPrint_F === true) && (av.SouByou.PointInterval !== 0)) {
-                if (false) { // at.SoubyouLayerEnable[Layernum] === true // Property not available
-                    if (av.SouByou.Auto === true) {
-                        spxy = spxy; // ad.MapFileData.Smoothing_Line(spxy, at.SoubyouLinePointIntervalCriteria) // Method not available
-                    } else if (av.SouByou.ThinningPrint_F === true) {
-                        spxy = spxy; // ad.MapFileData.Smoothing_Line(spxy, av.SouByou.PointInterval); // Method not available
-                    }
-                }
+                // if (false) { // at.SoubyouLayerEnable[Layernum] === true // Property not available
+                //     if (av.SouByou.Auto === true) {
+                //         spxy = spxy; // ad.MapFileData.Smoothing_Line(spxy, at.SoubyouLinePointIntervalCriteria) // Method not available
+                //     } else if (av.SouByou.ThinningPrint_F === true) {
+                //         spxy = spxy; // ad.MapFileData.Smoothing_Line(spxy, av.SouByou.PointInterval); // Method not available
+                //     }
+                // }
                 np = spxy.length;
             }
 
@@ -3825,7 +3826,7 @@ console.log(SortSumDataValue)
             if(Polygon_F === true) {
                 this.Vector_DummyGroup_Draw(g,  enmShape.PolygonShape, Layernum);
             }
-            if(nonPolygon_F =true) {
+            if(nonPolygon_F === true) {
                 this.Vector_DummyGroup_Draw(g,  enmShape.NotDeffinition, Layernum);
                 this.Vector_DummyGroup_Draw(g,  enmShape.LineShape, Layernum);
                 this.Vector_DummyGroup_Draw(g,  enmShape.PointShape, Layernum);

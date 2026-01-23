@@ -5946,7 +5946,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 //DIV要素の移動，拡大縮小
 // @ts-ignore - Element.prototypeに動的に追加するメソッドの型定義が不可能
-(Element.prototype as Record<string, unknown>)['dragBorder'] = function(movingCall?: Function, moveEndCall?: Function): void {
+(Element.prototype as Record<string, unknown>)['dragBorder'] = function(movingCall?: (element: Element) => void, moveEndCall?: (element: Element) => void): void {
     const state = appState();
     let x: number;
     let y: number;
@@ -5958,49 +5958,51 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     let fTop: number;
     let mode: string | number;
     let mdownF=false;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias -- プロトタイプメソッド内でthisをキャプチャする必要がある
     const targetEle=this;
     const SR=10;
     const TR=state.scrMargin.top;
 
+    const mmovef = (event: MouseEvent): void => {
+        //要素内の相対座標を取得
+        fx = event.pageX- targetEle.parentElement.offsetLeft;
+        fy = event.pageY- targetEle.parentElement.offsetTop;
+        x = fx - targetEle.offsetLeft;
+        y = fy - targetEle.offsetTop;
+        fW = targetEle.style.width.removePx();
+        fH = targetEle.style.height.removePx()
+        const posX = fW - x;
+        const posY = fH - y;
+        const top = targetEle.offsetTop;
+        //拡大縮小エリアのカーソル
+        if ((posX < SR) && (posY < SR)) {
+            targetEle.style.cursor = 'se-resize';
+        } else if ((posX < SR) && (y < TR)) {
+            targetEle.style.cursor = 'ne-resize';
+        } else if ((x < SR) && (y < TR)) {
+            targetEle.style.cursor = 'nw-resize';
+        } else if ((x < SR) && (posY < SR)) {
+            targetEle.style.cursor = 'sw-resize';
+        } else if ((posX < SR) && (y > TR)) {
+            targetEle.style.cursor = 'e-resize';
+        } else if ((x < SR)) {
+            targetEle.style.cursor = 'w-resize';
+        } else if ((posY < SR) && (top > 0)) {
+            targetEle.style.cursor = 's-resize';
+        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (70<posX )&&(40<x)) {
+            if (y < 3) {
+                targetEle.style.cursor = 'n-resize';
+            } else {
+                targetEle.style.cursor = 'move';
+            }
+        } else {
+            targetEle.style.cursor = 'default';
+        }
+    };
+
     this.addEventListener("mousedown", mdown, false);
     this.addEventListener("touchstart", mdown, false);
     this.addEventListener("mousemove", mmovef, false);
-    function mmovef(event: MouseEvent) {
-        //要素内の相対座標を取得
-        fx = event.pageX- this.parentElement.offsetLeft;
-        fy = event.pageY- this.parentElement.offsetTop;
-        x = fx - this.offsetLeft;
-        y = fy - this.offsetTop;
-        fW = this.style.width.removePx();
-        fH = this.style.height.removePx()
-        const posX = fW - x;
-        const posY = fH - y;
-        const top = this.offsetTop;
-        //拡大縮小エリアのカーソル
-        if ((posX < SR) && (posY < SR)) {
-            this.style.cursor = 'se-resize';
-        } else if ((posX < SR) && (y < TR)) {
-            this.style.cursor = 'ne-resize';
-        } else if ((x < SR) && (y < TR)) {
-            this.style.cursor = 'nw-resize';
-        } else if ((x < SR) && (posY < SR)) {
-            this.style.cursor = 'sw-resize';
-        } else if ((posX < SR) && (y > TR)) {
-            this.style.cursor = 'e-resize';
-        } else if ((x < SR)) {
-            this.style.cursor = 'w-resize';
-        } else if ((posY < SR) && (top > 0)) {
-            this.style.cursor = 's-resize';
-        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (70<posX )&&(40<x)) {
-            if (y < 3) {
-                this.style.cursor = 'n-resize';
-            } else {
-                this.style.cursor = 'move';
-            }
-        } else {
-            this.style.cursor = 'default';
-        }
-    }
 
     //マウスが押された際の関数
     function mdown(e: MouseEvent) {
@@ -6016,46 +6018,46 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
 
         //要素内の相対座標を取得
-        fx = event.pageX- this.parentElement.offsetLeft;
-        fy = event.pageY- this.parentElement.offsetTop;
-        fW = this.style.width.removePx();
-        fH = this.style.height.removePx();
-        fLeft = this.style.left.removePx();
-        fTop = this.style.top.removePx();
-        x = fx - this.offsetLeft;
-        y = fy - this.offsetTop;
+        fx = event.pageX- targetEle.parentElement.offsetLeft;
+        fy = event.pageY- targetEle.parentElement.offsetTop;
+        fW = targetEle.style.width.removePx();
+        fH = targetEle.style.height.removePx();
+        fLeft = targetEle.style.left.removePx();
+        fTop = targetEle.style.top.removePx();
+        x = fx - targetEle.offsetLeft;
+        y = fy - targetEle.offsetTop;
         const posX = fW - x;
         const posY = fH - y;
-        const top = this.offsetTop;
+        const top = targetEle.offsetTop;
         //拡大縮小エリアのカーソルとモード設定
         if ((posX < SR) && (posY < SR)) {
-            this.style.cursor = 'se-resize';
+            targetEle.style.cursor = 'se-resize';
             mode = 'se-resize';
         } else if ((posX < SR) && (y < TR)) {
-            this.style.cursor = 'ne-resize';
+            targetEle.style.cursor = 'ne-resize';
             mode = 'ne-resize';
         } else if ((x < SR) && (y < TR)) {
-            this.style.cursor = 'nw-resize';
+            targetEle.style.cursor = 'nw-resize';
             mode = 'nw-resize';
         } else if ((x < SR) && (posY < SR)) {
-            this.style.cursor = 'sw-resize';
+            targetEle.style.cursor = 'sw-resize';
             mode = 'sw-resize';
         } else if ((posX < SR) && (y > TR)) {
-            this.style.cursor = 'e-resize';
+            targetEle.style.cursor = 'e-resize';
             mode = 'e-resize';
         } else if ((x < SR) && (y > TR)) {
-            this.style.cursor = 'w-resize';
+            targetEle.style.cursor = 'w-resize';
             mode = 'w-resize';
         } else if ((posY < SR) && (top > 0)) {
-            this.style.cursor = 's-resize';
+            targetEle.style.cursor = 's-resize';
             mode = 's-resize';
         } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (posX > 60)) {
             if (x > 40) {
                 if (y < 3) {
-                    this.style.cursor = 'n-resize';
+                    targetEle.style.cursor = 'n-resize';
                     mode = 'n-resize';
                 } else {
-                    this.style.cursor = 'move';
+                    targetEle.style.cursor = 'move';
                     mode = 'move';
                 }
             }
@@ -6064,10 +6066,10 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
         //ムーブイベントにコールバック
         if (checkF === true) {
-            this.removeEventListener("mousemove", mmovef, false);
-            this.parentElement.addEventListener("mousemove", mmove, false);
-            this.parentElement.addEventListener("touchmove", mmove, false);
-            this.addEventListener("mouseup", mdup, false);
+            targetEle.removeEventListener("mousemove", mmovef, false);
+            targetEle.parentElement.addEventListener("mousemove", mmove, false);
+            targetEle.parentElement.addEventListener("touchmove", mmove, false);
+            targetEle.addEventListener("mouseup", mdup, false);
         }
     }
 
@@ -6177,8 +6179,8 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
     //同じ地点でマウスボタンが上がった場合の処理
     function mdup(e: MouseEvent) {
-        this.style.cursor = 'default';
-        this.addEventListener("mousemove", mmovef, false);
+        targetEle.style.cursor = 'default';
+        targetEle.addEventListener("mousemove", mmovef, false);
         targetEle.parentElement.removeEventListener("mousemove", mmove, false);
         targetEle.parentElement.removeEventListener("touchmove", mmove, false);
         mdownF=false;
@@ -6190,11 +6192,11 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
             return;
         }
 
-        this.style.cursor = 'default';
-        this.addEventListener("mousemove", mmovef, false);
+        targetEle.style.cursor = 'default';
+        targetEle.addEventListener("mousemove", mmovef, false);
         //ムーブベントハンドラの消去
-        this.parentElement.removeEventListener("mousemove", mmove, false);
-        this.parentElement.removeEventListener("touchmove", mmove, false);
+        targetEle.parentElement.removeEventListener("mousemove", mmove, false);
+        targetEle.parentElement.removeEventListener("touchmove", mmove, false);
         targetEle.removeEventListener("mouseup", mup, false);
         targetEle.removeEventListener("touchend", mup, false);
         if (mode !== 'move') {            
@@ -6406,20 +6408,21 @@ HTMLElement.prototype.btnDisabled = function (f) {
     } else {
         this.className = "";
     }
-}
+};
 
 //文字からpxをとる
 // @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要
 (String.prototype as unknown)['removePx'] = function (): number {
-    return parseInt(this.substr(0, this.length - 2))
+    return parseInt(this.substr(0, this.length - 2));
 };
 
 //文字列繰り返し
 // @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要
 (String.prototype as unknown)['repeatString'] = function (num?: number): string {
     const repeatCount = num ?? 0;
+    const thisStr = String(this);
     let str = "";
-    for (; (this.length * repeatCount) > str.length; str += this);
+    for (; (thisStr.length * repeatCount) > str.length; str += thisStr);
     return str;
 };
 
