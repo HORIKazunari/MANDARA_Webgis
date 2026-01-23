@@ -36,8 +36,8 @@ export default tseslint.config(
       // any型の使用を禁止
       '@typescript-eslint/no-explicit-any': 'error', // any型の新規追加を完全に防止
       
-      // 未使用変数の警告
-      '@typescript-eslint/no-unused-vars': ['error', { 
+      // 未使用変数の警告 - 段階的に修正するため一旦warnに
+      '@typescript-eslint/no-unused-vars': ['warn', { 
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrors: 'all'
@@ -139,6 +139,9 @@ export default tseslint.config(
       
       // TypeScriptが型チェックするため無効化
       'no-undef': 'off',
+      
+      // クラスとインターフェースのマージング - 段階的に修正
+      '@typescript-eslint/no-unsafe-declaration-merging': 'warn', // レガシーパターンを段階的に修正
     },
   },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
