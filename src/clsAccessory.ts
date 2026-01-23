@@ -367,9 +367,9 @@ export class Accessory {
     }
 
 
-    static Legend_print(g: CanvasRenderingContext2D, Legend_No: number, SizeGetOnlyF: boolean): boolean {
+    static Legend_print(g: CanvasRenderingContext2D, legendNo: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
-        const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[Legend_No];
+        const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[legendNo];
         const vs = state.attrData.TotalData.ViewStyle;
         if ((vs.MapLegend.Base.Visible === false) && (
             LegendW.LineKind_Flag === false) && (LegendW.PointObject_Flag === false)) {
@@ -378,10 +378,10 @@ export class Accessory {
         let ALP;
         const P_Legend = vs.MapLegend;
         if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
-            const p = P_Legend.Base.LegendXY[Legend_No];
+            const p = P_Legend.Base.LegendXY[legendNo];
             ALP = vs.ScrData.getSxSy(vs.ScrData.getSRXYfromRatio(p));
         } else {
-            const p = P_Legend.Base.LegendXY[Legend_No];
+            const p = P_Legend.Base.LegendXY[legendNo];
             ALP = vs.ScrData.getSxSy(p);
         }
         const LFont = P_Legend.Base.Font;
@@ -604,7 +604,7 @@ export class Accessory {
     }
 
     /**円グラフで、凡例の表示方法が円一つの場合で円グラフの周囲にデータ項目名を並べる場合の凡例 */
-    static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean): boolean {
+    static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         const vs = state.attrData.TotalData.ViewStyle;
@@ -614,7 +614,7 @@ export class Accessory {
 
         const EN_TP = clsBase.Tile();
 
-        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
+        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[dataSetNum];
         const UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
         const n = gData.Data.length;
         let size2 = HeadBoxSize;
@@ -718,7 +718,7 @@ export class Accessory {
 
 
     /**グラフ表示モードの円・帯グラフ */
-    static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean): boolean {
+    static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
         const LFont = vs.MapLegend.Base.Font;
@@ -729,16 +729,16 @@ export class Accessory {
             return false;
         }
 
-        if ((state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num].GraphMode === enmGraphMode.PieGraph) && (
+        if ((state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[dataSetNum].GraphMode === enmGraphMode.PieGraph) && (
             vs.MapLegend.En_Graph_Pattern === enmMultiEnGraphPattern.oneCircle)) {
             //円グラフで、凡例の表示方法が円一つの場合
-            return this.Draw_Multi_Engraph_Pattern1(g, ALP, HeadBoxSize, Layn2, DataSet_Num, SizeGetOnlyF);
+            return this.Draw_Multi_Engraph_Pattern1(g, ALP, HeadBoxSize, Layn2, dataSetNum, SizeGetOnlyF);
         }
 
         const TilePat = clsBase.Tile();
         TilePat.Color = new colorRGBA(210, 210, 210, 255);
 
-        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
+        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[dataSetNum];
 
         const UnitTx = state.attrData.Get_DataUnit_With_Kakko(Layn2, gData.Data[0].DataNumber);
         const n = gData.Data.length;
@@ -757,7 +757,7 @@ export class Accessory {
             let size2 = HeadBoxSize.Clone();
             if (gData.En_Obi.EnSizeMode === enmGraphMaxSize.Changeable) {
                 //サイズ可変型の場合
-                switch (state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num].GraphMode) {
+                switch (state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[dataSetNum].GraphMode) {
                     case enmGraphMode.PieGraph: {
                         const EN_TP = clsBase.Tile();
                         EN_TP.Color = clsBase.ColorWhite();
@@ -863,7 +863,7 @@ export class Accessory {
     }
 
     /**折れ線・棒グラフモード */
-    static Draw_Multi_Oresen(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, DataSet_Num: number, SizeGetOnlyF: boolean): boolean {
+    static Draw_Multi_Oresen(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
         if (state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible === false) {
@@ -875,7 +875,7 @@ export class Accessory {
         g.font = LFont.toContextFont(vs.ScrData).font;
 
 
-        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[DataSet_Num];
+        const gData = state.attrData.LayerData[Layn2].LayerModeViewSettings.GraphMode.DataSet[dataSetNum];
         const DataN = gData.Data.length;
 
 

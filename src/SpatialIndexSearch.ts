@@ -732,22 +732,22 @@ class SpatialIndexSearchInternal {
         }
     }
 
-    AddRect(XY1_rectangle: point | rectangle, XY2_TagData: latlon | string | number, TagData?: string | number): void {
+    AddRect(xy1Rectangle: point | rectangle, xy2TagData: latlon | string | number, TagData?: string | number): void {
         //四角オブジェクト追加
         if (this.ObjectType !== SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
             return;
         }
-        if ((XY1_rectangle instanceof point) === true) {
-            const XY = [(XY1_rectangle as point).toLatlon(), (XY2_TagData as latlon)];
+        if ((xy1Rectangle instanceof point) === true) {
+            const XY = [(xy1Rectangle as point).toLatlon(), (xy2TagData as latlon)];
             this.Add_Point_Sub(2, XY, TagData);
         } else {
-            const rect = XY1_rectangle as rectangle;
+            const rect = xy1Rectangle as rectangle;
             const XY: latlon[] = [
                 new point(rect.left, rect.top).toLatlon(),
                 new point(rect.right, rect.bottom).toLatlon()
             ];
-            this.Add_Point_Sub(2, XY, XY2_TagData as string | number);
+            this.Add_Point_Sub(2, XY, xy2TagData as string | number);
         }
     }
 
