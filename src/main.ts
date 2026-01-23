@@ -314,10 +314,18 @@ function backImageButton(): void {
 function _settingFront(): void {
     const state = appState();
     
-    state.divMain?.style && (void (state.divMain.style.zIndex = "2"));
-    state.settingModeWindow?.style && (void (state.settingModeWindow.style.zIndex = "2"));
-    state.frmPrint?.style && (void (state.frmPrint.style.zIndex = "1"));
-    state.propertyWindow?.style && (void (state.propertyWindow.style.zIndex = "1"));
+    if (state.divMain?.style) {
+        state.divMain.style.zIndex = "2";
+    }
+    if (state.settingModeWindow?.style) {
+        state.settingModeWindow.style.zIndex = "2";
+    }
+    if (state.frmPrint?.style) {
+        state.frmPrint.style.zIndex = "1";
+    }
+    if (state.propertyWindow?.style) {
+        state.propertyWindow.style.zIndex = "1";
+    }
 }
 
 /**

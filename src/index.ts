@@ -1,5 +1,5 @@
 // メインエントリーポイント - 動的インポートでチャンク分割
-(async () => {
+void (async () => {
 	// まずユーティリティ系（圧縮/文字コード/地図補助）を先に読み込む
 	await Promise.all([
 		import('./encoding.min.ts'),

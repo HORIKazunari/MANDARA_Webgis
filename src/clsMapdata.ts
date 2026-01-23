@@ -122,7 +122,7 @@ constructor() {
         this.Title = "";
         this.Unit = ""; //String
         this.MissingF = false; //Boolean
-        this.Note;  //String
+        this.Note = ""; //String
     }
     get AttDataType() {
         return Generic.getAttDataType_From_TitleUnit(this.Title, this.Unit);

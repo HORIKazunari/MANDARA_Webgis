@@ -1066,8 +1066,8 @@ declare let k: number; // ループカウンタ
 declare enum enmZahyo_mode_info {
     Zahyo_No_Mode = 0,
     Zahyo_Ido_Keido = 1,
-    Zahyo_Heimentyokukaku = 2,
-    Zahyo_HeimenTyokkaku = 2  // 別名
+    Zahyo_Heimentyokukaku = 2
+    // Zahyo_HeimenTyokkaku は Zahyo_Heimentyokukaku のエイリアスとして使用
 }
 
 // ==================== 基本クラスの型定義強化 ====================

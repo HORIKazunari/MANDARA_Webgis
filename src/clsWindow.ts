@@ -4284,11 +4284,10 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
         if(data.dbf === true){tx+="<br>dbfファイル：あり "}else{tx+="<br>dbfファイル：なし" };
         if(data.prj === true){tx+="prj ファイル：あり"}else{tx+="prj ファイル：なし"};
         relatedFile.innerHTML=tx;
-        let  zahyo;
+        const zahyo = data.shape.getMapZahyo();
         const zahyoGet=data.shape.getZahyoSettingFlag();
         Generic.setDisabled(zahyoModeFrame,zahyoGet);
         Generic.setDisabled(zahyoSystemFrame,zahyoGet);
-        zahyo = data.shape.getMapZahyo();
         Generic.checkRadioByValue('zahyoSystem',zahyo.System);
         Generic.checkRadioByValue('zahyoMode',zahyo.Mode);
         cboKeiNo?.setSelectValue?.(zahyo.HeimenTyokkaku_KEI_Number);
