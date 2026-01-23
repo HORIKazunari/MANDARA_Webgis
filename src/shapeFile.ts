@@ -554,7 +554,7 @@ export class clsShapefile {
             MapData.Checl_All_Line_Maxmin();
              MapData.MapLatLon_Zahyo_convert();
                 break;
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku:
                 MapData.YReverse();
                 MapData.Checl_All_Line_Maxmin();
                 MapData.Check_All_Obj_MaxMin();

@@ -2,6 +2,7 @@
 import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
 import { Object_NameTimeStac_Data, EnableMPLine_Data } from './clsMapdata';
+import { Screen_info } from './clsAttrData';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
 // CHR_LF は現在未使用のためコメントアウト
@@ -5154,7 +5155,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         for (const i in menuObj) {
             if (Object.prototype.hasOwnProperty.call(menuObj[i], property)) {
-                if ((menuObj[i] as Record<string, unknown>)[property] === pname) {
+                if ((menuObj[i] as unknown as Record<string, unknown>)[property] === pname) {
                     return menuObj[i];
                 }
                 if (menuObj[i].child) {
@@ -5938,9 +5939,9 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
     }
     if(MaxFlag===true){
-        (this as Record<string, unknown>).maxSizeFlag=false;
+        (this as unknown as Record<string, unknown>).maxSizeFlag=false;
     }else{
-        (this as Record<string, unknown>).maxSizeFlag=true;
+        (this as unknown as Record<string, unknown>).maxSizeFlag=true;
     }
 };
 // @ts-ignore - Element.prototypeへのメソッド追加は型システムで警告されるが必要
