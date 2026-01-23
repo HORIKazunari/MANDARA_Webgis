@@ -3230,14 +3230,12 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
             Note += "\n" + appState().attrData.Get_Condition_Info(L2);
         }
         if (BufferMode === bufMode.ParentObject) {
-            let TTL;
-            let UNT;
-            TTL = appState().attrData.LayerData[L2].Name + "レイヤに含まれているオブジェクト";
-            UNT = "CAT";
+            const TTL = appState().attrData.LayerData[L2].Name + "レイヤに含まれているオブジェクト";
+            const UNT = "CAT";
             appState().attrData.Add_One_Data_Value(L1, TTL, UNT, Note, Buf2_Obj_Str, true);
         } else {
-            let TTL;
-            let UNT;
+            let TTL = "";
+            let UNT = "";
             if (F_ObjectCount === true) {
                 if (BufferMode === bufMode.Distance) {
                     TTL = "バッファ" + Dis.toString() + scaleUnit.getText() + "に含まれるオブジェクト数"

@@ -1585,7 +1585,7 @@ console.log(SortSumDataValue)
                     }
                     case enmGraphMode.StackedBarGraph: { //帯グラフ
                         let r;
-                        let r2;
+                        let r2 = 0;
                         let xw;
                         let yw;
                         if (selGraph.En_Obi.EnSizeMode === 0) {

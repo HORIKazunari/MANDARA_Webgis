@@ -819,7 +819,7 @@ function setting(locSearch: string) {
                             title = "ラベル表示位置";
                             break;
                     }   
-                    const TTL = "";
+                    let TTL = "";
                     switch (attrData.TotalData.ViewStyle.Zahyo.Mode) {
                         case enmZahyo_mode_info.Zahyo_No_Mode:
                             TTL = title + "Ｘ";
