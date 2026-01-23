@@ -1856,6 +1856,14 @@ export class gridControl {
         if(this.UndoArray.length!==0){
             udo="("+this.UndoArray[this.UndoArray.length-1].caption+")";
         }
+        
+        const mnuPaste = (): void => {
+            if (this.inClipboard !== "") {
+                this.Grid_Paste(this.inClipboard, false);
+                return;
+            }
+        };
+        
         const popmenu = [
             { caption: "元に戻す"+udo, enabled: true, event: this.Undo },
             { caption: "コピー", enabled: true, event: this.Grid_Copy },
@@ -1869,12 +1877,7 @@ export class gridControl {
             { caption: this.Grid_Total.ColumnCaption+"削除", enabled: GPO.GridRowEnabled, event: mnuDeleteCol },
         ];
         Generic.ceatePopupMenu(popmenu, pos);
-        const mnuPaste = (): void => {
-            if (this.inClipboard !== "") {
-                this.Grid_Paste(this.inClipboard, false);
-                return;
-            }
-        };
+        const self = this;
         /**外部から貼り付け */
         function mnuouterPaste(event: Event){
             self.removeEventlister();
