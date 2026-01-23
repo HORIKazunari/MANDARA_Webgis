@@ -429,17 +429,17 @@ class MeshContour {
 
         switch (Q) {
             case 2:
-                this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
+                this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, _highCN, con);
                 break;
             case 4:
                 if(( V2 === High)&&(V3 === High)){
                     C12 = 1; C13 = 1;
-                    this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
+                    this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, _highCN, con);
                 }else{
                     C34 = 0; C13 = 0; C12 = 1; C24 = 1;
-                    this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
+                    this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, _highCN, con);
                     C12 = 0; C24 = 0; C34 = 1; C13 = 1;
-                    this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
+                    this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, _highCN, con);
                 }
                 break;
             case 3:
@@ -448,7 +448,7 @@ class MeshContour {
                 if(( C24 === 1 )&&( C34 === 1 )&&( V4 === High )){ C24 = 0;}
                 if(( C34 === 1 )&&( C13 === 1 )&&( V3 === High )){ C13 = 0;}
 
-                this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, High_CN, con);
+                this.R2220(mi, mj, C12, C34, C24, C13, VH1, VH2, VH3, VH4, V1, V2, V3, V4, HK, _highCN, con);
                 break;
         }
     }

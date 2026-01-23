@@ -228,7 +228,7 @@ export class clsShapefile {
         }
         if ((FData.indexOf("JAPAN_ZONE_") !== -1)) {
             //平面直角
-            this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
+            this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Heimentyokukaku;
             this.mapZahyo.HeimenTyokkaku_KEI_Number = parseInt(FData.substr(FData.indexOf("JAPAN_ZONE_") + 11, 2));
             fixf = true;
         } else {
@@ -256,7 +256,7 @@ export class clsShapefile {
             heimen_Code[19] = HC + "XIX";
             for (let i = 19; i > 0; i--) {
                 if ((FData.indexOf(heimen_Code[i].toUpperCase()) !== -1)) { //平面直角
-                    this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_HeimenTyokkaku;
+                    this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Heimentyokukaku;
                     this.mapZahyo.HeimenTyokkaku_KEI_Number = i;
                     fixf = true;
                     break;

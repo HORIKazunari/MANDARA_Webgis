@@ -481,7 +481,7 @@ class clsPrint {
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
         if((av.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order === enmLatLonLine_Order.Back) && (av.LatLonLine_Print.Visible === true)) {
-           clsAccessory.LatLonLine_Print(g);
+           Accessory.LatLonLine_Print(g);
         }
         if(av.Screen_Back.ObjectInner.BlankF === false) {
             const lv1 = state.attrData.TotalData.LV1;

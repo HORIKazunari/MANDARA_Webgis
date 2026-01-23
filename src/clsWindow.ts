@@ -1,6 +1,7 @@
 ﻿import { Generic, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { appState } from './core/AppState';
 import { clsShapefile } from './shapeFile';
+import { SortingSearch } from './SortingSearch';
 import type { 
   ExtendedHTMLElement, 
   SelectChangeHandler, 
@@ -827,7 +828,7 @@ function setting(locSearch: string) {
                         case enmZahyo_mode_info.Zahyo_Ido_Keido:
                             TTL = title + "経度";
                             break;
-                        case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+                        case enmZahyo_mode_info.Zahyo_Heimentyokukaku:
                             TTL = title + "Ｙ";
                             break;
                     }
@@ -840,7 +841,7 @@ function setting(locSearch: string) {
                         case enmZahyo_mode_info.Zahyo_Ido_Keido:
                             TTL = title + "緯度";
                             break;
-                        case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+                        case enmZahyo_mode_info.Zahyo_Heimentyokukaku:
                             TTL = title + "Ｘ";
                             break;
                     }
@@ -4086,7 +4087,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     const relatedFile = Generic.createNewDiv(infoFrame, "関連ファイル", "", "grayFrame", 15, 30, 200, 50, "padding:5px;");
     const zahyoModeFrame = Generic.createNewFrame(infoFrame, "", "", 15, 100, 100, 100, "座標系");
     const ZahyoSystemList = [{ value: enmZahyo_mode_info.Zahyo_Ido_Keido, text: "緯度経度" },
-    { value: enmZahyo_mode_info.Zahyo_HeimenTyokkaku, text: "平面直角" },
+    { value: enmZahyo_mode_info.Zahyo_Heimentyokukaku, text: "平面直角" },
     { value: enmZahyo_mode_info.Zahyo_No_Mode, text: "その他" }];
     Generic.createNewRadioButtonList(zahyoModeFrame, "zahyoMode", ZahyoSystemList, 10, 10,undefined, 22,undefined, zahyoModeFrameChange, "");
     const lst = doc.getElementById("radiozahyoMode2");

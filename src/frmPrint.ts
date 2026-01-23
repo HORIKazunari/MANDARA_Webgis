@@ -408,10 +408,10 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                         if (ag.Note === true) {
                             vs.DataNote.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.Comapss === true) {
+                        if (ag.NorthSign === true) {
                             vs.AttMapCompass.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.Legend === true) {
+                        if (ag.MapLegend === true) {
                             for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
                                 vs.MapLegend.Base.LegendXY[i].offset(stp.x, stp.y);
                             }

@@ -5022,7 +5022,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                         }
                     }
                 }
-                if (datObject.prototype.hasOwnProperty.call(a, 'checked')) {
+                if (Object.prototype.hasOwnProperty.call(data, 'checked')) {
                     let tx = "";
                     if (data.checked === true) {
                         tx = "✓";
