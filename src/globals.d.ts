@@ -47,6 +47,12 @@ declare let preReadMapFile: MapFileInfo[];
 // レイヤーデータ（未使用の可能性が高い）
 declare let clsLayerData: typeof ILayerDataInfo | undefined;
 
+// Window拡張（グローバルプロパティ）
+interface Window {
+    attrMapData?: Record<string, unknown>;
+    xhr?: XMLHttpRequest;
+}
+
 // GlobalEventHandlers拡張
 interface GlobalEventHandlers {
     innerText?: string;

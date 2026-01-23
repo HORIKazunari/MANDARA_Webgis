@@ -44,6 +44,24 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         Comment: "Comment" as const,
         ReferenceSystem: "ReferenceSystem" as const
     };
+    
+    // 関数の前方宣言
+    let Check_DataKind: (Layernum: number) => void;
+    let Set_LayerTypeShape: () => void;
+    let ErrorCheck: () => boolean;
+    let setIniform: () => void;
+    let newDataFlag: boolean;
+    let set_First_GridCellWidthHeight: (Layernum: number) => void;
+    let Get_Data_Property_Value: (_attrData: clsAttrData, Layernum: number, DataNum: number) => number;
+    let check_DataKind_and_Allignment: (Layernum: number) => void;
+    let SetMapFileList_to_CboBox: () => void;
+    let Get_E_Data: () => { ok: boolean; emes: string };
+    let Reset_SCRView_Size: () => void;
+    let Check_Data: () => void;
+    let btnReplaceMapfileClick: () => void;
+    let btnRemoveMapfileClick: () => void;
+    let btnAddMapfile: () => void;
+    
     const _Change_Data = false;
     let ZahyoOk = false; // Boolean
     const newAttrData=new clsAttrData();
@@ -1618,7 +1636,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     }
 
     /**レイヤ情報の画面セット */
-    function Set_LayerTypeShape(){
+    Set_LayerTypeShape = function(){
         cboLayerMapFile.disabled= true;
         cboLayerType.disabled=true;
         cboLayerShape.disabled= true;
@@ -1673,7 +1691,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         }
         txtLayerComment.value = ktGrid.getLayerData(LayerNum, GridLayerData.Comment);
 }
-    function Check_DataKind(Layernum: number){
+    Check_DataKind = function(Layernum: number){
         for (let i = 0; i < ktGrid.getXsize(Layernum); i++) {
             const lType = ktGrid.getLayerData(Layernum, GridLayerData.Type);
             let ttl = "通常のデータ";
@@ -1706,7 +1724,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             ktGrid.setFixedYSData(Layernum, i, 1, ttl);
         }
 }
-    function set_First_GridCellWidthHeight(Layernum: number){
+    set_First_GridCellWidthHeight = function(Layernum: number){
        ktGrid.setFixedXSWidth(Layernum, 0,50);
        ktGrid.setFixedXSWidth(Layernum, 1,150);
        ktGrid.setFixedYSHeight(Layernum, 3,38);
@@ -1716,7 +1734,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
        ktGrid.setFixedUpperLeftData(Layernum, 1, 4,"単位");
        ktGrid.setFixedUpperLeftData(Layernum, 1, 5,"注");
     }
-    function Get_Data_Property_Value(_attrData: clsAttrData, Layernum: number, DataNum: number){
+    Get_Data_Property_Value = function(_attrData: clsAttrData, Layernum: number, DataNum: number){
         const al = _attrData.LayerData[Layernum];
         switch (al.atrData.Data[DataNum].DataType) {
             case enmAttDataType.Normal:
@@ -1745,7 +1763,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         }
     }
 
-    function check_DataKind_and_Allignment(Layernum: number){
+    check_DataKind_and_Allignment = function(Layernum: number){
         for(let i  = 0 ;i< ktGrid.getXsize(Layernum);i++){
             const dtype  = Generic.getAttDataType_From_TitleUnit(ktGrid.getFixedYSData(Layernum, i, 3), ktGrid.getFixedYSData(Layernum, i, 4));
             ktGrid.setFixedYSData(Layernum, i, 1, Generic.ConvertAttDataTypeString(dtype));
@@ -1762,7 +1780,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             }
     }
 
-    function SetMapFileList_to_CboBox(){
+    SetMapFileList_to_CboBox = function(){
         const Mapfiles=newAttrData.GetMapFileName();
         if(Mapfiles.length===0){return;}
         const lst=[];
@@ -1772,7 +1790,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         cboLayerMapFile.addSelectList(lst,undefined,true,false);
 
     }
-    function setIniform() {
+    setIniform = function() {
         const gl = GridLayerData;
         gl.MapFile = "MapFile";
         gl.Type = "Type";
@@ -1803,7 +1821,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         cboMesh.addSelectList(lShape, 0, false, false);
     }
 
-    function btnAddMapfile() {
+    btnAddMapfile = function() {
         openMapFile(getFile);
         function getFile(jsonMapData: JsonObject | undefined, filename: string) {
             if (jsonMapData === undefined) {
