@@ -2,6 +2,7 @@ import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
 import { gridControl, type EventCallbacks } from './clsGridControl';
 import type { JsonObject, JsonValue } from './types';
+import { SortingSearch } from './SortingSearch';
 
 type LayerTypeValue = (typeof enmLayerType)[keyof typeof enmLayerType];
 type ShapeValue = (typeof enmShape)[keyof typeof enmShape];
@@ -50,7 +51,6 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     let Set_LayerTypeShape: () => void;
     let ErrorCheck: () => boolean;
     let setIniform: () => void;
-    let newDataFlag: boolean;
     let set_First_GridCellWidthHeight: (Layernum: number) => void;
     let Get_Data_Property_Value: (_attrData: clsAttrData, Layernum: number, DataNum: number) => number;
     let check_DataKind_and_Allignment: (Layernum: number) => void;
@@ -61,6 +61,9 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     let btnReplaceMapfileClick: () => void;
     let btnRemoveMapfileClick: () => void;
     let btnAddMapfile: () => void;
+    
+    // パラメータから実際の値を取得
+    const newDataFlag = _newDataFlag;
     
     const _Change_Data = false;
     let ZahyoOk = false; // Boolean
@@ -496,7 +499,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     }
 
     /**既存データの編集の場合、グリッド上中のデータと以前のデータを比較 */
-    function Check_Data() {
+    Check_Data = function() {
         const R_Conv = [];// Layer_Data_Info())
         const r_md = 0;
         for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
@@ -1195,7 +1198,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             return CheckDataRet
     }
 
-    function Reset_SCRView_Size(){
+    Reset_SCRView_Size = function(){
 
         newAttrData.Check_Vector_Object();
         //ダミー点オブジェクトの記号
@@ -1297,7 +1300,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     }
 
     /**グリッド上のデータを取得 */
-    function Get_E_Data(){
+    Get_E_Data = function(){
         const L = ktGrid.getLayerMax();
         newAttrData.TotalData.LV1.Lay_Maxn = 0
         for (let i = 0; i < L; i++) {
@@ -1417,7 +1420,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     }
 
     /**データエラーのチェック */
-    function ErrorCheck() {
+    ErrorCheck = function() {
         errorInfo.value="";
         const emes = ErrorCheckLayerMapFile();
         if (emes.length !== 0) {
@@ -1801,7 +1804,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         gl.SyntheticObjF = "SyntheticObjF";
         gl.Comment = "Comment";
         gl.ReferenceSystem = "ReferenceSystem";
-        Change_Data = false;
+        // _Change_Data = false; // constなので代入不可
         const ltype = [{ value: enmLayerType.Normal, text: Generic.ConvertStringFromLayerType(enmLayerType.Normal) },
         { value: enmLayerType.DefPoint, text: Generic.ConvertStringFromLayerType(enmLayerType.DefPoint) },
         { value: enmLayerType.Mesh, text: Generic.ConvertStringFromLayerType(enmLayerType.Mesh) }];
@@ -1864,7 +1867,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
 
     }
     
-    function btnRemoveMapfileClick(){
+    btnRemoveMapfileClick = function(){
         const sel  = lstMapFile.selectedIndex;
         if( sel === -1){
             Generic.alert(undefined,"地図ファイルを選択して下さい。");
@@ -1883,7 +1886,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         Set_LayerTypeShape();
     }
 
-    function btnReplaceMapfileClick() {
+    btnReplaceMapfileClick = function() {
         const sel = lstMapFile.selectedIndex;
         if (sel === -1) {
             Generic.alert(undefined, "地図ファイルを選択して下さい。");
