@@ -2717,7 +2717,7 @@ function setting(locSearch: string) {
                         return;
                     }
                     break;
-                case enmDivisionMethod.StandardDeviation:
+                case enmDivisionMethod.StandardDeviation: {
                     dc.selectedIndex = 2;
                     dc.disabled = true;
                     const oldDivNum = data.Div_Num;
@@ -2733,6 +2733,7 @@ function setting(locSearch: string) {
                         attrData.Twocolort(Layernum, DataNum);
                     }
                     break;
+                }
             }
             data.Div_Method = selectedValue;
             attrData.Set_Div_Value(Layernum, DataNum);
