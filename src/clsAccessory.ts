@@ -2001,7 +2001,7 @@ export class Accessory {
                 fu = Generic.Figure_Using3((Class_div[checkN] as strClass_Div_data)?.Value || Class_div[checkN], LL, RR, comma_f) + MoreSTR;
                 break;
             case (DivNum - 1):
-                if ((vs.MapLegend.ClassMD.SeparateClassWords as typeof enmSeparateClassWords) === enmSeparateClassWords.Japanese) {
+                if (vs.MapLegend.ClassMD.SeparateClassWords === enmSeparateClassWords.Japanese) {
                     fu = Generic.Figure_Using3((Class_div[checkN - 1] as strClass_Div_data)?.Value || Class_div[checkN - 1], LL, RR, comma_f) + UnderSTR;
                 } else {
                     fu = UnderSTR + Generic.Figure_Using3((Class_div[checkN - 1] as strClass_Div_data)?.Value || Class_div[checkN - 1], LL, RR, comma_f).trim();
