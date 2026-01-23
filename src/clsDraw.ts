@@ -134,7 +134,7 @@ class clsDraw {
 
 
     //指定した幅で文字列を分割して返す
-    static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info): { Out_Text: string[]; Height: number; Width: number } {
+    static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info): { Out_Text: string[]; Height: number; RealWidth: number } {
 
         const Out_Text=[];
         const thdata = P_Font.toContextFont!(ScrData);
@@ -345,7 +345,7 @@ class clsDrawLine {
         const e3=new point() ;
         const e4=new point() ;
         this.Draw_Arrow_Keisan(e3, e2, e4,  OP, BeforPoint, LPat, DArrow, true, ScrData);
-        return spatial.Line_Cross_Point(e3, e4, LineP1, LineP2);
+        return spatial.Line_Cross_Point(e3, e4, LineP1, LineP2) !== undefined;
     }
 
     static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info): void {

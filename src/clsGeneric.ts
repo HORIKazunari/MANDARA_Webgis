@@ -639,7 +639,7 @@ export class spatial {
         let f;
         switch (MPDataMapZahyo.Mode) {
             case enmZahyo_mode_info.Zahyo_No_Mode:
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku: {
                 f = true;
                 break;
             }
@@ -827,7 +827,7 @@ export class spatial {
                 }
                 break;
             }
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku: {
                 v = 1;
                 break;
             }
@@ -907,7 +907,7 @@ export class spatial {
         let x2, y2;
         const LatLon = new latlon();
 
-        if (MapZahyo_Info.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) {
+        if (MapZahyo_Info.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku) {
             let Ellip12;
             //平面直角座標系の場合は緯度経度に変換
             if (MapZahyo_Info.System === enmZahyo_System_Info.Zahyo_System_tokyo) {
@@ -965,7 +965,7 @@ export class spatial {
                     }
                     P2 = (XY2 as {toPoint: () => point}).toPoint();
                 }
-            } else if ((oldMapZahyo.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (newMapZahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+            } else if ((oldMapZahyo.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku) && (newMapZahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
                 //元が平面直角、新規が緯度経度の場合、
 
                 let Ellip12;
@@ -1184,7 +1184,7 @@ export class spatial {
                     men = Math.abs(men / 2);
                 }
                 break;
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku:
                 men = Math.abs(men / (MapDataMap.SCL * MapDataMap.SCL) / 2);
                 break;
              default:
@@ -1524,7 +1524,7 @@ export class spatial {
                 return new point(ox, oy);
                 break;
             }
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku: {
                 return new point(ox, -oy);
                 break;
             }
@@ -1637,11 +1637,11 @@ export class spatial {
             const mes = "座標系の設定していないデータと、設定してあるデータを重ねることはできません。";
             return { ok: false, emes: mes };
         }
-        if ((OriginMap.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (ConvertMap.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
+        if ((OriginMap.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku) && (ConvertMap.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido)) {
             const mes =  "平面直角座標系のデータ上に緯度経度座標系のデータは追加できません。";
             return { ok: false, emes: mes };
         }
-        if ((OriginMap.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku) && (OriginMap.Mode === enmZahyo_mode_info.Zahyo_HeimenTyokkaku)) {
+        if ((OriginMap.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku) && (OriginMap.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku)) {
             if (ConvertMap.HeimenTyokkaku_KEI_Number !== OriginMap.HeimenTyokkaku_KEI_Number) {
                 const mes =  "平面直角座標系の系番号が違います。";
                 return { ok: false, emes: mes };
@@ -1681,7 +1681,7 @@ export class spatial {
             case enmZahyo_mode_info.Zahyo_No_Mode:
                 return new point(ox, oy);
                 break;
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku:
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku:
                 return new point(ox, -oy);
                 break;
             case enmZahyo_mode_info.Zahyo_Ido_Keido:
@@ -2742,7 +2742,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         let retPS: {x: string, y: string} = {x: "", y: ""};
         switch (MPDataMapZahyo.Mode) {
-            case enmZahyo_mode_info.Zahyo_HeimenTyokkaku: {
+            case enmZahyo_mode_info.Zahyo_Heimentyokukaku: {
                 if (Header_Flag === true) {
                     retPS.x = "Y:";
                     retPS.y = "X:";
