@@ -398,7 +398,7 @@ class clsPrint {
 
     /**複数のレイヤごとのポリゴンのクリッピング */
     static ClippingRegion_ObjectBoundary_set(g: CanvasRenderingContext2D, Layers: number[], RealObjClip_f: boolean, DummyClip_F: boolean) {
-        const state = appState();
+        // const state = appState();
         let f = false;
         const Allpxy = [];
         const AllnPolyP = [];
@@ -552,7 +552,7 @@ class clsPrint {
 
     /**複数オブジェクトにまとめて色塗り */
     static PaintMultiPolygonObject(g: CanvasRenderingContext2D, Layernum: number, MultiObj: number[], TI: Tile_Property, Dummy_F: boolean){
-        const state = appState();
+        // const state = appState();
         const MbjN=MultiObj.length;
         if((MbjN === 0)||(TI.BlankF === true) ){
             return;
@@ -1849,7 +1849,7 @@ class clsPrint {
         const LabelMark = attLbl.Location_Mark;
 
 
-        const LocMarkFlag = attLbl.Location_Mark_Flag;
+        // const LocMarkFlag = attLbl.Location_Mark_Flag;
         const mark_r = state.attrData.Radius(attLbl.Location_Mark.WordFont.Size, 1, 1);
 
 
@@ -2581,7 +2581,7 @@ class clsPrint {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
         const smd = ad.SoloModeViewSettings.StringMD;
-        const H = state.attrData.Get_Length_On_Screen(smd.Font.Size);
+        // const H = state.attrData.Get_Length_On_Screen(smd.Font.Size);
         const Font = smd.Font.Clone();
         const xw = state.attrData.Get_Length_On_Screen(smd.maxWidth);
         const turnF = smd.WordTurnF;
@@ -2713,7 +2713,7 @@ class clsPrint {
     }
 
     static MarkBarRectPrint(Pos: point, w: number, h: number, threeD: boolean) {
-        const state = appState();
+        // const state = appState();
         const CenterRect= new rectangle(new point(Pos.x - w / 2, Pos.y - h), new size(w, h));
         const UpperPoly=[];
         const RightPoly=[];
@@ -3297,7 +3297,7 @@ class clsPrint {
                 const vs = state.attrData.TotalData.ViewStyle.ScrData;
                 let OP = vs.Get_SxSy_With_3D(CP);
                 const r = 5; // vs.Radius(MK.WordFont.Size, 1, 1); // Property not available1, 1); // Property not available
-                const ot = state.attrData.TempData.OverLay_Temp;
+                // const ot = state.attrData.TempData.OverLay_Temp;
                 OP = this.getOverlayMarkPosition(OP, r);
                 // if(ot.OverLay_Printing_Flag === true) {
                 //     if(ot.OverLay_EMode_N >= 2) {
@@ -3514,7 +3514,7 @@ class clsPrint {
         }
     }
 
-    static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, Dummy_F: boolean) {
+    static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, /*Dummy_F: boolean*/) {
         const state = appState();
         let ELine = []// clsMapData.EnableMPLine_Data
         const ad = state.attrData.LayerData[Layernum];
@@ -3539,10 +3539,10 @@ class clsPrint {
             ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code);
         }
         // }
-        const MPFileNapa = ad.MapFileName;
+        // const MPFileNapa = ad.MapFileName;
         for (let j = 0; j < ELine.length; j++) {
             const lc = ELine[j].LineCode;
-            const lcc = ELine[j].Kind;
+            // const lcc = ELine[j].Kind;
             let PatNum = ad.ObjectGroupRelatedLine[lc];
             if(PatNum === undefined) {
                 PatNum = 0;
@@ -3651,7 +3651,7 @@ class clsPrint {
 
     //指定されたラインをポリゴン化したXY座標を返す
     static Get_Boundary_XY(Layernum: number, badata: boundArrangeData) {
-        const state = appState();
+        // const state = appState();
         const poly = new PolydataInfo();
 
         let Pon = badata.Pon ?? 0;

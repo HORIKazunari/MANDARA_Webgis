@@ -6434,7 +6434,6 @@ HTMLElement.prototype.btnDisabled = function (f) {
 interface String {
     left(num: number): string;
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 (String.prototype as { left: (this: string, num: number) => string }).left = function (num: number): string {
     return this.substr(0, num);
 };
@@ -6477,7 +6476,6 @@ interface String {
 interface Number {
     px(): string;
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 (Number.prototype as { px: (this: number) => string }).px = function(): string {
     return this.toString() + "px";
 };
