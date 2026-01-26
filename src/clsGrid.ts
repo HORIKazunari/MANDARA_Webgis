@@ -1,4 +1,4 @@
-import { appState } from './core/AppState';
+// import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
 import { gridControl, type EventCallbacks } from './clsGridControl';
 import type { JsonObject, JsonValue } from './types';

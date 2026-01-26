@@ -1213,7 +1213,7 @@ class clsMapdata {
                     if (check_objNameListNum === true) {
                         if (this.ObjectKind[i].ObjectNameNum !== this.ObjectKind[SeFlOb].ObjectNameNum) {
                             Emes = "オブジェクト名リスト数が異なるオブジェクトグループが選択されています。";
-                            f = false;
+                            // f = false;
                             break;
                         } else {
                             for (let j = 0; j < this.ObjectKind[i].ObjectNameNum; j++) {
