@@ -36,8 +36,8 @@ export default tseslint.config(
       // any型の使用を禁止
       '@typescript-eslint/no-explicit-any': 'error', // any型の新規追加を完全に防止
       
-      // 未使用変数の警告 - 段階的に修正するため一旦warnに
-      '@typescript-eslint/no-unused-vars': ['warn', { 
+      // 未使用変数の警告 - errorに変更して修正を促進
+      '@typescript-eslint/no-unused-vars': ['error', { 
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrors: 'all'

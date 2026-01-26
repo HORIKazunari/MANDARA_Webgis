@@ -1,20 +1,20 @@
-import { appState } from './core/AppState';
+// import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsTime } from './clsTime';
 import { SortingSearch } from './SortingSearch';
-import { clsDraw } from './clsDraw';
+// import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { Start_End_Time_data } from './clsAttrData';
 import { Fringe_Line_Info } from './clsPrint';
 import type { JsonObject, JsonValue } from './types';
 
 /** Description placeholder */
-class Hennyu_Data {
-    code?: number;
-    Name?: string;
-    Time?: strYMD;
-    Part?: boolean;
-}
+// class Hennyu_Data {
+//     code?: number;
+//     Name?: string;
+//     Time?: strYMD;
+//     Part?: boolean;
+// }
 
 //オブジェクト継承データ（地図データ）
 /**
@@ -495,10 +495,10 @@ class Map_Detail_Data {
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
 /** Description placeholder */
-class Hennyu_Data2 {
-    code?: number;
-    Direction?: number;
-}
+// class Hennyu_Data2 {
+//     code?: number;
+//     Direction?: number;
+// }
 
 
 
@@ -1235,7 +1235,7 @@ class clsMapdata {
                             if ((this.ObjectKind[i].DefTimeAttSTC[j].attData.Title !== this.ObjectKind[SeFlOb].DefTimeAttSTC[j].attData.Title) ||
                                 (this.ObjectKind[i].DefTimeAttSTC[j].attData.Unit !== this.ObjectKind[SeFlOb].DefTimeAttSTC[j].attData.Unit)) {
                                 Emes = "初期属性のタイトルまたは単位が異なるオブジェクトグループが選択されています。";
-                                f = false;
+                                // const f = false;
                                 i = this.Map.OBKNum - 1;
                                 break;
                             }
@@ -1315,7 +1315,8 @@ class clsMapdata {
         const mens = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
             const LXY2: point[] = [];
-            const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
+            // const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
+            this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
             LXY2.push(LXY2[1]);
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map as { Zahyo: Zahyo_info; SCL: number });
         }
@@ -1324,7 +1325,8 @@ class clsMapdata {
             m = mens[0]
         } else {
             const TotalInOut: number[] = [];
-            const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
+            // const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
+            this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             for (let i = 0; i < Pon; i++) {
                 if ((TotalInOut[i] % 2) === 1) {
@@ -1397,7 +1399,8 @@ class clsMapdata {
             GXY = gp[0];
         } else {
             const TotalInOut: number[] = [];
-            const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
+            // const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
+            this.Object_Polygon_InOut(badata, TotalInOut);
             m = 0;
             let sm = 0;
             for (let i = 0; i < Pon; i++) {
@@ -1484,7 +1487,7 @@ class clsMapdata {
             const retRin = SIndex.GetRectIn(X, Y);
             if (retRin !== 0) {
                 const n = retRin.number;
-                const Onum = retRin.ObStac;
+                // const Onum = retRin.ObStac;
                 const Otags = retRin.Tags;
 
                 for (let j = 0; j < n; j++) {
@@ -1540,7 +1543,8 @@ class clsMapdata {
         //2:世界測地系の緯度経度
         //3:元々の座標系の座標で取得
 
-        const Pnum = this.Get_Object_Polygon_Points(Num, Arrange_LineCode, Fringe);
+        // const Pnum = this.Get_Object_Polygon_Points(Num, Arrange_LineCode, Fringe);
+        this.Get_Object_Polygon_Points(Num, Arrange_LineCode, Fringe);
         poxy.length = 0;
         let n = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
@@ -1983,7 +1987,7 @@ class clsMapdata {
             const ml = this.MPLine[lc];
             const ln = ml.NumOfPoint;
             for (let j = 0; j < ln - 1; j++) {
-                let nearP;
+                // let nearP;
                 const DD = spatial.Distance_PointLine2(P, ml.PointSTC[j], ml.PointSTC[j + 1]);
                 let dist = DD.distance;
                 if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
@@ -2840,7 +2844,7 @@ class clsMapdata {
                     polyn ++;
                 }else{
                     polyn = 0;
-                    CutPoint = exy;
+                    // const CutPoint = exy;
                     break;
                 }
             }

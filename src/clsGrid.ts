@@ -33,7 +33,7 @@ class Layer_Data_InfoCheck {
 }
 
 function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
-    const state = appState();
+    // const state = appState();
     const GridLayerData = {
         MapFile: "MapFile" as const,
         Type: "Type" as const,
@@ -500,7 +500,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     /**既存データの編集の場合、グリッド上中のデータと以前のデータを比較 */
     function Check_Data() {
         const R_Conv = [];// Layer_Data_Info())
-        const r_md = 0;
+        // const r_md = 0;
         for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
             const datan = oldAttrData.LayerData[i].atrData.Count;
             const d = [];
@@ -1813,13 +1813,13 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         { value: enmShape.LineShape, text: Generic.ConvertShapeEnumString(enmShape.LineShape) },
         { value: enmShape.PolygonShape, text: Generic.ConvertShapeEnumString(enmShape.PolygonShape) }];
         cboLayerShape.addSelectList(lShape, 0, false, false);
-        const lMesh = [{ value: enmMesh_Number.mhFirst, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhFirst) },
-        { value: enmMesh_Number.mhSecond, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhSecond) },
-        { value: enmMesh_Number.mhThird, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhThird) },
-        { value: enmMesh_Number.mhHalf, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhHalf) },
-        { value: enmMesh_Number.mhQuarter, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhQuarter) },
-        { value: enmMesh_Number.mhOne_Eighth, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhOne_Eighth) },
-        { value: enmMesh_Number.mhOne_Tenth, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhOne_Tenth) }];
+        // const lMesh = [{ value: enmMesh_Number.mhFirst, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhFirst) },
+        // { value: enmMesh_Number.mhSecond, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhSecond) },
+        // { value: enmMesh_Number.mhThird, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhThird) },
+        // { value: enmMesh_Number.mhHalf, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhHalf) },
+        // { value: enmMesh_Number.mhQuarter, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhQuarter) },
+        // { value: enmMesh_Number.mhOne_Eighth, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhOne_Eighth) },
+        // { value: enmMesh_Number.mhOne_Tenth, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhOne_Tenth) }];
         cboMesh.addSelectList(lShape, 0, false, false);
     }
 

@@ -1679,7 +1679,7 @@ export class gridControl {
         }
     }
 
-    Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
+    Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, /*BorderWidth: number, font: Font_Property*/) => {
         if(STT===undefined){return;}
         if (!this.ctx) return;
         
@@ -1880,7 +1880,7 @@ export class gridControl {
         // eslint-disable-next-line @typescript-eslint/no-this-alias -- 複数の内部関数でthisにアクセスする必要がある
         const self = this;
         /**外部から貼り付け */
-        function mnuouterPaste(event: Event){
+        function mnuouterPaste(/*event: Event*/){
             self.removeEventlister();
             document.body.removeEventListener("contextmenu", contextMenuPrevent);
             self.base.removeEventListener("contextmenu", contextMenuPrevent);
@@ -3007,7 +3007,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         } else {
             event = (e as TouchEvent).changedTouches[0];
         }
-        const MouseDownF = true;
+        // const MouseDownF = true;
         this.touchStartTime = new Date().getTime();
         const mouseDownPosition = Generic.getCanvasXY2(event);
         const x = mouseDownPosition.x;
@@ -3411,7 +3411,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     /**テキストボックス中でのキー操作 */
     txtTextBox_KeyDown = (e: KeyboardEvent) => {
         
-        const CTRL_Key = e.ctrlKey;
+        // const CTRL_Key = e.ctrlKey;
         const Shift_Key = e.shiftKey;
         const ALT_Key = e.altKey;
 
@@ -3881,7 +3881,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         }
     }
 
-    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, Width: number) => {
+    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, /*Width: number*/) => {
         const UndoData=new Undo_ChangeColumnWidth();
         const oldW = [];
         const GP = this.Grid_Property[Layer];
@@ -4230,7 +4230,7 @@ class scrollBar {
     }
 
     /**スクロールバーの位置取得 */
-    this.getXY = (x: number, y: number): point => {
+    this.getXY = (/*x: number, y: number*/): point => {
         return new point(frame.style.left.removePx(), frame.style.top.removePx());
     }
 
@@ -4328,7 +4328,7 @@ class scrollBar {
         }
     }
 
-    function btnMup(e: MouseEvent) {
+    function btnMup(/*e: MouseEvent*/) {
         if (btnMDownF === true) {
             btnMDownF = false;
             clearInterval(btnDownTimer);
@@ -4384,7 +4384,7 @@ class scrollBar {
             mdownPos = e.clientX - slideFrame.getBoundingClientRect().x;
         }
         mdownF = true;
-        const sliderInF = false;
+        // const sliderInF = false;
         if (type === 0) {//縦
             // mdownPos = p.y;
             const p1 = slider.style.top.removePx();

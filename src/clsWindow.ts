@@ -4,19 +4,19 @@ import { clsShapefile } from './shapeFile';
 import { SortingSearch } from './SortingSearch';
 import type { 
   ExtendedHTMLElement, 
-  SelectChangeHandler, 
+  // SelectChangeHandler, 
   SelectMode, 
   SoloMode, 
-  ValueCallback, 
-  ObjectValueCallback, 
+  // ValueCallback, 
+  // ObjectValueCallback, 
   Mark, 
   Tile, 
   LinePattern, 
   Color, 
-  Font, 
+  // Font, 
   Edge,
-  JsonValue,
-  JsonObject,
+  // JsonValue,
+  // JsonObject,
   MapData
 } from './types';
 
@@ -59,17 +59,17 @@ export class strLayerInfo {
 // settingModeWindow は globals.d.ts で定義済み
 const picClassBoxHeight = 23;
 const picClassBoxWidth = 40;
-const picClassBoxLeft = 10;
-const picClassBoxTop = 10;
+// const picClassBoxLeft = 10;
+// const picClassBoxTop = 10;
 const txtClassValueWidth = 120;
 const txtClassValueLeftMergin = 5;
 const freqWidth = 50;
 const allW = picClassBoxWidth + txtClassValueWidth + freqWidth+txtClassValueLeftMergin;
 const pnlGraphEachItemHeight=25;
-function setting(locSearch: string) {
-    const state = appState();
+// function setting(locSearch: string) {
+//     const state = appState();
 
-    let man_Data=enmDataSource.NoData;
+//     let man_Data=enmDataSource.NoData;
     const totalh = 680;
     let overlayListView: ListViewTable | undefined;//重ね合わせデータセットりリストビュー
     let seriesListView: ListViewTable | undefined;//連続表示データセットりリストビュー
