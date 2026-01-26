@@ -95,7 +95,7 @@ export class TKY2JGDInfo_Impl {
         const M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
         let b: number, L: number;        //求める緯度，経度。基本的にradian
         let _Gamma: number;                 //=γ 子午線収差角。radian
-        let MMM: number;                   //縮尺係数
+        // let MMM: number;                   //縮尺係数 - 未使用
         let Ep2: number;
         let AJ: number, BJ: number, CJ: number, DJ: number, EJ: number;
         let FJ: number, GJ: number, HJ: number;
@@ -3386,7 +3386,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static CenterPage(help_url: string, Xv: number, Yv: number) {
 
         const win2p: string = "";
-        const win1p: string = "";
+        // const win1p: string = ""; // 未使用
         let new2: Window | null = null;
         
         if (win2p === "on") {
@@ -4152,7 +4152,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 sbox.tooltip = 'true';
             }
         }
-        function mouseLeave(this: HTMLSelectElement, e: MouseEvent) {
+        function mouseLeave(this: HTMLSelectElement, _e: MouseEvent) {
             if (sbox.tooltip === 'true') {
                 this.parentNode.removeChild(this.parentNode.lastChild);
                 sbox.tooltip = '';
@@ -4244,7 +4244,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         function handleClick(this: HTMLCanvasElement, e: MouseEvent) {
             e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
+            // const _rect = canvas.getBoundingClientRect(); // 未使用
             if (onClick) {
                 onClick.call(canvas, e);
             }
@@ -4520,7 +4520,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             this.createXmark(window, hiddenWindow, 14);
         }
         if (menuMarkF === true) {
-            const menuHandler = menuCall ? function(this: HTMLCanvasElement, e: MouseEvent) {
+            const menuHandler = menuCall ? function(this: HTMLCanvasElement, _e: MouseEvent) {
                 const rect = this.getBoundingClientRect();
                 menuCall(new point(rect.right, rect.bottom));
             } : null;
@@ -4669,12 +4669,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const head = Generic.createNewDiv(dup, "", "", "", 0, 0, '100%', state.scrMargin.top, "background-color: gray;color:#ffffff;font-size:15px", "");
         Generic.createNewSpan(head, title, "", "", 10, 0, "margin-top:4px", undefined);
         if(createXmark){
-            const cv = this.createXmark(dup, cancelButton, 14);
+            // const _cv = this.createXmark(dup, cancelButton, 14); // 未使用
+            this.createXmark(dup, cancelButton, 14);
         }
 
         let bux = w;
         if (cancelButtonF === true) {
-            const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, h - 35, (e: MouseEvent) => cancelButton(), "width:70px;height:23px");
+            const ele=Generic.createNewButton(dup, "Cancel", "", bux - 80, h - 35, (_e: MouseEvent) => cancelButton(), "width:70px;height:23px");
             ele.bottomRightPositionFixed=true;
             ele.relativePosition=new point(80,30);
             ele.name="cancel";
@@ -5311,7 +5312,7 @@ export class CheckedListBox {
                     }
                 }
                 if (typeof this.onChange === 'function') {
-                    const retV = this._getChecked();
+                    // const _retV = this._getChecked(); // 未使用
                     this.onChange(newSel);
                 }
             };
@@ -5690,10 +5691,10 @@ export class ListViewTable {
                     }
                 }
             };
-            this.tbh.onmousedown = (e) => {
+            this.tbh.onmousedown = (_e) => {
                 this.mousePointingSituation = mousePointingSituations.down as number;
             };
-            this.tbh.onmouseup = (e) => {
+            this.tbh.onmouseup = (_e) => {
                 this.bpos = -1;
                 this.mousePointingSituation = mousePointingSituations.up as number;
             };
@@ -6181,7 +6182,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 
     //同じ地点でマウスボタンが上がった場合の処理
-    function mdup(e: MouseEvent) {
+    function mdup(_e: MouseEvent) {
         targetEle.style.cursor = 'default';
         targetEle.addEventListener("mousemove", mmovef, false);
         targetEle.parentElement.removeEventListener("mousemove", mmove, false);
@@ -6190,7 +6191,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     }
 
     //マウスボタンが上がったら発火
-    function mup(e: MouseEvent) {
+    function mup(_e: MouseEvent) {
         if(mdownF===false){
             return;
         }
@@ -6433,6 +6434,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 interface String {
     left(num: number): string;
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 (String.prototype as { left: (this: string, num: number) => string }).left = function (num: number): string {
     return this.substr(0, num);
 };
@@ -6475,6 +6477,7 @@ interface String {
 interface Number {
     px(): string;
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 (Number.prototype as { px: (this: number) => string }).px = function(): string {
     return this.toString() + "px";
 };
