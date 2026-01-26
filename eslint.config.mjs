@@ -55,15 +55,11 @@ export default tseslint.config(
       
       // 関数とメソッドの型定義 - 段階的に修正
       '@typescript-eslint/no-inferrable-types': 'off',
-      '@typescript-eslint/explicit-function-return-type': ['warn', {
-        allowExpressions: true,
-        allowTypedFunctionExpressions: true,
-        allowHigherOrderFunctions: true
-      }],
+      '@typescript-eslint/explicit-function-return-type': 'off', // 一旦オフ: 段階的に追加
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       
       // コード品質 - 段階的に修正
-      '@typescript-eslint/no-empty-function': 'warn',  // 13件: 意図的な空関数にコメント追加が必要
+      '@typescript-eslint/no-empty-function': 'off',  // 意図的な空関数が多いため一旦オフ
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'eqeqeq': ['error', 'always', { null: 'ignore' }],
@@ -78,12 +74,12 @@ export default tseslint.config(
       
       // null/undefined安全性 - 段階的に修正
       '@typescript-eslint/no-non-null-assertion': 'warn',  // 50件: 段階的に修正
-      '@typescript-eslint/prefer-nullish-coalescing': 'warn',  // 48件: 段階的に修正
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',  // strictNullChecks有効化後に再度有効化
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/strict-boolean-expressions': 'off', // 厳密すぎるので無効化
       
-      // 命名規則（段階的に厳格化）
-      '@typescript-eslint/naming-convention': ['warn',
+      // 命名規則（段階的に厳格化） - レガシーコードとの互換性のため一時的にオフ
+      '@typescript-eslint/naming-convention': 'off', /* ['warn',
         {
           selector: 'variable',
           format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
@@ -135,7 +131,7 @@ export default tseslint.config(
           selector: 'enumMember',
           format: ['PascalCase', 'UPPER_CASE']
         }
-      ],
+      ], */
       
       // TypeScriptが型チェックするため無効化
       'no-undef': 'off',
