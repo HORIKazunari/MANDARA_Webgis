@@ -470,7 +470,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     }
 
     /**データ部分をクリックした場合に発生 */
-    function Click_DataGrid(Layer: number, X: number, Y: number, Value: string, Top: number, Left: number, Width: number, Height: number) {
+    function Click_DataGrid(_Layer: number, _X: number, _Y: number, _Value: string, _Top: number, _Left: number, _Width: number, _Height: number) {
         // console.log("Click_DataGrid", Layer, X, Y, Value, Top, Left, Width, Height);
     }
     /**上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
@@ -1948,5 +1948,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     }
 }
 
+// グローバル関数として公開
+(globalThis as any).clsGrid = clsGrid;
 
 }

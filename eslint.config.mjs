@@ -45,7 +45,7 @@ export default tseslint.config(
       
       // var宣言を禁止
       'no-var': 'error',
-      'prefer-const': 'warn',  // 段階的に修正
+      'prefer-const': 'error',  // 修正完了したのでerrorに変更
       
       // 型安全性の向上 - 段階的に修正
       '@typescript-eslint/no-unsafe-assignment': 'warn',      // 大量のため一旦warn
@@ -64,7 +64,7 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'eqeqeq': ['error', 'always', { null: 'ignore' }],
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-console': ['error', { allow: ['warn', 'error'] }],  // 修正完了したのでerrorに変更
       
       // TypeScriptコメント
       '@typescript-eslint/ban-ts-comment': ['error', {

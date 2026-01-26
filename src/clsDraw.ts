@@ -1,7 +1,7 @@
 ﻿// JavaScript source code
 import { Generic } from './clsGeneric';
 import { Screen_info } from './clsAttrData';
-import type { JsonObject, JsonValue, JsonArray } from './types';
+import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
 
 class clsDraw {
 

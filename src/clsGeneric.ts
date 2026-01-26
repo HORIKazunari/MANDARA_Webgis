@@ -4084,7 +4084,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             md.onmouseleave = function () {
                 md.style.backgroundColor = 'white';
             }
-            md.onclick = function (e) {
+            md.onclick = function (_e) {
                 change(Number(this.tag))
             }
         }
@@ -4145,7 +4145,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.oldSel = firstSelectIndex;
         ParentObj.appendChild(sbox);
         return sbox;
-        function mouseEnter(this: HTMLSelectElement, e: MouseEvent) {
+        function mouseEnter(this: HTMLSelectElement, _e: MouseEvent) {
             const w = Generic.getSpanSize(sbox.getText ? sbox.getText() : "", sbox.style.fontSize.removePx()).width + 20;
             if (w > sbox.offsetWidth) {
                 Generic.createNewDiv(this.parentNode as HTMLElement, sbox.getText ? sbox.getText() : "", "", "", x + 50, y + sbox.offsetHeight, 150, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#fffff0;text-align:center", "");
