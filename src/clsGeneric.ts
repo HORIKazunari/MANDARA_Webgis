@@ -2246,7 +2246,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 }
                onOK(unZipData);
             } catch (e) {
-                console.log(e);
+                console.error(e);
                  onError(e as Error);
              }
         }

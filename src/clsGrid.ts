@@ -57,7 +57,6 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     let SetMapFileList_to_CboBox: () => void;
     let Get_E_Data: () => { ok: boolean; emes: string };
     let Reset_SCRView_Size: () => void;
-    let Check_Data: () => void;
     let btnReplaceMapfileClick: () => void;
     let btnRemoveMapfileClick: () => void;
     let btnAddMapfile: () => void;
@@ -382,7 +381,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
 
     /**データがどこか変更された場合に発生 */
     function eventChange_Data() {
-        console.log("Change_Data");
+        // console.log("Change_Data");
         ErrorCheck();
     }
     /**レイヤの追加メニューを選択した場合に発生 */
@@ -472,34 +471,34 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
 
     /**データ部分をクリックした場合に発生 */
     function Click_DataGrid(Layer: number, X: number, Y: number, Value: string, Top: number, Left: number, Width: number, Height: number) {
-        console.log("Click_DataGrid", Layer, X, Y, Value, Top, Left, Width, Height);
+        // console.log("Click_DataGrid", Layer, X, Y, Value, Top, Left, Width, Height);
     }
     /**上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
     function Change_FixedYS() {
-        console.log("Change_FixedYS");
+        // console.log("Change_FixedYS");
         check_DataKind_and_Allignment(ktGrid.getLayer());
         ktGrid.refresh()
         ErrorCheck();
     }
     /**左部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
     function Change_FixedXS() {
-        console.log("Change_FixedXS");
+        // console.log("Change_FixedXS");
         ErrorCheck();
     }
     /** 左上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生*/
     function Change_FixedUpperLeft() {
-        console.log("Change_FixedUpperLeft");
+        // console.log("Change_FixedUpperLeft");
     }
     /**レイヤ名の変更、レイヤの移動などで発生 */
     function Change_Layer(LayerNameChange: boolean, LayerMove: boolean, LayerDelete: boolean) {
-        console.log("Change_Layer", LayerNameChange, LayerMove, LayerDelete);
+        // console.log("Change_Layer", LayerNameChange, LayerMove, LayerDelete);
         if(LayerDelete===true){
             Set_LayerTypeShape();
         }
     }
 
     /**既存データの編集の場合、グリッド上中のデータと以前のデータを比較 */
-    Check_Data = function() {
+    function Check_Data() {
         const R_Conv = [];// Layer_Data_Info())
         const r_md = 0;
         for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
@@ -707,7 +706,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             }
         }
 
-        console.log(newAttrData.LayerData[0].atrData.Data)
+        // console.log(newAttrData.LayerData[0].atrData.Data)
         //---------------------線モードのベジェ曲線をチェック
         for(let L  = 0 ;L< oldAttrData.TotalData.LV1.Lay_Maxn ; L++) {
             const oldAL=oldAttrData.LayerData[L];

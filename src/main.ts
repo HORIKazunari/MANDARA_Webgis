@@ -38,7 +38,7 @@ function _logX(data: JsonValue): void {
     } else {
         tx = String(data);
     }
-    console.log(tx);
+    // console.log(tx);
     
     if (state.logWindow) {
         state.logWindow.value += tx + "\n";

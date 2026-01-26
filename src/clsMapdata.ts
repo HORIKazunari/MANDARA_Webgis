@@ -1881,7 +1881,7 @@ class clsMapdata {
                                     const daten1 = Math.abs(clsTime.getDifference(span.StartTime, Time));
                                     const daten2 = Math.abs(clsTime.getDifference(span.StartTime, span.EndTime));
                                     const v3 = v1 + vsa * (daten1 / daten2);
-                                    if(isNaN(v3)){console.log(ob,ObjCode, defNumber,dev.Data[i].Value , dev.Data[i+1].Value)}
+                                    // if(isNaN(v3)){console.log(ob,ObjCode, defNumber,dev.Data[i].Value , dev.Data[i+1].Value)}
                                     return String(v3);
                                 }
                             }

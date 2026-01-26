@@ -1116,7 +1116,7 @@ class _clsTileMap {
                 self.xhr[n].send(null);
             }
             catch (e) {
-                console.log(e)
+                console.error(e)
             }
         }
     }

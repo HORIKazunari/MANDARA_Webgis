@@ -158,7 +158,7 @@ export class AppState {
         } else {
             tx = String(data);
         }
-        console.log(tx);
+        // console.log(tx);
         
         if (this.logWindow) {
             this.logWindow.value += tx + "\n";

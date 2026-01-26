@@ -1537,7 +1537,7 @@ class clsPrint {
         for (let i = obn - 1; i >= 0; i--) {
             const SortObjPos = en_sort.DataPosition(i);
             const SortSumDataValue = en_sort.DataPositionValue(i);
-console.log(SortSumDataValue)
+            // console.log(SortSumDataValue)
             if ((SortSumDataValue !== 0) && (state.attrData.Check_Condition(Layernum, SortObjPos) === true)) {
 
                 const CP = al.atrObject.atrObjectData[SortObjPos].Symbol;
@@ -1552,7 +1552,7 @@ console.log(SortSumDataValue)
                         } else {
                             r = state.attrData.Radius(selGraph.En_Obi.EnSize, SortSumDataValue, RMAXVAL);
                         }
-                        console.log(selGraph.En_Obi.EnSize, SortSumDataValue, RMAXVAL)
+                        // console.log(selGraph.En_Obi.EnSize, SortSumDataValue, RMAXVAL)
                         if (r !== 0) {
                             if (state.attrData.Check_Screen_In(OP, r) === true) {
                                 let acum = 0
@@ -1560,7 +1560,7 @@ console.log(SortSumDataValue)
                                     const Datan = selGraph.Data[j].DataNumber
                                     if (state.attrData.Check_Missing_Value(Layernum, Datan, SortObjPos) === false) {
                                         const H =Number( state.attrData.Get_Data_Value(Layernum, Datan, SortObjPos, "")) / SortSumDataValue;
-                                        console.log(H);
+                                        // console.log(H);
                                         if (Math.abs(H - 1) <= 0.00001) {
                                             const Circle_Mark = new Mark_Property();
                                             Circle_Mark.PrintMark = enmMarkPrintType.Mark;
