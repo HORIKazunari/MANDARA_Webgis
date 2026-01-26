@@ -1219,7 +1219,7 @@ class clsMapdata {
                             for (let j = 0; j < this.ObjectKind[i].ObjectNameNum; j++) {
                                 if (this.ObjectKind[i].ObjectNameList[j] !== this.ObjectKind[SeFlOb].ObjectNameList[j]) {
                                     Emes = "オブジェクト名リストの名称が異なるオブジェクトグループが選択されています。";
-                                    f = false;
+                                    // f = false;
                                     i = this.Map.OBKNum - 1
                                     break;
                                 }

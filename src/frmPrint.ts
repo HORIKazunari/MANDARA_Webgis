@@ -9,10 +9,10 @@ import type { JsonValue } from './types';
 
 // Check_Acc_Result は globals.d.ts で定義済み
 
-function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
-    const state = appState();
+// function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
+//     const state = appState();
 
-    let MouseDownF: boolean = false;
+//     let MouseDownF: boolean = false;
     let mousePointingSituation: number = mousePointingSituations.up;
     let mouseDownPosition: point;
     let mousePreviousPosition: point;
@@ -122,7 +122,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
     }
 
     function mdown(e: MouseEvent | TouchEvent) {
-        const state = appState();
+        // const state = appState();
         e.preventDefault();
         let event;
         if (e.type === "mousedown") {
@@ -513,7 +513,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                             { caption: "今昔マップ", event:  showWebMap} as MenuItem
                                         ]};
                                         mnuAccPopupVisible.push(pmnu);
-                                        function showWebMap(data: MenuItem, e?: Event) {
+                                        function showWebMap(data: MenuItem/*, e?: Event*/) {
                                             const state = appState();
                                             const p = vs.ScrData.getSRXY(mouseDownPosition);
                                             const xy1=spatial.Get_Reverse_XY(p,state.attrData.TotalData.ViewStyle.Zahyo);   
@@ -579,7 +579,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                                             break
                                     }
                                     Generic.ceatePopupMenu(mnuAccPopupVisible, new point(event.clientX, event.clientY));
-                                    function accVisible(data: {caption: string}, e: Event) {
+                                    function accVisible(data: {caption: string}/*, e: Event*/) {
                                         const state = appState();
                                         switch (data.caption) {
                                             case "凡例設定":
@@ -764,7 +764,7 @@ function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanva
                             mnuAccPopupVisible.push({ caption: "-" })
                         }
                         for (let i = 0; i < alo.HyperLinkNum; i++) {
-                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: MenuItem, e: Event){
+                            mnuAccPopupVisible.push({caption:"リンク：" + alo.HyperLink[i].Name,event:function(data: MenuItem/*, e: Event*/){
                                 if (data.tag) window.open(data.tag, '_blank');
                             },tag:alo.HyperLink[i].Address} );
                         }

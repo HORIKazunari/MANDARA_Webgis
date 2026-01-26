@@ -17,7 +17,7 @@
  * ```
  */
 
-import type { MapFileInfo, JsonObject, JsonValue } from '../types';
+import type { /*MapFileInfo,*/ JsonObject, JsonValue } from '../types';
 import type { TKY2JGDInfo_Impl } from '../clsGeneric';
 
 /**

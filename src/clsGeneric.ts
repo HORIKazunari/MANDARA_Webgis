@@ -6431,6 +6431,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 };
 
 //文字列左から抜き出し
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface String {
     left(num: number): string;
 }
@@ -6473,6 +6474,7 @@ interface String {
 }
 
 // Number型の拡張: px()メソッド
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Number {
     px(): string;
 }
