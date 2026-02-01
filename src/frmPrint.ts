@@ -1420,7 +1420,6 @@ import type { JsonValue } from './types';
         }
         return { type: Check_Acc_Result.NoAccessory, rect: undefined };
     }
-}
 
 class frmPrint {
 

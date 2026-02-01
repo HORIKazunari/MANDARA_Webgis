@@ -1949,6 +1949,6 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
 }
 
 // グローバル関数として公開
-(globalThis as any).clsGrid = clsGrid;
+(globalThis as Record<string, unknown>).clsGrid = clsGrid;
 
 }

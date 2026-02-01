@@ -5851,7 +5851,7 @@ export class ListViewTable {
 
     /**行の上下を反転 */
     reverse(): void {
-        if (!this.tb || !this.tb.rows[0]) return;
+        if (!this.tb?.rows[0]) return;
         const n = this.tb.rows.length;
         const celln = this.tb.rows[0].cells.length;
         for (let i = 0; i < Math.floor(n / 2); i++) {

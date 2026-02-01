@@ -416,7 +416,8 @@ function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Propert
     Generic.Set_Box_Position_in_Browser(event, backDiv);
 
     const bk = back.Clone();
-    const innerColorBox = Generic.createNewTileBox(backDiv, "", "背景", back.Tile, 15, appState().scrMargin.top+5,undefined,  tileClick);
+    // const innerColorBox = Generic.createNewTileBox(backDiv, "", "背景", back.Tile, 15, appState().scrMargin.top+5,undefined,  tileClick);
+    Generic.createNewTileBox(backDiv, "", "背景", back.Tile, 15, appState().scrMargin.top+5,undefined,  tileClick);
     const picFrameLine = Generic.createNewWordDivCanvas(backDiv, "", "枠線", 15, 70,undefined, LinePatternClick);
     _attrData.Draw_Sample_LineBox(picFrameLine, bk.Line);
     const cornerSize = Generic.createNewSizeSelect(backDiv, back.Round, "", "角丸サイズ", 15, 110,70, 1, "");
@@ -491,7 +492,8 @@ function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (lin
     tile.BlankF = line.BlankF;
     tile.Color = line.Color.Clone();
     let newEdge=line.Edge_Connect_Pattern.Clone();
-    const innerColorBox = Generic.createNewTileBox(backDiv, "", "色", tile, 15, 40,40,  tileClick);
+    // const innerColorBox = Generic.createNewTileBox(backDiv, "", "色", tile, 15, 40,40,  tileClick);
+    Generic.createNewTileBox(backDiv, "", "色", tile, 15, 40,40,  tileClick);
     const sizeInput = Generic.createNewSizeSelect(backDiv, line.Width, "","幅", 15, 80,40, 1, undefined);
     Generic.createNewButton(backDiv, "線端設定","",55,113,btnPaintLineEdge,"");
 
@@ -534,17 +536,25 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
 //    Generic.createNewSpan(backDiv, "フォント名", "", "", 15, 45, "", "");
 //    const name = Generic.createNewInput(backDiv, "text", ft.Name, "", 75, 45, "", "width:100px;text-align: left");
     const name=Generic.createNewWordTextInput(backDiv, "フォント名","",ft.Name,"",15,45,50,100,undefined,"");
-    const size = Generic.createNewSizeSelect(backDiv, ft.Size, "", "サイズ", 190, 45,40, 2,function (_obj: HTMLElement, v: number) { ft.Size = v;}, true);
-    const colBox = Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
-    const boldBox = Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
-    const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
-    const Kakudo = Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
+    // const size = Generic.createNewSizeSelect(backDiv, ft.Size, "", "サイズ", 190, 45,40, 2,function (_obj: HTMLElement, v: number) { ft.Size = v;}, true);
+    Generic.createNewSizeSelect(backDiv, ft.Size, "", "サイズ", 190, 45,40, 2,function (_obj: HTMLElement, v: number) { ft.Size = v;}, true);
+    // const colBox = Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
+    Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
+    // const boldBox = Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
+    Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
+    // const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
+    Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
+    // const Kakudo = Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
+    Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
     const backColorBox = Generic.createNewWordDivCanvas(backDiv, "", "文字背景", 320, 80,undefined, backClick);
     clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData);
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 115, 380, 40, "縁取り");
-    const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
-    const fringeSizeBox = Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLElement, v: number) { ft.FringeWidth = v;}, true);
-    const fringeColBox = Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
+    // const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
+    Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
+    // const fringeSizeBox = Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLElement, v: number) { ft.FringeWidth = v;}, true);
+    Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLElement, v: number) { ft.FringeWidth = v;}, true);
+    // const fringeColBox = Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
+    Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
 
     function backClick(e: MouseEvent) {
         clsBackgroundPatternSet(e, ft.Back, backGet, _attrData);
@@ -574,7 +584,7 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
     }
 }
 
-function clsInnerDataSet(event: MouseEvent, attrData: clsAttrData ) {
+function clsInnerDataSet(event: MouseEvent, /*attrData: clsAttrData*/ ) {
             /// <signature>
     /// <summary>記号の大きさモードの内部データ設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -1055,7 +1065,7 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.MapTitle.MaxWidth,"",30,60,undefined,40,function (obj, v) { atv.MapTitle.MaxWidth = v;},"")
     Generic.createNewCheckBox(tab00,"方位表示","",atv.AttMapCompass.Visible,10,90,undefined, function(obj: HTMLInputElement){atv.AttMapCompass.Visible=obj.checked;},"");
     Generic.createNewButton(tab00,"方位設定","",30,113,
-        function(v: MouseEvent){
+        function(/*v: MouseEvent*/){
             frmCompassSettings(atv.AttMapCompass,function(v: MapCompass){atv.AttMapCompass=v;});
         },"padding-top:0;padding-bottom:0");
     Generic.createNewCheckBox(tab00,"注表示","",atv.DataNote.Visible,10,145,undefined, function(obj: HTMLInputElement){atv.DataNote.Visible=obj.checked;},"");
@@ -1231,7 +1241,7 @@ function frmPrintOption(firstTab: number = 0) {
         const retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false);
         txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
     }
-    Generic.createNewButton(gbtab12Interval, "間隔設定", "", 50, 70, function (lp: MouseEvent) {
+    Generic.createNewButton(gbtab12Interval, "間隔設定", "", 50, 70, function (/*lp: MouseEvent*/) {
         frmLatLonInput(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false, function (lp: latlon) {
             atv.LatLonLine_Print.Lat_Interval = lp.lat;
             atv.LatLonLine_Print.Lon_Interval = lp.lon;
@@ -1477,7 +1487,7 @@ function frmMainCopyDataSettings(okEvent: () => void) {
     const chkODMarkSizeValueCopy=Generic.createNewCheckBox(grCopyMode,"記号の大きさモードの凡例値もコピー","",true,30,110,130,undefined,"");
     const chkContour=Generic.createNewCheckBox(grCopyMode,"等値線モード","",true,10,155,100,undefined,"");
 
-    function changeOriginLayer(obj: HTMLSelectElement, sel: number, v: string) {
+    function changeOriginLayer(obj: HTMLSelectElement, sel: number, /*v: string*/) {
         appState().attrData.Set_DataTitle_to_cboBox(originData, sel, 0);
         setDestDataItem();
         }
@@ -2083,7 +2093,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
 
     const newSettings = Generic.createNewFrame(grPanel, "", "", 10, 185, 380, 110, "新規設定");
     const cboData = Generic.createNewWordSelect(newSettings, "データ項目", undefined, -1, "", 15, 15, 60, 160, 0,
-        function (obj: HTMLSelectElement, sel: number, v: number) {
+        function (obj: HTMLSelectElement, sel: number, /*v: number*/) {
             unitSpan.innerHTML = appState().attrData.Get_DataUnit(cboLayerLabel.selectedIndex, sel);
         }, "", "");
     const txtValue = Generic.createNewWordTextInput(newSettings, "条件値", "", "", "", 15, 45, 60, 150, undefined, "text-align:left");
@@ -2120,10 +2130,10 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         txtValue.value = "";
     }, "");
 
-    function changeStep(obj: HTMLSelectElement, sel: number, v: number) {
+    function changeStep(/*obj: HTMLSelectElement, sel: number, v: number*/) {
         ListViewSet();
     }
-    function changeLayer(obj: HTMLSelectElement, sel: number, v: number) {
+    function changeLayer(obj: HTMLSelectElement, sel: number, /*v: number*/) {
         ConItem.Layer = sel;
         appState().attrData.Set_DataTitle_to_cboBox(cboData, sel, 0, true, true, true, true);
         ListView.clear();
@@ -2187,7 +2197,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
             break;
         }
     }
-    function buttonOK(e: MouseEvent) {
+    function buttonOK(/*e: MouseEvent*/) {
         const n = appState().attrData.Get_ObjectNum(LayerNum);
         const Data_Val_STR: (string | number | undefined)[] = new Array(n);
         let Title = "";
@@ -2236,21 +2246,21 @@ function frmMain_Culc(okEvent: () => void) {
     const rdYplus = [110, 55, 55, 90, 55]
     Generic.createNewRadioButtonList(backDiv, "dataCulMethod", rdList, 20, 50, 50, rdYplus, 0, undefined, "");
 
-    const sumDataItem = new CheckedListBox(backDiv, "", [], 100, 50, 205, 100, false, function (index: number) { Generic.checkRadioByValue("dataCulMethod", 0) }); //足し算
+    const sumDataItem = new CheckedListBox(backDiv, "", [], 100, 50, 205, 100, false, function (/*index: number*/) { Generic.checkRadioByValue("dataCulMethod", 0) }); //足し算
     appState().attrData.Set_DataTitle_to_CheckedListBox(sumDataItem, LayerNum, false, true, true, false, false);
     Generic.createNewSpan(backDiv, "数値入力", "", "", 330, 100, "", undefined);
     const txtPlusInput = Generic.createNewNumberInput(backDiv, "", "", 315, 130, 100, undefined, "")
 
-    const cboDif1 = Generic.createNewSelect(backDiv, [], -1, "", 100, 160, false, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 1) }, "width:150px");//引き算
-    const cboDif2 = Generic.createNewWordSelect(backDiv, "－", [], -1, "", 120, 185, 30, 150, 0, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 1) }, "", "");
+    const cboDif1 = Generic.createNewSelect(backDiv, [], -1, "", 100, 160, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 1) }, "width:150px");//引き算
+    const cboDif2 = Generic.createNewWordSelect(backDiv, "－", [], -1, "", 120, 185, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 1) }, "", "");
     appState().attrData.Set_DataTitle_to_cboBox(cboDif1, LayerNum, 0, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cboDif2, LayerNum, 0, true, true, false, false);
     cboDif1.selectedIndex = -1;
     cboDif2.addSelectList([{ value: 0, text: "数値入力" }], -1, false, true, 0);
     const txtMinusInput = Generic.createNewNumberInput(backDiv, "", "", 315, 185, 100, undefined, "")
 
-    const cboMulti1 = Generic.createNewSelect(backDiv, [], -1, "", 100, 215, false, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 2) }, "width:150px");//かけ算
-    const cboMulti2 = Generic.createNewWordSelect(backDiv, "×", [], -1, "", 120, 240, 30, 150, 0, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 2) }, "", "");
+    const cboMulti1 = Generic.createNewSelect(backDiv, [], -1, "", 100, 215, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 2) }, "width:150px");//かけ算
+    const cboMulti2 = Generic.createNewWordSelect(backDiv, "×", [], -1, "", 120, 240, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 2) }, "", "");
     appState().attrData.Set_DataTitle_to_cboBox(cboMulti1, LayerNum, 0, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cboMulti2, LayerNum, 0, true, true, false, false);
     cboMulti1.selectedIndex = -1;
@@ -3353,7 +3363,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
     fileIn.accept=".mpfj";
     fileIn.addEventListener("change", function (e: Event) {
         const files = (e.target as HTMLInputElement).files;
-        if (files && files[0]) {
+        if (files?.[0]) {
             getFile(files[0]);
         }
     }  , false);
@@ -3522,7 +3532,7 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
             for (let i = 0; i < MapData.Map.Kend; i++) {
                 const mpObj = MapData.MPObj[i];
                 if ((SelF[i] === false) && (lstObjGroup.getCheckedStatus(mpObj.Kind) === true) && (ChkShapeBoxSelected[mpObj.Shape] === true)) {
-                    const f = false;
+                    // const f = false;
                     for (let j = 0; j < mpObj.NumOfNameTime; j++) {
                         const mpobjN = mpObj.NameTimeSTC[j];
                         if (clsTime.checkDurationIn(mpobjN.SETime, Time) === true) {

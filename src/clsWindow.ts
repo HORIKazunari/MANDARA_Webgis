@@ -1210,14 +1210,14 @@ export function setting(locSearch: string) {
         Generic.createMsgBox("統計値表示", txt,true);
     }
     //レイヤの変更
-    function changeLayer(obj: HTMLSelectElement, sel: number | number[], v: string = "") {
+    function changeLayer(obj: HTMLSelectElement, sel: number | number[], /*v: string = ""*/) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         attrData.TotalData.LV1.SelectedLayer = selNum;
         setDataItemList();
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
-    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], v: string | number = "") {
+    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /*v: string | number = ""*/) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = attrData.TotalData.LV1.SelectedLayer;
         attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
@@ -1809,7 +1809,7 @@ export function setting(locSearch: string) {
         const Layernum = attrData.TotalData.LV1.SelectedLayer;
         const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
         const data = attrData.LayerData[Layernum].atrData.Data[DataNum];
-        const md = attrData.getSoloMode(Layernum, DataNum);
+        // const md = attrData.getSoloMode(Layernum, DataNum);
         const layShape=attrData.LayerData[Layernum].Shape;
 
         if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.ClassPaintMode, Layernum, DataNum) === true) {
@@ -2112,7 +2112,7 @@ export function setting(locSearch: string) {
             }
             Generic.checkRadioByValue("markSizeMaxValueSetting", datam.MaxValueMode);
             doc.getElementById("markSizeUserMaxValue").setNumberValue (datam.MaxValue );
-            const markSizeView = doc.getElementById("markSizeView");
+            // const markSizeView = doc.getElementById("markSizeView");
             if(attrData.Get_DataMin(Layernum, DataNum) < 0) {
                 doc.getElementById("gbMarkSizeMinusValueCase").setVisibility(true);
                 const mkc = data.SoloModeViewSettings.MarkCommon;

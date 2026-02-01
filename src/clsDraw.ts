@@ -138,7 +138,7 @@ class clsDraw {
 
         const Out_Text=[];
         const thdata = P_Font.toContextFont?.(ScrData);
-        if (!thdata || !thdata.font) {
+        if (!thdata?.font) {
             return { Out_Text: [T], Height: 0, RealWidth: 0 };
         }
         g.font = thdata.font;

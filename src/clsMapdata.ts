@@ -1200,13 +1200,13 @@ class clsMapdata {
                 } else {
                     if (this.ObjectKind[i].Shape !== this.ObjectKind[SeFlOb].Shape) {
                         Emes = "異なる形状のオブジェクトグループが選択されています。";
-                        f = false;
+                        // f = false;
                         break;
                     }
                     if (check_objType === true) {
                         if (this.ObjectKind[i].ObjectType !== this.ObjectKind[SeFlOb].ObjectType) {
                             Emes = "異なるオブジェクトのタイプのオブジェクトグループが選択されています。";
-                            f = false;
+                            // f = false;
                             break;
                         }
                     }
