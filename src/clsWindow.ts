@@ -175,7 +175,7 @@ export function setting(locSearch: string) {
         }
     }, "padding:2px");
 
-    Generic.createNewImageButton(divpanel, "settingWindowBtnConditionInfo", "image/Find_VS.png", 315, 20, 20, 20, function (e: MouseEvent) {
+    Generic.createNewImageButton(divpanel, "settingWindowBtnConditionInfo", "image/Find_VS.png", 315, 20, 20, 20, function (/*e: MouseEvent*/) {
         //属性検索設定ボタン
 
         const at = state.attrData.TotalData;
@@ -647,7 +647,7 @@ export function setting(locSearch: string) {
     }
 
     /**空間検索メニュー */
-    function mnuSpatialSearch(e: MouseEvent){
+    function mnuSpatialSearch(/*e: MouseEvent*/){
         const Layernum = attrData.TotalData.LV1.SelectedLayer;
         const oldData = attrData.LayerData[Layernum].atrData.Count;
         frmMain_Buffer(function (e: MouseEvent) {
@@ -703,7 +703,7 @@ export function setting(locSearch: string) {
     }
 
     /**データ計算メニュー */
-    function mnuCulc(e: MouseEvent){
+    function mnuCulc(/*e: MouseEvent*/){
         frmMain_Culc(function (e: MouseEvent) {
             addNewDataItem(e);
         });
@@ -782,7 +782,7 @@ export function setting(locSearch: string) {
 
     /**記号表示位置等操作 */
     function mnuMarkPosition(){
-        frmMain_MarkPosition(function(mode: number, x: number, y: number){          
+        frmMain_MarkPosition(function(mode: number, /*x: number, y: number*/){          
             switch (mode){
                  case 0: 
                 case 1:
@@ -2542,7 +2542,7 @@ export function setting(locSearch: string) {
                 const ldd = attrData.nowDataSolo().ClassODMD;
                 clsArrow(ev as MouseEvent, ldd.Arrow, "起点方向", "終点方向", function (newArrow: Arrow) { ldd.Arrow = newArrow });
             }
-            function LpatChange(_data: MenuItem, ev?: Event) {
+            function LpatChange(_data: MenuItem, /*ev?: Event*/) {
                 const ldd = attrData.nowDataSolo();
                 clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: LinePattern) {
                     for (let i = 0; i < ldd.Div_Num; i++) {
@@ -2584,7 +2584,7 @@ export function setting(locSearch: string) {
             }
         }
 
-        function btnClassODOriginSettings(e: MouseEvent) {
+        function btnClassODOriginSettings(/*e: MouseEvent*/) {
             const ldd = attrData.nowDataSolo().ClassODMD;
             frmMain_LayeObjectSelectOne(true, ldd.o_Layer, ldd.O_object, ldd.Dummy_ObjectFlag, function (lay: number, obnum: number, dumF: boolean) {
                 ldd.Dummy_ObjectFlag = dumF;
@@ -2704,7 +2704,7 @@ export function setting(locSearch: string) {
         }
 
         //階級区分方法クリック
-        function cboDivisionMethodChange(obj: HTMLSelectElement, sel: number | number[], v?: string) {
+        function cboDivisionMethodChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
             const selectedValue = typeof sel === 'number' ? cboDivisionMethodList[sel].value : cboDivisionMethodList[sel[0]].value;
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -2743,7 +2743,7 @@ export function setting(locSearch: string) {
             setFrequencyLabel();
         }
         //階級分割数クリック
-        function cboDivisionCountChange(obj: HTMLSelectElement, sel: number | number[], v?: string) {
+        function cboDivisionCountChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
             const selectedValue = typeof sel === 'number' ? cboDivisionCountMethodList[sel].value : cboDivisionCountMethodList[sel[0]].value;
             const Layernum = attrData.TotalData.LV1.SelectedLayer;
             const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -2808,7 +2808,7 @@ export function setting(locSearch: string) {
         { value: 2, text: '少し細かい' }, { value: 3, text: '普通' }, { value: 4, text: '粗い' }];
 
         Generic.createNewWordSelect(gbContourDrawMethod, "密度", cboDetailedList.map(item => item.text), 0, "contourDetailed", 10, 70, 40, 80, 0,
-            function (obj: HTMLSelectElement, sel: number | number[], v?: string) {
+            function (obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
                 const selectedValue = typeof sel === 'number' ? cboDetailedList[sel].value : cboDetailedList[sel[0]].value;
                 attrData.nowDataSolo().ContourMD.Detailed = selectedValue;
             }, "", "", true);
@@ -3034,10 +3034,10 @@ export function setting(locSearch: string) {
             }
         }
         //記号の大きさモード線オブジェクトの色設定
-        function MarkLineColor(e: MouseEvent) {
-            const col = Generic.RGBAfromElement(e.target as HTMLElement);
-            attrData.nowDataSolo().MarkSizeMD.LineShape.Color = col;
-        }
+        // function MarkLineColor(e: MouseEvent) {
+        //     const col = Generic.RGBAfromElement(e.target as HTMLElement);
+        //     attrData.nowDataSolo().MarkSizeMD.LineShape.Color = col;
+        // }
 
 
         //内部データボタンクリック
@@ -3101,7 +3101,7 @@ export function setting(locSearch: string) {
         const cboOverlapList = [{ value: 0, text: '少し離す' }, { value: 1, text: 'ぴったり' },
         { value: 2, text: '1/4重ねる' }, { value: 3, text: '1/2重ねる' }, { value: 4, text: '3/4重ねる' }];
         Generic.createNewWordSelect(markBlockView, "記号の重なり", cboOverlapList.map(item => item.text), 0, "markBlockOverlap", 0, 335, undefined, 100, 0,
-            function (obj: HTMLSelectElement, sel: number | number[], v?: string) {
+            function (obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
                 const selectedValue = typeof sel === 'number' ? cboOverlapList[sel].value : cboOverlapList[sel[0]].value;
                 attrData.nowDataSolo().MarkBlockMD.Overlap = selectedValue;
             }, "", "", false);
@@ -3181,7 +3181,7 @@ export function setting(locSearch: string) {
         const overlayView = Generic.createNewDiv(settingModeWindow, "", "overlayView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gbOverlayDataSet = Generic.createNewFrame(overlayView, "gbOverlayDataSet", "", 0, 10, 380, 80, "重ね合わせデータセット");
         Generic.createNewSelect(gbOverlayDataSet, [], -1, "overlayDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
                 attrData.TotalData.TotalMode.OverLay.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 overlayDatasetDataItem();
             }, "width:185px", 1, false);
@@ -3234,7 +3234,7 @@ export function setting(locSearch: string) {
         const borderStyle = "border:solid 1px;background-Color:#ffffff"
         overlayListView = new ListViewTable(gbOverlayDataSetItem, "", "", "", overHdata, [], 15, 15, 350, 200, borderStyle, "font-size:13px;",
             "background-Color:#dddddd;text-align:center", "", ["", "", "", "width:10%"], [], true,
-            function (row: number) { overlayDatasetDataItemEach() });
+            function (/*row: number*/) { overlayDatasetDataItemEach() });
 
         const gbOverlayItemData = Generic.createNewFrame(gbOverlayDataSetItem, "gbOverlayItemData", "", 15, 230, 230, 50, "");
         Generic.createNewImageButton(gbOverlayItemData, "", "image/112_UpArrowLong_Grey_24x24_72.png", 8, 13, 24, 24, function () {
@@ -3301,7 +3301,7 @@ export function setting(locSearch: string) {
         const seriesView = Generic.createNewDiv(settingModeWindow, "", "seriesView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gbseriesDataSet = Generic.createNewFrame(seriesView, "gbSeriesDataSet", "", 0, 10, 380, 80, "連続表示データセット");
         Generic.createNewSelect(gbseriesDataSet, [], -1, "seriesDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
                 attrData.TotalData.TotalMode.Series.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 seriesDatasetDataItem();
             }, "width:185px", 1, false);
@@ -3425,7 +3425,7 @@ export function setting(locSearch: string) {
         const graphView = Generic.createNewDiv(settingModeWindow, "", "graphView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gbgraphDataSet = Generic.createNewFrame(graphView, "gbgraphDataSet", "", 0, 10, 380, 80, "グラフデータセット");
         Generic.createNewSelect(gbgraphDataSet, [], -1, "graphDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
                 attrData.layerGraph().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 pnlGraphItem.selectedRow = -1;
                 pnlGraphEachItem(0);
@@ -3616,7 +3616,7 @@ export function setting(locSearch: string) {
         const labelView = Generic.createNewDiv(settingModeWindow, "", "labelView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gblabelDataSet = Generic.createNewFrame(labelView, "gblabelDataSet", "", 0, 10, 380, 80, "ラベルデータセット");
         Generic.createNewSelect(gblabelDataSet, [], -1, "labelDataSetList", 15, 15, false,
-            function (obj: HTMLSelectElement, selectedIndex: number | number[], value?: string) {
+            function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
                 attrData.layerLabel().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 labelDatasetDataItem();
             }, "width:185px", 1, false);
@@ -3896,7 +3896,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
             getMapFile(JSON.parse(Generic.utf8ArrayToStr(data[key])), file.name);
             Generic.clear_backDiv();
         }
-        function unzipError(err: Error) {
+        function unzipError(/*err: Error*/) {
             getMapFile(undefined, undefined);
             Generic.clear_backDiv();
         }
@@ -3976,7 +3976,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
                 mdrjString=Generic.utf8ArrayToStr(data[key]);
                 dataTextArea.value = ext.toUpperCase() + "ファイル: "+file.name;
             }
-            function unzipError(err: Error){
+            function unzipError(/*err: Error*/){
                 Generic.clear_backDiv();
                 Generic.alert(undefined,"読み込めませんでした。")
             }
@@ -3986,7 +3986,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
             const reader = new FileReader();
             const wcode=cboCode.value;
             reader.readAsText(file, wcode);//文字コード重要
-            reader.onload = function (evt) {
+            reader.onload = function (/*evt*/) {
                 dataTextArea.value = reader.result as string;
             }
         }
@@ -4071,7 +4071,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
         files?: (File | string)[];
     };
     let shapeFiles: { [key: string]: ShapeFileInfo } = {};
-    const mapList: Record<string, clsMapdata> = {};
+    /*const mapList: Record<string, clsMapdata> = {};*/
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
@@ -4110,7 +4110,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
     const chkTopology=Generic.createNewCheckBox(bbox,"位相構造化","",false,30,260,120,undefined,"");
     const cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList().map(item => item.text), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
 
-    function keiChange(obj: HTMLSelectElement, sel: number | number[], v?: string){
+    function keiChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/){
         const fileKey = fileList.getValue();
         const selectedIndex = typeof sel === 'number' ? sel : sel[0];
         const zahyo=shapeFiles[fileKey].shape.getMapZahyo();  
@@ -4207,7 +4207,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
                 Generic.alert(undefined,zipFile.name + "は読み込めませんでした。")
             }
         }
-        function checkSFiles(file: File | string, zipF: boolean) {
+        function checkSFiles(file: File | string, /*zipF: boolean*/) {
             const ext = typeof file === 'string' 
                 ? Generic.getExtension(file).toLowerCase()
                 : Generic.getExtension(file.name).toLowerCase();
@@ -4299,31 +4299,31 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
         cboKeiNo?.setSelectValue?.(zahyo.HeimenTyokkaku_KEI_Number);
     }
 
-    function getFile(jsonMapData: Record<string, unknown>, filename: string | undefined) {
-        const key = Object.keys(mapList);
-        const fu = filename.toUpperCase();
-        if(key.indexOf(fu) !== -1) {
-            Generic.alert(undefined,filename + "は既に読み込まれています。")
-            return;
-        }
-        const mapdata = new clsMapdata();
-        mapdata.openJsonMapData(jsonMapData);
-        mapdata.Map.filename = filename;
-        if(key.length > 0) {
-            const z = mapList[key[0]].Map.Zahyo;
-            const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z, mapdata.Map.Zahyo);
-            if(retv.ok === false) {
-                Generic.alert(undefined,filename + "は既存の読み込み地図ファイルと座標系が異なります。");
-                return
-            }
-        }
-        mapList[filename.toUpperCase()] = mapdata;
-        fileList.addList([filename], fileList.length);
-        // @ts-expect-error - layerFrame is not defined in this scope
-        Generic.setDisabled(layerFrame, false);
-        // @ts-expect-error - AddLayer is not defined in this scope
-        AddLayer();
-    }
+    // function getFile(jsonMapData: Record<string, unknown>, filename: string | undefined) {
+    //     const key = Object.keys(mapList);
+    //     const fu = filename.toUpperCase();
+    //     if(key.indexOf(fu) !== -1) {
+    //         Generic.alert(undefined,filename + "は既に読み込まれています。")
+    //         return;
+    //     }
+    //     const mapdata = new clsMapdata();
+    //     mapdata.openJsonMapData(jsonMapData);
+    //     mapdata.Map.filename = filename;
+    //     if(key.length > 0) {
+    //         const z = mapList[key[0]].Map.Zahyo;
+    //         const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z, mapdata.Map.Zahyo);
+    //         if(retv.ok === false) {
+    //             Generic.alert(undefined,filename + "は既存の読み込み地図ファイルと座標系が異なります。");
+    //             return
+    //         }
+    //     }
+    //     mapList[filename.toUpperCase()] = mapdata;
+    //     fileList.addList([filename], fileList.length);
+    //     // @ts-expect-error - layerFrame is not defined in this scope
+    //     Generic.setDisabled(layerFrame, false);
+    //     // @ts-expect-error - AddLayer is not defined in this scope
+    //     AddLayer();
+    // }
     function deleteFile() {
         delete shapeFiles[fileList.value];
         const n=fileList.selectedIndex;
@@ -4429,7 +4429,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
             getFile(tx, file.name);
             Generic.clear_backDiv();
         }
-        function unzipError(err: Error) {
+        function unzipError(/*err: Error*/) {
             getFile(undefined, undefined);
             Generic.clear_backDiv();
         }
@@ -4570,7 +4570,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
     }
 
     //レイヤのオブジェクトグループ変更
-    function objGListChange(index: number) {
+    function objGListChange(/*index: number*/) {
         const n = layerList.selectedIndex;
         const checked = objGList.getChecked();
         LayerData[n].UseObjectKind.fill(false);
@@ -4580,7 +4580,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
     }
 
     //レイヤの地図ファイル変更
-    function useMapListChange(obj: HTMLSelectElement, sel: number | number[], v?: string) {
+    function useMapListChange(/*obj: HTMLSelectElement, sel: number | number[], v?: string*/) {
         const n = layerList.selectedIndex;
         const mapName = useMapList?.getText ? useMapList.getText() : "";
         LayerData[n].MapfileName = mapName;

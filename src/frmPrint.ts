@@ -28,7 +28,8 @@ import type { JsonValue } from './types';
     
     const mousewheelevent: string = 'onwheel' in document ? 'wheel' : 'onmousewheel' in document ? 'mousewheel' : 'DOMMouseScroll';
     elem.addEventListener(mousewheelevent, onWheel as EventListener, false);
-    const g: CanvasRenderingContext2D = elem.getContext('2d')!;
+    const g = elem.getContext('2d');
+    if (!g) throw new Error('Failed to get 2d context');
 
     //出力画面でのキー操作
     document.addEventListener('keydown', function (e: KeyboardEvent): void {
@@ -771,7 +772,7 @@ import type { JsonValue } from './types';
                         // mnuAccPopupVisible.push({ caption: "-" });
                         // mnuAccPopupVisible.push({caption: "リンクの編集", event: mnuAccPopupVisible_LinkEdit} );
 
-                        const ObjName = Generic.Check_StringLength_And_Cut(state.attrData.Get_KenObjName(Layernum, ObjNum), 20)
+                        // const ObjName = Generic.Check_StringLength_And_Cut(state.attrData.Get_KenObjName(Layernum, ObjNum), 20)
                         if (alo.Objectstructure === enmKenCodeObjectstructure.SyntheticObj) {
                             // mnuAccPopupVisible.push({caption: ObjName + "の構成", event: mnuAccPopupVisible_synthetic} );
                         }
@@ -789,7 +790,7 @@ import type { JsonValue } from './types';
     let pinchBaseDis: number;
     let pinchPresentDis: number;
     function pinch(event: TouchEvent){
-        const state = appState();
+        // const state = appState();
         const touches=event.changedTouches;
         const p1=Generic.getCanvasXY(touches[0]);
         const p2=Generic.getCanvasXY(touches[1]);
@@ -797,7 +798,7 @@ import type { JsonValue } from './types';
         pinchBaseDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
     }
     function pinchMove(event: TouchEvent){
-        const state = appState();
+        // const state = appState();
         const touches=event.changedTouches;
         if(touches.length>1){
             const p1=Generic.getCanvasXY(touches[0]);
@@ -806,8 +807,8 @@ import type { JsonValue } from './types';
             pinchPresentDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
         }
     }
-    function pinchUp(event: TouchEvent){
-        const state = appState();
+    function pinchUp(/*event: TouchEvent*/){
+        // const state = appState();
         const ratio=pinchPresentDis/pinchBaseDis;
         expansionMap(pinchCenter,ratio);
     }
@@ -1098,7 +1099,7 @@ import type { JsonValue } from './types';
         let L_Layer ;
         let L_Print_Mode_Layer ;
         let L_Data ;
-        let L_Solomode ;
+        /*let L_Solomode ;*/
         if( state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.SeriesMode ){
             const koma  = state.attrData.TempData.Series_temp.Koma;
             const n  = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
@@ -1107,7 +1108,7 @@ import type { JsonValue } from './types';
                 L_Print_Mode_Layer = im.Print_Mode_Layer;
                 L_Layer = im.Layer;
                 L_Data = im.Data;
-                L_Solomode = im.SoloMode;
+                /*L_Solomode = im.SoloMode;*/
         } else {
             const lv = state.attrData.TotalData.LV1;
             L_Print_Mode_Total = lv.Print_Mode_Total
@@ -1120,7 +1121,7 @@ import type { JsonValue } from './types';
                     switch (L_Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode: {
                             L_Data = ld.atrData.SelectedIndex;
-                            L_Solomode = ld.atrData.Data[L_Data].ModeData;
+                            // L_Solomode = ld.atrData.Data[L_Data].ModeData;
                             break;
                         }
                         case enmLayerMode_Number.GraphMode: {
@@ -1421,6 +1422,7 @@ import type { JsonValue } from './types';
         return { type: Check_Acc_Result.NoAccessory, rect: undefined };
     }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class frmPrint {
 
     /** コピー画像ウインドウ表示*/
@@ -1494,20 +1496,20 @@ class frmPrint {
         showLinePattern();
 
         function meshLinePatternClick(e: Event) {
-            const state = appState();
+            // const state = appState();
             clsLinePatternSet(e as MouseEvent, MeshLpat, LinePatternGet);
             function LinePatternGet(Lpat: Line_Property) {
-                const state = appState();
+                // const state = appState();
                 MeshLpat = Lpat;
                 state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
             }
         }
         function mapListchange() {
-            const state = appState();
+            // const state = appState();
             showLinePattern();
         }
         function buttonOK() {
-            const state = appState();
+            // const state = appState();
             for (let i = 0; i < MapFileList.length; i++) {
                 const lk = [];
                 for (const j in NewLineKind[i]) {
@@ -1540,13 +1542,13 @@ class frmPrint {
                 state.attrData.Draw_Sample_LineBox(lc, lk.Pat);
             }
             function inePatternClick(e: Event){
-                const state = appState();
+                // const state = appState();
                 const target = e.target as HTMLElement;
                 if (!target?.tag) { return; }
                 const n = target.tag as number;
                 clsLinePatternSet(e as MouseEvent, NewLineKind[Mpindex][n].Pat, LinePatternGet);
                 function LinePatternGet(Lpat: Line_Property) {
-                    const state = appState();
+                    // const state = appState();
                     NewLineKind[Mpindex][n].Pat = Lpat;
                     state.attrData.Draw_Sample_LineBox(target, Lpat);
                 }
@@ -1919,7 +1921,7 @@ class frmPrint {
                 }
             }
             function drawLines(g: CanvasRenderingContext2D, pxy: point[], w: number, col: colorRGBA) {
-                const state = appState();
+                // const state = appState();
                 g.lineWidth = w;
                 g.strokeStyle = col.toRGBA();
                 g.beginPath();

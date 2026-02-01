@@ -142,7 +142,7 @@ export class clsShapefile {
                             this.getDbfFile(dbfReader.result, dbfEncode);
                         }
                     }
-                    catch (_e) {
+                    catch {
                         okf = false;
                         this.onError?.(this.tag);
                         return;

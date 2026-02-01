@@ -275,7 +275,7 @@ const enmLatLonPrintPattern = {
     DecimalDegree: 1
 }
 
-class Setting_Info {
+export class Setting_Info {
     ObjectName_Word_Compatible = "ヶガケかカヵ|曽曾|桧檜|条條|蕊蘂|釜竈竃|桜櫻|当當|頸頚|梼檮|挾狭|諫諌|鶯鴬|真眞|篭籠|鯵鰺|檮梼|藪薮|龍竜";
     KatakanaCheck = true;
     SinKyuCharacter = true;
@@ -300,7 +300,7 @@ class Setting_Info {
 }
 
 
-class clsBase {
+export class clsBase {
     static Arrow(): Arrow_Data {
 
         const BArrow = new Arrow_Data();

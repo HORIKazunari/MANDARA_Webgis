@@ -32,6 +32,7 @@ class Layer_Data_InfoCheck {
     Value = 0; // Double
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
     // const state = appState();
     const GridLayerData = {

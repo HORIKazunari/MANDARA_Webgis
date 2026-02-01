@@ -1,6 +1,5 @@
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /** グリッドコントロール用の内部クラス（外部に移動） */
-import { appState } from './core/AppState';
 import type { JsonValue } from './types';
 
 export {};

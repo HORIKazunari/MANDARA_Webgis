@@ -2267,8 +2267,8 @@ function frmMain_Culc(okEvent: () => void) {
     cboMulti2.addSelectList([{ value: 0, text: "数値入力" }], -1, false, true, 0);
     const txtMultiInput = Generic.createNewNumberInput(backDiv, "", "", 315, 240, 100, undefined, "")
 
-    const  cbonumeratorData= Generic.createNewSelect(backDiv, [], -1, "", 100, 270, false, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 3) }, "width:150px");//わり算
-    const  cboDenominatorData= Generic.createNewWordSelect(backDiv, "÷", [], -1, "", 120, 295, 30, 150, 0, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 3) }, "", "");
+    const  cbonumeratorData= Generic.createNewSelect(backDiv, [], -1, "", 100, 270, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 3) }, "width:150px");//わり算
+    const  cboDenominatorData= Generic.createNewWordSelect(backDiv, "÷", [], -1, "", 120, 295, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 3) }, "", "");
     appState().attrData.Set_DataTitle_to_cboBox(cboDenominatorData, LayerNum, 0, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cbonumeratorData, LayerNum, 0, true, true, false, false);
     cboDenominatorData.addSelectList([{ value: 0, text: "数値入力" }], -1, false, true, 0);
@@ -2277,18 +2277,18 @@ function frmMain_Culc(okEvent: () => void) {
     const txtDenominatorDataBox = Generic.createNewNumberInput(backDiv, "", "", 315, 295, 100, undefined, "")
     const chkPercent = Generic.createNewCheckBox(backDiv, "100倍してパーセントにする", "", false, 100, 325, 200, undefined, "");
 
-    const cboStartData = Generic.createNewWordSelect(backDiv, "期首データ", [], -1, "", 100, 360, 60, 150, 0, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 4) }, "", "");
-    const cboEndData = Generic.createNewWordSelect(backDiv, "期末データ", [], -1, "", 100, 385, 60, 150, 0, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 4) }, "", "");
+    const cboStartData = Generic.createNewWordSelect(backDiv, "期首データ", [], -1, "", 100, 360, 60, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 4) }, "", "");
+    const cboEndData = Generic.createNewWordSelect(backDiv, "期末データ", [], -1, "", 100, 385, 60, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 4) }, "", "");
     appState().attrData.Set_DataTitle_to_cboBox(cboStartData, LayerNum, -1, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cboEndData, LayerNum, -1, true, true, false, false);
 
-    const cboDensityData = Generic.createNewSelect(backDiv, [], -1, "", 100, 415, false, function (e: Event) { Generic.checkRadioByValue("dataCulMethod", 5) }, "width:150px");//密度
+    const cboDensityData = Generic.createNewSelect(backDiv, [], -1, "", 100, 415, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 5) }, "width:150px");//密度
     appState().attrData.Set_DataTitle_to_cboBox(cboDensityData, LayerNum, -1, true, true, false, false);
 
     cboDensityData.disabled = (appState().attrData.LayerData[LayerNum].Shape !== enmShape.PolygonShape);
     Generic.enableRadioByValue("dataCulMethod",5, (appState().attrData.LayerData[LayerNum].Shape === enmShape.PolygonShape));
 
-    function buttonOK(e: MouseEvent) {
+    function buttonOK(/*e: MouseEvent*/) {
         const n = appState().attrData.Get_ObjectNum(LayerNum)
         const Data_Val_STR: (string | number | undefined)[] = new Array(n);
         let Title = "";
@@ -2635,12 +2635,12 @@ function frmMain_GetDistance(okEvent: () => void){
             posList.splice(n, 1);
         }
     },"")
-    Generic.createNewButton(backDiv, "すべて消去", "", 75, 205, function (e: MouseEvent) {
+    Generic.createNewButton(backDiv, "すべて消去", "", 75, 205, function (/*e: MouseEvent*/) {
         lbList.removeAll();
         posList.length = 0;
     },"")
     const btnLlatlon=Generic.createNewButton(backDiv, "緯度経度で指定", "", 15, 235, 
-    function (e: MouseEvent) {
+    function (/*e: MouseEvent*/) {
         frmLatLonInput(new latlon(0,0), true, function (lp: latlon) {
             const s=Generic.Get_LatLon_Strings(lp, true);
             const tx=s.x + "/" + s.y;
@@ -3349,7 +3349,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
             const key = Object.keys(data)[0];
             call(JSON.parse(Generic.utf8ArrayToStr(data[key])), file.name);
         }
-        function unzipError(err: Error) {
+        function unzipError(/*err: Error*/) {
             // @ts-expect-error TS2304: Cannot find name 'readingScreen'.
             readingScreen.close();
             //Generic.clear_backDiv();
@@ -3670,7 +3670,7 @@ function frmPrint_DummyObjectGroup(){
     txtDummy.addEventListener('keydown',txtKeyDown) ;
      function txtKeyDown (e: KeyboardEvent) {if (e.keyCode === 13) { btnAdd.click(); } }
     const btnAdd=Generic.createNewButton(gbDummyList, "追加", "", 115, 180,
-        function (e: MouseEvent) {
+        function (/*e: MouseEvent*/) {
             const tx = txtDummy.value;
             if (tx === "") {
                 txtDummy.removeEventListener('keydown',txtKeyDown) ;
@@ -3685,7 +3685,7 @@ function frmPrint_DummyObjectGroup(){
             txtDummy.focus();
 
         }, "width:60px");
-    Generic.createNewButton(gbDummyList, "オブジェクト名コピーパネル", "", 10, 210, function (e: MouseEvent) {
+    Generic.createNewButton(gbDummyList, "オブジェクト名コピーパネル", "", 10, 210, function (/*e: MouseEvent*/) {
         const mp = appState().attrData.LayerData[LayerNum].MapFileData as unknown as IMapData;
         const init_para = new strFrmCopyObjectName_init_parameter_data();
         init_para.Time = appState().attrData.LayerData[LayerNum].Time;
@@ -3697,7 +3697,7 @@ function frmPrint_DummyObjectGroup(){
             AddDummyObject(str);
         })
     }, "width:170px;font-size:11px");
-    Generic.createNewButton(gbDummyList, "クリップボードから追加", "", 10, 240, function (e: MouseEvent) {
+    Generic.createNewButton(gbDummyList, "クリップボードから追加", "", 10, 240, function (/*e: MouseEvent*/) {
         document.body.removeEventListener("contextmenu",contextMenuPrevent);
         Generic.outerPaste(function(val: string){
             document.body.addEventListener("contextmenu",contextMenuPrevent);
@@ -3850,3 +3850,27 @@ function frmPrint_DummyObjectGroup(){
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 }
+
+// グローバル関数として公開
+(globalThis as Record<string, unknown>).clsColorChart = clsColorChart;
+(globalThis as Record<string, unknown>).clsColorPicker = clsColorPicker;
+(globalThis as Record<string, unknown>).clsInnerDataSet = clsInnerDataSet;
+(globalThis as Record<string, unknown>).clsArrow = clsArrow;
+(globalThis as Record<string, unknown>).clsSelectData = clsSelectData;
+(globalThis as Record<string, unknown>).frmPrint_ObjectValue = frmPrint_ObjectValue;
+(globalThis as Record<string, unknown>).frmPrint_backImageSet = frmPrint_backImageSet;
+(globalThis as Record<string, unknown>).graphModeEn_Obi = graphModeEn_Obi;
+(globalThis as Record<string, unknown>).graphModeOresen_Bou = graphModeOresen_Bou;
+(globalThis as Record<string, unknown>).frmProjectionConvert = frmProjectionConvert;
+(globalThis as Record<string, unknown>).frmPrintOption = frmPrintOption;
+(globalThis as Record<string, unknown>).frmMainCopyDataSettings = frmMainCopyDataSettings;
+(globalThis as Record<string, unknown>).frmMain_SetSeriesMode = frmMain_SetSeriesMode;
+(globalThis as Record<string, unknown>).frmMain_MarkPosition = frmMain_MarkPosition;
+(globalThis as Record<string, unknown>).frmMain_ConditionSettings = frmMain_ConditionSettings;
+(globalThis as Record<string, unknown>).frmMain_AreaPeripheri = frmMain_AreaPeripheri;
+(globalThis as Record<string, unknown>).frmMain_Culc = frmMain_Culc;
+(globalThis as Record<string, unknown>).frmMain_GetDistance = frmMain_GetDistance;
+(globalThis as Record<string, unknown>).frmMain_LayeObjectSelectOne = frmMain_LayeObjectSelectOne;
+(globalThis as Record<string, unknown>).frmMain_Buffer = frmMain_Buffer;
+(globalThis as Record<string, unknown>).openMapFile = openMapFile;
+(globalThis as Record<string, unknown>).frmPrint_DummyObjectGroup = frmPrint_DummyObjectGroup;

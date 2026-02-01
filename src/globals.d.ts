@@ -2000,6 +2000,7 @@ declare let picMark: HTMLElement | undefined; // 変更される可能性あり
 declare let lstDummyItem: HTMLElement | undefined; // 変更される可能性あり
 
 // Array extensions
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Array<T> {
     trueNum?: number;
     DummyOBGArray?: boolean[];

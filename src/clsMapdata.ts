@@ -1190,7 +1190,7 @@ class clsMapdata {
     // <param name="check_objType">オブジェクトのタイプをチェックする場合true</param>
     // <param name="check_objNameListNum">オブジェクト名リストの数をチェックする場合true</param>
     Check_Selected_ObjectGroup_Same(ObjSel: boolean[], check_objType: boolean, check_objNameListNum: boolean) {
-        let f = true;
+        // let f = true;
         let Emes = "";
         let SeFlOb = -1;
         for (let i = 0; i < this.Map.OBKNum; i++) {
