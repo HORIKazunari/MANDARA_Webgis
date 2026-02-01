@@ -102,7 +102,8 @@ function _init(): void {
     state.frmPrint.addEventListener('touchstart', frmPrintFront);
     state.frmPrint.dragBorder?.(undefined, state.frmPrint.resizeMapWindow as (() => void) | undefined);
     
-    const footer: HTMLElement = document.getElementById("printFoot")!;
+    const footer = document.getElementById("printFoot");
+    if (!footer) throw new Error("printFoot要素が見つかりません");
     state.frmPrint.label1 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
     state.frmPrint.label2 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);
     state.frmPrint.label3 = Generic.createNewSpan(footer, "", "", "", 0, 0, "", undefined);

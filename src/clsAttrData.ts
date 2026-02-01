@@ -7258,7 +7258,10 @@ class clsAttrData {
             ctm.Detailed = 3;
             ctm.Draw_in_Polygon_F = true;
             ctm.Spline_flag = true;
-            const ctmr = ctm.Regular!;
+            if (!ctm.Regular) {
+                ctm.Regular = new Contour_Regular_Mode_Data();
+            }
+            const ctmr = ctm.Regular;
             ctmr.bottom = Number(sv.Class_Div[sv.Div_Num - 2].Value);
             ctmr.Interval = (Number(sv.Class_Div[sv.Div_Num - 3].Value) - ctmr.bottom) / 2;
             ctmr.Line_Pat = clsBase.Line();

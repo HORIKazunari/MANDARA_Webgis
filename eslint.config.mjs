@@ -60,7 +60,7 @@ export default tseslint.config(
       
       // コード品質 - 段階的に修正
       '@typescript-eslint/no-empty-function': 'off',  // 意図的な空関数が多いため一旦オフ
-      '@typescript-eslint/no-this-alias': 'warn',  // アロー関数への移行を段階的に
+      '@typescript-eslint/no-this-alias': 'error',  // アロー関数への移行完了
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'eqeqeq': ['error', 'always', { null: 'ignore' }],
@@ -74,7 +74,7 @@ export default tseslint.config(
       }],
       
       // null/undefined安全性 - 段階的に修正
-      '@typescript-eslint/no-non-null-assertion': 'warn',  // 50件: 段階的に修正
+      '@typescript-eslint/no-non-null-assertion': 'error',  // 修正完了
       '@typescript-eslint/prefer-nullish-coalescing': 'off',  // strictNullChecks有効化後に再度有効化
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/strict-boolean-expressions': 'off', // 厳密すぎるので無効化

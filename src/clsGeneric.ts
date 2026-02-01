@@ -5160,7 +5160,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     return menuObj[i];
                 }
                 if (menuObj[i].child) {
-                    const v = this.getPopMenuObj(menuObj[i].child!, property, pname);
+                    const v = this.getPopMenuObj(menuObj[i].child ?? [], property, pname);
                     if (v !== undefined) {
                         return v;
                     }
@@ -5652,28 +5652,29 @@ export class ListViewTable {
 
         if (this.headNum > 0) {
             this.tbh = document.createElement("table");
-            this.tbh.setAttribute("style", "user-select: none;" + this.styleinfo);
-            this.tbh.setAttribute("class", tableClass);
-            this.tbh.style.tableLayout = 'fixed';
-            this.tbh.style.width = '100%';
-            this.tbh.onmousemove = (e) => {
+            const tbh = this.tbh; // ローカル変数にキャプチャしてnon-nullを保証
+            tbh.setAttribute("style", "user-select: none;" + this.styleinfo);
+            tbh.setAttribute("class", tableClass);
+            tbh.style.tableLayout = 'fixed';
+            tbh.style.width = '100%';
+            tbh.onmousemove = (e) => {
                 if (!e.target) { return; }
                 switch (this.mousePointingSituation) {
                     case mousePointingSituations.up: {
                         const target = e.target as HTMLElement;
                         const x = target.offsetLeft + e.offsetX;
-                        const n = this.tbh!.rows[0].cells.length;
+                        const n = tbh.rows[0].cells.length;
                         this.bpos = -1;
                         for (let i = 0; i < n - 1; i++) {
-                            const cellBorderx0 = this.tbh!.rows[0].cells[i].offsetLeft + this.tbh!.rows[0].cells[i].offsetWidth;
+                            const cellBorderx0 = tbh.rows[0].cells[i].offsetLeft + tbh.rows[0].cells[i].offsetWidth;
                             if ((Math.abs(x - cellBorderx0) < 10)) {
-                                this.tbh!.style.cursor = 'w-resize';
+                                tbh.style.cursor = 'w-resize';
                                 this.bpos = i;
                                 break;
                             }
                         }
                         if (this.bpos === -1) {
-                            this.tbh!.style.cursor = 'default';
+                            tbh.style.cursor = 'default';
                         }
                         break;
                     }
@@ -5681,8 +5682,8 @@ export class ListViewTable {
                         if (this.bpos !== -1) {
                             const target = e.target as HTMLElement;
                             const x = target.offsetLeft + e.offsetX;
-                            const w = x - this.tbh!.rows[0].cells[this.bpos].offsetLeft;
-                            this.tbh!.rows[0].cells[this.bpos].style.width = w.px();
+                            const w = x - tbh.rows[0].cells[this.bpos].offsetLeft;
+                            tbh.rows[0].cells[this.bpos].style.width = w.px();
                             if (this.tb.rows[0] !== undefined) {
                                 this.tb.rows[0].cells[this.bpos].style.width = w.px();
                             }
@@ -5691,14 +5692,14 @@ export class ListViewTable {
                     }
                 }
             };
-            this.tbh.onmousedown = (_e) => {
+            tbh.onmousedown = (_e) => {
                 this.mousePointingSituation = mousePointingSituations.down as number;
             };
-            this.tbh.onmouseup = (_e) => {
+            tbh.onmouseup = (_e) => {
                 this.bpos = -1;
                 this.mousePointingSituation = mousePointingSituations.up as number;
             };
-            this.thead = this.tbh.createTHead();
+            this.thead = tbh.createTHead();
             this.thead.setAttribute("style", this.headStyleinfo);
 
             for (let i = 0; i < this.headNum; i++) {
@@ -5794,9 +5795,10 @@ export class ListViewTable {
 
     /**行にデータ挿入prototypeでは作りにくい rowInsertPos=0の場合はselectedRowの前に、1の場合は後ろに追加*/
     insertRow(rowInsertPos: number, plusData: string[]): void {
-        const rn = this.tb!.rows.length;
+        if (!this.tb || !this.tbody) return;
+        const rn = this.tb.rows.length;
         const rowpos = this.selectedRow + rowInsertPos;
-        const row = this.tbody!.insertRow(rowpos);
+        const row = this.tbody.insertRow(rowpos);
         row.setAttribute("style", this.normalStyleinfo);
         for (let j = 0; j < plusData.length; j++) {
             const newtd = row.insertCell(-1);
@@ -5813,8 +5815,8 @@ export class ListViewTable {
                     this.onclick(row.rowIndex);
                 }
             };
-            if ((this.headNum > 0) && (rn === 0)) {
-                newtd.style.width = this.tbh!.rows[0].cells[j].style.width;
+            if ((this.headNum > 0) && (rn === 0) && this.tbh?.rows[0]?.cells[j]) {
+                newtd.style.width = this.tbh.rows[0].cells[j].style.width;
             }
         }
         if (rowInsertPos === 0) {
@@ -5824,93 +5826,103 @@ export class ListViewTable {
     }
     /**ListViewの行数取得 */
     getRowNumber(): number {
-        return this.tb!.rows.length;
+        return this.tb?.rows.length ?? 0;
     }
 
     /**selectedRowの行削除 */
     deleteRow(): void {
         const rowPos = this.selectedRow;
-        if (rowPos === -1) { return; }
-        this.tbody!.deleteRow(rowPos);
-        if (this.tb!.rows.length === 0) {
+        if (rowPos === -1 || !this.tbody || !this.tb) { return; }
+        this.tbody.deleteRow(rowPos);
+        if (this.tb.rows.length === 0) {
             this.selectedRow = -1;
         } else {
-            const newsel = Math.min(this.selectedRow, this.tb!.rows.length - 1);
+            const newsel = Math.min(this.selectedRow, this.tb.rows.length - 1);
             this.selectRow(newsel);
         }
     }
 
     /**セルに値を設定 */
     setValue(x: number, y: number, value: string): void {
-        this.tb!.rows[y].cells[x].innerHTML = value;
+        if (this.tb?.rows[y]?.cells[x]) {
+            this.tb.rows[y].cells[x].innerHTML = value;
+        }
     }
 
     /**行の上下を反転 */
     reverse(): void {
-        const n = this.tb!.rows.length;
-        const celln = this.tb!.rows[0].cells.length;
+        if (!this.tb || !this.tb.rows[0]) return;
+        const n = this.tb.rows.length;
+        const celln = this.tb.rows[0].cells.length;
         for (let i = 0; i < Math.floor(n / 2); i++) {
-            const r1 = this.tb!.rows[i];
-            const r2 = this.tb!.rows[n - 1 - i];
+            const r1 = this.tb.rows[i];
+            const r2 = this.tb.rows[n - 1 - i];
             for (let j = 0; j < celln; j++) {
                 [r1.cells[j].innerHTML, r2.cells[j].innerHTML] = [r2.cells[j].innerHTML, r1.cells[j].innerHTML];
             }
         }
-        const newsel = this.tb!.rows.length - 1 - this.selectedRow;
+        const newsel = this.tb.rows.length - 1 - this.selectedRow;
         this.selectRow(newsel);
     }
 
     /**selectedRowの行上移動 */
     rowUp(): void {
-        if (this.tb!.rows.length < 2) { return; }
+        if (!this.tb || this.tb.rows.length < 2) { return; }
         const rowPos = this.selectedRow;
-        const celln = this.tb!.rows[rowPos].cells.length;
+        if (!this.tb.rows[rowPos]) return;
+        const celln = this.tb.rows[rowPos].cells.length;
         const dest = rowPos - 1;
         if (dest === -1) {
             const stac = [];
             for (let i = 0; i < celln; i++) {
-                stac.push(this.tb!.rows[rowPos].cells[i].innerHTML);
+                stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
             }
             this.deleteRow();
-            this.selectRow(this.tb!.rows.length - 1);
+            if (!this.tb) return;
+            this.selectRow(this.tb.rows.length - 1);
             this.insertRow(1, stac);
             const tbdivWithScroll = this.tbdiv as HTMLElement & {scrollTopMax?: number};
-            if (tbdivWithScroll.scrollTopMax !== undefined) {
-                this.tbdiv!.scrollTop = tbdivWithScroll.scrollTopMax;
+            if (this.tbdiv && tbdivWithScroll.scrollTopMax !== undefined) {
+                this.tbdiv.scrollTop = tbdivWithScroll.scrollTopMax;
             }
         } else {
             for (let i = 0; i < celln; i++) {
-                [this.tb!.rows[rowPos].cells[i].innerHTML, this.tb!.rows[dest].cells[i].innerHTML] = [this.tb!.rows[dest].cells[i].innerHTML, this.tb!.rows[rowPos].cells[i].innerHTML];
+                [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML];
             }
             this.selectRow(dest);
         }
     }
     /**selectedRowの行下移動 */
     rowDown(): void {
-        const maxrow = this.tb!.rows.length;
+        if (!this.tb) return;
+        const maxrow = this.tb.rows.length;
         if (maxrow < 2) { return; }
         const rowPos = this.selectedRow;
-        const celln = this.tb!.rows[rowPos].cells.length;
+        if (!this.tb.rows[rowPos]) return;
+        const celln = this.tb.rows[rowPos].cells.length;
         const dest = rowPos + 1;
         if (dest === maxrow) {
             const stac = [];
             for (let i = 0; i < celln; i++) {
-                stac.push(this.tb!.rows[rowPos].cells[i].innerHTML);
+                stac.push(this.tb.rows[rowPos].cells[i].innerHTML);
             }
             this.deleteRow();
             this.selectRow(0);
             this.insertRow(0, stac);
-            this.tbdiv!.scrollTop = 0;
+            if (this.tbdiv) {
+                this.tbdiv.scrollTop = 0;
+            }
         } else {
             for (let i = 0; i < celln; i++) {
-                [this.tb!.rows[rowPos].cells[i].innerHTML, this.tb!.rows[dest].cells[i].innerHTML] = [this.tb!.rows[dest].cells[i].innerHTML, this.tb!.rows[rowPos].cells[i].innerHTML];
+                [this.tb.rows[rowPos].cells[i].innerHTML, this.tb.rows[dest].cells[i].innerHTML] = [this.tb.rows[dest].cells[i].innerHTML, this.tb.rows[rowPos].cells[i].innerHTML];
             }
             this.selectRow(dest);
         }
     }
     /**表クリア */
     clear(): void {
-        const maxrow = this.tb!.rows.length;
+        if (!this.tb) return;
+        const maxrow = this.tb.rows.length;
         for (let i = maxrow - 1; i >= 0; i--) {
             this.selectRow(i);
             this.deleteRow();

@@ -3352,8 +3352,10 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
     const fileIn = Generic.createNewInput(bbox, "file", "", "", 15, 75, "", "");
     fileIn.accept=".mpfj";
     fileIn.addEventListener("change", function (e: Event) {
-        const file = (e.target as HTMLInputElement).files![0];
-        getFile(file);
+        const files = (e.target as HTMLInputElement).files;
+        if (files && files[0]) {
+            getFile(files[0]);
+        }
     }  , false);
 
     //ドロップする場合
@@ -3361,12 +3363,15 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
     dropZone.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        e.dataTransfer!.dropEffect = 'copy';
+        if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'copy';
+        }
     }, false);
     dropZone.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        const files = e.dataTransfer!.files; // FileList object.
+        if (!e.dataTransfer) return;
+        const files = e.dataTransfer.files; // FileList object.
         const file = files[0];
         if (Generic.getExtension(file.name).toLowerCase() !== "mpfj") {
             Generic.alert(undefined,"地図ファイルではありません。拡張子mpfjのファイルをドロップしてください。");

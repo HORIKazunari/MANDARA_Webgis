@@ -137,8 +137,11 @@ class clsDraw {
     static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info): { Out_Text: string[]; Height: number; RealWidth: number } {
 
         const Out_Text=[];
-        const thdata = P_Font.toContextFont!(ScrData);
-        g.font = thdata.font!;
+        const thdata = P_Font.toContextFont?.(ScrData);
+        if (!thdata || !thdata.font) {
+            return { Out_Text: [T], Height: 0, RealWidth: 0 };
+        }
+        g.font = thdata.font;
         let FSize;
         let subText = "";
         let i = 0;
@@ -1068,31 +1071,31 @@ class _clsTileMap {
         const tileList_Data = this.Get_TileMap_Image(TileMap, ZoomLevel, ScrLatLonBox, MapZahyo, ScrData);
         const numofTile = tileList_Data.length;
         let getTileNum=0;
-        const self = this; // Capture 'this' for use in nested functions
         for (let i = 0; i < numofTile; i++) {
             const d = tileList_Data[i] as JsonObject;
             request(d.URL as string, d.ScrPosition as unknown as rectangle);
         }
 
-        function request(url: string, destRect: rectangle): void {
-            const n = self.xhr.length;
-            self.xhr[n] = new XMLHttpRequest();
-            self.xhr[n].open('GET', url, true);
-            self.xhr[n].responseType = "blob";
-            self.xhr[n].onerror = function () {
+        const request = (url: string, destRect: rectangle): void => {
+            const n = this.xhr.length;
+            this.xhr[n] = new XMLHttpRequest();
+            this.xhr[n].open('GET', url, true);
+            this.xhr[n].responseType = "blob";
+            this.xhr[n].onerror = () => {
                 getTileNum++;
                 if (getTileNum === numofTile) {
                     if (typeof afterDrawFunction === 'function') {
                         afterDrawFunction();
                     }
                 }
-    }
-            self.xhr[n].onload = function () {
-                if (self.xhr[n].status === 200) {
-                    const oURL = URL.createObjectURL(this.response);
+            };
+            this.xhr[n].onload = () => {
+                if (this.xhr[n].status === 200) {
+                    const xhr = this.xhr[n]; // キャプチャして内部関数で使用
+                    const oURL = URL.createObjectURL(xhr.response);
                     const image = new Image();
                     image.src = oURL;
-                    image.onload = function () {
+                    image.onload = () => {
                         URL.revokeObjectURL(oURL);
                         g.drawImage(image, 0, 0, 256, 256, destRect.left, destRect.top, destRect.width(), destRect.height());
                         getTileNum++;
@@ -1102,7 +1105,7 @@ class _clsTileMap {
                             }
                         }
                     };
-                }else if (self.xhr[n].status === 404) {
+                }else if (this.xhr[n].status === 404) {
                     getTileNum++;
                     if (getTileNum === numofTile) {
                         if (typeof afterDrawFunction === 'function') {
@@ -1113,12 +1116,12 @@ class _clsTileMap {
                 }
             };
             try {
-                self.xhr[n].send(null);
+                this.xhr[n].send(null);
             }
             catch (e) {
                 console.error(e)
             }
-        }
+        };
     }
 
     /**ライセンスフォントを設定 */

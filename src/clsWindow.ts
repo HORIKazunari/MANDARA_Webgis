@@ -66,10 +66,11 @@ const txtClassValueLeftMergin = 5;
 const freqWidth = 50;
 const allW = picClassBoxWidth + txtClassValueWidth + freqWidth+txtClassValueLeftMergin;
 const pnlGraphEachItemHeight=25;
-// function setting(locSearch: string) {
-//     const state = appState();
 
-//     let man_Data=enmDataSource.NoData;
+const state = appState();
+let man_Data=enmDataSource.NoData;
+
+export function setting(locSearch: string) {
     const totalh = 680;
     let overlayListView: ListViewTable | undefined;//重ね合わせデータセットりリストビュー
     let seriesListView: ListViewTable | undefined;//連続表示データセットりリストビュー
@@ -442,7 +443,7 @@ const pnlGraphEachItemHeight=25;
     function mnuOpenShapeFile() {
 
         openShapeFile(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]) {
+        function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]) {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
@@ -504,7 +505,7 @@ const pnlGraphEachItemHeight=25;
     /**データ挿入(シェープファイルから) */
     function menuInsertShapefile() {
         openShapeFile(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]) {
+        function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]) {
             const newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
             newAttrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
@@ -520,7 +521,7 @@ const pnlGraphEachItemHeight=25;
     /**データ挿入(白地図・初期属性データ表示から) */
     function menuInsertMapViewer(){
         mapViewer(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]) {
+        function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]) {
             const newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
 
@@ -918,7 +919,7 @@ const pnlGraphEachItemHeight=25;
     //白地図初期属性データ
     function mnuMapViewer(): void {
         mapViewer(okButton);
-        function okButton(mapdata: clsMapdata, layerdata: ILayerDataInfo[]): void {
+        function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]): void {
             attrData = new clsAttrData();
             attrData.SetMapViewerData(mapdata, layerdata, false);
             attrData.TotalData.LV1.DataSourceType = enmDataSource.Viwer;
@@ -4060,7 +4061,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
 }
 
 //シェープファイル読み込み
-function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) => void) | undefined): void{
+function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => void) | undefined): void{
     type ShapeFileInfo = {
         shape: clsShapefile;
         shp?: boolean;
@@ -4133,11 +4134,14 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
     fileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        e.dataTransfer!.dropEffect = 'copy';
+        if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'copy';
+        }
     }, false);
     fileList.frame.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
+        if (!e.dataTransfer) return;
         const files = e.dataTransfer.files; // FileList object.
         dropShapeFiles(files);
     }, false);
@@ -4368,7 +4372,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[
 }
 
 /** 白地図・初期属性データ表示 */
-function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) => void) | undefined): void {
+function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => void) | undefined): void {
     const mapList: Record<string, clsMapdata> = {};
     const LayerData: strLayerInfo[] = [];
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
@@ -4400,12 +4404,15 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: ILayerDataInfo[]) =
     fileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        e.dataTransfer!.dropEffect = 'copy';
+        if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'copy';
+        }
     }, false);
     fileList.frame.addEventListener('drop', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
-        const files = e.dataTransfer!.files; // FileList object.
+        if (!e.dataTransfer) return;
+        const files = e.dataTransfer.files; // FileList object.
         const file = files[0];
         if (Generic.getExtension(file.name).toLowerCase() !== "mpfj") {
             Generic.alert(undefined,"地図ファイルではありません。拡張子mpfjのファイルをドロップしてください。");
