@@ -875,9 +875,9 @@ const pnlGraphEachItemHeight=25;
         const tx1="ブラウザGIS MANDARA JS";
         const tx2="バージョン 1.003";
         const tx3="<b>左上のメニューから始めてください</b>"
-        const tx4='<a href="http://ktgis.net/lab" target="_blank">谷 謙二（埼玉大学教育学部人文地理学研究室）</a>';
-        const tx5='<a href="index.html" target="_blank">本サイトのページ</a>'
-        const tx6='<a href="http://ktgis.net/mandara/" target="_blank">Windows版MANDARA10のページ</a>'
+        const tx4='<a href="https://webgis.celas.osaka-u.ac.jp/" target="_blank">MANDARA Webgisのページ（大阪大学）</a>';
+        const tx5='<a href="index.html" target="_blank">本サイトのトップページ</a>'
+        const tx6='<a href="https://github.com/HORIKazunari/MANDARA_JS_followup" target="_blank">GitHub MANDARA_JS_followupのページ</a>'
         Generic.createNewSpan(frame,tx1,"","",15,15,"",undefined);
         Generic.createNewSpan(frame,tx2,"","",100,40,"",undefined);
         Generic.createNewSpan(frame,tx3,"","",50,70,"",undefined);
