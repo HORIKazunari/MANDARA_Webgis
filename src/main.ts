@@ -240,7 +240,10 @@ function frmPrintProjection(): void {
     }
     
     const av = state.attrData.TotalData.ViewStyle;
-    frmProjectionConvert(av.Zahyo, av.ScrData.MapRectanglem, okButton);
+    const mapRect = av?.ScrData?.MapRectanglem;
+    if (mapRect) {
+        frmProjectionConvert(av.Zahyo, mapRect, okButton);
+    }
     
     function okButton(newZahyo: Zahyo_info): void {
         const state = appState();
@@ -249,20 +252,31 @@ function frmPrintProjection(): void {
         if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
             (centerLon !== state.attrData.TotalData.ViewStyle.Zahyo.CenterXY.x)) {
             
-            state.attrData?.Convert_Zahyo?.(newZahyo);
+            if (state.attrData?.Convert_Zahyo) {
+                state.attrData.Convert_Zahyo(newZahyo);
+            }
             const MapFileList: string[] = state.attrData?.GetMapFileName?.() ?? [];
             
             for (let i = 0; i < MapFileList.length; i++) {
-                state.attrData?.SetMapFile?.(MapFileList[i])?.Convert_ZahyoMode?.(newZahyo);
+                const mapFile = state.attrData?.SetMapFile?.(MapFileList[i]);
+                if (mapFile?.Convert_ZahyoMode) {
+                    mapFile.Convert_ZahyoMode(newZahyo);
+                }
             }
             
-            if (state.attrData?.TotalData?.ViewStyle?.ScrData?.MapRectangle) {
-                state.attrData.TotalData.ViewStyle.Zahyo = newZahyo;
-                state.attrData.TotalData.ViewStyle.ScrData.ScrView = 
-                    state.attrData.TotalData.ViewStyle.ScrData.MapRectangle.Clone();
+            const viewStyle = state.attrData?.TotalData?.ViewStyle;
+            const scrData = viewStyle?.ScrData;
+            if (scrData?.MapRectangle) {
+                viewStyle.Zahyo = newZahyo;
+                const clonedRect = scrData.MapRectangle.Clone?.();
+                if (clonedRect) {
+                    scrData.ScrView = clonedRect;
+                }
             }
             
-            state.attrData?.Check_Vector_Object?.();
+            if (state.attrData?.Check_Vector_Object) {
+                state.attrData.Check_Vector_Object();
+            }
             state.attrData?.PrtObjectSpatialIndex?.();
             clsPrint.printMapScreen(state.frmPrint.picMap);
             Generic.alert(

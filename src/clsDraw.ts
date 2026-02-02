@@ -1205,6 +1205,9 @@ class _clsTileMap {
     Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): JsonArray {
 
         const FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
+        if (!ScrLatLonBox.NorthWest || !ScrLatLonBox.SouthEast) {
+            return [];
+        }
         const StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
         const EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
 
@@ -1213,6 +1216,7 @@ class _clsTileMap {
             return [];
         }
         const tileList_Data = [];
+        const hrefStr = typeof TileMap.href === 'string' ? TileMap.href : '';
         for (let x = StartP.x; x <= EndP.x; x++) {
             for (let y = StartP.y; y <= EndP.y; y++) {
                 let xx = x;
@@ -1230,15 +1234,16 @@ class _clsTileMap {
 
                 const d = new tileList_Data_Info();
                 d.LatLonBox = this.Get_TileMap_IdoKedo(ZoomLevel, ox, yy);
-                const NW = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.NorthWest, MapZahyo as Zahyo_info);
-                const SE = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.SouthEast, MapZahyo as Zahyo_info);
-                const NWpoint = ScrData.getSxSy(spatial.Get_Converted_XY(NW.toPoint(), MapZahyo as Zahyo_info));
-                const SEpoint = ScrData.getSxSy(spatial.Get_Converted_XY(SE.toPoint(), MapZahyo as Zahyo_info));
-                d.ScrPosition = new rectangle(NWpoint, new size(SEpoint.x - NWpoint.x, SEpoint.y - NWpoint.y));
-                d.URL = TileMap.href;
-                d.URL = d.URL.replace("{z}", String(ZoomLevel));
-                d.URL = d.URL.replace("{x}", String(xx));
-                d.URL = d.URL.replace("{y}", String(ry));
+                if (d.LatLonBox?.NorthWest && d.LatLonBox?.SouthEast) {
+                    const NW = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.NorthWest, MapZahyo as Zahyo_info);
+                    const SE = spatial.Get_ReverseWorld_IdoKedo(d.LatLonBox.SouthEast, MapZahyo as Zahyo_info);
+                    const NWpoint = ScrData.getSxSy(spatial.Get_Converted_XY(NW.toPoint(), MapZahyo as Zahyo_info));
+                    const SEpoint = ScrData.getSxSy(spatial.Get_Converted_XY(SE.toPoint(), MapZahyo as Zahyo_info));
+                    d.ScrPosition = new rectangle(NWpoint, new size(SEpoint.x - NWpoint.x, SEpoint.y - NWpoint.y));
+                }
+                d.URL = hrefStr.replace("{z}", String(ZoomLevel))
+                              .replace("{x}", String(xx))
+                              .replace("{y}", String(ry));
                 tileList_Data.push(d);
             }
         }
