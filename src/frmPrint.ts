@@ -9,7 +9,7 @@ import type { JsonValue } from './types';
 
 // Check_Acc_Result は globals.d.ts で定義済み
 
-function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
+export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
     const state = appState();
 
     let MouseDownF: boolean = false;
@@ -1934,8 +1934,5 @@ class frmPrint {
         }
     }
 }
-
-// Ensure module scope for TypeScript
-export {};
 
 
