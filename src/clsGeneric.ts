@@ -4407,9 +4407,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tx;
     }
 
-    static Array2Dimension<T>(dim1num: number, dim2num: number, defoValue: T = undefined as T) {
+    static Array2Dimension<T>(dim1num: number, dim2num: number, defoValue: T = undefined as T): T[][] {
 
-        const arrayData = new Array(dim1num);
+        const arrayData: T[][] = new Array(dim1num);
         for (let i = 0; i < dim1num; i++) {
             arrayData[i] = new Array(dim2num);
             if (defoValue !== undefined) {
@@ -6270,7 +6270,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 }
 
 //select要素の選択要素を一つ削除、選択位置を移動、削除したvalueを返す
-HTMLElement.prototype.removeOne = function () {
+HTMLElement.prototype.removeOne = function (): string | undefined {
     const mx=this.options.length;
     const fSel=parseInt(this.selectedIndex);
     if(fSel===-1){
@@ -6324,7 +6324,7 @@ HTMLElement.prototype.getText = function () {
 }
 
 //select要素の選択valueを取得
-HTMLElement.prototype.getValue = function () {
+HTMLElement.prototype.getValue = function (): string | number | undefined {
     const n = this.selectedIndex;
     if (n === -1) {
         return undefined;

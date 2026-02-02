@@ -545,7 +545,7 @@ export function setting(locSearch: string) {
         data[0][2] = "地図ファイル";
         data[1][2] = attrData.MapData.GetMapFileName().join(",");
         data[0][3] = "レイヤ数";
-        data[1][3] = layn;
+        data[1][3] = layn.toString();
         let n=4;
         for (let i = 0; i <layn ; i++) {
             const lay = attrData.LayerData[i];
@@ -564,11 +564,11 @@ export function setting(locSearch: string) {
             data[0][n + 6] = "コメント";
             data[1][n + 6] = lay.Comment;
             data[0][n + 7] = "オブジェクト数";
-            data[1][n + 7] = lay.atrObject.ObjectNum;
+            data[1][n + 7] = lay.atrObject.ObjectNum.toString();
             data[0][n + 8] = "データ項目数";
-            data[1][n + 8] = lay.atrData.Count;
+            data[1][n + 8] = lay.atrData.Count.toString();
             data[0][n + 9] = "ダミーオブジェクト数";
-            data[1][n + 9] = lay.Dummy.length;
+            data[1][n + 9] = lay.Dummy.length.toString();
             n += 10;
         }
         Generic.createNewSpan(backDiv,"データ","","",15,40,"",undefined);
@@ -1182,7 +1182,7 @@ export function setting(locSearch: string) {
             data[1][i+1] = attrData.Get_KenObjName(Layernum, i);
             data[2][i+1] = attrData.Get_Data_Value(Layernum, DataNum, i, attrData.TotalData.ViewStyle.Missing_Data.Text);
         }
-        Generic.createMsgTableBox(attrData.Get_DataTitle(Layernum, DataNum,false), data,300,500,true);
+        Generic.createMsgTableBox(attrData.Get_DataTitle(Layernum, DataNum,false), data as (string | number)[][],300,500,true);
     }
 
     //統計値表示
@@ -3232,7 +3232,7 @@ export function setting(locSearch: string) {
         overHdata[2][0] = "表示モード";
         overHdata[3][0] = "凡例";
         const borderStyle = "border:solid 1px;background-Color:#ffffff"
-        overlayListView = new ListViewTable(gbOverlayDataSetItem, "", "", "", overHdata, [], 15, 15, 350, 200, borderStyle, "font-size:13px;",
+        overlayListView = new ListViewTable(gbOverlayDataSetItem, "", "", "", overHdata as string[][], [], 15, 15, 350, 200, borderStyle, "font-size:13px;",
             "background-Color:#dddddd;text-align:center", "", ["", "", "", "width:10%"], [], true,
             function (/*row: number*/) { overlayDatasetDataItemEach() });
 
@@ -3340,7 +3340,7 @@ export function setting(locSearch: string) {
         seriesHdata[2][0] = "データ";
         seriesHdata[3][0] = "表示モード";
         const slborderStyle = "border:solid 1px;background-Color:#ffffff"
-        seriesListView = new ListViewTable(gbSeriesDataSetItem, "", "", "", seriesHdata, [], 15, 15, 350, 200, slborderStyle, "font-size:13px;",
+        seriesListView = new ListViewTable(gbSeriesDataSetItem, "", "", "", seriesHdata as string[][], [], 15, 15, 350, 200, slborderStyle, "font-size:13px;",
             "background-Color:#dddddd;text-align:center", "", ["width:10%"], ["text-align:center"], true, undefined);
 
         const gbSeriesItemData = Generic.createNewFrame(gbSeriesDataSetItem, "gbSeriesItemData", "", 15, 230, 150, 50, "");

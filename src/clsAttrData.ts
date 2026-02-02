@@ -5878,7 +5878,7 @@ class clsAttrData {
         if (Emes !== "") {
             E_Mes += "ダミーオブジェクト指定で地図ファイルに含まれないものがあります。" + '\n' + Emes
         }
-        const retv = this.Set_STRData_To_Cell(NowLay, MxData - 1, LayerReading.TTL as string[], LayerReading.UNT as string[], LayerReading.DTMis as JsonValue[], LayerReading.Note as string[], DN_Str);
+        const retv = this.Set_STRData_To_Cell(NowLay, MxData - 1, LayerReading.TTL as string[], LayerReading.UNT as string[], LayerReading.DTMis as JsonValue[], LayerReading.Note as string[], DN_Str as string[][]);
         E_Mes += retv.emes;
         return { ok: retv.ok, emes: E_Mes };
     }
@@ -6889,7 +6889,7 @@ class clsAttrData {
     //データ項目のデータが欠損値だった場合にTRUEが入る配列を返す
     Get_Missing_Value_DataArray(Layernum: number, DataNum: number): boolean[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
-        let dt =[];
+        let dt: boolean[] = [];
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         if ((ad.MissingValueNum === 0) || (ad.MissingF === false)) {
              dt = new Array(ObjNum).fill(false);

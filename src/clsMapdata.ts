@@ -1469,7 +1469,7 @@ class clsMapdata {
 
         TotalInOutNum.length=Polygon_Num;
         TotalInOutNum.fill(0);
-        const InOut = Generic.Array2Dimension(Polygon_Num, Polygon_Num);
+        const InOut = Generic.Array2Dimension<number>(Polygon_Num, Polygon_Num, 0);
 
         for (let i = 0; i < Polygon_Num; i++) {
             let PRect = this.MPLine[Fringe[Arrange_LineCode[i][0]].code].Circumscribed_Rectangle;
@@ -1492,9 +1492,9 @@ class clsMapdata {
 
                 for (let j = 0; j < n; j++) {
                     const LCD = Otags[j];
-                    if (LCD !== i) {
+                    if (typeof LCD === 'number' && LCD !== i) {
                         const Fringe_Line: number[] = [];
-                        const lcdData = Arrange_LineCode[LCD as number] as number[];
+                        const lcdData = Arrange_LineCode[LCD] as number[];
                         for (let k = 0; k < lcdData[1]; k++) {
                             Fringe_Line.push(Fringe[lcdData[0] + k].code);
                         }

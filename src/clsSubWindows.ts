@@ -1340,7 +1340,7 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewCheckBox(tabLegend.panel[3], "線種の凡例を表示", "", atvl.Line_Visible, 20, 20, 180,
         function (obj: HTMLInputElement) { atvl.Line_Visible = obj.checked; }, "");
     const lLK = appState().attrData.GetAllMapLineKindName();
-    const lLKList = [];
+    const lLKList: {text: string, checked: boolean}[] = [];
     for (let i = 0; i < lLK.length; i++) {
         const cv = (atvl.Line_Visible_Number_STR.mid(i, 1) === "1");
         lLKList.push({ text: lLK[i], checked: cv });
