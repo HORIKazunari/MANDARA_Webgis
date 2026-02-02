@@ -1421,6 +1421,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
         return { type: Check_Acc_Result.NoAccessory, rect: undefined };
     }
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class frmPrint {
