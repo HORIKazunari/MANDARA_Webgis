@@ -1678,7 +1678,7 @@ export class gridControl {
         }
     }
 
-    Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, /*BorderWidth: number, font: Font_Property*/) => {
+    Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
         if(STT===undefined){return;}
         if (!this.ctx) return;
         
@@ -3880,7 +3880,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         }
     }
 
-    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, /*Width: number*/) => {
+    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, Width: number) => {
         const UndoData=new Undo_ChangeColumnWidth();
         const oldW = [];
         const GP = this.Grid_Property[Layer];
