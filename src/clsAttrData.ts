@@ -528,19 +528,6 @@ class strClass_Div_data {
     }
 }
 
-interface strContour_Data_Regular_interval {
-    bottom: number; // Double
-    Interval: number; // Double
-    top: number; // Double
-    Line_Pat: Line_Property;
-    SP_Bottom: number; // Double
-    SP_interval: number; // Double
-    SP_Top: number; // Double
-    SP_Line_Pat: Line_Property;
-    EX_Value_Flag: boolean; // Boolean
-    EX_Value: number; // Double
-    EX_Line_Pat: Line_Property;
-}
 class strContour_Data_Regular_interval {
     bottom: number = 0;
     Interval: number = 0;
@@ -627,12 +614,6 @@ const _enmMarkTurnDirection = {
     Clockwise: 1
 }
 //記号の回転モード
-interface strMarkTurnMode_Data {
-    Dirction: number;// enmMarkTurnDirection //0:反時計回り 1:時計回り
-    Mark: Mark_Property;
-    DegreeLap: number;// Double '一周の値
-    Clone(): strMarkTurnMode_Data;
-}
 class strMarkTurnMode_Data {
     Dirction: number = 0;
     Mark: Mark_Property = new Mark_Property();
@@ -647,21 +628,6 @@ class strMarkTurnMode_Data {
 }
 
 //データ項目ごとの単独表示モードのプロパティを保持する構造体
-interface strSoloModeViewSettings_Data {
-    Div_Num: number;  //Integer
-    Div_Method: number;  //enmDivisionMethod
-    ClassPaintMD: strClassPaint_Data;
-    MarkCommon: strMarkCommon_Data;
-    MarkSizeMD: strMarkSize_Data;
-    MarkBlockMD: strMarkBlock_Data;
-    MarkBarMD: strMarkBar_Data;
-    StringMD: strString_Data;
-    ContourMD: strContour_Data;
-    ClassODMD: strClassODMode_data;
-    ClassMarkMD: strInner_Data_Info;
-    MarkTurnMD: strMarkTurnMode_Data;
-    Class_Div: strClass_Div_data[];  //strClass_Div_data;
-}
 class strSoloModeViewSettings_Data {
     SoloMode: number = 0;
     Div_Num: number = 0;
@@ -677,16 +643,6 @@ class strSoloModeViewSettings_Data {
     ClassMarkMD: strInner_Data_Info = new strInner_Data_Info();
     MarkTurnMD: strMarkTurnMode_Data = new strMarkTurnMode_Data();
     Class_Div: strClass_Div_data[] = [];
-}
-interface strStatisticInfo {
-    Max: number; //Double
-    Min: number; //Double
-    Ave: number; //Double
-    STD: number; //Double
-    Sum: number; //Double
-    sa: number; //Double
-    BeforeDecimalNum: number; //Integer
-    AfterDecimalNum: number; //Integer
 }
 class strStatisticInfo {
     Max: number = 0;
@@ -1181,20 +1137,6 @@ class strLayerDataInfo {
     }
 }
 
-interface strScreen_Setting_Data_Info {
-    title: string;
-    frmPrint_FormSize: rectangle;
-    ScrView: rectangle;
-    Screen_Margin: ScreenMargin;
-    Accessory_Base: number;//enmBasePosition
-    MapScale: strScale_Attri;
-    MapTitle: strTitle_Attri;
-    DataNote: strNote_Attri;
-    AttMapCompass: strCompass_Attri;
-    MapLegend: strLegend_Attri;
-    ThreeDMode: strThreeDMode_Set;
-    Clone(): strScreen_Setting_Data_Info;
-}
 class strScreen_Setting_Data_Info {
     //画面設定保存用
     title: string = "";
@@ -7259,7 +7201,7 @@ class clsAttrData {
             ctm.Draw_in_Polygon_F = true;
             ctm.Spline_flag = true;
             if (!ctm.Regular) {
-                ctm.Regular = new Contour_Regular_Mode_Data();
+                ctm.Regular = new strContour_Data_Regular_interval();
             }
             const ctmr = ctm.Regular;
             ctmr.bottom = Number(sv.Class_Div[sv.Div_Num - 2].Value);
@@ -8350,9 +8292,9 @@ class clsAttrMapData {
             }
         });
         if (f === true) {
-            Object.keys(this.attrMapData).forEach(function (key) {
-                if (Generic.equal(self.attrMapData[key].Map.Zahyo as Zahyo_info, Zahyo as Zahyo_info) === false) {
-                    self.attrMapData[key].Convert_ZahyoMode(Zahyo as Zahyo_info);
+            Object.keys(this.attrMapData).forEach((key) => {
+                if (Generic.equal(this.attrMapData[key].Map.Zahyo as Zahyo_info, Zahyo as Zahyo_info) === false) {
+                    this.attrMapData[key].Convert_ZahyoMode(Zahyo as Zahyo_info);
                 }
             });
         }

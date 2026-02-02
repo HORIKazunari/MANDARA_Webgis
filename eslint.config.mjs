@@ -137,8 +137,8 @@ export default tseslint.config(
       // TypeScriptが型チェックするため無効化
       'no-undef': 'off',
       
-      // クラスとインターフェースのマージング - 段階的に修正
-      '@typescript-eslint/no-unsafe-declaration-merging': 'warn', // レガシーパターンを段階的に修正
+      // クラスとインターフェースのマージング - 修正完了
+      '@typescript-eslint/no-unsafe-declaration-merging': 'error', // interface/classマージングを禁止
     },
   },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
