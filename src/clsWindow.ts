@@ -662,7 +662,7 @@ export function setting(locSearch: string) {
             if (attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
                 if (attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
                     if (selectDataItem) selectDataItem.selectedIndex = oldData;
-                    changeDataItem(0, oldData, 0);
+                    changeDataItem(0, oldData);
                 }
             }
         })
@@ -717,7 +717,7 @@ export function setting(locSearch: string) {
         if (attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
             if (attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
                 if (selectDataItem) selectDataItem.selectedIndex = newN - 1;
-                changeDataItem(0, newN - 1, 0);
+                changeDataItem(0, newN - 1);
             }
         }
     }
@@ -740,7 +740,7 @@ export function setting(locSearch: string) {
             if (attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
                 if (attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
                         if (selectDataItem) selectDataItem.selectedIndex = oldN;
-                    changeDataItem(0, oldN, 0);
+                    changeDataItem(0, oldN);
                 }
             }
         });
@@ -855,7 +855,7 @@ export function setting(locSearch: string) {
                     if (selectDataItem) {
                         selectDataItem.selectedIndex = newN;
                     }
-                    changeDataItem(0, newN, 0);
+                    changeDataItem(0, newN);
                     break;
                 }
             }
@@ -1217,7 +1217,7 @@ export function setting(locSearch: string) {
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
-    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], v: string | number = "") {
+    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /* v: string | number = "" */) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = attrData.TotalData.LV1.SelectedLayer;
         attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
@@ -4167,7 +4167,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
             return;
         }
         for (let i = 0; i < files.length; i++) {
-            checkSFiles(files[i],false);
+            checkSFiles(files[i]);
         }
         checkSFiles2();
         if(er !== '') {
@@ -4192,7 +4192,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
             Generic.unzipFile(zipFile, zipSOK, zipSErr)
             function zipSOK(unZipData: {[key: string]: Uint8Array}) {
                 for (const filename in unZipData) {
-                    checkSFiles(filename,true);
+                    checkSFiles(filename);
                 }
                 checkSFiles2();
                 if (er !== '') {
@@ -4207,7 +4207,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
                 Generic.alert(undefined,zipFile.name + "は読み込めませんでした。")
             }
         }
-        function checkSFiles(file: File | string, zipF: boolean) {
+        function checkSFiles(file: File | string, /* zipF: boolean */) {
             const ext = typeof file === 'string' 
                 ? Generic.getExtension(file).toLowerCase()
                 : Generic.getExtension(file.name).toLowerCase();

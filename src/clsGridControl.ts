@@ -1414,7 +1414,7 @@ export class gridControl {
                 if(ptx==='undefined'){
                     ptx="";
                 }
-               this.Print_Data(ptx, GP.DataItemData[i].Allignment, X, Y, GP.DataItemData[i].Width, GP.CellHeight[j], GP.GridLineCol, bkCol, 0, font);
+               this.Print_Data(ptx, GP.DataItemData[i].Allignment, X, Y, GP.DataItemData[i].Width, GP.CellHeight[j], GP.GridLineCol, bkCol);
                 X += GP.DataItemData[i].Width;
                 i++;
             } while ((X < picW) && (i < xs))
@@ -1441,8 +1441,7 @@ export class gridControl {
                         }
                     }
                 }
-                const fontObj = typeof font === 'string' ? new Font_Property() : font;
-                this.Print_Data(GP.FixedObjectName[i][j].Text, GP.FixedObjectNameData[i].Allignment, X, Y, GP.FixedObjectNameData[i].Width, GP.CellHeight[j], GP.GridLineCol, bkCol, 1, fontObj);
+                this.Print_Data(GP.FixedObjectName[i][j].Text, GP.FixedObjectNameData[i].Allignment, X, Y, GP.FixedObjectNameData[i].Width, GP.CellHeight[j], GP.GridLineCol, bkCol);
 
                 X += GP.FixedObjectNameData[i].Width;
             }
@@ -1490,8 +1489,7 @@ export class gridControl {
                         }
                     }
                 }
-                const fontObj = typeof font === 'string' ? new Font_Property() : font;
-                this.Print_Data(GP.FixedDataItem[i][j].Text, GP.FixedDataItemData[j].Allignment, X, Y, GP.DataItemData[i].Width, GP.FixedDataItemData[j].Height, GP.GridLineCol, bkCol, 0, fontObj);
+                this.Print_Data(GP.FixedDataItem[i][j].Text, GP.FixedDataItemData[j].Allignment, X, Y, GP.DataItemData[i].Width, GP.FixedDataItemData[j].Height, GP.GridLineCol, bkCol);
                 Y += GP.FixedDataItemData[j].Height;
             }
             X += GP.DataItemData[i].Width;
@@ -1538,8 +1536,7 @@ export class gridControl {
                         bkCol = bkCol.getDarkColor();
                     }
                 }
-                const fontObj = typeof font === 'string' ? new Font_Property() : font;
-                this.Print_Data(GP.FixedUpperLeft[i][j].Text, GP.FixedUpperLeftAllignment, X, Y, GP.FixedObjectNameData[i].Width, GP.FixedDataItemData[j].Height, GP.GridLineCol, bkCol, 0, fontObj)
+                this.Print_Data(GP.FixedUpperLeft[i][j].Text, GP.FixedUpperLeftAllignment, X, Y, GP.FixedObjectNameData[i].Width, GP.FixedDataItemData[j].Height, GP.GridLineCol, bkCol)
                 Y += GP.FixedDataItemData[j].Height;
             }
             X += GP.FixedObjectNameData[i].Width;
@@ -1678,7 +1675,7 @@ export class gridControl {
         }
     }
 
-    Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, BorderWidth: number, font: Font_Property) => {
+    Print_Data = (STT: string | JsonValue, Allignment: number, X: number, Y: number, CellW: number, CellHeight: number, BorderColor: colorRGBA, Fillcolor: colorRGBA, /* BorderWidth: number, font: Font_Property */) => {
         if(STT===undefined){return;}
         if (!this.ctx) return;
         
@@ -3833,7 +3830,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                     S1 = tx;
                     s2 = tx;
                 }
-               this.SetUndo_ChangeColumnWidth(this.Grid_Total.Layer, S1, s2, w);
+               this.SetUndo_ChangeColumnWidth(this.Grid_Total.Layer, S1, s2);
                 this.ChangeColumnWidth(this.Grid_Total.Layer, S1, s2, w);
                 break;
             }
@@ -3880,7 +3877,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         }
     }
 
-    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, Width: number) => {
+    SetUndo_ChangeColumnWidth = (Layer: number, left: number, right: number, /* Width: number */) => {
         const UndoData=new Undo_ChangeColumnWidth();
         const oldW = [];
         const GP = this.Grid_Property[Layer];

@@ -2628,11 +2628,11 @@ class clsMapdata {
     // <returns></returns>
     // <remarks></remarks>
     /**全期間を通したオブジェクトの形状をチェック */
-    Check_Obj_Shape_AllTime(ObjData: strObj_Data, CutPoint: point | undefined = undefined) {
+    Check_Obj_Shape_AllTime(ObjData: strObj_Data, /* CutPoint: point | undefined = undefined */) {
         //オブジェクト名の有効期間の開始と終了時期での形状チェック
 
         if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
-            return this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD(), CutPoint);
+            return this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD());
         }
 
         const OT = []; // As Start_End_Time_data
@@ -2647,11 +2647,11 @@ class clsMapdata {
 
         for (let i = 0; i < obtn; i++) {
             if (OT[i].StartTime.nullFlag() === false) {
-                SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].StartTime, CutPoint);
+                SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].StartTime);
                 SHN++;
             }
             if (OT[i].EndTime.nullFlag() === false) {
-                SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].EndTime, CutPoint);
+                SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, OT[i].EndTime);
                 SHN++;
             }
         }
@@ -2705,7 +2705,7 @@ class clsMapdata {
             if (GT[i].nullFlag() === false) {
                 for (let j = 0; j < obtn; j++) {
                     if (clsTime.checkDurationIn(OT[j], GT[i]) === true) {
-                        SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, GT[i], CutPoint);
+                        SHP[SHN] = this.Check_Obj_Shape_Cut(ObjData, GT[i]);
                         SHN++;
                     }
                 }
@@ -2713,7 +2713,7 @@ class clsMapdata {
         }
 
         if (SHN === 0) {
-            SHP[0] = this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD(), CutPoint);
+            SHP[0] = this.Check_Obj_Shape_Cut(ObjData, clsTime.GetNullYMD());
             SHN = 1;
         }
 
@@ -2740,7 +2740,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: strYMD, CutPoint: point) {
+    Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: strYMD, /* CutPoint: point */) {
         if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
             //集成オブジェクトタイプの場合
             const OBShape = new Array(3);
@@ -2758,7 +2758,7 @@ class clsMapdata {
             }
         } else {
             //通常のオブジェクトタイプの場合
-            const polyn = this.Check_PolyShape_PolygonNum(ObjData, L_Time, CutPoint);
+            const polyn = this.Check_PolyShape_PolygonNum(ObjData, L_Time);
             switch (polyn) {
                 case -1:
                     return enmShape.PointShape;
@@ -2778,7 +2778,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標(戻り値)</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_PolyShape_PolygonNum( ObjData: strObj_Data ,  L_Time: strYMD , CutPoint: point | undefined  = undefined) {
+    Check_PolyShape_PolygonNum( ObjData: strObj_Data ,  L_Time: strYMD , /* CutPoint: point | undefined  = undefined */) {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;

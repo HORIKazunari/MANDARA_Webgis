@@ -3507,14 +3507,14 @@ class clsPrint {
                     }
                     if(vf === true) {
 
-                        this.Vector_Boundary_Draw(g,  Layernum, i, false);
+                        this.Vector_Boundary_Draw(g,  Layernum, i);
                     }
                 }
             // }
         }
     }
 
-    static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, Dummy_F: boolean) {
+    static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, /* Dummy_F: boolean */) {
         const state = appState();
         let ELine = []// clsMapData.EnableMPLine_Data
         const ad = state.attrData.LayerData[Layernum];
@@ -3872,7 +3872,7 @@ class clsPrint {
                     state.attrData.AddPointObjectKindUsed(ad.MapFileName, okIndex, MK);
                 }
             } else {
-                this.Vector_Boundary_Draw(g,  Layernum, code, true);
+                this.Vector_Boundary_Draw(g,  Layernum, code);
             }
         }
 
