@@ -1020,7 +1020,7 @@ export class spatial {
     }
 
     /** 起終点座標だけを指定した境界線を面領域を描くように並べ替える、返す値は並び順とオブジェクトのポリゴン数*/
-    static BoundaryArrangeGeneral(LieneNum: number, spxy: point[], epxy: point[]) {
+    static BoundaryArrangeGeneral(LieneNum: number, spxy: point[], epxy: point[]): boundArrangeData {
 
         const boundArrange = new boundArrangeData();
         boundArrange.Fringe = boundArrange.Fringe ?? [];
@@ -1152,7 +1152,7 @@ export class spatial {
         return boundArrange;
     }
 
-    static Get_Hairetu_Menseki(XY: point[], MapDataMap: { Zahyo: Zahyo_info; SCL: number }) {
+    static Get_Hairetu_Menseki(XY: point[], MapDataMap: { Zahyo: Zahyo_info; SCL: number }): number {
 
         const n = XY.length ;
         const xy2 =Generic.ArrayClone(XY);

@@ -664,7 +664,7 @@ class clsMapdata {
 
     //ライン登録
     Save_Line(EditingLine: strLine_Data, checkRelatedLineFlag: boolean, checkRelatedObjectShapeFlag: boolean, checkLineMaxMinFlag: boolean) {
-        const SEpoint = [];
+        const SEpoint: point[] = [];
         let newf;
         SEpoint.push(EditingLine.PointSTC[0].Clone());
         SEpoint.push(EditingLine.PointSTC[EditingLine.NumOfPoint-1].Clone());
@@ -889,7 +889,7 @@ class clsMapdata {
             LoopF = false;
         }
 
-        const Push_point = new Array(FirstPointNum);
+        const Push_point: point[] = Array.from({ length: FirstPointNum }) as point[];
         let ts = FirstPointNum;
         let n = 0;
         let Cng_f;
@@ -983,10 +983,10 @@ class clsMapdata {
         Okind.ObjectNameList = ["オブジェクト名1"];
         if (type === enmObjectGoupType_Data.AggregationObject) {
             const len = Math.max(ObkNum, 0);
-            Okind.UseLineType = new Array(len).fill(false);
+            Okind.UseLineType = new Array(len).fill(false) as boolean[];
         } else {
             const len = Math.max(LpNum - 1, 0);
-            Okind.UseLineType = new Array(len).fill(false);
+            Okind.UseLineType = new Array(len).fill(false) as boolean[];
         }
         return Okind;
     }
@@ -1256,27 +1256,29 @@ class clsMapdata {
 
     //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
     Boundary_Arrange_Sub(ELine: EnableMPLine_Data[]): boundArrangeData {
-        let boundArrange = new boundArrangeData();
+        const boundArrange: boundArrangeData = new boundArrangeData();
         const NL = ELine.length;
         if (NL === 0) {
             boundArrange.Pon = 0;
             return boundArrange;
         }
-        const spxy = [];
-        const epxy = [];
+        const spxy: point[] = [];
+        const epxy: point[] = [];
         for (let i = 0; i < NL; i++) {
             const LineNO = ELine[i].LineCode;
             spxy.push(this.MPLine[LineNO].PointSTC[0]);
             epxy.push(this.MPLine[LineNO].PointSTC[this.MPLine[LineNO].NumOfPoint - 1]);
         }
-        boundArrange = spatial.BoundaryArrangeGeneral(NL, spxy, epxy);
-        for (let i = 0; i < NL; i++) {
-            const fringeCode = boundArrange.Fringe[i].code;
-            if (typeof fringeCode === 'number' && fringeCode < ELine.length) {
-                boundArrange.Fringe[i].code = ELine[fringeCode].LineCode ?? 0;
+        const result = spatial.BoundaryArrangeGeneral(NL, spxy, epxy);
+        if (result.Fringe) {
+            for (let i = 0; i < NL; i++) {
+                const fringeCode = result.Fringe[i].code;
+                if (typeof fringeCode === 'number' && fringeCode < ELine.length) {
+                    result.Fringe[i].code = ELine[fringeCode].LineCode ?? 0;
+                }
             }
         }
-        return boundArrange;
+        return result;
     }
 
     //指定したラインコードがループでない場合は－１、ループの場合は面積を返す
@@ -1312,7 +1314,7 @@ class clsMapdata {
         const Pon = badata.Pon;
         const Arrange_LineCode = badata.Arrange_LineCode;
         const Fringe = badata.Fringe;
-        const mens = new Array(Pon);
+        const mens: number[] = Array.from({ length: Pon }) as number[];
         for (let i = 0; i < Pon; i++) {
             const LXY2: point[] = [];
             // const n2 = this.Get_Object_Polygon_Coords(i, 0, Arrange_LineCode, Fringe, LXY2, false, 1);
@@ -1320,7 +1322,7 @@ class clsMapdata {
             LXY2.push(LXY2[1]);
             mens[i] = spatial.Get_Hairetu_Menseki(LXY2, this.Map as { Zahyo: Zahyo_info; SCL: number });
         }
-        let m;
+        let m: number;
         if (Pon === 1) {
             m = mens[0]
         } else {
@@ -1337,7 +1339,7 @@ class clsMapdata {
                 }
             }
         }
-        return m;
+        return m as number;
     }
 
     //ポリゴンごとの面積を求めて、中抜け等を判定して全体の面積を返す（重心つき）
@@ -1349,8 +1351,8 @@ class clsMapdata {
         const Pon = badata.Pon;
         const Arrange_LineCode = badata.Arrange_LineCode;
         const Fringe = badata.Fringe;
-        const mens = new Array(Pon);
-        const gp = new Array(Pon);
+        const mens: number[] = new Array(Pon);
+        const gp: point[] = new Array(Pon);
         for (let i = 0; i < Pon; i++) {
 
             const LXY2: point[] = [];
@@ -1393,10 +1395,10 @@ class clsMapdata {
                 }
             }
         }
-        let m;
+        let m: number;
         if (Pon === 1) {
-            m = mens[0]
-            GXY = gp[0];
+            m = mens[0] as number;
+            GXY = gp[0] as point;
         } else {
             const TotalInOut: number[] = [];
             // const In_Out = this.Object_Polygon_InOut(badata, TotalInOut);
@@ -1406,12 +1408,12 @@ class clsMapdata {
             for (let i = 0; i < Pon; i++) {
                 if ((TotalInOut[i] % 2) === 1) {
                     //何かのポリゴンに奇数回含まれるポリゴンは中抜け
-                    mens[i] = -mens[i];
+                    mens[i] = -mens[i] as number;
                 } else {
                     if (mens[i] > sm) {
                         //より面積の大きいポリゴンに重心を移す
-                        GXY = gp[i];
-                        sm = mens[i];
+                        GXY = gp[i] as point;
+                        sm = mens[i] as number;
                     }
                 }
                 m += mens[i];
