@@ -1217,7 +1217,7 @@ export function setting(locSearch: string) {
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
-    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /*v: string | number = ""*/) {
+    function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], v: string | number = "") {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = attrData.TotalData.LV1.SelectedLayer;
         attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
@@ -4207,7 +4207,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
                 Generic.alert(undefined,zipFile.name + "は読み込めませんでした。")
             }
         }
-        function checkSFiles(file: File | string, /*zipF: boolean*/) {
+        function checkSFiles(file: File | string, zipF: boolean) {
             const ext = typeof file === 'string' 
                 ? Generic.getExtension(file).toLowerCase()
                 : Generic.getExtension(file.name).toLowerCase();

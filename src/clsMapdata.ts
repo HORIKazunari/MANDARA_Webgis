@@ -2777,7 +2777,7 @@ class clsMapdata {
     // <param name="CutPoint">切れ目の地図座標(戻り値)</param>
     // <returns></returns>
     // <remarks></remarks>
-    Check_PolyShape_PolygonNum( ObjData: strObj_Data ,  L_Time: strYMD /*, CutPoint: point | undefined  = undefined*/) {
+    Check_PolyShape_PolygonNum( ObjData: strObj_Data ,  L_Time: strYMD , CutPoint: point | undefined  = undefined) {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
         let NL=ELine.length;

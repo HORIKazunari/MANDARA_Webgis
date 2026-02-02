@@ -9,10 +9,10 @@ import type { JsonValue } from './types';
 
 // Check_Acc_Result は globals.d.ts で定義済み
 
-// function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
-//     const state = appState();
+function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
+    const state = appState();
 
-//     let MouseDownF: boolean = false;
+    let MouseDownF: boolean = false;
     let mousePointingSituation: number = mousePointingSituations.up;
     let mouseDownPosition: point;
     let mousePreviousPosition: point;
