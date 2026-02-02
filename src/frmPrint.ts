@@ -335,7 +335,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         e.preventDefault();
         let event;
         if(mousePointingSituation === mousePointingSituations.pinch){
-            pinchUp(e as TouchEvent)
+            pinchUp()
             mousePointingSituation = mousePointingSituations.up;
             MouseDownF=false;
             return;
@@ -399,7 +399,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                         } else {
                             stp = mapstep;
                         }
-                        const ag = vs.AccessoryGroupBox as {Title: boolean; Scale: boolean; Note: boolean; NorthSign: boolean; MapLegend: boolean};
+                        const ag = vs.AccessoryGroupBox;
                         if (ag.Title === true) {
                             vs.MapTitle.Position.offset(stp.x, stp.y);
                         }
@@ -409,10 +409,10 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                         if (ag.Note === true) {
                             vs.DataNote.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.NorthSign === true) {
+                        if (ag.Comapss === true) {
                             vs.AttMapCompass.Position.offset(stp.x, stp.y);
                         }
-                        if (ag.MapLegend === true) {
+                        if (ag.Legend === true) {
                             for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
                                 vs.MapLegend.Base.LegendXY[i].offset(stp.x, stp.y);
                             }
@@ -1579,8 +1579,9 @@ class frmPrint {
         let gridtx="";
         const cnode = state.propertyWindow.pnlProperty.childNodes;
         for(const i in cnode){
-            if((cnode[i] as {name?: string}).name==="grid"){
-                gridtx=Generic.getTableValue((cnode[i] as {table: HTMLTableElement}).table);
+            const node = cnode[i] as HTMLElement;
+            if(node && 'name' in node && (node as {name?: string}).name==="grid"){
+                gridtx=Generic.getTableValue((node as unknown as {table: HTMLTableElement}).table);
                 break;
             }
         }

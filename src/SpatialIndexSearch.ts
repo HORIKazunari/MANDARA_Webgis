@@ -10,7 +10,7 @@ interface GetRectInResult {
     ObStac: number[];
 }
 
-class GetObjectPointTagInfo {
+export class GetObjectPointTagInfo {
     ObjectNumber: number;
     PointNumber: number;
     Tag: string | number;
@@ -599,7 +599,7 @@ class SpatialIndexSearchInternal {
         const XY = new point(x, y);
         const outXY = new point;
         const exf = this.GetConPointXY(XY, outXY);
-        if (exf === false) { return {num:0}  }
+        if (exf === false) { return 0  }
 
         let mind = Math.min(this.ExtraRange, BaseDistance);
         let o_mind = mind - 1;
@@ -622,7 +622,7 @@ class SpatialIndexSearchInternal {
                 }
             }
         }
-        return {mind:mind,num:NearestPointData.length,NearestPointData: NearestPointData};
+        return mind;
     }
 
     //指定した点が入る四角領域を取得

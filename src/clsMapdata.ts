@@ -3,7 +3,7 @@ import { Generic } from './clsGeneric';
 import { clsTime } from './clsTime';
 import { SortingSearch } from './SortingSearch';
 // import { clsDraw } from './clsDraw';
-import { SpatialIndexSearch } from './SpatialIndexSearch';
+import { SpatialIndexSearch, GetObjectPointTagInfo } from './SpatialIndexSearch';
 import { Start_End_Time_data } from './clsAttrData';
 import { Fringe_Line_Info } from './clsPrint';
 import type { JsonObject, JsonValue } from './types';
@@ -1493,9 +1493,10 @@ class clsMapdata {
                 for (let j = 0; j < n; j++) {
                     const LCD = Otags[j];
                     if (LCD !== i) {
-                        const Fringe_Line = [];
-                        for (let k = 0; k < Arrange_LineCode[LCD][1]; k++) {
-                            Fringe_Line.push(Fringe[Arrange_LineCode[LCD][0] + k].code);
+                        const Fringe_Line: number[] = [];
+                        const lcdData = Arrange_LineCode[LCD as number] as number[];
+                        for (let k = 0; k < lcdData[1]; k++) {
+                            Fringe_Line.push(Fringe[lcdData[0] + k].code);
                         }
                         const retV = this.Check_Point_in_Polygon_LineCode(X, Y, Fringe_Line);
                         if (retV.ok === true) {
@@ -2131,7 +2132,7 @@ class clsMapdata {
 
         //    最初に座標が一致するポイントを取得
         const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false, TwoRect);
-        PointIndex.AddSinglePoint_Array(PNum2, XYstac2, -1);
+        PointIndex.AddSinglePoint_Array(PNum2, XYstac2 as unknown as latlon[], -1);
         PointIndex.AddEnd();
 
         let f = false;
@@ -2857,7 +2858,7 @@ class clsMapdata {
         for (let i = 0; i < Map.ALIN; i++) {
             const ml = this.MPLine[i];
             if (ml.NumOfPoint > 0) {
-                PointIndex.AddDoublePoint(ml.PointSTC[0], ml.PointSTC[ml.NumOfPoint - 1], i);
+                PointIndex.AddDoublePoint(ml.PointSTC[0] as unknown as latlon, ml.PointSTC[ml.NumOfPoint - 1] as unknown as latlon, i);
             }
         }
         PointIndex.AddEnd();
@@ -2869,11 +2870,11 @@ class clsMapdata {
                 } else {
                     ml.Connect = 0;
                     for (let j = 0; j < 1; j++) {
-                        const SamePointData: { ObjectNumber?: number[] } = {};
+                        const SamePointData: GetObjectPointTagInfo[] = [];
                         const n = PointIndex.GetSamePointNumberArray(ml.PointSTC[j * (ml.NumOfPoint - 1)].x, ml.PointSTC[j * (ml.NumOfPoint - 1)].y, SamePointData)
-                        if (SamePointData.ObjectNumber) {
+                        if (n > 0) {
                             for (let k = 0; k < n; k++) {
-                                if (SamePointData.ObjectNumber[k] !== i) {
+                                if (SamePointData[k].ObjectNumber !== i) {
                                     ml.Connect++;
                                     break;
                                 }

@@ -979,15 +979,14 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         }
 
         const oldObjn = oldAttrData.Get_ObjectNum(OldL);
-        const sortoldObjName = new SortingSearch();
+        const sortoldObjName: Map<string, number> = new Map();
         for (let i = 0; i < oldObjn; i++) {
-            sortoldObjName.Add(oldAttrData.Get_KenObjName(OldL, i));
+            sortoldObjName.set(oldAttrData.Get_KenObjName(OldL, i), i);
         }
-        sortoldObjName.AddEnd();
 
         for (let i = 0; i < newAttrData.Get_ObjectNum(NewL); i++) {
             const objName = newAttrData.Get_KenObjName(NewL, i);
-            const oldN = sortoldObjName.SearchData_One(objName);
+            const oldN = sortoldObjName.get(objName) ?? -1;
             const naa = newAL.atrObject.atrObjectData[i];
             const oldALA = oldAL.atrObject.atrObjectData[oldN];
             switch (newAL.Type) {
