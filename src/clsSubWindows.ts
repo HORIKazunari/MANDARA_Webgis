@@ -536,25 +536,17 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
 //    Generic.createNewSpan(backDiv, "フォント名", "", "", 15, 45, "", "");
 //    const name = Generic.createNewInput(backDiv, "text", ft.Name, "", 75, 45, "", "width:100px;text-align: left");
     const name=Generic.createNewWordTextInput(backDiv, "フォント名","",ft.Name,"",15,45,50,100,undefined,"");
-    // const size = Generic.createNewSizeSelect(backDiv, ft.Size, "", "サイズ", 190, 45,40, 2,function (_obj: HTMLElement, v: number) { ft.Size = v;}, true);
     Generic.createNewSizeSelect(backDiv, ft.Size, "", "サイズ", 190, 45,40, 2,function (_obj: HTMLElement, v: number) { ft.Size = v;}, true);
-    // const colBox = Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
-    Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
-    // const boldBox = Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
-    Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
-    // const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
-    Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
-    // const Kakudo = Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
-    Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
+    const colBox = Generic.createNewColorBox(backDiv, "", "文字色", ft.Color, 330, 45,undefined);
+    const boldBox = Generic.createNewCheckBox(backDiv, "太字", "boldBox", ft.bold, 15, 80,undefined, undefined, "");
+    const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "");
+    const Kakudo = Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
     const backColorBox = Generic.createNewWordDivCanvas(backDiv, "", "文字背景", 320, 80,undefined, backClick);
     clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData);
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 115, 380, 40, "縁取り");
-    // const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
-    Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
-    // const fringeSizeBox = Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLElement, v: number) { ft.FringeWidth = v;}, true);
+    const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "");
     Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLElement, v: number) { ft.FringeWidth = v;}, true);
-    // const fringeColBox = Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
-    Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
+    const fringeColBox = Generic.createNewColorBox(gbSize, "", "色", ft.FringeColor, 280, 10, undefined);
 
     function backClick(e: MouseEvent) {
         clsBackgroundPatternSet(e, ft.Back, backGet, _attrData);

@@ -1,4 +1,4 @@
-// import { appState } from './core/AppState';
+import { appState } from './core/AppState';
 import { ListBox } from './clsGeneric';
 import { gridControl, type EventCallbacks } from './clsGridControl';
 import type { JsonObject, JsonValue } from './types';
@@ -65,6 +65,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     // パラメータから実際の値を取得
     const newDataFlag = _newDataFlag;
     
+    const state = appState();
     const _Change_Data = false;
     let ZahyoOk = false; // Boolean
     const newAttrData=new clsAttrData();

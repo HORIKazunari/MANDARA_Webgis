@@ -1071,11 +1071,7 @@ class _clsTileMap {
         const tileList_Data = this.Get_TileMap_Image(TileMap, ZoomLevel, ScrLatLonBox, MapZahyo, ScrData);
         const numofTile = tileList_Data.length;
         let getTileNum=0;
-        for (let i = 0; i < numofTile; i++) {
-            const d = tileList_Data[i] as JsonObject;
-            request(d.URL as string, d.ScrPosition as unknown as rectangle);
-        }
-
+        
         const request = (url: string, destRect: rectangle): void => {
             const n = this.xhr.length;
             this.xhr[n] = new XMLHttpRequest();
@@ -1122,6 +1118,11 @@ class _clsTileMap {
                 console.error(e)
             }
         };
+        
+        for (let i = 0; i < numofTile; i++) {
+            const d = tileList_Data[i] as JsonObject;
+            request(d.URL as string, d.ScrPosition as unknown as rectangle);
+        }
     }
 
     /**ライセンスフォントを設定 */
