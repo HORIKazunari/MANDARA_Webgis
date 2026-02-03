@@ -1004,7 +1004,7 @@ export class spatial {
     }
 
     /** 世界測地系の緯度経度の座標を、地図ファイルの測地系が日本測地系だった場合、日本測地系の緯度経度に変換、平面直角座標系の場合は変換不可*/
-    static Get_ReverseWorld_IdoKedo(oLatLon: latlon, MapZahyo: Zahyo_info) {
+    static Get_ReverseWorld_IdoKedo(oLatLon: latlon, MapZahyo: Zahyo_info): latlon {
 
         if (MapZahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
             alert("平面直角は不可")

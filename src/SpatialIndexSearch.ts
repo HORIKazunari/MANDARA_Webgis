@@ -658,9 +658,9 @@ class SpatialIndexSearchInternal {
                 }
             }
         }
-        const Tags = new Array(same_N);
+        const Tags: (string | number)[] = new Array<string | number>(same_N);
         for (let i = 0; i < same_N; i++) {
-            Tags[i] = this.ObjectXY[ObStac[i]].Tag;
+            Tags[i] = this.ObjectXY[ObStac[i]].Tag as (string | number);
         }
         return {number:same_N,Tags:Tags,ObStac:ObStac}
 
