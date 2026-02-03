@@ -3288,7 +3288,7 @@ export function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbOverlayDataSetItem, "注", "", 260, 230,
             function () {
-
+                // TODO: 注釈機能は未実装 - 将来実装予定
             }, "width:50px");
         Generic.createNewButton(gbOverlayDataSetItem, "すべて削除", "", 260, 260,
             function () {

@@ -922,8 +922,12 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     if(BoxF===true){
         const pnlNorthSouth=Generic.createNewDiv(pnlLat,"","","",30,0,60,50,"",undefined);
         const pnlEastWest=Generic.createNewDiv(pnlLon,"","","",30,0,60,50,"",undefined);
-        Generic.createNewRadioButtonList(pnlNorthSouth,"latNorthSouth",[{value:0,text:"北緯"},{value:1,text:"南緯"}],0,5,undefined,20,(LatLon.lat>=0)?0:1,() => {},"");
-        Generic.createNewRadioButtonList(pnlEastWest,"lonEastWest",[{value:0,text:"東経"},{value:1,text:"西経"}],0,5,undefined,20,(LatLon.lon>=0)?0:1,() => {},"");
+        Generic.createNewRadioButtonList(pnlNorthSouth,"latNorthSouth",[{value:0,text:"北緯"},{value:1,text:"南緯"}],0,5,undefined,20,(LatLon.lat>=0)?0:1,() => {
+            // 値の取得はOKボタン押下時に行うため、変更時の処理は不要
+        },"");
+        Generic.createNewRadioButtonList(pnlEastWest,"lonEastWest",[{value:0,text:"東経"},{value:1,text:"西経"}],0,5,undefined,20,(LatLon.lon>=0)?0:1,() => {
+            // 値の取得はOKボタン押下時に行うため、変更時の処理は不要
+        },"");
     }
     if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
         const LatLonDMS = LatLon.toDegreeMinuteSecond();
@@ -977,7 +981,9 @@ function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okEvent: (
     Generic.createNewDiv( gbPresentProjection,Generic.getStringProjectionEnum(Zahyo.Projection),"","grayFrame",15,15,170,15,"padding:2px;",undefined);
     const gbCenterLon=Generic.createNewFrame(backDiv,"","",15,105,200,135,"中央経線の設定");
     const CenterLonList=[{value:0,text:"変更なし("+Zahyo.CenterXY.x + "度)"},{value:1,text:"地図の中央"},{value:2,text:"指定"}];
-    Generic.createNewRadioButtonList(gbCenterLon,"rdCenter",CenterLonList,10,15,undefined,25,0,() => {},"");
+    Generic.createNewRadioButtonList(gbCenterLon,"rdCenter",CenterLonList,10,15,undefined,25,0,() => {
+        // 値の取得はOKボタン押下時に行うため、変更時の処理は不要
+    },"");
     const centerInput=Generic.createNewWordNumberInput(gbCenterLon, "", "度", Zahyo.CenterXY.x, "boxCenterLon", 40, 90,undefined, 120,undefined, "");
 
     const gbProjection=Generic.createNewFrame(backDiv,"","",230,40,180,200,"変換後の投影法");
@@ -1542,7 +1548,9 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         modeNameList[i].text = Generic.getSolomodeStrings(modeNameList[i].value);
     }
     const gbsoloModeSelect = Generic.createNewFrame(tab.panel[0], "", "", 225, 30, 115, 210, "表示モード");
-    Generic.createNewRadioButtonList(gbsoloModeSelect, "soloModeSelect", modeNameList, 10, 10, undefined, 25, enmSoloMode_Number.ClassPaintMode, function() {}, "");
+    Generic.createNewRadioButtonList(gbsoloModeSelect, "soloModeSelect", modeNameList, 10, 10, undefined, 25, enmSoloMode_Number.ClassPaintMode, function() {
+        // モード選択の反映はOKボタン押下時に行うため、変更時の処理は不要
+    }, "");
 
     const cboLayerGraph = Generic.createNewWordSelect(tab.panel[1], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setGraphModeDataItem, "", "");
     appState().attrData.Set_LayerName_to(cboLayerGraph, LayerNum);
@@ -2065,7 +2073,9 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         "background-Color:#dddddd;text-align:center", "", ["", "", "width:30%"], ["", "", "width:30%"], true, undefined);
 
     const grAndOr = Generic.createNewFrame(grPanel, "", "", 310, 10, 75, 65, "");
-    Generic.createNewRadioButtonList(grAndOr, "rdoAndOr", [{ value: enmConditionAnd_Or._And, text: "AND" }, { value: enmConditionAnd_Or.Or, text: "OR" }], 15, 10, undefined, 30, 0, function() {}, "");
+    Generic.createNewRadioButtonList(grAndOr, "rdoAndOr", [{ value: enmConditionAnd_Or._And, text: "AND" }, { value: enmConditionAnd_Or.Or, text: "OR" }], 15, 10, undefined, 30, 0, function() {
+        // 条件設定の反映は項目追加時に行うため、変更時の処理は不要
+    }, "");
     Generic.createNewButton(grPanel, "項目削除", "", 310, 90, function (e: MouseEvent) {
         const n = cboStep.selectedIndex;
         if (ListView.getRowNumber() === 0) {
@@ -2677,7 +2687,9 @@ function frmMain_GetDistance(okEvent: () => void){
     const gbDistance = Generic.createNewFrame(backDiv, "", "", 215, 40, 200, 165, "距離取得方法");
     const rbDisGet = [{ value: 0, text: "取得元からの距離のうち、最も近い距離を取得" },
             { value: 1, text: "取得元それぞれとの距離を取得" }];
-    Generic.createNewRadioButtonList(gbDistance, "rbDisGet", rbDisGet, 10, 30, 150, 50, 0,() => {},"");
+    Generic.createNewRadioButtonList(gbDistance, "rbDisGet", rbDisGet, 10, 30, 150, 50, 0,() => {
+        // 設定の反映はOKボタン押下時に行うため、変更時の処理は不要
+    },"");
     const scaleList = Generic.getScaleUnit_for_select();
     const atv=appState().attrData.TotalData.ViewStyle.MapScale;
     const scaleUnit=Generic.createNewWordSelect(gbDistance,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
@@ -3716,7 +3728,9 @@ function frmPrint_DummyObjectGroup(){
     function(){
         PolygonDummy_ClipSet_F[LayerNum]=chkDummyClip.checked;
     },"");
-    const chkDummy_Size=Generic.createNewCheckBox(gbDummyFrame,"ダミーオブジェクトを画面領域の計算対象に含む","",appState().attrData.TotalData.ViewStyle.Dummy_Size_Flag,215,300,150,function(){},"");
+    const chkDummy_Size=Generic.createNewCheckBox(gbDummyFrame,"ダミーオブジェクトを画面領域の計算対象に含む","",appState().attrData.TotalData.ViewStyle.Dummy_Size_Flag,215,300,150,function(){
+        // 設定の反映はOKボタン押下時に行うため、変更時の処理は不要
+    },"");
 
     const gbPointMark=Generic.createNewFrame(backDiv, "", "", 425, 40, 205, 300, "点オブジェクトの記号設定");
     const list = [];

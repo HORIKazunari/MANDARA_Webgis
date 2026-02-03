@@ -4894,7 +4894,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 }
                 div.style.backgroundColor="#eeeeee";
             }
+            // マウスリーブ時は特に処理不要
             div.onmouseleave=function(){
+                // 意図的な空実装
             }
     
         }

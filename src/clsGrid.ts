@@ -131,7 +131,9 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     gbLayerData.style.overflow='auto';
     Generic.createNewSpan(gbLayerData,"レイヤコメント","","",10,15,"",undefined);
     const txtLayerComment=Generic.createNewTextarea(gbLayerData,"","",20,35,10,10,"font-size:12px;width:140px;height:100px;resize:none;")
-    const cboLayerMapFile=Generic.createNewWordSelect(gbLayerData,"レイヤで使用する地図ファイル",[],0,"",10,150,undefined,140,1,function(){},"","",false);
+    const cboLayerMapFile=Generic.createNewWordSelect(gbLayerData,"レイヤで使用する地図ファイル",[],0,"",10,150,undefined,140,1,function(){
+        // 地図ファイル選択時の処理は他の箇所で実行されるため、ここでは不要
+    },"","",false);
     const cboLayerType=Generic.createNewWordSelect(gbLayerData,"レイヤの種類",[],0,"",10,205,undefined,140,1,function(obj: HTMLSelectElement, sel: number, ltype: LayerTypeValue){
         const lay=ktGrid.getLayer();
         ktGrid.setLayerData(lay, GridLayerData.Type, ltype);

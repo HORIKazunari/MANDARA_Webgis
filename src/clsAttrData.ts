@@ -3538,7 +3538,10 @@ class clsAttrData {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
-    Draw_Tile_Region(_g: CanvasRenderingContext2D, _BoundaryRect: rectangle, _L: Line_Property, _T: Tile_Property, _Kakudo: number): void {}
+    // TODO: タイル領域の描画機能は未実装
+    Draw_Tile_Region(_g: CanvasRenderingContext2D, _BoundaryRect: rectangle, _L: Line_Property, _T: Tile_Property, _Kakudo: number): void {
+        // 現在未実装 - 必要に応じて実装予定
+    }
     
     Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_Box?.(g, BoundaryRect, L, T, Kakudo, this.TotalData.ViewStyle.ScrData);

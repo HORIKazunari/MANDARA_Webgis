@@ -59,7 +59,7 @@ export default tseslint.config(
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       
       // コード品質 - 段階的に修正
-      '@typescript-eslint/no-empty-function': 'off',  // 意図的な空関数が多いため一旦オフ
+      '@typescript-eslint/no-empty-function': 'warn',  // 意図的な空関数には説明コメントを追加済み
       '@typescript-eslint/no-this-alias': 'error',  // アロー関数への移行完了
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
