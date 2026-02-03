@@ -189,8 +189,8 @@ type ViewStyleCloneResult = {
             Clone?: () => JsonObject;
             [key: string]: JsonValue;
         };
-        ClassMD?: JsonObject;
-        MarkMD?: JsonObject;
+        ClassMD?: JsonObject & { Clone?: () => JsonObject };
+        MarkMD?: JsonObject & { Clone?: () => JsonObject };
         Clone?: () => JsonObject;
         [key: string]: JsonValue;
     };
@@ -213,7 +213,7 @@ type ViewStyleCloneResult = {
     TileMapView: JsonObject & {
         Visible: boolean;
         DrawTiming?: number;
-        TileMapDataSet?: JsonObject;
+        TileMapDataSet?: JsonObject & { Clone?: () => JsonObject };
         AlphaValue?: number;
     };
     Missing_Data: JsonObject & {
@@ -229,10 +229,10 @@ type ViewStyleCloneResult = {
         MapAreaBack: Tile_Property;
         ObjectInner: Tile_Property;
     };
-    LatLonLine_Print?: JsonObject;
-    SymbolLine?: JsonObject;
+    LatLonLine_Print?: JsonObject & { Clone?: () => JsonObject };
+    SymbolLine?: JsonObject & { Clone?: () => JsonObject };
     FigureVisible?: boolean;
-    SouByou?: JsonObject;
+    SouByou?: JsonObject & { Clone?: () => JsonObject };
     Clone?: () => ViewStyleCloneResult;
     [key: string]: JsonValue;
 };
@@ -762,7 +762,7 @@ interface ILayerDataInfo {
     ODBezier_DataStac: ODBezier_Data[];
     // Methods
     Remove_OD_Bezier?: (objPos: number, dataNum: number) => void;
-    Get_OD_Bezier_RefPoint?: (index: number, dataNum: number) => JsonObject;
+    Get_OD_Bezier_RefPoint?: (index: number, dataNum: number) => JsonObject & { Clone?: () => JsonObject };
     [key: string]: JsonValue;
 }
 
@@ -800,13 +800,13 @@ interface ISoloModeViewSettings {
     ClassODMode: IClassODMode;
     ClassODMD: IClassODMD;
     ContourMode: IContourMode;
-    TripMode: JsonObject;
-    StringMode: JsonObject;
-    MarkSizeMD: JsonObject;
-    MarkBlockMD: JsonObject;
-    MarkBarMD: JsonObject;
-    ClassMarkMode: JsonObject;
-    MarkTurnMode: JsonObject;
+    TripMode: JsonObject & { Clone?: () => JsonObject };
+    StringMode: JsonObject & { Clone?: () => JsonObject };
+    MarkSizeMD: JsonObject & { Clone?: () => JsonObject };
+    MarkBlockMD: JsonObject & { Clone?: () => JsonObject };
+    MarkBarMD: JsonObject & { Clone?: () => JsonObject };
+    ClassMarkMode: JsonObject & { Clone?: () => JsonObject };
+    MarkTurnMode: JsonObject & { Clone?: () => JsonObject };
     Class_Div: strClass_Div_data[];
     Div_Num: number;
     [key: string]: JsonValue;
@@ -909,7 +909,7 @@ interface IClassODMD {
 interface ILayerModeViewSettings {
     GraphMode: IGraphMode;
     LabelMode: ILabelMode;
-    PointLineShape: JsonObject;
+    PointLineShape: JsonObject & { Clone?: () => JsonObject };
     PolygonDummy_ClipSet_F: boolean;
     [key: string]: JsonValue;
 }
