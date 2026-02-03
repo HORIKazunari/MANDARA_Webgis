@@ -3675,14 +3675,18 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return s.EachValue_Array();
     }
 
-    /**タブ作成(base.panel[]に内部要素を追加する) */
-    static createNewTab(ParentObj: HTMLElement, tabList: string[], firstSel: number, x: number, y: number, width: number, height: number) {
+    /**タブ作成(base.panels[]に内部要素を追加する) */
+    static createNewTab(ParentObj: HTMLElement, tabList: string[], firstSel: number, x: number, y: number, width: number, height: number): TabComponentElement {
 
         const tabh = 20;
-        const base = this.createNewDiv(ParentObj, "", "", "", x, y, width, height, "", "");
-        base.tab = [];
+        const baseDiv = this.createNewDiv(ParentObj, "", "", "", x, y, width, height, "", "");
+        // 動的にプロパティを追加してからTabComponentElementとして扱う
+        const base = baseDiv as HTMLDivElement & { tabs: (HTMLDivElement & { tag?: string | number })[]; panels: (HTMLDivElement & { tag?: string | number })[]; selectedIndex: number; panel: (HTMLDivElement & { tag?: string | number })[] };
+        base.tabs = [];
         base.selectedIndex = firstSel;
-        base.panel = [];
+        base.panels = [];
+        // 下位互換性のためにpanelプロパティもpanelsを参照
+        base.panel = base.panels;
         const n = tabList.length;
         const tabw = Math.floor(width - 20) / n;
         for (let i = 0; i < n; i++) {
@@ -3690,17 +3694,17 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             tab.style.backgroundColor = "#e1e1e1";
             tab.align = 'center';
             tab.tag = i;
-            base.tab.push(tab);
+            base.tabs.push(tab);
             const panel = this.createNewDiv(base, "", "", "", 0, tabh + 1, width, height - tabh - 1, "border:solid 1px;border-color:#666666;border-bottom-right-radius:3px;border-bottom-left-radius:3px;border-top-right-radius:3px", "");
             panel.tag = i;
             panel.setVisibility?.(false);
             panel.style.backgroundColor = "#ffffff";
-            base.panel.push(panel);
+            base.panels.push(panel);
         }
-        base.tab[firstSel].style.backgroundColor = "#ffffff";
-        if (base.panel[firstSel]) {
-            base.panel[firstSel].style.visibility = "visible";
-            base.panel[firstSel].setVisibility?.(true);
+        base.tabs[firstSel].style.backgroundColor = "#ffffff";
+        if (base.panels[firstSel]) {
+            base.panels[firstSel].style.visibility = "visible";
+            base.panels[firstSel].setVisibility?.(true);
         }
         const mask = this.createNewDiv(base, "", "", "", 0, tabh - 1, tabw - 1, 3, "", undefined);
         mask.style.backgroundColor = "#ffffff";
@@ -3708,11 +3712,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return base;
         function tabclick(this: HTMLElement & { tag: number }) {
             for (let i = 0; i < n; i++) {
-                base.tab[i].style.backgroundColor = "#e1e1e1";
-                base.panel[i]?.setVisibility?.(false);
+                base.tabs[i].style.backgroundColor = "#e1e1e1";
+                base.panels[i]?.setVisibility?.(false);
             }
             this.style.backgroundColor = "#ffffff";
-            base.panel[this.tag]?.setVisibility?.(true);
+            base.panels[this.tag]?.setVisibility?.(true);
             base.selectedIndex = Number(this.tag);
             mask.style.left = (this.tag * tabw + 1).px();
         }

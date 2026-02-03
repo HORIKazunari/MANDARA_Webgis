@@ -1584,6 +1584,14 @@ interface ExtendedHTMLDivElement extends HTMLDivElement {
     setSelectValue?: (value: string | number) => void;
 }
 
+// タブコンポーネント用の拡張型（tabs/panelsプロパティを持つ要素）
+interface TabComponentElement extends ExtendedHTMLDivElement {
+    tabs: (HTMLDivElement & { tag?: string | number })[];
+    panels: (HTMLDivElement & { tag?: string | number })[];
+    panel: (HTMLDivElement & { tag?: string | number })[]; // 下位互換性のためのエイリアス
+    selectedIndex: number;
+}
+
 interface HTMLDivElement {
     tooltip?: string;
     selected?: boolean;
@@ -1751,7 +1759,13 @@ declare class strCompass_Attri {
 }
 declare class clsDrawLine { [key: string]: JsonValue; static Arrow?: (...args: JsonValue[]) => void; static Line?: (...args: JsonValue[]) => void; static Draw_Sample_LineBox?: (...args: JsonValue[]) => void; static Check_Draw_Arrow_Line?: (OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info) => point | undefined; }
 declare class clsDrawTile { [key: string]: JsonValue; static Darw_Sample_BackGroundBox?: (...args: JsonValue[]) => void; static Draw_Poly_Inner?: (...args: JsonValue[]) => void; static Draw_Tile_Box?: (...args: JsonValue[]) => void; static Draw_Tile_RoundBox?: (...args: JsonValue[]) => void; }
-declare class tileList_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class tileList_Data_Info { 
+    LatLonBox?: latlonbox;
+    ScrPosition?: rectangle;
+    URL?: string;
+    [key: string]: JsonValue; 
+    constructor(...args: JsonValue[]); 
+}
 declare class EnableMPLine_Data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 
 // EnableMPLine インターフェース
