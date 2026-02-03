@@ -1278,7 +1278,7 @@ class clsMapdata {
                 }
             }
         }
-        return result;
+        return result as boundArrangeData;
     }
 
     //指定したラインコードがループでない場合は－１、ループの場合は面積を返す

@@ -51,7 +51,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'warn',      // 大量のため一旦warn
       '@typescript-eslint/no-unsafe-member-access': 'warn',   // 大量のため一旦warn
       '@typescript-eslint/no-unsafe-call': 'warn',            // 大量のため一旦warn
-      '@typescript-eslint/no-unsafe-return': 'warn',          // 一旦warn
+      '@typescript-eslint/no-unsafe-return': 'error',         // 8件のみ: 修正対象
       
       // 関数とメソッドの型定義 - 段階的に修正
       '@typescript-eslint/no-inferrable-types': 'off',

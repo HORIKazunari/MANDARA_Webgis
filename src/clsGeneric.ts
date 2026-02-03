@@ -3298,7 +3298,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
     static Clone<T>(odata: T): T {
 
-        return JSON.parse(JSON.stringify(odata));
+        return JSON.parse(JSON.stringify(odata)) as T;
     }
 
     //配列のシャローコピー
@@ -6270,9 +6270,9 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 }
 
 //select要素の選択要素を一つ削除、選択位置を移動、削除したvalueを返す
-HTMLElement.prototype.removeOne = function (): string | undefined {
+HTMLElement.prototype.removeOne = function (this: HTMLSelectElement): string | undefined {
     const mx=this.options.length;
-    const fSel=parseInt(this.selectedIndex);
+    const fSel=parseInt(this.selectedIndex.toString());
     if(fSel===-1){
         return undefined;
     }
@@ -6315,7 +6315,7 @@ HTMLElement.prototype.addSelectList = function (list: ListItem[], firstSelectInd
 }
 
 //select要素の選択テキストを取得
-HTMLElement.prototype.getText = function () {
+HTMLElement.prototype.getText = function (this: HTMLSelectElement): string | undefined {
     const n = this.selectedIndex;
     if (n === -1) {
         return undefined;
@@ -6324,13 +6324,13 @@ HTMLElement.prototype.getText = function () {
 }
 
 //select要素の選択valueを取得
-HTMLElement.prototype.getValue = function (): string | number | undefined {
+HTMLElement.prototype.getValue = function (this: HTMLSelectElement): string | number | undefined {
     const n = this.selectedIndex;
     if (n === -1) {
         return undefined;
     }
-    let v=this.options[n].value;
-    if (isNaN(v)===false){
+    let v: string | number = this.options[n].value;
+    if (isNaN(v as unknown as number)===false){
         v=Number(v);
     }
     return v;

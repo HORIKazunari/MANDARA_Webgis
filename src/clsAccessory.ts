@@ -1550,7 +1550,7 @@ export class Accessory {
             }
         }
         ST.AddEnd();
-        const lev = [];
+        const lev: number[] = [];
         for (let i = 0; i < ST.NumofData(); i++) {
             lev.push(ST.DataPositionRevValue(i));
         }

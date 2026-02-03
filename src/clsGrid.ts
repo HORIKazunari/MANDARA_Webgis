@@ -1406,7 +1406,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             }
             const retv=newAttrData.Set_STRData_To_Cell(i, LayXMax, TTL, UNT, Mis, Note, DN_Str);
             if(retv.ok===false){
-                return retv;
+                return retv as {ok: boolean; emes: string};
             }
             switch (newAt.Type) {
                 case enmLayerType.Normal:
@@ -1416,7 +1416,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
                     break;
             }
         }
-        return {ok:true};
+        return {ok:true, emes: ""};
     }
 
     /**データエラーのチェック */
@@ -1737,12 +1737,12 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
        ktGrid.setFixedUpperLeftData(Layernum, 1, 4,"単位");
        ktGrid.setFixedUpperLeftData(Layernum, 1, 5,"注");
     }
-    Get_Data_Property_Value = function(_attrData: clsAttrData, Layernum: number, DataNum: number){
+    Get_Data_Property_Value = function(_attrData: clsAttrData, Layernum: number, DataNum: number): number{
         const al = _attrData.LayerData[Layernum];
         switch (al.atrData.Data[DataNum].DataType) {
             case enmAttDataType.Normal:
                 //平均値
-                return al.atrData.Data[DataNum].Statistics.Ave;
+                return al.atrData.Data[DataNum].Statistics.Ave as number;
                 break;
             case enmAttDataType.Category: {
                 let n = 0;
