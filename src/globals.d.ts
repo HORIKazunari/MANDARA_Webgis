@@ -675,6 +675,9 @@ interface IAttrData {
     Radius?: (size: number, arg2?: number, arg3?: number) => number;
     [key: string]: JsonValue;
     
+    // LayerData配列
+    LayerData: ILayerDataInfo[];
+    
     // MapData関連
     MapData: {
         SetMapFile: (mapFileName: string) => IMapData;
@@ -686,11 +689,11 @@ interface IAttrData {
     };
 }
 
-// Accessory_Temp（拡張版） - 削除：実際の型はAccessoryTemp_InfpでclsとtrData.tsで定義
-// interface IAccessoryTemp {
-//     MapLegend_W: IMapLegendW[];
-//     [key: string]: JsonValue;
-// }
+// Accessory_Temp（拡張版）
+interface IAccessoryTemp {
+    MapLegend_W: IMapLegendW[];
+    [key: string]: JsonValue;
+}
 
 // MapLegend_W（拡張版）
 interface IMapLegendW {
