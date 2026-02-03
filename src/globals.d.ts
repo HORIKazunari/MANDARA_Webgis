@@ -174,6 +174,70 @@ interface Event {
     caption?: string;
 }
 
+// ViewStyle.Clone()の戻り値の型
+// 実際のViewStyleインターフェースを拡張してCloneメソッドを追加
+type ViewStyleCloneResult = {
+    MapLegend: {
+        Base: {
+            ModeValueInScreenFlag: boolean;
+            Visible?: boolean;
+            Font?: Font_Property;
+            Back?: BackGround_Box_Property;
+            Comma_f?: boolean;
+            LegendXY?: point[];
+            Legend_Num?: number;
+            Clone?: () => JsonObject;
+            [key: string]: JsonValue;
+        };
+        ClassMD?: JsonObject;
+        MarkMD?: JsonObject;
+        Clone?: () => JsonObject;
+        [key: string]: JsonValue;
+    };
+    ScrData: Screen_info & JsonObject;
+    MapTitle?: JsonObject & { Visible?: boolean; Font?: Font_Property; Position?: point; };
+    MapScale?: JsonObject & { Position?: point; };
+    DataNote?: JsonObject & { Position?: point; Visible?: boolean; };
+    AccessoryGroupBox: JsonObject & {
+        Visible: boolean;
+        Back: BackGround_Box_Property;
+        Title: boolean;
+        Comapss: boolean;
+        Scale: boolean;
+        Legend: boolean;
+        Note: boolean;
+        LinePattern: boolean;
+        ObjectGroup: boolean;
+    };
+    Zahyo: Zahyo_info & JsonObject;
+    TileMapView: JsonObject & {
+        Visible: boolean;
+        DrawTiming?: number;
+        TileMapDataSet?: JsonObject;
+        AlphaValue?: number;
+    };
+    Missing_Data: JsonObject & {
+        Print_Flag: boolean;
+        Text: string;
+        PaintTile: Tile_Property;
+        Mark: Mark_Property;
+    };
+    Screen_Back: JsonObject & {
+        MapAreaFrameLine: Line_Property;
+        ScreenFrameLine: Line_Property;
+        ScreenAreaBack: Tile_Property;
+        MapAreaBack: Tile_Property;
+        ObjectInner: Tile_Property;
+    };
+    LatLonLine_Print?: JsonObject;
+    SymbolLine?: JsonObject;
+    FigureVisible?: boolean;
+    SouByou?: JsonObject;
+    Clone?: () => ViewStyleCloneResult;
+    [key: string]: JsonValue;
+};
+
+
 // ChildNode拡張（name等）
 interface ChildNode {
     name?: string;
@@ -210,7 +274,7 @@ interface IAttrData {
             };
         };
         ViewStyle: {
-            Clone?: () => JsonValue;
+            Clone?: () => ViewStyleCloneResult;
             Dummy_Size_Flag?: boolean;
             ScrData: Screen_info & {
                 frmPrint_FormSize: rectangle;
@@ -222,6 +286,7 @@ interface IAttrData {
                 getSRXY?: (p: point) => point;
                 getSxSy?: (arg1: point, arg2?: point) => point;
                 getSRXYfromRatio?: (p: point) => point;
+                Get_SxSy_With_3D?: (arg1: point, arg2?: point) => point; // 3D変換を含む座標変換
                 // Get_SxSy_With_3Dはオーバーロードがあるため、Screen_infoクラスの定義を使用
                 ThreeDMode?: {
                     Set3D_F: boolean;
@@ -251,6 +316,7 @@ interface IAttrData {
                     Back?: BackGround_Box_Property
                     Comma_f?: boolean;
                     Legend_Num?: number;
+                    Clone?: () => JsonObject;
                 };
                 Line_DummyKind?: ILegendLineDummyAttri;
                 OverLay_Legend_Title?: IOverLayLegendTitleInfo;
@@ -271,6 +337,8 @@ interface IAttrData {
                     PaintMode_Width?: number;
                     ClassBoundaryLine?: Line_Property;
                 };
+                MapLegend_W?: number; // 凡例幅
+                Clone?: () => JsonObject;
             };
             MapTitle?: {
                 Position: point;
@@ -1582,6 +1650,10 @@ interface ExtendedHTMLDivElement extends HTMLDivElement {
     setSelectData?: (index: number, value: string | number, text: string) => void;
     setAstarisk?: (value: string | number, astariskAddF: boolean) => void;
     setSelectValue?: (value: string | number) => void;
+    // 追加の頻出プロパティ
+    Data?: JsonValue; // データ項目用の汎用プロパティ
+    disabled?: boolean; // 無効化フラグ
+    selected?: boolean; // 選択フラグ
 }
 
 // タブコンポーネント用の拡張型（tabs/panelsプロパティを持つ要素）
@@ -1634,6 +1706,13 @@ interface HTMLInputElement {
     tag?: string | number;
     preValue?: string | number;
     word?: string;
+    Data?: JsonValue; // データ項目用の汎用プロパティ
+}
+
+interface HTMLSelectElement {
+    Data?: JsonValue; // データ項目用の汎用プロパティ
+    tag?: string | number;
+    selectedIndex: number; // 標準プロパティだが明示
 }
 
 interface HTMLTextAreaElement {
