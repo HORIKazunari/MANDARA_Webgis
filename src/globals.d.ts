@@ -464,28 +464,27 @@ interface IAttrData {
     };
     TempData: {
         frmPrint_Temp: {
+            OnObject: strLocationSearchObject[];
+            OldObject: strLocationSearchObject[];
             PrintMouseMode: number;
-            image?: ImageData;
+            MultiObjectSelectSub?: number;
+            MultiObjectSelectShowFlag?: boolean;
+            MultiObjects: number[];
+            FigMode?: JsonObject;
             mouseAccesoryDragType?: number;
-            OD_Drag?: {
-                ObjectPos: number;
-                Data: strOD_Drag_Data; // OD drag data structure
-            };
-            OnObject?: strLocationSearchObject | null;
-            OldObject?: strLocationSearchObject | null;
+            OD_Drag: ODBezier_Data;
+            MouseDownF?: boolean;
+            LocationMenuString: strTempLocationMenuString;
+            RightButtonClickF?: boolean;
             SymbolPointFirstMessage?: boolean;
             LabelPointFirstMessage?: boolean;
-            LocationMenuString?: {
-                ObjectNameValue?: string;
-                ContourStacPos?: number;
-                ClickMapPos?: point;
-                DataIndex?: number;
-                [key: string]: JsonValue;
-            };
-            MultiObjects?: strLocationSearchObject[];
+            Menu_Enable?: JsonObject;
+            PointDistanceArea?: point[];
+            image?: ImageData;
         };
         Accessory_Temp: IAccessoryTemp;
-        OnObject?: strLocationSearchObject | null;
+        OnObject: strLocationSearchObject[];
+        OldObject?: strLocationSearchObject[];
         MouseDownF?: boolean;
         PrintMouseMode?: number;
         PointObjectKindUsedStack?: strDummyObjectPointMark_Info[];
@@ -692,6 +691,15 @@ interface IAttrData {
 // Accessory_Temp（拡張版）
 interface IAccessoryTemp {
     MapLegend_W: IMapLegendW[];
+    GroupBox_Rect: rectangle;
+    Legend_No_Max: number;
+    Push_titleXY: point;
+    Push_LegendXY: point;
+    Edit_Legend: number;
+    Push_CompassXY: point;
+    Push_ScaleXY: point;
+    Push_DataNoteXY: point;
+    OriginalGroupBoxRect: rectangle;
     [key: string]: JsonValue;
 }
 
@@ -704,6 +712,7 @@ interface IMapLegendW {
     GraphMode: number;
     LabelMode?: number;
     title: string;
+    Rect: rectangle;
     LineKind_Flag: boolean;
     PointObject_Flag: boolean;
     OverLay_Printing_Flag?: boolean;
@@ -962,6 +971,7 @@ interface ILabelDataItem {
 // マップデータ（拡張版）
 interface IMapData {
     Map: IMapInfo;
+    Convert_ZahyoMode?: (zahyo: Zahyo_info) => void;
     LineKind?: Array<{
         Name: string;
         NumofObjectGroup: number;
@@ -1201,6 +1211,79 @@ declare class rectangle {
     Offset(x: number, y: number): void;
     Offset(pt: point): void;
     Union(rect: rectangle): rectangle;
+}
+
+declare class strLocationSearchObject {
+    objLayer: number;
+    ObjNumber: number;
+    constructor(layer: number, objnumber: number);
+    Clone(): strLocationSearchObject;
+}
+
+declare class strTempLocationMenuString {
+    ObjectNameValue?: string;
+    ContourStacPos?: number;
+    ClickMapPos: point;
+    DataIndex?: number;
+}
+
+declare class ODBezier_Data {
+    ObjectPos: number;
+    Data: number;
+    Point: point;
+    Name: string;
+    Clone(): ODBezier_Data;
+}
+
+declare class Magnification {
+    Xplus: number;
+    YPlus: number;
+    Mul: number;
+    Clone(): Magnification;
+}
+
+declare class ScreenMargin {
+    ClipF: boolean;
+    rect: rectangle;
+    Clone(): ScreenMargin;
+}
+
+declare class Screen_info {
+    FirstScreenMGMul: number;
+    GSMul: number;
+    STDWsize: number;
+    ScrView: rectangle;
+    ScrRectangle: rectangle;
+    MapRectangle: rectangle;
+    MapScreen_Scale: rectangle;
+    ScreenMG: Magnification;
+    OutputDevide: number;
+    PrinterMG: Magnification;
+    PrintPageNum: number;
+    PrinterPageSize: size;
+    PrintRectangle: rectangle;
+    Zahyo: Zahyo_info;
+    Screen_Margin: ScreenMargin;
+    frmPrint_FormSize: rectangle;
+    Accessory_Base: number;
+    SampleBoxFlag: boolean;
+    ThreeDMode: {
+        Set3D_F: boolean;
+        Pitch?: number;
+        Head?: number;
+        Bank?: number;
+        Expand?: number;
+        Clone?: () => JsonObject;
+    };
+    init(pictureboxSize: rectangle, picBoxMargin: ScreenMargin, MapAllAreaRect: rectangle, AccessoryBase: number, SCRViewResetF: boolean): void;
+    Set_PictureBox_and_CulculateMul(Size: rectangle): void;
+    Get_SxSy_With_3D(p: point): point;
+    getSxSy(p: point, Offset?: point): point;
+    getSRXY(p: point): point;
+    getSRXYfromRatio(p: point): point;
+    getSXSY_Margin(): rectangle;
+    getSxSyRect(rect: rectangle): rectangle;
+    Clone(): Screen_info;
 }
 
 // 度分秒構造体
@@ -2179,6 +2262,8 @@ declare class Generic {
     static createNewCheckBox(parent: HTMLElement, text: string, id: string, checked: boolean, x: number, y: number, arg7?: JsonValue, onChange?: Function, arg9?: JsonValue, arg10?: JsonValue): HTMLInputElement;
     static createNewTextarea(parent: HTMLElement, type: string, id: string, x: number, y: number, width: number, height: number, style?: string): HTMLTextAreaElement;
     static ArrayClone<T>(arr: T[]): T[];
+    static getCanvasXY(e: MouseEvent | Touch): point;
+    static getCanvasXY2(e: MouseEvent): point | undefined;
 }
 
 // ==================== 列挙型定義（追加） ====================

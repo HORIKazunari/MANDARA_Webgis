@@ -1,6 +1,7 @@
 ﻿import { appState } from './core/AppState';
 import { Accessory } from './clsAccessory';
 import { clsSpline } from './clsDraw';
+import { Generic } from './clsGeneric';
 import type { JsonValue } from './types';
 
 // mousePointingSituations は globals.d.ts で定義済み
