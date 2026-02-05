@@ -133,6 +133,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     const txtLayerComment=Generic.createNewTextarea(gbLayerData,"","",20,35,10,10,"font-size:12px;width:140px;height:100px;resize:none;")
     const cboLayerMapFile=Generic.createNewWordSelect(gbLayerData,"レイヤで使用する地図ファイル",[],0,"",10,150,undefined,140,1,function(){
         // 地図ファイル選択時の処理は他の箇所で実行されるため、ここでは不要
+        void 0;
     },"","",false);
     const cboLayerType=Generic.createNewWordSelect(gbLayerData,"レイヤの種類",[],0,"",10,205,undefined,140,1,function(obj: HTMLSelectElement, sel: number, ltype: LayerTypeValue){
         const lay=ktGrid.getLayer();
@@ -476,6 +477,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     /**データ部分をクリックした場合に発生 */
     function Click_DataGrid(_Layer: number, _X: number, _Y: number, _Value: string, _Top: number, _Left: number, _Width: number, _Height: number) {
         // console.log("Click_DataGrid", Layer, X, Y, Value, Top, Left, Width, Height);
+        void 0;
     }
     /**上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
     function Change_FixedYS() {
@@ -492,6 +494,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     /** 左上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生*/
     function Change_FixedUpperLeft() {
         // console.log("Change_FixedUpperLeft");
+        void 0;
     }
     /**レイヤ名の変更、レイヤの移動などで発生 */
     function Change_Layer(LayerNameChange: boolean, LayerMove: boolean, LayerDelete: boolean) {

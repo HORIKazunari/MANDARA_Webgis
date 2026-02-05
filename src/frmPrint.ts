@@ -783,6 +783,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             if (alm.ContourStacPos !== -1) {
                 mnuAccPopupVisible.push({caption: "等値線の値表示", event: function(){
                     // TODO: 等値線の値表示機能は未実装 - 将来実装予定
+                    void 0;
                 }});
             }
         }

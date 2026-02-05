@@ -3650,6 +3650,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
     // マウスリーブ時の処理は現在不要
     mleave = () => {
         // 意図的な空実装
+        void 0;
     }
 
     VScrollGrid_ValueSet = () => {

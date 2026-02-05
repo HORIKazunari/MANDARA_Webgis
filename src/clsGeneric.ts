@@ -4901,6 +4901,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             // マウスリーブ時は特に処理不要
             div.onmouseleave=function(){
                 // 意図的な空実装
+                void 0;
             }
     
         }

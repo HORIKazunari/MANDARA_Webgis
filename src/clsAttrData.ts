@@ -3541,6 +3541,7 @@ class clsAttrData {
     // TODO: タイル領域の描画機能は未実装
     Draw_Tile_Region(_g: CanvasRenderingContext2D, _BoundaryRect: rectangle, _L: Line_Property, _T: Tile_Property, _Kakudo: number): void {
         // 現在未実装 - 必要に応じて実装予定
+        void 0;
     }
     
     Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {
