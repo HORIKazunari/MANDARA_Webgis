@@ -7,6 +7,9 @@
 // リストアイテムの型定義（select要素やListBoxで使用）
 type ListItem = { value: string | number; text: string };
 
+// 互換性維持のための広めの属性値型
+type AttrValue = JsonValue | Font_Property | Line_Property | Tile_Property | Mark_Property | colorRGBA | point | point[] | rectangle | size;
+
 // ListViewTable互換のインターフェース（clsGenericのListViewTableクラスと互換）
 interface IListViewTable {
     clear?: () => void;
@@ -691,6 +694,10 @@ interface IAttrData {
 // Accessory_Temp（拡張版）
 interface IAccessoryTemp {
     MapLegend_W: IMapLegendW[];
+    MapTitle_Rect?: rectangle;
+    MapScale_Rect?: rectangle;
+    MapCompass_Rect?: rectangle;
+    DataNote_Rect?: rectangle;
     GroupBox_Rect: rectangle;
     Legend_No_Max: number;
     Push_titleXY: point;
@@ -699,8 +706,9 @@ interface IAccessoryTemp {
     Push_CompassXY: point;
     Push_ScaleXY: point;
     Push_DataNoteXY: point;
+    Push_GroupBoxXY?: point;
     OriginalGroupBoxRect: rectangle;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // MapLegend_W（拡張版）
@@ -766,19 +774,32 @@ interface ILayerDataInfo {
     DummyGroup: number[];
     Print_Mode_Layer: number; // enmLayerMode_Number
     LayerModeViewSettings: ILayerModeViewSettings;
-    PrtSpatialIndex: JsonValue; // clsSpatialIndexSearch
+    PrtSpatialIndex: ClsSpatialIndexSearchInstance; // clsSpatialIndexSearch
     ObjectGroupRelatedLine: number[];
     ODBezier_DataStac: ODBezier_Data[];
     // Methods
+    Add_OD_Bezier?: (objPos: number, dataNum: number, refPoint: point) => void;
     Remove_OD_Bezier?: (objPos: number, dataNum: number) => void;
-    Get_OD_Bezier_RefPoint?: (index: number, dataNum: number) => JsonObject & { Clone?: () => JsonObject };
-    [key: string]: JsonValue;
+    Get_OD_Bezier_RefPoint?: (objPos: number, dataNum: number) => { ok: boolean; RefPoint?: point };
+    [key: string]: AttrValue;
 }
 
 // オブジェクト情報（拡張版）
 interface IObjectInfo {
     ObjectNum: number;
-    [key: string]: JsonValue;
+    atrObjectData: IObjectData[];
+    [key: string]: AttrValue;
+}
+
+interface IObjectData {
+    Symbol: point;
+    Label: point;
+    CenterPoint: point;
+    MeshPoint?: point[];
+    HyperLinkNum?: number;
+    HyperLink?: Array<{ Name: string; Address: string }>;
+    Objectstructure?: number;
+    [key: string]: AttrValue;
 }
 
 // 属性データ情報（拡張版）
@@ -786,7 +807,7 @@ interface IAttrDataInfo {
     Count: number;
     Data: IDataItem[];
     SelectedIndex: number;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // データ項目（拡張版）
@@ -796,7 +817,7 @@ interface IDataItem {
     Unit: string;
     Note: string;
     SoloModeViewSettings: ISoloModeViewSettings;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // ソロモード表示設定（拡張版）
@@ -818,7 +839,7 @@ interface ISoloModeViewSettings {
     MarkTurnMode: JsonObject & { Clone?: () => JsonObject };
     Class_Div: strClass_Div_data[];
     Div_Num: number;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // クラス塗り分けモード（拡張版）
@@ -828,7 +849,7 @@ interface IClassPaintMode {
     color3?: colorRGBA;
     Color_Mode?: number;
     Clone?: () => IClassPaintMode;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // 記号の大きさモード（拡張版）
@@ -839,7 +860,7 @@ interface IMarkSizeMode {
     Mark?: Mark_Property;
     LineShape?: Line_Property;
     Clone?: () => IMarkSizeMode;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // 記号の数モード（拡張版）
@@ -851,7 +872,7 @@ interface IMarkBlockMode {
     Overlap?: number;
     LegendBlockModeWord?: string;
     Clone?: () => IMarkBlockMode;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // 記号の棒モード（拡張版）
@@ -868,7 +889,7 @@ interface IMarkBarMode {
     scaleLinePat?: Line_Property;
     BarShape?: number;
     Clone?: () => IMarkBarMode;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // 線引きモード（拡張版）
@@ -878,7 +899,7 @@ interface IClassODMode {
     Dummy_ObjectFlag?: boolean;
     Arrow?: Arrow_Data;
     Clone?: () => IClassODMode;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // 等値線レギュラー設定
@@ -911,7 +932,10 @@ interface IContourMode {
 // クラスODモード設定（拡張版）
 interface IClassODMD {
     Arrow: Arrow_Property;
-    [key: string]: JsonValue;
+    o_Layer?: number;
+    O_object?: number;
+    Dummy_ObjectFlag?: boolean;
+    [key: string]: AttrValue;
 }
 
 // レイヤーモード表示設定（拡張版）
@@ -933,17 +957,23 @@ interface IGraphMode {
 
 // グラフデータセット（拡張版）
 interface IGraphDataSet {
+    title?: string;
+    GraphMode?: number; // enmGraphMode
     Data: IGraphDataItem[];
+    En_Obi?: JsonObject;
+    Oresen_Bou?: JsonObject;
     Type?: number;
     length?: number;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // グラフデータ項目（拡張版）
 interface IGraphDataItem {
     DataNumber: number;
     Layer?: number;
-    [key: string]: JsonValue;
+    Tile?: Tile_Property;
+    Clone?: () => IGraphDataItem;
+    [key: string]: AttrValue;
 }
 
 // ラベルモード（拡張版）
@@ -956,15 +986,31 @@ interface ILabelMode {
 
 // ラベルデータセット（拡張版）
 interface ILabelDataSet {
-    Data: ILabelDataItem[];
+    title?: string;
+    Width?: number;
+    DataItem?: number[];
+    Data?: ILabelDataItem[];
+    ObjectName_Print_Flag?: boolean;
+    ObjectName_Turn_Flag?: boolean;
+    ObjectName_Font?: Font_Property;
+    DataValue_Font?: Font_Property;
+    DataValue_Unit_Flag?: boolean;
+    DataValue_TurnFlag?: boolean;
+    DataValue_Print_Flag?: boolean;
+    DataName_Print_Flag?: boolean;
+    BorderObjectTile?: Tile_Property;
+    BorderDataTile?: Tile_Property;
+    BorderLine?: Line_Property;
+    Clone?: () => ILabelDataSet;
     length?: number;
-    [key: string]: JsonValue;
+    [key: string]: AttrValue;
 }
 
 // ラベルデータ項目（拡張版）
 interface ILabelDataItem {
     DataNumber: number;
     Layer?: number;
+    Clone?: () => ILabelDataItem;
     [key: string]: JsonValue;
 }
 
@@ -972,6 +1018,9 @@ interface ILabelDataItem {
 interface IMapData {
     Map: IMapInfo;
     Convert_ZahyoMode?: (zahyo: Zahyo_info) => void;
+    Get_Enable_CenterP?: (code: string | number, time?: strYMD) => point;
+    Get_TotalLineKind?: () => LPatSek_Info[];
+    Set_TotalLineKind?: (lineKinds: LPatSek_Info[]) => void;
     LineKind?: Array<{
         Name: string;
         NumofObjectGroup: number;
@@ -1564,6 +1613,12 @@ declare class PeripheriDirinfo {
 
 // clsSpatialIndexSearch は SpatialIndexSearch.ts で実装済み
 
+interface ClsSpatialIndexSearchInstance {
+    GetRectIn: (x: number, y: number) => { number: number; Tags: (string | number)[]; ObStac: number[] };
+    GetNearPointNumber: (x: number, y: number, mind: number) => { num: number; Tags: (string | number)[] };
+    GetNearestLineNumber: (x: number, y: number, mind: number) => { num: number; Tags: (string | number)[] };
+}
+
 // Setting_Info は clsTime.ts で定義済み
 
 // 汎用の描画設定・列挙体（グローバル参照されるためここで宣言）
@@ -1828,13 +1883,41 @@ interface Math {
 
 // Legacy globals still referenced across the codebase (typed as unknown for now)
 declare function clsSelectData(...args: JsonValue[]): void;
-declare class GraphModeDataItem { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class GraphModeDataItem {
+    DataNumber: number;
+    Tile?: Tile_Property;
+    Clone?: () => GraphModeDataItem;
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
+}
 declare function clsTileSet(...args: JsonValue[]): void;
 declare function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line: LinePattern) => void): void;
 declare function graphModeEn_Obi(...args: JsonValue[]): void;
 declare function graphModeOresen_Bou(...args: JsonValue[]): void;
 declare function openMapFile(...args: JsonValue[]): JsonValue;
-declare class clsMapdata { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class clsMapdata {
+    Map: strMap_data;
+    MPObj: strObj_Data[];
+    MPLine: strLine_Data[];
+    Get_Enable_CenterP?: (code: string | number, time?: strYMD) => point;
+    Get_TotalLineKind?: () => LPatSek_Info[];
+    Set_TotalLineKind?: (lineKinds: LPatSek_Info[]) => void;
+    init_MapData: () => void;
+    Add_OneObjectGroup_Parameter: (name: string, shape: number, mesh: boolean | number, type: number) => void;
+    Add_OneLineKind: (lineKindName: string, linePat: Line_Property, mesh: boolean | number) => void;
+    Init_One_Object: (obkNum: number) => strObj_Data;
+    Init_One_Line: (lineKindNumber: number) => strLine_Data;
+    Save_Line: (editingLine: strLine_Data, checkRelatedLineFlag: boolean, checkRelatedObjectShapeFlag: boolean, checkLineMaxMinFlag: boolean) => void;
+    Save_Object: (editingObject: strObj_Data, checkObjectmaxMinFlag: boolean) => void;
+    Add_one_DefAttDataSet: (obkNum: number, title: string, unit: string, note: string) => void;
+    Set_First_ObjectKind_Color: () => void;
+    Checl_All_Line_Maxmin: () => void;
+    MapLatLon_Zahyo_convert: () => void;
+    YReverse: () => void;
+    Check_All_Obj_MaxMin: () => void;
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
+}
 declare class clsAttrData implements IAttrData { 
     TotalData: IAttrData['TotalData'];
     TempData: IAttrData['TempData'];
@@ -1859,19 +1942,36 @@ declare function frmPrintOption(...args: JsonValue[]): void;
 declare function frmPrint_ObjectValue(...args: JsonValue[]): void;
 declare function frmPrint_backImageSet(...args: JsonValue[]): void;
 declare function frmCompassSettings(...args: JsonValue[]): void;
-declare class clsSpline { static Spline_Get?: (...args: JsonValue[]) => JsonValue; }
+declare class clsSpline { static Spline_Get: (Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) => point[]; }
 declare class strLocationSearchObject { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class LPatSek_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class LPatSek_Info {
+    Name?: string;
+    Pat?: Line_Property;
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
+}
 declare class strDummyObjectPointMark_Info { 
     ObjectKindName: string;
     Mark: Mark_Property;
     Clone(): strDummyObjectPointMark_Info;
 }
 declare class strCondition_Limitation_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strDummyObjectName_and_Code { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strDummyObjectName_and_Code {
+    Name?: string;
+    code: string | number;
+    Time?: strYMD;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
 declare class strOverLay_DataSet_Item_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strContour_Data_Irregular_interval { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strClass_Div_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strClass_Div_data {
+    ODLinePat?: Line_Property;
+    BlankF?: boolean;
+    Clone?: () => strClass_Div_data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
 declare class clsSortingSearch { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function clsColorPicker(...args: JsonValue[]): void;
 declare function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: JsonValue): void;
@@ -1997,9 +2097,72 @@ declare const enmLineConnect: { readonly [key: string]: number };
 declare const enmPointOnjectDrawOrder: { readonly [key: string]: number };
 // レガシーコンストラクタ型（互換性維持のため、戻り値の型をJsonObjectに統一）
 declare const Quad_Mesh_Info: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
-declare const LineCodeStac_Data: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
-declare const strDefTimeAttDataEach_Info: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
-declare const strDefTimeAttData_Info: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
+declare class LineCodeStac_Data {
+    LineCode?: number;
+    NumOfTime?: number;
+    Times?: JsonValue[];
+    Clone?(): LineCodeStac_Data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class Object_NameTimeStac_Data {
+    NamesList: string[];
+    SETime?: JsonValue;
+    Clone?(): Object_NameTimeStac_Data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class Object_CenterPoint_Data {
+    Position: point;
+    SETime?: JsonValue;
+    Clone?(): Object_CenterPoint_Data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class Object_Succession_Data {
+    ObjectCode?: number;
+    Time?: strYMD;
+    Clone?(): Object_Succession_Data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class strDefTimeAttDataEach_Info {
+    Span?: JsonValue;
+    Value: string;
+    Clone?(): strDefTimeAttDataEach_Info;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class strDefTimeAttData_Info {
+    Data: strDefTimeAttDataEach_Info[];
+    Clone?(): strDefTimeAttData_Info;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class strLine_Data {
+    Number?: number;
+    NumOfPoint: number;
+    NumOfTime?: number;
+    Circumscribed_Rectangle?: rectangle;
+    LineTimeSTC?: JsonValue[];
+    PointSTC: point[];
+    Clone?(): strLine_Data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
+declare class strObj_Data {
+    Shape?: number;
+    NumOfLine?: number;
+    Circumscribed_Rectangle?: rectangle;
+    DefTimeAttValue: strDefTimeAttData_Info[];
+    SucSTC?: Object_Succession_Data[];
+    NameTimeSTC: Object_NameTimeStac_Data[];
+    CenterPSTC: Object_CenterPoint_Data[];
+    LineCodeSTC: LineCodeStac_Data[];
+    Clone?(): strObj_Data;
+    [key: string]: AttrValue;
+    constructor(...args: JsonValue[]);
+}
 
 interface Zahyo_info {
     Mode: number; // enmZahyo_mode_info (必須プロパティに変更)
@@ -2264,6 +2427,13 @@ declare class Generic {
     static ArrayClone<T>(arr: T[]): T[];
     static getCanvasXY(e: MouseEvent | Touch): point;
     static getCanvasXY2(e: MouseEvent): point | undefined;
+    static getExtension(path: string): string;
+    static getFilenameWithoutExtension(path: string): string;
+    static utf8ArrayToStr(arr: Uint8Array): string;
+    static Check_DataType(DataNum: number, ObjNum: number, aData: string[][]): string[];
+    static Check_New_ScrView(MapRect: rectangle, new_Rect: rectangle): boolean;
+    static Get_OD_Spline_Point(ControlP: point, OriginP: point, DestP: point): point[];
+    static createNewSpan(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, styleinfo: string, onclick?: ((event: MouseEvent) => void)): HTMLSpanElement;
 }
 
 // ==================== 列挙型定義（追加） ====================

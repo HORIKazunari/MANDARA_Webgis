@@ -435,7 +435,7 @@ export class clsShapefile {
                         const NumParts = dv.getUint32(pos, endian.little );
                         const NumPoints = dv.getUint32(pos + 4, endian.little);
                         pos += 8;
-                        const pindex2 = [];
+                        const pindex2: number[] = [];
                         for (let i = 0; i < NumParts; i++) {
                             pindex2.push(dv.getUint32(pos, endian.little));
                             pos += 4;
@@ -514,7 +514,7 @@ export class clsShapefile {
             MapData.Save_Object(newObj, false);
         }
 
-        let unit = [];
+        let unit: string[] = [];
         if (UnitCheckFlag === true) {
             unit = Generic.Check_DataType(this.fieldDT.length, this.indexData.length, this.dataStr);
         } else {

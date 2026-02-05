@@ -239,11 +239,12 @@ function frmPrintProjection(): void {
         return;
     }
     
-    const av = state.attrData.TotalData.ViewStyle;
-    const mapRect = av?.ScrData?.MapRectanglem;
-    if (mapRect) {
-        frmProjectionConvert(av.Zahyo, mapRect, okButton);
-    }
+    const viewStyle = state.attrData.TotalData.ViewStyle as {
+        Zahyo: Zahyo_info;
+        ScrData: Screen_info;
+    };
+    const mapRect = viewStyle.ScrData.MapRectangle;
+    frmProjectionConvert(viewStyle.Zahyo, mapRect, okButton);
     
     function okButton(newZahyo: Zahyo_info): void {
         const state = appState();
@@ -252,8 +253,9 @@ function frmPrintProjection(): void {
         if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
             (centerLon !== state.attrData.TotalData.ViewStyle.Zahyo.CenterXY.x)) {
             
-            if (state.attrData?.Convert_Zahyo) {
-                state.attrData.Convert_Zahyo(newZahyo);
+            const convertZahyo = state.attrData.Convert_Zahyo as ((zahyo: Zahyo_info) => void) | undefined;
+            if (convertZahyo) {
+                convertZahyo(newZahyo);
             }
             const MapFileList: string[] = state.attrData?.GetMapFileName?.() ?? [];
             
@@ -264,15 +266,14 @@ function frmPrintProjection(): void {
                 }
             }
             
-            const viewStyle = state.attrData?.TotalData?.ViewStyle;
-            const scrData = viewStyle?.ScrData;
-            if (scrData?.MapRectangle) {
-                viewStyle.Zahyo = newZahyo;
-                const clonedRect = scrData.MapRectangle.Clone?.();
-                if (clonedRect) {
-                    scrData.ScrView = clonedRect;
-                }
-            }
+            const nextViewStyle = state.attrData.TotalData.ViewStyle as {
+                Zahyo: Zahyo_info;
+                ScrData: Screen_info;
+            };
+            const scrData = nextViewStyle.ScrData;
+            nextViewStyle.Zahyo = newZahyo;
+            const clonedRect = scrData.MapRectangle.Clone();
+            scrData.ScrView = clonedRect;
             
             if (state.attrData?.Check_Vector_Object) {
                 state.attrData.Check_Vector_Object();
