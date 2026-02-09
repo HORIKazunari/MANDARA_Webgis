@@ -532,7 +532,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             }
         }
 
-        const R_Layer_Convert = new Array(oldAttrData.TotalData.LV1.Lay_Maxn).fill(-1);
+        const R_Layer_Convert = new Array<number>(oldAttrData.TotalData.LV1.Lay_Maxn).fill(-1);
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
             if (L !== -1) {
@@ -1043,15 +1043,15 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     function  Get_Data_Refference(){
         const D_LayerNum = oldAttrData.TotalData.LV1.Lay_Maxn;
 
-        const CheckedData=[]// As New List(Of Boolean())
+        const CheckedData: boolean[][] = [];// As New List(Of Boolean())
         for(let i  = 0 ;i< D_LayerNum  ;i++){
-            const d=new Array(oldAttrData.LayerData[i].atrData.Count) ;
+            const d = new Array<boolean>(oldAttrData.LayerData[i].atrData.Count).fill(false);
             CheckedData.push(d);
         }
 
-        const Conv = [];//As New List(Of Layer_Data_Info())
+        const Conv: Layer_Data_Info[][] = [];//As New List(Of Layer_Data_Info())
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
-            const Dconv = [];//(datn - 1) As Layer_Data_Info
+            const Dconv: Layer_Data_Info[] = [];//(datn - 1) As Layer_Data_Info
             for (let j = 0; j < newAttrData.LayerData[i].atrData.Count; j++) {
                 Dconv[j] = Check_Data2(i, j, 1, CheckedData);
             }
@@ -1081,7 +1081,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         }
 
         //同一名称・単位のデータ項目をチェック
-        const KouhoTitle = [];// As New List(Of Layer_Data_Info)
+        const KouhoTitle: Layer_Data_Info[] = [];// As New List(Of Layer_Data_Info)
         for (let i = 0; i < oldAttrData.TotalData.LV1.Lay_Maxn; i++) {
             for (let j = 0; j < oldAttrData.LayerData[i].atrData.Count; j++) {
                 const O_DTA = oldAttrData.LayerData[i].atrData.Data[j];
@@ -1311,7 +1311,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
         for (let i = 0; i < L; i++) {
             const LayYMax = ktGrid.getYsize(i);
             const LayXMax = ktGrid.getXsize(i);
-            const YChange = new Array(LayYMax - 1);
+            const YChange = new Array<number>(LayYMax - 1);
             let LayYMaxReal = 0;
             for (let j = 0; j < LayYMax; j++) {
                 if (ktGrid.getFixedXSData(i, 1, j) === "") {
@@ -1331,10 +1331,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             const RefSystem = ktGrid.getLayerData(i, GridLayerData.ReferenceSystem);
             const LayComment = ktGrid.getLayerData(i, GridLayerData.Comment);
 
-            const Get_Obj = new Array(LayYMaxReal);
-            for (let i = 0; i < LayYMaxReal; i++) {
-                Get_Obj[i] = new strObject_Data_Info();
-            }
+            const Get_Obj = Array.from({ length: LayYMaxReal }, () => new strObject_Data_Info());
             if (SyntheticObjF === true) {
                 //時系列集計したレイヤの場合は，変更前のオブジェクトコード・合成オブジェクトデータを設定する
 
@@ -1391,11 +1388,11 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
                     newAt.Shape = LSP;
                 }
             }
-            const DN_Str = Generic.Array2Dimension(LayXMax, LayYMax);
-            const TTL = [];
-            const UNT = [];
-            const Mis = [];
-            const Note = [];
+            const DN_Str = Array.from({ length: LayXMax }, () => new Array<string>(LayYMax));
+            const TTL: string[] = [];
+            const UNT: string[] = [];
+            const Mis: boolean[] = [];
+            const Note: string[] = [];
             for (let j = 0; j < LayXMax; j++) {
                 TTL[j] = ktGrid.getFixedYSData(i, j, 3);
                 UNT[j] = ktGrid.getFixedYSData(i, j, 4);
