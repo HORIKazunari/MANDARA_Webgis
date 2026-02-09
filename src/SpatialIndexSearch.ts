@@ -112,7 +112,10 @@ class SpatialIndexSearchInternal {
                 break;
         }
         this.XYSize = Math.max(this.XYSize, 2);
-        this.MeshIndex = Generic.Array2Dimension(this.XYSize + 1, this.XYSize + 1);
+        this.MeshIndex = Array.from(
+            { length: this.XYSize + 1 },
+            () => new Array<IndexContentsInfo | undefined>(this.XYSize + 1)
+        );
 
         if (this.RectSetF === false) {
             const firstPoint = this.ObjectXY[0].Point[0].toPoint();
@@ -645,7 +648,7 @@ class SpatialIndexSearchInternal {
         }
 
         let same_N = 0;
-        const ObStac = [];
+        const ObStac: number[] = [];
         const MI = this.MeshIndex[sp.x][sp.y];
         if (MI !== undefined) {
             for (let i = 0; i < MI.ObjectNumber.length;i++) {
