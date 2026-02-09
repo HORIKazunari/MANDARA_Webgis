@@ -149,6 +149,7 @@ export default tseslint.config(
       'src/SpatialIndexSearch.ts',
       'src/MeshContour.ts',
       'src/shapeFile.ts',
+      'src/typeUsageExample.ts',
       'src/counter.ts',
     ],
     rules: {
