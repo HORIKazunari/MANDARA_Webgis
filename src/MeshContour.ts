@@ -1,6 +1,7 @@
 ﻿
 import { SortingSearch } from './SortingSearch';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
+import { Generic } from './clsGeneric';
 
 type MeshCell = number | undefined;
 type MeshGrid = MeshCell[][];
@@ -64,7 +65,7 @@ class MeshContour {
         this.YMeshSize = yMeshSize;
         this.Xplus = xPlus;
         this.Yplus = yPlus;
-        this.Mesh = Generic.Array2Dimension(xMeshNum, yMeshNum);
+        this.Mesh = Array.from({ length: xMeshNum }, () => new Array<MeshCell>(yMeshNum));
     }
     
     SetMeshValue(x: number, y: number, Value: number): void {
@@ -118,14 +119,9 @@ class MeshContour {
             const NL = highCN[i];
             if (0 < NL) {
                 const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false, new rectangle(0, this.XMeshNum, 0, this.YMeshNum));
-                const Arrange_LineCode = Generic.Array2Dimension(NL + 1, 2, 0);
-                for (let j = 0; j < Arrange_LineCode.length; j++) {
-                    for (let k = 0; k < Arrange_LineCode[j].length; k++) { Arrange_LineCode[j][k] = 0; }
-                }
-                const Fringe: FringeLineInfo[] = new Array(NL + 1);
-                for (let j = 0; j < Fringe.length; j++) { Fringe[j] = new FringeLineInfo(); }
-                const Get_Linef: boolean[] = new Array(NL + 1);
-                for (let j = 0; j < Get_Linef.length; j++) { Get_Linef[j] = false; }
+                const Arrange_LineCode = Array.from({ length: NL + 1 }, () => [0, 0]);
+                const Fringe = Array.from({ length: NL + 1 }, () => new FringeLineInfo());
+                const Get_Linef = Array.from({ length: NL + 1 }, () => false);
                 for (let j = 0; j < NL; j++) {
                     PointIndex.AddDoublePoint(con[i][j].p0.toLatlon(), con[i][j].p1.toLatlon(), j);
                 }
@@ -186,9 +182,8 @@ class MeshContour {
                                 Reverse_f = true;
                                     const k2 = Arrange_LineCode[Pon][0];
                                     const Kn = Arrange_LineCode[Pon][1];
-                                    const Fringe_Sub: FringeLineInfo[] = new Array(Kn);
-                                for (let k = 0 ; k < Kn; k++) {
-                                    Fringe_Sub[k]=new FringeLineInfo();
+                                const Fringe_Sub = Array.from({ length: Kn }, () => new FringeLineInfo());
+                                for (let k = 0; k < Kn; k++) {
                                     Fringe_Sub[k].code = Fringe[k2 + k].code;
                                     Fringe_Sub[k].direction = Fringe[k2 + k].direction;
                                 }
