@@ -1,4 +1,6 @@
-﻿export {};
+﻿import { Generic } from './clsGeneric';
+import { clsMapdata } from './clsMapdata';
+
 // シェープファイル取得
 
 interface IndexFileDataInfo {
@@ -114,7 +116,8 @@ export class clsShapefile {
         const shapeFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "shp");
         const dbfFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "dbf");
         const prjFile: File | undefined = files.find(f => f.name.slice(-3).toLowerCase() === "prj");
-        this.fileName = Generic.getFilenameWithoutExtension(files[0].name);
+        const baseName = Generic.getFilenameWithoutExtension(files[0].name);
+        this.fileName = typeof baseName === 'string' ? baseName : files[0].name;
         let okf = true;
         const shxReader = new FileReader();
         if (!shxFile || !shapeFile || !dbfFile) {
@@ -176,11 +179,13 @@ export class clsShapefile {
         let dbfFile: string | undefined;
         let prjFile: string | undefined;
         for (const file in unZipData) {
-            const ext = Generic.getExtension(file).toLowerCase();
+            const extension = Generic.getExtension(file);
+            const ext = typeof extension === 'string' ? extension.toLowerCase() : '';
             if (ext === "shx") { shxFile = file; }
             if (ext === "shp") { 
                 shapeFile = file;
-                this.fileName = Generic.getFilenameWithoutExtension(shapeFile);
+                const zipBaseName = Generic.getFilenameWithoutExtension(shapeFile);
+                this.fileName = typeof zipBaseName === 'string' ? zipBaseName : shapeFile;
              }
             if (ext === "dbf") { dbfFile = file; }
             if (ext === "prj") { prjFile = file; }
@@ -199,7 +204,7 @@ export class clsShapefile {
         }
         if (prjFile !== undefined) {
             const prjtx = Generic.utf8ArrayToStr(unZipData[prjFile]);
-            this.zahyoSettingFlag = this.getPrjFile(prjtx);
+            this.zahyoSettingFlag = this.getPrjFile(typeof prjtx === 'string' ? prjtx : '');
         }
         onOK(this.tag);
     }
@@ -516,7 +521,7 @@ export class clsShapefile {
 
         let unit: string[] = [];
         if (UnitCheckFlag === true) {
-            unit = Generic.Check_DataType(this.fieldDT.length, this.indexData.length, this.dataStr);
+            unit = Generic.Check_DataType(this.fieldDT.length, this.indexData.length, this.dataStr) as string[];
         } else {
             for (let i = 0; i < this.fieldDT.length; i++) {
                 const fd = this.fieldDT[i];
