@@ -141,6 +141,20 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-declaration-merging': 'error', // interface/classマージングを禁止
     },
   },
+  {
+    files: [
+      'src/core/**/*.ts',
+      'src/constants/**/*.ts',
+      'src/SortingSearch.ts',
+      'src/SpatialIndexSearch.ts',
+      'src/MeshContour.ts',
+      'src/shapeFile.ts',
+      'src/counter.ts',
+    ],
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'error',
+    },
+  },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
   // 追加の除外設定は不要
 );
