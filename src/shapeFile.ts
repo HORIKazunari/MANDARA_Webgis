@@ -123,20 +123,20 @@ export class clsShapefile {
         }
         shxReader.readAsArrayBuffer(shxFile);
         //ファイルの読込が終了した時の処理
-        shxReader.onload = () => {
+        shxReader.onload = (): void => {
             this.indexData = [];
             if (shxReader.result instanceof ArrayBuffer) {
                 this.getSHXFile(shxReader.result);
             }
             const shpReader = new FileReader();
             shpReader.readAsArrayBuffer(shapeFile);
-            shpReader.onload = () => {
+            shpReader.onload = (): void => {
                 if (shpReader.result instanceof ArrayBuffer) {
                     this.getShapeFile(shpReader.result);
                 }
                 const dbfReader = new FileReader();
                 dbfReader.readAsArrayBuffer(dbfFile);
-                dbfReader.onload = () => {
+                dbfReader.onload = (): void => {
                     try {
                         if (dbfReader.result instanceof ArrayBuffer) {
                             this.getDbfFile(dbfReader.result, dbfEncode);
@@ -150,7 +150,7 @@ export class clsShapefile {
                     if (prjFile !== undefined) {
                         const prjReader = new FileReader();
                         prjReader.readAsText(prjFile, 'utf8');
-                        prjReader.onload = () => {
+                        prjReader.onload = (): void => {
                             if (typeof prjReader.result === 'string') {
                                 this.zahyoSettingFlag = this.getPrjFile(prjReader.result);
                             }
