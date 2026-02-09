@@ -4,6 +4,50 @@ import { clsSpline } from './clsDraw';
 import { Generic } from './clsGeneric';
 import type { JsonValue } from './types';
 
+type ContourObjectInfo = {
+    Flag: boolean;
+    Circumscribed_Rectangle: rectangle;
+    PointStac: number;
+    NumOfPoint: number;
+    Value: number;
+    Layernum: number;
+    DataNum: number;
+};
+
+type ContourModeTemp = {
+    Contour_All_Number: number;
+    Contour_Object: ContourObjectInfo[];
+    Contour_Point: point[];
+};
+
+type SeriesDataItem = {
+    Print_Mode_Total?: number;
+    Print_Mode_Layer?: number;
+    Layer?: number;
+    Data?: number;
+    SoloMode?: number;
+};
+
+type OverLayInfo = {
+    SelectedIndex?: number;
+    DataSet: Array<{
+        DataItem: Array<{
+            Layer: number;
+            DataNumber: number;
+            Print_Mode_Layer: number;
+            Mode?: number;
+        }>;
+    }>;
+};
+
+type TotalModeInfo = {
+    OverLay?: OverLayInfo;
+};
+
+type EnableLineInfo = {
+    LineCode: number;
+};
+
 // mousePointingSituations は globals.d.ts で定義済み
 
 // enmPrintMouseMode は globals.d.ts で定義済み
@@ -928,7 +972,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         let Near_ODNumber  = -1;
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
-                const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                const Layernum = state.attrData.TotalData.LV1.SelectedLayer ?? 0;
                 const al = state.attrData.LayerData[Layernum];
                 const DataNum = al.atrData.SelectedIndex;
                 if (al.Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
@@ -940,7 +984,15 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 break;
             }
             case enmTotalMode_Number.OverLayMode: {
-                const ovl = state.attrData.TotalData.TotalMode.OverLay.DataSet[state.attrData.TotalData.TotalMode.OverLay.SelectedIndex];
+                const overlay = state.attrData.TotalData.TotalMode?.OverLay;
+                if (!overlay) {
+                    break;
+                }
+                const overlayIndex = overlay.SelectedIndex ?? 0;
+                const ovl = overlay.DataSet[overlayIndex];
+                if (!ovl) {
+                    break;
+                }
                 for (let i = 0; i < ovl.DataItem.length; i++) {
                     const Layernum = ovl.Layer
                     const DataNum = ovl.DataNumber
@@ -963,8 +1015,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             const al=state.attrData.LayerData[Layernum];
             const mod=al.atrData.Data[DataNum].SoloModeViewSettings.ClassODMD;
             const oal=state.attrData.LayerData[mod.o_Layer];
-            let StartP ;
-            let EndP ;
+            let StartP: point;
+            let EndP: point;
             const objn  = al.atrObject.ObjectNum;
             const origin_objn  = oal.atrObject.ObjectNum
             if(mod.O_object > origin_objn ){
@@ -1016,6 +1068,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     function LocationContourSearch(ScreenP: point) {
         const state = appState();
         const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const contourTemp = state.attrData.TempData.ContourMode_Temp as ContourModeTemp | undefined;
         let tx4 = ""
         if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.Normal) {
             state.attrData.TempData.frmPrint_Temp.LocationMenuString.ContourStacPos = -1;
@@ -1023,7 +1076,10 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 const c = Near_Contour(MapP);
                 if (c !== -1) {
                     state.attrData.TempData.frmPrint_Temp.LocationMenuString.ContourStacPos = c;
-                    const cdt = state.attrData.TempData.ContourMode_Temp.Contour_Object[c];
+                    if (!contourTemp) {
+                        return;
+                    }
+                    const cdt = contourTemp.Contour_Object[c];
                     tx4 = "等値線" + cdt.Value.toString() + state.attrData.Get_DataUnit(cdt.Layernum, cdt.DataNum);
                     let conDiv=document.getElementById("contourDataTip");
                     if(conDiv===undefined){
@@ -1074,15 +1130,19 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         // 最寄りの等値線取得
         function Near_Contour(MapP: point) {
             const state = appState();
+            if (!contourTemp) {
+                return -1;
+            }
             let Near_ContourNumber = -1;
             let mind = 5;
-            const atc = state.attrData.TempData.ContourMode_Temp;
+            const atc = contourTemp;
             for (let i = 0; i < atc.Contour_All_Number; i++) {
                 const atco = atc.Contour_Object[i];
                 if ((atco.Flag === true) && (spatial.Check_PointInBox(MapP, 0, atco.Circumscribed_Rectangle) === true)) {
                     for (let j = atco.PointStac; j <= atco.PointStac + atco.NumOfPoint - 2; j++) {
                         const retV = spatial.Distance_PointLine(MapP.x,MapP.y, atc.Contour_Point[j].x,atc.Contour_Point[j].y, atc.Contour_Point[j + 1].x, atc.Contour_Point[j + 1].y ) ;
-                        const d=retV.distance* state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
+                        const screenMul = state.attrData.TotalData.ViewStyle.ScrData.ScreenMG?.Mul ?? 1;
+                        const d = retV.distance * screenMul;
                         if (d < mind) {
                             mind = d;
                             Near_ContourNumber = i;
@@ -1099,24 +1159,39 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         const state = appState();
         const MapP  = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
         picMapMouseMovePointInformation(ScreenP);
-        let L_Print_Mode_Total ;
-        let L_Layer ;
-        let L_Print_Mode_Layer ;
-        let L_Data ;
+        let L_Print_Mode_Total: number;
+        let L_Layer: number;
+        let L_Print_Mode_Layer: number;
+        let L_Data: number;
         /*let L_Solomode ;*/
         if( state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.SeriesMode ){
-            const koma  = state.attrData.TempData.Series_temp.Koma;
-            const n  = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
-            const im= state.attrData.TotalData.TotalMode.Series.DataSet[n].DataItem[koma];
-                L_Print_Mode_Total = im.Print_Mode_Total;
-                L_Print_Mode_Layer = im.Print_Mode_Layer;
-                L_Layer = im.Layer;
-                L_Data = im.Data;
+            const series = state.attrData.TotalData.TotalMode?.Series;
+            if (!series) {
+                return false;
+            }
+            const koma = state.attrData.TempData.Series_temp?.Koma ?? 0;
+            const n = series.SelectedIndex ?? 0;
+            const dataSet = series.DataSet[n];
+            if (!dataSet || !Array.isArray(dataSet.DataItem)) {
+                return false;
+            }
+            const dataItems = dataSet.DataItem as SeriesDataItem[];
+            const im = dataItems[koma];
+            if (!im) {
+                return false;
+            }
+                L_Print_Mode_Total = im.Print_Mode_Total ?? enmTotalMode_Number.DataViewMode;
+                L_Print_Mode_Layer = im.Print_Mode_Layer ?? enmLayerMode_Number.SoloMode;
+                L_Layer = im.Layer ?? 0;
+                L_Data = im.Data ?? 0;
                 /*L_Solomode = im.SoloMode;*/
         } else {
             const lv = state.attrData.TotalData.LV1;
-            L_Print_Mode_Total = lv.Print_Mode_Total
-            L_Layer = lv.SelectedLayer;
+            if (!lv) {
+                return false;
+            }
+            L_Print_Mode_Total = lv.Print_Mode_Total ?? enmTotalMode_Number.DataViewMode
+            L_Layer = lv.SelectedLayer ?? 0;
             const ld = state.attrData.LayerData[L_Layer];
             L_Print_Mode_Layer = ld.Print_Mode_Layer;
             L_Data = ld.atrData.SelectedIndex;
@@ -1144,7 +1219,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     break;
                 }
                 case enmTotalMode_Number.OverLayMode: {
-                    L_Data = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
+                    const totalMode = (state.attrData.TotalData as { TotalMode?: TotalModeInfo }).TotalMode;
+                    L_Data = totalMode?.OverLay?.SelectedIndex ?? 0;
                     break;
                 }
             }
@@ -1832,20 +1908,38 @@ class frmPrint {
     /**連続表示ボタン 次*/
     static seriesNext() {
         const state = appState();
-        const ats = state.attrData.TotalData.TotalMode.Series;
-        const n = ats.SelectedIndex;
+        const ats = state.attrData.TotalData.TotalMode?.Series;
+        if (!ats) {
+            return;
+        }
+        const n = ats.SelectedIndex ?? 0;
+        const dataSet = ats.DataSet[n];
+        if (!dataSet || !Array.isArray(dataSet.DataItem)) {
+            return;
+        }
         const atst = state.attrData.TempData.Series_temp;
-        atst.Koma = (atst.Koma === ats.DataSet[n].DataItem.length - 1) ? 0 : atst.Koma+1;
+        const koma = atst.Koma ?? 0;
+        const lastIndex = dataSet.DataItem.length - 1;
+        atst.Koma = (koma === lastIndex) ? 0 : koma + 1;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 
     /**連続表示ボタン 前*/
     static seriesBefore() {
         const state = appState();
-        const ats = state.attrData.TotalData.TotalMode.Series;
-        const n = ats.SelectedIndex;
+        const ats = state.attrData.TotalData.TotalMode?.Series;
+        if (!ats) {
+            return;
+        }
+        const n = ats.SelectedIndex ?? 0;
+        const dataSet = ats.DataSet[n];
+        if (!dataSet || !Array.isArray(dataSet.DataItem)) {
+            return;
+        }
         const atst = state.attrData.TempData.Series_temp;
-        atst.Koma  = (atst.Koma === 0) ? ats.DataSet[n].DataItem.length - 1 : atst.Koma-1;
+        const koma = atst.Koma ?? 0;
+        const lastIndex = dataSet.DataItem.length - 1;
+        atst.Koma  = (koma === 0) ? lastIndex : koma - 1;
         clsPrint.printMapScreen(Frm_Print.picMap);
     }
 
@@ -1915,7 +2009,11 @@ class frmPrint {
                         const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(5, meshP, false);
                         drawLines(g, pxy, 3, new colorRGBA(255, 0, 150, 200));
                     } else {
-                        const ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, ObjNum);
+                        const getEnableLine = state.attrData.Get_Enable_KenCode_MPLine as ((layer: number, obj: number) => EnableLineInfo[]) | undefined;
+                        if (!getEnableLine) {
+                            break;
+                        }
+                        const ELine = getEnableLine(Layernum, ObjNum);
                         for (const j in ELine) {
                             const pxy = clsPrint.Get_PointXY_by_LineCode(Layernum, ELine[j].LineCode, false);
                             if (pxy !== undefined) {
