@@ -1269,7 +1269,12 @@ class clsMapdata {
             spxy.push(this.MPLine[LineNO].PointSTC[0]);
             epxy.push(this.MPLine[LineNO].PointSTC[this.MPLine[LineNO].NumOfPoint - 1]);
         }
-        const result = spatial.BoundaryArrangeGeneral(NL, spxy, epxy);
+        const boundaryArrangeGeneral = Generic.BoundaryArrangeGeneral as (
+            lineNum: number,
+            startPoints: point[],
+            endPoints: point[]
+        ) => boundArrangeData;
+        const result = boundaryArrangeGeneral(NL, spxy, epxy);
         if (result.Fringe) {
             for (let i = 0; i < NL; i++) {
                 const fringeCode = result.Fringe[i].code;
@@ -1351,8 +1356,8 @@ class clsMapdata {
         const Pon = badata.Pon;
         const Arrange_LineCode = badata.Arrange_LineCode;
         const Fringe = badata.Fringe;
-        const mens: number[] = new Array(Pon);
-        const gp: point[] = new Array(Pon);
+        const mens: number[] = new Array<number>(Pon);
+        const gp: point[] = new Array<point>(Pon);
         for (let i = 0; i < Pon; i++) {
 
             const LXY2: point[] = [];
