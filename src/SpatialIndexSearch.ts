@@ -467,10 +467,10 @@ class SpatialIndexSearchInternal {
         }
         const XY = new point(x, y);
         const outXY = new point(x, y);
-        const ObStac=[];
-        const PStac=[];
-        const NearP=[];
-        const Tags=[];
+        const ObStac: number[] = [];
+        const PStac: number[] = [];
+        const NearP: point[] = [];
+        const Tags: (string | number)[] = [];
 
         const exf = this.GetConPointXY(XY, outXY);
         if (exf === false) { return { Num:0 }; }
@@ -486,7 +486,7 @@ class SpatialIndexSearchInternal {
                     EP = this.ObjectXY[Onum].Pnum;
                 }
                 let thisMin = Math.min(this.ExtraRange, BaseDistance);
-                let thisNearP;
+                let thisNearP: point | undefined;
                 let thisNearObjPoint = -1;
 
                 //線分集合ごとに最短距離を求める
@@ -501,7 +501,7 @@ class SpatialIndexSearchInternal {
                         thisNearObjPoint = j;
                     }
                 }
-                if ((thisMin <= mind) && (thisNearObjPoint !== -1)) {
+                if ((thisMin <= mind) && (thisNearObjPoint !== -1) && thisNearP !== undefined) {
                     //線分集合の最短最小値がそれ以前の最短距離以下の場合
                     if (thisMin !== mind) {
                         ObStac.length = 0;
@@ -546,9 +546,7 @@ class SpatialIndexSearchInternal {
         if (this.ObjectNum === 0) {
             return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance};
         }
-        if(ExceptionTag===undefined){
-            ExceptionTag=[];
-        }
+        const exceptionTags: (string | number)[] = ExceptionTag ?? [];
         const XY = new point(x, y);
         const outXY = new point;
         const exf = this.GetConPointXY(XY, outXY);
@@ -560,7 +558,7 @@ class SpatialIndexSearchInternal {
             for (let i = 0; i < mi.ObjectNumber.length; i++) {
                 const n = mi.ObjectNumber[i].ObjectNumber;
                 const np = mi.ObjectNumber[i].ObjectPointNumber;
-                if ((n !== ExceptionNumber) && ((ExceptionTag.indexOf(this.ObjectXY[n].Tag) === -1))) {
+                if ((n !== ExceptionNumber) && (exceptionTags.indexOf(this.ObjectXY[n].Tag) === -1)) {
                     const op = this.ObjectXY[n].Point[np].toPoint();
                     const D = spatial.Distance(x, y, op.x, op.y);
                     if (D < mind) {
@@ -584,7 +582,7 @@ class SpatialIndexSearchInternal {
         /// <param name="ExceptionTag" >対象から除外するタグ</param>
         /// <returns type="Number" >同じ値の数</returns>
         /// </signature> 
-        const NearestPointData=[];
+        const NearestPointData: GetObjectPointTagInfo[] = [];
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
@@ -596,9 +594,9 @@ class SpatialIndexSearchInternal {
         if (this.ObjectNum === 0) {
             return -1;
         }
-        if(ExceptionTag===undefined){
-            ExceptionTag=[];
-        }
+        const exceptionTags: (string | number)[] = ExceptionTag === undefined
+            ? []
+            : (Array.isArray(ExceptionTag) ? ExceptionTag : [ExceptionTag]);
         const XY = new point(x, y);
         const outXY = new point;
         const exf = this.GetConPointXY(XY, outXY);
@@ -611,7 +609,7 @@ class SpatialIndexSearchInternal {
             for (let i = 0; i < meshxy.Num; i++) {
                 const n = meshxy.ObjectNumber[i].ObjectNumber;
                 const np = meshxy.ObjectNumber[i].ObjectPointNumber;
-                if ((n !== ExceptionNumber) && (this.ObjectXY[n].Tag !== ExceptionTag)) {
+                if ((n !== ExceptionNumber) && (exceptionTags.indexOf(this.ObjectXY[n].Tag) === -1)) {
                     const Point = this.ObjectXY[n].Point[np].toPoint();
                     const D = spatial.Distance(x, y, Point.x, Point.y);
                     if (D <= mind) {
