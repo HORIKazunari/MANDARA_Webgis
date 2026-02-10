@@ -157,6 +157,13 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'error',
     },
   },
+  {
+    files: ['src/SortingSearch.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+    },
+  },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
   // 追加の除外設定は不要
 );
