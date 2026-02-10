@@ -92,7 +92,7 @@ class MeshContour {
         const hn = ContourNum;
         const High_M = contourHighM;
         const maxPartitionLevel = this.Get_PartitiopnLevel(this.XMeshNum, this.YMeshNum);
-        const highCN: number[] = new Array(hn).fill(0); // 等値線の値ごとの等値線部分線分数
+        const highCN: number[] = new Array<number>(hn).fill(0); // 等値線の値ごとの等値線部分線分数
         const con: ConPartInfo[][] = Array.from({ length: hn }, (): ConPartInfo[] => []);
         conLineStack.length = 0; // ContourLineStackInfo
   
