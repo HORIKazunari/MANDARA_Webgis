@@ -2496,7 +2496,7 @@ export class Accessory {
 
     }
 
-    static getScaleSub(g: CanvasRenderingContext2D): {SCST: number; scaleMax: string; sxy: point; P_Scl: typeof strScale_Attri; zeroW: number; ScaleLength: number; ScaleMaxW: number; rect: rectangle} {
+    static getScaleSub(g: CanvasRenderingContext2D): {SCST: number; scaleMax: string; sxy: point; P_Scl: strScale_Attri; zeroW: number; ScaleLength: number; ScaleMaxW: number; rect: rectangle} {
         const state = appState();
 
         const retV = {

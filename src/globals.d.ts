@@ -201,7 +201,7 @@ type ViewStyleCloneResult = {
     };
     ScrData: Screen_info & JsonObject;
     MapTitle?: JsonObject & { Visible?: boolean; Font?: Font_Property; Position?: point; };
-    MapScale?: JsonObject & { Position?: point; };
+    MapScale?: strScale_Attri;
     DataNote?: JsonObject & { Position?: point; Visible?: boolean; };
     AccessoryGroupBox: JsonObject & {
         Visible: boolean;
@@ -359,28 +359,7 @@ interface IAttrData {
                 };
                 Back?: BackGround_Box_Property
             };
-            MapScale?: {
-                Position: point;
-                Visible?: boolean;
-                Font?: Font_Property;
-                BarAuto?: boolean;
-                BarPattern?: number;
-                Clone?: () => {
-                    Position: point;
-                    Visible?: boolean;
-                    BarDistance?: number;
-                    BarKugiriNum?: number;
-                    Back?: BackGround_Box_Property;
-                    Unit?: number;
-                    Font?: Font_Property;
-                    BarAuto?: boolean;
-                    BarPattern?: number;
-                };
-                BarDistance?: number;
-                BarKugiriNum?: number;
-                Back?: BackGround_Box_Property;
-                Unit?: number;
-            };
+            MapScale: strScale_Attri;
             DataNote?: {
                 Position: point;
                 Visible?: boolean;
@@ -1085,6 +1064,8 @@ interface IMapCompassInfo {
     Mark: Mark_Property;
     Position?: point;
     Visible?: boolean;
+    dirWord: dirWord_Data;
+    Font: Font_Property;
     [key: string]: JsonValue;
 }
 
@@ -2131,17 +2112,27 @@ declare class strLKOjectGroup_Info {
     constructor(...args: JsonValue[]); 
 }
 declare class strTileMapViewInfo { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class strLayerPointLineShape_Data {
+    LineWidth: number;
+    LineEdge: LineEdge_Connect_Pattern_Data_Info;
+    PointMark: Mark_Property;
+}
+
+declare class dirWord_Data {
+    East: string;
+    West: string;
+    North: string;
+    South: string;
+    Clone(): dirWord_Data;
+}
+
 declare class strCompass_Attri { 
-    Mark?: Mark_Property;
-    Position?: point;
     Visible?: boolean;
-    Font?: Font_Property;
-    dirWord?: {
-        North: string;
-        South: string;
-        East: string;
-        West: string;
-    };
+    Position: point;
+    Mark: Mark_Property;
+    dirWord: dirWord_Data;
+    Font: Font_Property;
+    Clone(): strCompass_Attri;
     [key: string]: JsonValue; 
     constructor(...args: JsonValue[]); 
 }
