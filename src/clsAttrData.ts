@@ -1052,7 +1052,7 @@ class strLayerDataInfo {
     Print_Mode_Layer: number = 0; // enmLayerMode_Number '0:単独 1:グラフ 2:ラベル 3:移動
     // グラフ表示、ラベル表示、移動表示、点線オブジェクトのペイントモードの記号
     LayerModeViewSettings: strLayerModeViewSetting_Data = new strLayerModeViewSetting_Data();
-    PrtSpatialIndex: typeof clsSpatialIndexSearch | undefined = undefined;
+    PrtSpatialIndex: ClsSpatialIndexSearchInstance | undefined = undefined;
     ObjectGroupRelatedLine: number[] = []; // Integer()
     ODBezier_DataStac: ODBezier_Data[] = []; // List(Of ODBezier_Data)
 
@@ -2591,6 +2591,35 @@ class strSaveLinePat_Info {
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
+// JSON構造の最小型（使用箇所のみ定義）
+type MDRJSaveLPat = {
+    MapNum: number;
+    MapFileName: string[];
+    LpatNumByMapfile: number[];
+    Lpat: Array<{
+        Name?: string;
+        NumofObjectGroup?: number;
+        ObjGroup: Array<{
+            GroupNumber?: number;
+            Pattern?: JsonObject;
+        }>;
+    }>;
+};
+
+type MDRJTotalData = {
+    LV1: Total_Data_Info['LV1'];
+    ViewStyle: IAttrData['TotalData']['ViewStyle'];
+    Condition: Total_Data_Info['Condition'];
+    TotalMode: Total_Data_Info['TotalMode'];
+};
+
+type MDRJData = {
+    TotalData: MDRJTotalData;
+    LayerData: JsonValue[];
+    saveLPat?: MDRJSaveLPat;
+    mapData?: Record<string, JsonObject>;
+};
+
 class clsAttrData {
     TempData: strTem;
     LayerData: strLayerDataInfo[];
@@ -2628,7 +2657,7 @@ class clsAttrData {
 
         this.MapData = new clsAttrMapData(); //clsAttrMapData
         this.MPSubLine = {};
-        this.LineKindUse = []; //Boolean
+        this.LineKindUse = new Array<boolean>(); //Boolean
     }
 
     //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
@@ -2638,8 +2667,10 @@ class clsAttrData {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
         const alm = al.MapFileData;
-        const DummyObjG = new Array(alm.Map.OBKNum);
-        DummyObjG.fill(false);
+        if (!alm) {
+            return { DummyOBGArray: [], trueNum: 0 };
+        }
+        const DummyObjG: boolean[] = Array.from({ length: alm.Map.OBKNum }, () => false);
         let n = 0;
         for (let i = 0; i < al.DummyGroup.length; i++) {
             const objg = al.DummyGroup[i];
@@ -3377,7 +3408,7 @@ class clsAttrData {
 
         const bData: Uint8Array = Generic.strToUtf8Array(json);
         const bDataArray: Uint8Array[] = [bData];
-        const bDataFile=[fname+"in"];
+        const bDataFile: string[] = [fname + "in"];
         Generic.zipFile(fname, bDataArray, bDataFile);
     }
 
@@ -3429,7 +3460,7 @@ class clsAttrData {
         }
         const cate = this.Get_CategolyArray(Layernum, DataNum);
         let MissFreq = 0;
-        const Freqency = new Array(ldd.Div_Num).fill(0);
+        const Freqency: number[] = Array.from({ length: ldd.Div_Num }, () => 0);
         for (let i = 0; i < cate.length; i++) {
             let f = true;
             if (ConditionCheck === true) {
@@ -3719,14 +3750,13 @@ class clsAttrData {
         const mr = mv.ScrData.MapRectangle;
         const w = mr.width();
         const H = mr.height();
-
         for (let i = 0; i < mv.MapLegend.Base.Legend_Num; i++) {
             mv.MapLegend.Base.LegendXY[i] = new point(mr.right + (i - i) * w / 50, mr.top + H / 2 + (1 - i) * H / 50);
         }
         mv.MapTitle.Position = new point(mr.centerP().x, mr.bottom + H / 20);
         mv.MapScale.Position = new point(mr.left + w * 4 / 5, mr.bottom + H / 30);
         mv.DataNote.Position = new point(mr.left + w, mr.bottom - H * 0.2);
- 
+
         const cpx = mv.AttMapCompass.Position.x;
         const cpy = mv.AttMapCompass.Position.y;
         if (cpx >= mr.right + w * 0.3) {
@@ -3746,6 +3776,7 @@ class clsAttrData {
             this.Change_Acc_Position_by_Accessory_Base_Set_Screen()
         }
     }
+
     Boundary_Kencode_Arrange(Layernum: number, ObjNum: number): boundArrangeData {
         const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
         let badata = new boundArrangeData();
@@ -3990,38 +4021,41 @@ class clsAttrData {
                     } else {
                         XYSize = Math.sqrt(obn);
                     }
-                    LD.PrtSpatialIndex = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, true, mrect, mrect.width() / XYSize);
+                    const index = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, true, mrect, mrect.width() / XYSize);
+                    LD.PrtSpatialIndex = index;
                     for (let j = 0; j < obn; j++) {
-                        LD.PrtSpatialIndex.AddSinglePoint(LD.atrObject.atrObjectData[j].CenterPoint, j)
+                        index.AddSinglePoint(LD.atrObject.atrObjectData[j].CenterPoint, j)
                     }
                     break;
                 }
                 case enmShape.LineShape: {
                     const XYSize = Math.sqrt(obn) / 4;
-                    LD.PrtSpatialIndex = new clsSpatialIndexSearch(SpatialPointType.SPILine, true, mrect, mrect.width() / XYSize);
+                    const index = new clsSpatialIndexSearch(SpatialPointType.SPILine, true, mrect, mrect.width() / XYSize);
+                    LD.PrtSpatialIndex = index;
                     for (let j = 0; j < obn; j++) {
                         if (LD.Type === enmLayerType.Mesh) {
-                            LD.PrtSpatialIndex.AddLine(4, LD.atrObject.atrObjectData[j].MeshPoint, j)
+                            index.AddLine(4, LD.atrObject.atrObjectData[j].MeshPoint, j)
                         } else {
                             const ELine = this.Get_Enable_KenCode_MPLine(i, j);
                             for (const k in ELine) {
                                 const LDM = LD.MapFileData.MPLine[ELine[k].LineCode];
-                                LD.PrtSpatialIndex.AddLine(LDM.NumOfPoint, LDM.PointSTC, j);
+                                index.AddLine(LDM.NumOfPoint, LDM.PointSTC, j);
                             }
                         }
                     }
                     break;
                 }
                 case enmShape.PolygonShape: {
-                    LD.PrtSpatialIndex = new clsSpatialIndexSearch(SpatialPointType.SPIRect, false, mrect);
+                    const index = new clsSpatialIndexSearch(SpatialPointType.SPIRect, false, mrect);
+                    LD.PrtSpatialIndex = index;
                     for (let j = 0; j < obn; j++) {
                         const ObjRect = this.Get_Kencode_Object_Circumscribed_Rectangle(i, j);
-                        LD.PrtSpatialIndex.AddRect(ObjRect, j);
+                        index.AddRect(ObjRect, j);
                     }
                     break;
                 }
             }
-            LD.PrtSpatialIndex.AddEnd();
+            LD.PrtSpatialIndex?.AddEnd();
         }
 
     }
@@ -4109,6 +4143,9 @@ class clsAttrData {
             const ld = this.LayerData[i];
             if (ld.Type !== enmLayerType.Trip_Definition) {
                 const MapFileData = ld.MapFileData;
+                if (!MapFileData) {
+                    continue;
+                }
                 const LayerTime = ld.Time;
                 if (this.TotalData.ViewStyle.Dummy_Size_Flag === true) {
 
@@ -4346,8 +4383,11 @@ class clsAttrData {
             const ld = this.LayerData[i];
             if (ld.Type !== enmLayerType.Trip_Definition) {
                 const MapFileData = ld.MapFileData;
+                if (!MapFileData) {
+                    continue;
+                }
                 if (Object.keys(LineCheck).indexOf(ld.MapFileName) === -1) {
-                    const LineL = new Array(MapFileData.Map.ALIN).fill(false);
+                    const LineL: boolean[] = Array.from({ length: MapFileData.Map.ALIN }, () => false);
                     LineCheck[ld.MapFileName] = LineL;
                 }
                 const LC = (LineCheck as Record<string, boolean[]>)[ld.MapFileName];
@@ -4356,7 +4396,7 @@ class clsAttrData {
                     //ダミー領域も範囲に含む場合
                     const dmObj: number[] = [];
                     if (ld.DummyGroup.length > 0) {
-                        const ObjGIndex = new Array(MapFileData.Map.OBKNum);
+                        const ObjGIndex: boolean[] = Array.from({ length: MapFileData.Map.OBKNum }, () => false);
                         for (let j = 0; j < ld.DummyGroup.length; j++) {
                             ObjGIndex[ld.DummyGroup[j]] = true;
                         }
@@ -4481,13 +4521,14 @@ class clsAttrData {
             this.MapData.AddExistingMapData(MapDataList[i], MapDataList[i].Map.FileName);
         }
 
-        const odata = JSON.parse(attrText);
+        const odata = JSON.parse(attrText) as MDRJData;
         
-        if(Object.prototype.hasOwnProperty.call(odata, "mapData")){
+        const mapData = odata.mapData;
+        if (mapData) {
             //地図データ付属形式
-            for(const mapfname in odata.mapData){
+            for (const mapfname in mapData) {
                 const mdata = new clsMapdata();
-                mdata.openJsonMapData(odata.mapData[mapfname],true);
+                mdata.openJsonMapData(mapData[mapfname], true);
                 mdata.Map.FileName = mapfname;
                 this.MapData.AddExistingMapData(mdata, mdata.Map.FileName);
             }
@@ -4522,24 +4563,30 @@ class clsAttrData {
 
         vs.Dummy_Size_Flag = oldvs.Dummy_Size_Flag;
         //点ダミーオブジェクトの記号
-        const oldDOG = oldvs.DummyObjectPointMark;
+        const oldDOG = oldvs.DummyObjectPointMark ?? {};
+        vs.DummyObjectPointMark = vs.DummyObjectPointMark ?? {};
         for (const key in oldDOG) {
-            const d = oldDOG[key];
+            const d = oldDOG[key] ?? [];
             const nd: strDummyObjectPointMark_Info[] = [];
             for (let i = 0; i < d.length; i++) {
+                const src = d[i];
                 const dd = new strDummyObjectPointMark_Info();
-                dd.ObjectKindName = d.ObjectKindName;
-                dd.Mark = cnvMarkProperty(d.Mark);
+                dd.ObjectKindName = src.ObjectKindName;
+                dd.Mark = cnvMarkProperty(src.Mark);
                 nd.push(dd);
             }
             vs.DummyObjectPointMark[key] = nd;
         }
         const lp = vs.LatLonLine_Print;
-        const olp = oldvs.LatLonLine_Print;
-        if(olp.Lat_Interval===undefined){olp.Lat_Interval=1;}
-        if(olp.Lon_Interval===undefined){olp.Lon_Interval=1;}
-        lp.Lat_Interval = olp.Lat_Interval;
-        lp.Lon_Interval = olp.Lon_Interval;
+        const olp = oldvs.LatLonLine_Print ?? {
+            Lat_Interval: 1,
+            Lon_Interval: 1,
+            LPat: clsBase.Line(),
+            Order: 0,
+            Visible: false
+        };
+        lp.Lat_Interval = olp.Lat_Interval ?? 1;
+        lp.Lon_Interval = olp.Lon_Interval ?? 1;
         lp.LPat = cnvLineProperty(olp.LPat);
         lp.Order = olp.Order;
         lp.Visible = olp.Visible;
@@ -4560,9 +4607,10 @@ class clsAttrData {
         vs.Screen_Setting = cnvScreen_Setting(oldvs.Screen_Setting);
         vs.ValueShow=cnvValueShow(oldvs.ValueShow);
         vs.SouByou = cnvSouByou(oldvs.SouByou);
-        vs.TileMapView=cnvTileMapView(oldvs.TileMapView);
-        vs.SymbolLine.Visible = oldvs.SymbolLine.Visible;
-        vs.SymbolLine.Line = cnvLineProperty(oldvs.SymbolLine.Line);
+        vs.TileMapView = cnvTileMapView(oldvs.TileMapView);
+        const oldSymbolLine = oldvs.SymbolLine ?? { Visible: false, Line: clsBase.Line() };
+        vs.SymbolLine.Visible = oldSymbolLine.Visible ?? false;
+        vs.SymbolLine.Line = cnvLineProperty(oldSymbolLine.Line ?? clsBase.Line());
         vs.Zahyo = new Zahyo_info();
         Object.assign(vs.Zahyo, oldvs.Zahyo);
         vs.Zahyo.CenterXY=cnvPoint(oldvs.Zahyo.CenterXY);
@@ -4571,7 +4619,7 @@ class clsAttrData {
         this.TotalData.TotalMode = cnvTotalmode(odata.TotalData.TotalMode);
         //レイヤデータの読み込み
         for (let i = 0; i < lv1.Lay_Maxn; i++) {
-            this.LayerData[i] = cnvLayerData(odata.LayerData[i]);
+            this.LayerData[i] = cnvLayerData(odata.LayerData[i] as JsonObject);
         }
         
         //レイヤに地図ファイルを設定
@@ -4608,7 +4656,7 @@ class clsAttrData {
 
         let ObjectErrorMessage="";
         //線種の設定
-        const saveLPat = odata.saveLPat;
+        const saveLPat = odata.saveLPat ?? { MapNum: 0, MapFileName: [], LpatNumByMapfile: [], Lpat: [] };
         let ct = 0;
         for (let i = 0; i < saveLPat.MapNum; i++) {
             const mpk = this.SetMapFile(saveLPat.MapFileName[i]).Map.LpNum;
@@ -5689,9 +5737,9 @@ class clsAttrData {
         let E_Mes = "";
         const MapFileData = this.MapData.SetMapFile(LayerReading.MapFile as string);
         const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(LayerReading.MapFile as string);
-        const Object_Use_Check = new Array(MapFileData.Map.Kend - 1);
-        const No_Object_Name = [];
-        const Over_Lap_Object = [];
+        const Object_Use_Check: boolean[] = Array.from({ length: MapFileData.Map.Kend - 1 }, () => false);
+        const No_Object_Name: string[] = [];
+        const Over_Lap_Object: string[] = [];
 
         let MxData = 0;
         const LayerReadingTTL = LayerReading.TTL as string[];
@@ -5711,7 +5759,7 @@ class clsAttrData {
         }
         const DN_Str = Generic.Array2Dimension(MxData, LayerReadingObjectDataStac.length);
         
-        const Get_Obj = [];//strObject_Data_Info / strTripObjData_Info / string
+        const Get_Obj: Array<strObject_Data_Info | strTripObjData_Info | string> = [];
         let MeshCodeLen = 0;
         const LayerReadingType = LayerReading.Type as number;
         if (LayerReadingType === enmLayerType.Mesh) {
@@ -5837,18 +5885,18 @@ class clsAttrData {
             E_Mes += Laye_Shape_Emes + '\n';
         }
 
-        if ((LayerReading.UNT as string[]).length===0) {
-            LayerReading.UNT = new Array(MxData).fill("");
+        if ((LayerReading.UNT as string[]).length === 0) {
+            LayerReading.UNT = new Array<string>(MxData).fill("");
         }
         if ((LayerReading.TTL as string[]).length === 0) {
-            LayerReading.TTL = new Array(MxData).fill("");
+            LayerReading.TTL = new Array<string>(MxData).fill("");
         }
 
         if ((LayerReading.DTMis as JsonValue[]).length === 0) {
-            LayerReading.DTMis = new Array(MxData).fill(TotalMissing);
+            LayerReading.DTMis = new Array<JsonValue>(MxData).fill(TotalMissing);
         }
         if ((LayerReading.Note as string[]).length === 0) {
-            LayerReading.Note = new Array(MxData).fill("");
+            LayerReading.Note = new Array<string>(MxData).fill("");
         }
 
         (LayerReading.TTL as JsonValue[]).shift();
@@ -5856,7 +5904,7 @@ class clsAttrData {
         (LayerReading.DTMis as JsonValue[]).shift();
         (LayerReading.Note as JsonValue[]).shift();
 
-        const DummmyObjNamesList = [];
+        const DummmyObjNamesList: string[] = [];
         const LayerReadingDummyTemp = LayerReading.Dummy_Temp;
         for (let i = 0; i < LayerReadingDummyTemp.length; i++) {
             const DCS = LayerReadingDummyTemp[i];
@@ -5867,7 +5915,7 @@ class clsAttrData {
             }
         }
 
-        const DummmyObjGroupNamesList = [];
+        const DummmyObjGroupNamesList: string[] = [];
         const LayerReadingDummyOBKTemp = LayerReading.Dummy_OBKTemp as string[][];
         for (let i = 0; i < LayerReadingDummyOBKTemp.length; i++) {
             const DCS = LayerReadingDummyOBKTemp[i];
@@ -5893,9 +5941,9 @@ class clsAttrData {
         let ErrorMes = "";
         const L = this.LayerData[Layernum];
         const ObjNum = L.atrObject.ObjectNum;
-        const DataItemNotF = new Array(DataNum).fill(false);
-        const URLData = new Array(DataNum);
-        const URL_NameData = new Array(DataNum);
+        const DataItemNotF: boolean[] = Array.from({ length: DataNum }, () => false);
+        const URLData: number[] = Array.from({ length: DataNum }, () => 0);
+        const URL_NameData: number[] = Array.from({ length: DataNum }, () => 0);
         let URLDataNum = 0;
         let URL_NameDataNum = 0;
         let LatPosition = -1;
@@ -6093,7 +6141,7 @@ class clsAttrData {
         }
         //データ項目の追加
         let addErMes = "";
-        const Data_Val_STR = new Array(ObjNum);
+        const Data_Val_STR: string[] = Array.from({ length: ObjNum }, () => "");
         for (let i = 0; i < DataNum; i++) {
             if (DataItemNotF[i] === false) {
                 for (let j = 0; j < ObjNum; j++) {
@@ -6351,9 +6399,9 @@ class clsAttrData {
             }
         }
 
-        const sh = new Array(3).fill(0);
+        const sh: number[] = Array.from({ length: 3 }, () => 0);
         for (let j = 0; j < L.atrObject.ObjectNum; j++) {
-            let D;
+            let D = 0;
             const O = L.atrObject.atrObjectData[j];
             if (O.Objectstructure === enmKenCodeObjectstructure.MapObj) {
                 D = L.MapFileData.MPObj[O.MpObjCode].Shape;
@@ -6896,7 +6944,7 @@ class clsAttrData {
         let dt: boolean[] = [];
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         if ((ad.MissingValueNum === 0) || (ad.MissingF === false)) {
-             dt = new Array(ObjNum).fill(false);
+             dt = Array.from({ length: ObjNum }, () => false);
         } else {
             for (let i = 0; i < ObjNum; i++) {
                 dt[i] = (ad.Value[i] === undefined);
@@ -7485,7 +7533,7 @@ class clsAttrData {
         const EDataNum = L.EnableValueNum;
         const div_num = L.SoloModeViewSettings.Div_Num;
         const _dtype = L.DataType;
-        const Div_Value = new Array(div_num);
+        const Div_Value: number[] = Array.from({ length: div_num }, () => 0);
         switch (v) {
             case enmDivisionMethod.Free:
                 return;
@@ -7509,11 +7557,11 @@ class clsAttrData {
                     } while (divv < SortV.NumofData());
                 } else {
                     //面積分位数
-                    const Mense = new Array(EDataNum);
+                    const Mense: number[] = Array.from({ length: EDataNum }, () => 0);
                     let AddMense = 0;
                     for (let i = 0; i < EDataNum; i++) {
                         Mense[i] = this.GetObjMenseki(Layernum, EnableDT[i].ObjLocation);
-                        AddMense += Mense[i].menseki;
+                        AddMense += Mense[i];
                     }
                     let n = 0;
                     let Addv = 0;
@@ -7521,12 +7569,12 @@ class clsAttrData {
                     let divv = divvStp;
                     for (let i = 0; i < SortV.NumofData(); i++) {
                         const j = SortV.DataPositionRev(i);
-                        Addv += Mense[j].menseki;
+                        Addv += Mense[j];
                         if (Addv >= divv) {
                             Div_Value[n] = SortV.DataPositionRevValue(i);
                             divv += divvStp;
                             n++;
-                            Addv -= Mense[j].menseki;
+                            Addv -= Mense[j];
                             i--;
                         }
                     }
@@ -8125,8 +8173,7 @@ class clsAttrData {
         this.TempData.SoubyouLoopLineArea = [];
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
             const ld = this.LayerData[i]
-            const LoopLineArea = new Array(ld.MapFileData.Map.ALIN );
-            LoopLineArea.fill(0);
+            const LoopLineArea: number[] = Array.from({ length: ld.MapFileData.Map.ALIN }, () => 0);
             //ダミーオブジェクトグループのチェック
             const ObjGIndex = new Array(ld.MapFileData.Map.OBKNum);
             ObjGIndex.fill(false);

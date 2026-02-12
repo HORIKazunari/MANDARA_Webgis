@@ -394,9 +394,10 @@ interface IAttrData {
             TileMapView: {
                 Visible: boolean;
                 DrawTiming?: number; // enmDrawTiming
-                TileMapDataSet?: strTileMapViewInfo; // strTileMapViewInfo from clsAttrData.ts
+                TileMapDataSet?: JsonObject; // clsAttrData.ts と clsDraw.ts に合わせる
                 AlphaValue?: number;
             };
+            MapPrint_Flag?: boolean;
             Missing_Data: {
                 Print_Flag: boolean;
                 Text: string;
@@ -503,7 +504,7 @@ interface IAttrData {
         };
         ObjectPrintedCheckFlag?: boolean[][];
     };
-    LayerData?: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
+    LayerData: ILayerDataInfo[]; // strLayerDataInfo[] (clsAttrData.tsで定義)
     // メソッド
     Get_AllMapLineKind?: () => LPatSek_Info[];
     Get_LineKindUsedList?: () => boolean[];
@@ -1149,6 +1150,9 @@ interface IGeneric {
     Remove_Same_String: (values: string[]) => string[];
     GetColorArrange: (color: colorRGBA, changeValue: number) => colorRGBA;
     getScaleUnitStrings: (value: number | undefined, unit: number) => string;
+    strToUtf8Array: (text: string) => Uint8Array;
+    unzipFile: (file: Blob, onOK: (data: { [key: string]: Uint8Array }) => void, onError: (err: Error) => void) => void;
+    zipFile: (totalFileName: string, data: Uint8Array[], fileName: string[]) => void;
     [key: string]: JsonValue;
 }
 
@@ -1688,8 +1692,8 @@ declare enum enmPrintMouseMode {
 
 declare enum SpatialPointType {
     SinglePoint = 0,
-    LineString = 1,
-    Polygon = 2
+    SPILine = 1,
+    SPIRect = 2
 }
 
 // ==================== 追加クラス・インターフェース ====================
@@ -1711,6 +1715,10 @@ interface ClsSpatialIndexSearchInstance {
     GetRectIn: (x: number, y: number) => { number: number; Tags: (string | number)[]; ObStac: number[] };
     GetNearPointNumber: (x: number, y: number, mind: number) => { num: number; Tags: (string | number)[] };
     GetNearestLineNumber: (x: number, y: number, mind: number) => { num: number; Tags: (string | number)[] };
+    AddSinglePoint: (XY1: latlon | point, TagData: string | number) => void;
+    AddLine: (Pnum: number, XY: latlon[] | point[], TagData: string | number) => void;
+    AddRect: (xy1Rectangle: point | rectangle, xy2TagData: latlon | string | number, TagData?: string | number) => void;
+    AddEnd: () => void;
 }
 
 // Setting_Info は clsTime.ts で定義済み
@@ -1991,7 +1999,9 @@ declare function graphModeOresen_Bou(...args: JsonValue[]): void;
 declare function openMapFile(...args: JsonValue[]): JsonValue;
 declare class clsMapdata {
     Map: strMap_data;
+    ObjectKind: strObjectGroup_Data[];
     MPObj: strObj_Data[];
+    LineKind: LineKind_Data[];
     MPLine: strLine_Data[];
     Get_Enable_CenterP?: (code: string | number, time?: strYMD) => point;
     Get_TotalLineKind?: () => LPatSek_Info[];
@@ -2012,6 +2022,27 @@ declare class clsMapdata {
     [key: string]: JsonValue;
     constructor(...args: JsonValue[]);
 }
+declare class strObjectGroup_Data {
+    ObjectType?: number;
+    Name?: string;
+    Shape?: number;
+    Mesh?: number;
+    Color: colorRGBA;
+    ObjectNameList: string[];
+    UseLineType: boolean[];
+    UseObjectGroup: boolean[];
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
+}
+
+declare class LineKind_Data {
+    Name?: string;
+    NumofObjectGroup?: number;
+    ObjGroup: strLKOjectGroup_Info[];
+    Mesh?: boolean;
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
+}
 declare class clsAttrData implements IAttrData { 
     TotalData: IAttrData['TotalData'];
     TempData: IAttrData['TempData'];
@@ -2019,7 +2050,16 @@ declare class clsAttrData implements IAttrData {
     [key: string]: JsonValue; 
     constructor(...args: JsonValue[]); 
 }
-declare class clsTileMap { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
+declare class clsTileMap {
+    getTileMapData: (dataName: string) => JsonObject | undefined;
+    getTileMapDataById: (id: number) => JsonObject | undefined;
+    getTileMapTagList: () => string[];
+    getTileMapListByTag: (tag: string) => JsonObject[];
+    drawTileMap?: (...args: JsonValue[]) => void;
+    PrintCopyright?: (...args: JsonValue[]) => void;
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
+}
 declare class clsDrawMarkFan {
     static init?: (...args: JsonValue[]) => void;
     static getMarkShameNum?: (...args: JsonValue[]) => number;
@@ -2088,7 +2128,17 @@ declare function frmMain_SetSeriesMode(...args: JsonValue[]): void;
 declare function frmMain_MarkPosition(...args: JsonValue[]): void;
 declare function frmMain_LayeObjectSelectOne(...args: JsonValue[]): void;
 declare function settingFront(...args: JsonValue[]): void;
-declare const clsSpatialIndexSearch: typeof import('./SpatialIndexSearch').clsSpatialIndexSearch;
+declare function Check_Point_in_Kencode_oneObject_Box(layernum: number, objNum: number, x: number, y: number): boolean;
+declare class clsSpatialIndexSearch implements ClsSpatialIndexSearchInstance {
+    constructor(objType: SpatialPointType, extraRangeFlag: boolean, rect?: rectangle, extraRangeSize?: number);
+    GetRectIn: (x: number, y: number) => { number: number; Tags: (string | number)[]; ObStac: number[] };
+    GetNearPointNumber: (x: number, y: number, mind: number) => { num: number; Tags: (string | number)[] };
+    GetNearestLineNumber: (x: number, y: number, mind: number) => { num: number; Tags: (string | number)[] };
+    AddSinglePoint: (XY1: latlon | point, TagData: string | number) => void;
+    AddLine: (Pnum: number, XY: latlon[] | point[], TagData: string | number) => void;
+    AddRect: (xy1Rectangle: point | rectangle, xy2TagData: latlon | string | number, TagData?: string | number) => void;
+    AddEnd: () => void;
+}
 declare class strFrmCopyObjectName_init_parameter_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function frmCopyObjectName(...args: JsonValue[]): void;
 declare class strOverLay_Dataset_Info { 
@@ -2110,6 +2160,13 @@ declare class strLKOjectGroup_Info {
     NumofObjectGroup?: number;
     [key: string]: JsonValue; 
     constructor(...args: JsonValue[]); 
+}
+declare class strSymbolLine_Info {
+    Visible?: boolean;
+    Line?: Line_Property;
+    Clone?: () => strSymbolLine_Info;
+    [key: string]: JsonValue;
+    constructor(...args: JsonValue[]);
 }
 declare class strTileMapViewInfo { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strLayerPointLineShape_Data {
