@@ -48,9 +48,9 @@ export default tseslint.config(
       'prefer-const': 'error',  // 修正完了したのでerrorに変更
       
       // 型安全性の向上 - 段階的に修正
-      '@typescript-eslint/no-unsafe-assignment': 'warn',      // 大量のため一旦warn
-      '@typescript-eslint/no-unsafe-member-access': 'warn',   // 大量のため一旦warn
-      '@typescript-eslint/no-unsafe-call': 'warn',            // 大量のため一旦warn
+      '@typescript-eslint/no-unsafe-assignment': 'error',      // 段階的にerrorへ移行
+      '@typescript-eslint/no-unsafe-member-access': 'error',   // 段階的にerrorへ移行
+      '@typescript-eslint/no-unsafe-call': 'error',            // 段階的にerrorへ移行
       '@typescript-eslint/no-unsafe-return': 'error',         // 8件のみ: 修正対象
       
       // 関数とメソッドの型定義 - 段階的に修正
@@ -162,6 +162,14 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-unsafe-call': 'error',
       '@typescript-eslint/no-unsafe-member-access': 'error',
+    },
+  },
+  {
+    files: ['src/clsAccessory.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-unsafe-call': 'warn',
     },
   },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、

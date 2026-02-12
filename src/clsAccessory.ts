@@ -186,12 +186,12 @@ export class Accessory {
         if (av.ScrData.ThreeDMode.Set3D_F === true) {
             return;
         }
-        const MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon;
+        const MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon as rectangle;
         if (typeof MapIdoKedoRect?.top === 'undefined' || typeof MapIdoKedoRect.bottom === 'undefined' ||
             typeof MapIdoKedoRect.left === 'undefined' || typeof MapIdoKedoRect.right === 'undefined') {
             return;
         }
-        const iiv = av.LatLonLine_Print.Lat_Interval;
+        const iiv = Number(av.LatLonLine_Print.Lat_Interval);
         const s1 = Math.floor(MapIdoKedoRect.top / iiv) ;
         let Start_Ido = iiv * s1;
         let End_Ido = iiv * Math.floor(MapIdoKedoRect.bottom / iiv) + iiv;
@@ -206,7 +206,7 @@ export class Accessory {
             }
         }
 
-        const ikv = av.LatLonLine_Print.Lon_Interval;
+        const ikv = Number(av.LatLonLine_Print.Lon_Interval);
         let s2;
         if (ikv > 2) {
             if (MapIdoKedoRect.left > 0) {
@@ -297,7 +297,7 @@ export class Accessory {
         }
         for (let i = 0; i < kedon; i++) {
             const Kedo = Start_Kedo + i * ikv;
-            let lpt = av.LatLonLine_Print.LPat;
+            let lpt: Line_Property = av.LatLonLine_Print.LPat;
             if ((i === 0) || (i === kedon - 1)) {
                 lpt = av.LatLonLine_Print.OuterPat;
             }
@@ -316,7 +316,7 @@ export class Accessory {
                         //赤道を挟まない場合
                         const w = Math.abs(PC2.x - PC1.x);
                         const H = End_Ido - Start_Ido;
-                        const pxy = [];
+                        const pxy: point[] = [];
                         for (let j = 0; j <= w; j++) {
                             const PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / w)), av.Zahyo);
                             pxy.push(av.ScrData.getSxSy(PP1));
@@ -332,7 +332,7 @@ export class Accessory {
                             clsDrawLine.Line?.(g, lpt, [PC1, PC2], av.ScrData);
                         } else {
                             const H = Math.abs(Start_Ido) + End_Ido
-                            const pxy = [];
+                            const pxy: point[] = [];
                             for (let j = 0; j <= w + w2; j++) {
                                 const PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / (w + w2))), av.Zahyo);
                                 pxy.push(av.ScrData.getSxSy(PP1));
@@ -531,7 +531,7 @@ export class Accessory {
                         const gm = al.LayerModeViewSettings.GraphMode;
                         const n = gm.DataSet[gm.SelectedIndex].length;
                         if (n > 0) {
-                            const NoteD = [];
+                            const NoteD: string[] = [];
                             for (let i = 0; i < n; i++) {
                                 const tx = state.attrData.Get_DataNote(Layernum, gm.DataSet[gm.SelectedIndex].Data[i].DataNumber) || '';
                                 if (tx !== "") {
@@ -539,7 +539,7 @@ export class Accessory {
                                 }
                             }
                             if (NoteD.length !== 0) {
-                                const NoteD2 = Generic.Remove_Same_String(NoteD);
+                                const NoteD2 = Generic.Remove_Same_String(NoteD) as string[];
                                 nt = NoteD2.join(chrLF);
                             }
                         }
@@ -549,7 +549,7 @@ export class Accessory {
                         const lm = al.LayerModeViewSettings.LabelMode;
                         const n = lm.DataSet[lm.SelectedIndex].length;
                         if (n > 0) {
-                            const NoteD = [];
+                            const NoteD: string[] = [];
                             for (let i = 0; i < n; i++) {
                                 const tx = state.attrData.Get_DataNote(Layernum, lm.DataSet[lm.SelectedIndex].Data[i].DataNumber) || '';
                                 if (tx !== "") {
@@ -557,7 +557,7 @@ export class Accessory {
                                 }
                             }
                             if (NoteD.length !== 0) {
-                                const NoteD2 = Generic.Remove_Same_String(NoteD);
+                                const NoteD2 = Generic.Remove_Same_String(NoteD) as string[];
                                 nt = NoteD2.join('\n');
                             }
                         }
@@ -634,9 +634,9 @@ export class Accessory {
 
         let UnderW = 0;
         let UnderH = 0;
-        const xposi = [];// enmHorizontalAlignment
-        const yposi = [];// enmVerticalAlignment
-        const WordP = [];
+        const xposi: enmHorizontalAlignment[] = [];
+        const yposi: enmVerticalAlignment[] = [];
+        const WordP: point[] = [];
         //rep=0の時は大きさを計算、rep1で実際の描画
         for (let rep = 0; rep <= 1; rep++) {
             size2 = HeadBoxSize.Clone();
@@ -1227,7 +1227,7 @@ export class Accessory {
         const OP  = new point(zerop.x + state.attrData.Get_Length_On_Screen(2) + BarSize.width / 2, zerop.y);
         switch (Bar_Md.BarShape){
             case enmMarkBarShape.triangle: {
-                const tri = [];
+                const tri: point[] = [];
                 tri.push(new point(OP.x - BarSize.width / 2, OP.y));
                 tri.push(new point(OP.x + BarSize.width / 2, OP.y));
                 tri.push(new point(OP.x, OP.y - BarSize.height));
