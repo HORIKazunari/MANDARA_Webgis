@@ -4412,15 +4412,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     static Array2Dimension<T>(dim1num: number, dim2num: number, defoValue: T = undefined as T): T[][] {
-
-        const arrayData: T[][] = new Array(dim1num);
-        for (let i = 0; i < dim1num; i++) {
-            arrayData[i] = new Array(dim2num);
+        return Array.from({ length: dim1num }, () => {
+            const row = new Array<T>(dim2num);
             if (defoValue !== undefined) {
-                arrayData[i].fill(defoValue);
+                row.fill(defoValue);
             }
-        }
-        return arrayData;
+            return row;
+        });
     }
 
     static createNewFrame(parentObj: HTMLElement, id: string, Class: string, x: number, y: number, width: number, height: number, text: string = "") {
@@ -4573,7 +4571,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
         }
         window.setVisibility?.(visibilieF);
-        window.setTitle = function (title) {
+        window.setTitle = function (this: HTMLDivElement, title: string) {
             const cnode = this.childNodes;
             for (let i = 0; i < cnode.length; i++) {
                 if (cnode[i].name === 'header') {
@@ -5969,7 +5967,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 //DIV要素の移動，拡大縮小
 // @ts-ignore - Element.prototypeに動的に追加するメソッドの型定義が不可能
-(Element.prototype as Record<string, unknown>)['dragBorder'] = function(movingCall?: (element: Element) => void, moveEndCall?: (element: Element) => void): void {
+(Element.prototype as Record<string, unknown>)['dragBorder'] = function(this: HTMLElement, movingCall?: (element: Element) => void, moveEndCall?: (element: Element) => void): void {
     const state = appState();
     let x: number;
     let y: number;
@@ -5982,14 +5980,18 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     let mode: string | number;
     let mdownF=false;
     // eslint-disable-next-line @typescript-eslint/no-this-alias -- プロトタイプメソッド内でthisをキャプチャする必要がある
-    const targetEle=this;
+    const targetEle = this;
     const SR=10;
     const TR=state.scrMargin.top;
 
     const mmovef = (event: MouseEvent): void => {
+        const parentElement = targetEle.parentElement;
+        if (!parentElement) {
+            return;
+        }
         //要素内の相対座標を取得
-        fx = event.pageX- targetEle.parentElement.offsetLeft;
-        fy = event.pageY- targetEle.parentElement.offsetTop;
+        fx = event.pageX- parentElement.offsetLeft;
+        fy = event.pageY- parentElement.offsetTop;
         x = fx - targetEle.offsetLeft;
         y = fy - targetEle.offsetTop;
         fW = targetEle.style.width.removePx();
@@ -6040,9 +6042,13 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
              event = e.changedTouches[0];
         }
 
+        const parentElement = targetEle.parentElement;
+        if (!parentElement) {
+            return;
+        }
         //要素内の相対座標を取得
-        fx = event.pageX- targetEle.parentElement.offsetLeft;
-        fy = event.pageY- targetEle.parentElement.offsetTop;
+        fx = event.pageX- parentElement.offsetLeft;
+        fy = event.pageY- parentElement.offsetTop;
         fW = targetEle.style.width.removePx();
         fH = targetEle.style.height.removePx();
         fLeft = targetEle.style.left.removePx();
@@ -6236,19 +6242,19 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 //数値にpxをつける
 // @ts-ignore - Number.prototypeへのメソッド追加は型システムで警告されるが必要
 (Number.prototype as Record<string, unknown>)['px'] = function(): string {
-    const v = this.toString();
+    const v = (this as number).toString();
     return v + "px";
 };
 
 /**NumberInputに値を設定する */
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
-(HTMLElement.prototype as Record<string, unknown>).setNumberValue = function (v: number){
-    this.preValue=v;
-    this.value=v;
+(HTMLElement.prototype as Record<string, unknown>).setNumberValue = function (this: HTMLInputElement, v: number){
+    this.preValue = v;
+    this.value = String(v);
 };
 //select要素の子要素を削除
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
-(HTMLElement.prototype as unknown)['removeAll'] = function (): void {
+(HTMLElement.prototype as unknown)['removeAll'] = function (this: HTMLElement): void {
     while (this.lastChild) {
         this.removeChild(this.lastChild);
     }
@@ -6256,7 +6262,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
 
 /**select要素のoptionを入れ替える */
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
-(HTMLElement.prototype as unknown)['optionSwap'] = function(n1?: number, n2?: number): void {
+(HTMLElement.prototype as unknown)['optionSwap'] = function(this: HTMLSelectElement, n1?: number, n2?: number): void {
     if (n1 === undefined || n2 === undefined) {
         return;
     }
@@ -6298,7 +6304,7 @@ HTMLElement.prototype.removeOne = function (this: HTMLSelectElement): string | u
 }
 
 //select要素にリスト追加
-HTMLElement.prototype.addSelectList = function (list: ListItem[], firstSelectIndex: number | undefined, resetF: boolean, astariskNonF: boolean,insertPoint: number | undefined=undefined) {
+HTMLElement.prototype.addSelectList = function (this: HTMLSelectElement, list: ListItem[], firstSelectIndex: number | undefined, resetF: boolean, astariskNonF: boolean, insertPoint: number | undefined = undefined) {
     if (resetF === true) {
         this.removeAll();
     }
@@ -6344,7 +6350,7 @@ HTMLElement.prototype.getValue = function (this: HTMLSelectElement): string | nu
 }
 
 //select要素で指定した文字のテキストを選択
-HTMLElement.prototype.setSelectText = function (txt: string) {
+HTMLElement.prototype.setSelectText = function (this: HTMLSelectElement, txt: string) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         if (this.options[i].text === txt) {
@@ -6357,13 +6363,13 @@ HTMLElement.prototype.setSelectText = function (txt: string) {
 }
 
 /**select要素の指定の位置のvalueとテキストを変更 */
-HTMLElement.prototype.setSelectData=function(n: number,value: string | number,text: string){
+HTMLElement.prototype.setSelectData = function (this: HTMLSelectElement, n: number, value: string | number, text: string) {
     this.options[n].text=text;
     this.options[n].value=value;
 }
 
 //select要素で指定したvalueのテキストの先頭にアスタリスクを付ける、外す
-HTMLElement.prototype.setAstarisk = function (value: string | number, astariskAddF: boolean) {
+HTMLElement.prototype.setAstarisk = function (this: HTMLSelectElement, value: string | number, astariskAddF: boolean) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
@@ -6390,7 +6396,7 @@ HTMLElement.prototype.setAstarisk = function (value: string | number, astariskAd
 }
 
 //select要素で指定したvalueを選択
-HTMLElement.prototype.setSelectValue= function (value: string | number) {
+HTMLElement.prototype.setSelectValue = function (this: HTMLSelectElement, value: string | number) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
         let v=this.options[i].value;
@@ -6406,7 +6412,7 @@ HTMLElement.prototype.setSelectValue= function (value: string | number) {
     return false;
 }
 //要素の表示状態を指定のものに設定
-HTMLElement.prototype.setVisibility = function (visiflag: boolean) {
+HTMLElement.prototype.setVisibility = function (this: HTMLElement, visiflag: boolean) {
     if (visiflag === true) {
         this.style.display = "inline";
     } else {
@@ -6414,7 +6420,7 @@ HTMLElement.prototype.setVisibility = function (visiflag: boolean) {
     }
 }
 /**要素の表示状態を取得 */
-HTMLElement.prototype.getVisibility = function () {
+HTMLElement.prototype.getVisibility = function (this: HTMLElement) {
     if (this.style.display === "inline"){
         return true;
     } else {
@@ -6424,7 +6430,7 @@ HTMLElement.prototype.getVisibility = function () {
 
 /**ボタンの使用可／不可の切り替え */
 // @ts-ignore - HTMLElement.prototypeへのメソッド追加は型システムで警告されるが必要
-HTMLElement.prototype.btnDisabled = function (f) {
+HTMLElement.prototype.btnDisabled = function (this: HTMLButtonElement | HTMLInputElement, f: boolean) {
     this.disabled = f;
     if (f === true) {
         this.className = "btnDisable";
@@ -6435,7 +6441,7 @@ HTMLElement.prototype.btnDisabled = function (f) {
 
 //文字からpxをとる
 // @ts-ignore - String.prototypeへのメソッド追加は型システムで警告されるが必要
-(String.prototype as unknown)['removePx'] = function (): number {
+(String.prototype as unknown)['removePx'] = function (this: string): number {
     return parseInt(this.substr(0, this.length - 2));
 };
 

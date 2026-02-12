@@ -249,22 +249,22 @@ class Grid_Info {
     
     Clone() {
         const CloneGrid = new Grid_Info();
+        const clone2d = <T extends { Clone(): T }>(grid: T[][]): T[][] =>
+            grid.map((row) => row.map((cell) => cell.Clone()));
+        const cloneArray = <T extends { Clone(): T }>(items: T[]): T[] =>
+            items.map((item) => item.Clone());
         Object.assign(CloneGrid, this);
-        CloneGrid.Grid_Text = Generic.Array2Clone(this.Grid_Text);
-        CloneGrid.FixedObjectName = Generic.Array2Clone(this.FixedObjectName);
-        CloneGrid.FixedDataItem = Generic.Array2Clone(this.FixedDataItem);
-        CloneGrid.FixedUpperLeft = Generic.Array2Clone(this.FixedUpperLeft);
+        CloneGrid.Grid_Text = clone2d(this.Grid_Text);
+        CloneGrid.FixedObjectName = clone2d(this.FixedObjectName);
+        CloneGrid.FixedDataItem = clone2d(this.FixedDataItem);
+        CloneGrid.FixedUpperLeft = clone2d(this.FixedUpperLeft);
         CloneGrid.Ope = this.Ope.Clone();
-        CloneGrid.LayerName = this.LayerName
-        CloneGrid.LayerData = [];
-        for(const key in this.LayerData){
-            CloneGrid.LayerData[key] = this.LayerData[key];
-        }
-        Object.assign(CloneGrid.LayerData, this.LayerData);
-        CloneGrid.DataItemData = Generic.ArrayClone(this.DataItemData);
-        CloneGrid.CellHeight = Generic.ArrayShallowCopy(this.CellHeight);
-        CloneGrid.FixedDataItemData = Generic.ArrayClone(this.FixedDataItemData);
-        CloneGrid.FixedObjectNameData = Generic.ArrayClone(this.FixedObjectNameData);
+        CloneGrid.LayerName = this.LayerName;
+        CloneGrid.LayerData = this.LayerData.slice();
+        CloneGrid.DataItemData = cloneArray(this.DataItemData);
+        CloneGrid.CellHeight = this.CellHeight.slice();
+        CloneGrid.FixedDataItemData = cloneArray(this.FixedDataItemData);
+        CloneGrid.FixedObjectNameData = cloneArray(this.FixedObjectNameData);
         CloneGrid.GridLineCol = this.GridLineCol.Clone();
         return CloneGrid
     }
@@ -350,15 +350,15 @@ export class gridControl {
     private GY: number = 0;
     private touchStartTime: number = 0;
     private base: HTMLDivElement;
-    private tabbase: {
-        frame?: HTMLDivElement;
-        tab?: HTMLElement[];
-        tabListBase?: HTMLDivElement;
-        moveDiv?: HTMLDivElement;
-        moveLeft?: HTMLDivElement;
-        moveRight?: HTMLDivElement;
-        selectedIndex?: number;
-    } = {};
+    private tabbase!: {
+        frame: HTMLDivElement;
+        tab: HTMLElement[];
+        tabListBase: HTMLDivElement;
+        moveDiv: HTMLDivElement;
+        moveLeft: HTMLDivElement;
+        moveRight: HTMLDivElement;
+        selectedIndex: number;
+    };
     private picGrid: HTMLDivElement;
     private vScroll!: scrollBar;
     private hScroll!: scrollBar;
@@ -419,8 +419,7 @@ export class gridControl {
     this.addDocumentEvent();
     this.txtTextBox = Generic.createNewTextarea(this.picGrid, "text", "", 0, 0, 100, 50, "height:25px;width:10px;text-align:right;resize: none;padding:0px;border: 0px solid #ccc;appearance: none");
     
-    // @ts-expect-error - 'this' refers to HTMLTextAreaElement in the handler
-    this.txtTextBox.onfocus = function(){ this.select() };
+    this.txtTextBox.onfocus = function (this: HTMLTextAreaElement) { this.select(); };
 
     this.ctx = this.canvas.getContext("2d");
     if (this.ctx) {
@@ -431,6 +430,23 @@ export class gridControl {
     this.Grid_Total.GridHeight = height;
     this.tabInit();
 }
+
+    private clone2d<T extends { Clone(): T }>(grid: T[][]): T[][] {
+        return grid.map((row) => row.map((cell) => cell.Clone()));
+    }
+
+    private cloneArray<T extends { Clone(): T }>(items: T[]): T[] {
+        return items.map((item) => item.Clone());
+    }
+
+    private getCanvasPosition(event: MouseEvent | Touch): point | undefined {
+        const target = event.target as HTMLElement | null;
+        if (!target || typeof target.getBoundingClientRect !== 'function') {
+            return undefined;
+        }
+        const rect = target.getBoundingClientRect();
+        return new point(event.clientX - rect.x, event.clientY - rect.y);
+    }
 
     private ScrollChange = () => {
         if (this.txtTextBox?.getVisibility?.() === true) {
@@ -1913,13 +1929,13 @@ export class gridControl {
                             self.SetUndo_DeleteRows(self.Grid_Total.RowCaption + "数変更", PV + n, -n);
                             self.DeleteRows(self.Grid_Total.Layer, PV + n, -n);
                             self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedXS();
-                            self.eventCall.evtChange_Data();
+                            self.eventCall.evtChange_FixedXS?.();
+                            self.eventCall.evtChange_Data?.();
                         } else {
                             self.InsertRows(self.Grid_Total.Layer, PV, n);
                             self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedXS();
-                            self.eventCall.evtChange_Data();
+                            self.eventCall.evtChange_FixedXS?.();
+                            self.eventCall.evtChange_Data?.();
                         }
                     }
                     self.addDocumentEvent();
@@ -1943,14 +1959,14 @@ export class gridControl {
                             self.SetUndo_DeleteColumns(self.Grid_Total.ColumnCaption + "数指定", PV + n, -n)
                             self.DeleteColumns(self.Grid_Total.Layer, PV + n, -n);
                             self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedYS();
-                            self.eventCall.evtChange_Data();
+                            self.eventCall.evtChange_FixedYS?.();
+                            self.eventCall.evtChange_Data?.();
                         } else {
                             self.SetUndo_InsertColumns(self.Grid_Total.ColumnCaption + "数指定", PV, n)
                             self.InsertColumns(self.Grid_Total.Layer, PV, n);
                             self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedYS();
-                            self.eventCall.evtChange_Data();
+                            self.eventCall.evtChange_FixedYS?.();
+                            self.eventCall.evtChange_Data?.();
                         }
                     }
                     self.addDocumentEvent();
@@ -2152,7 +2168,7 @@ export class gridControl {
             GP.CellHeight[j - DeleteNum] = GP.CellHeight[j];
         }
         GP.CellHeight.length = ys;
-        let GTempText = Generic.Array2Clone(GP.Grid_Text);
+        let GTempText = this.clone2d(GP.Grid_Text);
         GP.Grid_Text = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < DeletePoint; j++) {
@@ -2164,7 +2180,7 @@ export class gridControl {
         }
 
         //オブジェクト名部分を削除
-         GTempText = Generic.Array2Clone(GP.FixedObjectName);
+         GTempText = this.clone2d(GP.FixedObjectName);
          xs = this.Grid_Total.FixedObjectName_n;
         GP.FixedObjectName = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         for (let i = -xs; i <= -1; i++) {
@@ -2186,7 +2202,7 @@ export class gridControl {
         const ys = GP.Ymax + InsertNum;
         GP.Ymax = ys;
         let xs = GP.Xmax;
-        let GTempText = Generic.Array2Clone(GP.Grid_Text);
+        let GTempText = this.clone2d(GP.Grid_Text);
         GP.Grid_Text = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         const refPoint = (InsertPoint !== oldYs) ? InsertPoint : InsertPoint - 1;
         for (let i = 0; i < xs; i++) {
@@ -2217,7 +2233,7 @@ export class gridControl {
 
         //オブジェクト名部分を挿入
         xs = this.Grid_Total.FixedObjectName_n
-        GTempText = Generic.Array2Clone(GP.FixedObjectName);
+        GTempText = this.clone2d(GP.FixedObjectName);
         GP.FixedObjectName = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         for (let i = -xs; i <= -1; i++) {
             for (let j = 0; j < InsertPoint; j++) {
@@ -2244,7 +2260,7 @@ export class gridControl {
         const xs = GP.Xmax - DeleteNum;
         GP.Xmax = xs;
 
-        let GTempText = Generic.Array2Clone(GP.Grid_Text);
+        let GTempText = this.clone2d(GP.Grid_Text);
         GP.Grid_Text = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         for (let i = 0; i < ys; i++) {
             for (let j = 0; j < DeletePoint; j++) {
@@ -2262,7 +2278,7 @@ export class gridControl {
 
         //データ項目部分を削除
          ys = this.Grid_Total.FixedDataItem_n
-        GTempText = Generic.Array2Clone(GP.FixedDataItem);
+        GTempText = this.clone2d(GP.FixedDataItem);
         GP.FixedDataItem = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         for (let i = -ys; i <= -1; i++) {
             for (let j = 0; j < DeletePoint; j++) {
@@ -2284,7 +2300,7 @@ export class gridControl {
         let ys = GP.Ymax;
         const xs = GP.Xmax + InsertNum;
         GP.Xmax = xs;
-        let GTempText = Generic.Array2Clone(GP.Grid_Text);
+        let GTempText = this.clone2d(GP.Grid_Text);
         GP.Grid_Text = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         const refPoint = (InsertPoint !== oldXs) ? InsertPoint : InsertPoint - 1;
         for (let i = 0; i < ys; i++) {
@@ -2320,7 +2336,7 @@ export class gridControl {
         //データ項目部分を挿入
         GP = this.Grid_Property[GridLay];
          ys = this.Grid_Total.FixedDataItem_n
-        GTempText = Generic.Array2Clone(GP.FixedDataItem);
+        GTempText = this.clone2d(GP.FixedDataItem);
         GP.FixedDataItem = Generic.Array2Dimension<GridTextColor_Info>(xs, ys, new GridTextColor_Info());
         for (let i = -ys; i <= -1; i++) {
             for (let j = 0; j < InsertPoint; j++) {
@@ -2724,42 +2740,54 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
 
 }
     tabInit = () => {
-        this.tabbase.frame = Generic.createNewDiv(this.base, "", "", "", 0, 0, this.width, this.tabh, "", "");
-        this.tabbase.tab = [];
-        this.tabbase.tabListBase = Generic.createNewDiv(this.tabbase.frame, "", "", "", 0, 0, this.width - this.tabArrowW*2 , this.tabh, "", undefined);
-        this.tabbase.moveDiv = Generic.createNewDiv(this.tabbase.frame, "", "", "", this.width - this.tabArrowW*2 , 0, this.tabArrowW*2  , this.tabh + 1, "user-select:none;cursor:default;z-index:100;background-color:white", undefined);
-        this.tabbase.moveLeft = Generic.createNewDiv(this.tabbase.moveDiv as HTMLElement, "", "", "", 0, 0, this.tabArrowW, this.tabh, "cursor:pointer", undefined);
-        this.tabbase.moveLeft.onclick = () => {
-            let x = this.tabbase.tabListBase.style.left.removePx() + this.tabw / 2;
-            x = Math.min(x, 0);
-            this.tabbase.tabListBase.style.left = x.px()
+        const frame = Generic.createNewDiv(this.base, "", "", "", 0, 0, this.width, this.tabh, "", "");
+        const tabListBase = Generic.createNewDiv(frame, "", "", "", 0, 0, this.width - this.tabArrowW * 2, this.tabh, "", undefined);
+        const moveDiv = Generic.createNewDiv(frame, "", "", "", this.width - this.tabArrowW * 2, 0, this.tabArrowW * 2, this.tabh + 1, "user-select:none;cursor:default;z-index:100;background-color:white", undefined);
+        const moveLeft = Generic.createNewDiv(moveDiv as HTMLElement, "", "", "", 0, 0, this.tabArrowW, this.tabh, "cursor:pointer", undefined);
+        const moveRight = Generic.createNewDiv(moveDiv, "", "", "", this.tabArrowW, 0, this.tabArrowW, this.tabh, "cursor:pointer", undefined);
+        this.tabbase = {
+            frame,
+            tab: [],
+            tabListBase,
+            moveDiv,
+            moveLeft,
+            moveRight,
+            selectedIndex: 0
         };
-        const moveLeftCanvas = Generic.createNewCanvas(this.tabbase.moveLeft, "", "", 0, 0, this.tabArrowW, this.tabh, undefined, "");
+        moveLeft.onclick = () => {
+            let x = tabListBase.style.left.removePx() + this.tabw / 2;
+            x = Math.min(x, 0);
+            tabListBase.style.left = x.px()
+        };
+        const moveLeftCanvas = Generic.createNewCanvas(moveLeft, "", "", 0, 0, this.tabArrowW, this.tabh, undefined, "");
         const ctxl = moveLeftCanvas.getContext("2d");
         const cx = this.tabArrowW / 2;
         const cy = this.tabh / 2;
-        ctxl.fillStyle = 'gray';
-        ctxl.beginPath();
-        ctxl.moveTo(cx - this.tabh / 2, cy);
-        ctxl.lineTo(cx + this.tabh / 2, 2);
-        ctxl.lineTo(cx + this.tabh / 2, this.tabh - 2);
-        ctxl.closePath();
-        ctxl.fill();
-        this.tabbase.moveRight = Generic.createNewDiv(this.tabbase.moveDiv, "", "", "", this.tabArrowW, 0, this.tabArrowW, this.tabh, "cursor:pointer", undefined);
-        this.tabbase.moveRight.onclick = () => {
-            let x = this.tabbase.tabListBase.style.left.removePx() - this.tabw / 2;
+        if (ctxl) {
+            ctxl.fillStyle = 'gray';
+            ctxl.beginPath();
+            ctxl.moveTo(cx - this.tabh / 2, cy);
+            ctxl.lineTo(cx + this.tabh / 2, 2);
+            ctxl.lineTo(cx + this.tabh / 2, this.tabh - 2);
+            ctxl.closePath();
+            ctxl.fill();
+        }
+        moveRight.onclick = () => {
+            let x = tabListBase.style.left.removePx() - this.tabw / 2;
             x = Math.max(x, -this.tabw * (this.tabbase.tab.length - 1));
-            this.tabbase.tabListBase.style.left = x.px()
+            tabListBase.style.left = x.px()
         };
-        const moveRightCanvas = Generic.createNewCanvas(this.tabbase.moveRight, "", "", 0, 0, this.tabArrowW, this.tabh, undefined, "");
+        const moveRightCanvas = Generic.createNewCanvas(moveRight, "", "", 0, 0, this.tabArrowW, this.tabh, undefined, "");
         const ctxr = moveRightCanvas.getContext("2d");
-        ctxr.fillStyle = 'gray';
-        ctxr.beginPath();
-        ctxr.moveTo(cx + this.tabh / 2, cy);
-        ctxr.lineTo(cx - this.tabh / 2, 2);
-        ctxr.lineTo(cx - this.tabh / 2, this.tabh - 2);
-        ctxr.closePath();
-        ctxr.fill();
+        if (ctxr) {
+            ctxr.fillStyle = 'gray';
+            ctxr.beginPath();
+            ctxr.moveTo(cx + this.tabh / 2, cy);
+            ctxr.lineTo(cx - this.tabh / 2, 2);
+            ctxr.lineTo(cx - this.tabh / 2, this.tabh - 2);
+            ctxr.closePath();
+            ctxr.fill();
+        }
 
     }
     tabMake = () => {
@@ -2925,7 +2953,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             UndoData.caption = this.Grid_Total.LayerCaption + "の挿入";
             this.UndoArray.push(UndoData);
 
-            const existLayer = [];
+            const existLayer: string[] = [];
             for (let i = 0; i < this.Grid_Total.LayerNum; i++) {
                 existLayer[i] = this.Grid_Property[i].LayerName;
             }
@@ -2935,7 +2963,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
             this.tabSelect();
             this.Print_Grid_ViewSize();
             this.Print_Grid_Data();
-            this.eventCall.evtAdd_Layer(nt);
+            this.eventCall.evtAdd_Layer?.(nt);
         };
         const mnuTabRightMenuDeleteTab = () => {
             const mxt = this.Grid_Total.LayerNum;
@@ -3005,7 +3033,10 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         }
         // const MouseDownF = true;
         this.touchStartTime = new Date().getTime();
-        const mouseDownPosition = Generic.getCanvasXY2(event);
+        const mouseDownPosition = this.getCanvasPosition(event);
+        if (mouseDownPosition === undefined) {
+            return;
+        }
         const x = mouseDownPosition.x;
         const y = mouseDownPosition.y;
         let xx, yy
@@ -3153,7 +3184,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                 event = e.changedTouches[0];
             }
         }
-        const p = Generic.getCanvasXY2(event);
+        const p = this.getCanvasPosition(event);
         if(p===undefined){
             return;
         }
@@ -3507,7 +3538,7 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
         }
         let xx, yy
         const f=false;
-        const mouseUpPosition = Generic.getCanvasXY2(event);
+        const mouseUpPosition = this.getCanvasPosition(event);
 
         if(mouseUpPosition===undefined){
             return;
@@ -4115,6 +4146,13 @@ class scrollBar {
     let btnMDownF = false;
     let btnDownTimer: ReturnType<typeof setInterval> | undefined;
     let btnDownID: string = "";
+    const onChange = changeEventCall ?? ((value: number) => { void value; });
+    const normalizePointer = (event: MouseEvent | TouchEvent): MouseEvent | Touch => {
+        if (event.type === "mousedown" || event.type === "mousemove") {
+            return event as MouseEvent;
+        }
+        return (event as TouchEvent).changedTouches[0];
+    };
     if (type === 0) {//縦
         frame = Generic.createNewDiv(ParentObj, "", "", "", x, y, size, length, "background-color:" + backCol, undefined);
         const btnMinusCanvas = Generic.createNewCanvas(frame, "tateMinus", "", 0, 0, size, size , undefined, "");
@@ -4125,13 +4163,15 @@ class scrollBar {
         btnMinusCanvas.addEventListener("touchend",btnMup as EventListener);
 
         const ctxBtnMinus = btnMinusCanvas.getContext("2d");
-        ctxBtnMinus.strokeStyle = arrowCol;
-        ctxBtnMinus.lineWidth = 2;
-        ctxBtnMinus.beginPath();
-        ctxBtnMinus.moveTo(size * 0.3, size * 0.4+size/4);
-        ctxBtnMinus.lineTo(size / 2, +size/4);
-        ctxBtnMinus.lineTo(size * 0.7, size * 0.4+size/4);
-        ctxBtnMinus.stroke();
+        if (ctxBtnMinus) {
+            ctxBtnMinus.strokeStyle = arrowCol;
+            ctxBtnMinus.lineWidth = 2;
+            ctxBtnMinus.beginPath();
+            ctxBtnMinus.moveTo(size * 0.3, size * 0.4 + size / 4);
+            ctxBtnMinus.lineTo(size / 2, +size / 4);
+            ctxBtnMinus.lineTo(size * 0.7, size * 0.4 + size / 4);
+            ctxBtnMinus.stroke();
+        }
         btnPlusCanvas = Generic.createNewCanvas(frame, "tatePlus", "", 0, length - size , size, size , undefined, "");
         btnPlusCanvas.addEventListener('mousedown', btnMdown);
         btnPlusCanvas.addEventListener('mouseup', btnMup);
@@ -4139,13 +4179,15 @@ class scrollBar {
         btnPlusCanvas.addEventListener("touchstart",btnMdown as EventListener);
         btnPlusCanvas.addEventListener("touchend",btnMup as EventListener);
         const ctxBtnPlus = btnPlusCanvas.getContext("2d");
-        ctxBtnPlus.strokeStyle = arrowCol;
-        ctxBtnPlus.lineWidth = 2;
-        ctxBtnPlus.beginPath();
-        ctxBtnPlus.moveTo(size * 0.3, size * 0.1+size/4);
-        ctxBtnPlus.lineTo(size / 2, size -size/4);
-        ctxBtnPlus.lineTo(size * 0.7, size * 0.1+size/4);
-        ctxBtnPlus.stroke();
+        if (ctxBtnPlus) {
+            ctxBtnPlus.strokeStyle = arrowCol;
+            ctxBtnPlus.lineWidth = 2;
+            ctxBtnPlus.beginPath();
+            ctxBtnPlus.moveTo(size * 0.3, size * 0.1 + size / 4);
+            ctxBtnPlus.lineTo(size / 2, size - size / 4);
+            ctxBtnPlus.lineTo(size * 0.7, size * 0.1 + size / 4);
+            ctxBtnPlus.stroke();
+        }
         slideFrame = Generic.createNewDiv(frame, "", "slideFrame", "", 0, size, size, slength, "", undefined);
         sliderSize = Math.max(areaRange / maxValue * slength, size );
         slider = Generic.createNewDiv(slideFrame, "", "slider", "", 0, 0, size, sliderSize, "background-color:" + sliderCol, undefined);
@@ -4159,13 +4201,15 @@ class scrollBar {
         btnMinusCanvas.addEventListener("touchstart",btnMdown as EventListener);
         btnMinusCanvas.addEventListener("touchend",btnMup as EventListener);
         const ctxBtnMinus = btnMinusCanvas.getContext("2d");
-        ctxBtnMinus.strokeStyle = arrowCol;
-        ctxBtnMinus.lineWidth = 2;
-        ctxBtnMinus.beginPath();
-        ctxBtnMinus.moveTo(size * 0.4+size/4, size * 0.3);
-        ctxBtnMinus.lineTo(+size/4, size / 2);
-        ctxBtnMinus.lineTo(size * 0.4+size/4, size * 0.7);
-        ctxBtnMinus.stroke();
+        if (ctxBtnMinus) {
+            ctxBtnMinus.strokeStyle = arrowCol;
+            ctxBtnMinus.lineWidth = 2;
+            ctxBtnMinus.beginPath();
+            ctxBtnMinus.moveTo(size * 0.4 + size / 4, size * 0.3);
+            ctxBtnMinus.lineTo(+size / 4, size / 2);
+            ctxBtnMinus.lineTo(size * 0.4 + size / 4, size * 0.7);
+            ctxBtnMinus.stroke();
+        }
         btnPlusCanvas = Generic.createNewCanvas(frame, "yokoPlus", "", length - size , 0, size , size, undefined, "");
         btnPlusCanvas.addEventListener('mousedown', btnMdown);
         btnPlusCanvas.addEventListener('mouseup', btnMup);
@@ -4173,13 +4217,15 @@ class scrollBar {
         btnPlusCanvas.addEventListener("touchstart",btnMdown as EventListener);
         btnPlusCanvas.addEventListener("touchend",btnMup as EventListener);
         const ctxBtnPlus = btnPlusCanvas.getContext("2d");
-        ctxBtnPlus.strokeStyle = arrowCol;
-        ctxBtnPlus.lineWidth = 2;
-        ctxBtnPlus.beginPath();
-        ctxBtnPlus.moveTo(size * 0.4, size * 0.3);
-        ctxBtnPlus.lineTo(size * 0.8, size / 2);
-        ctxBtnPlus.lineTo(size * 0.4, size * 0.7);
-        ctxBtnPlus.stroke();
+        if (ctxBtnPlus) {
+            ctxBtnPlus.strokeStyle = arrowCol;
+            ctxBtnPlus.lineWidth = 2;
+            ctxBtnPlus.beginPath();
+            ctxBtnPlus.moveTo(size * 0.4, size * 0.3);
+            ctxBtnPlus.lineTo(size * 0.8, size / 2);
+            ctxBtnPlus.lineTo(size * 0.4, size * 0.7);
+            ctxBtnPlus.stroke();
+        }
         slideFrame = Generic.createNewDiv(frame, "", "slideFrame", "", size, 0, slength, size, "", undefined);
         sliderSize = Math.max(areaRange / maxValue * slength, size);
         slider = Generic.createNewDiv(slideFrame, "", "", "slider", 0, 0, sliderSize, size, "background-color:" + sliderCol, undefined);
@@ -4290,7 +4336,7 @@ class scrollBar {
         }
     }
 
-    function btnMdown(e: MouseEvent) {
+    function btnMdown(e: MouseEvent | TouchEvent) {
         if (btnMDownF === false) {
             btnMDownF = true;
             btnDownID = (e.target as HTMLElement).id;
@@ -4322,7 +4368,7 @@ class scrollBar {
                 break;
         }
         if (opos !== position) {
-            changeEventCall(position);
+            onChange(position);
         }
     }
 
@@ -4346,7 +4392,7 @@ class scrollBar {
         position = Math.min(position, maxValue);
         if (opos !== position) {
             setSliderPosition();
-            changeEventCall(position);
+            onChange(position);
         }
     }
 
@@ -4368,13 +4414,8 @@ class scrollBar {
     let sliderInPosition: number;//-1,0,1
     let mDownsliderInPosition: number;
     let mdownPos: number | undefined;
-    function mdown(event: MouseEvent) {
-        let e;
-        if (event.type === "mousedown") {
-            e = event ;
-        } else {
-            e = event.changedTouches[0];
-        }
+    function mdown(event: MouseEvent | TouchEvent) {
+        const e = normalizePointer(event);
 
         if (type === 0) {//縦
             mdownPos = e.clientY - slideFrame.getBoundingClientRect().y;
@@ -4410,13 +4451,8 @@ class scrollBar {
         }
     }
 
-    function mmove(event: MouseEvent) {
-        let e;
-        if (event.type === "mousemove") {
-            e = event ;
-        } else {
-            e = event.changedTouches[0];
-        }
+    function mmove(event: MouseEvent | TouchEvent) {
+        const e = normalizePointer(event);
         if ((mdownF === false) || (sliderInPosition !== 0)) {
             return;
         }
