@@ -364,6 +364,7 @@ interface IAttrData {
                 Visible?: boolean;
                 Font?: Font_Property;
                 BarAuto?: boolean;
+                BarPattern?: number;
                 Clone?: () => {
                     Position: point;
                     Visible?: boolean;
@@ -373,6 +374,7 @@ interface IAttrData {
                     Unit?: number;
                     Font?: Font_Property;
                     BarAuto?: boolean;
+                    BarPattern?: number;
                 };
                 BarDistance?: number;
                 BarKugiriNum?: number;
@@ -818,6 +820,8 @@ interface IDataItem {
     Title: string;
     Unit: string;
     Note: string;
+    Statistics: strStatisticInfo;
+    MissingValueNum?: number;
     SoloModeViewSettings: ISoloModeViewSettings;
     [key: string]: AttrValue;
 }
@@ -832,11 +836,12 @@ interface ISoloModeViewSettings {
     ClassODMode: IClassODMode;
     ClassODMD: IClassODMD;
     ContourMode: IContourMode;
+    MarkCommon: strMarkCommon_Data;
     TripMode: JsonObject & { Clone?: () => JsonObject };
     StringMode: JsonObject & { Clone?: () => JsonObject };
-    MarkSizeMD: JsonObject & { Clone?: () => JsonObject };
-    MarkBlockMD: JsonObject & { Clone?: () => JsonObject };
-    MarkBarMD: JsonObject & { Clone?: () => JsonObject };
+    MarkSizeMD: IMarkSizeMode;
+    MarkBlockMD: IMarkBlockMode;
+    MarkBarMD: IMarkBarMode;
     ClassMarkMode: JsonObject & { Clone?: () => JsonObject };
     MarkTurnMode: JsonObject & { Clone?: () => JsonObject };
     Class_Div: strClass_Div_data[];
@@ -944,7 +949,7 @@ interface IClassODMD {
 interface ILayerModeViewSettings {
     GraphMode: IGraphMode;
     LabelMode: ILabelMode;
-    PointLineShape: JsonObject & { Clone?: () => JsonObject };
+    PointLineShape: strLayerPointLineShape_Data;
     PolygonDummy_ClipSet_F: boolean;
     [key: string]: JsonValue;
 }
@@ -962,10 +967,37 @@ interface IGraphDataSet {
     title?: string;
     GraphMode?: number; // enmGraphMode
     Data: IGraphDataItem[];
-    En_Obi?: JsonObject;
-    Oresen_Bou?: JsonObject;
+    En_Obi?: IGraphEnObi;
+    Oresen_Bou?: IGraphOresenBou;
     Type?: number;
     length?: number;
+    [key: string]: AttrValue;
+}
+
+interface IGraphEnObi {
+    Value1: number;
+    Value2: number;
+    Value3: number;
+    EnSizeMode: number;
+    EnSize: number;
+    MaxValue: number;
+    BoaderLine: Line_Property;
+    AspectRatio: number;
+    StackedBarDirection: number;
+    [key: string]: AttrValue;
+}
+
+interface IGraphOresenBou {
+    Size: number;
+    AspectRatio: number;
+    yMax: number;
+    ymin: number;
+    YMax: number;
+    Ymin: number;
+    Ystep: number;
+    BorderLine: Line_Property;
+    BackgroundTile: Tile_Property;
+    Line: Line_Property;
     [key: string]: AttrValue;
 }
 
@@ -1130,12 +1162,24 @@ interface IGeneric {
     Array2Dimension: <T>(dim1num: number, dim2num: number, defoValue?: T) => T[][];
     Array2Clone: (array: JsonValue[]) => JsonValue[];
     ceatePopupMenu: (menu: MenuItem[], position: point) => void;
+    Figure_Using_Solo: (value: number, commaFlag?: boolean) => string;
+    Figure_Using3: (value: number, beforeDecimal: number, afterDecimal: number, commaFlag?: boolean) => string;
+    Figure_Arrange: (value: number) => { BeforeDecimal: number; AfterDecimal: number };
+    Remove_Same_String: (values: string[]) => string[];
+    GetColorArrange: (color: colorRGBA, changeValue: number) => colorRGBA;
+    getScaleUnitStrings: (value: number | undefined, unit: number) => string;
     [key: string]: JsonValue;
 }
 
 // clsPrint クラス（拡張）
 interface IClsPrint {
     printMapScreen: (canvas: HTMLCanvasElement) => void;
+    MarkBarRectPrint?: (pos: point, w: number, h: number, threeD: boolean) => {
+        rectAll: rectangle;
+        CenterRect: rectangle;
+        UpperPoly: point[];
+        RightPoly: point[];
+    };
     [key: string]: JsonValue;
 }
 
@@ -1146,6 +1190,11 @@ interface IClsDraw {
     Line: (g: CanvasRenderingContext2D, linePat: Tile_Property, arg3: point | point[], arg4?: point | Screen_info, arg5?: Screen_info) => void;
     Draw_Tile_and_Paint_and_Line: (g: CanvasRenderingContext2D, points: point[], nPolyP: number[], polyNum: number, tile: Tile_Property, linePat: Tile_Property, scrData: Screen_info) => void;
     Arrow: (g: CanvasRenderingContext2D, point: point, beforePoint: point, linePat: Tile_Property, arrow: Arrow_Property, scrData: Screen_info) => void;
+    TextCut_for_print: (g: CanvasRenderingContext2D, text: string, font: Font_Property, wrap: boolean, maxWidth: number, scrData: Screen_info) => {
+        Out_Text: string[];
+        Height: number;
+        RealWidth: number;
+    };
     [key: string]: JsonValue;
 }
 
@@ -1478,6 +1527,7 @@ declare class Tile_Property {
     Color: colorRGBA;
     Width?: number; // Line描画時に使用される場合がある
     Edge_Connect_Pattern?: LineEdge_Connect_Pattern_Data_Info; // Line描画時に使用される場合がある
+    Line?: Line_Property;
     Clone(): Tile_Property;
 }
 
@@ -1490,6 +1540,67 @@ declare class Mark_Property {
     wordmark?: string;
     WordFont: Font_Property;
     Clone(): Mark_Property;
+}
+
+declare class strMarkCommon_Data {
+    Inner_Data: strInner_Data_Info;
+    MinusTile: Tile_Property;
+    MinusLineColor: colorRGBA;
+    LegendMinusWord: string;
+    LegendPlusWord: string;
+    Clone(): strMarkCommon_Data;
+}
+
+declare class strInner_Data_Info {
+    Flag: boolean;
+    Data: number;
+    Mode?: number;
+    Clone(): strInner_Data_Info;
+}
+
+declare class strMarkSize_Data {
+    MaxValueMode: number;
+    MaxValue: number;
+    Value: number[];
+    Mark: Mark_Property;
+    LineShape: JsonObject;
+    Clone(): strMarkSize_Data;
+}
+
+declare class strMarkBlock_Data {
+    Value: number;
+    ArrangeB: number;
+    HasuVisible: boolean;
+    Mark: Mark_Property;
+    Overlap: number;
+    LegendBlockModeWord: string;
+    Clone(): strMarkBlock_Data;
+}
+
+declare class strMarkBar_Data {
+    Width: number;
+    MaxHeight: number;
+    MaxValueMode: number;
+    MaxValue: number;
+    InnerTile: Tile_Property;
+    FrameLinePat: Line_Property;
+    ThreeD: boolean;
+    ScaleLineInterval: number;
+    ScaleLineVisible: boolean;
+    scaleLinePat: Line_Property;
+    BarShape: number;
+    Clone(): strMarkBar_Data;
+}
+
+declare class strStatisticInfo {
+    Max: number;
+    Min: number;
+    Ave: number;
+    STD: number;
+    Sum: number;
+    sa: number;
+    BeforeDecimalNum: number;
+    AfterDecimalNum: number;
 }
 
 // 型エイリアス
@@ -1970,6 +2081,9 @@ declare class strContour_Data_Irregular_interval { [key: string]: JsonValue; con
 declare class strClass_Div_data {
     ODLinePat?: Line_Property;
     BlankF?: boolean;
+    Value?: number | string;
+    ClassMark?: Mark_Property;
+    PaintColor?: colorRGBA;
     Clone?: () => strClass_Div_data;
     [key: string]: AttrValue;
     constructor(...args: JsonValue[]);
@@ -2021,6 +2135,13 @@ declare class strCompass_Attri {
     Mark?: Mark_Property;
     Position?: point;
     Visible?: boolean;
+    Font?: Font_Property;
+    dirWord?: {
+        North: string;
+        South: string;
+        East: string;
+        West: string;
+    };
     [key: string]: JsonValue; 
     constructor(...args: JsonValue[]); 
 }
@@ -2712,7 +2833,18 @@ declare const chvValue_on_twoValue: {
 };
 
 // strScale_Attri型
-declare const strScale_Attri: { new(): JsonObject; [key: string]: JsonValue };
+declare class strScale_Attri {
+    Visible: boolean;
+    Position: point;
+    Font: Font_Property;
+    BarPattern: number;
+    BarAuto: boolean;
+    BarDistance: number;
+    BarKugiriNum: number;
+    Back: BackGround_Box_Property;
+    Unit: number;
+    Clone(): strScale_Attri;
+}
 
 // clsAttrData.ts の関数コンストラクタ型（戻り値をJsonObjectに統一）
 declare const strDegreeMinuteSeconde: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };

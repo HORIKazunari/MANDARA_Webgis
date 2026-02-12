@@ -2024,17 +2024,20 @@ export class Accessory {
         const PointLayerMark  = state.attrData.LayerData[Layn2].LayerModeViewSettings.PointLineShape;
 
         const dvn  = PData.SoloModeViewSettings.Div_Num
-        const LinePush=[];
+        const LinePush: Line_Property[] = [];
         for (let i = 0; i < dvn;i++){
-            LinePush[i] = PData.SoloModeViewSettings.Class_Div[i].ODLinePat.Clone();
+            const linePat = PData.SoloModeViewSettings.Class_Div[i].ODLinePat ?? clsBase.Line();
+            LinePush[i] = linePat.Clone();
         }
 
         for (let i = 0; i < dvn ;i++){
             const cd= PData.SoloModeViewSettings.Class_Div[i];
+            const paintColor = cd.PaintColor ?? new colorRGBA();
+            const lineEdge = PointLayerMark.LineEdge ?? new LineEdge_Connect_Pattern_Data_Info();
             cd.ODLinePat = clsBase.Line();
-            cd.ODLinePat.Color=cd.PaintColor.Clone();
-            cd.ODLinePat.Width=PointLayerMark.LineWidth;
-            cd.ODLinePat.Edge_Connect_Pattern = PointLayerMark.LineEdge.Clone();
+            cd.ODLinePat.Color = paintColor.Clone();
+            cd.ODLinePat.Width = PointLayerMark.LineWidth;
+            cd.ODLinePat.Edge_Connect_Pattern = lineEdge.Clone();
         }
 
         const screen_in_f  = this.Draw_ClassODModeMode(g,  ALP, HeadBoxSize, UnitTx, Layn2, datn2, SizeGetOnlyF);
