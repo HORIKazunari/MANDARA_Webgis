@@ -994,11 +994,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     break;
                 }
                 for (let i = 0; i < ovl.DataItem.length; i++) {
-                    const Layernum = ovl.Layer
-                    const DataNum = ovl.DataNumber
+                    const ovlItem = ovl.DataItem[i];
+                    const Layernum = ovlItem.Layer;
+                    const DataNum = ovlItem.DataNumber;
                     const al = state.attrData.LayerData[Layernum];
-                    if ((ovl.Print_Mode_Layer === enmLayerMode_Number.SoloMode)&& (ovl.Mode === enmSoloMode_Number.ClassODMode) && (
-                        al.Shape !== enmShape.LineShape)){
+                    if ((ovlItem.Print_Mode_Layer === enmLayerMode_Number.SoloMode) && (ovlItem.Mode === enmSoloMode_Number.ClassODMode) && (
+                        al.Shape !== enmShape.LineShape)) {
                         Near_ODNumber = Near_OD_sub(MapP, Layernum, DataNum);
                         if (Near_ODNumber !== -1) {
                             break;
@@ -1212,15 +1213,19 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                             break;
                         }
                         case enmLayerMode_Number.TripMode: {
-                            L_Data = ld.LayerModeViewSettings.TripMode.SelectedIndex;
+                            const tripMode = (ld.LayerModeViewSettings as unknown as { TripMode?: { SelectedIndex?: number } }).TripMode;
+                            L_Data = typeof tripMode?.SelectedIndex === 'number' ? tripMode.SelectedIndex : 0;
                             break;
                         }
                     }
                     break;
                 }
                 case enmTotalMode_Number.OverLayMode: {
-                    const totalMode = (state.attrData.TotalData as { TotalMode?: TotalModeInfo }).TotalMode;
-                    L_Data = totalMode?.OverLay?.SelectedIndex ?? 0;
+                    const totalMode = state.attrData.TotalData.TotalMode as unknown;
+                    const selectedIndex = typeof totalMode === 'object' && totalMode !== null
+                        ? (totalMode as TotalModeInfo).OverLay?.SelectedIndex
+                        : undefined;
+                    L_Data = typeof selectedIndex === 'number' ? selectedIndex : 0;
                     break;
                 }
             }
@@ -2010,12 +2015,16 @@ class frmPrint {
                         drawLines(g, pxy, 3, new colorRGBA(255, 0, 150, 200));
                     } else {
                         const getEnableLine = state.attrData.Get_Enable_KenCode_MPLine as ((layer: number, obj: number) => EnableLineInfo[]) | undefined;
-                        if (!getEnableLine) {
+                        const enableLines = getEnableLine ? getEnableLine(Layernum, ObjNum) : [];
+                        if (enableLines.length === 0) {
                             break;
                         }
-                        const ELine = getEnableLine(Layernum, ObjNum);
-                        for (const j in ELine) {
-                            const pxy = clsPrint.Get_PointXY_by_LineCode(Layernum, ELine[j].LineCode, false);
+                        const getPointXYByLineCode = (clsPrint as unknown as { Get_PointXY_by_LineCode?: (layer: number, lineCode: number, reverse: boolean) => point[] | undefined }).Get_PointXY_by_LineCode;
+                        if (!getPointXYByLineCode) {
+                            break;
+                        }
+                        for (const line of enableLines) {
+                            const pxy = getPointXYByLineCode(Layernum, line.LineCode, false);
                             if (pxy !== undefined) {
                                 drawLines(g, pxy, w, new colorRGBA(255, 0, 150, 150));
                             }
