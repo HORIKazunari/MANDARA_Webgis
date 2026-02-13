@@ -1483,21 +1483,80 @@ export function setting(locSearch: string) {
 
     //●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
     /**グラフ表示モードの設定画面の要素設定 */
+    interface GraphDataItem {
+        DataNumber: number;
+        Tile: Tile;
+    }
+    interface GraphBandSetting {
+        BoaderLine: LinePattern;
+        RMAX: number;
+        RMIN: number;
+        Value1: number;
+        Value2: number;
+        Value3: number;
+        MaxValueMode: number;
+        MaxValue: number;
+        [key: string]: number | string | boolean | LinePattern;
+    }
+    interface GraphLineBarSetting {
+        Line: LinePattern;
+        YmaxMinMode: number;
+        [key: string]: number | string | boolean | LinePattern;
+    }
+    interface GraphSetting {
+        title: string;
+        GraphMode: number;
+        Data: GraphDataItem[];
+        En_Obi: GraphBandSetting;
+        Oresen_Bou: GraphLineBarSetting;
+    }
+    type GraphAttrData = {
+        TotalData: {
+            LV1: {
+                SelectedLayer: number;
+            };
+        };
+        LayerData: {
+            atrObject: {
+                ObjectNum: number;
+            };
+            atrData: {
+                Data: {
+                    Statistics: {
+                        Max: number;
+                        Min: number;
+                    };
+                }[];
+            };
+        }[];
+        layerGraph: () => { SelectedIndex: number };
+        getGraphTitle: (layerNum: number) => string[];
+        nowGraph: () => GraphSetting;
+        Draw_Sample_LineBox: (target: HTMLElement, line: LinePattern) => void;
+        Get_DataTitle: (layerNum: number, dataNum: number, unitF: boolean) => string;
+        Get_Data_Value: (layerNum: number, dataNum: number, objNum: number, nullValue: string) => string;
+    };
+    function getGraphAttrData(): GraphAttrData {
+        return attrData as GraphAttrData;
+    }
+
     function setSettingGraphModeWindow(){
         graphDatasetSelectSet();
         graphDatasetDataItem();
         Check_Print_err();
     }
     function graphDatasetSelectSet(){
-        const graph=attrData.layerGraph();
-        const graphDataSetList = attrData.getGraphTitle(attrData.TotalData.LV1.SelectedLayer);
+        const graphAttrData = getGraphAttrData();
+        const graph = graphAttrData.layerGraph();
+        const graphDataSetList = graphAttrData.getGraphTitle(graphAttrData.TotalData.LV1.SelectedLayer);
         doc.getElementById("graphDataSetList").addSelectList(graphDataSetList, graph.SelectedIndex, true,false);
         pnlGraphEachItem(0);
     }
 
     /**グラフ表示モードのデータセットの内容を表示 */
     function graphDatasetDataItem() {
-        const selGraph = attrData.nowGraph();
+        const graphAttrData = getGraphAttrData();
+        const selGraph = graphAttrData.nowGraph();
         doc.getElementById("graphDatasetTitle").value = selGraph.title;
         Generic.checkRadioByValue("graphShape",selGraph.GraphMode);
         picGraphLinePat();
@@ -1505,15 +1564,16 @@ export function setting(locSearch: string) {
     }
     /**グラフ表示モードの「線種」 */
     function picGraphLinePat() {
-        const selGraph = attrData.nowGraph();
+        const graphAttrData = getGraphAttrData();
+        const selGraph = graphAttrData.nowGraph();
         switch (selGraph.GraphMode) {
             case enmGraphMode.PieGraph:
             case enmGraphMode.StackedBarGraph:
-                attrData.Draw_Sample_LineBox(doc.getElementById("graphLinePat"), selGraph.En_Obi.BoaderLine);
+                graphAttrData.Draw_Sample_LineBox(doc.getElementById("graphLinePat"), selGraph.En_Obi.BoaderLine);
                 break;
             case enmGraphMode.BarGraph:
             case enmGraphMode.LineGraph:
-                attrData.Draw_Sample_LineBox(doc.getElementById("graphLinePat"), selGraph.Oresen_Bou.Line);
+                graphAttrData.Draw_Sample_LineBox(doc.getElementById("graphLinePat"), selGraph.Oresen_Bou.Line);
                 break;
         }
     }
@@ -1521,7 +1581,8 @@ export function setting(locSearch: string) {
     /**グラフモードの表示データ項目を設定 */
     function pnlGraphEachItem(newRow: number){
         const pnl = doc.getElementById("pnlGraphItem");
-        const selGraph = attrData.nowGraph();
+        const graphAttrData = getGraphAttrData();
+        const selGraph = graphAttrData.nowGraph();
         const datan = selGraph.Data.length;
         const w = pnl.offsetWidth - scrMargin.scrollWidth - 10;
         for (let i = pnl.inPanel; i < datan; i++) {
@@ -1530,9 +1591,9 @@ export function setting(locSearch: string) {
             const eleText=Generic.createNewDiv(ele,"","pnlGraphIteminPanelTextBox"+ String(i),"",0,2,w-30,pnlGraphEachItemHeight-3,"overflow:hidden;text-overflow:ellipsis;white-space:nowrap",eleClick)
             eleText.tag=i;
             const eleTile = Generic.createNewTileBox(ele, "pnlGraphIteminPanelTileBox" + String(i), "", clsBase.Tile(), w-30, 0,undefined,
-                function (e: MouseEvent) {
-                    const tsel = attrData.nowGraph();
-                    const i = Number(this.tag)
+                function (this: ExtendedHTMLElement, e: MouseEvent) {
+                    const tsel = graphAttrData.nowGraph();
+                    const i = Number(this.tag);
                     const tile = tsel.Data[i].Tile;
                     clsTileSet(e, tile,
                         function (retTile: Tile) { tsel.Data[i].Tile = retTile });
@@ -1549,7 +1610,7 @@ export function setting(locSearch: string) {
             tbox.setVisibility(selGraph.GraphMode !== enmGraphMode.LineGraph);
             Generic.setTileDiv(tbox, selGraph.Data[i].Tile);
             const ele = doc.getElementById("pnlGraphIteminPanelTextBox" + String(i));
-            ele.innerText = attrData.Get_DataTitle(attrData.TotalData.LV1.SelectedLayer, selGraph.Data[i].DataNumber, true);
+            ele.innerText = graphAttrData.Get_DataTitle(graphAttrData.TotalData.LV1.SelectedLayer, selGraph.Data[i].DataNumber, true);
             doc.getElementById("pnlGraphIteminPanel" + String(i)).style.borderColor = 'white';
         }
         pnl.inPanel = datan;
@@ -1557,11 +1618,11 @@ export function setting(locSearch: string) {
         doc.getElementById("btmBarGraphColorSetting").setVisibility(selGraph.GraphMode === enmGraphMode.BarGraph);
         Check_Print_err();
 
-        function eleClick(){
+        function eleClick(this: ExtendedHTMLElement): void {
             if (pnl.selectedRow !== -1) {
                 doc.getElementById("pnlGraphIteminPanel" + String(pnl.selectedRow)).style.borderColor = 'white';
             }
-            const newSelRow: number = Number(this.tag)
+            const newSelRow: number = Number(this.tag);
             pnl.selectedRow = newSelRow;
             if (newSelRow < datan) {
                 doc.getElementById("pnlGraphIteminPanel" + String(newSelRow)).style.borderColor = '#666666';
@@ -1581,15 +1642,16 @@ export function setting(locSearch: string) {
 
     /**グラフモードの選択データの最大値・最小値を求める */
     function graphCulculateRmaxRmin() {
+        const graphAttrData = getGraphAttrData();
         const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const selGraph = attrData.nowGraph();
+        const selGraph = graphAttrData.nowGraph();
         if (selGraph.Data.length === 0) {
             return;
         }
         for (let j = 0; j < attrData.LayerData[Layernum].atrObject.ObjectNum; j++) {
             let s = 0;
             for (let i = 0; i < selGraph.Data.length; i++) {
-                const str = attrData.Get_Data_Value(Layernum, selGraph.Data[i].DataNumber, j, "")
+                const str = graphAttrData.Get_Data_Value(Layernum, selGraph.Data[i].DataNumber, j, "");
                 if (str !== "") {
                     s += Number( str);
                 }
