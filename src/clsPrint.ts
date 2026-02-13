@@ -32,6 +32,36 @@ class VecContourStac_Info {
     cStac: number[] = [];
 }
 
+interface ContourRegularModeInfo {
+    top: number;
+    bottom: number;
+    Interval: number;
+    Line_Pat: Line_Property;
+    SP_Bottom: number;
+    SP_Top: number;
+    SP_interval: number;
+    SP_Line_Pat: Line_Property;
+    EX_Value_Flag: boolean;
+    EX_Value: number;
+    EX_Line_Pat: Line_Property;
+}
+
+interface ContourIrregularModeInfo {
+    Value: number;
+    Line_Pat: Line_Property;
+}
+
+interface ContourModeInfo {
+    Interval_Mode: number;
+    Regular: ContourRegularModeInfo;
+    IrregularNum: number;
+    Irregular: ContourIrregularModeInfo[];
+}
+
+interface TitledDataSetInfo {
+    title: string;
+}
+
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
 class Fringe_Line_Info {
@@ -112,14 +142,14 @@ class clsPrint {
         state.attrData.TempData.DotMap_Temp.DotMapTempResetF = true;
         const n = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
         const koma = state.attrData.TempData.Series_temp.Koma;
-        const atsd = state.attrData.TotalData.TotalMode.Series.DataSet[n];
+        const atsd = state.attrData.TotalData.TotalMode.Series.DataSet[n] as strSeries_Dataset_Info;
         if (atsd.DataItem.length === 0) {
             return;
         }
-        const atsdi = atsd.DataItem[koma];
+        const atsdi = atsd.DataItem[koma] as strSeries_DataSet_Item_Info;
         state.attrData.TotalData.LV1.Print_Mode_Total = atsdi.Print_Mode_Total;
-        let ttl;
-        const al = state.attrData.LayerData[atsdi.Layer];
+        let ttl = "";
+        const al = state.attrData.LayerData[atsdi.Layer] as ILayerDataInfo;
         switch (atsdi.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
                 const o_p_m_l = al.Print_Mode_Layer;
@@ -142,7 +172,8 @@ class clsPrint {
                         const o_m_d = al.LayerModeViewSettings.GraphMode.SelectedIndex;
                         al.LayerModeViewSettings.GraphMode.SelectedIndex = atsdi.Data;
                         this.printMap(g);
-                        ttl = al.LayerModeViewSettings.GraphMode.DataSet[atsdi.Data].title;
+                        const graphDataSet = al.LayerModeViewSettings.GraphMode.DataSet[atsdi.Data] as TitledDataSetInfo;
+                        ttl = graphDataSet.title;
                         al.LayerModeViewSettings.GraphMode.SelectedIndex = o_m_d;
                         break;
                     }
@@ -150,7 +181,8 @@ class clsPrint {
                         const o_m_d = al.LayerModeViewSettings.LabelMode.SelectedIndex;
                         al.LayerModeViewSettings.LabelMode.SelectedIndex = atsdi.Data;
                         this.printMap(g);
-                        ttl = al.LayerModeViewSettings.LabelMode.DataSet[atsdi.Data].title;
+                        const labelDataSet = al.LayerModeViewSettings.LabelMode.DataSet[atsdi.Data] as TitledDataSetInfo;
+                        ttl = labelDataSet.title;
                         al.LayerModeViewSettings.LabelMode.SelectedIndex = o_m_d;
                         break;
                     }
@@ -166,7 +198,8 @@ class clsPrint {
                 const O_O = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
                 state.attrData.TotalData.TotalMode.OverLay.SelectedIndex = atsdi.Data;
                 this.printMap(g);
-                ttl = state.attrData.TotalData.TotalMode.OverLay.DataSet[atsdi.Data].title;
+                const overLayDataSet = state.attrData.TotalData.TotalMode.OverLay.DataSet[atsdi.Data] as TitledDataSetInfo;
+                ttl = overLayDataSet.title;
                 state.attrData.TotalData.TotalMode.OverLay.SelectedIndex = O_O;
                 break;
             }
@@ -181,7 +214,7 @@ class clsPrint {
         state.attrData.TotalData.ViewStyle.ScrData.Set_PictureBox_and_CulculateMul(picMapRect)
         state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = false;
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
-        let ca;
+        let ca = "";
         switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
                 switch (state.attrData.LayerData[Layernum].Print_Mode_Layer) {
@@ -190,11 +223,13 @@ class clsPrint {
                         break;
                     }
                     case enmLayerMode_Number.GraphMode: {
-                        ca=state.attrData.nowGraph().title;
+                        const currentGraph = state.attrData.nowGraph() as IGraphDataSet;
+                        ca = currentGraph.title;
                         break;
                     }
                     case enmLayerMode_Number.LabelMode: {
-                        ca=state.attrData.nowLabel().title;
+                        const currentLabel = state.attrData.nowLabel() as ILabelDataSet;
+                        ca = currentLabel.title;
                         break;
                     }
                     case enmLayerMode_Number.TripMode: {
@@ -2522,14 +2557,14 @@ class clsPrint {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
         const ad = al.atrData.Data[DataNum];
-        const Contour_High_M = [];
-        const C_Line_Pat = [];//Line_Property
-        const c_md = ad.SoloModeViewSettings.ContourMD;
+        const Contour_High_M: number[] = [];
+        const C_Line_Pat: Line_Property[] = [];
+        const c_md = ad.SoloModeViewSettings.ContourMD as ContourModeInfo;
 
         let hn = 0;
         switch (c_md.Interval_Mode) {
             case enmContourIntervalMode.RegularInterval: {
-                const c_mdr = c_md.Regular;
+                const c_mdr = c_md.Regular as ContourRegularModeInfo;
                 hn = parseInt(((c_mdr.top - c_mdr.bottom) / c_mdr.Interval).toString()) + 1;
                 let n = 0;
                 let V = c_mdr.bottom;
@@ -2565,8 +2600,9 @@ class clsPrint {
             case enmContourIntervalMode.SeparateSettings: {
                 hn = c_md.IrregularNum
                 for (let i = 0; i < hn; i++) {
-                    Contour_High_M.push(c_md.Irregular[i].Value);
-                    C_Line_Pat.push(this.cloneLineProperty(c_md.Irregular[i].Line_Pat));
+                    const irregular = c_md.Irregular[i] as ContourIrregularModeInfo;
+                    Contour_High_M.push(irregular.Value);
+                    C_Line_Pat.push(this.cloneLineProperty(irregular.Line_Pat));
                 }
                 break;
             }
@@ -2595,7 +2631,7 @@ class clsPrint {
             this.Vector_Object_Boundary(g, LayerNum);
         }
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
-        const Missing_DataArray = state.attrData.Get_Data_Cell_Array_With_MissingValue(LayerNum, DataNum);
+        const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
         const InnerDT = ad.SoloModeViewSettings.MarkCommon.Inner_Data;
         let Category_Array_Inner: number[] = [];
         if(InnerDT.Flag === true) {
