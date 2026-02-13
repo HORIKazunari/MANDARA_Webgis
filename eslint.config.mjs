@@ -8,18 +8,18 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     ignores: [
-      'tests/**',  // テストファイルは別の設定で管理
+      'tests/**',
       'playwright.config.ts',
-      'eslint.config.mjs',  // 設定ファイル自体を除外
+      'eslint.config.mjs',
       'vite.config.ts',
       'vitest.config.ts',
       '*.cjs',
       'src/.!*',
-      'src/encoding.min.ts', // minifyされた外部ライブラリを除外
-      'src/zlibrev.ts', // zlibライブラリコードを除外
-      'src/worldmap.ts', // JSON地図データ読み込み専用ファイル
-      'src/japanmap.ts', // JSON地図データ読み込み専用ファイル
-      'src/japanLatLonMap.ts', // JSON地図データ読み込み専用ファイル
+      'src/encoding.min.ts',
+      'src/zlibrev.ts',
+      'src/worldmap.ts',
+      'src/japanmap.ts',
+      'src/japanLatLonMap.ts',
       'node_modules/**',
       'dist/**',
       'playwright-report/**'
@@ -33,112 +33,60 @@ export default tseslint.config(
       },
     },
     rules: {
-      // any型の使用を禁止
-      '@typescript-eslint/no-explicit-any': 'error', // any型の新規追加を完全に防止
+      // Type safety
+      '@typescript-eslint/no-explicit-any': 'error',
       
-      // 未使用変数の警告 - errorに変更して修正を促進
+      // Unused vars
       '@typescript-eslint/no-unused-vars': ['error', { 
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrors: 'all'
       }],
       
-      // var宣言を禁止
+      // Declarations
       'no-var': 'error',
-      'prefer-const': 'error',  // 修正完了したのでerrorに変更
+      'prefer-const': 'error',
       
-      // 型安全性の向上 - 段階的に修正
-      '@typescript-eslint/no-unsafe-assignment': 'error',     // 段階昇格: error化
-      '@typescript-eslint/no-unsafe-member-access': 'error',  // 段階昇格: error化
-      '@typescript-eslint/no-unsafe-call': 'error',           // 段階昇格: error化
-      '@typescript-eslint/no-unsafe-return': 'error',        // 段階昇格: error化
+      // Unsafe operations
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
       
-      // 関数とメソッドの型定義 - 段階的に修正
+      // Function typing policy
       '@typescript-eslint/no-inferrable-types': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off', // 一旦オフ: 段階的に追加
+      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       
-      // コード品質 - 段階的に修正
-      '@typescript-eslint/no-empty-function': 'error',  // 空関数はerrorにして修正を促進
-      '@typescript-eslint/no-this-alias': 'error',  // アロー関数への移行完了
+      // Code quality
+      '@typescript-eslint/no-empty-function': 'error',
+      '@typescript-eslint/no-this-alias': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'eqeqeq': ['error', 'always', { null: 'ignore' }],
-      'no-console': ['error', { allow: ['warn', 'error'] }],  // 修正完了したのでerrorに変更
+      'no-console': ['error', { allow: ['warn', 'error'] }],
       
-      // TypeScriptコメント
+      // TS comment policy
       '@typescript-eslint/ban-ts-comment': ['error', {
         'ts-ignore': 'allow-with-description',
         'ts-expect-error': 'allow-with-description',
         minimumDescriptionLength: 10
       }],
       
-      // null/undefined安全性 - 段階的に修正
-      '@typescript-eslint/no-non-null-assertion': 'error',  // 修正完了
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',  // strictNullChecks有効化後に再度有効化
+      // Null safety
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/strict-boolean-expressions': 'off', // 厳密すぎるので無効化
+      '@typescript-eslint/strict-boolean-expressions': 'off',
       
-      // 命名規則（段階的に厳格化） - レガシーコードとの互換性のため一時的にオフ
-      '@typescript-eslint/naming-convention': 'off', /* ['warn',
-        {
-          selector: 'variable',
-          format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
-          leadingUnderscore: 'allow',
-          trailingUnderscore: 'allow',
-          // レガシーコード対応: アンダースコア区切りを一時的に許可
-          filter: {
-            regex: '^(.*_.*|[A-Z][a-z]*(_[A-Z][a-z]*)*)$',
-            match: false
-          }
-        },
-        {
-          selector: 'function',
-          format: ['camelCase', 'PascalCase'],
-          leadingUnderscore: 'allow'
-        },
-        {
-          selector: 'parameter',
-          format: ['camelCase', 'PascalCase'],
-          leadingUnderscore: 'allow'
-        },
-        {
-          selector: 'class',
-          format: ['PascalCase'],
-          // レガシーコード: clsで始まるクラス名を許可
-          custom: {
-            regex: '^(cls)?[A-Z]',
-            match: true
-          }
-        },
-        {
-          selector: 'interface',
-          format: ['PascalCase'],
-          // I始まりのインターフェース名を許可
-          custom: {
-            regex: '^I?[A-Z]',
-            match: true
-          }
-        },
-        {
-          selector: 'typeAlias',
-          format: ['PascalCase']
-        },
-        {
-          selector: 'enum',
-          format: ['PascalCase']
-        },
-        {
-          selector: 'enumMember',
-          format: ['PascalCase', 'UPPER_CASE']
-        }
-      ], */
+      // Naming
+      '@typescript-eslint/naming-convention': 'off',
       
-      // TypeScriptが型チェックするため無効化
+      // TypeScript handles this
       'no-undef': 'off',
       
-      // クラスとインターフェースのマージング - 修正完了
-      '@typescript-eslint/no-unsafe-declaration-merging': 'error', // interface/classマージングを禁止
+      // Prevent interface/class merge pitfalls
+      '@typescript-eslint/no-unsafe-declaration-merging': 'error',
     },
   },
   {
@@ -156,6 +104,4 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'error',
     },
   },
-  // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
-  // 追加の除外設定は不要
 );
