@@ -543,7 +543,8 @@ export function setting(locSearch: string) {
         data[0][1] = "地図ファイル数";
         data[1][1] = attrData.MapData.GetNumOfMapFile();
         data[0][2] = "地図ファイル";
-        data[1][2] = attrData.MapData.GetMapFileName().join(",");
+        const mapFileNames = attrData.MapData.GetMapFileName() as (string | number)[];
+        data[1][2] = mapFileNames.map((name) => String(name)).join(",");
         data[0][3] = "レイヤ数";
         data[1][3] = layn.toString();
         let n=4;
@@ -2921,7 +2922,8 @@ export function setting(locSearch: string) {
         Generic.createNewButton(gbContourSepaData, "削除", "", 80, 70,
             function () {
                 const n = lstcontourSeparateValue.selectedIndex;
-                attrData.nowDataSolo().ContourMD.Irregular.splice(n, 1);
+                const irregular = attrData.nowDataSolo().ContourMD.Irregular as strContour_Data_Irregular_interval[];
+                irregular.splice(n, 1);
                 attrData.nowDataSolo().ContourMD.IrregularNum--;
                 lstcontourSeparateValue.removeList(n, 1);
                 if (lstcontourSeparateValue.selectedIndex === -1) {
@@ -2939,7 +2941,8 @@ export function setting(locSearch: string) {
                 const dt = new strContour_Data_Irregular_interval()
                 dt.Line_Pat = clsBase.Line();
                 dt.Value = 0;
-                attrData.nowDataSolo().ContourMD.Irregular.push(dt);
+                const irregular = attrData.nowDataSolo().ContourMD.Irregular as strContour_Data_Irregular_interval[];
+                irregular.push(dt);
                 setContourSepaDataValue();
             }, "width:60px");
         Generic.createNewButton(gbSeparateSettings, "すべて削除", "", 80, 295,
@@ -2960,7 +2963,8 @@ export function setting(locSearch: string) {
                     const dt = new strContour_Data_Irregular_interval()
                     dt.Line_Pat = clsBase.Line();
                     dt.Value = ns.Class_Div[i].Value;
-                    ns.ContourMD.Irregular.push(dt);
+                    const irregular = ns.ContourMD.Irregular as strContour_Data_Irregular_interval[];
+                    irregular.push(dt);
                     lst.push({ value: dt.Value, text: dt.Value });
                 }
                 doc.getElementById("gbContourSepaData").setVisibility(true);
@@ -2973,11 +2977,13 @@ export function setting(locSearch: string) {
             const n = lstcontourSeparateValue.selectedIndex;
             const nsc = attrData.nowDataSolo().ContourMD;
             const sort = new SortingSearch();
-            const stac = [];
+            const stac: strContour_Data_Irregular_interval[] = [];
             const lst = [];
             for (let i = 0; i < nsc.IrregularNum; i++) {
                 sort.Add(nsc.Irregular[i].Value);
-                stac.push(nsc.Irregular[i].Clone());
+                const copied = new strContour_Data_Irregular_interval();
+                Object.assign(copied, nsc.Irregular[i]);
+                stac.push(copied);
             }
             sort.AddEnd();
             for (let i = 0; i < nsc.IrregularNum; i++) {
@@ -3346,7 +3352,7 @@ export function setting(locSearch: string) {
 
         const gbSeriesItemData = Generic.createNewFrame(gbSeriesDataSetItem, "gbSeriesItemData", "", 15, 230, 150, 50, "");
         Generic.createNewImageButton(gbSeriesItemData, "", "image/112_UpArrowLong_Grey_24x24_72.png", 10, 13, 24, 24, function () {
-            const seriesData = attrData.nowSeries().DataItem;
+            const seriesData = attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
             const n = seriesListView?.selectedRow ?? -1;
             if (!seriesListView || n < 0 || n >= seriesData.length) {
                 return;
@@ -3354,12 +3360,14 @@ export function setting(locSearch: string) {
             seriesListView.rowUp();
             resetSeriesListOrderNumber();
             const dest = n - 1;
-            const d1 = seriesData[n].Clone();
+            const d1 = new strSeries_DataSet_Item_Info();
+            Object.assign(d1, seriesData[n]);
             if (dest === -1) {
                 seriesData.shift();
                 seriesData.push(d1);
             } else {
-                const d2 = seriesData[dest].Clone();
+                const d2 = new strSeries_DataSet_Item_Info();
+                Object.assign(d2, seriesData[dest]);
                 seriesData[n] = d2;
                 seriesData[dest] = d1;
             }
@@ -3367,7 +3375,7 @@ export function setting(locSearch: string) {
         }, "padding:2px");
         Generic.createNewImageButton(gbSeriesItemData, "", "image/112_DownArrowLong_Grey_24x24_72.png", 45, 13, 24, 24,
             function () {
-                const seriesData = attrData.nowSeries().DataItem;
+                const seriesData = attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
                 const n = seriesListView?.selectedRow ?? -1;
                 if (!seriesListView || n < 0 || n >= seriesData.length) {
                     return;
@@ -3375,13 +3383,15 @@ export function setting(locSearch: string) {
                 seriesListView.rowDown();
                 resetSeriesListOrderNumber();
                 let dest = n + 1;
-                const d1 = seriesData[n].Clone();
+                const d1 = new strSeries_DataSet_Item_Info();
+                Object.assign(d1, seriesData[n]);
                 if (dest === seriesData.length) {
                     dest = 0;
                     seriesData.splice(0, 0, d1);
                     seriesData.pop();
                 } else {
-                    const d2 = seriesData[dest].Clone();
+                    const d2 = new strSeries_DataSet_Item_Info();
+                    Object.assign(d2, seriesData[dest]);
                     seriesData[n] = d2;
                     seriesData[dest] = d1;
                 }
@@ -3389,7 +3399,7 @@ export function setting(locSearch: string) {
 
         Generic.createNewButton(gbSeriesItemData, "削除", "", 90, 15,
             function () {
-                const seriesData = attrData.nowSeries().DataItem;
+                const seriesData = attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
                 const n = seriesListView?.selectedRow ?? -1;
                 if (!seriesListView || n < 0 || n >= seriesData.length) {
                     return;
@@ -3409,7 +3419,7 @@ export function setting(locSearch: string) {
                 const series = attrData.TotalData.TotalMode.Series;
                 const seriesSelD = series.DataSet[series.SelectedIndex];
                 const n = seriesSelD.DataItem.length;
-                for (let i = 0; i < parseInt(n.toString()) / 2; i++) {
+                for (let i = 0; i < n / 2; i++) {
                     [seriesSelD.DataItem[i], seriesSelD.DataItem[n - 1 - i]] = [seriesSelD.DataItem[n - 1 - i], seriesSelD.DataItem[i]];
                 }
                 seriesListView.reverse();
@@ -3466,15 +3476,18 @@ export function setting(locSearch: string) {
         Generic.createNewImageButton(gbGraphDataSetItem, "", "image/112_UpArrowLong_Grey_24x24_72.png", 10, 225, 24, 24, function () {
             const n = pnlGraphItem.selectedRow;
             const selGraph = attrData.nowGraph();
+            const graphData = selGraph.Data as GraphModeDataItem[];
             const dest = n - 1;
-            const d1 = selGraph.Data[n].Clone();
+            const d1 = new GraphModeDataItem();
+            Object.assign(d1, graphData[n]);
             if (dest === -1) {
-                selGraph.Data.shift();
-                selGraph.Data.push(d1);
+                graphData.shift();
+                graphData.push(d1);
             } else {
-                const d2 = selGraph.Data[dest].Clone();
-                selGraph.Data[n] = d2;
-                selGraph.Data[dest] = d1;
+                const d2 = new GraphModeDataItem();
+                Object.assign(d2, graphData[dest]);
+                graphData[n] = d2;
+                graphData[dest] = d1;
             }
             pnlGraphEachItem(dest);
         }, "padding:2px");
@@ -3483,15 +3496,18 @@ export function setting(locSearch: string) {
                 const n = pnlGraphItem.selectedRow;
                 let dest = n + 1;
                 const selGraph = attrData.nowGraph();
-                const d1 = selGraph.Data[n].Clone();
-                if (dest === selGraph.Data.length) {
+                const graphData = selGraph.Data as GraphModeDataItem[];
+                const d1 = new GraphModeDataItem();
+                Object.assign(d1, graphData[n]);
+                if (dest === graphData.length) {
                     dest = 0;
-                    selGraph.Data.splice(0, 0, d1);
-                    selGraph.Data.pop();
+                    graphData.splice(0, 0, d1);
+                    graphData.pop();
                 } else {
-                    const d2 = selGraph.Data[dest].Clone();
-                    selGraph.Data[n] = d2;
-                    selGraph.Data[dest] = d1;
+                    const d2 = new GraphModeDataItem();
+                    Object.assign(d2, graphData[dest]);
+                    graphData[n] = d2;
+                    graphData[dest] = d1;
                 }
                 pnlGraphEachItem(dest);
             }, "padding:2px");
@@ -3504,6 +3520,7 @@ export function setting(locSearch: string) {
                 }
                 clsSelectData(e, attrData, attrData.TotalData.LV1.SelectedLayer,
                     function (selectedStatus: boolean[], selectedNumber: number[]) {
+                        const graphData = selGraph.Data as GraphModeDataItem[];
                         const colorPat = [];
                         colorPat.push(new colorRGBA([255, 40, 0]));
                         colorPat.push(new colorRGBA([0, 0o0, 0xbf]));
@@ -3522,7 +3539,7 @@ export function setting(locSearch: string) {
                             d.Tile = clsBase.Tile();
                             d.Tile.Color = colorPat[(n + i) % colorPat.length].Clone();
                             d.Tile.Color = Generic.GetColorArrange(d.Tile.Color, -parseInt(((n + i) / colorPat.length).toString()) * 50);
-                            selGraph.Data.push(d);
+                            graphData.push(d);
                         }
                         pnlGraphEachItem(n);
                     }, preAsta, true, true, false, false);
@@ -3531,8 +3548,9 @@ export function setting(locSearch: string) {
             function () {
                 const n = pnlGraphItem.selectedRow;
                 if (n !== -1) {
-                    attrData.nowGraph().Data.splice(n, 1);
-                    const mxn = attrData.nowGraph().Data.length;
+                    const graphData = attrData.nowGraph().Data as GraphModeDataItem[];
+                    graphData.splice(n, 1);
+                    const mxn = graphData.length;
                     pnlGraphItem.selectedRow = -1;
                     pnlGraphEachItem(Math.min(n, mxn - 1));
                 }
@@ -3665,16 +3683,18 @@ export function setting(locSearch: string) {
             const n = lstLabelDataItem.selectedIndex;
             if (n === -1) { return };
             const selLabel = attrData.nowLabel();
+            const labelDataItems = (selLabel.DataItem ?? []) as number[];
+            selLabel.DataItem = labelDataItems;
             let dest = n - 1;
-            const d1 = selLabel.DataItem[n];
+            const d1 = labelDataItems[n];
             if (dest === -1) {
-                selLabel.DataItem.shift();
-                selLabel.DataItem.push(d1);
-                dest = selLabel.DataItem.length - 1;
+                labelDataItems.shift();
+                labelDataItems.push(d1);
+                dest = labelDataItems.length - 1;
             } else {
-                const d2 = selLabel.DataItem[dest];
-                selLabel.DataItem[n] = d2;
-                selLabel.DataItem[dest] = d1;
+                const d2 = labelDataItems[dest];
+                labelDataItems[n] = d2;
+                labelDataItems[dest] = d1;
             }
             lstLabelDataItem.rowUp(n);
         }, "padding:2px");
@@ -3684,24 +3704,28 @@ export function setting(locSearch: string) {
                 if (n === -1) { return };
                 let dest = n + 1;
                 const selLabel = attrData.nowLabel();
-                const d1 = selLabel.DataItem[n];
-                if (dest === selLabel.DataItem.length) {
+                const labelDataItems = (selLabel.DataItem ?? []) as number[];
+                selLabel.DataItem = labelDataItems;
+                const d1 = labelDataItems[n];
+                if (dest === labelDataItems.length) {
                     dest = 0;
-                    selLabel.DataItem.splice(0, 0, d1);
-                    selLabel.DataItem.pop();
+                    labelDataItems.splice(0, 0, d1);
+                    labelDataItems.pop();
                 } else {
-                    const d2 = selLabel.DataItem[dest];
-                    selLabel.DataItem[n] = d2;
-                    selLabel.DataItem[dest] = d1;
+                    const d2 = labelDataItems[dest];
+                    labelDataItems[n] = d2;
+                    labelDataItems[dest] = d1;
                 }
                 lstLabelDataItem.rowDown(n);
             }, "padding:2px");
         Generic.createNewButton(gbLabelDataItem, "追加", "", 250, 15,
             function (e: MouseEvent) {
                 const selLabel = attrData.nowLabel();
+                const labelDataItems = (selLabel.DataItem ?? []) as number[];
+                selLabel.DataItem = labelDataItems;
                 const preAsta = [];
-                for (let i = 0; i < selLabel.DataItem.length; i++) {
-                    preAsta.push(selLabel.DataItem[i]);
+                for (let i = 0; i < labelDataItems.length; i++) {
+                    preAsta.push(labelDataItems[i]);
                 }
                 clsSelectData(e, attrData, attrData.TotalData.LV1.SelectedLayer,
                     function (selected: boolean[], selectedNumber: number[]) {
@@ -3710,7 +3734,7 @@ export function setting(locSearch: string) {
                         selN = (selN === -1) ? 0 : selN;
                         const Layernum = attrData.TotalData.LV1.SelectedLayer;
                         for (let i = 0; i < selectedNumber.length; i++) {
-                            selLabel.DataItem.push(selectedNumber[i]);
+                            labelDataItems.push(selectedNumber[i]);
                             adList.push({ value: String(selectedNumber[i]), text: attrData.Get_DataTitle(Layernum, selectedNumber[i], true) });
                         }
                         lstLabelDataItem.addList(adList, selN);
@@ -3720,7 +3744,10 @@ export function setting(locSearch: string) {
             function () {
                 const n = lstLabelDataItem.selectedIndex;
                 if (n !== -1) {
-                    attrData.nowLabel().DataItem.splice(n, 1);
+                    const selLabel = attrData.nowLabel();
+                    const labelDataItems = (selLabel.DataItem ?? []) as number[];
+                    selLabel.DataItem = labelDataItems;
+                    labelDataItems.splice(n, 1);
                     lstLabelDataItem.removeList(n, 1);
                 }
             }, "width:70px");
