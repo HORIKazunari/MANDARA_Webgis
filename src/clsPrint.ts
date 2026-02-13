@@ -62,6 +62,33 @@ interface TitledDataSetInfo {
     title: string;
 }
 
+interface ClassDivValueInfo {
+    Value: number;
+}
+
+interface SoloModeViewSettingsForRestore {
+    Class_Div: ClassDivValueInfo[];
+    MarkSizeMD: {
+        MaxValueMode: number;
+        MaxValue: number;
+    };
+    MarkBarMD: {
+        MaxValueMode: number;
+        MaxValue: number;
+    };
+}
+
+interface ModeValueInScreenInfo {
+    LayerNum: number;
+    DataNum: number;
+    divValue: number[];
+    MarkSize_MaxValueMode: number;
+    MarkSize_MaxValue: number;
+    MarkBar_MaxValueMode: number;
+    MarkBar_MaxValue: number;
+    setF: boolean;
+}
+
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
 class Fringe_Line_Info {
@@ -563,11 +590,13 @@ class clsPrint {
     static Screen_Back_Set_Paint(g: CanvasRenderingContext2D, Layernum: number){
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
+        type PolygonShapeInfo = { Shape: number };
 
-        let MultiObj = [];
+        let MultiObj: number[] = [];
         for (let i = 0; i < al.Dummy.length; i++) {
             const c = al.Dummy[i].code;
-            if ((al.MapFileData.MPObj[c].Shape === enmShape.PolygonShape) && (
+            const mapObject = al.MapFileData.MPObj[c] as PolygonShapeInfo;
+            if ((mapObject.Shape === enmShape.PolygonShape) && (
                 state.attrData.Check_Screen_Objcode_In(Layernum, c) === true)) {
                 MultiObj.push(c);
             }
@@ -575,8 +604,9 @@ class clsPrint {
         if (al.DummyGroup.length > 0) {
             for (let i = 0; i < al.DummyGroup.length; i++) {
                 const ok = al.DummyGroup[i];
-                if (al.MapFileData.ObjectKind[ok].Shape === enmShape.PolygonShape) {
-                    const temp = al.MapFileData.Get_Objects_by_Group(ok, al.Time);
+                const objectKind = al.MapFileData.ObjectKind[ok] as PolygonShapeInfo;
+                if (objectKind.Shape === enmShape.PolygonShape) {
+                    const temp = al.MapFileData.Get_Objects_by_Group(ok, al.Time) as number[];
                     for (let j = 0; j < temp.length; j++) {
                         if (state.attrData.Check_Screen_Objcode_In(Layernum, temp[j]) === true) {
                             MultiObj.push(temp[j]);
@@ -622,7 +652,7 @@ class clsPrint {
         const state = appState();
         const ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, ObjCode, Dummy_F);
 
-        const boundArrange = state.attrData.LayerData[Layernum].MapFileData.Boundary_Arrange_Sub(ELine);
+        const boundArrange = state.attrData.LayerData[Layernum].MapFileData.Boundary_Arrange_Sub(ELine) as boundArrangeData;
         if (boundArrange.Pon <= 0) {
             return undefined;
         } else {
@@ -636,20 +666,25 @@ class clsPrint {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
         const ALineN = al.MapFileData.Map.ALIN;
-        const Use_Line = new Array(ALineN);
+        const Use_Line: number[] = new Array(ALineN);
         Use_Line.fill(0);
         for (let i = 0; i < ObjCode.length; i++) {
-            let badata; //boundArrangeData
             if (Dummy_F === false) {
-                badata = state.attrData.Boundary_Kencode_Arrange(Layernum, ObjCode[i]);
+                const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, ObjCode[i]) as boundArrangeData[];
+                for (let k = 0; k < badataArray.length; k++) {
+                    const badata = badataArray[k] as boundArrangeData;
+                    for (let j = 0; j < badata.Fringe.length; j++) {
+                        Use_Line[badata.Fringe[j].code]++;
+                    }
+                }
             } else {
-                badata = al.MapFileData.Boundary_Arrange(ObjCode[i], al.Time);
-            }
-            for (let j = 0; j < badata.Fringe.length; j++) {
-                Use_Line[badata.Fringe[j].code]++;
+                const badata = al.MapFileData.Boundary_Arrange(ObjCode[i], al.Time) as boundArrangeData;
+                for (let j = 0; j < badata.Fringe.length; j++) {
+                    Use_Line[badata.Fringe[j].code]++;
+                }
             }
         }
-        const ELine = [];
+        const ELine: EnableMPLine_Data[] = [];
         for (let i = 0; i < ALineN; i++) {
             if (Use_Line[i] % 2 === 1) {
                 const d = new EnableMPLine_Data(i, -1);
@@ -893,9 +928,9 @@ class clsPrint {
 
     static Restore_InScreenObjectData(){
         const state = appState();
-        const atc = state.attrData.TempData.ModeValueInScreen_Stac;
+        const atc = state.attrData.TempData.ModeValueInScreen_Stac as ModeValueInScreenInfo;
         const al = state.attrData.LayerData[atc.LayerNum];
-        const ald = al.atrData.Data[atc.DataNum].SoloModeViewSettings;
+        const ald = al.atrData.Data[atc.DataNum].SoloModeViewSettings as SoloModeViewSettingsForRestore;
         for (let i = 0; i < atc.divValue.length; i++) {
             ald.Class_Div[i].Value = atc.divValue[i];
         }
@@ -911,6 +946,12 @@ class clsPrint {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
         const vs = state.attrData.TotalData.ViewStyle;
+        const missingData = vs.Missing_Data as {
+            Mark: { WordFont: { Size: number } };
+            MarkBar: { WordFont: { Size: number } };
+            TurnMark: { WordFont: { Size: number } };
+            Print_Flag: boolean;
+        };
         const LayerShape = al.Shape;
         const Objn = al.atrObject.ObjectNum;
         const Missing_DataArraySub = state.attrData.Get_Missing_Value_DataArray(LayerNum, DataNum);
@@ -947,12 +988,12 @@ class clsPrint {
         let maxv;
         switch (mode) {
             case enmSoloMode_Number.MarkSizeMode:
-                misR = state.attrData.Radius(vs.Missing_Data.Mark.WordFont.Size, 1, 1);
+                misR = state.attrData.Radius(missingData.Mark.WordFont.Size, 1, 1);
                 normR = al.atrData.Data[DataNum].SoloModeViewSettings.MarkSizeMD.Mark.WordFont.Size;
                 maxv = Math.max(Math.abs(state.attrData.Get_DataMax(LayerNum, DataNum)), Math.abs(state.attrData.Get_DataMin(LayerNum, DataNum)));
                 break;
             case enmSoloMode_Number.MarkBarMode: {
-                misR = state.attrData.Radius(vs.Missing_Data.MarkBar.WordFont.Size, 1, 1);
+                misR = state.attrData.Radius(missingData.MarkBar.WordFont.Size, 1, 1);
                 const alm = al.atrData.Data[DataNum].SoloModeViewSettings.MarkBarMD;
                 const w = state.attrData.Get_Length_On_Screen(alm.Width);
                 const h = state.attrData.Get_Length_On_Screen(alm.MaxHeight);
@@ -964,7 +1005,7 @@ class clsPrint {
                 break;
             }
             case enmSoloMode_Number.MarkTurnMode:
-                misR = state.attrData.Radius(vs.Missing_Data.TurnMark.WordFont.Size, 1, 1);
+                misR = state.attrData.Radius(missingData.TurnMark.WordFont.Size, 1, 1);
                 normR = state.attrData.Radius(al.atrData.Data[DataNum].SoloModeViewSettings.MarkTurnMD.Mark.WordFont.Size, 1, 1);
                 break;
             case enmSoloMode_Number.MarkBlockMode:
@@ -1227,15 +1268,17 @@ class clsPrint {
                             n++;
                             break;
                         }
-                        case enmLayerMode_Number.GraphMode:
+                        case enmLayerMode_Number.GraphMode: {
                             //グラフモード
                             atw.Layn = Layernum;
                             atw.Print_Mode_Layer = state.attrData.LayerData[Layernum].Print_Mode_Layer;
                             atw.title = "";
                             atw.DatN = state.attrData.layerGraph().SelectedIndex;
-                            atw.GraphMode = state.attrData.nowGraph().GraphMode;
+                            const currentGraph = state.attrData.nowGraph() as IGraphDataSet;
+                            atw.GraphMode = currentGraph.GraphMode;
                             n++;
                             break;
+                        }
                         case enmLayerMode_Number.LabelMode:
                             break;
                         case enmLayerMode_Number.TripMode:
@@ -1317,7 +1360,7 @@ class clsPrint {
     }
 
     /**重ね合わせモードのデータセット内の表示項目ごとの凡例セット */
-    static Legend_Data_Set_Over_sub(Over_D: IOverLayDataItemElement, orn: number) {
+    static Legend_Data_Set_Over_sub(Over_D: IOverLayDataItemElement, orn: number): number {
         const state = appState();
         let n = orn;
         const L = Over_D.Layer;
@@ -2956,12 +2999,13 @@ class clsPrint {
                     break;
                 }
                 case enmMarkBlockArrange.Random: {
+                    const dotMapPoint = state.attrData.TempData.DotMap_Temp.DotMapPoint as Record<number, point[]>;
                     if(r === 0 && MK.Line?.Color) {
                         const brush = MK.Line.Color.toRGBA();
                         g.fillStyle = brush;
                     }
-                    if((state.attrData.TempData.DotMap_Temp.DotMapTempResetF === true) || (state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum] === undefined)) {
-                        const onP = [];
+                    if((state.attrData.TempData.DotMap_Temp.DotMapTempResetF === true) || (dotMapPoint[ObjNum] === undefined)) {
+                        const onP: point[] = [];
                         for (let j = 0; j < Block_n; j++) {
                             const area = state.attrData.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
                             let inf = false
@@ -2979,9 +3023,9 @@ class clsPrint {
                                 g.fillRect(ap.x, ap.y, 1, 1);
                             }
                         }
-                        state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum] = onP;
+                        dotMapPoint[ObjNum] = onP;
                     } else {
-                        const pOn = state.attrData.TempData.DotMap_Temp.DotMapPoint[ObjNum];
+                        const pOn = dotMapPoint[ObjNum] as point[];
                         for (let j = 0; j < Block_n; j++) {
                             ap = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(pOn[j])
                             if(r !== 0) {
@@ -3151,9 +3195,9 @@ class clsPrint {
                     const LineSize = Math.abs(MV) / maxv * mmv.LineShape.LineWidth;
                     const ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, kpos);
                     for (let j = 0; j < ELine.length; j++) {
-                        const mpl = al.MapFileData.MPLine[ELine[j].LineCode];
+                        const mpl = al.MapFileData.MPLine[ELine[j].LineCode] as { NumOfPoint: number; PointSTC: point[] };
                         const np= mpl.NumOfPoint;
-                        const pxy = vs.ScrData.Get_SxSy_With_3D(np, mpl.PointSTC, false);
+                        const pxy = vs.ScrData.Get_SxSy_With_3D(np, mpl.PointSTC, false) as point[];
 
                         let LineShapeLine;
                         if(MisF === true) {
