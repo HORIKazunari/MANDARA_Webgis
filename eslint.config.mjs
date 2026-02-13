@@ -48,9 +48,9 @@ export default tseslint.config(
       'prefer-const': 'error',  // 修正完了したのでerrorに変更
       
       // 型安全性の向上 - 段階的に修正
-      '@typescript-eslint/no-unsafe-assignment': 'warn',      // 既存コードのため一時的にwarn
-      '@typescript-eslint/no-unsafe-member-access': 'warn',   // 既存コードのため一時的にwarn
-      '@typescript-eslint/no-unsafe-call': 'warn',            // 既存コードのため一時的にwarn
+      '@typescript-eslint/no-unsafe-assignment': 'error',     // 段階昇格: error化
+      '@typescript-eslint/no-unsafe-member-access': 'error',  // 段階昇格: error化
+      '@typescript-eslint/no-unsafe-call': 'error',           // 段階昇格: error化
       '@typescript-eslint/no-unsafe-return': 'warn',         // 既存コードのため一時的にwarn
       
       // 関数とメソッドの型定義 - 段階的に修正
