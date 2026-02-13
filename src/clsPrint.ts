@@ -89,6 +89,37 @@ interface ModeValueInScreenInfo {
     setF: boolean;
 }
 
+interface TempDataLegendInfo {
+    Accessory_Temp: {
+        MapLegend_W: Legend2_Atri[];
+    };
+    OverLay_Temp: {
+        Always_Ove_DataStac: IOverLayDataItemElement[];
+    };
+}
+
+interface LabelModeDataSetInfo {
+    Location_Mark: Mark_Property;
+    DataItem: Array<{ Data: number; title: string; Unit_Flag?: boolean }>;
+    Width: number;
+    ObjectName_Print_Flag: boolean;
+    ObjectName_Font: Font_Property;
+    DataName_Print_Flag: boolean;
+    DataValue_Unit_Flag: boolean;
+    DataValue_Font: Font_Property;
+    DataValue_TurnFlag: boolean;
+    BorderLine: Line_Property;
+    BorderObjectTile: Tile_Property;
+    BorderDataTile: Tile_Property;
+}
+
+interface ContourTempInfo {
+    Contour_All_Number: number;
+    Contour_All_Point: number;
+    Contour_Point: point[];
+    Contour_Object: Record<number, strContour_Line_property>;
+}
+
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
 class Fringe_Line_Info {
@@ -506,8 +537,9 @@ class clsPrint {
     /**等値線モード他の背後のポリゴンのクリッピングリージョン作成、ポリゴン数を返す */
     static ContourPolygonRegion(Layernum: number, RealObjClip_f: boolean, DummyClip_F: boolean): PolydataInfo {
         const state = appState();
-        const MultiObj = [];
+        const MultiObj: number[] = [];
         const al = state.attrData.LayerData[Layernum];
+        type MapObjectShapeInfo = { Shape: number; Kind: number };
 
         const LT = al.Time;
         let Dummy_F;
@@ -522,7 +554,8 @@ class clsPrint {
         } else if (DummyClip_F === true) {
             for (let i = 0; i < al.Dummy.length; i++) {
                 const c = al.Dummy[i].code
-                if ((al.MapFileData.MPObj[c].Shape === enmShape.PolygonShape) && (state.attrData.Check_Screen_Objcode_In(Layernum, c) === true)) {
+                const mapObj = al.MapFileData.MPObj[c] as MapObjectShapeInfo;
+                if ((mapObj.Shape === enmShape.PolygonShape) && (state.attrData.Check_Screen_Objcode_In(Layernum, c) === true)) {
                     MultiObj.push(c);
                 }
             }
@@ -530,8 +563,9 @@ class clsPrint {
             if (dobgRet.trueNum > 0) {
                 const alm = al.MapFileData;
                 for (let j = 0; j < alm.Map.Kend; j++) {
-                    if ((dobgRet.DummyOBGArray[alm.MPObj[j].Kind] === true) && (alm.MPObj[j].Shape === enmShape.PolygonShape)) {
-                        if (alm.CheckEnableObject(alm.MPObj[j], LT) === true) {
+                    const mapObj = alm.MPObj[j] as MapObjectShapeInfo;
+                    if ((dobgRet.DummyOBGArray[mapObj.Kind] === true) && (mapObj.Shape === enmShape.PolygonShape)) {
+                        if (alm.CheckEnableObject(mapObj, LT) === true) {
                             MultiObj.push(j);
                         }
                     }
@@ -666,8 +700,7 @@ class clsPrint {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
         const ALineN = al.MapFileData.Map.ALIN;
-        const Use_Line: number[] = new Array(ALineN);
-        Use_Line.fill(0);
+        const Use_Line: number[] = Array.from({ length: ALineN }, () => 0);
         for (let i = 0; i < ObjCode.length; i++) {
             if (Dummy_F === false) {
                 const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, ObjCode[i]) as boundArrangeData[];
@@ -1004,10 +1037,12 @@ class clsPrint {
                 normSize = new size(w + wThree, h + wThree);
                 break;
             }
-            case enmSoloMode_Number.MarkTurnMode:
+            case enmSoloMode_Number.MarkTurnMode: {
                 misR = state.attrData.Radius(missingData.TurnMark.WordFont.Size, 1, 1);
-                normR = state.attrData.Radius(al.atrData.Data[DataNum].SoloModeViewSettings.MarkTurnMD.Mark.WordFont.Size, 1, 1);
+                const markTurn = al.atrData.Data[DataNum].SoloModeViewSettings.MarkTurnMD as { Mark: { WordFont: { Size: number } } };
+                normR = state.attrData.Radius(markTurn.Mark.WordFont.Size, 1, 1);
                 break;
+            }
             case enmSoloMode_Number.MarkBlockMode:
                 break;
         }
@@ -1217,7 +1252,7 @@ class clsPrint {
     static Legend_Data_Set() {
         const state = appState();
         let n = 0;
-        const at = state.attrData.TempData;
+        const at = state.attrData.TempData as TempDataLegendInfo;
         if(state.attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index !== -1) {
 
             at.Accessory_Temp.MapLegend_W.length = at.OverLay_Temp.Always_Ove_DataStac.length;
@@ -1461,11 +1496,13 @@ class clsPrint {
 
     static OverLay_Print_Sub(g: CanvasRenderingContext2D, Ov_Data: IOverLayDataItemElement | strOverLay_DataSet_Item_Info) {
         const state = appState();
+        const overData = Ov_Data as IOverLayDataItemElement;
+        const layerData = state.attrData.LayerData[overData.Layer] as ILayerDataInfo;
         switch (Ov_Data.Print_Mode_Layer) {
             case enmLayerMode_Number.SoloMode: {
                 switch (Ov_Data.Mode) {
                     case enmSoloMode_Number.ClassPaintMode:
-                        state.attrData.ResetMPSubLineDrawn(state.attrData.LayerData[Ov_Data.Layer].MapFileName);
+                        state.attrData.ResetMPSubLineDrawn(layerData.MapFileName);
                         this.PrintClassPaintMode(g, Ov_Data.Layer, Ov_Data.DataNumber);
                         break;
                     case enmSoloMode_Number.MarkSizeMode:
@@ -1486,7 +1523,7 @@ class clsPrint {
                         this.PrintClassMarkMode(g, Ov_Data.Layer, Ov_Data.DataNumber);
                         break;
                     case enmSoloMode_Number.ClassODMode:
-                        if (state.attrData.LayerData[Ov_Data.Layer].Shape === enmShape.LineShape) {
+                        if (layerData.Shape === enmShape.LineShape) {
                             clsPrint.PrintClassLineShapeSENMode(g, Ov_Data.Layer, Ov_Data.DataNumber);
                         } else {
                             this.PrintClassODMode(g, Ov_Data.Layer, Ov_Data.DataNumber);
@@ -1942,7 +1979,7 @@ class clsPrint {
         this.Vector_Object_Boundary(g, Layernum)
         this.Vector_Dummy_Boundary(g, Layernum, true, true);
 
-        const attLbl = al.LayerModeViewSettings.LabelMode.DataSet[DataSet];
+        const attLbl = al.LayerModeViewSettings.LabelMode.DataSet[DataSet] as LabelModeDataSetInfo;
         const LabelMark = attLbl.Location_Mark;
 
 
@@ -2085,6 +2122,7 @@ class clsPrint {
         }
 
         const C_md  = ad.SoloModeViewSettings.ContourMD;
+        const contourTemp = cont as ContourTempInfo;
 
         //等値線間隔と値を取得
         const retConV = this.GetContourIntervalValue(LayerNum, DataNum);
@@ -2176,27 +2214,27 @@ class clsPrint {
         }
 
         for (let i = 0; i < ln; i++) {
-            const Con_Obj_Code = i + cont.Contour_All_Number;
+            const Con_Obj_Code = i + contourTemp.Contour_All_Number;
             const pci=Pre_CStac[i];
             const d = new strContour_Line_property();
             d.Layernum = LayerNum
             d.DataNum = DataNum
-            d.PointStac = cont.Contour_All_Point;
+            d.PointStac = contourTemp.Contour_All_Point;
             d.NumOfPoint = pci.NumOfPoint;
             d.Value = Contour_High_M[pci.ContourNumber];
             d.Circumscribed_Rectangle = new rectangle(pci.points[0], new size(0, 0));
 
             for (let j = 0; j <  pci.NumOfPoint; j++) {
-                cont.Contour_Point.push(pci.points[j].Clone());
-                cont.Contour_All_Point++;
+                contourTemp.Contour_Point.push(pci.points[j].Clone());
+                contourTemp.Contour_All_Point++;
                 d.Circumscribed_Rectangle = spatial.getCircumscribedRectangle(pci.points[j], d.Circumscribed_Rectangle);
             }
             d.Flag = true;
-            cont.Contour_Object[Con_Obj_Code] = d;
+            contourTemp.Contour_Object[Con_Obj_Code] = d;
 
-            let pxy = [];
+            let pxy: point[] = [];
             if (C_md.Spline_flag === true && clsSpline.Spline_Get) {
-                pxy = clsSpline.Spline_Get(0, pci.NumOfPoint, pci.points, ST, state.attrData.TotalData.ViewStyle.ScrData);
+                pxy = clsSpline.Spline_Get(0, pci.NumOfPoint, pci.points, ST, state.attrData.TotalData.ViewStyle.ScrData) as point[];
             } else {
                 for (let j = 0; j < pci.NumOfPoint; j++) {
                     pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(pci.points[ j]));
@@ -2339,15 +2377,13 @@ class clsPrint {
         const F_Mesh: number[][][] = Generic.Array2Dimension(F_Meshx + 1, F_Meshy + 1);
         for (let j = 0; j <= F_Meshx; j++) {
             for (let k = 0; k <= F_Meshy; k++) {
-                F_Mesh[j][k] = new Array(2);
-                F_Mesh[j][k][0] = 0;
-                F_Mesh[j][k][1] = -1;
+                F_Mesh[j][k] = [0, -1];
             }
         }
 
         let nn = 0;
         const Missing_DataArray = state.attrData.Get_Missing_Value_DataArray(Layernum, DataNum);
-        const F_Mesh_In: number[] = new Array(ObjN).fill(0);
+        const F_Mesh_In: number[] = Array.from({ length: ObjN }, () => 0);
 
         for (let i = 0; i < ObjN; i++) {
 
@@ -2681,10 +2717,11 @@ class clsPrint {
             Category_Array_Inner = state.attrData.Get_CategolyArray(LayerNum, InnerDT.Data);
         }
         const smd = ad.SoloModeViewSettings.StringMD;
+        const stringMode = smd as { Font: Font_Property; maxWidth: number; WordTurnF: boolean };
         // const H = state.attrData.Get_Length_On_Screen(smd.Font.Size);
-        const Font = this.cloneFontProperty(smd.Font);
-        const xw = state.attrData.Get_Length_On_Screen(smd.maxWidth);
-        const turnF = smd.WordTurnF;
+        const Font = this.cloneFontProperty(stringMode.Font);
+        const xw = state.attrData.Get_Length_On_Screen(stringMode.maxWidth);
+        const turnF = stringMode.WordTurnF;
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             if((state.attrData.Check_Condition(LayerNum, i) === true) && (
                 (!Missing_DataArray[i]) || (state.attrData.TotalData.ViewStyle.Missing_Data.Print_Flag === true))) {
@@ -3617,9 +3654,9 @@ class clsPrint {
 
     static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, /* Dummy_F: boolean */) {
         const state = appState();
-        let ELine = []// clsMapData.EnableMPLine_Data
+        let ELine: EnableMPLine_Data[] = []
         const ad = state.attrData.LayerData[Layernum];
-        let pxy = [];// Point
+        let pxy: point[] = [];
         // if(false) { // Dummy_F === true
         //     if(!(false)) { // state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false
         //         return;
@@ -3641,11 +3678,13 @@ class clsPrint {
         }
         // }
         // const MPFileNapa = ad.MapFileName;
+        const layerForLine = ad as ILayerDataInfo & { ObjectGroupRelatedLine: number[] };
         for (let j = 0; j < ELine.length; j++) {
             const lc = ELine[j].LineCode;
             // const lcc = ELine[j].Kind;
-            let PatNum = ad.ObjectGroupRelatedLine[lc];
-            if(PatNum === undefined) {
+            const objectGroupRelatedLine = layerForLine.ObjectGroupRelatedLine;
+            let PatNum = Number(objectGroupRelatedLine[lc] ?? 0);
+            if(Number.isNaN(PatNum)) {
                 PatNum = 0;
             }
             // Property not available: ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern
