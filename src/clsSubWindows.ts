@@ -2,6 +2,17 @@
 import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
+type SelectControl = HTMLSelectElement & {
+    getValue: () => string;
+    getText: () => string;
+    addSelectList: (items: Array<{ value: string | number; text: string }>, selectedIndex?: number, replace?: boolean, allowBlank?: boolean, blankValue?: number) => void;
+    setSelectValue: (value: string) => void;
+};
+
+type NumberControl = HTMLInputElement & {
+    setNumberValue: (value: number) => void;
+};
+
 // JavaScript source code
 
 //カラーチャート
@@ -194,7 +205,7 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     rangeStyle.top = colPSize.rangeTop + "px";
     rangeStyle.left = "50px";
     colorPickerObj.appendChild(rangeNameObj);
-    let ocol;
+    let ocol: colorRGBA;
     if(OriginControl!==undefined){
         ocol = Generic.RGBAfromElement(OriginControl);
     }else{
@@ -234,13 +245,13 @@ function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color)
     colorPickerObj.appendChild(colorPickerBox);
 
     function setCol(e: MouseEvent): void {
-        const col = Generic.RGBAfromElement(e.target);
+        const col = Generic.RGBAfromElement(e.target) as colorRGBA;
         col.a = parseInt(String(Number(rangeObj.value) * 2.55));
         colorPickerBox.style.backgroundColor = col.toRGBA();
     }
 
     function setColBar() {
-        const col = Generic.RGBAfromElement(colorPickerBox);
+        const col = Generic.RGBAfromElement(colorPickerBox) as colorRGBA;
         col.a = parseInt(String(Number(rangeObj.value) * 2.55));
         colorPickerBox.style.backgroundColor = col.toRGBA();
     }
@@ -306,7 +317,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
     // Generic.checkRadioByValue("MarkPrintType", mk.PrintMark);
     markPrintTypeChange(mk.PrintMark);
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 110, 245, 85, "");
-    const sizeBox = Generic.createNewSizeSelect(gbSize, mk.WordFont.Size, "","サイズ", 15, 15,40,2, undefined);
+    const sizeBox = Generic.createNewSizeSelect(gbSize, mk.WordFont.Size, "","サイズ", 15, 15,40,2, undefined) as NumberControl;
     const innerColorBox = Generic.createNewTileBox(gbSize, "", "内部", mk.Tile, 150, 15,undefined, tileClick);
     const backrColorBox = Generic.createNewWordDivCanvas(gbSize, "", "背景", 150, 45,undefined, backClick);
     clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData);
@@ -749,8 +760,8 @@ function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
     const finedx = tag.indexOf(avt.TileMapDataSet.opt.tag);
     const tileTagSelect = Generic.createNewSelect(gbTIle, taglist, finedx, "", 15, 15, false, function () {
         setTileMapListByTag("");
-    }, "width:180px", 1, false);
-    const tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false);
+    }, "width:180px", 1, false) as SelectControl;
+    const tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false) as SelectControl;
     setTileMapListByTag(avt.TileMapDataSet.opt.id);
 
     const gbTIming = Generic.createNewFrame(backDiv, "", "", 15, 170, 120, 70, "描画タイミング");
@@ -804,7 +815,7 @@ function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
 function graphModeEn_Obi() {
     const backDiv = Generic.set_backDiv("", "円・帯グラフ設定", 350, 300, true, true, buttonOK, 0.2, true);
 
-    const En_Obi=appState().attrData.nowGraph().En_Obi.Clone();
+    const En_Obi = appState().attrData.nowGraph().En_Obi as strGraph_Data_En;
 
     const gbMaxSize = Generic.createNewFrame(backDiv, "", "", 15, 40, 150, 90, "最大サイズ");
     const maxSizeMode = [{ value: enmGraphMaxSize.Fixed, text: "固定" }, { value: enmGraphMaxSize.Changeable, text: "可変" }]
@@ -864,7 +875,7 @@ function graphModeEn_Obi() {
 function graphModeOresen_Bou() {
     const backDiv = Generic.set_backDiv("", "折れ線・棒グラフ設定", 370, 330, true, true, buttonOK, 0.2, true);
 
-    const Oresen_Bou = appState().attrData.nowGraph().Oresen_Bou.Clone();
+    const Oresen_Bou = appState().attrData.nowGraph().Oresen_Bou as strGraph_Data_Oresen;
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 40, 150, 90, "最大サイズ");
      Generic.createNewSizeSelect(gbSize, Oresen_Bou.Size, "","", 30, 15, 40, 3,
         function (_obj: HTMLElement, v: number) { Oresen_Bou.Size = v; }, "");
@@ -1145,7 +1156,7 @@ function frmPrintOption(firstTab: number = 0) {
     const autoLst=[{ value: 1, text: "弱"},{ value: 2, text: "中"},{ value: 3, text: "強"},{ value: 4, text: "最強"}];
     const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst,-1,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v?: string){
         atv.SouByou.AutoDegree=v ? parseInt(v) : 0;
-    },"");
+    },"") as SelectControl;
     cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree.toString());
     Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: HTMLInputElement){atv.SouByou.Spline_F=obj.checked;},"");
     const soubyouManual = Generic.createNewFrame(tab04, "", "", 10, 50, 170, 122, "マニュアル設定");
@@ -1351,11 +1362,13 @@ function frmPrintOption(firstTab: number = 0) {
     const lLK = appState().attrData.GetAllMapLineKindName();
     const lLKList: {text: string, checked: boolean}[] = [];
     for (let i = 0; i < lLK.length; i++) {
-        const cv = (atvl.Line_Visible_Number_STR.mid(i, 1) === "1");
+        const lineVisibleStr = String(atvl.Line_Visible_Number_STR);
+        const cv = (lineVisibleStr.substring(i, i + 1) === "1");
         lLKList.push({ text: lLK[i], checked: cv });
     }
     Generic.createNewCheckListBox(tabLegend.panel[3], "", lLKList, 20, 45, 150, 150, function (num: number, checked: boolean) {
-        atvl.Line_Visible_Number_STR = atvl.Line_Visible_Number_STR.midReplace(num, (checked === true) ? "1" : "0");
+        const current = String(atvl.Line_Visible_Number_STR);
+        atvl.Line_Visible_Number_STR = current.substring(0, num) + ((checked === true) ? "1" : "0") + current.substring(num + 1);
     }, "");
     const MapLegendLine_DummyKind = Generic.createNewWordDivCanvas(tabLegend.panel[3], "", "背景", 190, 45, undefined, function (e: MouseEvent) {
         clsBackgroundPatternSet(e, atvl.Back, backGet, appState().attrData);
@@ -1777,8 +1790,8 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     Generic.createNewSpan(backDiv, "対象レイヤ：" + appState().attrData.LayerData[Layernum].Name, "", "", 240, 40, "", undefined);
     Generic.createNewRadioButtonList(backDiv, "markPositionOperation", lst, 15, 70, 200, 25, 0, rbClick, "");
     const gbDataSelect = Generic.createNewFrame(backDiv, "", "", 240, 220, 200, 80, "設定する属性データ");
-    const cboLonData = Generic.createNewWordSelect(gbDataSelect, "経度", [], 0, "", 10, 20, 30, 140, 0, undefined, "", "", true);
-    const cboLatData = Generic.createNewWordSelect(gbDataSelect, "緯度", [], 0, "", 10, 50, 30, 140, 0, undefined, "", "", true);
+    const cboLonData = Generic.createNewWordSelect(gbDataSelect, "経度", [], 0, "", 10, 20, 30, 140, 0, undefined, "", "", true) as SelectControl;
+    const cboLatData = Generic.createNewWordSelect(gbDataSelect, "緯度", [], 0, "", 10, 50, 30, 140, 0, undefined, "", "", true) as SelectControl;
     gbDataSelect.setVisibility(false);
     const titles = appState().attrData.getDataTitleName(Layernum, true, true, false, false, undefined);
     const items = [{value:0,text:"変更なし"}];
@@ -2038,13 +2051,14 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
     appState().attrData.Set_LayerName_to(cboLayerLabel, LayerNum);
     const txtTitle = Generic.createNewWordTextInput(grTop, "タイトル", "", ConItem.Name, "", 15, 50, 60, 160, undefined, "text-align:left");
 
-    const cboStep = Generic.createNewWordSelect(backDiv, "段階", undefined, -1, "", 15, 140, 40, 80, 0, changeStep, "", "");
+    const cboStep = Generic.createNewWordSelect(backDiv, "段階", undefined, -1, "", 15, 140, 40, 80, 0, changeStep, "", "") as SelectControl;
     Generic.createNewButton(backDiv, "段階追加", "", 170, 140, function () {
         const n = cboStep.options.length;
         const cdt = new strCondition_Data_Info();
         cdt.And_OR = enmConditionAnd_Or._And;
         cdt.Condition = [];
-        ConItem.Condition_Class.push(cdt);
+        const classes = ConItem.Condition_Class as strCondition_Data_Info[];
+        classes.push(cdt);
         setStep(n);
     }, "");
     Generic.createNewButton(backDiv, "段階削除", "", 250, 140, function (e: MouseEvent) {
@@ -2060,7 +2074,8 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
             } else {
                 newn = n;
             }
-            ConItem.Condition_Class.splice(n, 1);
+            const classes = ConItem.Condition_Class as strCondition_Data_Info[];
+            classes.splice(n, 1);
             setStep(newn);
             ListViewSet()
         }, undefined);
@@ -2091,7 +2106,8 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
             Generic.alert(new point(e.clientX, e.clientY),"項目を選択して下さい。");
         } else {
             let  newRow=ListView.selectedRow;
-            ConItem.Condition_Class[n].Condition.splice(selRow, 1);
+            const conditions = ConItem.Condition_Class[n].Condition as strCondition_Limitation_Info[];
+            conditions.splice(selRow, 1);
             ListViewSet();
             newRow=(newRow === ListView.getRowNumber()) ? newRow-1:newRow;
             ListView.selectRow(newRow);
@@ -2119,20 +2135,21 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
         const tx = Generic.getConditionString(condList[i].value);
         condList[i].text = tx;
     }
-    const cboCondition = Generic.createNewWordSelect(newSettings, "条件", condList, enmCondition.Equal, "", 15, 75, 60, 100, 0, undefined, "", "");
+    const cboCondition = Generic.createNewWordSelect(newSettings, "条件", condList, enmCondition.Equal, "", 15, 75, 60, 100, 0, undefined, "", "") as SelectControl;
     Generic.createNewButton(newSettings, "項目追加", "", 300, 75, function (e: MouseEvent) {
         const n = cboStep.selectedIndex;
         const Lim = new strCondition_Limitation_Info();
         Lim.Data = cboData.selectedIndex;
         Lim.Val = txtValue.value;
-        Lim.Condition = cboCondition.getValue();
+        Lim.Condition = Number(cboCondition.getValue());
         if (appState().attrData.Get_DataType(ConItem.Layer, Lim.Data) === enmAttDataType.Normal) {
             if (isNaN(Lim.Val)) {
                 Generic.alert(new point(e.clientX, e.clientY),"数値以外の文字が含まれています。");
                 return;
             }
         }
-        ConItem.Condition_Class[n].Condition.push(Lim);
+        const conditions = ConItem.Condition_Class[n].Condition as strCondition_Limitation_Info[];
+        conditions.push(Lim);
         ListViewSet();
         txtValue.value = "";
     }, "");
@@ -2183,7 +2200,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
     const atv=appState().attrData.TotalData.ViewStyle.MapScale;
     Generic.createNewRadioButtonList(backDiv, "rbAreaOrPeri", [{ value: 0, text: "オブジェクト面積取得" }, { value: 1, text: "オブジェクト周長取得" }], 15, 50, undefined, 30, 0, undefined, "");
     const scaleList = Generic.getScaleUnit_for_select();
-    const scaleUnit=Generic.createNewWordSelect(backDiv,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
+    const scaleUnit=Generic.createNewWordSelect(backDiv,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false) as SelectControl;
     const LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     switch (appState().attrData.LayerData[LayerNum].Shape) {
         case enmShape.PolygonShape: {
@@ -2259,7 +2276,7 @@ function frmMain_Culc(okEvent: () => void) {
     const txtPlusInput = Generic.createNewNumberInput(backDiv, "", "", 315, 130, 100, undefined, "")
 
     const cboDif1 = Generic.createNewSelect(backDiv, [], -1, "", 100, 160, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 1) }, "width:150px");//引き算
-    const cboDif2 = Generic.createNewWordSelect(backDiv, "－", [], -1, "", 120, 185, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 1) }, "", "");
+    const cboDif2 = Generic.createNewWordSelect(backDiv, "－", [], -1, "", 120, 185, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 1) }, "", "") as SelectControl;
     appState().attrData.Set_DataTitle_to_cboBox(cboDif1, LayerNum, 0, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cboDif2, LayerNum, 0, true, true, false, false);
     cboDif1.selectedIndex = -1;
@@ -2267,15 +2284,15 @@ function frmMain_Culc(okEvent: () => void) {
     const txtMinusInput = Generic.createNewNumberInput(backDiv, "", "", 315, 185, 100, undefined, "")
 
     const cboMulti1 = Generic.createNewSelect(backDiv, [], -1, "", 100, 215, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 2) }, "width:150px");//かけ算
-    const cboMulti2 = Generic.createNewWordSelect(backDiv, "×", [], -1, "", 120, 240, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 2) }, "", "");
+    const cboMulti2 = Generic.createNewWordSelect(backDiv, "×", [], -1, "", 120, 240, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 2) }, "", "") as SelectControl;
     appState().attrData.Set_DataTitle_to_cboBox(cboMulti1, LayerNum, 0, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cboMulti2, LayerNum, 0, true, true, false, false);
     cboMulti1.selectedIndex = -1;
     cboMulti2.addSelectList([{ value: 0, text: "数値入力" }], -1, false, true, 0);
     const txtMultiInput = Generic.createNewNumberInput(backDiv, "", "", 315, 240, 100, undefined, "")
 
-    const  cbonumeratorData= Generic.createNewSelect(backDiv, [], -1, "", 100, 270, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 3) }, "width:150px");//わり算
-    const  cboDenominatorData= Generic.createNewWordSelect(backDiv, "÷", [], -1, "", 120, 295, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 3) }, "", "");
+    const  cbonumeratorData= Generic.createNewSelect(backDiv, [], -1, "", 100, 270, false, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 3) }, "width:150px") as SelectControl;//わり算
+    const  cboDenominatorData= Generic.createNewWordSelect(backDiv, "÷", [], -1, "", 120, 295, 30, 150, 0, function (/*e: Event*/) { Generic.checkRadioByValue("dataCulMethod", 3) }, "", "") as SelectControl;
     appState().attrData.Set_DataTitle_to_cboBox(cboDenominatorData, LayerNum, 0, true, true, false, false);
     appState().attrData.Set_DataTitle_to_cboBox(cbonumeratorData, LayerNum, 0, true, true, false, false);
     cboDenominatorData.addSelectList([{ value: 0, text: "数値入力" }], -1, false, true, 0);
@@ -2698,7 +2715,7 @@ function frmMain_GetDistance(okEvent: () => void){
     },"");
     const scaleList = Generic.getScaleUnit_for_select();
     const atv=appState().attrData.TotalData.ViewStyle.MapScale;
-    const scaleUnit=Generic.createNewWordSelect(gbDistance,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false);
+    const scaleUnit=Generic.createNewWordSelect(gbDistance,"取得単位",scaleList,atv.Unit,"",15,120,60,60,0,undefined,"","",false) as SelectControl;
 
     function buttonOK(e: MouseEvent) {
         const n = lbList.length;
@@ -2936,7 +2953,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
      },"");
     const scaleList = Generic.getScaleUnit_for_select();
     const atv = appState().attrData.TotalData.ViewStyle.MapScale;
-    const scaleUnit = Generic.createNewWordSelect(gbMethod, "取得単位", scaleList, atv.Unit, "", 80, 155, 55, 60, 0, undefined, "", "", false);
+    const scaleUnit = Generic.createNewWordSelect(gbMethod, "取得単位", scaleList, atv.Unit, "", 80, 155, 55, 60, 0, undefined, "", "", false) as SelectControl;
     const chkConditionUse = Generic.createNewCheckBox(gbLayerMethod, "表示オブジェクト限定・属性検索の条件設定を使用する", "", false, 15, 280, 190, undefined, "");
 
     const gbOutout = Generic.createNewFrame(backDiv, "", "", 255, 40, 250, 320, "出力項目");
@@ -2950,7 +2967,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     const registDiv=Generic.createNewDiv(gbOutout,"","","",50,260,200,60,"",undefined);
     const regModeLst = [{ value: registMode.average, text: "平均値" }, { value: registMode.sum, text: "合計値" }, { value: registMode.standard, text: "標準偏差" },
         { value: registMode.max, text: "最大値" }, { value: registMode.min, text: "最小値" }];
-    const cboRegistMode = Generic.createNewWordSelect(registDiv, "集計方法",regModeLst, 0, "", 0, 0, 60, 100, 0, undefined, "", "", false);
+    const cboRegistMode = Generic.createNewWordSelect(registDiv, "集計方法",regModeLst, 0, "", 0, 0, 60, 100, 0, undefined, "", "", false) as SelectControl;
     Generic.createNewSpan(registDiv, "カテゴリーデータの場合は、カテゴリーごとに数がカウントされます", "", "", 0, 25, "width:180px", undefined);
 
     const disE = appState().attrData.LayerData[LayerNum].MapFileData.Map.Detail.DistanceMeasurable;
@@ -3360,8 +3377,8 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
             call(JSON.parse(Generic.utf8ArrayToStr(data[key])), file.name);
         }
         function unzipError(/*err: Error*/) {
-            // @ts-expect-error TS2304: Cannot find name 'readingScreen'.
-            readingScreen.close();
+            const rs = (globalThis as { readingScreen?: { close?: () => void } }).readingScreen;
+            rs?.close?.();
             //Generic.clear_backDiv();
             Generic.clear_backDiv();
             call(undefined);
@@ -3369,7 +3386,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
     }
 
     //ファイル選択する場合
-    const fileIn = Generic.createNewInput(bbox, "file", "", "", 15, 75, "", "");
+    const fileIn = Generic.createNewInput(bbox, "file", "", "", 15, 75, "", "") as HTMLInputElement;
     fileIn.accept=".mpfj";
     fileIn.addEventListener("change", function (e: Event) {
         const files = (e.target as HTMLInputElement).files;
@@ -3393,7 +3410,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
         if (!e.dataTransfer) return;
         const files = e.dataTransfer.files; // FileList object.
         const file = files[0];
-        if (Generic.getExtension(file.name).toLowerCase() !== "mpfj") {
+        if (String(Generic.getExtension(file.name)).toLowerCase() !== "mpfj") {
             Generic.alert(undefined,"地図ファイルではありません。拡張子mpfjのファイルをドロップしてください。");
         }else{
             getFile(file);
@@ -3479,7 +3496,7 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
         // cancelEventがある場合の処理は別途実装
     }
     Generic.createNewSpan(backDiv, "検索するオブジェクト名", "", "", 10, 40, "", undefined);
-    const objNameBox = Generic.createNewInput(backDiv, "text", initParapeter.ObjName, "", 20, 60, undefined, "width:160px");
+    const objNameBox = Generic.createNewInput(backDiv, "text", initParapeter.ObjName, "", 20, 60, undefined, "width:160px") as HTMLInputElement;
     objNameBox.onkeydown = function (e: KeyboardEvent) {
         if (e.keyCode === 13) {
             change();
@@ -3523,7 +3540,7 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
                 case 8:
                     break;
                 default:
-                    tx += tx0.mid(i, 1);
+                    tx += tx0.substring(i, i + 1);
                     break;
             }
         }
@@ -3546,8 +3563,9 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
                     for (let j = 0; j < mpObj.NumOfNameTime; j++) {
                         const mpobjN = mpObj.NameTimeSTC[j];
                         if (clsTime.checkDurationIn(mpobjN.SETime, Time) === true) {
-                            const objComp = mpobjN.NamesList.concat();
-                            for (let k = 0; k < mpobjN.NamesList.length; k++) {
+                            const namesList = mpobjN.NamesList as string[];
+                            const objComp = namesList.slice();
+                            for (let k = 0; k < namesList.length; k++) {
                                 objComp[k] = Generic.ObjName_Kanji_Compatible(objComp[k]).newObjname;
                             }
                             let okf = false;
@@ -3558,7 +3576,7 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
                                     }
                                     break;
                                 case 1:
-                                    for (let k = 0; k < mpobjN.NamesList.length; k++) {
+                                    for (let k = 0; k < namesList.length; k++) {
                                         if (objComp[k] !== undefined) {
                                             if (objComp[k].indexOf(tx) !== -1) {
                                                 okf = true;
@@ -3594,7 +3612,7 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
             }
             for(let i  = 0;i<n ;i++){
                 const mn= MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac];
-                const name = mn.connectNames();
+                const name = (mn.NamesList as string[]).join('/');
                 lbList.addList([{ text: name, value: name, checked: true }], lbList.length);
             }
         }
@@ -3676,7 +3694,7 @@ function frmPrint_DummyObjectGroup(){
                 lstDummyItem.removeList(n, 1);
             }
         }, "width:60px");
-    const txtDummy = Generic.createNewInput(gbDummyList, "text", "", "", 10, 185, undefined, "width:100px");
+    const txtDummy = Generic.createNewInput(gbDummyList, "text", "", "", 10, 185, undefined, "width:100px") as HTMLInputElement;
     txtDummy.addEventListener('keydown',txtKeyDown) ;
      function txtKeyDown (e: KeyboardEvent) {if (e.keyCode === 13) { btnAdd.click(); } }
     const btnAdd=Generic.createNewButton(gbDummyList, "追加", "", 115, 180,
@@ -3744,7 +3762,7 @@ function frmPrint_DummyObjectGroup(){
     for (let i = 0; i < MapFileList.length; i++) {
         list.push({ value: MapFileList[i], text: MapFileList[i] });
     }
-    const selMapFIle = Generic.createNewWordSelect(gbPointMark,"地図ファイル", list, 0, "", 10, 30,70,160,1, showPointMark,"", "");
+    const selMapFIle = Generic.createNewWordSelect(gbPointMark,"地図ファイル", list, 0, "", 10, 30,70,160,1, showPointMark,"", "") as SelectControl;
     const pnlPointMark = Generic.createNewDiv(gbPointMark, "", "", "", 10, 85, 185, 180, "overflow-y:scroll;overflow-x:hidden;border:solid 1px;border-color:#666666;", "");
     const pnlPointMarkList = Generic.createNewDiv(pnlPointMark, "", "", "", 0, 0, 210, 100, "", "");
 

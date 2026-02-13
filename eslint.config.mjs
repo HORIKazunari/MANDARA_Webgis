@@ -184,6 +184,12 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-call': 'error',
     },
   },
+  {
+    files: ['src/clsSubWindows.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'error',
+    },
+  },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
   // 追加の除外設定は不要
 );
