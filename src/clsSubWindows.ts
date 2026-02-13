@@ -1916,14 +1916,14 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
                 }
 
                 if (lat !== -1) {
-                    const Data = appState().attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lat);
+                    const Data = appState().attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lat) as AttrDataCellInfo[];
                     for (let i = 0; i < Data.length; i++) {
                         OriPos[Data[i].ObjLocation].y = Number(Data[i].DataValue);
                     }
                 }
 
                 if (lon !== -1) {
-                    const Data = appState().attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lon);
+                    const Data = appState().attrData.Get_Data_Cell_Array_Without_MissingValue(Layernum, lon) as AttrDataCellInfo[];
                     for (let i = 0; i < Data.length; i++) {
                         OriPos[Data[i].ObjLocation].x = Number(Data[i].DataValue);
                     }
@@ -2019,7 +2019,9 @@ function frmMain_ConditionSettings(okEvent: () => void){
         frmMain_ConditionSettingSub(ConItem,btnOK);
         function btnOK(Con: strCondition_DataSet_Info){
             appState().attrData.TotalData.Condition[n] = Con;
-            clbList.setText(n, "【" + appState().attrData.LayerData[Con.Layer].Name + "】" + Con.Name);
+            const layer = Number(Con.Layer);
+            const layerData = appState().attrData.LayerData[layer] as LayerNameInfo;
+            clbList.setText(n, "【" + layerData.Name + "】" + Con.Name);
             clbList.setCheckStatus(n, Con.Enabled)
         }
     },"width:80px");
@@ -2040,7 +2042,9 @@ function frmMain_ConditionSettings(okEvent: () => void){
         frmMain_ConditionSettingSub(ConItem,btnOK);
         function btnOK(Con: strCondition_DataSet_Info){
             appState().attrData.TotalData.Condition.push(Con);
-            const name = "【" + appState().attrData.LayerData[Con.Layer].Name + "】" + Con.Name;
+            const layer = Number(Con.Layer);
+            const layerData = appState().attrData.LayerData[layer] as LayerNameInfo;
+            const name = "【" + layerData.Name + "】" + Con.Name;
             clbList.addList([{checked:true, text: name, value: name}],clbList.length);
         }
     }, "width:80px");
@@ -2072,7 +2076,9 @@ function frmMain_ConditionSettings(okEvent: () => void){
     const atc = appState().attrData.TotalData.Condition;
     const list = [];
     for (let i = 0; i < atc.length; i++) {
-        const tx = "【" + appState().attrData.LayerData[atc[i].Layer].Name + "】" + atc[i].Name;
+        const layer = Number(atc[i].Layer);
+        const layerData = appState().attrData.LayerData[layer] as LayerNameInfo;
+        const tx = "【" + layerData.Name + "】" + atc[i].Name;
         list.push({ checked: atc[i].Enabled, text: tx, value: tx });
     }
     const clbList = new CheckedListBox(backDiv, "", list, 15, 65, 270, 200, true, undefined);
@@ -2092,8 +2098,7 @@ function frmMain_ConditionSettings(okEvent: () => void){
 function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEvent: (ConItem: strCondition_DataSet_Info) => void) {
 
     const backDiv = Generic.set_backDiv("", "属性検索条件設定", 450, 540, true, true, buttonOK, 0.2, true);
-    const conItemRaw: unknown = _ConItem.Clone();
-    const ConItem = conItemRaw as strCondition_DataSet_Info;
+    const ConItem = _ConItem.Clone() as strCondition_DataSet_Info;
     const LayerNum = ConItem.Layer;//appState().attrData.TotalData.LV1.SelectedLayer;
     const grTop = Generic.createNewFrame(backDiv, "", "", 15, 40, 400, 90, "");
     const cboLayerLabel = Generic.createNewWordSelect(grTop, "レイヤ", undefined, -1, "", 15, 10, 60, 150, 0, changeLayer, "", "") as SelectControl;
@@ -2155,7 +2160,8 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
             Generic.alert(new point(e.clientX, e.clientY),"項目を選択して下さい。");
         } else {
             let  newRow=ListView.selectedRow;
-            const conditions = ConItem.Condition_Class[n].Condition as strCondition_Limitation_Info[];
+            const conditionClass = ConItem.Condition_Class[n] as ConditionClassInfo;
+            const conditions = conditionClass.Condition;
             conditions.splice(selRow, 1);
             ListViewSet();
             newRow=(newRow === ListView.getRowNumber()) ? newRow-1:newRow;
@@ -2197,7 +2203,8 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
                 return;
             }
         }
-        const conditions = ConItem.Condition_Class[n].Condition as strCondition_Limitation_Info[];
+        const conditionClass = ConItem.Condition_Class[n] as ConditionClassInfo;
+        const conditions = conditionClass.Condition;
         conditions.push(Lim);
         ListViewSet();
         txtValue.value = "";
@@ -2216,10 +2223,12 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
 
     function ListViewSet() {
         const n = cboStep.selectedIndex;
+        const conditionClass = ConItem.Condition_Class[n] as ConditionClassInfo;
+        const conditions = conditionClass.Condition;
         ListView.clear();
-        for (let i = 0; i < ConItem.Condition_Class[n].Condition.length; i++) {
+        for (let i = 0; i < conditions.length; i++) {
             const ItemData = new Array(3);
-            const cd = ConItem.Condition_Class[n].Condition[i] as strCondition_Limitation_Info;
+            const cd = conditions[i];
             ItemData[0] = String(appState().attrData.Get_DataTitle(ConItem.Layer, cd.Data, false));
             ItemData[1] = String(cd.Val);
             ItemData[2] = String(Generic.getConditionString(cd.Condition));
@@ -3538,6 +3547,36 @@ interface CandidateInfo {
     TimeStac: number;
 }
 
+interface LayerNameInfo {
+    Name: string;
+}
+
+interface AttrDataCellInfo {
+    ObjLocation: number;
+    DataValue: string | number;
+}
+
+interface ConditionClassInfo {
+    Condition: strCondition_Limitation_Info[];
+}
+
+interface CopyObjectNameTimeInfo {
+    SETime: Start_End_Time_data;
+    NamesList: string[];
+}
+
+interface CopyObjectMapInfo {
+    Kind: number;
+    Shape: number;
+    NumOfNameTime: number;
+    NameTimeSTC: CopyObjectNameTimeInfo[];
+}
+
+interface CopyObjectKindInfo {
+    Name: string;
+    ObjectNameList: string[];
+}
+
 /**オブジェクト名コピー */
 function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true);
@@ -3562,7 +3601,8 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
     Generic.createNewSpan(backDiv, "オブジェクトグループ", "", "", 10, 180, "", undefined);
     const lObjGList: {text: string; value: string; checked: boolean}[] = [];
     for (let i = 0; i < MapData.Map.OBKNum; i++) {
-        lObjGList.push({ text: String(MapData.ObjectKind[i].Name), value: String(i), checked: Boolean(initParapeter.ObjectGroupChecked[i]) });
+        const objectKind = MapData.ObjectKind[i] as CopyObjectKindInfo;
+        lObjGList.push({ text: String(objectKind.Name), value: String(i), checked: Boolean(initParapeter.ObjectGroupChecked[i]) });
     }
     const lstObjGroup=new CheckedListBox(backDiv, "", lObjGList, 20, 200, 160, 110,false, change, "");
     // lstObjGroup.disabled=!initParapeter.ObjectGroupEnabled; // CheckedListBoxにdisabledプロパティがないためコメント化
@@ -3606,13 +3646,13 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
         const Time  = clsTime.GetFromInputDate(dbdtpTime.value);
         for(let Smode  = 0 ;Smode<= 1;Smode++){
             for (let i = 0; i < MapData.Map.Kend; i++) {
-                const mpObj = MapData.MPObj[i];
+                const mpObj = MapData.MPObj[i] as CopyObjectMapInfo;
                 if ((SelF[i] === false) && (lstObjGroup.getCheckedStatus(mpObj.Kind) === true) && (ChkShapeBoxSelected[mpObj.Shape] === true)) {
                     // const f = false;
                     for (let j = 0; j < mpObj.NumOfNameTime; j++) {
-                        const mpobjN = mpObj.NameTimeSTC[j] as { SETime: Start_End_Time_data; NamesList: string[] };
+                        const mpobjN = mpObj.NameTimeSTC[j] as CopyObjectNameTimeInfo;
                         if (clsTime.checkDurationIn(mpobjN.SETime, Time) === true) {
-                            const namesList = mpobjN.NamesList as string[];
+                            const namesList = mpobjN.NamesList;
                             const objComp = namesList.slice();
                             for (let k = 0; k < namesList.length; k++) {
                                 objComp[k] = String((Generic.ObjName_Kanji_Compatible(objComp[k]) as { newObjname: string }).newObjname);
@@ -3656,12 +3696,14 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
             const Values =[];
             
             for(let i  = 0;i<n ;i++){
-                    const oname  = String(MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[0]);
+                const mpObj = MapData.MPObj[candidateObject[i].ObjCode] as CopyObjectMapInfo;
+                const oname  = String(mpObj.NameTimeSTC[candidateObject[i].TimeStac].NamesList[0]);
                 Values.push(oname);
             }
             for(let i  = 0;i<n ;i++){
-                    const mn = MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac] as { NamesList: string[] };
-                const name = (mn.NamesList as string[]).join('/');
+                const mpObj = MapData.MPObj[candidateObject[i].ObjCode] as CopyObjectMapInfo;
+                const mn = mpObj.NameTimeSTC[candidateObject[i].TimeStac] as CopyObjectNameTimeInfo;
+                const name = mn.NamesList.join('/');
                 lbList.addList([{ text: name, value: name, checked: true }], lbList.length);
             }
         }
@@ -3672,7 +3714,8 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
         const copyObjname: string[] = [];
         for (let i = 0; i < MapData.Map.OBKNum; i++) {
             if (lstObjGroup.getCheckedStatus(i) === true) {
-                    const onl = MapData.ObjectKind[i].ObjectNameList as string[];
+                const objectKind = MapData.ObjectKind[i] as CopyObjectKindInfo;
+                const onl = objectKind.ObjectNameList;
                 maxOname = Math.max(maxOname, onl.length);
                 for (let j = 0; j < onl.length; j++) {
                     if (copyObjname[j] === undefined) {
@@ -3697,7 +3740,8 @@ function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectNam
             let copyTx = "";
             for (let i = 0; i < candidateObject.length; i++) {
                 if (lbList.getCheckedStatus(i) === true) {
-                    copyTx += MapData.MPObj[candidateObject[i].ObjCode].NameTimeSTC[candidateObject[i].TimeStac].NamesList[index] + "\n";
+                    const mpObj = MapData.MPObj[candidateObject[i].ObjCode] as CopyObjectMapInfo;
+                    copyTx += mpObj.NameTimeSTC[candidateObject[i].TimeStac].NamesList[index] + "\n";
                 }
             }
             Generic.clear_backDiv();
