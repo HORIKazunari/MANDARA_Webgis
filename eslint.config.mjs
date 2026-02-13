@@ -154,46 +154,6 @@ export default tseslint.config(
     ],
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'warn',
-    },
-  },
-  {
-    files: ['src/SortingSearch.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-call': 'warn',
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
-    },
-  },
-  {
-    files: ['src/clsAccessory.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'warn',
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
-      '@typescript-eslint/no-unsafe-call': 'warn',
-    },
-  },
-  {
-    files: ['src/clsPrint.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-call': 'error',
-      '@typescript-eslint/no-unsafe-member-access': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'error',
-    },
-  },
-  {
-    files: ['src/clsWindow.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-call': 'error',
-      '@typescript-eslint/no-unsafe-member-access': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'error',
-    },
-  },
-  {
-    files: ['src/clsSubWindows.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-call': 'error',
-      '@typescript-eslint/no-unsafe-member-access': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'error',
     },
   },
   // vscode.config.tsやvitest.config.tsなどの設定ファイルは既にignoredに含まれるため、
