@@ -13,6 +13,11 @@ type NumberControl = HTMLInputElement & {
     setNumberValue: (value: number) => void;
 };
 
+type TabControl = {
+    panel: HTMLElement[];
+    selectedIndex: number;
+};
+
 // JavaScript source code
 
 //カラーチャート
@@ -803,7 +808,7 @@ function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
         _attrData.TotalData.ViewStyle.TileMapView = {
             Visible: chkVisible.checked,
             TileMapDataSet: tileMapDataSet,
-            DrawTiming: Generic.getRadioCheckByValue("drawTiming") as enmDrawTiming,
+            DrawTiming: Number(Generic.getRadioCheckByValue("drawTiming")) as enmDrawTiming,
             AlphaValue: parseInt(rangeObj.value) / 100
         };
         Generic.clear_backDiv();
@@ -815,8 +820,8 @@ function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
 function graphModeEn_Obi() {
     const backDiv = Generic.set_backDiv("", "円・帯グラフ設定", 350, 300, true, true, buttonOK, 0.2, true);
 
-    const graphData = appState().attrData.nowGraph() as { En_Obi: strGraph_Data_En; GraphMode: enmGraphMode };
-    const En_Obi = graphData.En_Obi;
+    const En_Obi = appState().attrData.nowGraph().En_Obi as strGraph_Data_En;
+    const graphMode = Number(appState().attrData.nowGraph().GraphMode) as enmGraphMode;
 
     const gbMaxSize = Generic.createNewFrame(backDiv, "", "", 15, 40, 150, 90, "最大サイズ");
     const maxSizeMode = [{ value: enmGraphMaxSize.Fixed, text: "固定" }, { value: enmGraphMaxSize.Changeable, text: "可変" }]
@@ -853,7 +858,7 @@ function graphModeEn_Obi() {
             }, "");
     }
 
-    if (graphData.GraphMode === enmGraphMode.StackedBarGraph) {
+    if (graphMode === enmGraphMode.StackedBarGraph) {
         const gbStackGraphSetting = Generic.createNewFrame(backDiv, "", "", 180, 150, 150, 100, "帯グラフ表示");
         const StackedBarDirectionList = [{ value: enmStackedBarChart_Direction.Vertical, text: "縦" },
         { value: enmStackedBarChart_Direction.Horizontal, text: "横" }];
@@ -867,7 +872,7 @@ function graphModeEn_Obi() {
     }
 
     function buttonOK() {
-        graphData.En_Obi = En_Obi;
+        appState().attrData.nowGraph().En_Obi = En_Obi;
         Generic.clear_backDiv();
     }
 }
@@ -876,8 +881,7 @@ function graphModeEn_Obi() {
 function graphModeOresen_Bou() {
     const backDiv = Generic.set_backDiv("", "折れ線・棒グラフ設定", 370, 330, true, true, buttonOK, 0.2, true);
 
-    const graphData = appState().attrData.nowGraph() as { Oresen_Bou: strGraph_Data_Oresen };
-    const Oresen_Bou = graphData.Oresen_Bou;
+    const Oresen_Bou = appState().attrData.nowGraph().Oresen_Bou as strGraph_Data_Oresen;
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 40, 150, 90, "最大サイズ");
      Generic.createNewSizeSelect(gbSize, Oresen_Bou.Size, "","", 30, 15, 40, 3,
         function (_obj: HTMLElement, v: number) { Oresen_Bou.Size = v; }, "");
@@ -920,7 +924,7 @@ function graphModeOresen_Bou() {
         }, "");
 
     function buttonOK() {
-        graphData.Oresen_Bou = Oresen_Bou;
+        appState().attrData.nowGraph().Oresen_Bou = Oresen_Bou;
         Generic.clear_backDiv();
     }
 }
@@ -978,7 +982,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
             if (Generic.getRadioCheckByValue("lonEastWest") === 1) {
                 dms.LongitudeDMS.Degree = -dms.LongitudeDMS.Degree;
             }
-            LatLon=dms.toLatLon();
+            LatLon = dms.toLatLon() as latlon;
         }else{
             const latDegreeBox = document.getElementById("latDegreeBox") as HTMLInputElement;
             const lonDegreeBox = document.getElementById("lonDegreeBox") as HTMLInputElement;
@@ -1011,13 +1015,13 @@ function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okEvent: (
     const centerInput = Generic.createNewWordNumberInput(gbCenterLon, "", "度", Zahyo.CenterXY.x, "boxCenterLon", 40, 90,undefined, 120,undefined, "") as HTMLInputElement;
 
     const gbProjection=Generic.createNewFrame(backDiv,"","",230,40,180,200,"変換後の投影法");
-    const prjList=[{value:enmProjection_Info.prjMercator,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMercator)},
-        {value:enmProjection_Info.prjMiller,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMiller)},
-        {value:enmProjection_Info.prjSeikyoEntou,text:Generic.getStringProjectionEnum(enmProjection_Info.prjSeikyoEntou)},
-        {value:enmProjection_Info.prjLambertSeisekiEntou,text:Generic.getStringProjectionEnum(enmProjection_Info.prjLambertSeisekiEntou)},
-        {value:enmProjection_Info.prjEckert4,text:Generic.getStringProjectionEnum(enmProjection_Info.prjEckert4)},
-        {value:enmProjection_Info.prjMollweide,text:Generic.getStringProjectionEnum(enmProjection_Info.prjMollweide)},
-        {value:enmProjection_Info.prjSanson,text:Generic.getStringProjectionEnum(enmProjection_Info.prjSanson)}];
+    const prjList=[{value:enmProjection_Info.prjMercator,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjMercator))},
+        {value:enmProjection_Info.prjMiller,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjMiller))},
+        {value:enmProjection_Info.prjSeikyoEntou,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjSeikyoEntou))},
+        {value:enmProjection_Info.prjLambertSeisekiEntou,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjLambertSeisekiEntou))},
+        {value:enmProjection_Info.prjEckert4,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjEckert4))},
+        {value:enmProjection_Info.prjMollweide,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjMollweide))},
+        {value:enmProjection_Info.prjSanson,text:String(Generic.getStringProjectionEnum(enmProjection_Info.prjSanson))}];
     Generic.createNewRadioButtonList(gbProjection, "Projection", prjList, 15, 15, undefined,25, Zahyo.Projection, 
         function(v: number){Zahyo.Projection=v;}, "");
       
@@ -1071,11 +1075,11 @@ function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) =>
 
 /**出力画面のオプション */
 function frmPrintOption(firstTab: number = 0) {
-    const atv=appState().attrData.TotalData.ViewStyle.Clone();
-    const sdata=clsSettingData.Clone();
+    const atv = appState().attrData.TotalData.ViewStyle.Clone() as ReturnType<typeof appState>['attrData']['TotalData']['ViewStyle'];
+    const sdata = clsSettingData.Clone() as typeof clsSettingData;
     const backDiv = Generic.set_backDiv("", "オブション", 600, 420, true, true, buttonOK, 0.2, true);
     const tablist=["全般","背景・描画","凡例設定","欠損値","スケール設定"];
-    const tab=Generic.createNewTab(backDiv,tablist,firstTab,15,40,570,330);
+    const tab = Generic.createNewTab(backDiv, tablist, firstTab, 15, 40, 570, 330) as TabControl;
 
     /**全般●●●●●●●●●●●●●●●●●●●●● */
     const tab00 = Generic.createNewFrame(tab.panel[0], "", "", 15, 10, 150, 260, "飾り");
@@ -1098,7 +1102,7 @@ function frmPrintOption(firstTab: number = 0) {
     Generic.createNewWordNumberInput(tab00,"最大幅","%",atv.DataNote.MaxWidth,"",30,190,undefined,40,function (obj: HTMLInputElement, v: number) { atv.DataNote.MaxWidth = v;},"")
     Generic.createNewCheckBox(tab00,"図形表示","",atv.FigureVisible,10,220,undefined, function(obj: HTMLInputElement){atv.FigureVisible=obj.checked;},"");
 
-    const atva=atv.AccessoryGroupBox;
+    const atva = atv.AccessoryGroupBox as typeof atv.AccessoryGroupBox;
     const tab01 = Generic.createNewFrame(tab.panel[0], "", "", 180, 10, 170, 210, "飾りグループボックス");
     Generic.createNewCheckBox(tab01,"設定する","",atva.Visible,10,15,undefined, function(obj: HTMLInputElement){atva.Visible=obj.checked;},"");
     const accGList=[{text:"凡例",checked:atva.Legend},{text:"タイトル",checked:atva.Title},{text:"方位",checked:atva.Comapss},{text:"スケール",checked:atva.Scale},
@@ -1258,16 +1262,16 @@ function frmPrintOption(firstTab: number = 0) {
     appState().attrData.Draw_Sample_LineBox(document.getElementById("LPat"), atv.LatLonLine_Print.LPat);
 
     const gbtab12Interval = Generic.createNewFrame(tab12, "", "", 10, 120, 170, 100, "間隔");
-    const txtLatLonIntData = Generic.createNewDiv(gbtab12Interval, "", "", "grayFrame", 10, 15, 140, 35, "padding:5px;", undefined);
+    const txtLatLonIntData = Generic.createNewDiv(gbtab12Interval, "", "", "grayFrame", 10, 15, 140, 35, "padding:5px;", undefined) as HTMLDivElement;
     if (appState().attrData.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
-        const retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false);
+        const retPS = Generic.Get_LatLon_Strings(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false) as { x: string; y: string };
         txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
     }
     Generic.createNewButton(gbtab12Interval, "間隔設定", "", 50, 70, function (/*lp: MouseEvent*/) {
         frmLatLonInput(new latlon(atv.LatLonLine_Print.Lat_Interval, atv.LatLonLine_Print.Lon_Interval), false, function (lp: latlon) {
             atv.LatLonLine_Print.Lat_Interval = lp.lat;
             atv.LatLonLine_Print.Lon_Interval = lp.lon;
-            const retPS = Generic.Get_LatLon_Strings(lp, false);
+            const retPS = Generic.Get_LatLon_Strings(lp, false) as { x: string; y: string };
             txtLatLonIntData.innerHTML = "緯度：" + retPS.y + "<br>" + "経度：" + retPS.x;
         })
     }, "padding-top:0;padding-bottom:0");
@@ -1278,7 +1282,7 @@ function frmPrintOption(firstTab: number = 0) {
     /**凡例設定●●●●●●●●●●●●●●●●●●●●● */
     Generic.createNewCheckBox(tab.panel[2], "凡例を表示", "", atv.MapLegend.Base.Visible, 10, 15,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.Base.Visible = obj.checked }, "");
     Generic.createNewCheckBox(tab.panel[2], "桁区切りカンマを表示", "", atv.MapLegend.Base.Comma_f, 150, 15,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.Base.Comma_f = obj.checked }, "");
-    const tabLegend=Generic.createNewTab(tab.panel[2],["凡例背景・フォント","階級区分","記号・円グラフ","線種・点ダミー凡例"],0,30,50,490,230);
+    const tabLegend = Generic.createNewTab(tab.panel[2], ["凡例背景・フォント", "階級区分", "記号・円グラフ", "線種・点ダミー凡例"], 0, 30, 50, 490, 230) as TabControl;
 
     /**凡例背景*/
     Generic.createNewButton(tabLegend.panel[0], "凡例フォント", "", 30, 25, 
@@ -1340,7 +1344,7 @@ function frmPrintOption(firstTab: number = 0) {
                     atv.MapLegend.ClassMD.ClassBoundaryLine.LPat = Lpat;
                     appState().attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                 });
-        });
+        }) as HTMLElement;
     appState().attrData.Draw_Sample_LineBox(ClassBoundaryLine, atv.MapLegend.ClassMD.ClassBoundaryLine.LPat);
     Generic.createNewCheckBox(tabLegend.panel[1], "度数の表示", "", atv.MapLegend.ClassMD.FrequencyPrint, 290, 160, undefined,function (obj: HTMLInputElement) { atv.MapLegend.ClassMD.FrequencyPrint = obj.checked }, "");
 
@@ -1355,7 +1359,7 @@ function frmPrintOption(firstTab: number = 0) {
                     atv.MapLegend.MarkMD.MultiEnMode_Line = Lpat;
                     appState().attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                 });
-        });
+        }) as HTMLElement;
     appState().attrData.Draw_Sample_LineBox(ClasMarkMDMultiEnMode_Lines, atv.MapLegend.MarkMD.MultiEnMode_Line);
     Generic.createNewWordWidthDiv(tabLegend.panel[2], "", "負の値の記号モードの既定凡例文字", 20, 110, 21, undefined, undefined);
     Generic.createNewWordTextInput(tabLegend.panel[2], "正の値", "", clsSettingData.LegendPlusWord, "", 40, 130, undefined, 80, function (e: Event) {sdata.LegendPlusWord = (e.target as HTMLInputElement).value }, "");
@@ -1386,7 +1390,7 @@ function frmPrintOption(firstTab: number = 0) {
             atvl.Back = back;
             clsDrawTile.Darw_Sample_BackGroundBox((e.target as HTMLElement), back, atv.ScrData);
         }
-    });
+    }) as HTMLElement;
     clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, atvl.Back, atv.ScrData);
     const gbMapLegendLine = Generic.createNewFrame(tabLegend.panel[3], "", "", 190, 85, 100, 80, "線の描き方");
     Generic.createNewRadioButtonList(gbMapLegendLine, "enmCircleMDLegendLine", [{ value: enmCircleMDLegendLine.Zigzag, text: "＼／＼" }, { value: enmCircleMDLegendLine.Straight, text: "───" }], 5, 20, 130, 30, atvl.Line_Pattern,
@@ -1397,7 +1401,7 @@ function frmPrintOption(firstTab: number = 0) {
 
     /**欠損値●●●●●●●●●●●●●●●●●●●●● */
 
-    const atvm = atv.Missing_Data;
+    const atvm = atv.Missing_Data as typeof atv.Missing_Data;
     Generic.createNewCheckBox(tab.panel[3], "欠損値を表示", "", atvm.Print_Flag, 20, 20, undefined, function (obj: HTMLInputElement) { atvm.Print_Flag = obj.checked }, "");
     const gbmPat = Generic.createNewFrame(tab.panel[3], "", "", 30, 50, 500, 200, "欠損値のパターン");
     Generic.createNewWordTextInput(gbmPat, "欠損値の凡例文字", "", atvm.Text, "", 15, 15, 120, 90, function (e: Event) { atvm.Text = (e.target as HTMLInputElement).value }, "");
@@ -1412,7 +1416,7 @@ function frmPrintOption(firstTab: number = 0) {
             atvm.ClassMark = newMark;
             appState().attrData.Draw_Sample_Mark_Box((e.target as HTMLElement), newMark);
         }
-    }, "");
+    }, "") as HTMLElement;
     appState().attrData.Draw_Sample_Mark_Box(atvmClassMark, atvm.ClassMark);
     const atvmMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の大きさモードの凡例記号", 15, 120, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.Mark, appState().attrData);
@@ -1420,7 +1424,7 @@ function frmPrintOption(firstTab: number = 0) {
             atvm.Mark = newMark;
             appState().attrData.Draw_Sample_Mark_Box((e.target as HTMLElement), newMark);
         }
-    }, "");
+    }, "") as HTMLElement;
     appState().attrData.Draw_Sample_Mark_Box(atvmMark, atvm.Mark);
     const atvmBlockMark = Generic.createNewWordDivCanvas(gbmPat, "", "記号の数モードの凡例記号", 15, 155, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.BlockMark, appState().attrData);
@@ -1428,7 +1432,7 @@ function frmPrintOption(firstTab: number = 0) {
             atvm.BlockMark = newMark;
             appState().attrData.Draw_Sample_Mark_Box((e.target as HTMLElement), newMark);
         }
-    }, "");
+    }, "") as HTMLElement;
     appState().attrData.Draw_Sample_Mark_Box(atvmBlockMark, atvm.BlockMark);
     const atvmBlockMarkBar = Generic.createNewWordDivCanvas(gbmPat, "", "棒の高さモードの凡例記号", 250, 15, 120, function (e: MouseEvent) {
         clsMarkSet(e, picMarkChange, atvm.MarkBar, appState().attrData);
@@ -1436,7 +1440,7 @@ function frmPrintOption(firstTab: number = 0) {
             atvm.MarkBar = newMark;
             appState().attrData.Draw_Sample_Mark_Box((e.target as HTMLElement), newMark);
         }
-    }, "");
+    }, "") as HTMLElement;
     appState().attrData.Draw_Sample_Mark_Box(atvmBlockMarkBar, atvm.MarkBar);
     Generic.createNewWordTextInput(gbmPat, "文字・ラベルモードの凡例文字", "", atvm.Label, "", 250, 50, 120, 90, function (e: Event) { atvm.Label = (e.target as HTMLInputElement).value }, "");
     const atvmLineShape = Generic.createNewWordDivCanvas(gbmPat, "", "線形状オブジェクトの凡例", 250, 85, 120,
@@ -1446,7 +1450,7 @@ function frmPrintOption(firstTab: number = 0) {
                     atvm.LineShape = Lpat;
                     appState().attrData.Draw_Sample_LineBox((e.target as HTMLElement), Lpat);
                 });
-        });
+        }) as HTMLElement;
     appState().attrData.Draw_Sample_LineBox(atvmLineShape, atvm.LineShape);
 
     /**スケール設定●●●●●●●●●●●●●●●●●●●●● */
@@ -1462,10 +1466,10 @@ function frmPrintOption(firstTab: number = 0) {
             atvs.Back = back;
             clsDrawTile.Darw_Sample_BackGroundBox((e.target as HTMLElement), back, atv.ScrData);
         }
-    });
+    }) as HTMLElement;
     clsDrawTile.Darw_Sample_BackGroundBox(atvsBack, atvs.Back, atv.ScrData);
     Generic.createNewSpan(tab.panel[4], "スケールバーの表示単位", "", "", 30, 125, "", "");
-    const scaleList = Generic.getScaleUnit_for_select();
+    const scaleList = Generic.getScaleUnit_for_select() as Array<{ value: number; text: string }>;
     Generic.createNewSelect(tab.panel[4], scaleList, atvs.Unit, "", 40, 150, false,
         function (obj: HTMLSelectElement, sel: number, v: number) { atvs.Unit = v }, "",1,false);
     const gbScaleLength = Generic.createNewFrame(tab.panel[4], "", "", 180, 55, 200, 130, "スケールバーの長さ・間隔");
@@ -1493,9 +1497,9 @@ function frmMainCopyDataSettings(okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "データ項目設定コピー", 560, 400, true, true, buttonOK, 0.2, true);
     const origin = Generic.createNewFrame(backDiv, "", "", 20, 50, 250, 290, "コピー元");
     const dest = Generic.createNewFrame(backDiv, "", "", 290, 50, 250, 290, "コピー先");
-    const originLayer = Generic.createNewWordSelect(origin,"レイヤ", undefined, -1, "", 10, 10,70,150,0,  changeOriginLayer,"", "");
-    const destLayer = Generic.createNewWordSelect(dest,"レイヤ", undefined, -1, "", 10, 10,70,150,0,  changeDestLayer,"", "");
-    const originData = Generic.createNewWordSelect(origin,"データ項目", undefined, -1, "", 10, 40,70,150,0,  changeOriginData,"", "");
+    const originLayer = Generic.createNewWordSelect(origin, "レイヤ", undefined, -1, "", 10, 10, 70, 150, 0, changeOriginLayer, "", "") as SelectControl;
+    const destLayer = Generic.createNewWordSelect(dest, "レイヤ", undefined, -1, "", 10, 10, 70, 150, 0, changeDestLayer, "", "") as SelectControl;
+    const originData = Generic.createNewWordSelect(origin, "データ項目", undefined, -1, "", 10, 40, 70, 150, 0, changeOriginData, "", "") as SelectControl;
     Generic.createNewSpan(dest,"データ項目","","",10,40,"",undefined);
     const destData=new CheckedListBox(dest,"",[],80,40,150,240,false,undefined);
     const LayerNum=appState().attrData.TotalData.LV1.SelectedLayer;
@@ -1563,15 +1567,15 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "連続表示モードにまとめて設定", 790, 390, true, true, buttonOK, 0.2, true);
     const LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     const tablist = ["単独表示", "グラフ表示", "ラベル表示", "重ね合わせ"];
-    const tab = Generic.createNewTab(backDiv, tablist, 0, 15, 40, 350, 290);
-    const cboLayerSolo = Generic.createNewWordSelect(tab.panel[0], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setSoloModeDataItem, "", "");
+    const tab = Generic.createNewTab(backDiv, tablist, 0, 15, 40, 350, 290) as TabControl;
+    const cboLayerSolo = Generic.createNewWordSelect(tab.panel[0], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setSoloModeDataItem, "", "") as SelectControl;
     appState().attrData.Set_LayerName_to(cboLayerSolo, LayerNum);
     const layerSoloData = new CheckedListBox(tab.panel[0], "", [], 10, 40, 200, 220,false, undefined);
     setSoloModeDataItem();
-    const modeNameList = [{ value: enmSoloMode_Number.ClassPaintMode, text: "" }, { value: enmSoloMode_Number.ClassMarkMode, text: "" }, { value: enmSoloMode_Number.ClassODMode, text: "" }, { value: enmSoloMode_Number.ContourMode, text: "" },
+        const modeNameList: Array<{ value: enmSoloMode_Number; text: string }> = [{ value: enmSoloMode_Number.ClassPaintMode, text: "" }, { value: enmSoloMode_Number.ClassMarkMode, text: "" }, { value: enmSoloMode_Number.ClassODMode, text: "" }, { value: enmSoloMode_Number.ContourMode, text: "" },
     { value: enmSoloMode_Number.MarkSizeMode, text: "" }, { value: enmSoloMode_Number.MarkBlockMode, text: "" }, { value: enmSoloMode_Number.MarkBarMode, text: "" }, { value: enmSoloMode_Number.StringMode, text: "" }];
     for (const i in modeNameList) {
-        modeNameList[i].text = Generic.getSolomodeStrings(modeNameList[i].value);
+        modeNameList[i].text = String(Generic.getSolomodeStrings(modeNameList[i].value));
     }
     const gbsoloModeSelect = Generic.createNewFrame(tab.panel[0], "", "", 225, 30, 115, 210, "表示モード");
     Generic.createNewRadioButtonList(gbsoloModeSelect, "soloModeSelect", modeNameList, 10, 10, undefined, 25, enmSoloMode_Number.ClassPaintMode, function() {
@@ -1579,12 +1583,12 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         void 0;
     }, "");
 
-    const cboLayerGraph = Generic.createNewWordSelect(tab.panel[1], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setGraphModeDataItem, "", "");
+    const cboLayerGraph = Generic.createNewWordSelect(tab.panel[1], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setGraphModeDataItem, "", "") as SelectControl;
     appState().attrData.Set_LayerName_to(cboLayerGraph, LayerNum);
     const layerGraphData = new CheckedListBox(tab.panel[1], "", [], 50, 40, 200, 220,false, undefined);
     setGraphModeDataItem();
 
-    const cboLayerLabel = Generic.createNewWordSelect(tab.panel[2], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setLabelModeDataItem, "", "");
+    const cboLayerLabel = Generic.createNewWordSelect(tab.panel[2], "レイヤ", undefined, -1, "", 10, 10, 40, 150, 0, setLabelModeDataItem, "", "") as SelectControl;
     appState().attrData.Set_LayerName_to(cboLayerLabel, LayerNum);
     const layerLabelData = new CheckedListBox(tab.panel[2], "", [], 50, 40, 200, 220,false, undefined);
     setLabelModeDataItem();
@@ -1611,7 +1615,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
             }
          }
         , "");
-    const seriesHdata: string[][] = Generic.Array2Dimension(4, 1);
+    const seriesHdata = Generic.Array2Dimension(4, 1) as string[][];
     seriesHdata[0][0] = "順番";
     seriesHdata[1][0] = "レイヤ";
     seriesHdata[2][0] = "データ";
@@ -1620,15 +1624,15 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     const seriesListView = new ListViewTable(gbdestSeries, "", "", "", seriesHdata, [], 10, 110, 300, 170, slborderStyle, "font-size:13px;",
         "background-Color:#dddddd;text-align:center", "", ["width:10%"], ["text-align:center"], true, undefined);
 
-    const txtNewDataSet = Generic.createNewWordTextInput(gbdestSeries, "タイトル", "", "", "", 40, 85, undefined, 200, undefined, "");
-    const selectDataset = Generic.createNewSelect(gbdestSeries, appState().attrData.getSeriesDataSetName(), 0, "", 40, 40, false, copyExsistAttrDataItem, "width:185px", 1, false);
+    const txtNewDataSet = Generic.createNewWordTextInput(gbdestSeries, "タイトル", "", "", "", 40, 85, undefined, 200, undefined, "") as HTMLInputElement;
+    const selectDataset = Generic.createNewSelect(gbdestSeries, appState().attrData.getSeriesDataSetName(), 0, "", 40, 40, false, copyExsistAttrDataItem, "width:185px", 1, false) as SelectControl;
     copyExsistAttrDataItem();
 
     function copyExsistAttrDataItem() {
         DataItem = [];
         const n = selectDataset.selectedIndex;
-        const asd = appState().attrData.TotalData.TotalMode.Series.DataSet[n];
-        DataItem = Generic.ArrayClone(asd.DataItem);
+        const asd = appState().attrData.TotalData.TotalMode.Series.DataSet[n] as ISeriesDatasetInfo;
+        DataItem = Generic.ArrayClone(asd.DataItem) as strSeries_DataSet_Item_Info[];
         SetListView();
     }
     function btnSet_Click() {
@@ -1647,7 +1651,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
                     dt.Layer = LayerNum;
                     dt.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
                     dt.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
-                    dt.SoloMode = Generic.getRadioCheckByValue("soloModeSelect");
+                    dt.SoloMode = Number(Generic.getRadioCheckByValue("soloModeSelect")) as enmSoloMode_Number;
                     if (appState().attrData.Check_Enable_SoloMode(dt.SoloMode, LayerNum, n) === true) {
                         DataItem.push(dt);
                     } else {
@@ -1716,8 +1720,8 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     }
     function setGraphModeDataItem(){
         const lay = cboLayerGraph.selectedIndex;
-        const titles = appState().attrData.getGraphTitle(lay);
-        const list = [];
+        const titles = appState().attrData.getGraphTitle(lay) as Array<{ text: string }>;
+        const list: Array<{ checked: boolean; text: string; value: string }> = [];
         for (let i = 0; i < titles.length; i++) {
             list.push({ checked: false, text: titles[i].text, value: titles[i].text });
         }
@@ -1726,8 +1730,8 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     }
     function setLabelModeDataItem(){
         const lay = cboLayerLabel.selectedIndex;
-        const titles = appState().attrData.getLabelTitle(lay);
-        const list = [];
+        const titles = appState().attrData.getLabelTitle(lay) as Array<{ text: string }>;
+        const list: Array<{ checked: boolean; text: string; value: string }> = [];
         for (let i = 0; i < titles.length; i++) {
             list.push({ checked: false, text: titles[i].text, value: titles[i].text });
         }
@@ -1736,8 +1740,8 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
     } 
 
     function setOverlayModeDataItem(){
-        const titles = appState().attrData.getOverlayTitle();
-        const list = [];
+        const titles = appState().attrData.getOverlayTitle() as Array<{ text: string }>;
+        const list: Array<{ checked: boolean; text: string; value: string }> = [];
         for (let i = 0; i < titles.length; i++) {
             list.push({ checked: false, text: titles[i].text, value: titles[i].text });
         }
@@ -1750,16 +1754,16 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
         appState().attrData.Set_DataTitle_to_CheckedListBox(layerSoloData,lay,false,true, true, true, true,-1);
     }
     function buttonOK() {
-        const v=Generic.getRadioCheckByValue("rbSeriesDataSet");
-        const as=appState().attrData.TotalData.TotalMode.Series;
-        let sel;
+        const v = Generic.getRadioCheckByValue("rbSeriesDataSet") as number;
+        const as = appState().attrData.TotalData.TotalMode.Series as { DataSet: ISeriesDatasetInfo[] };
+        let sel = 0;
         switch(v){
             case 0: {
-                 sel = selectDataset.selectedIndex;
-                const dt =as.DataSet[sel];
+                sel = selectDataset.selectedIndex;
+                const dt = as.DataSet[sel] as ISeriesDatasetInfo;
                 dt.SelectedIndex = 0;
-                dt.DataItem=[];
-                dt.DataItem =Generic.ArrayClone( DataItem);
+                dt.DataItem = [];
+                dt.DataItem = Generic.ArrayClone(DataItem) as strSeries_DataSet_Item_Info[];
                 as.DataSet[sel] = dt;
                 break;
             }
@@ -1768,7 +1772,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
                 const dt: ISeriesDatasetInfo = {
                     title: txtNewDataSet.value,
                     SelectedIndex: 0,
-                    DataItem: Generic.ArrayClone(DataItem)
+                    DataItem: Generic.ArrayClone(DataItem) as strSeries_DataSet_Item_Info[]
                 };
                 as.DataSet.push(dt);
                 break;
