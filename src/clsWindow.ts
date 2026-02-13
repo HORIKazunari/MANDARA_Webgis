@@ -15,6 +15,7 @@ import type {
   Color, 
   // Font, 
   Edge,
+    JsonObject,
   // JsonValue,
   // JsonObject,
   MapData
@@ -208,9 +209,18 @@ export function setting(locSearch: string) {
                 break;
             }
             case enmTotalMode_Number.SeriesMode: {
-                const s = at.TotalMode.Series.SelectedIndex
-                for (let i = 0; i < at.TotalMode.Series.DataSet[s].DataItem.length; i++) {
-                    const L = at.TotalMode.Series.DataSet[s].DataItem[i].Layer
+                const seriesMode = at.TotalMode?.Series;
+                if (!seriesMode) {
+                    break;
+                }
+                const s = seriesMode.SelectedIndex ?? 0;
+                const seriesDataSet = seriesMode.DataSet[s];
+                if (!seriesDataSet) {
+                    break;
+                }
+                const dataItems = seriesDataSet.DataItem as { Layer: number }[];
+                for (let i = 0; i < dataItems.length; i++) {
+                    const L = dataItems[i].Layer;
                     if (Check_Lay[L] === false) {
                         ST += state.attrData.Get_Condition_Info(L);
                         ST += state.attrData.Get_Condition_Ok_Num_Info(L);
@@ -399,7 +409,7 @@ export function setting(locSearch: string) {
         }
     }
     //モードのdivをクリック
-    function modeClick() {
+    function modeClick(this: ExtendedHTMLElement): void {
         const Layernum = attrData.TotalData.LV1.SelectedLayer;
         const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
         attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.DataViewMode
@@ -486,18 +496,22 @@ export function setting(locSearch: string) {
     function menuInsertDataFile(){
         readData(okButton);
         function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
-            const newAttrData = new clsAttrData();
-            const retv = newAttrData.OpenNewMandaraFile([mapdata], attrText, filename, ext);            
+            const newAttrData = new clsAttrData() as IAttrData;
+            const retv = newAttrData.OpenNewMandaraFile?.([mapdata], attrText, filename, ext);
+            if (!retv) {
+                Generic.alert(undefined, "データ読み込み処理を実行できませんでした。");
+                return;
+            }
             if(retv.emes !== "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
             if(retv.ok === false) {
                 Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。");
             } else {
-                const retV=attrData.ADD_AttrData(newAttrData, true);
+                const retV = attrData.ADD_AttrData?.(newAttrData as JsonObject, true);
                 if(retV.ok===true){
                     Init_Screen_Set(true);
-                    attrData.Set_LayerName_to(selectLayer,attrData.TotalData.LV1.SelectedLayer);
+                    attrData.Set_LayerName_to?.(selectLayer,attrData.TotalData.LV1.SelectedLayer);
                 }
             }
         }
@@ -536,7 +550,7 @@ export function setting(locSearch: string) {
     /**プロパティ */
     function mnuProperty(){
         const backDiv = Generic.set_backDiv("", "プロパティ", 650, 360, true, true, buttonOK, 0.2, true);
-        const layn=attrData.TotalData.LV1.Lay_Maxn
+        const layn = state.attrData.TotalData.LV1?.Lay_Maxn ?? 0;
         const data = Generic.Array2Dimension(2, layn*10+4,"");
         data[0][0] = "項目";
         data[1][0] = "値";
