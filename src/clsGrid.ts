@@ -1131,8 +1131,8 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
 
     /**古いシンボル位置・ラベル位置で変更してあるものがあったら新しい箇所にコピーする */
     function Check_Kencode_XY(NewL: number, OldL: number){
-        const newAL = newAttrData.LayerData[NewL];
-        const oldAL = oldAttrData.LayerData[OldL];
+        const newAL = newAttrData.LayerData[NewL] as LayerDataInfo;
+        const oldAL = oldAttrData.LayerData[OldL] as LayerDataInfo;
         const time = newAL.Time;
         if (newAL.Type === enmLayerType.Normal) {
             if (newAL.MapFileName !== oldAL.MapFileName) {
@@ -1153,8 +1153,6 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             sortoldObjName.set(oldAttrData.Get_KenObjName(OldL, i), i);
         }
 
-        const newAL = newAttrData.LayerData[NewL] as LayerDataInfo;
-        const oldAL = oldAttrData.LayerData[OldL] as LayerDataInfo;
         const newALObj = (newAL.atrObject as AtrObjectInfo).atrObjectData;
         const oldALObj = (oldAL.atrObject as AtrObjectInfo).atrObjectData;
         const mapFileData = newAL.MapFileData as MapFileInfo | undefined;
