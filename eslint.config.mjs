@@ -51,7 +51,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'error',     // 段階昇格: error化
       '@typescript-eslint/no-unsafe-member-access': 'error',  // 段階昇格: error化
       '@typescript-eslint/no-unsafe-call': 'error',           // 段階昇格: error化
-      '@typescript-eslint/no-unsafe-return': 'warn',         // 既存コードのため一時的にwarn
+      '@typescript-eslint/no-unsafe-return': 'error',        // 段階昇格: error化
       
       // 関数とメソッドの型定義 - 段階的に修正
       '@typescript-eslint/no-inferrable-types': 'off',
