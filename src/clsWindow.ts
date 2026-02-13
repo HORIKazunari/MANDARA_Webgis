@@ -555,7 +555,7 @@ export function setting(locSearch: string) {
         data[0][0] = "項目";
         data[1][0] = "値";
         data[0][1] = "地図ファイル数";
-        data[1][1] = attrData.MapData.GetNumOfMapFile();
+        data[1][1] = String(attrData.MapData.GetNumOfMapFile());
         data[0][2] = "地図ファイル";
         const mapFileNames = attrData.MapData.GetMapFileName() as (string | number)[];
         data[1][2] = mapFileNames.map((name) => String(name)).join(",");
@@ -1510,6 +1510,44 @@ export function setting(locSearch: string) {
         En_Obi: GraphBandSetting;
         Oresen_Bou: GraphLineBarSetting;
     }
+    interface LabelSetting {
+        title: string;
+        ObjectName_Print_Flag: boolean;
+        ObjectName_Turn_Flag: boolean;
+        Width: number;
+        DataName_Print_Flag: boolean;
+        DataValue_Unit_Flag: boolean;
+        DataValue_TurnFlag: boolean;
+        DataItem: number[];
+        BorderLine: LinePattern;
+        BorderObjectTile: Tile;
+        BorderDataTile: Tile;
+    }
+    interface ContourRegularSetting {
+        bottom: number;
+        top: number;
+        Interval: number;
+        Line_Pat: LinePattern;
+        SP_Bottom: number;
+        SP_Top: number;
+        SP_interval: number;
+        SP_Line_Pat: LinePattern;
+        EX_Value_Flag: boolean;
+        EX_Value: number;
+        EX_Line_Pat: LinePattern;
+    }
+    interface ContourIrregularItem {
+        Value: number;
+    }
+    interface ContourSetting {
+        Interval_Mode: number;
+        Draw_in_Polygon_F: boolean;
+        Spline_flag: boolean;
+        Detailed: number;
+        Regular: ContourRegularSetting;
+        IrregularNum: number;
+        Irregular: ContourIrregularItem[];
+    }
     type GraphAttrData = {
         TotalData: {
             LV1: {
@@ -1538,6 +1576,21 @@ export function setting(locSearch: string) {
     };
     function getGraphAttrData(): GraphAttrData {
         return attrData as GraphAttrData;
+    }
+    type LabelAttrData = {
+        TotalData: {
+            LV1: {
+                SelectedLayer: number;
+            };
+        };
+        layerLabel: () => { SelectedIndex: number };
+        getLabelTitle: (layerNum: number) => string[];
+        nowLabel: () => LabelSetting;
+        Get_DataTitle: (layerNum: number, dataNum: number, unitF: boolean) => string;
+        Draw_Sample_LineBox: (target: HTMLElement, line: LinePattern) => void;
+    };
+    function getLabelAttrData(): LabelAttrData {
+        return attrData as LabelAttrData;
     }
 
     function setSettingGraphModeWindow(){
@@ -1750,12 +1803,14 @@ export function setting(locSearch: string) {
     }
 
     function labelDatasetSelectSet(){
-        const lbl=attrData.layerLabel();
-        const lblDataSetList =attrData.getLabelTitle(attrData.TotalData.LV1.SelectedLayer);
+        const labelAttrData = getLabelAttrData();
+        const lbl = labelAttrData.layerLabel();
+        const lblDataSetList = labelAttrData.getLabelTitle(labelAttrData.TotalData.LV1.SelectedLayer);
         doc.getElementById("labelDataSetList").addSelectList(lblDataSetList, lbl.SelectedIndex, true,false);
     }
     function labelDatasetDataItem() {
-        const selLabel = attrData.nowLabel();
+        const labelAttrData = getLabelAttrData();
+        const selLabel = labelAttrData.nowLabel();
         doc.getElementById("labelDatasetTitle").value = selLabel.title;
         doc.getElementById("chkLblObjectName").checked = selLabel.ObjectName_Print_Flag;
         doc.getElementById("chkLblObjectNameReturn").checked = selLabel.ObjectName_Turn_Flag;
@@ -1764,13 +1819,13 @@ export function setting(locSearch: string) {
         doc.getElementById("chkLblDataValue_Unit_Flag").checked = selLabel.DataValue_Unit_Flag;
         doc.getElementById("chkLblDataValue_TurnFlag").checked = selLabel.DataValue_TurnFlag;
         const adList=[];
-        const Layernum=attrData.TotalData.LV1.SelectedLayer;
+        const Layernum = labelAttrData.TotalData.LV1.SelectedLayer;
         for (let i = 0; i < selLabel.DataItem.length; i++) {
-            adList.push({value:selLabel.DataItem[i],text:attrData.Get_DataTitle(Layernum,selLabel.DataItem[i],true)});
+            adList.push({value:selLabel.DataItem[i],text:labelAttrData.Get_DataTitle(Layernum,selLabel.DataItem[i],true)});
         }
         lstLabelDataItem.removeAll();
         lstLabelDataItem.addList(adList,0);
-        attrData.Draw_Sample_LineBox(doc.getElementById("labelFrame"), selLabel.BorderLine);
+        labelAttrData.Draw_Sample_LineBox(doc.getElementById("labelFrame"), selLabel.BorderLine);
         Generic.setTileDiv(doc.getElementById("labelObjectNameColor"),selLabel.BorderObjectTile);
         Generic.setTileDiv(doc.getElementById("labelDataColor"),selLabel.BorderDataTile);
     }
@@ -2132,7 +2187,7 @@ export function setting(locSearch: string) {
 
         if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.ContourMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●等値線モード
-            const datam = data.SoloModeViewSettings.ContourMD;
+            const datam = data.SoloModeViewSettings.ContourMD as ContourSetting;
             Generic.checkRadioByValue("contourInterval_Mode",datam.Interval_Mode);
             doc.getElementById("contourDraw_in_Polygon_F").checked=datam.Draw_in_Polygon_F;
             doc.getElementById("contourSpline_flag").checked=datam.Spline_flag;
@@ -2157,7 +2212,7 @@ export function setting(locSearch: string) {
             lstcontourSeparateValue.removeAll();
             if(datam.IrregularNum > 0) {
                 doc.getElementById("gbContourSepaData").setVisibility(true);
-                const conValList = [];
+                const conValList: { value: number; text: number }[] = [];
                 for (let i = 0; i < datam.IrregularNum; i++) {
                     conValList.push({ value: datam.Irregular[i].Value, text: datam.Irregular[i].Value });
                 }
