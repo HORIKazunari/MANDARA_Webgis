@@ -1514,10 +1514,12 @@ export function setting(locSearch: string) {
         title: string;
         ObjectName_Print_Flag: boolean;
         ObjectName_Turn_Flag: boolean;
+        ObjectName_Font: Font_Property;
         Width: number;
         DataName_Print_Flag: boolean;
         DataValue_Unit_Flag: boolean;
         DataValue_TurnFlag: boolean;
+        DataValue_Font: Font_Property;
         DataItem: number[];
         BorderLine: LinePattern;
         BorderObjectTile: Tile;
@@ -1584,7 +1586,7 @@ export function setting(locSearch: string) {
                 SelectedLayer: number;
             };
         };
-        layerLabel: () => { SelectedIndex: number };
+        layerLabel: () => { SelectedIndex: number; DataSet: JsonObject[]; AddDataSet: () => void };
         getLabelTitle: (layerNum: number) => string[];
         nowLabel: () => LabelSetting;
         Get_DataTitle: (layerNum: number, dataNum: number, unitF: boolean) => string;
@@ -2307,8 +2309,9 @@ export function setting(locSearch: string) {
 
         if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.StringMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●文字モード
-            doc.getElementById("txtStringSizeChange").setNumberValue(  data.SoloModeViewSettings.StringMD.maxWidth);
-            doc.getElementById("chkStringReturn").checked = data.SoloModeViewSettings.StringMD.WordTurnF;
+            const stringMode = data.SoloModeViewSettings.StringMD as { maxWidth: number; WordTurnF: boolean };
+            doc.getElementById("txtStringSizeChange").setNumberValue(stringMode.maxWidth);
+            doc.getElementById("chkStringReturn").checked = stringMode.WordTurnF;
         }
     }
 
@@ -3567,9 +3570,12 @@ export function setting(locSearch: string) {
                 }
                 const series = attrData.TotalData.TotalMode.Series;
                 const seriesSelD = series.DataSet[series.SelectedIndex];
-                const n = seriesSelD.DataItem.length;
+                const seriesItems = seriesSelD.DataItem as JsonObject[];
+                const n = seriesItems.length;
                 for (let i = 0; i < n / 2; i++) {
-                    [seriesSelD.DataItem[i], seriesSelD.DataItem[n - 1 - i]] = [seriesSelD.DataItem[n - 1 - i], seriesSelD.DataItem[i]];
+                    const tempData = seriesItems[i];
+                    seriesItems[i] = seriesItems[n - 1 - i];
+                    seriesItems[n - 1 - i] = tempData;
                 }
                 seriesListView.reverse();
                 resetSeriesListOrderNumber();
@@ -3791,21 +3797,22 @@ export function setting(locSearch: string) {
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ラベルモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
         const labelView = Generic.createNewDiv(settingModeWindow, "", "labelView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         const gblabelDataSet = Generic.createNewFrame(labelView, "gblabelDataSet", "", 0, 10, 380, 80, "ラベルデータセット");
+        const labelAttrData = getLabelAttrData();
         Generic.createNewSelect(gblabelDataSet, [], -1, "labelDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
-                attrData.layerLabel().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
+                labelAttrData.layerLabel().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 labelDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gblabelDataSet, "追加", "", 205, 15,
             function () {
-                const ov = attrData.layerLabel();
+                const ov = labelAttrData.layerLabel();
                 ov.AddDataSet();
                 ov.SelectedIndex = ov.DataSet.length - 1;
                 setSettingLabelModeWindow();
             }, "font-size:12px");
         Generic.createNewButton(gblabelDataSet, "データセット削除", "", 260, 15,
             function (e: MouseEvent) {
-                const ov = attrData.layerLabel();
+                const ov = labelAttrData.layerLabel();
                 if (ov.DataSet.length === 1) {
                     Generic.alert(new point(e.clientX, e.clientY),"これ以上削除できません。");
                     return;
@@ -3817,29 +3824,29 @@ export function setting(locSearch: string) {
         Generic.createNewWordTextInput(gblabelDataSet, "タイトル", "", "", "labelDatasetTitle", 15, 45, undefined, 200,
             function (e: Event) {
                 const ttl = (e.target as HTMLInputElement).value;
-                attrData.nowLabel().title = ttl;
-                doc.getElementById("labelDataSetList").setSelectData(attrData.layerLabel().SelectedIndex, attrData.layerGraph().SelectedIndex, ttl);
+                labelAttrData.nowLabel().title = ttl;
+                doc.getElementById("labelDataSetList").setSelectData(labelAttrData.layerLabel().SelectedIndex, labelAttrData.layerLabel().SelectedIndex, ttl);
             }, "");
 
         const gbLabelObjName = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 0, 110, 230, 70, "オブジェクト名");
         Generic.createNewCheckBox(gbLabelObjName, "オブジェクト名表示", "chkLblObjectName", false, 15, 15, undefined,
-            function (obj: HTMLInputElement) { attrData.nowLabel().ObjectName_Print_Flag = obj.checked; })
+            function (obj: HTMLInputElement) { labelAttrData.nowLabel().ObjectName_Print_Flag = obj.checked; })
         Generic.createNewCheckBox(gbLabelObjName, "最大幅を超えたら折り返す", "chkLblObjectNameReturn", false, 15, 42, undefined,
-            function (obj: HTMLInputElement) { attrData.nowLabel().ObjectName_Turn_Flag = obj.checked }, "");
+            function (obj: HTMLInputElement) { labelAttrData.nowLabel().ObjectName_Turn_Flag = obj.checked }, "");
         Generic.createNewButton(gbLabelObjName, "フォント", "", 155, 12, function (e: MouseEvent) {
-            clsFontSet(e, attrData.nowLabel().ObjectName_Font, function (newFont: Font_Property) { attrData.nowLabel().ObjectName_Font = newFont }, attrData);
+            clsFontSet(e, labelAttrData.nowLabel().ObjectName_Font, function (newFont: Font_Property) { labelAttrData.nowLabel().ObjectName_Font = newFont }, attrData);
         }, "");
 
         const gbLabelMaxSize = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 240, 110, 110, 70, "最大幅");
         Generic.createNewSizeSelect(gbLabelMaxSize, 0, "txtLabelSizeChange", "", 15, 30, 40, 3,
-            function (obj: HTMLInputElement, value: number) { attrData.nowLabel().Width = value; });
+            function (obj: HTMLInputElement, value: number) { labelAttrData.nowLabel().Width = value; });
 
         const gbLabelDataItem = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 0, 195, 350, 155, "データ項目");
         lstLabelDataItem = new ListBox(gbLabelDataItem, "", [], 15, 15, 180, 80, undefined, "");
         Generic.createNewImageButton(gbLabelDataItem, "", "image/112_UpArrowLong_Grey_24x24_72.png", 200, 15, 24, 24, function () {
             const n = lstLabelDataItem.selectedIndex;
             if (n === -1) { return };
-            const selLabel = attrData.nowLabel();
+            const selLabel = labelAttrData.nowLabel();
             const labelDataItems = (selLabel.DataItem ?? []) as number[];
             selLabel.DataItem = labelDataItems;
             let dest = n - 1;
@@ -3860,7 +3867,7 @@ export function setting(locSearch: string) {
                 const n = lstLabelDataItem.selectedIndex;
                 if (n === -1) { return };
                 let dest = n + 1;
-                const selLabel = attrData.nowLabel();
+                const selLabel = labelAttrData.nowLabel();
                 const labelDataItems = (selLabel.DataItem ?? []) as number[];
                 selLabel.DataItem = labelDataItems;
                 const d1 = labelDataItems[n];
@@ -3877,19 +3884,19 @@ export function setting(locSearch: string) {
             }, "padding:2px");
         Generic.createNewButton(gbLabelDataItem, "追加", "", 250, 15,
             function (e: MouseEvent) {
-                const selLabel = attrData.nowLabel();
+                const selLabel = labelAttrData.nowLabel();
                 const labelDataItems = (selLabel.DataItem ?? []) as number[];
                 selLabel.DataItem = labelDataItems;
                 const preAsta = [];
                 for (let i = 0; i < labelDataItems.length; i++) {
                     preAsta.push(labelDataItems[i]);
                 }
-                clsSelectData(e, attrData, attrData.TotalData.LV1.SelectedLayer,
+                clsSelectData(e, attrData, labelAttrData.TotalData.LV1.SelectedLayer,
                     function (selected: boolean[], selectedNumber: number[]) {
                         const adList = [];
                         let selN = lstLabelDataItem.length;
                         selN = (selN === -1) ? 0 : selN;
-                        const Layernum = attrData.TotalData.LV1.SelectedLayer;
+                        const Layernum = labelAttrData.TotalData.LV1.SelectedLayer;
                         for (let i = 0; i < selectedNumber.length; i++) {
                             labelDataItems.push(selectedNumber[i]);
                             adList.push({ value: String(selectedNumber[i]), text: attrData.Get_DataTitle(Layernum, selectedNumber[i], true) });
@@ -3901,7 +3908,7 @@ export function setting(locSearch: string) {
             function () {
                 const n = lstLabelDataItem.selectedIndex;
                 if (n !== -1) {
-                    const selLabel = attrData.nowLabel();
+                    const selLabel = labelAttrData.nowLabel();
                     const labelDataItems = (selLabel.DataItem ?? []) as number[];
                     selLabel.DataItem = labelDataItems;
                     labelDataItems.splice(n, 1);
@@ -3910,25 +3917,25 @@ export function setting(locSearch: string) {
             }, "width:70px");
         Generic.createNewButton(gbLabelDataItem, "すべて削除", "", 250, 75,
             function () {
-                attrData.nowLabel().DataItem = [];
+                labelAttrData.nowLabel().DataItem = [];
                 lstLabelDataItem.removeAll();
             }, "width:80px");
         Generic.createNewCheckBox(gbLabelDataItem, "データ項目名の表示", "chkLblDataName_Print_Flag", false, 15, 105, 110,
-            function (obj: HTMLInputElement) { attrData.nowLabel().DataName_Print_Flag = obj.checked; })
+            function (obj: HTMLInputElement) { labelAttrData.nowLabel().DataName_Print_Flag = obj.checked; })
         Generic.createNewCheckBox(gbLabelDataItem, "単位の表示", "chkLblDataValue_Unit_Flag", false, 150, 105, undefined,
-            function (obj: HTMLInputElement) { attrData.nowLabel().DataValue_Unit_Flag = obj.checked; })
+            function (obj: HTMLInputElement) { labelAttrData.nowLabel().DataValue_Unit_Flag = obj.checked; })
         Generic.createNewCheckBox(gbLabelDataItem, "最大幅を超えたら折り返す", "chkLblDataValue_TurnFlag", false, 15, 130, undefined,
-            function (obj: HTMLInputElement) { attrData.nowLabel().DataValue_TurnFlag = obj.checked }, "");
+            function (obj: HTMLInputElement) { labelAttrData.nowLabel().DataValue_TurnFlag = obj.checked }, "");
         Generic.createNewButton(gbLabelDataItem, "フォント", "", 230, 125, function (e: MouseEvent) {
-            clsFontSet(e, attrData.nowLabel().DataValue_Font, function (newFont: Font_Property) { attrData.nowLabel().DataValue_Font = newFont }, attrData);
+            clsFontSet(e, labelAttrData.nowLabel().DataValue_Font, function (newFont: Font_Property) { labelAttrData.nowLabel().DataValue_Font = newFont }, attrData);
         }, "");
 
         const gbLabelFrame = Generic.createNewFrame(labelView, "gbLabelFrame", "", 0, 365, 350, 40, "枠");
         Generic.createNewWordDivCanvas(gbLabelFrame, "labelFrame", "輪郭線", 10, 10, 40,
             function (e: MouseEvent) {
-                clsLinePatternSet(e, attrData.nowLabel().BorderLine,
+                clsLinePatternSet(e, labelAttrData.nowLabel().BorderLine,
                     function (Lpat: Line_Property) {
-                        attrData.nowLabel().BorderLine = Lpat;
+                        labelAttrData.nowLabel().BorderLine = Lpat;
                         attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
@@ -3936,16 +3943,16 @@ export function setting(locSearch: string) {
         );
         Generic.createNewTileBox(gbLabelFrame, "labelObjectNameColor", "オブジェクト名背景", clsBase.Tile(), 120, 10, 60,
             function (e: MouseEvent) {
-                const mkc = attrData.nowLabel().BorderObjectTile;
+                const mkc = labelAttrData.nowLabel().BorderObjectTile;
                 clsTileSet(e, mkc,
-                    function (retTile: Tile_Property) { attrData.nowLabel().BorderObjectTile = retTile });
+                    function (retTile: Tile_Property) { labelAttrData.nowLabel().BorderObjectTile = retTile });
             }
         );
         Generic.createNewTileBox(gbLabelFrame, "labelDataColor", "データ項目背景", clsBase.Tile(), 240, 10, 50,
             function (e: MouseEvent) {
-                const mkc = attrData.nowLabel().BorderDataTile;
+                const mkc = labelAttrData.nowLabel().BorderDataTile;
                 clsTileSet(e, mkc,
-                    function (retTile: Tile_Property) { attrData.nowLabel().BorderDataTile = retTile });
+                    function (retTile: Tile_Property) { labelAttrData.nowLabel().BorderDataTile = retTile });
             }
         );
     }
@@ -3987,8 +3994,9 @@ export function setting(locSearch: string) {
             }
             case enmTotalMode_Number.SeriesMode: {
                 const n = attrData.TotalData.TotalMode.Series.SelectedIndex
-                for (i = 0; i < attrData.TotalData.TotalMode.Series.DataSet[n].DataItem.length; i++) {
-                    const ad = attrData.TotalData.TotalMode.Series.DataSet[n].DataItem[i];
+                const seriesItems = attrData.TotalData.TotalMode.Series.DataSet[n].DataItem as { Layer: number; Data: number }[];
+                for (i = 0; i < seriesItems.length; i++) {
+                    const ad = seriesItems[i];
                     switch (attrData.Print_Mode_Total) {
                         case enmTotalMode_Number.DataViewMode: {
                             f = attrData.Check_Condition_UMU(ad.Layer);
@@ -4543,7 +4551,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
             d.MapfileName = keyNum;
             d.Name = "レイヤ" + String(d.MapfileName);
             const okn = mapList[key].Map.OBKNum;
-            d.UseObjectKind = (new Array(okn)).fill(false);
+            d.UseObjectKind = Array<boolean>(okn).fill(false);
             d.UseObjectKind[0] = true;
             LayerData.push(d);
         }
@@ -4610,7 +4618,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
         Generic.unzipFile(file, unzipOk, unzipError);
         function unzipOk(data: {[key: string]: Uint8Array}) {
             const key = Object.keys(data)[0];
-            const tx = JSON.parse(Generic.utf8ArrayToStr(data[key]));
+            const tx = JSON.parse(Generic.utf8ArrayToStr(data[key])) as JsonObject;
             getFile(tx, file.name);
             Generic.clear_backDiv();
         }
@@ -4662,7 +4670,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
         }
         const key = d.MapfileName.toUpperCase();
         const okn = mapList[key].Map.OBKNum;
-        d.UseObjectKind = (new Array(okn)).fill(false);
+        d.UseObjectKind = Array<boolean>(okn).fill(false);
         d.UseObjectKind[0] = true;
         Generic.setDisabled(eachLayerFrame, false);
         layerList.addList([d.Name], n);
@@ -4771,7 +4779,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
         LayerData[n].MapfileName = mapName;
         const key = mapName.toUpperCase();
         const okn = mapList[key].Map.OBKNum;
-        LayerData[n].UseObjectKind = (new Array(okn)).fill(false);
+        LayerData[n].UseObjectKind = Array<boolean>(okn).fill(false);
         checkTime();
         resetObjKind();
     }
@@ -4794,7 +4802,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
             let f1 = false;
             for (const j in LD.UseObjectKind) {
                 if(LD.UseObjectKind[j] === true) {
-                    LD.Shape = mapList[key].ObjectKind[j].Shape;
+                    LD.Shape = mapList[key].ObjectKind[j].Shape as string | number;
                     f1 = true;
                     break;
                 }
@@ -4803,7 +4811,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
                 Generic.alert(undefined,"レイヤ" + LD.Name + "で表示するオブジェクトクループが設定されていません。");
                     return;
             }
-            const emes = mapList[key].Check_Selected_ObjectGroup_Same(LD.UseObjectKind, false, false);
+            const emes = String(mapList[key].Check_Selected_ObjectGroup_Same(LD.UseObjectKind, false, false));
             if(emes !== "") {
                 Generic.alert(undefined,emes);
                 return;
