@@ -3639,8 +3639,8 @@ class clsPrint {
         if(Dummy_F === false) {
             if(state.attrData.LayerData[Layernum].Type === enmLayerType.Mesh) {
                 const meshPoint: point[] = ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint;
-                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
-                const nPolyP = [];
+                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint) as point[];
+                const nPolyP: number[] = [];
                 nPolyP[0] = pxy.length;
                 if(pxy.length >= 4) {
                     //メッシュオブジェクトで計算誤差による白抜けが入るのを防ぐ処置
@@ -3654,13 +3654,13 @@ class clsPrint {
                 Polydata.nPolyP = nPolyP;
                 return Polydata;
             } else {
-                const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, O_ObjNum_Code);
+                const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, O_ObjNum_Code) as boundArrangeData[];
                 if (badataArray.length > 0) {
-                    badata = badataArray[0] as unknown as boundArrangeData;
+                    badata = badataArray[0] as boundArrangeData;
                 }
             }
         } else {
-            badata = ad.MapFileData.Boundary_Arrange(O_ObjNum_Code, ad.Time);
+            badata = ad.MapFileData.Boundary_Arrange(O_ObjNum_Code, ad.Time) as boundArrangeData;
         }
         if(!badata.Pon || badata.Pon <= 0) {
             Polydata.Pon = 0;
@@ -3843,6 +3843,7 @@ class clsPrint {
     static Vector_Dummy_Boundary(g: CanvasRenderingContext2D, Layernum: number, Polygon_F: boolean, nonPolygon_F: boolean) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
+        type DummyMapObjectInfo = { Shape: number; Kind: number };
         if(ad.DummyGroup.length > 0) {
             if(Polygon_F === true) {
                 this.Vector_DummyGroup_Draw(g,  enmShape.PolygonShape, Layernum);
@@ -3855,7 +3856,7 @@ class clsPrint {
         }
         for (let i = 0; i < ad.Dummy.length; i++) {
             const c = ad.Dummy[i].code;
-            const mc = ad.MapFileData.MPObj[c];
+            const mc = ad.MapFileData.MPObj[c] as DummyMapObjectInfo;
             if((mc.Shape === enmShape.PolygonShape) && (Polygon_F === true) || (mc.Shape !== enmShape.PolygonShape) && (nonPolygon_F === true)){
                 this.Vector_Dummy_Draw(g, c, Layernum);
             }
@@ -3865,12 +3866,14 @@ class clsPrint {
     static Vector_DummyGroup_Draw(g: CanvasRenderingContext2D, SHP: number, Layernum: number) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
+        type DummyObjectKindInfo = { Shape: number };
         for (let i = 0; i < ad.DummyGroup.length; i++) {
             const ok = ad.DummyGroup[i];
-            if(ad.MapFileData.ObjectKind[ok].Shape === SHP) {
-                const temp = ad.MapFileData.Get_Objects_by_Group(ok, ad.Time);
-                for (const j in temp) {
-                    this.Vector_Dummy_Draw(g,  temp[j], Layernum);
+            const objectKind = ad.MapFileData.ObjectKind[ok] as DummyObjectKindInfo;
+            if(objectKind.Shape === SHP) {
+                const temp = ad.MapFileData.Get_Objects_by_Group(ok, ad.Time) as number[];
+                for (const code of temp) {
+                    this.Vector_Dummy_Draw(g, code, Layernum);
                 }
             }
         }
@@ -3881,11 +3884,15 @@ class clsPrint {
         const state = appState();
         if(state.attrData.Check_Screen_Objcode_In(Layernum, code) === true) {
             const ad = state.attrData.LayerData[Layernum];
-            if(ad.MapFileData.MPObj[code].Shape === enmShape.PointShape) {
-                const ok = ad.MapFileData.MPObj[code].Kind;
+            type DummyMapObjectInfo = { Shape: number; Kind: number };
+            type DummyObjectKindInfo = { Name: string };
+            const mapObj = ad.MapFileData.MPObj[code] as DummyMapObjectInfo;
+            if(mapObj.Shape === enmShape.PointShape) {
+                const ok = mapObj.Kind;
                 const CP = ad.MapFileData.Get_Enable_CenterP(code, ad.Time);
                 const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
-                const MK = this.getPointDummyMark(ad.MapFileName, ad.MapFileData.ObjectKind[ok].Name);
+                const objectKind = ad.MapFileData.ObjectKind[ok] as DummyObjectKindInfo;
+                const MK = this.getPointDummyMark(ad.MapFileName, objectKind.Name);
                 const r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
                 state.attrData.Draw_Mark(g, OP, r, MK);
                 if(state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Dummy_Point_Visible === true) {
