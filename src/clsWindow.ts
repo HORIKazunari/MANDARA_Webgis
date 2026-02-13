@@ -1538,6 +1538,7 @@ export function setting(locSearch: string) {
     }
     interface ContourIrregularItem {
         Value: number;
+        Line_Pat: LinePattern;
     }
     interface ContourSetting {
         Interval_Mode: number;
@@ -1591,6 +1592,10 @@ export function setting(locSearch: string) {
     };
     function getLabelAttrData(): LabelAttrData {
         return attrData as LabelAttrData;
+    }
+    function nowContourMD(): ContourSetting {
+        const soloData = attrData.nowDataSolo() as { ContourMD: ContourSetting };
+        return soloData.ContourMD;
     }
 
     function setSettingGraphModeWindow(){
@@ -2361,7 +2366,8 @@ export function setting(locSearch: string) {
     /**等値線モードの個別設定の値セット */
     function setContourSepaDataValue(){
         const n=lstcontourSeparateValue.selectedIndex;
-        const d=attrData.nowDataSolo().ContourMD.Irregular[n];
+        const contour = nowContourMD();
+        const d = contour.Irregular[n];
         doc.getElementById("contourSepaValue").setNumberValue(d.Value);
         attrData.Draw_Sample_LineBox(doc.getElementById("contourSepaLine"), d.Line_Pat);
     }
@@ -2924,7 +2930,7 @@ export function setting(locSearch: string) {
         { value: enmContourIntervalMode.SeparateSettings, text: '個別設定' }];
         Generic.createNewRadioButtonList(gbContourMode, "contourInterval_Mode", contourIntervalList, 10, 10, undefined, 30, undefined,
             function (value: RadioValue) {
-                attrData.nowDataSolo().ContourMD.Interval_Mode = value;
+                nowContourMD().Interval_Mode = value;
                 doc.getElementById("gbContourLineLpat").setVisibility(value === enmContourIntervalMode.ClassPaint);
                 doc.getElementById("gbRegularInterval").setVisibility(value === enmContourIntervalMode.RegularInterval);
                 doc.getElementById("gbSeparateSettings").setVisibility(value === enmContourIntervalMode.SeparateSettings);
@@ -2933,22 +2939,22 @@ export function setting(locSearch: string) {
 
         const gbContourDrawMethod = Generic.createNewFrame(contourView, "", "", 0, 125, 170, 100, "等値線の描き方");
         Generic.createNewCheckBox(gbContourDrawMethod, "ポリゴン内部のみ描画", "contourDraw_in_Polygon_F", true, 10, 20, undefined,
-            function (obj: HTMLInputElement) { attrData.nowDataSolo().ContourMD.Draw_in_Polygon_F = obj.checked }, "");
+            function (obj: HTMLInputElement) { nowContourMD().Draw_in_Polygon_F = obj.checked }, "");
         Generic.createNewCheckBox(gbContourDrawMethod, "等値線を曲線で近似", "contourSpline_flag", true, 10, 45, undefined,
-            function (obj: HTMLInputElement) { attrData.nowDataSolo().ContourMD.Spline_flag = obj.checked }, "");
+            function (obj: HTMLInputElement) { nowContourMD().Spline_flag = obj.checked }, "");
         const cboDetailedList = [{ value: 0, text: '非常に細かい' }, { value: 1, text: '細かい' },
         { value: 2, text: '少し細かい' }, { value: 3, text: '普通' }, { value: 4, text: '粗い' }];
 
         Generic.createNewWordSelect(gbContourDrawMethod, "密度", cboDetailedList.map(item => item.text), 0, "contourDetailed", 10, 70, 40, 80, 0,
             function (obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
                 const selectedValue = typeof sel === 'number' ? cboDetailedList[sel].value : cboDetailedList[sel[0]].value;
-                attrData.nowDataSolo().ContourMD.Detailed = selectedValue;
+                nowContourMD().Detailed = selectedValue;
             }, "", "", true);
         const gbContourLineLpat = Generic.createNewFrame(contourView, "gbContourLineLpat", "", 190, 0, 90, 55, "等値線線種");
         Generic.createNewCanvas(gbContourLineLpat, "contourLinePat", "imgButton", 20, 15, 50, 30, function (e: MouseEvent) {
-            clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.Line_Pat,
+            clsLinePatternSet(e, nowContourMD().Regular.Line_Pat,
                 function (Lpat: Line_Property) {
-                    attrData.nowDataSolo().ContourMD.Regular.Line_Pat = Lpat;
+                    nowContourMD().Regular.Line_Pat = Lpat;
                     attrData.Draw_Sample_LineBox(doc.getElementById("contourLinePat"), Lpat);
                 }
             );
@@ -2957,24 +2963,24 @@ export function setting(locSearch: string) {
         const gbRegularNormal = Generic.createNewFrame(gbRegularInterval, "", "", 10, 10, 170, 125, "通常の等値線");
         Generic.createNewWordNumberInput(gbRegularNormal, "下限値", "", 0, "contourRegulerMinValue", 10, 15, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.bottom = v;
+                nowContourMD().Regular.bottom = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularNormal, "上限値", "", 0, "contourRegulerMaxValue", 10, 40, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.top = v;
+                nowContourMD().Regular.top = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularNormal, "間隔　", "", 0, "contourRegulerInterval", 10, 65, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.Interval = v;
+                nowContourMD().Regular.Interval = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordDivCanvas(gbRegularNormal, "contourRegulerLinePat", "線種", 10, 90, 40,
             function (e: MouseEvent) {
-                clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.Line_Pat,
+                clsLinePatternSet(e, nowContourMD().Regular.Line_Pat,
                     function (Lpat: Line_Property) {
-                        attrData.nowDataSolo().ContourMD.Regular.Line_Pat = Lpat;
+                        nowContourMD().Regular.Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
@@ -2984,24 +2990,24 @@ export function setting(locSearch: string) {
         const gbRegularSP = Generic.createNewFrame(gbRegularInterval, "", "", 10, 155, 170, 125, "上のうち強調する等値線");
         Generic.createNewWordNumberInput(gbRegularSP, "下限値", "", 0, "contourRegulerSPMinValue", 10, 15, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.SP_Bottom = v;
+                nowContourMD().Regular.SP_Bottom = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularSP, "上限値", "", 0, "contourRegulerSPMaxValue", 10, 40, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.SP_Top = v;
+                nowContourMD().Regular.SP_Top = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordNumberInput(gbRegularSP, "間隔　", "", 0, "contourRegulerSPInterval", 10, 65, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.SP_interval = v;
+                nowContourMD().Regular.SP_interval = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordDivCanvas(gbRegularSP, "contourRegulerSPLinePat", "線種", 10, 90, 40,
             function (e: MouseEvent) {
-                clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.SP_Line_Pat,
+                clsLinePatternSet(e, nowContourMD().Regular.SP_Line_Pat,
                     function (Lpat: Line_Property) {
-                        attrData.nowDataSolo().ContourMD.Regular.SP_Line_Pat = Lpat;
+                        nowContourMD().Regular.SP_Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
@@ -3010,18 +3016,18 @@ export function setting(locSearch: string) {
         const gbRegularEx = Generic.createNewFrame(gbRegularInterval, "", "", 10, 295, 170, 70, "1本だけ強調する等値線");
         Generic.createNewCheckBox(gbRegularEx, "", "contourRegulerExCheck", true, 10, 15, undefined,
             function (obj: HTMLInputElement) {
-                attrData.nowDataSolo().ContourMD.Regular.EX_Value_Flag = obj.checked
+                nowContourMD().Regular.EX_Value_Flag = obj.checked
             }, "")
         Generic.createNewWordNumberInput(gbRegularEx, "強調値", "", 0, "contourRegulerExValue", 40, 15, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
-                attrData.nowDataSolo().ContourMD.Regular.EX_Value = v;
+                nowContourMD().Regular.EX_Value = v;
                 Check_Print_err();
             }, "");
         Generic.createNewWordDivCanvas(gbRegularEx, "contourRegulerExLine", "線種", 10, 40, 40,
             function (e: MouseEvent) {
-                clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Regular.EX_Line_Pat,
+                clsLinePatternSet(e, nowContourMD().Regular.EX_Line_Pat,
                     function (Lpat: Line_Property) {
-                        attrData.nowDataSolo().ContourMD.Regular.EX_Line_Pat = Lpat;
+                        nowContourMD().Regular.EX_Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
@@ -3035,15 +3041,15 @@ export function setting(locSearch: string) {
         Generic.createNewWordNumberInput(gbContourSepaData, "値", "", 0, "contourSepaValue", 10, 10, undefined, 80,
             function (obj: HTMLInputElement, v: number) {
                 const n = lstcontourSeparateValue.selectedIndex;
-                attrData.nowDataSolo().ContourMD.Irregular[n].Value = v;
+                nowContourMD().Irregular[n].Value = v;
                 sortContourSepaValue();
             }, "");
         Generic.createNewWordDivCanvas(gbContourSepaData, "contourSepaLine", "線種", 10, 40, 40,
             function (e: MouseEvent) {
                 const n = lstcontourSeparateValue.selectedIndex;
-                clsLinePatternSet(e, attrData.nowDataSolo().ContourMD.Irregular[n].Line_Pat,
+                clsLinePatternSet(e, nowContourMD().Irregular[n].Line_Pat,
                     function (Lpat: Line_Property) {
-                        attrData.nowDataSolo().ContourMD.Irregular[n].Line_Pat = Lpat;
+                        nowContourMD().Irregular[n].Line_Pat = Lpat;
                         attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
@@ -3053,9 +3059,10 @@ export function setting(locSearch: string) {
         Generic.createNewButton(gbContourSepaData, "削除", "", 80, 70,
             function () {
                 const n = lstcontourSeparateValue.selectedIndex;
-                const irregular = attrData.nowDataSolo().ContourMD.Irregular as strContour_Data_Irregular_interval[];
+                const contour = nowContourMD();
+                const irregular = contour.Irregular;
                 irregular.splice(n, 1);
-                attrData.nowDataSolo().ContourMD.IrregularNum--;
+                contour.IrregularNum--;
                 lstcontourSeparateValue.removeList(n, 1);
                 if (lstcontourSeparateValue.selectedIndex === -1) {
                     doc.getElementById("gbContourSepaData").setVisibility?.(false);
@@ -3068,18 +3075,20 @@ export function setting(locSearch: string) {
             function () {
                 doc.getElementById("gbContourSepaData").setVisibility(true);
                 lstcontourSeparateValue.addList(["0"], lstcontourSeparateValue.length);
-                attrData.nowDataSolo().ContourMD.IrregularNum++;
+                const contour = nowContourMD();
+                contour.IrregularNum++;
                 const dt = new strContour_Data_Irregular_interval()
                 dt.Line_Pat = clsBase.Line();
                 dt.Value = 0;
-                const irregular = attrData.nowDataSolo().ContourMD.Irregular as strContour_Data_Irregular_interval[];
+                const irregular = contour.Irregular;
                 irregular.push(dt);
                 setContourSepaDataValue();
             }, "width:60px");
         Generic.createNewButton(gbSeparateSettings, "すべて削除", "", 80, 295,
             function () {
-                attrData.nowDataSolo().ContourMD.IrregularNum = 0;
-                attrData.nowDataSolo().ContourMD.Irregular = [];
+                const contour = nowContourMD();
+                contour.IrregularNum = 0;
+                contour.Irregular = [];
                 lstcontourSeparateValue.removeAll();
                 doc.getElementById("gbContourSepaData").setVisibility(false);
             }, "width:100px");
@@ -3106,7 +3115,7 @@ export function setting(locSearch: string) {
         function sortContourSepaValue() {
             //等値線数値の大きい順に並べ替える
             const n = lstcontourSeparateValue.selectedIndex;
-            const nsc = attrData.nowDataSolo().ContourMD;
+            const nsc = nowContourMD();
             const sort = new SortingSearch();
             const stac: strContour_Data_Irregular_interval[] = [];
             const lst = [];
