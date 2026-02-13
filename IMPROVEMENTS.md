@@ -56,13 +56,15 @@ npm run test:coverage # カバレッジレポート生成
 
 ```javascript
 {
-  '@typescript-eslint/no-explicit-any': 'error',           // any型を禁止
-  '@typescript-eslint/no-unused-vars': 'error',            // 未使用変数をエラー化
-  'no-var': 'error',                                        // var宣言を禁止
-  'prefer-const': 'error',                                  // constを推奨
-  '@typescript-eslint/explicit-function-return-type': 'warn', // 戻り値型を推奨
-  '@typescript-eslint/prefer-nullish-coalescing': 'warn',  // ?? 演算子を推奨
-  '@typescript-eslint/prefer-optional-chain': 'warn',      // ?. 演算子を推奨
+   '@typescript-eslint/no-explicit-any': 'error',
+   '@typescript-eslint/no-unused-vars': 'error',
+   'no-var': 'error',
+   'prefer-const': 'error',
+   '@typescript-eslint/no-unsafe-assignment': 'error',
+   '@typescript-eslint/no-unsafe-member-access': 'error',
+   '@typescript-eslint/no-unsafe-call': 'error',
+   '@typescript-eslint/no-unsafe-return': 'error',
+   '@typescript-eslint/prefer-optional-chain': 'error'
 }
 ```
 
@@ -71,6 +73,8 @@ npm run test:coverage # カバレッジレポート生成
 npm run lint       # リント実行
 npm run lint:fix   # 自動修正
 ```
+
+補足: `npm run lint` は `--max-warnings 0` のため、警告が残っている状態ではCI/ローカルともに失敗します。
 
 ---
 
@@ -181,7 +185,7 @@ const file = files[0];
 - 最大ファイルサイズ: 変わらず (分割計画作成済み) 📋
 - テストカバレッジ: 環境構築完了 ✅
 - TypeScript strict: 段階的有効化 ✅
-- ESLint: 厳格化 ✅
+- ESLint: `src` 全体で warnings 0 / errors 0 ✅
 
 ---
 
