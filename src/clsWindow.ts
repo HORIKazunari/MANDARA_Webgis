@@ -1568,7 +1568,7 @@ export function setting(locSearch: string) {
                 }[];
             };
         }[];
-        layerGraph: () => { SelectedIndex: number };
+        layerGraph: () => { SelectedIndex: number; DataSet: JsonObject[]; AddDataSet: () => void };
         getGraphTitle: (layerNum: number) => string[];
         nowGraph: () => GraphSetting;
         Draw_Sample_LineBox: (target: HTMLElement, line: LinePattern) => void;
@@ -1887,7 +1887,7 @@ export function setting(locSearch: string) {
 
         doc.getElementById("overlayAlwaysOver").checked = (over.Always_Overlay_Index === over.SelectedIndex);
         doc.getElementById("overlayDatasetTitle").value = overSelD.title;
-        const overData: (string | undefined)[] = new Array(4);
+        const overData: (string | undefined)[] = ["", "", "", ""];
         doc.getElementById("gbOverlayItemData").setVisibility(overSelD.DataItem.length>0);
         overlayListView.clear();
         for (let i = 0; i < overSelD.DataItem.length; i++) {
@@ -2232,7 +2232,13 @@ export function setting(locSearch: string) {
         if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkSizeMode, Layernum, DataNum) === true) {
 
             //●●●●●●●●●●●●●●●●記号の大きさモード
-            const datam = data.SoloModeViewSettings.MarkSizeMD;
+            const datam = data.SoloModeViewSettings.MarkSizeMD as {
+                LineShape: { LineWidth: number; Color: { toRGBA: () => string } };
+                Mark: Mark;
+                Value: number[];
+                MaxValueMode: number;
+                MaxValue: number;
+            };
             if(layShape===enmShape.LineShape){
                 doc.getElementById("gbMark").style.display='none';
                 doc.getElementById("gbMarkLine").style.display='inline';
@@ -2309,8 +2315,11 @@ export function setting(locSearch: string) {
 
     //階級区分の区分ボックスを設定
     function SetPictureBox() {
-        const ldd = attrData.nowDataSolo();
-        const md = attrData.nowData().ModeData;
+        const ldd = attrData.nowDataSolo() as {
+            Div_Num: number;
+            Class_Div: { PaintColor: { toRGBA: () => string }; ClassMark: Mark; ODLinePat: LinePattern }[];
+        };
+        const md = (attrData.nowData() as { ModeData: number }).ModeData;
         for (let i = 0; i < ldd.Div_Num; i++) {
             const p = doc.getElementById("picClassBox" + i) as HTMLCanvasElement;
             if (!p) { continue; }
@@ -3173,7 +3182,7 @@ export function setting(locSearch: string) {
 
         //記号の大きさモード線オブジェクトの線端設定
         function btnMarkLineEdge(e: MouseEvent) {
-            const edge = attrData.nowDataSolo().MarkSizeMD.LineShape.LineEdge;
+            const edge = (attrData.nowDataSolo().MarkSizeMD as { LineShape: { LineEdge: Edge_Property } }).LineShape.LineEdge;
             clsLineEdgePattern(e, edge, okButton);
             function okButton(retEdge: Edge_Property) {
                 attrData.nowDataSolo().MarkSizeMD.LineShape.LineEdge = retEdge;
@@ -3577,14 +3586,16 @@ export function setting(locSearch: string) {
         const gbgraphDataSet = Generic.createNewFrame(graphView, "gbgraphDataSet", "", 0, 10, 380, 80, "グラフデータセット");
         Generic.createNewSelect(gbgraphDataSet, [], -1, "graphDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
-                attrData.layerGraph().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
+                const graphAttrData = getGraphAttrData();
+                graphAttrData.layerGraph().SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 pnlGraphItem.selectedRow = -1;
                 pnlGraphEachItem(0);
                 graphDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gbgraphDataSet, "追加", "", 205, 15,
             function () {
-                const gv = attrData.layerGraph();
+                const graphAttrData = getGraphAttrData();
+                const gv = graphAttrData.layerGraph();
                 gv.AddDataSet();
                 gv.SelectedIndex = gv.DataSet.length - 1;
                 pnlGraphItem.selectedRow = -1;
@@ -3592,7 +3603,8 @@ export function setting(locSearch: string) {
             }, "font-size:12px");
         Generic.createNewButton(gbgraphDataSet, "データセット削除", "", 260, 15,
             function (e: MouseEvent) {
-                const gv = attrData.layerGraph();
+                const graphAttrData = getGraphAttrData();
+                const gv = graphAttrData.layerGraph();
                 if (gv.DataSet.length === 1) {
                     Generic.alert(new point(e.clientX, e.clientY),"これ以上削除できません。");
                     return;
@@ -3604,8 +3616,10 @@ export function setting(locSearch: string) {
         Generic.createNewWordTextInput(gbgraphDataSet, "タイトル", "", "", "graphDatasetTitle", 15, 45, undefined, 200,
             function (e: Event) {
                 const ttl = (e.target as HTMLInputElement).value;
-                attrData.nowGraph().title = ttl;
-                 doc.getElementById("graphDataSetList").setSelectData(attrData.layerGraph().SelectedIndex, attrData.layerGraph().SelectedIndex, ttl);
+                const graphAttrData = getGraphAttrData();
+                graphAttrData.nowGraph().title = ttl;
+                const selectedIndex = graphAttrData.layerGraph().SelectedIndex;
+                doc.getElementById("graphDataSetList").setSelectData(selectedIndex, selectedIndex, ttl);
             }, "");
 
         const gbGraphDataSetItem = Generic.createNewFrame(graphView, "gbGraphDataSetItem", "", 0, 110, 250, 290, "表示データ項目");
@@ -3615,7 +3629,8 @@ export function setting(locSearch: string) {
         pnlGraphItem.selectedRow = -1;
         Generic.createNewImageButton(gbGraphDataSetItem, "", "image/112_UpArrowLong_Grey_24x24_72.png", 10, 225, 24, 24, function () {
             const n = pnlGraphItem.selectedRow;
-            const selGraph = attrData.nowGraph();
+            const graphAttrData = getGraphAttrData();
+            const selGraph = graphAttrData.nowGraph();
             const graphData = selGraph.Data as GraphModeDataItem[];
             const dest = n - 1;
             const d1 = new GraphModeDataItem();
@@ -3635,7 +3650,8 @@ export function setting(locSearch: string) {
             function () {
                 const n = pnlGraphItem.selectedRow;
                 let dest = n + 1;
-                const selGraph = attrData.nowGraph();
+                const graphAttrData = getGraphAttrData();
+                const selGraph = graphAttrData.nowGraph();
                 const graphData = selGraph.Data as GraphModeDataItem[];
                 const d1 = new GraphModeDataItem();
                 Object.assign(d1, graphData[n]);
@@ -3653,12 +3669,13 @@ export function setting(locSearch: string) {
             }, "padding:2px");
         Generic.createNewButton(gbGraphDataSetItem, "追加", "", 85, 230,
             function (e: MouseEvent) {
-                const selGraph = attrData.nowGraph();
+                const graphAttrData = getGraphAttrData();
+                const selGraph = graphAttrData.nowGraph();
                 const preAsta = [];
                 for (let i = 0; i < selGraph.Data.length; i++) {
                     preAsta.push(selGraph.Data[i].DataNumber);
                 }
-                clsSelectData(e, attrData, attrData.TotalData.LV1.SelectedLayer,
+                clsSelectData(e, attrData, graphAttrData.TotalData.LV1.SelectedLayer,
                     function (selectedStatus: boolean[], selectedNumber: number[]) {
                         const graphData = selGraph.Data as GraphModeDataItem[];
                         const colorPat = [];
@@ -3688,7 +3705,7 @@ export function setting(locSearch: string) {
             function () {
                 const n = pnlGraphItem.selectedRow;
                 if (n !== -1) {
-                    const graphData = attrData.nowGraph().Data as GraphModeDataItem[];
+                    const graphData = getGraphAttrData().nowGraph().Data as GraphModeDataItem[];
                     graphData.splice(n, 1);
                     const mxn = graphData.length;
                     pnlGraphItem.selectedRow = -1;
@@ -3698,14 +3715,14 @@ export function setting(locSearch: string) {
 
         Generic.createNewButton(gbGraphDataSetItem, "すべて削除", "", 160, 260,
             function () {
-                attrData.nowGraph().Data = [];
+                getGraphAttrData().nowGraph().Data = [];
                 pnlGraphItem.selectedRow = -1;
                 pnlGraphEachItem(-1);
             }, "width:80px");
 
         Generic.createNewButton(gbGraphDataSetItem, "同一色に設定", "btmBarGraphColorSetting", 40, 260,
             function (e: MouseEvent) {
-                const selGraph = attrData.nowGraph();
+                const selGraph = getGraphAttrData().nowGraph();
                 clsTileSet(e, selGraph.Data[0].Tile,
                     function (retTile: Tile_Property) {
                         for (let i = 0; i < selGraph.Data.length; i++) {
@@ -3720,7 +3737,7 @@ export function setting(locSearch: string) {
         const gslist = [{ value: enmGraphMode.PieGraph, text: "円グラフ" }, { value: enmGraphMode.StackedBarGraph, text: "帯グラフ" }, { value: enmGraphMode.LineGraph, text: "折れ線グラフ" }, { value: enmGraphMode.BarGraph, text: "棒グラフ" }];
         Generic.createNewRadioButtonList(gbGraphShape, "graphShape", gslist, 10, 15, undefined, 25, undefined,
             function (value: RadioValue) {
-                const selGraph = attrData.nowGraph();
+                const selGraph = getGraphAttrData().nowGraph();
                 selGraph.GraphMode = value;
                 for (let i = 0; i < selGraph.Data.length; i++) {
                     const tbox = doc.getElementById("pnlGraphIteminPanelTileBox" + String(i));
@@ -3731,7 +3748,7 @@ export function setting(locSearch: string) {
             }, "");
         const gbGraphLineLpat = Generic.createNewFrame(graphView, "gbGraphLineLpat", "", 260, 260, 120, 45, "線種");
         Generic.createNewCanvas(gbGraphLineLpat, "graphLinePat", "imgButton", 35, 10, 50, 25, function (e: MouseEvent) {
-            const selGraph = attrData.nowGraph();
+            const selGraph = getGraphAttrData().nowGraph();
             switch (selGraph.GraphMode) {
                 case enmGraphMode.PieGraph:
                 case enmGraphMode.StackedBarGraph:
@@ -3753,8 +3770,8 @@ export function setting(locSearch: string) {
         }, "");
 
         Generic.createNewButton(graphView, "サイズ等設定", "", 260, 335, function () {
-            if (attrData.nowGraph().Data.length > 0) {
-                const selGraph = attrData.nowGraph();
+            const selGraph = getGraphAttrData().nowGraph();
+            if (selGraph.Data.length > 0) {
                 switch (selGraph.GraphMode) {
                     case enmGraphMode.PieGraph:
                     case enmGraphMode.StackedBarGraph:
