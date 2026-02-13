@@ -1,5 +1,5 @@
 ﻿import { Accessory } from './clsAccessory';
-import { ContourLineStackInfo } from './MeshContour';
+import { MeshContour, ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
 import { clsDraw } from './clsDraw';
 import { clsBase } from './clsGeneric'; // clsBaseを有効化
@@ -47,6 +47,25 @@ class Fringe_Line_Info {
 
 
 class clsPrint {
+    private static cloneLineProperty(linePat: Line_Property): Line_Property {
+        const cloned = clsBase.Line();
+        Object.assign(cloned, linePat);
+        return cloned;
+    }
+
+    private static cloneFontProperty(font: Font_Property): Font_Property {
+        const cloned = new Font_Property();
+        Object.assign(cloned, font);
+        return cloned;
+    }
+
+    private static clonePointValue(source: point): point {
+        const cloned = new point();
+        cloned.x = source.x;
+        cloned.y = source.y;
+        return cloned;
+    }
+
     static setData(picMap: HTMLCanvasElement){
         const state = appState();
         state.attrData.TotalData.ViewStyle.ScrData.OutputDevide = enmOutputDevice.Screen;
@@ -390,7 +409,7 @@ class clsPrint {
         const av=state.attrData.TotalData.ViewStyle.ScrData;
         const rect  = av.getSxSyRect(av.ScrRectangle);
         const sv=state.attrData.TotalData.ViewStyle.Screen_Back;
-        let penw  = av.Get_Length_On_Screen(sv.ScreenFrameLine.Width) % 2;
+        let penw  = parseInt(state.attrData.Get_Length_On_Screen(sv.ScreenFrameLine.Width), 10) % 2;
         penw = (penw===0) ? 1:penw;
         rect.inflate(-penw, -penw);
         state.attrData.Draw_Tile_Box(g, rect, sv.ScreenFrameLine, clsBase.BlancTile(), 0)
@@ -1020,7 +1039,7 @@ class clsPrint {
         const Lpat = av.Screen_Back.MapAreaFrameLine;
         if(Lpat.BlankF === false) {
             const marginRect = av.ScrData.getSXSY_Margin();
-            let penw = parseInt(av.ScrData.Get_Length_On_Screen(Lpat.Width).toString()) / 2;
+            let penw = parseInt(state.attrData.Get_Length_On_Screen(Lpat.Width), 10) / 2;
             if(penw === 0) {
                 penw = 1;
             }
@@ -1996,7 +2015,8 @@ class clsPrint {
         const C_Line_Pat = retConV.C_Line_Pat;
         //メッシュから等高線を抜き出す
         const Pre_CStac: ContourLineStackInfo[] = [];// clsMeshContour.ContourLineStackInfo
-        const ln  = cont.ContourMesh.Execute_Mesh(hn, Contour_High_M, Pre_CStac);
+        const contourMesh = cont.ContourMesh as MeshContour;
+        const ln  = contourMesh.Execute_Mesh(hn, Contour_High_M, Pre_CStac);
 
         if(ln === 0 ){
             Generic.alert(undefined,"該当する等値線が取得できませんでした。<br>下限値・上限値を変更してください。");
@@ -2037,7 +2057,7 @@ class clsPrint {
             for (let i = 0; i <= 3; i++) {
                 const Frame_LineStac: number[] = [];
                 const Frame_Point: point[] = [];
-                const FrameLineN = cont.ContourMesh.Execute_FrameGet(i, hn, Contour_High_M, Frame_LineStac, Frame_Point);
+                const FrameLineN = contourMesh.Execute_FrameGet(i, hn, Contour_High_M, Frame_LineStac, Frame_Point);
                 FrameStac[i][0] = FrameAllLineN;
                 FrameStac[i][1] = FrameLineN;
                 for (let j = 0; j < FrameLineN; j++) {
@@ -2303,7 +2323,8 @@ class clsPrint {
         cont.Contour_All_Number = 0;
         cont.Contour_All_Point = 0;
         cont.Contour_Point=[];
-        cont.ContourMesh = new clsMeshContour(D_Meshx + 1, D_Meshy + 1, md2 * D_Meshx, md2 * D_Meshy, vs.MapRectangle.left, vs.MapRectangle.top);
+        const contourMesh = new MeshContour(D_Meshx + 1, D_Meshy + 1, md2 * D_Meshx, md2 * D_Meshy, vs.MapRectangle.left, vs.MapRectangle.top);
+        cont.ContourMesh = contourMesh;
         cont.ContourDataResetF = false;
 
         const DataValue = state.attrData.Get_Data_Cell_Array_With_MissingValue(Layernum, DataNum);
@@ -2312,7 +2333,7 @@ class clsPrint {
                 const P = vs.MapRectangle.topLeft();
                 P.offset(i * md2, j * md2);
                 const v = this.ContourMesh_Value(Layernum, DataNum, DataValue, P, md, F_Mesh, F_Mesh_In);
-                cont.ContourMesh.SetMeshValue(i, j, v);
+                contourMesh.SetMeshValue(i, j, v);
             }
         }
 
@@ -2514,7 +2535,7 @@ class clsPrint {
                 let V = c_mdr.bottom;
                 do {
                     Contour_High_M.push(V);
-                    C_Line_Pat.push(c_mdr.Line_Pat.Clone());
+                    C_Line_Pat.push(this.cloneLineProperty(c_mdr.Line_Pat));
                     n++;
                     V = c_mdr.bottom + n * c_mdr.Interval;
                 } while (V < c_mdr.top);
@@ -2525,7 +2546,7 @@ class clsPrint {
                     V = c_mdr.SP_Bottom + n2 * c_mdr.SP_interval
                     for (let j = 0; j < n; j++) {
                         if (V === Contour_High_M[j]) {
-                            C_Line_Pat[j] = c_mdr.SP_Line_Pat.Clone();
+                            C_Line_Pat[j] = this.cloneLineProperty(c_mdr.SP_Line_Pat);
                             break;
                         }
                     }
@@ -2535,7 +2556,7 @@ class clsPrint {
                 if (c_mdr.EX_Value_Flag === true) {
                     for (let j = 0; j < n; j++) {
                         if (Contour_High_M[j] === c_mdr.EX_Value) {
-                            C_Line_Pat[j] = c_mdr.EX_Line_Pat.Clone();
+                            C_Line_Pat[j] = this.cloneLineProperty(c_mdr.EX_Line_Pat);
                         }
                     }
                 }
@@ -2545,7 +2566,7 @@ class clsPrint {
                 hn = c_md.IrregularNum
                 for (let i = 0; i < hn; i++) {
                     Contour_High_M.push(c_md.Irregular[i].Value);
-                    C_Line_Pat.push(c_md.Irregular[i].Line_Pat.Clone());
+                    C_Line_Pat.push(this.cloneLineProperty(c_md.Irregular[i].Line_Pat));
                 }
                 break;
             }
@@ -2553,7 +2574,7 @@ class clsPrint {
                 hn = ad.SoloModeViewSettings.Div_Num - 1
                 for (let i = 0; i < hn; i++) {
                     Contour_High_M.push(ad.SoloModeViewSettings.Class_Div[hn - 1 - i].Value);
-                    C_Line_Pat.push(c_md.Regular.Line_Pat.Clone());
+                    C_Line_Pat.push(this.cloneLineProperty(c_md.Regular.Line_Pat));
                 }
                 break;
             }
@@ -2582,7 +2603,7 @@ class clsPrint {
         }
         const smd = ad.SoloModeViewSettings.StringMD;
         // const H = state.attrData.Get_Length_On_Screen(smd.Font.Size);
-        const Font = smd.Font.Clone();
+        const Font = this.cloneFontProperty(smd.Font);
         const xw = state.attrData.Get_Length_On_Screen(smd.maxWidth);
         const turnF = smd.WordTurnF;
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
@@ -3532,7 +3553,7 @@ class clsPrint {
         if(ad.Type === enmLayerType.Mesh) {
             const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
             pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint);
-            pxy.push(pxy[0].Clone());
+            pxy.push(this.clonePointValue(pxy[0]));
             state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
             return;
         } else {
