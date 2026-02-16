@@ -31,6 +31,7 @@ class EllipPar {
 export class TKY2JGDInfo_Impl {
     private readonly EP = new Array<EllipPar>(3);
     private readonly XY_Genten = new Array<latlon>(20);
+    private parametersInitialized = false;
     private readonly rad2deg = 57.2957795130823;
     private readonly deg2rad = 0.0174532925199433;
     private readonly HAF_PI = 1.5707963267949;
@@ -39,13 +40,21 @@ export class TKY2JGDInfo_Impl {
     private readonly ROBYO = 206264.806247;
 
     constructor() {
+    }
+
+    private ensureParametersInitialized(): void {
+        if (this.parametersInitialized === true) {
+            return;
+        }
         this.Set_EP_Parameter();
+        this.parametersInitialized = true;
     }
 
     // Tokyo97系からITRF94系への座標変換
     // Ver.1.1  1999/1/28  (C) Mikio TOBITA 飛田幹男，国土地理院
     // この変換では楕円体高Hはゼロとする
     Tokyo97toITRF94(latlonP: latlon): latlon {
+        this.ensureParametersInitialized();
         // 入力 B1    : 緯度(度)
         // L1    : 経度(度)
         // 出力 B2    : 緯度(度)
@@ -72,6 +81,7 @@ export class TKY2JGDInfo_Impl {
     }
 
     ITRF94toTokyo97(latlonP: latlon): latlon {
+        this.ensureParametersInitialized();
         const B1 = latlonP.lat;
         const L1 = latlonP.lon;
         const Brad = B1 * this.deg2rad;
@@ -92,6 +102,7 @@ export class TKY2JGDInfo_Impl {
     }
 
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
+        this.ensureParametersInitialized();
         const M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
         let b: number, L: number;        //求める緯度，経度。基本的にradian
         let _Gamma: number;                 //=γ 子午線収差角。radian
