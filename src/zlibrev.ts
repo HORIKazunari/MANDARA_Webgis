@@ -1,8 +1,10 @@
 // @ts-nocheck
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';const COMPILED = false;
 /** revise  2020 ktani*/
-const goog = goog || {};
-goog.global = this;
+const globalScope = typeof globalThis !== "undefined" ? globalThis : this;
+var goog = globalScope.goog || {};
+goog.global = globalScope;
+globalScope.goog = goog;
 goog.DEBUG = true;
 goog.LOCALE = "en";
 goog.provide = function(name) {
@@ -272,7 +274,7 @@ goog.isNull = function(val) {
   return val === null
 };
 goog.isDefAndNotNull = function(val) {
-  return val !== null
+  return val !== undefined && val !== null
 };
 goog.isArray = function(val) {
   return goog.typeOf(val) === "array"

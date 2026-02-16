@@ -40,7 +40,7 @@ export default defineConfig({
       }
     },
     {
-      name: 'copy-data-directory-to-assets-with-original-names',
+      name: 'copy-data-directory-with-original-names',
       apply: 'build',
       generateBundle() {
         const dataRoot = path.resolve(process.cwd(), 'data')
@@ -48,10 +48,13 @@ export default defineConfig({
 
         const dataFiles = collectFilesRecursively(dataRoot)
         for (const filePath of dataFiles) {
+          const ext = path.extname(filePath).toLowerCase()
+          if (ext !== '.mdrj' && ext !== '.mdrmj') continue
+
           const relativeFromData = path.relative(dataRoot, filePath).replaceAll(path.sep, '/')
           this.emitFile({
             type: 'asset',
-            fileName: `assets/data/${relativeFromData}`,
+            fileName: `data/${relativeFromData}`,
             source: fs.readFileSync(filePath)
           })
         }
