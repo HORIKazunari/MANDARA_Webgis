@@ -4,29 +4,7 @@
     <title>MANDARA Webgis|ブラウザGIS|地理情報分析支援システム|</title>
     <meta charset="utf-8">
     <link rel="SHORTCUT ICON" href="favicon.ico">
-    <script type="text/javascript" src="/src/encoding.min.ts" defer></script>
-    <script type="text/javascript" src="/src/zlibrev.ts" defer></script>
-    <script type="text/javascript" src="/src/clsAttrData.ts" defer></script>
-    <script type="text/javascript" src="/src/clsTime.ts" defer></script>
-    <script type="text/javascript" src="/src/clsGeneric.ts" defer></script>
-    <script type="text/javascript" src="/src/clsDraw.ts" defer></script>
-    <script type="text/javascript" src="/src/main.ts"></script>
-    <script type="text/javascript" src="/src/SortingSearch.ts" defer></script>
-    <script type="text/javascript" src="/src/SpatialIndexSearch.ts" defer></script>
-    <script type="text/javascript" src="/src/clsMapdata.ts" defer></script>
-    <script type="text/javascript" src="/src/clsPrint.ts" defer></script>
-    <script type="text/javascript" src="/src/frmPrint.ts" defer></script>
-    <script type="text/javascript" src="/src/clsWindow.ts" defer></script>
-    <script type="text/javascript" src="/src/clsSubWindows.ts" defer></script>
-    <script type="text/javascript" src="/src/clsAccessory.ts" defer></script>
-    <script type="text/javascript" src="/src/shapeFile.ts" defer></script>
-    <script type="text/javascript" src="/src/MeshContour.ts" defer></script>
-    <script type="text/javascript" src="/src/clsGridControl.ts" defer></script>
-    <script type="text/javascript" src="/src/clsGrid.ts" defer></script>
-
-    <script type="text/javascript" src="/src/japanmap.ts" defer></script>
-    <script type="text/javascript" src="/src/worldmap.ts" defer></script>
-    <script type="text/javascript" src="/src/japanLatLonMap.ts" defer></script>
+    <script type="module" src="/src/index.ts"></script>
 
     <STYLE type="text/css">
         body {
@@ -133,12 +111,6 @@
     </STYLE>
 
 </head>
-<script>
-
-    window.onerror= function(message, source, lineno, colno, error) {
-        logX([message,source,lineno,colno,error]);
-    }
-</script>
-<body onLoad="init()" >
+<body>
 </body>
 </html>

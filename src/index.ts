@@ -31,4 +31,9 @@ void (async () => {
 
 	// エントリーポイント初期化
 	await import('./main.ts');
+
+	const globalScope = globalThis as typeof globalThis & {
+		init?: () => void;
+	};
+	globalScope.init?.();
 })();

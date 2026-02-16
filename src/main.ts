@@ -356,6 +356,20 @@ function frmPrintFront(): void {
     void (state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "3"));
 }
 
+const globalScope = globalThis as typeof globalThis & {
+    logX?: (data: JsonValue) => void;
+    init?: () => void;
+    settingFront?: () => void;
+};
+
+globalScope.logX = _logX;
+globalScope.init = _init;
+globalScope.settingFront = _settingFront;
+
+globalThis.onerror = function(message, source, lineno, colno, error) {
+    _logX([String(message), String(source ?? ''), lineno ?? 0, colno ?? 0, String(error ?? '')]);
+};
+
 
 
 

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  publicDir: false,
   esbuild: {
     // TypeScriptの変換を最小限に
     target: 'es2015'
@@ -16,7 +17,7 @@ export default defineConfig({
       // 複数のHTMLファイルをエントリーポイントとして指定
       input: {
         main: './index.html',
-        mandara: './mandarawebgis_ts.html'
+        mandara: './mandarawebgis.html'
       },
       // エラーを警告として扱う
       onwarn(warning, warn) {
