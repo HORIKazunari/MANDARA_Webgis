@@ -30,6 +30,9 @@ export default defineConfig({
 
         const mapFiles = collectFilesRecursively(mapRoot)
         for (const filePath of mapFiles) {
+          const ext = path.extname(filePath).toLowerCase()
+          if (ext !== '.mpfj') continue
+
           const relativeFromMap = path.relative(mapRoot, filePath).replaceAll(path.sep, '/')
           this.emitFile({
             type: 'asset',
