@@ -3,6 +3,14 @@ import { ListBox } from './clsGeneric';
 import { gridControl, type EventCallbacks } from './clsGridControl';
 import type { JsonObject, JsonValue } from './types';
 import { SortingSearch } from './SortingSearch';
+import { enmAttDataType, enmHorizontalAlignment, enmLayerType, enmMatchingMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import {
+    enmDataSource,
+    enmMesh_Number,
+    enmZahyo_System_Info,
+    enmBasePosition,
+    enmKenCodeObjectstructure
+} from './clsAttrData';
 
 type LayerTypeValue = (typeof enmLayerType)[keyof typeof enmLayerType];
 type ShapeValue = (typeof enmShape)[keyof typeof enmShape];

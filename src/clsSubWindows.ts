@@ -1,5 +1,21 @@
 ﻿import { appState } from './core/AppState';
 import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
+import { enmAttDataType, enmGraphMode, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import {
+    enmBarChartFrameAxePattern,
+    enmBarLineMaxMinMode,
+    enmClassMode_Meshod,
+    enmDrawTiming,
+    enmGraphMaxSize,
+    enmMarkMaxValueType,
+    enmMarkPrintType,
+    enmMultiEnGraphPattern,
+    enmProjection_Info,
+    enmScaleBarPattern,
+    enmScaleUnit,
+    enmSeparateClassWords,
+    enmSoloMode_Number
+} from './clsAttrData';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
 type SelectControl = HTMLSelectElement & {

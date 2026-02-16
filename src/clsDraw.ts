@@ -1,6 +1,7 @@
 ﻿// JavaScript source code
 import { Generic } from './clsGeneric';
-import { Screen_info } from './clsAttrData';
+import { enmEdge_Pattern, enmJoinPattern, enmMarkPrintType, Screen_info } from './clsAttrData';
+import { enmHorizontalAlignment, enmVerticalAlignment } from './constants/legacyEnums';
 import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
 
 class clsDraw {

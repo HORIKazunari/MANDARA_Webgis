@@ -2,6 +2,20 @@
 import { appState } from './core/AppState';
 import { clsShapefile } from './shapeFile';
 import { SortingSearch } from './SortingSearch';
+import { enmAttDataType, enmGraphMode, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import {
+    enmDataSource,
+    enmSoloMode_Number,
+    enmContourIntervalMode,
+    enmDivisionMethod,
+    enmMarkMaxValueType,
+    enmBarLineMaxMinMode,
+    enmPrint_Enable,
+    enmPaintColorSettingModeInfo,
+    enmMarkBlockArrange,
+    enmKenCodeObjectstructure,
+    enmZahyo_System_Info
+} from './clsAttrData';
 import type { 
   ExtendedHTMLElement, 
   // SelectChangeHandler, 

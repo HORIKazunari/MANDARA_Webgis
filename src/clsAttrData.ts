@@ -3,8 +3,13 @@ import { Generic, CheckedListBox } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata, EnableMPLine_Data } from './clsMapdata';
+import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import type { strLayerInfo } from './clsWindow';
 import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
+
+type HorizontalAlignmentValue = (typeof enmHorizontalAlignment)[keyof typeof enmHorizontalAlignment];
+type VerticalAlignmentValue = (typeof enmVerticalAlignment)[keyof typeof enmVerticalAlignment];
+type PrintMouseModeValue = (typeof enmPrintMouseMode)[keyof typeof enmPrintMouseMode];
 
 
 // size クラスは globals.d.ts で定義済み
@@ -306,14 +311,11 @@ const enmBasePosition = {
     Screen: 1
 }
 
-// enmHorizontalAlignment はglobals.d.tsで定義済み
-
 const enmScaleBarPattern = {
     Thin : 0,
         Bold : 1,
         Slim : 2
 }
-// enmVerticalAlignment はglobals.d.tsで定義済み
 
 
 //記号の数，大きさ，階級記号，線モードの内部色設定
@@ -2463,7 +2465,7 @@ class strTempLocationMenuString {
 class frmPrint_temp_info {
     OnObject: strLocationSearchObject[] = [];
     OldObject: strLocationSearchObject[] = [];
-    PrintMouseMode: number | undefined; // enmPrintMouseMode (未定義)
+    PrintMouseMode: PrintMouseModeValue | undefined;
     MultiObjectSelectSub: number | undefined; // enmMultiObjectSelecModesSub (未定義)
     MultiObjectSelectShowFlag: boolean = false;
     MultiObjects: number[] = [];
@@ -3583,7 +3585,7 @@ class clsAttrData {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
-    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment): void {
+    Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: HorizontalAlignmentValue, VerticalAlignment: VerticalAlignmentValue): void {
         clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
@@ -8530,6 +8532,12 @@ class clsObjectNameSearch {
 // Export all enums defined in this module
 export {
     enmDataSource,
+    enmMarkBlockArrange,
+    enmSoloMode_Number,
+    enmContourIntervalMode,
+    enmDivisionMethod,
+    enmPrint_Enable,
+    enmPaintColorSettingModeInfo,
     enmClassMode_Meshod,
     enmPointOnjectDrawOrder,
     enmEdge_Pattern,
@@ -8548,6 +8556,7 @@ export {
     enmDrawTiming,
     enmOutputDevice,
     enmKenCodeObjectstructure,
+    enmMultiEnGraphPattern,
     enmGraphMaxSize,
     enmMarkMaxValueType,
     enmBarLineMaxMinMode,

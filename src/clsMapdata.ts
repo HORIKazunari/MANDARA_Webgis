@@ -4,8 +4,9 @@ import { clsTime } from './clsTime';
 import { SortingSearch } from './SortingSearch';
 // import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch, GetObjectPointTagInfo } from './SpatialIndexSearch';
-import { Start_End_Time_data } from './clsAttrData';
+import { enmLineConnect, enmMarkPrintType, enmProjection_Info, enmScaleUnit, enmZahyo_System_Info, Start_End_Time_data } from './clsAttrData';
 import { Fringe_Line_Info } from './clsPrint';
+import { enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 import type { JsonObject, JsonValue } from './types';
 
 /** Description placeholder */

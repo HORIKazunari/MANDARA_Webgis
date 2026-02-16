@@ -1,6 +1,23 @@
 ﻿// JavaScript source code
 
 import { appState } from './core/AppState';
+import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
+import {
+    enmBasePosition,
+    enmClassMode_Meshod,
+    enmContourIntervalMode,
+    enmEdge_Pattern,
+    enmGraphMaxSize,
+    enmInner_Data_Info_Mode,
+    enmMarkBlockArrange,
+    enmMarkPrintType,
+    enmMultiEnGraphPattern,
+    enmProjection_Info,
+    enmScaleBarPattern,
+    enmScaleUnit,
+    enmSeparateClassWords,
+    enmSoloMode_Number
+} from './clsAttrData';
 
 export class Accessory {
 

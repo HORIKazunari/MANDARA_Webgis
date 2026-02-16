@@ -5,14 +5,22 @@ import { clsDraw } from './clsDraw';
 import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
-import { Legend2_Atri } from './clsAttrData';
+import {
+    enmBarChartFrameAxePattern,
+    enmBasePosition,
+    enmContourIntervalMode,
+    enmDivisionMethod,
+    enmDrawTiming,
+    enmMarkBlockArrange,
+    enmMarkPrintType,
+    enmOutputDevice,
+    enmPointOnjectDrawOrder,
+    enmGraphMaxSize,
+    enmSoloMode_Number,
+    Legend2_Atri
+} from './clsAttrData';
 import { SortingSearch } from './SortingSearch';
-
-const enmTotalMode_Number = {
-    DataViewMode: 0,
-    OverLayMode: 1,
-    SeriesMode:2
-}
+import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 
 interface strInner_Data_Info {
     Flag: boolean;

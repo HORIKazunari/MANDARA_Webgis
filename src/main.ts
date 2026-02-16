@@ -6,6 +6,7 @@
 import { TKY2JGDInfo } from './clsGeneric';
 import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
+import { enmZahyo_mode_info } from './constants/legacyEnums';
 
 // グローバル変数は完全に削除し、AppState経由でアクセス
 // 以前の実装：

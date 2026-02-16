@@ -1,6 +1,6 @@
 ﻿// import { appState } from './core/AppState';
 import type { JsonValue } from './types';
-import { Start_End_Time_data, Screen_info } from './clsAttrData';
+import { enmMarkPrintType, enmProjection_Info, Start_End_Time_data, Screen_info } from './clsAttrData';
 
 class clsTime  {
     static GetNullYMD(): strYMD {

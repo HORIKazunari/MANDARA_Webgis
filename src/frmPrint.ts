@@ -2,6 +2,12 @@
 import { Accessory } from './clsAccessory';
 import { clsSpline } from './clsDraw';
 import { Generic } from './clsGeneric';
+import { enmGraphMode, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import {
+    enmBasePosition,
+    enmKenCodeObjectstructure,
+    enmSoloMode_Number
+} from './clsAttrData';
 import type { JsonValue } from './types';
 
 type ContourObjectInfo = {
