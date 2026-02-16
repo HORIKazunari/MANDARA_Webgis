@@ -3520,7 +3520,7 @@ function openMapFile(call: (data: JsonValue, filename?: string) => void) {
                         serverFile = "CHINA.mpfj";
                         break;
                 }
-                Generic.getMapfileByHttpRequest("https://webgis.celas.osaka-u.ac.jp/map/" + serverFile, function (jsonData: object) {
+                Generic.getMapfileByHttpRequest("/map/" + serverFile, function (jsonData: object) {
                     appState().preReadMapFile[fup] = jsonData as JsonObject;                    
                     Generic.clear_backDiv();
                     call(appState().preReadMapFile[fup], fup);

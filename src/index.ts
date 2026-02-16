@@ -1,5 +1,12 @@
+import { appState } from './core/AppState';
+
 // メインエントリーポイント - 動的インポートでチャンク分割
 void (async () => {
+	const bootstrapGlobal = globalThis as typeof globalThis & {
+		preReadMapFile?: Record<string, unknown>;
+	};
+	bootstrapGlobal.preReadMapFile = appState().preReadMapFile;
+
 	// まずユーティリティ系（圧縮/文字コード/地図補助）を先に読み込む
 	await Promise.all([
 		import('./encoding.min.ts'),

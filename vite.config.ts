@@ -1,7 +1,63 @@
 import { defineConfig } from 'vite'
+import fs from 'node:fs'
+import path from 'node:path'
+
+function collectFilesRecursively(dirPath: string): string[] {
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true })
+  const files: string[] = []
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...collectFilesRecursively(fullPath))
+    } else if (entry.isFile()) {
+      files.push(fullPath)
+    }
+  }
+
+  return files
+}
 
 export default defineConfig({
   publicDir: false,
+  plugins: [
+    {
+      name: 'copy-map-directory-with-original-names',
+      apply: 'build',
+      generateBundle() {
+        const mapRoot = path.resolve(process.cwd(), 'map')
+        if (!fs.existsSync(mapRoot)) return
+
+        const mapFiles = collectFilesRecursively(mapRoot)
+        for (const filePath of mapFiles) {
+          const relativeFromMap = path.relative(mapRoot, filePath).replaceAll(path.sep, '/')
+          this.emitFile({
+            type: 'asset',
+            fileName: `map/${relativeFromMap}`,
+            source: fs.readFileSync(filePath)
+          })
+        }
+      }
+    },
+    {
+      name: 'copy-data-directory-to-assets-with-original-names',
+      apply: 'build',
+      generateBundle() {
+        const dataRoot = path.resolve(process.cwd(), 'data')
+        if (!fs.existsSync(dataRoot)) return
+
+        const dataFiles = collectFilesRecursively(dataRoot)
+        for (const filePath of dataFiles) {
+          const relativeFromData = path.relative(dataRoot, filePath).replaceAll(path.sep, '/')
+          this.emitFile({
+            type: 'asset',
+            fileName: `assets/data/${relativeFromData}`,
+            source: fs.readFileSync(filePath)
+          })
+        }
+      }
+    }
+  ],
   esbuild: {
     // TypeScriptの変換を最小限に
     target: 'es2015'
