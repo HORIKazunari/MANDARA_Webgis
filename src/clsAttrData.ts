@@ -1,5 +1,5 @@
 ﻿import { appState } from './core/AppState';
-import { Generic, CheckedListBox } from './clsGeneric';
+import { Generic, CheckedListBox, latlon } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
 import { clsTime } from './clsTime';
 import { clsMapdata, EnableMPLine_Data } from './clsMapdata';
@@ -12,7 +12,7 @@ type VerticalAlignmentValue = (typeof enmVerticalAlignment)[keyof typeof enmVert
 type PrintMouseModeValue = (typeof enmPrintMouseMode)[keyof typeof enmPrintMouseMode];
 
 
-class size {
+export class size {
     width: number;
     height: number;
 
@@ -26,7 +26,7 @@ class size {
     }
 }
 
-class point {
+export class point {
     x: number;
     y: number;
     Tag?: string | number;
@@ -59,7 +59,7 @@ class point {
     }
 }
 
-class point3 extends point {
+export class point3 extends point {
     z: number;
 
     constructor(x: number = 0, y: number = 0, z: number = 0) {
@@ -72,7 +72,7 @@ class point3 extends point {
     }
 }
 
-class latlonbox {
+export class latlonbox {
     NorthWest?: latlon;
     SouthEast?: latlon;
 
@@ -90,7 +90,7 @@ class latlonbox {
     }
 }
 
-class rectangle {
+export class rectangle {
     left: number;
     right: number;
     top: number;
@@ -218,17 +218,7 @@ class rectangle {
     }
 }
 
-class PeripheriDirinfo {
-    Code: number;
-    Dir: number;
-
-    constructor(Code: number, Dir: number) {
-        this.Code = Code;
-        this.Dir = Dir;
-    }
-}
-
-class strYMD {
+export class strYMD {
     Year: number;
     Month: number;
     Day: number;
@@ -275,14 +265,6 @@ class strYMD {
         return new Date(this.Year, this.Month - 1, this.Day);
     }
 }
-
-(globalThis as typeof globalThis & Record<string, unknown>).size = size;
-(globalThis as typeof globalThis & Record<string, unknown>).point = point;
-(globalThis as typeof globalThis & Record<string, unknown>).point3 = point3;
-(globalThis as typeof globalThis & Record<string, unknown>).rectangle = rectangle;
-(globalThis as typeof globalThis & Record<string, unknown>).latlonbox = latlonbox;
-(globalThis as typeof globalThis & Record<string, unknown>).PeripheriDirinfo = PeripheriDirinfo;
-(globalThis as typeof globalThis & Record<string, unknown>).strYMD = strYMD;
 
 //度分秒構造体
 class strDegreeMinuteSeconde {
@@ -459,7 +441,7 @@ const chvValue_on_twoValue = {
     chvIN: 1
 };
 
-class colorRGBA {
+export class colorRGBA {
     r: number;
     g: number;
     b: number;
@@ -505,8 +487,6 @@ class colorRGBA {
         return new colorRGBA([this.r * rate, this.g * rate, this.b * rate, this.a]);
     }
 }
-
-(globalThis as typeof globalThis & Record<string, unknown>).colorRGBA = colorRGBA;
 
 class _Cross_Line_Data {
     BeforPoint: point = new point();

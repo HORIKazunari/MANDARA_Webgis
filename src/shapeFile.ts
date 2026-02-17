@@ -1,6 +1,6 @@
 ﻿import { Generic } from './clsGeneric';
 import { clsMapdata } from './clsMapdata';
-import { enmMesh_Number, enmScaleUnit, enmZahyo_System_Info } from './clsAttrData';
+import { enmMesh_Number, enmScaleUnit, enmZahyo_System_Info, point } from './clsAttrData';
 import { enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 
 // シェープファイル取得

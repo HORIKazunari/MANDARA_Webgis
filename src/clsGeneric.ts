@@ -2,9 +2,10 @@
 import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
 import { Object_NameTimeStac_Data, EnableMPLine_Data } from './clsMapdata';
-import { chvValue_on_twoValue, cstRectangle_Cross, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, Screen_info } from './clsAttrData';
+import { chvValue_on_twoValue, cstRectangle_Cross, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, point3, Screen_info } from './clsAttrData';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
+import { clsColorPicker } from './clsSubWindows';
 import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
@@ -5194,9 +5195,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 };
 
- 
-(globalThis as Record<string, unknown>).Generic = Generic;
-
 // ESM-friendly export handles
 export const TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
@@ -6539,13 +6537,8 @@ interface String {
     return parseFloat(this.replace("px", "")) || 0;
 };
 
-// expose helpers globally for legacy callers
-(globalThis as Record<string, unknown>).CheckedListBox = CheckedListBox;
-(globalThis as Record<string, unknown>).ListBox = ListBox;
-(globalThis as Record<string, unknown>).ListViewTable = ListViewTable;
-
 // latlon class for latitude/longitude coordinates
-class latlon {
+export class latlon {
     lat: number;
     lon: number;
     
@@ -6585,8 +6578,6 @@ class latlon {
         return this.lat === other.lat && this.lon === other.lon;
     }
 }
-
-(globalThis as Record<string, unknown>).latlon = latlon;
 
 /**
  * ベースユーティリティクラス

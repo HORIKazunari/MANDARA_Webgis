@@ -2,6 +2,8 @@
 import { Accessory } from './clsAccessory';
 import { clsSpline } from './clsDraw';
 import { Generic } from './clsGeneric';
+import { clsPrint } from './clsPrint';
+import { frmPrintOption } from './clsSubWindows';
 import { enmGraphMode, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBasePosition,

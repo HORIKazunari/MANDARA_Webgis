@@ -1,9 +1,12 @@
 ﻿// JavaScript source code
 
 import { appState } from './core/AppState';
+import { Generic } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
+import { clsPrint } from './clsPrint';
 import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
+    colorRGBA,
     enmBasePosition,
     enmClassMode_Meshod,
     enmContourIntervalMode,
@@ -17,7 +20,10 @@ import {
     enmScaleBarPattern,
     enmScaleUnit,
     enmSeparateClassWords,
-    enmSoloMode_Number
+    enmSoloMode_Number,
+    point,
+    rectangle,
+    size
 } from './clsAttrData';
 
 export class Accessory {

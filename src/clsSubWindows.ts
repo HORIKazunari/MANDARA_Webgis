@@ -1,5 +1,6 @@
 ﻿import { appState } from './core/AppState';
 import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
+import { clsPrint } from './clsPrint';
 import { enmAttDataType, enmGraphMode, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBarChartFrameAxePattern,
@@ -60,7 +61,7 @@ type GraphOresenBouControl = {
 // JavaScript source code
 
 //カラーチャート
-function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: colorRGBA[]) => void) {
+export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: colorRGBA[]) => void) {
     const colorChart = Generic.set_backDiv("", "カラーチャート", 260, 400, false, true, undefined, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, colorChart);
     const pnlColorPattern = Generic.createNewDiv(colorChart, "", "", "", 10, appState().scrMargin.top + 10, 240, 310, "overflow-y: scroll;border:solid 1px;border-color:#666666;", "");
@@ -169,7 +170,7 @@ function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: col
 }
 
 /**カラーピッカー event_pointがpointの場合は表示位置のみ、targetがある場合はその要素の色も変える*/
-function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color) => void): void {
+export function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color) => void): void {
     /// <signature>
     /// <summary>カラーピッカー</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -631,7 +632,7 @@ function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void
     }
 }
 
-function clsInnerDataSet(event: MouseEvent, /*attrData: clsAttrData*/ ) {
+export function clsInnerDataSet(event: MouseEvent, /*attrData: clsAttrData*/ ) {
             /// <signature>
     /// <summary>記号の大きさモードの内部データ設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -702,7 +703,7 @@ function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern
 }
 
 /**矢印設定 */
-function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption: string, End_Arrow_Caption: string, okEvent: (Arrow: Arrow_Property) => void) {
+export function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption: string, End_Arrow_Caption: string, okEvent: (Arrow: Arrow_Property) => void) {
     const newArrow=Arrow.Clone();
     const backDiv = Generic.set_backDiv("", "矢印設定", 370, 230, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -735,7 +736,7 @@ function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption:
 }
 
 /**データ項目選択 PreAstariskはアスタリスクを付けたい番号を配列に入れ、ない場合はundefined、返す値は選択番号リスト配列,選択truefalse配列*/
-function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum: number, okEvent: (checkedStatus: boolean[], checkedArray: number[]) => void, PreAstarisk: number[] | undefined = undefined,
+export function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum: number, okEvent: (checkedStatus: boolean[], checkedArray: number[]) => void, PreAstarisk: number[] | undefined = undefined,
     Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true) {
     const backDiv = Generic.set_backDiv("", "データ項目選択", 230, 330, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -765,7 +766,7 @@ function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum: number
 }
 
 /**出力画面：オブジェクト名・データ値表示 */
-function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) {
+export function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名・データ値表示", 210, 280, true, true, buttonOK, 0.2, true);
 
     const avs = _attrData.TotalData.ViewStyle.ValueShow.Clone() as typeof _attrData.TotalData.ViewStyle.ValueShow;
@@ -791,7 +792,7 @@ function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) {
 }
 
 /**背景表示設定 */
-function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
+export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "背景画像設定", 260, 300, true, true, buttonOK, 0.2, true);
     const avt: typeof _attrData.TotalData.ViewStyle.TileMapView = _attrData.TotalData.ViewStyle.TileMapView;
     const chkVisible = Generic.createNewCheckBox(backDiv, "背景画像を表示", "", avt.Visible, 15, 40,undefined,  undefined, "");
@@ -862,7 +863,7 @@ function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
 }
 
 /**設定画面のグラフ表示モード・円・帯グラフ設定 */
-function graphModeEn_Obi() {
+export function graphModeEn_Obi() {
     const backDiv = Generic.set_backDiv("", "円・帯グラフ設定", 350, 300, true, true, buttonOK, 0.2, true);
 
     const nowGraphRaw: unknown = appState().attrData.nowGraph();
@@ -925,7 +926,7 @@ function graphModeEn_Obi() {
 }
 
 /**設定画面のグラフ表示モード・折れ線・棒グラフ設定 */
-function graphModeOresen_Bou() {
+export function graphModeOresen_Bou() {
     const backDiv = Generic.set_backDiv("", "折れ線・棒グラフ設定", 370, 330, true, true, buttonOK, 0.2, true);
 
     const nowGraphRaw: unknown = appState().attrData.nowGraph();
@@ -1050,7 +1051,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
 }
 
 /**投影法変換 */
-function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okEvent: (Zahyo: Zahyo_info) => void) {
+export function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okEvent: (Zahyo: Zahyo_info) => void) {
     const Zahyo = _Zahyo.Clone() as Zahyo_info;
     const backDiv = Generic.set_backDiv("", "投影法変換", 425, 300, true, true, buttonOK, 0.2, true);
     const gbPresentProjection=Generic.createNewFrame(backDiv,"","",15,40,200,50,"現在の投影法");
@@ -1123,7 +1124,7 @@ function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) =>
 }
 
 /**出力画面のオプション */
-function frmPrintOption(firstTab: number = 0) {
+export function frmPrintOption(firstTab: number = 0) {
     const atv = appState().attrData.TotalData.ViewStyle.Clone() as ReturnType<typeof appState>['attrData']['TotalData']['ViewStyle'];
     const sdata = appState().settingData.Clone();
     const backDiv = Generic.set_backDiv("", "オブション", 600, 420, true, true, buttonOK, 0.2, true);
@@ -1542,7 +1543,7 @@ function frmPrintOption(firstTab: number = 0) {
 }
 
 /**データ項目設定コピー */
-function frmMainCopyDataSettings(okEvent: () => void) {
+export function frmMainCopyDataSettings(okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "データ項目設定コピー", 560, 400, true, true, buttonOK, 0.2, true);
     const origin = Generic.createNewFrame(backDiv, "", "", 20, 50, 250, 290, "コピー元");
     const dest = Generic.createNewFrame(backDiv, "", "", 290, 50, 250, 290, "コピー先");
@@ -1611,7 +1612,7 @@ function frmMainCopyDataSettings(okEvent: () => void) {
 }
 
 /**連続表示モードにまとめて設定 */
-function frmMain_SetSeriesMode(okEvent: () => void) {
+export function frmMain_SetSeriesMode(okEvent: () => void) {
     let DataItem: strSeries_DataSet_Item_Info[] = [];
     const backDiv = Generic.set_backDiv("", "連続表示モードにまとめて設定", 790, 390, true, true, buttonOK, 0.2, true);
     const LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
@@ -1834,7 +1835,7 @@ function frmMain_SetSeriesMode(okEvent: () => void) {
 }
 
 /**記号表示位置等操作 */
-function frmMain_MarkPosition(okEvent: (mode: number) => void) {
+export function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     const backDiv = Generic.set_backDiv("", "記号表示位置等操作", 450, 365, true, true, buttonOK, 0.2, true);
     const Layernum = appState().attrData.TotalData.LV1.SelectedLayer;
     const Objn = appState().attrData.Get_ObjectNum(Layernum);
@@ -2022,7 +2023,7 @@ function frmMain_MarkPosition(okEvent: (mode: number) => void) {
 }
 
 /**属性検索設定 */
-function frmMain_ConditionSettings(okEvent: () => void){
+export function frmMain_ConditionSettings(okEvent: () => void){
     const backDiv = Generic.set_backDiv("", "属性検索設定", 305, 370, true, true, buttonOK, 0.2, true);
     Generic.createNewSpan(backDiv,"条件設定","","",15,40,"",undefined);
     Generic.createNewButton(backDiv,"設定変更","",15,275,function(){
@@ -2269,7 +2270,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
 
 
 /**面積・周長取得 */
-function frmMain_AreaPeripheri(okEvent: () => void){
+export function frmMain_AreaPeripheri(okEvent: () => void){
     const backDiv = Generic.set_backDiv("", "面積・周長取得", 195, 200, true, true, buttonOK, 0.2, true);
     const atv=appState().attrData.TotalData.ViewStyle.MapScale;
     Generic.createNewRadioButtonList(backDiv, "rbAreaOrPeri", [{ value: 0, text: "オブジェクト面積取得" }, { value: 1, text: "オブジェクト周長取得" }], 15, 50, undefined, 30, 0, undefined, "");
@@ -2337,7 +2338,7 @@ function frmMain_AreaPeripheri(okEvent: () => void){
     }
 }
 
-function frmMain_Culc(okEvent: () => void) {
+export function frmMain_Culc(okEvent: () => void) {
     const LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     const backDiv = Generic.set_backDiv("", "データ計算", 430, 490, true, true, buttonOK, 0.2, true);
     const rdList = [{ value: 0, text: "足し算" }, { value: 1, text: "引き算" }, { value: 2, text: "かけ算" }, { value: 3, text: "割り算" }, { value: 4, text: "増減率(%)" }, { value: 5, text: "密度" }];
@@ -2702,7 +2703,7 @@ function frmMain_Culc(okEvent: () => void) {
 }
 
 /**距離測定 */
-function frmMain_GetDistance(okEvent: () => void){
+export function frmMain_GetDistance(okEvent: () => void){
     const DisType = {
         Point : 0,
         LayerObject : 1,
@@ -2896,7 +2897,7 @@ function frmMain_GetDistance(okEvent: () => void){
     }
 }
 /**レイヤ内オブジェクト選択（一つ）defDummyF:初期値がダミーオブジェクトを表示 */
-function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: number, DefSelectObjectNumber: number,defDummyF: boolean, okEvent: (LayerNum: number, SelectObjcetNo: number, DummySelectF: boolean) => void) {
+export function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: number, DefSelectObjectNumber: number,defDummyF: boolean, okEvent: (LayerNum: number, SelectObjcetNo: number, DummySelectF: boolean) => void) {
     const backDiv = Generic.set_backDiv("", "レイヤ内オブジェクト選択", 230, 170, true, true, buttonOK, 0.2, true);
     const selectLayer = Generic.createNewWordSelect(backDiv, "レイヤ", undefined, DefLayerNum, "", 15, 40, 40, 150, 0, changeLayer, "") as SelectControl;
     appState().attrData.Set_LayerName_to(selectLayer, DefLayerNum, true, true, true, true);
@@ -2982,7 +2983,7 @@ function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, Canc
 }
 
 /**空間検索 */
-function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
+export function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     class NormalData {
         add: number = 0;
         add2: number = 0;
@@ -3429,7 +3430,7 @@ function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
 
 
 /**地図ファイルを開く */
-function openMapFile(call: (data: JsonValue, filename?: string) => void) {
+export function openMapFile(call: (data: JsonValue, filename?: string) => void) {
 
     //地図ファイルを開く
     const bbox = Generic.set_backDiv("","地図ファイル選択", 280, 270,false,true, undefined, 0.2,false);
@@ -3773,7 +3774,7 @@ interface DummyObjectInfo {
 }
 
 /**ダミーオブジェクトの設定 */
-function frmPrint_DummyObjectGroup(){
+export function frmPrint_DummyObjectGroup(){
 
     const Dummy: DummyObjectInfo[][] = [];
     const DummyOBGroup: boolean[][] = [];
@@ -3991,26 +3992,3 @@ function frmPrint_DummyObjectGroup(){
     }
 }
 
-// グローバル関数として公開
-(globalThis as Record<string, unknown>).clsColorChart = clsColorChart;
-(globalThis as Record<string, unknown>).clsColorPicker = clsColorPicker;
-(globalThis as Record<string, unknown>).clsInnerDataSet = clsInnerDataSet;
-(globalThis as Record<string, unknown>).clsArrow = clsArrow;
-(globalThis as Record<string, unknown>).clsSelectData = clsSelectData;
-(globalThis as Record<string, unknown>).frmPrint_ObjectValue = frmPrint_ObjectValue;
-(globalThis as Record<string, unknown>).frmPrint_backImageSet = frmPrint_backImageSet;
-(globalThis as Record<string, unknown>).graphModeEn_Obi = graphModeEn_Obi;
-(globalThis as Record<string, unknown>).graphModeOresen_Bou = graphModeOresen_Bou;
-(globalThis as Record<string, unknown>).frmProjectionConvert = frmProjectionConvert;
-(globalThis as Record<string, unknown>).frmPrintOption = frmPrintOption;
-(globalThis as Record<string, unknown>).frmMainCopyDataSettings = frmMainCopyDataSettings;
-(globalThis as Record<string, unknown>).frmMain_SetSeriesMode = frmMain_SetSeriesMode;
-(globalThis as Record<string, unknown>).frmMain_MarkPosition = frmMain_MarkPosition;
-(globalThis as Record<string, unknown>).frmMain_ConditionSettings = frmMain_ConditionSettings;
-(globalThis as Record<string, unknown>).frmMain_AreaPeripheri = frmMain_AreaPeripheri;
-(globalThis as Record<string, unknown>).frmMain_Culc = frmMain_Culc;
-(globalThis as Record<string, unknown>).frmMain_GetDistance = frmMain_GetDistance;
-(globalThis as Record<string, unknown>).frmMain_LayeObjectSelectOne = frmMain_LayeObjectSelectOne;
-(globalThis as Record<string, unknown>).frmMain_Buffer = frmMain_Buffer;
-(globalThis as Record<string, unknown>).openMapFile = openMapFile;
-(globalThis as Record<string, unknown>).frmPrint_DummyObjectGroup = frmPrint_DummyObjectGroup;

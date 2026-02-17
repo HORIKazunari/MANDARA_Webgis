@@ -1,6 +1,8 @@
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /** グリッドコントロール用の内部クラス（外部に移動） */
+import { Generic } from './clsGeneric';
 import type { JsonValue } from './types';
+import { colorRGBA, point, rectangle, size } from './clsAttrData';
 import { enmHorizontalAlignment, enmMatchingMode } from './constants/legacyEnums';
 
 export {};

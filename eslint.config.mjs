@@ -119,6 +119,58 @@ export default tseslint.config(
           name: 'clsGrid',
           message: 'Import clsGrid from clsGrid.ts instead of relying on implicit global clsGrid.',
         },
+        {
+          name: 'clsPrint',
+          message: 'Import clsPrint from clsPrint.ts instead of relying on implicit global clsPrint.',
+        },
+        {
+          name: 'clsColorPicker',
+          message: 'Import clsColorPicker from clsSubWindows.ts instead of relying on implicit global clsColorPicker.',
+        },
+        {
+          name: 'Generic',
+          message: 'Import Generic from clsGeneric.ts instead of relying on implicit global Generic.',
+        },
+        {
+          name: 'CheckedListBox',
+          message: 'Import CheckedListBox from clsGeneric.ts instead of relying on implicit global CheckedListBox.',
+        },
+        {
+          name: 'ListBox',
+          message: 'Import ListBox from clsGeneric.ts instead of relying on implicit global ListBox.',
+        },
+        {
+          name: 'ListViewTable',
+          message: 'Import ListViewTable from clsGeneric.ts instead of relying on implicit global ListViewTable.',
+        },
+        {
+          name: 'latlon',
+          message: 'Import latlon from clsGeneric.ts instead of relying on implicit global latlon.',
+        },
+        {
+          name: 'colorRGBA',
+          message: 'Import colorRGBA from clsAttrData.ts instead of relying on implicit global colorRGBA.',
+        },
+        {
+          name: 'strYMD',
+          message: 'Import strYMD from clsAttrData.ts instead of relying on implicit global strYMD.',
+        },
+        {
+          name: 'size',
+          message: 'Import size from clsAttrData.ts instead of relying on implicit global size.',
+        },
+        {
+          name: 'point',
+          message: 'Import point from clsAttrData.ts instead of relying on implicit global point.',
+        },
+        {
+          name: 'rectangle',
+          message: 'Import rectangle from clsAttrData.ts instead of relying on implicit global rectangle.',
+        },
+        {
+          name: 'latlonbox',
+          message: 'Import latlonbox from clsAttrData.ts instead of relying on implicit global latlonbox.',
+        },
       ],
       
       // Prevent interface/class merge pitfalls

@@ -1,8 +1,28 @@
 ﻿import { Generic, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { appState } from './core/AppState';
 import { clsGrid } from './clsGrid';
+import { clsPrint } from './clsPrint';
 import { clsShapefile } from './shapeFile';
 import { SortingSearch } from './SortingSearch';
+import {
+    frmMain_Buffer,
+    frmMain_AreaPeripheri,
+    frmMain_Culc,
+    frmMain_GetDistance,
+    frmMain_ConditionSettings,
+    frmMainCopyDataSettings,
+    frmMain_SetSeriesMode,
+    frmMain_MarkPosition,
+    graphModeEn_Obi,
+    graphModeOresen_Bou,
+    clsColorChart,
+    clsColorPicker,
+    clsInnerDataSet,
+    clsArrow,
+    clsSelectData,
+    frmMain_LayeObjectSelectOne,
+    openMapFile
+} from './clsSubWindows';
 import { enmAttDataType, enmGraphMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmDataSource,

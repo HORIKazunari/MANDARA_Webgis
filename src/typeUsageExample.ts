@@ -4,6 +4,8 @@
  * globals.d.ts と types.ts の使い分けの実例
  */
 
+import { point, rectangle, size } from './clsAttrData';
+
 // ==================== パターン1: グローバル型の使用 ====================
 // globals.d.ts で定義された型は import 不要
 

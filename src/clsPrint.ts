@@ -6,6 +6,7 @@ import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
 import {
+    colorRGBA,
     enmBarChartFrameAxePattern,
     enmBasePosition,
     enmContourIntervalMode,
@@ -17,6 +18,9 @@ import {
     enmPointOnjectDrawOrder,
     enmGraphMaxSize,
     enmSoloMode_Number,
+    point,
+    rectangle,
+    size,
     Legend2_Atri
 } from './clsAttrData';
 import { SortingSearch } from './SortingSearch';
@@ -4044,7 +4048,5 @@ class clsPrint {
         }
     }
 }
-
-(globalThis as typeof globalThis & Record<string, unknown>).clsPrint = clsPrint;
 
 export { clsPrint, Fringe_Line_Info };
