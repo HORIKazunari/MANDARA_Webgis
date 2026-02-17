@@ -51,6 +51,7 @@ function _logX(data: JsonValue): void {
  */
 function _init(): void {
     const state = appState();
+    const runtimeGlobals = globalThis as typeof globalThis & Record<string, unknown>;
     
     // コンテキストメニュー無効化
     document.body.addEventListener("contextmenu", contextMenuPrevent);
@@ -59,6 +60,9 @@ function _init(): void {
     state.settingData = new Setting_Info();
     state.tky2jgd = TKY2JGDInfo;
     state.tileMapClass = new clsTileMap();
+    runtimeGlobals.clsSettingData = state.settingData;
+    runtimeGlobals.TKY2JGD = state.tky2jgd;
+    runtimeGlobals.tileMapClass = state.tileMapClass;
     
     // フォント設定
     const testFont: string[] = [
@@ -92,6 +96,7 @@ function _init(): void {
         null, true, "printFoot", true, 
         null
     ) as IFrmPrint;
+    runtimeGlobals.Frm_Print = state.frmPrint;
     
     state.frmPrint.picMap = Generic.createNewCanvas(
         state.frmPrint, "mapArea", "", 0, 0, 0, 0, null, 
@@ -155,6 +160,7 @@ function _init(): void {
     state.propertyWindow.copyButton.relativePosition = new point(0, 30);
     state.propertyWindow.fixed = false;
     state.propertyWindow.nextVisible = true;
+    runtimeGlobals.propertyWindow = state.propertyWindow;
 
     const rightDIV: HTMLDivElement = Generic.createNewDiv(
         footer, "", "FTRight", "", 350, 0, 295, 18, 

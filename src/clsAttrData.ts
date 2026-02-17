@@ -12,25 +12,277 @@ type VerticalAlignmentValue = (typeof enmVerticalAlignment)[keyof typeof enmVert
 type PrintMouseModeValue = (typeof enmPrintMouseMode)[keyof typeof enmPrintMouseMode];
 
 
-// size クラスは globals.d.ts で定義済み
+class size {
+    width: number;
+    height: number;
 
+    constructor(width: number = 0, height: number = 0) {
+        this.width = width;
+        this.height = height;
+    }
 
-// point クラスは globals.d.ts で定義済み
-
-// point プロトタイプメソッドは globals.d.ts で定義済み
-
-
-class _point3 {
-    x: number;
-    y: number;
-    z: number;
-
-    constructor(x: number, y: number, z: number) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    Clone(): size {
+        return new size(this.width, this.height);
     }
 }
+
+class point {
+    x: number;
+    y: number;
+    Tag?: string | number;
+
+    constructor(x: number = 0, y: number = 0) {
+        this.x = x;
+        this.y = y;
+    }
+
+    Clone(): point {
+        return new point(this.x, this.y);
+    }
+
+    offset(p_xp: point | number, yp: number = 0): void {
+        if (p_xp instanceof point) {
+            this.x += p_xp.x;
+            this.y += p_xp.y;
+            return;
+        }
+        this.x += p_xp;
+        this.y += yp;
+    }
+
+    toLatlon(): latlon {
+        return new latlon(this.y, this.x);
+    }
+
+    Equals(np: point): boolean {
+        return (this.x === np.x) && (this.y === np.y);
+    }
+}
+
+class point3 extends point {
+    z: number;
+
+    constructor(x: number = 0, y: number = 0, z: number = 0) {
+        super(x, y);
+        this.z = z;
+    }
+
+    Clone(): point3 {
+        return new point3(this.x, this.y, this.z);
+    }
+}
+
+class latlonbox {
+    NorthWest?: latlon;
+    SouthEast?: latlon;
+
+    constructor(nw?: latlon, se?: latlon) {
+        this.NorthWest = nw;
+        this.SouthEast = se;
+    }
+
+    Clone(): latlonbox {
+        return new latlonbox(this.NorthWest?.Clone(), this.SouthEast?.Clone());
+    }
+
+    toRectangle(): rectangle {
+        return new rectangle(this.NorthWest?.lon ?? 0, this.SouthEast?.lon ?? 0, this.SouthEast?.lat ?? 0, this.NorthWest?.lat ?? 0);
+    }
+}
+
+class rectangle {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+
+    constructor(left_point: point | number = 0, right_size: point | size | number = 0, top: number = 0, bottom: number = 0) {
+        if (left_point instanceof point) {
+            const p = left_point;
+            if (right_size instanceof size) {
+                this.left = p.x;
+                this.right = p.x + right_size.width;
+                this.top = p.y;
+                this.bottom = p.y + right_size.height;
+                return;
+            }
+            this.left = p.x;
+            this.right = p.x;
+            this.top = p.y;
+            this.bottom = p.y;
+            return;
+        }
+
+        this.left = left_point;
+        this.right = right_size as number;
+        this.top = top;
+        this.bottom = bottom;
+    }
+
+    Clone(): rectangle {
+        return new rectangle(this.left, this.right, this.top, this.bottom);
+    }
+
+    centerP(): point {
+        return new point((this.right + this.left) / 2, (this.bottom + this.top) / 2);
+    }
+
+    size(): size {
+        return new size(this.right - this.left, this.bottom - this.top);
+    }
+
+    width(): number {
+        return this.right - this.left;
+    }
+
+    height(): number {
+        return this.bottom - this.top;
+    }
+
+    topLeft(): point {
+        return new point(this.left, this.top);
+    }
+
+    topRight(): point {
+        return new point(this.right, this.top);
+    }
+
+    bottomRight(): point {
+        return new point(this.right, this.bottom);
+    }
+
+    bottomLeft(): point {
+        return new point(this.left, this.bottom);
+    }
+
+    contains(P: point): boolean {
+        return (P.x >= this.left) && (P.x <= this.right) && (P.y >= this.top) && (P.y <= this.bottom);
+    }
+
+    offset(xplus: number, yplus: number): void {
+        this.left += xplus;
+        this.right += xplus;
+        this.top += yplus;
+        this.bottom += yplus;
+    }
+
+    inflate(xplus: number, yplus: number): void {
+        this.left -= xplus;
+        this.right += xplus;
+        this.top -= yplus;
+        this.bottom += yplus;
+    }
+
+    Inflate(x: number, y: number): void {
+        this.inflate(x, y);
+    }
+
+    Contains(value1: number | point | rectangle, value2?: number): boolean {
+        if (typeof value1 === 'number' && typeof value2 === 'number') {
+            return this.contains(new point(value1, value2));
+        }
+        if (value1 instanceof point) {
+            return this.contains(value1);
+        }
+        if (value1 instanceof rectangle) {
+            return this.contains(value1.topLeft()) && this.contains(value1.bottomRight());
+        }
+        return false;
+    }
+
+    Offset(value1: number | point, value2?: number): void {
+        if (value1 instanceof point) {
+            this.offset(value1.x, value1.y);
+            return;
+        }
+        this.offset(value1, value2 ?? 0);
+    }
+
+    IntersectsWith(rect: rectangle): boolean {
+        if (this.right < rect.left || rect.right < this.left) return false;
+        if (this.bottom < rect.top || rect.bottom < this.top) return false;
+        return true;
+    }
+
+    Union(rect: rectangle): rectangle {
+        return new rectangle(
+            Math.min(this.left, rect.left),
+            Math.max(this.right, rect.right),
+            Math.min(this.top, rect.top),
+            Math.max(this.bottom, rect.bottom)
+        );
+    }
+
+    Equals(rect: rectangle): boolean {
+        return (rect.left === this.left) && (rect.right === this.right) && (rect.top === this.top) && (rect.bottom === this.bottom);
+    }
+}
+
+class PeripheriDirinfo {
+    Code: number;
+    Dir: number;
+
+    constructor(Code: number, Dir: number) {
+        this.Code = Code;
+        this.Dir = Dir;
+    }
+}
+
+class strYMD {
+    Year: number;
+    Month: number;
+    Day: number;
+
+    constructor(year: number | strYMD = 0, month: number = 0, day: number = 0) {
+        if (year instanceof strYMD) {
+            this.Year = year.Year;
+            this.Month = year.Month;
+            this.Day = year.Day;
+            return;
+        }
+        this.Year = year;
+        this.Month = month;
+        this.Day = day;
+    }
+
+    Clone(): strYMD {
+        return new strYMD(this.Year, this.Month, this.Day);
+    }
+
+    nullFlag(): boolean {
+        return this.Year === 0 && this.Month === 0 && this.Day === 0;
+    }
+
+    Equals(time: strYMD): boolean {
+        return this.Year === time.Year && this.Month === time.Month && this.Day === time.Day;
+    }
+
+    toInputDate(): string {
+        if (this.nullFlag()) {
+            return '';
+        }
+        return `${this.Year.toString().padStart(4, '0')}-${this.Month.toString().padStart(2, '0')}-${this.Day.toString().padStart(2, '0')}`;
+    }
+
+    toString(): string {
+        if (this.nullFlag()) {
+            return '';
+        }
+        return `${this.Year}/${this.Month}/${this.Day}`;
+    }
+
+    toDate(): Date {
+        return new Date(this.Year, this.Month - 1, this.Day);
+    }
+}
+
+(globalThis as typeof globalThis & Record<string, unknown>).size = size;
+(globalThis as typeof globalThis & Record<string, unknown>).point = point;
+(globalThis as typeof globalThis & Record<string, unknown>).point3 = point3;
+(globalThis as typeof globalThis & Record<string, unknown>).rectangle = rectangle;
+(globalThis as typeof globalThis & Record<string, unknown>).latlonbox = latlonbox;
+(globalThis as typeof globalThis & Record<string, unknown>).PeripheriDirinfo = PeripheriDirinfo;
+(globalThis as typeof globalThis & Record<string, unknown>).strYMD = strYMD;
 
 //度分秒構造体
 class strDegreeMinuteSeconde {
@@ -193,7 +445,70 @@ const enmProjection_Info = {
     prjEckert4: 6,//エッケルト第4図法
 }
 // enmZahyo_mode_info はglobals.d.tsで定義済み
-// cstRectangle_Cross は globals.d.ts で定義済み
+const cstRectangle_Cross = {
+    cstOuter: -1,
+    cstCross: 0,
+    cstInner: 1,
+    cstInclusion: 2,
+    cstEqual: 3
+};
+
+const chvValue_on_twoValue = {
+    chvOuter: -1,
+    chvJust: 0,
+    chvIN: 1
+};
+
+class colorRGBA {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+
+    constructor(r: number | number[] = 0, g: number = 0, b: number = 0, a: number = 255) {
+        if (Array.isArray(r)) {
+            this.r = Number(r[0] ?? 0);
+            this.g = Number(r[1] ?? 0);
+            this.b = Number(r[2] ?? 0);
+            this.a = Number(r.length >= 4 ? r[3] : 255);
+            return;
+        }
+        this.r = Number(r);
+        this.g = Number(g);
+        this.b = Number(b);
+        this.a = Number(a);
+    }
+
+    Clone(): colorRGBA {
+        return new colorRGBA([this.r, this.g, this.b, this.a]);
+    }
+
+    toRGB(): string {
+        return `RGB(${this.r},${this.g},${this.b})`;
+    }
+
+    toRGBA(): string {
+        return `RGBA(${this.r},${this.g},${this.b},${this.a / 255})`;
+    }
+
+    toHex(): string {
+        const hex = (n: number): string => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
+        return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}`;
+    }
+
+    Equals(col: colorRGBA): boolean {
+        return (col.r === this.r) && (col.g === this.g) && (col.b === this.b) && (col.a === this.a);
+    }
+
+    getDarkColor(): colorRGBA {
+        const rate = 0.85;
+        return new colorRGBA([this.r * rate, this.g * rate, this.b * rate, this.a]);
+    }
+}
+
+(globalThis as typeof globalThis & Record<string, unknown>).cstRectangle_Cross = cstRectangle_Cross;
+(globalThis as typeof globalThis & Record<string, unknown>).chvValue_on_twoValue = chvValue_on_twoValue;
+(globalThis as typeof globalThis & Record<string, unknown>).colorRGBA = colorRGBA;
 
 class _Cross_Line_Data {
     BeforPoint: point = new point();

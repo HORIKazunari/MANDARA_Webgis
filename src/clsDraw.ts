@@ -1,6 +1,7 @@
 ﻿// JavaScript source code
 import { Generic } from './clsGeneric';
 import { enmEdge_Pattern, enmJoinPattern, enmMarkPrintType, Screen_info } from './clsAttrData';
+import { clsBase } from './clsTime';
 import { enmHorizontalAlignment, enmVerticalAlignment } from './constants/legacyEnums';
 import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
 
@@ -4285,4 +4286,7 @@ class _clsTileMap {
     }
 }
 
-export { clsDraw, clsSpline };
+class clsTileMap extends _clsTileMap {}
+(globalThis as typeof globalThis & Record<string, unknown>).clsTileMap = clsTileMap;
+
+export { clsDraw, clsSpline, clsTileMap };
