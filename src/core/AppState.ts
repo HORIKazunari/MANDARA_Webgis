@@ -18,7 +18,6 @@
  */
 
 import type { /*MapFileInfo,*/ JsonObject, JsonValue } from '../types';
-import type { TKY2JGDInfo_Impl } from '../clsGeneric';
 
 /**
  * スクロールマージン情報
@@ -62,11 +61,6 @@ export class AppState {
      * メインDIV要素
      */
     public divMain!: HTMLDivElement;
-
-    /**
-     * 座標変換情報
-     */
-    public tky2jgd!: TKY2JGDInfo_Impl;
 
     /**
      * タイルマップクラス

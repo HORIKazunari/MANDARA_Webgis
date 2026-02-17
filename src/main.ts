@@ -3,7 +3,6 @@
  * ESモジュール完全対応版
  */
 
-import { TKY2JGDInfo } from './clsGeneric';
 import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { enmZahyo_mode_info } from './constants/legacyEnums';
@@ -59,7 +58,6 @@ function _init(): void {
     
     // 状態の初期化
     state.settingData = new Setting_Info();
-    state.tky2jgd = TKY2JGDInfo;
     state.tileMapClass = new clsTileMap();
     
     // フォント設定
