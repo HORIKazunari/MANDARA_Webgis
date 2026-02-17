@@ -883,13 +883,13 @@ export class spatial {
     //測地系変換 Tokyo97 to ITRF94
     static Tokyo97toITRF94(latlonP: latlon) {
 
-        return TKY2JGD.Tokyo97toITRF94(latlonP);
+        return TKY2JGDInfo.Tokyo97toITRF94(latlonP);
     }
 
     //測地系変換 ITRF94 to Tokyo97
     static ITRF94toTokyo97(latlonP: latlon) {
 
-        return TKY2JGD.ITRF94toTokyo97(latlonP);
+        return TKY2JGDInfo.ITRF94toTokyo97(latlonP);
     }
 
     //扇形の座標を求める
@@ -937,7 +937,7 @@ export class spatial {
                 }
             }
             const Kei = MapZahyo_Info.HeimenTyokkaku_KEI_Number;
-            TKY2JGD.doCalcXy2bl(Ellip12, Kei, oxy.y, oxy.x, y2, x2);
+            TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, oxy.y, oxy.x, y2, x2);
             LatLon.lon = x2 ?? 0;
             LatLon.lat = y2 ?? 0;
         } else {
@@ -950,7 +950,7 @@ export class spatial {
             const inputLatLon = new latlon();
             inputLatLon.lat = LatLon.lat;
             inputLatLon.lon = LatLon.lon;
-            const result = TKY2JGD.Tokyo97toITRF94(inputLatLon);
+            const result = TKY2JGDInfo.Tokyo97toITRF94(inputLatLon);
             LatLon.lon = result.lon;
             LatLon.lat = result.lat;
         }
@@ -973,10 +973,10 @@ export class spatial {
                     //二つとも緯度経度座標で、測地系が違う場合
                     switch (oldMapZahyo.System) {
                         case enmZahyo_System_Info.Zahyo_System_tokyo:
-                            XY2 = P2.toLatlon ? TKY2JGD.Tokyo97toITRF94(P2.toLatlon()) : undefined;
+                            XY2 = P2.toLatlon ? TKY2JGDInfo.Tokyo97toITRF94(P2.toLatlon()) : undefined;
                             break;
                         case enmZahyo_System_Info.Zahyo_System_World:
-                            XY2 = P2.toLatlon ? TKY2JGD.ITRF94toTokyo97(P2.toLatlon()) : undefined;
+                            XY2 = P2.toLatlon ? TKY2JGDInfo.ITRF94toTokyo97(P2.toLatlon()) : undefined;
                             break;
                     }
                     if (!XY2 || typeof (XY2 as {toPoint?: () => point}).toPoint !== "function") {
@@ -997,16 +997,16 @@ export class spatial {
                     }
                     const y2 = { value: 0 };
                     const x2 = { value: 0 };
-                    TKY2JGD.doCalcXy2bl(Ellip12, Kei, P2.y, P2.x, y2, x2);
+                    TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, P2.y, P2.x, y2, x2);
                     XY2 = new latlon(y2.value, x2.value);
                     if (newMapZahyo.System !== oldMapZahyo.System) {
                         //さらに測地系が違う場合
                         switch (oldMapZahyo.System) {
                             case enmZahyo_System_Info.Zahyo_System_tokyo:
-                                XY3 = TKY2JGD.Tokyo97toITRF94(XY2.toLatlon())
+                                XY3 = TKY2JGDInfo.Tokyo97toITRF94(XY2.toLatlon())
                                 break;
                             case enmZahyo_System_Info.Zahyo_System_World:
-                                XY3 = TKY2JGD.ITRF94toTokyo97(XY2.toLatlon())
+                                XY3 = TKY2JGDInfo.ITRF94toTokyo97(XY2.toLatlon())
                                 break;
                         }
                         XY2 = XY3.Clone();
@@ -1028,7 +1028,7 @@ export class spatial {
 
         if (MapZahyo.System === enmZahyo_System_Info.Zahyo_System_tokyo) {
             //日本測地系の場合は変換
-            const xy2 = TKY2JGD.ITRF94toTokyo97(oLatLon);
+            const xy2 = TKY2JGDInfo.ITRF94toTokyo97(oLatLon);
             return xy2;
         } else {
             return oLatLon;

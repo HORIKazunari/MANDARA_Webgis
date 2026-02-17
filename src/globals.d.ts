@@ -1214,11 +1214,6 @@ declare class latlon {
     toPoint(): point;
     Equals(other: latlon): boolean;
 }
-declare const TKY2JGD: {
-    Tokyo97toITRF94: (latlonP: latlon) => latlon;
-    ITRF94toTokyo97: (latlonP: latlon) => latlon;
-    [key: string]: JsonValue;
-}; // kept temporarily; being migrated to ESM import
 // tileMapClass: AppStateで管理（削除済み）
 // preReadMapFile: AppStateで管理（削除済み）
 // scrMargin: AppStateで管理（削除済み）

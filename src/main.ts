@@ -53,7 +53,6 @@ function _logX(data: JsonValue): void {
  */
 function _init(): void {
     const state = appState();
-    const runtimeGlobals = globalThis as typeof globalThis & Record<string, unknown>;
     
     // コンテキストメニュー無効化
     document.body.addEventListener("contextmenu", contextMenuPrevent);
@@ -62,8 +61,6 @@ function _init(): void {
     state.settingData = new Setting_Info();
     state.tky2jgd = TKY2JGDInfo;
     state.tileMapClass = new clsTileMap();
-    runtimeGlobals.TKY2JGD = state.tky2jgd;
-    runtimeGlobals.tileMapClass = state.tileMapClass;
     
     // フォント設定
     const testFont: string[] = [
