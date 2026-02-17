@@ -99,6 +99,14 @@ export default tseslint.config(
           name: 'mousePointingSituations',
           message: 'Define/import mousePointingSituations in module scope; do not rely on implicit global declarations.',
         },
+        {
+          name: 'TKY2JGD',
+          message: 'Use TKY2JGDInfo import from clsGeneric instead of legacy global TKY2JGD.',
+        },
+        {
+          name: 'tileMapClass',
+          message: 'Use appState().tileMapClass instead of implicit global tileMapClass.',
+        },
       ],
       
       // Prevent interface/class merge pitfalls
