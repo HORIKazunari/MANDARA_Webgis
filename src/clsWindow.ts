@@ -2,7 +2,7 @@
 import { appState } from './core/AppState';
 import { clsShapefile } from './shapeFile';
 import { SortingSearch } from './SortingSearch';
-import { enmAttDataType, enmGraphMode, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmGraphMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmDataSource,
     enmSoloMode_Number,
@@ -13,7 +13,6 @@ import {
     enmPrint_Enable,
     enmPaintColorSettingModeInfo,
     enmMarkBlockArrange,
-    enmKenCodeObjectstructure,
     enmZahyo_System_Info
 } from './clsAttrData';
 import type { 
@@ -71,7 +70,7 @@ export class strLayerInfo {
 }
 
 /**設定画面（左側）を保存 */
-// settingModeWindow は globals.d.ts で定義済み
+// settingModeWindow は AppState で管理
 const picClassBoxHeight = 23;
 const picClassBoxWidth = 40;
 // const picClassBoxLeft = 10;
@@ -86,6 +85,10 @@ const state = appState();
 let man_Data=enmDataSource.NoData;
 
 export function setting(locSearch: string) {
+    const setAttrData = (newAttrData: IAttrData): void => {
+        state.attrData = newAttrData;
+    };
+
     const totalh = 680;
     let overlayListView: ListViewTable | undefined;//重ね合わせデータセットりリストビュー
     let seriesListView: ListViewTable | undefined;//連続表示データセットりリストビュー
@@ -363,9 +366,9 @@ export function setting(locSearch: string) {
     function multiModeClick(this: ExtendedHTMLElement): void {
         clearModeIcon();
         let selDiv: HTMLElement | undefined = undefined;
-        attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const al=attrData.LayerData[Layernum];
+        state.attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.DataViewMode;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const al=state.attrData.LayerData[Layernum];
         switch (this.id) {
             case "divGraph":
                 al.Print_Mode_Layer=enmLayerMode_Number.GraphMode;
@@ -379,7 +382,7 @@ export function setting(locSearch: string) {
         if (!selDiv) { return; }
         selDiv.selected = true;
         selDiv.style.backgroundColor = '#ff6464';
-        settingModeWindow?.setTitle?.(selDiv.tooltip ?? "");
+        state.settingModeWindow?.setTitle?.(selDiv.tooltip ?? "");
         rightSettingWindowControlVisibilitySet();
         Check_Print_err();
         switch (this.id) {
@@ -397,11 +400,11 @@ export function setting(locSearch: string) {
         let selDiv: HTMLElement | undefined = undefined;
         switch (this.id) {
             case "divOverlay":
-                attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.OverLayMode;
+                state.attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.OverLayMode;
                 selDiv=divOverlay;
                 break;
             case "divSeries":
-                attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.SeriesMode;
+                state.attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.SeriesMode;
                 doc.getElementById("btnSeriesSet").disabled=true;
                 selDiv=divSeries;
                 break;
@@ -410,7 +413,7 @@ export function setting(locSearch: string) {
         if (!selDiv) { return; }
         selDiv.selected = true;
         selDiv.style.backgroundColor = '#ff6464';
-        settingModeWindow?.setTitle?.(selDiv.tooltip ?? "");
+        state.settingModeWindow?.setTitle?.(selDiv.tooltip ?? "");
         rightSettingWindowControlVisibilitySet();
         Check_Print_err();
         switch (this.id) {
@@ -424,10 +427,10 @@ export function setting(locSearch: string) {
     }
     //モードのdivをクリック
     function modeClick(this: ExtendedHTMLElement): void {
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-        attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.DataViewMode
-        attrData.LayerData[Layernum].Print_Mode_Layer=enmLayerMode_Number.SoloMode;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+        state.attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.DataViewMode
+        state.attrData.LayerData[Layernum].Print_Mode_Layer=enmLayerMode_Number.SoloMode;
         let mode;
         switch (this.id) {
             case "divClassPaint":
@@ -458,7 +461,7 @@ export function setting(locSearch: string) {
                 mode = enmSoloMode_Number.MarkTurnMode;
                 break;
         }
-        attrData.setSoloMode(Layernum, DataNum, mode);
+        state.attrData.setSoloMode(Layernum, DataNum, mode);
         setDataMode();
         setSettingSoloModeWindow();
     }
@@ -468,10 +471,10 @@ export function setting(locSearch: string) {
 
         openShapeFile(okButton);
         function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]) {
-            attrData = new clsAttrData();
-            attrData.SetMapViewerData(mapdata, layerdata, false);
-            attrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
-            man_Data=attrData.TotalData.LV1.DataSourceType
+            setAttrData(new clsAttrData());
+            state.attrData.SetMapViewerData(mapdata, layerdata, false);
+            state.attrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
+            man_Data=state.attrData.TotalData.LV1.DataSourceType
             initAfterGetData(false);
         }
     }
@@ -481,23 +484,23 @@ export function setting(locSearch: string) {
 
         readData(okButton);
         function okButton(mapdata: clsMapdata, attrText: string, filename: string, ext: string) {
-            attrData = new clsAttrData();
-            const retv = attrData.OpenNewMandaraFile([mapdata], attrText, filename, ext);
+            setAttrData(new clsAttrData());
+            const retv = state.attrData.OpenNewMandaraFile([mapdata], attrText, filename, ext);
             if(retv.emes !== "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
             if(retv.ok === false) {
                 Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。");
-                Frm_Print?.setVisibility?.(false);
-                propertyWindow.nextVisible = true;
-                propertyWindow.setVisibility?.(false);
+                state.frmPrint?.setVisibility?.(false);
+                state.propertyWindow.nextVisible = true;
+                state.propertyWindow.setVisibility?.(false);
                 divpanel.style.visibility = 'hidden';
-                settingModeWindow?.setVisibility?.(false);
+                state.settingModeWindow?.setVisibility?.(false);
                 man_Data = enmDataSource.NoData;
         
             } else {
                 let non_clearf = false;
-                man_Data = attrData.TotalData.LV1.DataSourceType;
+                man_Data = state.attrData.TotalData.LV1.DataSourceType;
                 if((man_Data === enmDataSource.MDRJ) ||((man_Data === enmDataSource.MDRMJ) )){
                     non_clearf = true;
                 }
@@ -522,10 +525,10 @@ export function setting(locSearch: string) {
             if(retv.ok === false) {
                 Generic.alert(undefined,"MANDARAデータとして読み込めませんでした。");
             } else {
-                const retV = attrData.ADD_AttrData?.(newAttrData as JsonObject, true);
+                const retV = state.attrData.ADD_AttrData?.(newAttrData as JsonObject, true);
                 if(retV.ok===true){
                     Init_Screen_Set(true);
-                    attrData.Set_LayerName_to?.(selectLayer,attrData.TotalData.LV1.SelectedLayer);
+                    state.attrData.Set_LayerName_to?.(selectLayer,state.attrData.TotalData.LV1.SelectedLayer);
                 }
             }
         }
@@ -538,10 +541,10 @@ export function setting(locSearch: string) {
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
             newAttrData.TotalData.LV1.DataSourceType = enmDataSource.Shapefile;
             
-            const retV = attrData.ADD_AttrData(newAttrData, true);
+            const retV = state.attrData.ADD_AttrData(newAttrData, true);
             if (retV.ok === true) {
                 Init_Screen_Set(true);
-                attrData.Set_LayerName_to(selectLayer, attrData.TotalData.LV1.SelectedLayer);
+                state.attrData.Set_LayerName_to(selectLayer, state.attrData.TotalData.LV1.SelectedLayer);
             }
         }
     } 
@@ -553,10 +556,10 @@ export function setting(locSearch: string) {
             const newAttrData = new clsAttrData();
             newAttrData.SetMapViewerData(mapdata, layerdata, false);
 
-            const retV = attrData.ADD_AttrData(newAttrData, true);
+            const retV = state.attrData.ADD_AttrData(newAttrData, true);
             if (retV.ok === true) {
                 Init_Screen_Set(true);
-                attrData.Set_LayerName_to(selectLayer, attrData.TotalData.LV1.SelectedLayer);
+                state.attrData.Set_LayerName_to(selectLayer, state.attrData.TotalData.LV1.SelectedLayer);
             }
         }
     }
@@ -569,15 +572,15 @@ export function setting(locSearch: string) {
         data[0][0] = "項目";
         data[1][0] = "値";
         data[0][1] = "地図ファイル数";
-        data[1][1] = String(attrData.MapData.GetNumOfMapFile());
+        data[1][1] = String(state.attrData.MapData.GetNumOfMapFile());
         data[0][2] = "地図ファイル";
-        const mapFileNames = attrData.MapData.GetMapFileName() as (string | number)[];
+        const mapFileNames = state.attrData.MapData.GetMapFileName() as (string | number)[];
         data[1][2] = mapFileNames.map((name) => String(name)).join(",");
         data[0][3] = "レイヤ数";
         data[1][3] = layn.toString();
         let n=4;
         for (let i = 0; i <layn ; i++) {
-            const lay = attrData.LayerData[i];
+            const lay = state.attrData.LayerData[i];
             data[0][n + 0] = " ";
             data[1][n + 0] = " ";
             data[0][n + 1] = "レイヤ名";
@@ -603,10 +606,10 @@ export function setting(locSearch: string) {
         Generic.createNewSpan(backDiv,"データ","","",15,40,"",undefined);
         Generic.createNewSpan(backDiv,"データのコメント","","",330,40,"",undefined);
         Generic.createNewGrid(backDiv,"","","grayFrame","",data,15,60,300,250,100,"","font-size:13px",1,"background-color:#aaffaa;","","","");
-        const txComment=Generic.createNewTextarea(backDiv,attrData.TotalData.LV1.Comment,"",330,60,20,50,"resize:none;width:300px;height:250px");
+        const txComment=Generic.createNewTextarea(backDiv,state.attrData.TotalData.LV1.Comment,"",330,60,20,50,"resize:none;width:300px;height:250px");
         function buttonOK(){
             Generic.clear_backDiv();
-            attrData.TotalData.LV1.Comment=txComment.value;
+            state.attrData.TotalData.LV1.Comment=txComment.value;
         }
 
     }
@@ -614,15 +617,15 @@ export function setting(locSearch: string) {
     /**非表示オブジェクトの削除 */
     function mnuDeleteInvisibleObject() {
         const ObjLive: boolean[][] = [];
-        const LayMax = attrData.TotalData.LV1.Lay_Maxn;
+        const LayMax = state.attrData.TotalData.LV1.Lay_Maxn;
         let delN = 0;
         const DelNum = new Array(LayMax).fill(0);
         for (let i = 0; i < LayMax; i++) {
-            const objn = attrData.Get_ObjectNum(i);
+            const objn = state.attrData.Get_ObjectNum(i);
             const obn = new Array(objn).fill(false);
-            if (attrData.LayerData[i].atrObject.NumOfSyntheticObj === 0) {
+            if (state.attrData.LayerData[i].atrObject.NumOfSyntheticObj === 0) {
                 for (let j = 0; j < objn; j++) {
-                    if (attrData.Check_Condition(i, j) === false) {
+                    if (state.attrData.Check_Condition(i, j) === false) {
                         obn[j] = true;
                         DelNum[i]++;
                         delN++;
@@ -630,7 +633,7 @@ export function setting(locSearch: string) {
                 }
             }
             if (objn === DelNum[i]) {
-                Generic.alert(undefined, attrData.LayerData[i].Name + "は全てのオブジェクトが非表示なので、削除できません。");
+                Generic.alert(undefined, state.attrData.LayerData[i].Name + "は全てのオブジェクトが非表示なので、削除できません。");
                 return;
             }
             ObjLive.push(obn);
@@ -640,9 +643,9 @@ export function setting(locSearch: string) {
             Generic.alert(undefined, "非表示オブジェクトはありません。");
         } else {
             Generic.confirm(undefined, "非表示の " + delN + " オブジェクトを削除します。", function () {
-                attrData.DeleteObjects(DelNum, ObjLive);
-                attrData.Check_Vector_Object();
-                attrData.PrtObjectSpatialIndex();
+                state.attrData.DeleteObjects(DelNum, ObjLive);
+                state.attrData.Check_Vector_Object();
+                state.attrData.PrtObjectSpatialIndex();
                 setSettingSoloModeWindow();
                 setFrequencyLabel();
             }, undefined);
@@ -656,9 +659,8 @@ export function setting(locSearch: string) {
         })
         function buttonOK(newAttr: clsAttrData) {
             man_Data=enmDataSource.DataEdit;
-            settingModeWindow?.setVisibility?.(true);
-            attrData = new clsAttrData();
-            attrData = newAttr;
+            state.settingModeWindow?.setVisibility?.(true);
+            setAttrData(newAttr);
             initAfterGetData(false);
         }
 
@@ -668,8 +670,7 @@ export function setting(locSearch: string) {
     function mnuPropertyEdit(){
         clsGrid(false,buttonOK);
         function buttonOK(newAttr: clsAttrData){
-            attrData = new clsAttrData();
-            attrData=newAttr;
+            setAttrData(newAttr);
             Init_Screen_Set(true);
             initFirtScreen();
         }
@@ -677,19 +678,19 @@ export function setting(locSearch: string) {
 
     /**空間検索メニュー */
     function mnuSpatialSearch(/*e: MouseEvent*/){
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const oldData = attrData.LayerData[Layernum].atrData.Count;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const oldData = state.attrData.LayerData[Layernum].atrData.Count;
         frmMain_Buffer(function (e: MouseEvent) {
-            const newData = attrData.LayerData[Layernum].atrData.Count;
+            const newData = state.attrData.LayerData[Layernum].atrData.Count;
             const lst = [];
             for (let i = oldData; i < newData; i++) {
-                lst.push({ value: oldData, text: attrData.Get_DataTitle(Layernum, i, true) });
+                lst.push({ value: oldData, text: state.attrData.Get_DataTitle(Layernum, i, true) });
             }
             selectDataItem?.addSelectList?.(lst, undefined, false, true);
             Generic.clear_backDiv();
             Generic.alert(new point(e.clientX, e.clientY), "空間検索が終了しました。");
-            if (attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
-                if (attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
+            if (state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
+                if (state.attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
                     if (selectDataItem) selectDataItem.selectedIndex = oldData;
                     changeDataItem(0, oldData);
                 }
@@ -701,11 +702,11 @@ export function setting(locSearch: string) {
         if (man_Data !== enmDataSource.NoData) {
             Generic.confirm(undefined, "現在のデータは破棄されます。よろしいですか？", function(){
                 man_Data = enmDataSource.NoData;
-                Frm_Print?.setVisibility?.(false);
-                propertyWindow.nextVisible = true;
-                propertyWindow.setVisibility?.(false);
+                state.frmPrint?.setVisibility?.(false);
+                state.propertyWindow.nextVisible = true;
+                state.propertyWindow.setVisibility?.(false);
                 divpanel.style.visibility = 'hidden';
-                settingModeWindow?.setVisibility?.(false);
+                state.settingModeWindow?.setVisibility?.(false);
                 okCall ();
             },undefined);
         }else{
@@ -715,13 +716,13 @@ export function setting(locSearch: string) {
 
     /**面積・周長取得メニュー */
     function mnuAreaPeripheri(e: MouseEvent) {
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const shape = attrData.LayerData[Layernum].Shape;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const shape = state.attrData.LayerData[Layernum].Shape;
         if ((shape === enmShape.PointShape) || (shape === enmShape.NotDeffinition)) {
             Generic.alert(new point(e.clientX, e.clientY), "線または面形状のレイヤでないと、この機能は使えません。");
             return;
         }
-        if (attrData.LayerData[Layernum].MapFileData.Map.Detail.DistanceMeasurable === false) {
+        if (state.attrData.LayerData[Layernum].MapFileData.Map.Detail.DistanceMeasurable === false) {
             Generic.alert(new point(e.clientX, e.clientY), "使用する地図ファイルで面積・距離測定はできない設定になっています。");
             return;
         }
@@ -739,12 +740,12 @@ export function setting(locSearch: string) {
     }
 
     function addNewDataItem(e: MouseEvent){
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const newN = attrData.Get_DataNum(Layernum);
-        selectDataItem?.addSelectList?.([{ value: newN - 1, text: attrData.Get_DataTitle(Layernum, newN - 1, true) }], undefined, false, true);
-        Generic.alert(new point(e.clientX, e.clientY), "データ項目：" + attrData.Get_DataTitle(Layernum, newN - 1, false) + " を取得しました。");
-        if (attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
-            if (attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const newN = state.attrData.Get_DataNum(Layernum);
+        selectDataItem?.addSelectList?.([{ value: newN - 1, text: state.attrData.Get_DataTitle(Layernum, newN - 1, true) }], undefined, false, true);
+        Generic.alert(new point(e.clientX, e.clientY), "データ項目：" + state.attrData.Get_DataTitle(Layernum, newN - 1, false) + " を取得しました。");
+        if (state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
+            if (state.attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
                 if (selectDataItem) selectDataItem.selectedIndex = newN - 1;
                 changeDataItem(0, newN - 1);
             }
@@ -754,20 +755,20 @@ export function setting(locSearch: string) {
 
     /**距離測定メニュー */
     function mnuMeasureDistance(e: MouseEvent){
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        if (attrData.LayerData[Layernum].MapFileData.Map.Detail.DistanceMeasurable === false) {
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        if (state.attrData.LayerData[Layernum].MapFileData.Map.Detail.DistanceMeasurable === false) {
             Generic.alert(new point(e.clientX, e.clientY), "使用する地図ファイルで面積・距離測定はできない設定になっています。");
             return;
         }
-        const  oldN = attrData.Get_DataNum(Layernum);
+        const  oldN = state.attrData.Get_DataNum(Layernum);
         frmMain_GetDistance(function (e: MouseEvent) {
             Generic.alert(new point(e.clientX, e.clientY), "距離を取得しました。");
-            const  newN = attrData.Get_DataNum(Layernum);
+            const  newN = state.attrData.Get_DataNum(Layernum);
             for(let i=oldN;i<newN;i++){
-                    selectDataItem?.addSelectList?.([{ value: i, text: attrData.Get_DataTitle(Layernum, i, true) }], undefined, false, true);
+                    selectDataItem?.addSelectList?.([{ value: i, text: state.attrData.Get_DataTitle(Layernum, i, true) }], undefined, false, true);
             }
-            if (attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
-                if (attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
+            if (state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
+                if (state.attrData.LayerData[Layernum].Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
                         if (selectDataItem) selectDataItem.selectedIndex = oldN;
                     changeDataItem(0, oldN);
                 }
@@ -794,17 +795,17 @@ export function setting(locSearch: string) {
     /**連続表示モードにまとめて設定 */
     function mnuSetSeriesMode() {
         frmMain_SetSeriesMode(function (selIndex: number) {
-            attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.SeriesMode;
-            attrData.TotalData.TotalMode.Series.SelectedIndex = selIndex;
+            state.attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.SeriesMode;
+            state.attrData.TotalData.TotalMode.Series.SelectedIndex = selIndex;
             clearModeIcon();
             divSeries.selected = true;
             divSeries.style.backgroundColor = '#ff6464';
-            settingModeWindow?.setTitle?.(divSeries.tooltip ?? "");
+            state.settingModeWindow?.setTitle?.(divSeries.tooltip ?? "");
             rightSettingWindowControlVisibilitySet();
             setSettingSeriesModeWindow();
-            Frm_Print?.setVisibility?.(false);
-            propertyWindow.nextVisible = (propertyWindow.getVisibility?.() === true);
-            propertyWindow.setVisibility?.(false);
+            state.frmPrint?.setVisibility?.(false);
+            state.propertyWindow.nextVisible = (state.propertyWindow.getVisibility?.() === true);
+            state.propertyWindow.setVisibility?.(false);
         })
 
     }
@@ -818,23 +819,23 @@ export function setting(locSearch: string) {
                 case 5: {
                     const Data_Val_STRX = [];
                     const Data_Val_STRY = [];
-                    const LayerNum = attrData.TotalData.LV1.SelectedLayer;
-                    const Objn = attrData.Get_ObjectNum(LayerNum);
-                    const newN = attrData.Get_DataNum(LayerNum);
+                    const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+                    const Objn = state.attrData.Get_ObjectNum(LayerNum);
+                    const newN = state.attrData.Get_DataNum(LayerNum);
                     for (let i = 0; i < Objn; i++) {
                         let P;
                         switch (mode) {
                             case 0:
-                                P = attrData.Get_CenterP(LayerNum, i);
+                                P = state.attrData.Get_CenterP(LayerNum, i);
                                 break;
                             case 1:
-                                P = attrData.LayerData[LayerNum].atrObject.atrObjectData[i].Symbol;
+                                P = state.attrData.LayerData[LayerNum].atrObject.atrObjectData[i].Symbol;
                                 break;
                             case 5:
-                                P = attrData.LayerData[LayerNum].atrObject.atrObjectData[i].Label;
+                                P = state.attrData.LayerData[LayerNum].atrObject.atrObjectData[i].Label;
                                 break;
                         }    
-                        const P2 = spatial.Get_Reverse_XY(P, attrData.TotalData.ViewStyle.Zahyo);
+                        const P2 = spatial.Get_Reverse_XY(P, state.attrData.TotalData.ViewStyle.Zahyo);
                         Data_Val_STRX[i] = P2.x;
                         Data_Val_STRY[i] = P2.y;
                     }
@@ -851,7 +852,7 @@ export function setting(locSearch: string) {
                             break;
                     }   
                     let TTL = "";
-                    switch (attrData.TotalData.ViewStyle.Zahyo.Mode) {
+                    switch (state.attrData.TotalData.ViewStyle.Zahyo.Mode) {
                         case enmZahyo_mode_info.Zahyo_No_Mode:
                             TTL = title + "Ｘ";
                             break;
@@ -862,9 +863,9 @@ export function setting(locSearch: string) {
                             TTL = title + "Ｙ";
                             break;
                     }
-                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRX, false);
+                    state.attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRX, false);
 
-                    switch (attrData.TotalData.ViewStyle.Zahyo.Mode) {
+                    switch (state.attrData.TotalData.ViewStyle.Zahyo.Mode) {
                         case enmZahyo_mode_info.Zahyo_No_Mode:
                             TTL = title + "Ｙ";
                             break;
@@ -875,10 +876,10 @@ export function setting(locSearch: string) {
                             TTL = title + "Ｘ";
                             break;
                     }
-                    attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRY, false);
+                    state.attrData.Add_One_Data_Value(LayerNum, TTL, "", "", Data_Val_STRY, false);
                     selectDataItem?.addSelectList?.([
-                        { value: newN, text: attrData.Get_DataTitle(LayerNum, newN, true) },
-                        { value: newN + 1, text: attrData.Get_DataTitle(LayerNum, newN + 1, true) }
+                        { value: newN, text: state.attrData.Get_DataTitle(LayerNum, newN, true) },
+                        { value: newN + 1, text: state.attrData.Get_DataTitle(LayerNum, newN + 1, true) }
                     ], undefined, false, true);
                     Generic.alert(undefined, title + "を取得しました。");
                     if (selectDataItem) {
@@ -919,7 +920,7 @@ export function setting(locSearch: string) {
 
     //属性データ保存
     function menuSaveData(){
-        switch(attrData.TotalData.LV1.DataSourceType){
+        switch(state.attrData.TotalData.LV1.DataSourceType){
             case enmDataSource.MDRMJ:
                 Generic.alert(undefined,"地図ファイル付属形式で保存して下さい。");
                 return;
@@ -929,19 +930,19 @@ export function setting(locSearch: string) {
                 return;
                 break;
         }
-        let fname=Generic.getFilenameWithoutExtension(attrData.TotalData.LV1.FileName)+".mdrj";
+        let fname=Generic.getFilenameWithoutExtension(state.attrData.TotalData.LV1.FileName)+".mdrj";
         Generic.prompt(undefined,"属性データファイル名",fname,function(v: string){
             fname=Generic.getFilenameWithoutExtension(v)+".mdrj";
-            attrData.saveAsMDRJ(fname,false);
+            state.attrData.saveAsMDRJ(fname,false);
         })
     }
 
     /**地図ファイル付属形式 */
     function menuSaveMDRMJData(){
-        let fname=Generic.getFilenameWithoutExtension(attrData.TotalData.LV1.FileName)+".mdrmj";
+        let fname=Generic.getFilenameWithoutExtension(state.attrData.TotalData.LV1.FileName)+".mdrmj";
         Generic.prompt(undefined,"地図データ付属形式属性データファイル名",fname,function(v: string){
             fname=Generic.getFilenameWithoutExtension(v)+".mdrmj";
-            attrData.saveAsMDRJ(fname,true);
+            state.attrData.saveAsMDRJ(fname,true);
         })
     }
 
@@ -949,25 +950,25 @@ export function setting(locSearch: string) {
     function mnuMapViewer(): void {
         mapViewer(okButton);
         function okButton(mapdata: clsMapdata, layerdata: strLayerInfo[]): void {
-            attrData = new clsAttrData();
-            attrData.SetMapViewerData(mapdata, layerdata, false);
-            attrData.TotalData.LV1.DataSourceType = enmDataSource.Viwer;
-            man_Data=attrData.TotalData.LV1.DataSourceType
+            setAttrData(new clsAttrData());
+            state.attrData.SetMapViewerData(mapdata, layerdata, false);
+            state.attrData.TotalData.LV1.DataSourceType = enmDataSource.Viwer;
+            man_Data=state.attrData.TotalData.LV1.DataSourceType
             initAfterGetData(false);
         }
     }
 
     function SetODModeOriginObject() {
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const ldd = attrData.nowDataSolo().ClassODMD;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const ldd = state.attrData.nowDataSolo().ClassODMD;
         let tx = "";
         if (ldd.o_Layer !== Layernum) {
-            tx += "レイヤ:" + attrData.LayerData[ldd.o_Layer].Name + '\n';
+            tx += "レイヤ:" + state.attrData.LayerData[ldd.o_Layer].Name + '\n';
         }
         if (ldd.Dummy_ObjectFlag === false) {
-            tx += attrData.LayerData[ldd.o_Layer].atrObject.atrObjectData[ldd.O_object].Name;
+            tx += state.attrData.LayerData[ldd.o_Layer].atrObject.atrObjectData[ldd.O_object].Name;
         } else {
-            tx += attrData.LayerData[ldd.o_Layer].Dummy[ldd.O_object].Name;
+            tx += state.attrData.LayerData[ldd.o_Layer].Dummy[ldd.O_object].Name;
         }
         doc.getElementById("ODOriginObjectDiv").innerHTML = tx;
     }
@@ -975,17 +976,17 @@ export function setting(locSearch: string) {
     /**重ね合わせセットボタン */
     function overlaySet(e: MouseEvent){
 
-        const retV=attrData.Get_PrintError();
+        const retV=state.attrData.Get_PrintError();
         if(retV.Print_Enable === enmPrint_Enable.UnPrintable ){
             Generic.alert(new point(e.clientX,e.clientY),retV.message);
             return;
         }
         
-        let OverLayDataSetNum = attrData.TotalData.TotalMode.OverLay.SelectedIndex;
-        const ovdn = attrData.TotalData.TotalMode.OverLay.DataSet.length;
+        let OverLayDataSetNum = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex;
+        const ovdn = state.attrData.TotalData.TotalMode.OverLay.DataSet.length;
         const ovttl: string[] = [];
         for (let i = 0; i < ovdn; i++) {
-            ovttl[i] =attrData.TotalData.TotalMode.OverLay.DataSet[i].title;
+            ovttl[i] =state.attrData.TotalData.TotalMode.OverLay.DataSet[i].title;
             if(ovttl[i] === "") {
                 ovttl[i] = "重ね合わせデータセット" + (i + 1).toString();
             }
@@ -1001,8 +1002,8 @@ export function setting(locSearch: string) {
         }
 
         function setOverlay() {
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const al = attrData.LayerData[Layernum];
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const al = state.attrData.LayerData[Layernum];
             const DataNum = al.atrData.SelectedIndex;
             const ad = al.atrData.Data[DataNum];
             const MDLayer = al.Print_Mode_Layer;
@@ -1020,7 +1021,7 @@ export function setting(locSearch: string) {
                     MultiDataSetIndex = al.LayerModeViewSettings.LabelMode.SelectedIndex;
                     break;
             }
-            const DataSet = attrData.TotalData.TotalMode.OverLay.DataSet[OverLayDataSetNum];
+            const DataSet = state.attrData.TotalData.TotalMode.OverLay.DataSet[OverLayDataSetNum];
             const Num = DataSet.DataItem.length;
             let Index = Num;
             for (let i = 0; i < Num; i++) {
@@ -1034,7 +1035,7 @@ export function setting(locSearch: string) {
                     case enmLayerMode_Number.GraphMode: {
                         if((di.Layer === Layernum)&&(di.Print_Mode_Layer === enmLayerMode_Number.GraphMode)) {
                             const PresentGraphMode = al.LayerModeViewSettings.GraphMode.DataSet[MultiDataSetIndex].GraphMode;
-                            const StackedGraphMode = attrData.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.DataNumber].GraphMode;
+                            const StackedGraphMode = state.attrData.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.DataNumber].GraphMode;
                             if(di.DataNumber === MultiDataSetIndex) {
                                 Index = -2;
                                 i = Num;
@@ -1120,10 +1121,10 @@ export function setting(locSearch: string) {
                 } else {
                     DataSet.DataItem[Index] = d as unknown as IOverLayDataItemElement;
                 }
-                attrData.Sort_OverLay_Data(OverLayDataSetNum);
+                state.attrData.Sort_OverLay_Data(OverLayDataSetNum);
                 Generic.alert(new point(e.clientX, e.clientY),"「" + ovttl[OverLayDataSetNum] + "」にセットしました。");
-                if(OverLayDataSetNum !== attrData.TotalData.TotalMode.OverLay.SelectedIndex) {
-                    attrData.TotalData.TotalMode.OverLay.SelectedIndex = OverLayDataSetNum;
+                if(OverLayDataSetNum !== state.attrData.TotalData.TotalMode.OverLay.SelectedIndex) {
+                    state.attrData.TotalData.TotalMode.OverLay.SelectedIndex = OverLayDataSetNum;
                 }
             }
         }
@@ -1132,13 +1133,13 @@ export function setting(locSearch: string) {
     /**連続表示セットボタン */
     function seriesSet(e: MouseEvent) {
 
-        const retV=attrData.Get_PrintError();
+        const retV=state.attrData.Get_PrintError();
         if(retV.Print_Enable === enmPrint_Enable.UnPrintable ){
             Generic.alert(new point(e.clientX,e.clientY),retV.message);
             return;
         }
 
-        const ats = attrData.TotalData.TotalMode.Series;
+        const ats = state.attrData.TotalData.TotalMode.Series;
         const sedn = ats.DataSet.length;
         const ttl: string[] = [];
         for (let i = 0; i < sedn; i++) {
@@ -1157,17 +1158,17 @@ export function setting(locSearch: string) {
         }
 
         function setSeries(DataSetNum: number) {
-            const ats = attrData.TotalData.TotalMode.Series;
+            const ats = state.attrData.TotalData.TotalMode.Series;
             const atsd = ats.DataSet[DataSetNum];
             let Layernum;
             let DataNum;
             let ModeData;
             let Print_Mode_Layer;
-            const Print_Mode_Total = attrData.TotalData.LV1.Print_Mode_Total;
+            const Print_Mode_Total = state.attrData.TotalData.LV1.Print_Mode_Total;
             switch (Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
-                    Layernum = attrData.TotalData.LV1.SelectedLayer;
-                    const al = attrData.LayerData[Layernum];
+                    Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                    const al = state.attrData.LayerData[Layernum];
                     Print_Mode_Layer = al.Print_Mode_Layer
                     switch (Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode:
@@ -1186,7 +1187,7 @@ export function setting(locSearch: string) {
                     break;
                 }
                 case enmTotalMode_Number.OverLayMode:
-                    DataNum = attrData.TotalData.TotalMode.OverLay.SelectedIndex
+                    DataNum = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex
                     break;
             }
             atsd.AddData(Layernum, DataNum, Print_Mode_Total, Print_Mode_Layer, ModeData);
@@ -1199,26 +1200,26 @@ export function setting(locSearch: string) {
 
     //データ値表示
     function showObjectData() {
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-        const laydata = attrData.LayerData[Layernum];
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+        const laydata = state.attrData.LayerData[Layernum];
         const data = Generic.Array2Dimension(3, laydata.atrObject.ObjectNum+1);
         data[0][0] = "";
         data[1][0] = "オブジェクト名";
-        data[2][0] = "値"+attrData.Get_DataUnit_With_Kakko(Layernum, DataNum);
+        data[2][0] = "値"+state.attrData.Get_DataUnit_With_Kakko(Layernum, DataNum);
         for (let i = 0; i < laydata.atrObject.ObjectNum; i++) {
             data[0][i+1] = i+1;
-            data[1][i+1] = attrData.Get_KenObjName(Layernum, i);
-            data[2][i+1] = attrData.Get_Data_Value(Layernum, DataNum, i, attrData.TotalData.ViewStyle.Missing_Data.Text);
+            data[1][i+1] = state.attrData.Get_KenObjName(Layernum, i);
+            data[2][i+1] = state.attrData.Get_Data_Value(Layernum, DataNum, i, state.attrData.TotalData.ViewStyle.Missing_Data.Text);
         }
-        Generic.createMsgTableBox(attrData.Get_DataTitle(Layernum, DataNum,false), data as (string | number)[][],300,500,true);
+        Generic.createMsgTableBox(state.attrData.Get_DataTitle(Layernum, DataNum,false), data as (string | number)[][],300,500,true);
     }
 
     //統計値表示
     function showStatistics() {
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-        const laydata = attrData.LayerData[Layernum];
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+        const laydata = state.attrData.LayerData[Layernum];
         const ddata = laydata.atrData.Data[DataNum];
         let txt = "レイヤ：" + laydata.Name + "\n"
             + "データ項目：" + ddata.Title + "\n"
@@ -1229,7 +1230,7 @@ export function setting(locSearch: string) {
                 + "最小値：" + ddata.Statistics.Min + '\n'
                 + "合計値：" + ddata.Statistics.Sum + '\n'
                 + "平均値：" + ddata.Statistics.Ave + '\n'
-                + "中央値：" + attrData.Get_MedianValue(Layernum, DataNum) + '\n'
+                + "中央値：" + state.attrData.Get_MedianValue(Layernum, DataNum) + '\n'
                 + "標準偏差：" + ddata.Statistics.STD + '\n'
                 + "分散：" + (ddata.Statistics.STD ** 2) + '\n';
         }
@@ -1241,15 +1242,15 @@ export function setting(locSearch: string) {
     //レイヤの変更
     function changeLayer(obj: HTMLSelectElement, sel: number | number[], /*v: string = ""*/) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
-        attrData.TotalData.LV1.SelectedLayer = selNum;
+        state.attrData.TotalData.LV1.SelectedLayer = selNum;
         setDataItemList();
     }
 
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
     function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /* v: string | number = "" */) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
-        const LayerNum = attrData.TotalData.LV1.SelectedLayer;
-        attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
+        const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+        state.attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
         for (const k in enmSoloMode_Number) {
             const n = (enmSoloMode_Number as Record<string, number>)[k];
             SetPicPnlSoloDataEnabled(n, LayerNum, selNum);
@@ -1264,9 +1265,9 @@ export function setting(locSearch: string) {
     function initFirtScreen() {
         firstPanelAbout?.setVisibility?.(false);
         divpanel.style.visibility = 'visible';
-        attrData.Set_LayerName_to(selectLayer,attrData.TotalData.LV1.SelectedLayer);
+        state.attrData.Set_LayerName_to(selectLayer,state.attrData.TotalData.LV1.SelectedLayer);
         setDataItemList();
-        const pmt=attrData.TotalData.LV1.Print_Mode_Total;
+        const pmt=state.attrData.TotalData.LV1.Print_Mode_Total;
 
         const multiMode=['divGraph','divLabel'];
         for(const i in multiMode){
@@ -1284,15 +1285,15 @@ export function setting(locSearch: string) {
         }
         switch (pmt) {
             case enmTotalMode_Number.DataViewMode: {
-                const currentLayer = typeof attrData.nowLayer === 'function' ? attrData.nowLayer() : attrData.nowLayer;
+                const currentLayer = typeof state.attrData.nowLayer === 'function' ? state.attrData.nowLayer() : state.attrData.nowLayer;
                 switch (currentLayer.Print_Mode_Layer) {
                     case enmLayerMode_Number.GraphMode:
                         clearModeIcon();
                         divGraph.selected = true;
                         divGraph.style.backgroundColor = '#ff6464';
-                        if (settingModeWindow?.setTitle) {
+                        if (state.settingModeWindow?.setTitle) {
                             const ttl = divGraph?.tooltip ?? "";
-                            settingModeWindow.setTitle(ttl);
+                            state.settingModeWindow.setTitle(ttl);
                         }
                         rightSettingWindowControlVisibilitySet();
                         setSettingGraphModeWindow();
@@ -1301,9 +1302,9 @@ export function setting(locSearch: string) {
                         clearModeIcon();
                         divLabel.selected = true;
                         divLabel.style.backgroundColor = '#ff6464';
-                        if (settingModeWindow?.setTitle) {
+                        if (state.settingModeWindow?.setTitle) {
                             const ttl = divLabel?.tooltip ?? "";
-                            settingModeWindow.setTitle(ttl);
+                            state.settingModeWindow.setTitle(ttl);
                         }
                         rightSettingWindowControlVisibilitySet();
                         setSettingLabelModeWindow();
@@ -1313,24 +1314,24 @@ export function setting(locSearch: string) {
             }
             case enmTotalMode_Number.OverLayMode:
                 clearModeIcon();
-                attrData.TotalData.LV1.Print_Mode_Total=pmt;
+                state.attrData.TotalData.LV1.Print_Mode_Total=pmt;
                 divOverlay.selected = true;
                 divOverlay.style.backgroundColor = '#ff6464';
-                if (settingModeWindow?.setTitle) {
+                if (state.settingModeWindow?.setTitle) {
                     const ttl = divOverlay?.tooltip ?? "";
-                    settingModeWindow.setTitle(ttl);
+                    state.settingModeWindow.setTitle(ttl);
                 }
                 rightSettingWindowControlVisibilitySet();
                 setSettingOverlayModeWindow();
                 break;
             case enmTotalMode_Number.SeriesMode:
                 clearModeIcon();
-                attrData.TotalData.LV1.Print_Mode_Total = pmt;
+                state.attrData.TotalData.LV1.Print_Mode_Total = pmt;
                 divSeries.selected = true;
                 divSeries.style.backgroundColor = '#ff6464';
-                if (settingModeWindow?.setTitle) {
+                if (state.settingModeWindow?.setTitle) {
                     const ttl = divSeries?.tooltip ?? "";
-                    settingModeWindow.setTitle(ttl);
+                    state.settingModeWindow.setTitle(ttl);
                 }
                 rightSettingWindowControlVisibilitySet();
                 setSettingSeriesModeWindow();
@@ -1341,9 +1342,9 @@ export function setting(locSearch: string) {
 
     //データ項目のリストを設定
     function setDataItemList() {
-        const LayerNum = attrData.TotalData.LV1.SelectedLayer;
-        const al = attrData.LayerData[LayerNum].atrData;
-        attrData.Set_DataTitle_to_cboBox(selectDataItem, LayerNum, al.SelectedIndex);
+        const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+        const al = state.attrData.LayerData[LayerNum].atrData;
+        state.attrData.Set_DataTitle_to_cboBox(selectDataItem, LayerNum, al.SelectedIndex);
         for (const k in enmSoloMode_Number) {
             const n = (enmSoloMode_Number as Record<string, number>)[k];
             SetPicPnlSoloDataEnabled(n, LayerNum, al.SelectedIndex);
@@ -1354,11 +1355,11 @@ export function setting(locSearch: string) {
 
     //度数分布の表示
     function setFrequencyLabel() {
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-        const data = attrData.LayerData[Layernum].atrData.Data[DataNum];
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+        const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum];
         const div_num = data.SoloModeViewSettings.Div_Num;
-        const retv = attrData.Get_ClassFrequency(Layernum, DataNum, false);
+        const retv = state.attrData.Get_ClassFrequency(Layernum, DataNum, false);
 
         for (let j = 0; j < div_num; j++) {
             const fbox = doc.getElementById("freqBox" + j);
@@ -1375,7 +1376,7 @@ export function setting(locSearch: string) {
     //データ項目が変更された際に、単独表示モードの可否を調べ、コントロールを設定
     //solomode:enmSoloMode_Number
     function SetPicPnlSoloDataEnabled(solomode: SoloMode, LayerNum: number, DataNum: number) {
-        const f = attrData.Check_Enable_SoloMode(solomode, LayerNum, DataNum);
+        const f = state.attrData.Check_Enable_SoloMode(solomode, LayerNum, DataNum);
         SetPicPnlDataEnabled(GetSelectModeFromSoloMode(solomode), f);
     }
 
@@ -1592,7 +1593,7 @@ export function setting(locSearch: string) {
         Get_Data_Value: (layerNum: number, dataNum: number, objNum: number, nullValue: string) => string;
     };
     function getGraphAttrData(): GraphAttrData {
-        return attrData as GraphAttrData;
+        return state.attrData as GraphAttrData;
     }
     type LabelAttrData = {
         TotalData: {
@@ -1607,10 +1608,10 @@ export function setting(locSearch: string) {
         Draw_Sample_LineBox: (target: HTMLElement, line: LinePattern) => void;
     };
     function getLabelAttrData(): LabelAttrData {
-        return attrData as LabelAttrData;
+        return state.attrData as LabelAttrData;
     }
     function nowContourMD(): ContourSetting {
-        const soloData = attrData.nowDataSolo() as { ContourMD: ContourSetting };
+        const soloData = state.attrData.nowDataSolo() as { ContourMD: ContourSetting };
         return soloData.ContourMD;
     }
 
@@ -1717,12 +1718,12 @@ export function setting(locSearch: string) {
     /**グラフモードの選択データの最大値・最小値を求める */
     function graphCulculateRmaxRmin() {
         const graphAttrData = getGraphAttrData();
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const selGraph = graphAttrData.nowGraph();
         if (selGraph.Data.length === 0) {
             return;
         }
-        for (let j = 0; j < attrData.LayerData[Layernum].atrObject.ObjectNum; j++) {
+        for (let j = 0; j < state.attrData.LayerData[Layernum].atrObject.ObjectNum; j++) {
             let s = 0;
             for (let i = 0; i < selGraph.Data.length; i++) {
                 const str = graphAttrData.Get_Data_Value(Layernum, selGraph.Data[i].DataNumber, j, "");
@@ -1795,7 +1796,7 @@ export function setting(locSearch: string) {
             let Ymin;
             for (let i = 0; i < selGraph.Data.length; i++) {
                 const dn = selGraph.Data[i].DataNumber;
-                const lad = attrData.LayerData[Layernum].atrData.Data[dn];
+                const lad = state.attrData.LayerData[Layernum].atrData.Data[dn];
                 if (i === 0) {
                     YMax = lad.Statistics.Max;
                     Ymin = lad.Statistics.Min;
@@ -1859,18 +1860,18 @@ export function setting(locSearch: string) {
         seriesDatasetDataItem();
     }
     function seriesDatasetSelectSet() {
-        const series = attrData.TotalData.TotalMode.Series;
-        const seriesDataSetList = attrData.getSeriesDataSetName();
+        const series = state.attrData.TotalData.TotalMode.Series;
+        const seriesDataSetList = state.attrData.getSeriesDataSetName();
         doc.getElementById("seriesDataSetList").addSelectList(seriesDataSetList, series.SelectedIndex, true,false);
     }
 
     /**連続表示モードのデータセットの内容を表示 */
     function seriesDatasetDataItem() {
-        const series = attrData.TotalData.TotalMode.Series;
+        const series = state.attrData.TotalData.TotalMode.Series;
         const seriesSelD = series.DataSet[series.SelectedIndex];
         doc.getElementById("seriesDatasetTitle").value = seriesSelD.title;
         doc.getElementById("gbSeriesItemData").setVisibility(seriesSelD.DataItem.length > 0);
-        attrData.SeriesMode_to_ListViewData(seriesListView, seriesSelD.DataItem);
+        state.attrData.SeriesMode_to_ListViewData(seriesListView, seriesSelD.DataItem);
         Check_Print_err();
     }
 
@@ -1891,14 +1892,14 @@ export function setting(locSearch: string) {
     
         /**重ね合わせ表示モードのデータセットセレクトボックス*/
     function overlayDatasetSelectSet(){
-        const over = attrData.TotalData.TotalMode.OverLay;
-        const overlayDataSetList = attrData.getOverlayTitle();
+        const over = state.attrData.TotalData.TotalMode.OverLay;
+        const overlayDataSetList = state.attrData.getOverlayTitle();
         doc.getElementById("overlayDataSetList").addSelectList(overlayDataSetList,over.SelectedIndex, true,false);
     }
 
     /**重ね合わせ表示モードのデータセットの内容を表示 */
     function overlayDatasetDataItem(){
-        const over = attrData.TotalData.TotalMode.OverLay;
+        const over = state.attrData.TotalData.TotalMode.OverLay;
         const overSelD = over.DataSet[over.SelectedIndex];
 
         doc.getElementById("overlayAlwaysOver").checked = (over.Always_Overlay_Index === over.SelectedIndex);
@@ -1908,16 +1909,16 @@ export function setting(locSearch: string) {
         overlayListView.clear();
         for (let i = 0; i < overSelD.DataItem.length; i++) {
             const di = overSelD.DataItem[i];
-            overData[0] = attrData.LayerData[di.Layer].Name;
+            overData[0] = state.attrData.LayerData[di.Layer].Name;
             switch (di.Print_Mode_Layer) {
                 case enmLayerMode_Number.SoloMode: {
-                    overData[1] = attrData.Get_DataTitle(di.Layer, di.DataNumber, false);
+                    overData[1] = state.attrData.Get_DataTitle(di.Layer, di.DataNumber, false);
                     overData[2] = Generic.getSolomodeStrings(di.Mode);
                     break;
                 }
                 case enmLayerMode_Number.GraphMode: {
                     overData[1] = "グラフ表示";
-                    let T = attrData.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.DataNumber].title;
+                    let T = state.attrData.LayerData[di.Layer].LayerModeViewSettings.GraphMode.DataSet[di.DataNumber].title;
                     if (T === "") {
                         T = "データセット" + String(di.DataNumber + 1);
                     }
@@ -1926,7 +1927,7 @@ export function setting(locSearch: string) {
                 }
                 case enmLayerMode_Number.LabelMode: {
                     overData[1] = "ラベル表示";
-                    let T = attrData.LayerData[di.Layer].LayerModeViewSettings.LabelMode.DataSet[di.DataNumber].title;
+                    let T = state.attrData.LayerData[di.Layer].LayerModeViewSettings.LabelMode.DataSet[di.DataNumber].title;
                     if (T === "") {
                         T = "データセット" + String(di.DataNumber + 1);
                     }
@@ -1946,7 +1947,7 @@ export function setting(locSearch: string) {
 
     /**重ね合わせモードのデータセットの個別アイテムの情報をgbOverlayItemData内に表示 */
     function overlayDatasetDataItemEach() {
-        const over = attrData.TotalData.TotalMode.OverLay;
+        const over = state.attrData.TotalData.TotalMode.OverLay;
         const overSelD = over.DataSet[over.SelectedIndex];
         const n = overlayListView.selectedRow;
         if (n !== -1) {
@@ -1959,23 +1960,23 @@ export function setting(locSearch: string) {
     /**単独表示モードの設定画面の要素設定*/
     function setSettingSoloModeWindow() {
 
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-        const data = attrData.LayerData[Layernum].atrData.Data[DataNum];
-        // const md = attrData.getSoloMode(Layernum, DataNum);
-        const layShape=attrData.LayerData[Layernum].Shape;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+        const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum];
+        // const md = state.attrData.getSoloMode(Layernum, DataNum);
+        const layShape=state.attrData.LayerData[Layernum].Shape;
 
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.ClassPaintMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.ClassPaintMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●ペイントモード
             switch (layShape) {
                 case enmShape.PointShape: {
-                    const md = attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
+                    const md = state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
                     const ele = doc.getElementById("picPointMarkSize");
-                    attrData.Draw_Sample_Mark_Box(ele, md.PointMark);
+                    state.attrData.Draw_Sample_Mark_Box(ele, md.PointMark);
                         break;
                 }
                 case enmShape.LineShape:
-                    doc.getElementById("cboPaintLineSize").value=attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth;
+                    doc.getElementById("cboPaintLineSize").value=state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth;
                     break;
                 case enmShape.PolygonShape:
                     break;
@@ -1997,26 +1998,26 @@ export function setting(locSearch: string) {
                 cbox.onclick = function (e: MouseEvent) {
                     const tgt = e.target as HTMLCanvasElement;
                     if (!tgt) { return; }
-                    switch (attrData.nowData().ModeData) {
+                    switch (state.attrData.nowData().ModeData) {
                         case enmSoloMode_Number.ClassPaintMode: {
                             if(cbox.style.cursor === 'crosshair') { clsColorPicker(e, colorChange); }
                             break;
                         }
                         case enmSoloMode_Number.ClassMarkMode: {
-                            const md = attrData.nowDataSolo().Class_Div[tgt.tag as number].ClassMark;
-                            clsMarkSet(e, mkChange, md, attrData);
+                            const md = state.attrData.nowDataSolo().Class_Div[tgt.tag as number].ClassMark;
+                            clsMarkSet(e, mkChange, md, state.attrData);
                             function mkChange(newMark: Mark) {
-                                attrData.nowDataSolo().Class_Div[tgt.tag as number].ClassMark = { ...newMark };
-                                attrData.Draw_Sample_Mark_Box(tgt, newMark);
+                                state.attrData.nowDataSolo().Class_Div[tgt.tag as number].ClassMark = { ...newMark };
+                                state.attrData.Draw_Sample_Mark_Box(tgt, newMark);
                             }
                             break;
                         }
                         case enmSoloMode_Number.ClassODMode: {
-                            const md = attrData.nowDataSolo().Class_Div[tgt.tag as number].ODLinePat;
+                            const md = state.attrData.nowDataSolo().Class_Div[tgt.tag as number].ODLinePat;
                             clsLinePatternSet(e, md, lineChange);
                             function lineChange(newPat: Line_Property) {
-                                attrData.nowDataSolo().Class_Div[tgt.tag as number].ODLinePat = { ...newPat };
-                                attrData.Draw_Sample_LineBox(tgt,newPat);
+                                state.attrData.nowDataSolo().Class_Div[tgt.tag as number].ODLinePat = { ...newPat };
+                                state.attrData.Draw_Sample_LineBox(tgt,newPat);
                             }
                             break
                         }
@@ -2026,7 +2027,7 @@ export function setting(locSearch: string) {
             }
             //不足するtxtClassValueを追加
             let txtNum = div_num;
-            if(attrData.Get_DataType(Layernum, DataNum) !== enmAttDataType.Category) {
+            if(state.attrData.Get_DataType(Layernum, DataNum) !== enmAttDataType.Category) {
                 txtNum--;
             }
             const txtStyle = "border:solid 1px;height:" + picClassBoxHeight.px();
@@ -2044,9 +2045,9 @@ export function setting(locSearch: string) {
                     const dragN = Number(String(oele?.tag ?? 0));
                     const dropN = Number((e.target as HTMLElement).tag);
                     if(dropN === dragN) { return; }
-                    const Layernum = attrData.TotalData.LV1.SelectedLayer;
-                    const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-                    const ldd = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+                    const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                    const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+                    const ldd = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
                     const ddata = ldd.Class_Div[dragN].Clone();
                     if(dragN < dropN) {
                         for (let i = dragN; i < dropN; i++) {
@@ -2067,11 +2068,11 @@ export function setting(locSearch: string) {
                 function txeleOnChange (obj: HTMLInputElement, v: number) {
                     //階級区分値を変更設定
                     const n = obj.tag;
-                    const L = attrData.TotalData.LV1.SelectedLayer;
-                    const D = attrData.LayerData[L].atrData.SelectedIndex;
-                    const ld = attrData.LayerData[L];
+                    const L = state.attrData.TotalData.LV1.SelectedLayer;
+                    const D = state.attrData.LayerData[L].atrData.SelectedIndex;
+                    const ld = state.attrData.LayerData[L];
                     const ldd = ld.atrData.Data[D].SoloModeViewSettings;
-                    if(attrData.Get_DataType(L, D) !== enmAttDataType.Category) {
+                    if(state.attrData.Get_DataType(L, D) !== enmAttDataType.Category) {
                         ldd.Class_Div[n as number].Value = v;
                     } else {
                         const oldTx = ldd.Class_Div[n as number].Value;
@@ -2127,9 +2128,9 @@ export function setting(locSearch: string) {
                     return;
                 }
                 const n = parseInt(String(target.tag));
-                const Layernum = attrData.TotalData.LV1.SelectedLayer;
-                const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-                const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+                const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+                const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
                 const DivNum = data.Div_Num;
                 const col = Generic.RGBAfromElement(target);
                 data.Class_Div[n].PaintColor = col;
@@ -2141,22 +2142,22 @@ export function setting(locSearch: string) {
                         } else {
                             data.ClassPaintMD.color2 = col;
                         }
-                        attrData.Twocolort(Layernum, DataNum);
+                        state.attrData.Twocolort(Layernum, DataNum);
                         break;
                     case enmPaintColorSettingModeInfo.threeeColor:
                             SelectedCategoryIndex = -1;
                         switch (n) {
                             case 0:
                                 data.ClassPaintMD.color1 = col;
-                                attrData.Twocolort(Layernum, DataNum);
+                                state.attrData.Twocolort(Layernum, DataNum);
                                 break;
                             case DivNum - 1:
                                 data.ClassPaintMD.color2 = col;
-                                attrData.Twocolort(Layernum, DataNum);
+                                state.attrData.Twocolort(Layernum, DataNum);
                                 break;
                             default:
                                 data.ClassPaintMD.color3 = col;
-                                attrData.Threecolor(Layernum, DataNum, n);
+                                state.attrData.Threecolor(Layernum, DataNum, n);
                                 break;
                         }
                         break;
@@ -2164,21 +2165,21 @@ export function setting(locSearch: string) {
                         switch (n) {
                             case 0:
                                 data.ClassPaintMD.color1 = col;
-                                attrData.Twocolort(Layernum, DataNum);
+                                state.attrData.Twocolort(Layernum, DataNum);
                                 SelectedCategoryIndex = -1;
                                 break;
                             case DivNum - 1:
                                 data.ClassPaintMD.color2 = col;
-                                attrData.Twocolort(Layernum, DataNum);
+                                state.attrData.Twocolort(Layernum, DataNum);
                                 SelectedCategoryIndex = -1;
                                 break;
                             default://中間
                                 if(SelectedCategoryIndex === -1) {
                                     SelectedCategoryIndex = n;
                                     data.ClassPaintMD.color3 = col;
-                                    attrData.Threecolor(Layernum, DataNum, n);
+                                    state.attrData.Threecolor(Layernum, DataNum, n);
                                 } else {
-                                    attrData.FourColor(Layernum, DataNum, n);
+                                    state.attrData.FourColor(Layernum, DataNum, n);
                                     SelectedCategoryIndex = n;
                                     data.ClassPaintMD.color3 = col;
                                 }
@@ -2201,12 +2202,12 @@ export function setting(locSearch: string) {
             }
         }
 
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.ClassODMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.ClassODMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●線モード
             SetODModeOriginObject();
         }
 
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.ContourMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.ContourMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●等値線モード
             const datam = data.SoloModeViewSettings.ContourMD as ContourSetting;
             Generic.checkRadioByValue("contourInterval_Mode",datam.Interval_Mode);
@@ -2214,20 +2215,20 @@ export function setting(locSearch: string) {
             doc.getElementById("contourSpline_flag").checked=datam.Spline_flag;
             doc.getElementById("contourDetailed").setSelectValue(datam.Detailed);
             doc.getElementById("gbContourLineLpat").setVisibility(datam.Interval_Mode===enmContourIntervalMode.ClassPaint);
-            attrData.Draw_Sample_LineBox(doc.getElementById("contourLinePat"),datam.Regular.Line_Pat);
+            state.attrData.Draw_Sample_LineBox(doc.getElementById("contourLinePat"),datam.Regular.Line_Pat);
 
             doc.getElementById("gbRegularInterval").setVisibility(datam.Interval_Mode===enmContourIntervalMode.RegularInterval);
             doc.getElementById("contourRegulerMinValue").setNumberValue(datam.Regular.bottom);
             doc.getElementById("contourRegulerMaxValue").setNumberValue(datam.Regular.top);
             doc.getElementById("contourRegulerInterval").setNumberValue(datam.Regular.Interval);
-            attrData.Draw_Sample_LineBox(doc.getElementById("contourRegulerLinePat"),datam.Regular.Line_Pat);
+            state.attrData.Draw_Sample_LineBox(doc.getElementById("contourRegulerLinePat"),datam.Regular.Line_Pat);
             doc.getElementById("contourRegulerSPMinValue").setNumberValue(datam.Regular.SP_Bottom);
             doc.getElementById("contourRegulerSPMaxValue").setNumberValue(datam.Regular.SP_Top);
             doc.getElementById("contourRegulerSPInterval").setNumberValue(datam.Regular.SP_interval);
-            attrData.Draw_Sample_LineBox(doc.getElementById("contourRegulerSPLinePat"),datam.Regular.SP_Line_Pat);
+            state.attrData.Draw_Sample_LineBox(doc.getElementById("contourRegulerSPLinePat"),datam.Regular.SP_Line_Pat);
             doc.getElementById("contourRegulerExCheck").checked=datam.Regular.EX_Value_Flag
             doc.getElementById("contourRegulerExValue").setNumberValue(datam.Regular.EX_Value);
-            attrData.Draw_Sample_LineBox(doc.getElementById("contourRegulerExLine"),datam.Regular.EX_Line_Pat);
+            state.attrData.Draw_Sample_LineBox(doc.getElementById("contourRegulerExLine"),datam.Regular.EX_Line_Pat);
 
             doc.getElementById("gbSeparateSettings").setVisibility(datam.Interval_Mode===enmContourIntervalMode.SeparateSettings);
             lstcontourSeparateValue.removeAll();
@@ -2245,7 +2246,7 @@ export function setting(locSearch: string) {
             }
         }
 
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkSizeMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkSizeMode, Layernum, DataNum) === true) {
 
             //●●●●●●●●●●●●●●●●記号の大きさモード
             const datam = data.SoloModeViewSettings.MarkSizeMD as {
@@ -2264,7 +2265,7 @@ export function setting(locSearch: string) {
                 doc.getElementById("gbMark").setVisibility(true);
                 doc.getElementById("gbMarkLine").style.display='none';
                 const picMark = doc.getElementById("picMarkSize");
-                attrData.Draw_Sample_Mark_Box(picMark, datam.Mark);
+                state.attrData.Draw_Sample_Mark_Box(picMark, datam.Mark);
             }
             for (let i = 0; i < 5; i++) {
                 doc.getElementById("txtMarkSizeValue" + String(i + 1)).setNumberValue(datam.Value[i]);
@@ -2272,7 +2273,7 @@ export function setting(locSearch: string) {
             Generic.checkRadioByValue("markSizeMaxValueSetting", datam.MaxValueMode);
             doc.getElementById("markSizeUserMaxValue").setNumberValue (datam.MaxValue );
             // const markSizeView = doc.getElementById("markSizeView");
-            if(attrData.Get_DataMin(Layernum, DataNum) < 0) {
+            if(state.attrData.Get_DataMin(Layernum, DataNum) < 0) {
                 doc.getElementById("gbMarkSizeMinusValueCase").setVisibility(true);
                 const mkc = data.SoloModeViewSettings.MarkCommon;
                 doc.getElementById("gbMarkSizeMinusValueCase_txtMarkSizePlusValue").value = mkc.LegendPlusWord;
@@ -2283,18 +2284,18 @@ export function setting(locSearch: string) {
             }
         }
         
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkBlockMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkBlockMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●記号の数モード
             const datam = data.SoloModeViewSettings.MarkBlockMD;
             const picMark = doc.getElementById("picMarkBlockSize");
-            attrData.Draw_Sample_Mark_Box(picMark, datam.Mark);
+            state.attrData.Draw_Sample_Mark_Box(picMark, datam.Mark);
             Generic.checkRadioByValue("blockArrange",datam.ArrangeB);
             Generic.enableRadioByValue("blockArrange",enmMarkBlockArrange.Random,(layShape===enmShape.PolygonShape));
             doc.getElementById("markBlockValue").setNumberValue(datam.Value);
             doc.getElementById("markBlockWord").value=datam.LegendBlockModeWord;
             doc.getElementById("markBlockHasu").checked=datam.HasuVisible;
             doc.getElementById("markBlockOverlap").setSelectValue(datam.Overlap);
-            if(attrData.Get_DataMin(Layernum, DataNum) < 0) {
+            if(state.attrData.Get_DataMin(Layernum, DataNum) < 0) {
                 doc.getElementById("gbMarBlockMinusValueCase").setVisibility(true);
                 const mkc = data.SoloModeViewSettings.MarkCommon;
                 doc.getElementById("gbMarBlockMinusValueCase_txtMarkSizePlusValue").value = mkc.LegendPlusWord;
@@ -2305,7 +2306,7 @@ export function setting(locSearch: string) {
             }
         }
    
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkBarMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.MarkBarMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●棒の高さモード
             const datam = data.SoloModeViewSettings.MarkBarMD;
             doc.getElementById("cboMarkBarHeightSize").setNumberValue(datam.MaxHeight);
@@ -2313,15 +2314,15 @@ export function setting(locSearch: string) {
             doc.getElementById("markBarUserMaxValue").setNumberValue(datam.MaxValue);
             doc.getElementById("cboMarkBarWidth").setNumberValue(datam.Width)
             Generic.setTileDiv(doc.getElementById("markBarInnerColor"),datam.InnerTile);
-            attrData.Draw_Sample_LineBox(doc.getElementById("markBarFrame"), datam.FrameLinePat);
+            state.attrData.Draw_Sample_LineBox(doc.getElementById("markBarFrame"), datam.FrameLinePat);
             doc.getElementById("markBarView").checked=datam.ThreeD;
             doc.getElementById("markBarScaleCheck").checked=datam.ThreeD;
             doc.getElementById("markBarScaleInterval").setNumberValue(datam.ScaleLineInterval);
-            attrData.Draw_Sample_LineBox(doc.getElementById("markBarScaleLine"), datam.scaleLinePat);
+            state.attrData.Draw_Sample_LineBox(doc.getElementById("markBarScaleLine"), datam.scaleLinePat);
             Generic.checkRadioByValue("markBarShape",datam.BarShape);
         }
 
-        if(attrData.Check_Enable_SoloMode(enmSoloMode_Number.StringMode, Layernum, DataNum) === true) {
+        if(state.attrData.Check_Enable_SoloMode(enmSoloMode_Number.StringMode, Layernum, DataNum) === true) {
             //●●●●●●●●●●●●●●●●文字モード
             const stringMode = data.SoloModeViewSettings.StringMD as { maxWidth: number; WordTurnF: boolean };
             doc.getElementById("txtStringSizeChange").setNumberValue(stringMode.maxWidth);
@@ -2332,11 +2333,11 @@ export function setting(locSearch: string) {
 
     //階級区分の区分ボックスを設定
     function SetPictureBox() {
-        const ldd = attrData.nowDataSolo() as {
+        const ldd = state.attrData.nowDataSolo() as {
             Div_Num: number;
             Class_Div: { PaintColor: { toRGBA: () => string }; ClassMark: Mark; ODLinePat: LinePattern }[];
         };
-        const md = (attrData.nowData() as { ModeData: number }).ModeData;
+        const md = (state.attrData.nowData() as { ModeData: number }).ModeData;
         for (let i = 0; i < ldd.Div_Num; i++) {
             const p = doc.getElementById("picClassBox" + i) as HTMLCanvasElement;
             if (!p) { continue; }
@@ -2349,11 +2350,11 @@ export function setting(locSearch: string) {
                     break;
                 }
                 case enmSoloMode_Number.ClassMarkMode: {
-                    attrData.Draw_Sample_Mark_Box(p,ldd.Class_Div[i].ClassMark);
+                    state.attrData.Draw_Sample_Mark_Box(p,ldd.Class_Div[i].ClassMark);
                     break;
                 }
                 case enmSoloMode_Number.ClassODMode: {
-                    attrData.Draw_Sample_LineBox(p,ldd.Class_Div[i].ODLinePat);
+                    state.attrData.Draw_Sample_LineBox(p,ldd.Class_Div[i].ODLinePat);
                     break;
                 }
             }
@@ -2361,8 +2362,8 @@ export function setting(locSearch: string) {
     }
     //階級区分の区分テキストボックスを設定
     function SetClassDivValueTextBox() {
-        const DDType=attrData.nowData().DataType;
-        const ldd = attrData.nowDataSolo();
+        const DDType=state.attrData.nowData().DataType;
+        const ldd = state.attrData.nowDataSolo();
         for (let i = 0; i < ldd.Div_Num; i++) {
             if((i !== ldd.Div_Num - 1) || (DDType === enmAttDataType.Category)){
                 const t = doc.getElementById("txtClassValue" + i);
@@ -2395,7 +2396,7 @@ export function setting(locSearch: string) {
         const contour = nowContourMD();
         const d = contour.Irregular[n];
         doc.getElementById("contourSepaValue").setNumberValue(d.Value);
-        attrData.Draw_Sample_LineBox(doc.getElementById("contourSepaLine"), d.Line_Pat);
+        state.attrData.Draw_Sample_LineBox(doc.getElementById("contourSepaLine"), d.Line_Pat);
     }
 
     /**モードアイコンをすべて白にする */
@@ -2415,15 +2416,15 @@ export function setting(locSearch: string) {
 
     /**右側パネルの表示非表示の設定 */
     function rightSettingWindowControlVisibilitySet(){
-        if(settingModeWindow.getVisibility?.()=== false) {
-            settingModeWindow.setVisibility?.(true);
+        if(state.settingModeWindow?.getVisibility?.()=== false) {
+            state.settingModeWindow.setVisibility?.(true);
         }
         const settingControl=document.getElementsByClassName("rightSettingWindowControlBase");
         for (let i = 0; i < settingControl.length; i++) {
             (settingControl[i] as ExtendedHTMLElement)?.setVisibility?.(false);
         }
 
-        switch(attrData.TotalData.LV1.Print_Mode_Total){
+        switch(state.attrData.TotalData.LV1.Print_Mode_Total){
             case enmTotalMode_Number.OverLayMode:{
                 doc.getElementById("overlayView").setVisibility(true);
                 break;
@@ -2433,11 +2434,11 @@ export function setting(locSearch: string) {
                 break;
             }
             case enmTotalMode_Number.DataViewMode:{
-                const Layernum = attrData.TotalData.LV1.SelectedLayer;
-                switch (attrData.LayerData[Layernum].Print_Mode_Layer) {
+                const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+                switch (state.attrData.LayerData[Layernum].Print_Mode_Layer) {
                     case enmLayerMode_Number.SoloMode: {
-                        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-                        const md = attrData.getSoloMode(Layernum, DataNum);
+                        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+                        const md = state.attrData.getSoloMode(Layernum, DataNum);
                         let classViewF=false;
                         switch (md) {
                             case enmSoloMode_Number.ClassPaintMode:
@@ -2447,9 +2448,9 @@ export function setting(locSearch: string) {
                                 break;
                         }
                         if (classViewF === true) {
-                            const shape = attrData.LayerData[Layernum].Shape;
+                            const shape = state.attrData.LayerData[Layernum].Shape;
                             doc.getElementById("classView").setVisibility(true);
-                            if (attrData.Get_DataType(Layernum, DataNum) === enmAttDataType.Category) {
+                            if (state.attrData.Get_DataType(Layernum, DataNum) === enmAttDataType.Category) {
                                 doc.getElementById("gbDivNum").setVisibility(false);
                             } else {
                                 doc.getElementById("gbDivNum").setVisibility(true);
@@ -2501,11 +2502,11 @@ export function setting(locSearch: string) {
      */
     function setDataMode() {
         clearModeIcon();
-        attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.DataViewMode;
-        const Layernum = attrData.TotalData.LV1.SelectedLayer;
-        const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
+        state.attrData.TotalData.LV1.Print_Mode_Total=enmTotalMode_Number.DataViewMode;
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
         let selDiv;
-        const md = attrData.getSoloMode(Layernum, DataNum);
+        const md = state.attrData.getSoloMode(Layernum, DataNum);
         switch (md) {
             case enmSoloMode_Number.ClassPaintMode: {
                 selDiv = divClassPaint;
@@ -2547,7 +2548,7 @@ export function setting(locSearch: string) {
             selDiv.selected = true;
             selDiv.style.backgroundColor = '#ff6464';
         }
-        settingModeWindow?.setTitle?.(attrData.getSolomodeWord(md));
+        state.settingModeWindow?.setTitle?.(state.attrData.getSolomodeWord(md));
         rightSettingWindowControlVisibilitySet();
         Check_Print_err();
     }
@@ -2555,12 +2556,12 @@ export function setting(locSearch: string) {
     /**データ取得後の共通処理 */
     function initAfterGetData(non_clearf: boolean){
         
-        Frm_Print?.setVisibility?.(false);
-        propertyWindow.nextVisible = true;
-        propertyWindow.setVisibility?.(false);
+        state.frmPrint?.setVisibility?.(false);
+        state.propertyWindow.nextVisible = true;
+        state.propertyWindow.setVisibility?.(false);
         Init_Screen_Set(non_clearf);
         initFirtScreen();
-        divmain?.setTitle?.(attrData.TotalData.LV1.FileName ?? "");
+        divmain?.setTitle?.(state.attrData.TotalData.LV1.FileName ?? "");
     }
 
     /**
@@ -2568,16 +2569,16 @@ export function setting(locSearch: string) {
     */
     function Init_Screen_Set(Non_Clear_Flag: boolean) {
 
-        const sc = attrData.TotalData.ViewStyle.ScrData;
+        const sc = state.attrData.TotalData.ViewStyle.ScrData;
         if(Non_Clear_Flag === false) {
             frmPrint.Init_FrmPrint();
             frmPrint.set_frmPrint_Window_Size();
             const FpicRect = sc.frmPrint_FormSize;
             const sz = new size(FpicRect.width(), FpicRect.height())
             sc.init(sz, sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, true);
-            attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage = true;
-            attrData.TempData.frmPrint_Temp.LabelPointFirstMessage = true;
-            attrData.Set_Acc_First_Position();
+            state.attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage = true;
+            state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage = true;
+            state.attrData.Set_Acc_First_Position();
         } else {
             frmPrint.set_frmPrint_Window_Size();
             sc.init(sc.frmPrint_FormSize.size(), sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, false);
@@ -2589,32 +2590,32 @@ export function setting(locSearch: string) {
 * 描画開始
 */
     function drawMap(e: MouseEvent) {
-        const retV=attrData.Get_PrintError();
+        const retV=state.attrData.Get_PrintError();
         if(retV.Print_Enable === enmPrint_Enable.UnPrintable ){
             Generic.alert(new point(e.clientX,e.clientY),retV.message);
             return;
         }
 
         e.stopPropagation();
-         Frm_Print?.setVisibility?.(true);
+         state.frmPrint?.setVisibility?.(true);
         frmPrintFront();
 
-        if (propertyWindow.nextVisible === true) {
-            propertyWindow.setVisibility?.(true);
-            propertyWindow.nextVisible = false;
+        if (state.propertyWindow.nextVisible === true) {
+            state.propertyWindow.setVisibility?.(true);
+            state.propertyWindow.nextVisible = false;
         }
-        clsPrint.setData(Frm_Print.picMap);
+        clsPrint.setData(state.frmPrint.picMap);
     }
 
     //階級区分のピクチャボックス、テキストボックスの可否
     function SetPicClassBoxCursol() {
-        const data = attrData.nowDataSolo();
+        const data = state.attrData.nowDataSolo();
         const DivNum = data.Div_Num;
         for (let i = 0; i < DivNum; i++) {
             const p = doc.getElementById("picClassBox" + i);
             p.style.cursor = 'crosshair';
         }
-        if (attrData.nowData().ModeData === enmSoloMode_Number.ClassPaintMode) {
+        if (state.attrData.nowData().ModeData === enmSoloMode_Number.ClassPaintMode) {
             switch (data.ClassPaintMD.Color_Mode) {
                 case enmPaintColorSettingModeInfo.twoColor:
                     for (let i = 1; i < DivNum - 1; i++) {
@@ -2632,7 +2633,8 @@ export function setting(locSearch: string) {
         const sw = 400;
         const sh = 450;
         const xpos = divmain.style.left.removePx() + divmain.style.width.removePx() + 10;
-        settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, null, false, null, false, "", false, undefined) as HTMLDivElement;
+        state.settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, null, false, null, false, "", false, undefined) as HTMLDivElement;
+        const settingModeWindow = state.settingModeWindow;
         settingModeWindow.style.backgroundColor = "#f0f0f0";
         settingModeWindow.style.userSelect = 'none';
         settingModeWindow.addEventListener('click', settingFront)
@@ -2690,8 +2692,8 @@ export function setting(locSearch: string) {
 
 
         function btnClassODSettings(e: MouseEvent) {
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const lshape = attrData.LayerData[Layernum].Shape;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const lshape = state.attrData.LayerData[Layernum].Shape;
             const popmenu = [{ caption: "全線種変更", event: LpatChange },
             { caption: "全色変更", event: LColorChange },
             { caption: "ペイントモードの色をコピー", event: copyPaintColor },
@@ -2703,11 +2705,11 @@ export function setting(locSearch: string) {
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
 
             function LArrow(_data: MenuItem, ev?: Event) {
-                const ldd = attrData.nowDataSolo().ClassODMD;
+                const ldd = state.attrData.nowDataSolo().ClassODMD;
                 clsArrow(ev as MouseEvent, ldd.Arrow, "起点方向", "終点方向", function (newArrow: Arrow) { ldd.Arrow = newArrow });
             }
             function LpatChange(_data: MenuItem, /*ev?: Event*/) {
-                const ldd = attrData.nowDataSolo();
+                const ldd = state.attrData.nowDataSolo();
                 clsLinePatternSet(e, ldd.Class_Div[0].ODLinePat, function (newLpat: LinePattern) {
                     for (let i = 0; i < ldd.Div_Num; i++) {
                         ldd.Class_Div[i].ODLinePat = { ...newLpat };
@@ -2716,7 +2718,7 @@ export function setting(locSearch: string) {
                 })
             }
             function LColorChange(_data: MenuItem, ev?: Event) {
-                const ldd = attrData.nowDataSolo();
+                const ldd = state.attrData.nowDataSolo();
                 clsColorPicker(new point((ev as MouseEvent).clientX, (ev as MouseEvent).clientY),
                     function (newColor: Color) {
                         for (let i = 0; i < ldd.Div_Num; i++) {
@@ -2726,14 +2728,14 @@ export function setting(locSearch: string) {
                     })
             }
             function copyPaintColor() {
-                const ldd = attrData.nowDataSolo();
+                const ldd = state.attrData.nowDataSolo();
                 for (let i = 0; i < ldd.Div_Num; i++) {
                     ldd.Class_Div[i].ODLinePat.Color = ldd.Class_Div[i].PaintColor.Clone();
                 }
                 SetPictureBox();
             }
             function LWidthAuto() {
-                const ldd = attrData.nowDataSolo();
+                const ldd = state.attrData.nowDataSolo();
                 const w1 = ldd.Class_Div[0].ODLinePat.Width;
                 let n = ldd.Div_Num - 1;
                 if (ldd.Class_Div[ldd.Div_Num - 1].ODLinePat.BlankF === true) {
@@ -2749,7 +2751,7 @@ export function setting(locSearch: string) {
         }
 
         function btnClassODOriginSettings(/*e: MouseEvent*/) {
-            const ldd = attrData.nowDataSolo().ClassODMD;
+            const ldd = state.attrData.nowDataSolo().ClassODMD;
             frmMain_LayeObjectSelectOne(true, ldd.o_Layer, ldd.O_object, ldd.Dummy_ObjectFlag, function (lay: number, obnum: number, dumF: boolean) {
                 ldd.Dummy_ObjectFlag = dumF;
                 ldd.o_Layer = lay;
@@ -2763,7 +2765,7 @@ export function setting(locSearch: string) {
 
         //階級記号モードの記号設定ボタン
         function classMarkButton(e: MouseEvent) {
-            const sv = attrData.nowDataSolo();
+            const sv = state.attrData.nowDataSolo();
             const popmenu = [
                 { caption: "同一記号に設定", event: setSameMark },
                 { caption: "ペイントモードの色を内部色に設定", event: setSamePaintColor },
@@ -2772,7 +2774,7 @@ export function setting(locSearch: string) {
             Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
             function setSameMark(_data: MenuItem, ev?: Event) {
                 const md = sv.Class_Div[0].ClassMark;
-                clsMarkSet(ev as MouseEvent, mkChange, md, attrData)
+                clsMarkSet(ev as MouseEvent, mkChange, md, state.attrData)
                 function mkChange(newMark: Mark) {
                     for (let i = 0; i < sv.Div_Num; i++) {
                         sv.Class_Div[i].ClassMark = { ...newMark };
@@ -2788,38 +2790,38 @@ export function setting(locSearch: string) {
                 SetPictureBox();
             }
             function innerDataSet(_data: MenuItem, ev?: Event) {
-                clsInnerDataSet(ev as MouseEvent, attrData);
+                clsInnerDataSet(ev as MouseEvent, state.attrData);
             }
         }
 
         //ペイントモード点オブジェクトの記号選択クリック
         function picPointMark_Click(e: MouseEvent) {
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const md = attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
-            clsMarkSet(e, picMarkChange, md.PointMark, attrData);
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const md = state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
+            clsMarkSet(e, picMarkChange, md.PointMark, state.attrData);
             function picMarkChange(newMark: Mark) {
                 md.PointMark = newMark;
-                attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
+                state.attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
             }
         }
         //ペイントモード線オブジェクトのサイズ設定
         function cboPaintLineSizeChange(obj: HTMLInputElement, v: number) {
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth = v;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth = v;
         }
         //ペイントモード線オブジェクトの線端設定
         function btnPaintLineEdge(e: MouseEvent) {
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const edge = attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineEdge;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const edge = state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineEdge;
             clsLineEdgePattern(e, edge, okButton);
             function okButton(retEdge: Edge) {
-                attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineEdge = retEdge;
+                state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineEdge = retEdge;
             }
         }
 
         //ペイントモードカラーチャート
         function colorChart(e: MouseEvent) {
-            const sv = attrData.nowDataSolo();
+            const sv = state.attrData.nowDataSolo();
             const DivNum = sv.Div_Num;
             clsColorChart(e, DivNum, okButton);
             function okButton(col: colorRGBA[]) {
@@ -2833,7 +2835,7 @@ export function setting(locSearch: string) {
         }
         //ペイントモード上下色反転ボタンクリック
         function reverseColor() {
-            const data = attrData.nowDataSolo();
+            const data = state.attrData.nowDataSolo();
             const DivNum = data.Div_Num;
             const scol = [];
             for (let i = 0; i < DivNum; i++) {
@@ -2847,17 +2849,17 @@ export function setting(locSearch: string) {
 
         //色設定方法ボタンクリック
         function PaintColorSettingModeChange(value: RadioValue) {
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-            attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD.Color_Mode = value;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+            state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD.Color_Mode = value;
             switch (value) {
                 case enmPaintColorSettingModeInfo.twoColor:
-                    attrData.Twocolort(Layernum, DataNum);
+                    state.attrData.Twocolort(Layernum, DataNum);
                     break;
                 case enmPaintColorSettingModeInfo.threeeColor:
                     break;
                 case enmPaintColorSettingModeInfo.multiColor:
-                    attrData.Twocolort(Layernum, DataNum);
+                    state.attrData.Twocolort(Layernum, DataNum);
                     break;
                 case enmPaintColorSettingModeInfo.SoloColor:
                     break;
@@ -2870,11 +2872,11 @@ export function setting(locSearch: string) {
         //階級区分方法クリック
         function cboDivisionMethodChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
             const selectedValue = typeof sel === 'number' ? cboDivisionMethodList[sel].value : cboDivisionMethodList[sel[0]].value;
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-            const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+            const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
             const dc = doc.getElementById("cboDivisionCount");
-            const lshape = attrData.LayerData[Layernum].Shape;
+            const lshape = state.attrData.LayerData[Layernum].Shape;
             dc.disabled = false;
             switch (selectedValue) {
                 case enmDivisionMethod.AreaQuantile:
@@ -2893,25 +2895,25 @@ export function setting(locSearch: string) {
                         for (let i = oldDivNum; i < 6; i++) {
                             data.Class_Div[i] = new strClass_Div_data();
                         }
-                        attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
+                        state.attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
                     }
                     if (data.ClassPaintMD.Color_Mode !== enmPaintColorSettingModeInfo.SoloColor) {
-                        attrData.Twocolort(Layernum, DataNum);
+                        state.attrData.Twocolort(Layernum, DataNum);
                     }
                     break;
                 }
             }
             data.Div_Method = selectedValue;
-            attrData.Set_Div_Value(Layernum, DataNum);
+            state.attrData.Set_Div_Value(Layernum, DataNum);
             setSettingSoloModeWindow();
             setFrequencyLabel();
         }
         //階級分割数クリック
         function cboDivisionCountChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
             const selectedValue = typeof sel === 'number' ? cboDivisionCountMethodList[sel].value : cboDivisionCountMethodList[sel[0]].value;
-            const Layernum = attrData.TotalData.LV1.SelectedLayer;
-            const DataNum = attrData.LayerData[Layernum].atrData.SelectedIndex;
-            const data = attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+            const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+            const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
+            const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
             const oldDivNum = data.Div_Num;
             if (oldDivNum === selectedValue) {
                 return;
@@ -2922,7 +2924,7 @@ export function setting(locSearch: string) {
                 for (let i = oldDivNum; i < selectedValue; i++) {
                     data.Class_Div[i] = new strClass_Div_data();
                 }
-                attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
+                state.attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
             }
             switch (data.ClassPaintMD.Color_Mode) {
                 case enmPaintColorSettingModeInfo.SoloColor:
@@ -2932,7 +2934,7 @@ export function setting(locSearch: string) {
                     data.ClassPaintMD.color2 = data.Class_Div[selectedValue - 1].PaintColor.Clone();
                     break;
                 default:
-                    attrData.Twocolort(Layernum, DataNum);
+                    state.attrData.Twocolort(Layernum, DataNum);
             }
             switch (data.Div_Method) {
                 case enmDivisionMethod.Free:
@@ -2941,7 +2943,7 @@ export function setting(locSearch: string) {
                     }
                     break;
                 default:
-                    attrData.Set_Div_Value(Layernum, DataNum);
+                    state.attrData.Set_Div_Value(Layernum, DataNum);
             }
             setSettingSoloModeWindow();
             setFrequencyLabel();
@@ -2981,7 +2983,7 @@ export function setting(locSearch: string) {
             clsLinePatternSet(e, nowContourMD().Regular.Line_Pat,
                 function (Lpat: Line_Property) {
                     nowContourMD().Regular.Line_Pat = Lpat;
-                    attrData.Draw_Sample_LineBox(doc.getElementById("contourLinePat"), Lpat);
+                    state.attrData.Draw_Sample_LineBox(doc.getElementById("contourLinePat"), Lpat);
                 }
             );
         }, "");
@@ -3007,7 +3009,7 @@ export function setting(locSearch: string) {
                 clsLinePatternSet(e, nowContourMD().Regular.Line_Pat,
                     function (Lpat: Line_Property) {
                         nowContourMD().Regular.Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3034,7 +3036,7 @@ export function setting(locSearch: string) {
                 clsLinePatternSet(e, nowContourMD().Regular.SP_Line_Pat,
                     function (Lpat: Line_Property) {
                         nowContourMD().Regular.SP_Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3054,7 +3056,7 @@ export function setting(locSearch: string) {
                 clsLinePatternSet(e, nowContourMD().Regular.EX_Line_Pat,
                     function (Lpat: Line_Property) {
                         nowContourMD().Regular.EX_Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3076,7 +3078,7 @@ export function setting(locSearch: string) {
                 clsLinePatternSet(e, nowContourMD().Irregular[n].Line_Pat,
                     function (Lpat: Line_Property) {
                         nowContourMD().Irregular[n].Line_Pat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3120,7 +3122,7 @@ export function setting(locSearch: string) {
             }, "width:100px");
         Generic.createNewButton(gbSeparateSettings, "階級区分の値を設定", "", 10, 325,
             function () {
-                const ns = attrData.nowDataSolo();
+                const ns = state.attrData.nowDataSolo();
                 const n = ns.Div_Num - 1;
                 ns.ContourMD.IrregularNum = n;
                 ns.ContourMD.Irregular = [];
@@ -3171,9 +3173,9 @@ export function setting(locSearch: string) {
         Generic.createNewCanvas(gbMark, "picMarkSize", "imgButton", 25, 17, 65, 65, picMark_Click, "");
         const gbMarkLine = Generic.createNewFrame(markSizeView, "gbMarkLine", "", 0, 0, 125, 95, "線の設定");
         Generic.createNewSizeSelect(gbMarkLine, 0, "cboMarkLineSize", "最大幅", 15, 10, 40, 1,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
-        Generic.createNewColorBox(gbMarkLine, "markLineColor", "色", attrData.nowDataSolo().MarkSizeMD.LineShape.LineColor, 15, 35, function(color: colorRGBA) {
-            attrData.nowDataSolo().MarkSizeMD.LineShape.Color = color;
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkSizeMD.LineShape.LineWidth = v });
+        Generic.createNewColorBox(gbMarkLine, "markLineColor", "色", state.attrData.nowDataSolo().MarkSizeMD.LineShape.LineColor, 15, 35, function(color: colorRGBA) {
+            state.attrData.nowDataSolo().MarkSizeMD.LineShape.Color = color;
         });
         Generic.createNewButton(gbMarkLine, "線端設定", "", 30, 70, btnMarkLineEdge, "");
 
@@ -3184,7 +3186,7 @@ export function setting(locSearch: string) {
             Generic.createNewWordNumberInput(gbLegendValue, "値" + String(i + 1), "", 0, "txtMarkSizeValue" + String(i + 1), 10, i * 30 + 10, undefined, 80,
                 function (obj: HTMLInputElement, v: number) {
                     const n = Number(obj.id.right(1)) - 1;
-                    attrData.nowDataSolo().MarkSizeMD.Value[n] = v;
+                    state.attrData.nowDataSolo().MarkSizeMD.Value[n] = v;
                 }, "");
         }
 
@@ -3192,46 +3194,46 @@ export function setting(locSearch: string) {
         const maxValuesetting = [{ value: enmMarkSizeValueMode.inDataItem, text: "データ項目の最大値" },
         { value: enmMarkSizeValueMode.UserDefinition, text: "ユーザ設定" }];
         Generic.createNewRadioButtonList(gbMarksizeLegendMaxValue, "markSizeMaxValueSetting", maxValuesetting, 10, 10, undefined, 30, undefined,
-            function (value: RadioValue) { attrData.nowDataSolo().MarkSizeMD.MaxValueMode = value }, "");
+            function (value: RadioValue) { state.attrData.nowDataSolo().MarkSizeMD.MaxValueMode = value }, "");
         Generic.createNewNumberInput(gbMarksizeLegendMaxValue, 0, "markSizeUserMaxValue", 40, 63, 90,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkSizeMD.MaxValue = v; }, "");
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkSizeMD.MaxValue = v; }, "");
         setMinusValueCase(markSizeView, "gbMarkSizeMinusValueCase");
 
         //記号の大きさモード線オブジェクトの線端設定
         function btnMarkLineEdge(e: MouseEvent) {
-            const edge = (attrData.nowDataSolo().MarkSizeMD as { LineShape: { LineEdge: Edge_Property } }).LineShape.LineEdge;
+            const edge = (state.attrData.nowDataSolo().MarkSizeMD as { LineShape: { LineEdge: Edge_Property } }).LineShape.LineEdge;
             clsLineEdgePattern(e, edge, okButton);
             function okButton(retEdge: Edge_Property) {
-                attrData.nowDataSolo().MarkSizeMD.LineShape.LineEdge = retEdge;
+                state.attrData.nowDataSolo().MarkSizeMD.LineShape.LineEdge = retEdge;
             }
         }
         //記号の大きさモード線オブジェクトの色設定
         // function MarkLineColor(e: MouseEvent) {
         //     const col = Generic.RGBAfromElement(e.target as HTMLElement);
-        //     attrData.nowDataSolo().MarkSizeMD.LineShape.Color = col;
+        //     state.attrData.nowDataSolo().MarkSizeMD.LineShape.Color = col;
         // }
 
 
         //内部データボタンクリック
         function innerDataSet(e: MouseEvent) {
-            clsInnerDataSet(e, attrData);
+            clsInnerDataSet(e, state.attrData);
         }
 
         //記号選択クリック(記号大きさ・記号の数共通)
         function picMark_Click(e: MouseEvent) {
             let md: MarkSizeMD | MarkBlockMD;
-            switch (attrData.nowData().ModeData) {
+            switch (state.attrData.nowData().ModeData) {
                 case enmSoloMode_Number.MarkSizeMode:
-                    md = attrData.nowDataSolo().MarkSizeMD;
+                    md = state.attrData.nowDataSolo().MarkSizeMD;
                     break;
                 case enmSoloMode_Number.MarkBlockMode:
-                    md = attrData.nowDataSolo().MarkBlockMD;
+                    md = state.attrData.nowDataSolo().MarkBlockMD;
                     break;
             }
-            clsMarkSet(e, picMarkChange, md.Mark, attrData);
+            clsMarkSet(e, picMarkChange, md.Mark, state.attrData);
             function picMarkChange(newMark: Mark_Property) {
                 md.Mark = newMark;
-                attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
+                state.attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
             }
         }
         //負の場合の内部色（記号の大きさ・数共通）
@@ -3239,16 +3241,16 @@ export function setting(locSearch: string) {
             const gbBlockMinusValueCase = Generic.createNewFrame(parent, ID, "", 140, 0, 150, 120, "負の値の場合");
             Generic.createNewTileBox(gbBlockMinusValueCase, ID + "_minusColorBox", "負の値の内部", clsBase.Tile(), 10, 15, undefined,
                 function (e: MouseEvent) {
-                    const mkc = attrData.nowDataSolo().MarkCommon;
+                    const mkc = state.attrData.nowDataSolo().MarkCommon;
                     clsTileSet(e, mkc.MinusTile,
                         function (retTile: Tile_Property) { mkc.MinusTile = retTile });
                 }
             );
             Generic.createNewSpan(gbBlockMinusValueCase, "凡例文字", "", "", 10, 45, "", undefined);
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "正の値", "", "", ID + "_txtMarkSizePlusValue", 20, 62, undefined, 80,
-                function (e: Event) { attrData.nowDataSolo().MarkCommon.LegendPlusWord = e.target.value }, "text-align:left");
+                function (e: Event) { state.attrData.nowDataSolo().MarkCommon.LegendPlusWord = e.target.value }, "text-align:left");
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "負の値", "", "", ID + "_txtMarkSizeMinusValue", 20, 92, undefined, 80,
-                function (e: Event) { attrData.nowDataSolo().MarkCommon.LegendMinusWord = e.target.value }, "text-align:left");
+                function (e: Event) { state.attrData.nowDataSolo().MarkCommon.LegendMinusWord = e.target.value }, "text-align:left");
 
         }
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■記号の数モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -3263,47 +3265,47 @@ export function setting(locSearch: string) {
         { value: enmMarkBlockArrange.Horizontal, text: '横' },
         { value: enmMarkBlockArrange.Random, text: 'ランダム' }];
         Generic.createNewRadioButtonList(gbBlockMarkArrange, "blockArrange", arrangeList, 10, 10, undefined, 22, undefined,
-            function (value: RadioValue) { attrData.nowDataSolo().MarkBlockMD.ArrangeB = value }, "");
+            function (value: RadioValue) { state.attrData.nowDataSolo().MarkBlockMD.ArrangeB = value }, "");
         Generic.createNewWordNumberInput(markBlockView, "1記号あたりの値", "", 0, "markBlockValue", 0, 260, undefined, 100,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBlockMD.Value = v }, "");
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkBlockMD.Value = v }, "");
         Generic.createNewWordTextInput(markBlockView, "凡例文字", "（空白は既定値）", "", "markBlockWord", 0, 285, undefined, 80,
-            function (e: Event) { attrData.nowDataSolo().MarkBlockMD.LegendBlockModeWord = (e.target as HTMLInputElement).value }, "text-align:left");
+            function (e: Event) { state.attrData.nowDataSolo().MarkBlockMD.LegendBlockModeWord = (e.target as HTMLInputElement).value }, "text-align:left");
         Generic.createNewCheckBox(markBlockView, "端数表示", "markBlockHasu", false, 0, 310, undefined,
-            function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBlockMD.HasuVisible = obj.checked }, "text-align:left");
+            function (obj: HTMLInputElement) { state.attrData.nowDataSolo().MarkBlockMD.HasuVisible = obj.checked }, "text-align:left");
         const cboOverlapList = [{ value: 0, text: '少し離す' }, { value: 1, text: 'ぴったり' },
         { value: 2, text: '1/4重ねる' }, { value: 3, text: '1/2重ねる' }, { value: 4, text: '3/4重ねる' }];
         Generic.createNewWordSelect(markBlockView, "記号の重なり", cboOverlapList.map(item => item.text), 0, "markBlockOverlap", 0, 335, undefined, 100, 0,
             function (obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
                 const selectedValue = typeof sel === 'number' ? cboOverlapList[sel].value : cboOverlapList[sel[0]].value;
-                attrData.nowDataSolo().MarkBlockMD.Overlap = selectedValue;
+                state.attrData.nowDataSolo().MarkBlockMD.Overlap = selectedValue;
             }, "", "", false);
         setMinusValueCase(markBlockView, "gbMarBlockMinusValueCase");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■棒の高さモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
         const markBarView = Generic.createNewDiv(settingModeWindow, "", "markBarView", "rightSettingWindowControlBase", 20, scrMargin.top, sw - 20, sh - 20, "", "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarHeightSize", "最大高さ", 0, 30, 60, 3,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
 
         const gbMarkBarLegendMaxValue = Generic.createNewFrame(markBarView, "", "", 0, 55, 150, 100, "最大高さの値");
         Generic.createNewRadioButtonList(gbMarkBarLegendMaxValue, "markBarmaxValueSetting", maxValuesetting, 10, 15, undefined, 30, undefined,
-            function (value: RadioValue) { attrData.nowDataSolo().MarkBarMD.MaxValueMode = value }, "");
+            function (value: RadioValue) { state.attrData.nowDataSolo().MarkBarMD.MaxValueMode = value }, "");
         Generic.createNewNumberInput(gbMarkBarLegendMaxValue, 0, "markBarUserMaxValue", 40, 70, 90,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.MaxValue = v; }, "");
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkBarMD.MaxValue = v; }, "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarWidth", "幅", 0, 185, 40, 2,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.Width = v });
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkBarMD.Width = v });
         Generic.createNewTileBox(markBarView, "markBarInnerColor", "内部色", clsBase.Tile(), 0, 215, 40,
             function (e: MouseEvent) {
-                const mkc = attrData.nowDataSolo().MarkBarMD.InnerTile;
+                const mkc = state.attrData.nowDataSolo().MarkBarMD.InnerTile;
                 clsTileSet(e, mkc,
-                    function (retTile: Tile_Property) { attrData.nowDataSolo().MarkBarMD.InnerTile = retTile });
+                    function (retTile: Tile_Property) { state.attrData.nowDataSolo().MarkBarMD.InnerTile = retTile });
             }
         );
         Generic.createNewWordDivCanvas(markBarView, "markBarFrame", "輪郭線", 0, 245, 40,
             function (e: MouseEvent) {
-                clsLinePatternSet(e, attrData.nowDataSolo().MarkBarMD.FrameLinePat,
+                clsLinePatternSet(e, state.attrData.nowDataSolo().MarkBarMD.FrameLinePat,
                     function (Lpat: Line_Property) {
-                        attrData.nowDataSolo().MarkBarMD.FrameLinePat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.nowDataSolo().MarkBarMD.FrameLinePat = Lpat;
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3314,21 +3316,21 @@ export function setting(locSearch: string) {
         const MarkBarShapeList = [{ value: enmMarkBarShape.bar, text: "縦棒" },
         { value: enmMarkBarShape.triangle, text: "三角" }];
         Generic.createNewRadioButtonList(gbMarkBarShape, "markBarShape", MarkBarShapeList, 10, 15, undefined, 25, undefined,
-            function (value: RadioValue) { attrData.nowDataSolo().MarkBarMD.BarShape = value }, "");
+            function (value: RadioValue) { state.attrData.nowDataSolo().MarkBarMD.BarShape = value }, "");
 
         const gbMarkBarScale = Generic.createNewFrame(markBarView, "", "", 180, 120, 150, 150, "縦棒設定");
         Generic.createNewCheckBox(gbMarkBarScale, "立体表示", "", true, 10, 20, undefined,
-            function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBarMD.ThreeD = obj.checked }, "");
+            function (obj: HTMLInputElement) { state.attrData.nowDataSolo().MarkBarMD.ThreeD = obj.checked }, "");
         Generic.createNewCheckBox(gbMarkBarScale, "目盛り線表示", "markBarScaleCheck", true, 10, 50, undefined,
-            function (obj: HTMLInputElement) { attrData.nowDataSolo().MarkBarMD.ScaleLineVisible = obj.checked }, "");
+            function (obj: HTMLInputElement) { state.attrData.nowDataSolo().MarkBarMD.ScaleLineVisible = obj.checked }, "");
         Generic.createNewWordNumberInput(gbMarkBarScale, "間隔", "", 0, "markBarScaleInterval", 15, 80, undefined, 80,
-            function (obj: HTMLInputElement, v: number) { attrData.nowDataSolo().MarkBarMD.ScaleLineInterval = v }, "");
+            function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkBarMD.ScaleLineInterval = v }, "");
         Generic.createNewWordDivCanvas(gbMarkBarScale, "markBarScaleLine", "パターン", 15, 110, 60,
             function (e: MouseEvent) {
-                clsLinePatternSet(e, attrData.nowDataSolo().MarkBarMD.scaleLinePat,
+                clsLinePatternSet(e, state.attrData.nowDataSolo().MarkBarMD.scaleLinePat,
                     function (Lpat: Line_Property) {
-                        attrData.nowDataSolo().MarkBarMD.scaleLinePat = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.nowDataSolo().MarkBarMD.scaleLinePat = Lpat;
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3339,14 +3341,14 @@ export function setting(locSearch: string) {
         const stringView = Generic.createNewDiv(settingModeWindow, "", "stringView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
         stringView.style.backgroundColor = "#f0f0f0";
         Generic.createNewButton(stringView, "フォント", "", 30, 30, function (e: MouseEvent) {
-            const md = attrData.nowDataSolo().StringMD;
-            clsFontSet(e, md.Font, function (newFont: Font_Property) { md.Font = newFont }, attrData);
+            const md = state.attrData.nowDataSolo().StringMD;
+            clsFontSet(e, md.Font, function (newFont: Font_Property) { md.Font = newFont }, state.attrData);
         }, "");
 
         Generic.createNewSizeSelect(stringView, 0, "txtStringSizeChange", "最大幅", 30, 70, 40, 3,
-            function (obj: HTMLInputElement, value: number) { attrData.nowDataSolo().StringMD.maxWidth = value; });
+            function (obj: HTMLInputElement, value: number) { state.attrData.nowDataSolo().StringMD.maxWidth = value; });
         Generic.createNewCheckBox(stringView, "最大幅を超えたら折り返す", "chkStringReturn", false, 30, 110, undefined,
-            function (obj: HTMLInputElement) { attrData.nowDataSolo().StringMD.WordTurnF = obj.checked }, "");
+            function (obj: HTMLInputElement) { state.attrData.nowDataSolo().StringMD.WordTurnF = obj.checked }, "");
         Generic.createNewButton(stringView, "内部データ", "", 30, 150, innerDataSet, "");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■重ね合わせモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -3354,19 +3356,19 @@ export function setting(locSearch: string) {
         const gbOverlayDataSet = Generic.createNewFrame(overlayView, "gbOverlayDataSet", "", 0, 10, 380, 80, "重ね合わせデータセット");
         Generic.createNewSelect(gbOverlayDataSet, [], -1, "overlayDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
-                attrData.TotalData.TotalMode.OverLay.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
+                state.attrData.TotalData.TotalMode.OverLay.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 overlayDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gbOverlayDataSet, "追加", "", 205, 15,
             function () {
-                const ov = attrData.TotalData.TotalMode.OverLay;
+                const ov = state.attrData.TotalData.TotalMode.OverLay;
                 ov.AddDataSet();
                 ov.SelectedIndex = ov.DataSet.length - 1;
                 setSettingOverlayModeWindow();
             },  "font-size:12px");
         Generic.createNewButton(gbOverlayDataSet, "データセット削除", "", 260, 15,
             function (e: MouseEvent) {
-                const ov = attrData.TotalData.TotalMode.OverLay;
+                const ov = state.attrData.TotalData.TotalMode.OverLay;
                 if (ov.DataSet.length === 1) {
                     Generic.alert(new point(e.clientX, e.clientY),"これ以上削除できません。");
                     return;
@@ -3386,14 +3388,14 @@ export function setting(locSearch: string) {
             }, "font-size:12px");
         Generic.createNewWordTextInput(gbOverlayDataSet, "タイトル", "", "", "overlayDatasetTitle", 15, 45, undefined, 200,
             function (e: Event) {
-                const ov = attrData.TotalData.TotalMode.OverLay;
+                const ov = state.attrData.TotalData.TotalMode.OverLay;
                 const ttl = (e.target as HTMLInputElement).value;
-                attrData.nowOverlay().title = ttl;
+                state.attrData.nowOverlay().title = ttl;
                 doc.getElementById("overlayDataSetList").setSelectData(ov.SelectedIndex, ov.SelectedIndex, ttl);
             }, "");
         Generic.createNewCheckBox(gbOverlayDataSet, "常に重ねる", "overlayAlwaysOver", false, 290, 50, undefined,
             function (obj: HTMLInputElement) {
-                attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index = (obj.checked === true) ? attrData.TotalData.TotalMode.OverLay.SelectedIndex : -1;
+                state.attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index = (obj.checked === true) ? state.attrData.TotalData.TotalMode.OverLay.SelectedIndex : -1;
             }, "");
 
         const gbOverlayDataSetItem = Generic.createNewFrame(overlayView, "gbOverlayDataSetItem", "", 0, 110, 380, 290, "重ね合わせデータ");
@@ -3413,14 +3415,14 @@ export function setting(locSearch: string) {
             const n = overlayListView.selectedRow;
             overlayListView.rowUp();
             const dest = n - 1;
-            const d1 = attrData.nowOverlay().DataItem[n].Clone();
+            const d1 = state.attrData.nowOverlay().DataItem[n].Clone();
             if (dest === -1) {
-                attrData.nowOverlay().DataItem.shift();
-                attrData.nowOverlay().DataItem.push(d1);
+                state.attrData.nowOverlay().DataItem.shift();
+                state.attrData.nowOverlay().DataItem.push(d1);
             } else {
-                const d2 = attrData.nowOverlay().DataItem[dest].Clone();
-                attrData.nowOverlay().DataItem[n] = d2;
-                attrData.nowOverlay().DataItem[dest] = d1;
+                const d2 = state.attrData.nowOverlay().DataItem[dest].Clone();
+                state.attrData.nowOverlay().DataItem[n] = d2;
+                state.attrData.nowOverlay().DataItem[dest] = d1;
             }
 
         }, "padding:2px");
@@ -3429,31 +3431,31 @@ export function setting(locSearch: string) {
                 const n = overlayListView.selectedRow;
                 overlayListView.rowDown();
                 let dest = n + 1;
-                const d1 = attrData.nowOverlay().DataItem[n].Clone();
-                if (dest === attrData.nowOverlay().DataItem.length) {
+                const d1 = state.attrData.nowOverlay().DataItem[n].Clone();
+                if (dest === state.attrData.nowOverlay().DataItem.length) {
                     dest = 0;
-                    attrData.nowOverlay().DataItem.splice(0, 0, d1);
-                    attrData.nowOverlay().DataItem.pop();
+                    state.attrData.nowOverlay().DataItem.splice(0, 0, d1);
+                    state.attrData.nowOverlay().DataItem.pop();
                 } else {
-                    const d2 = attrData.nowOverlay().DataItem[dest].Clone();
-                    attrData.nowOverlay().DataItem[n] = d2;
-                    attrData.nowOverlay().DataItem[dest] = d1;
+                    const d2 = state.attrData.nowOverlay().DataItem[dest].Clone();
+                    state.attrData.nowOverlay().DataItem[n] = d2;
+                    state.attrData.nowOverlay().DataItem[dest] = d1;
                 }
             }, "padding:2px");
         Generic.createNewCheckBox(gbOverlayItemData, "凡例を表示", "overlayItemDataLegendPrint", false, 75, 18, undefined,
             function (obj: HTMLInputElement) {
                 const n = overlayListView.selectedRow;
-                attrData.nowOverlay().DataItem[n].Legend_Print_Flag = obj.checked;
+                state.attrData.nowOverlay().DataItem[n].Legend_Print_Flag = obj.checked;
                 const tx = (obj.checked === true) ? "表示" : "非表示";
                 overlayListView.setValue(3, n, tx);
             }, "");
         Generic.createNewButton(gbOverlayItemData, "削除", "", 170, 15,
             function () {
-                if (attrData.nowOverlay().DataItem.length > 0) {
+                if (state.attrData.nowOverlay().DataItem.length > 0) {
                     const n = overlayListView.selectedRow;
-                    attrData.nowOverlay().DataItem.splice(n, 1);
+                    state.attrData.nowOverlay().DataItem.splice(n, 1);
                     overlayListView.deleteRow();
-                    if (attrData.nowOverlay().DataItem.length === 0) {
+                    if (state.attrData.nowOverlay().DataItem.length === 0) {
                         gbOverlayItemData.setVisibility?.(false);
                     }
                 }
@@ -3465,7 +3467,7 @@ export function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbOverlayDataSetItem, "すべて削除", "", 260, 260,
             function () {
-                attrData.nowOverlay().DataItem = [];
+                state.attrData.nowOverlay().DataItem = [];
                 overlayListView.clear();
                 gbOverlayItemData?.setVisibility?.(false);
             }, "width:100px");
@@ -3475,12 +3477,12 @@ export function setting(locSearch: string) {
         const gbseriesDataSet = Generic.createNewFrame(seriesView, "gbSeriesDataSet", "", 0, 10, 380, 80, "連続表示データセット");
         Generic.createNewSelect(gbseriesDataSet, [], -1, "seriesDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
-                attrData.TotalData.TotalMode.Series.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
+                state.attrData.TotalData.TotalMode.Series.SelectedIndex = typeof selectedIndex === 'number' ? selectedIndex : selectedIndex[0];
                 seriesDatasetDataItem();
             }, "width:185px", 1, false);
         Generic.createNewButton(gbseriesDataSet, "追加", "", 205, 15,
             function () {
-                const ov = attrData.TotalData.TotalMode.Series;
+                const ov = state.attrData.TotalData.TotalMode.Series;
                 const newDataset: ISeriesDatasetInfo = { DataItem: [], Name: "", title: "" };
                 ov.AddDataSet(newDataset);
                 ov.SelectedIndex = ov.DataSet.length - 1;
@@ -3488,7 +3490,7 @@ export function setting(locSearch: string) {
             }, "font-size:12px");
         Generic.createNewButton(gbseriesDataSet, "データセット削除", "", 260, 15,
             function (e: MouseEvent) {
-                const ov = attrData.TotalData.TotalMode.Series;
+                const ov = state.attrData.TotalData.TotalMode.Series;
                 if (ov.DataSet.length === 1) {
                     Generic.alert(new point(e.clientX, e.clientY),"これ以上削除できません。");
                     return;
@@ -3499,9 +3501,9 @@ export function setting(locSearch: string) {
             }, "font-size:12px");
         Generic.createNewWordTextInput(gbseriesDataSet, "タイトル", "", "", "seriesDatasetTitle", 15, 45, undefined, 200,
             function (e: Event) {
-                const ov = attrData.TotalData.TotalMode.Series;
+                const ov = state.attrData.TotalData.TotalMode.Series;
                 const ttl = (e.target as HTMLInputElement).value;
-                attrData.nowSeries().title = ttl;
+                state.attrData.nowSeries().title = ttl;
                 doc.getElementById("seriesDataSetList").setSelectData(ov.SelectedIndex, ov.SelectedIndex, ttl);
             }, "");
 
@@ -3518,7 +3520,7 @@ export function setting(locSearch: string) {
 
         const gbSeriesItemData = Generic.createNewFrame(gbSeriesDataSetItem, "gbSeriesItemData", "", 15, 230, 150, 50, "");
         Generic.createNewImageButton(gbSeriesItemData, "", "image/112_UpArrowLong_Grey_24x24_72.png", 10, 13, 24, 24, function () {
-            const seriesData = attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
+            const seriesData = state.attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
             const n = seriesListView?.selectedRow ?? -1;
             if (!seriesListView || n < 0 || n >= seriesData.length) {
                 return;
@@ -3541,7 +3543,7 @@ export function setting(locSearch: string) {
         }, "padding:2px");
         Generic.createNewImageButton(gbSeriesItemData, "", "image/112_DownArrowLong_Grey_24x24_72.png", 45, 13, 24, 24,
             function () {
-                const seriesData = attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
+                const seriesData = state.attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
                 const n = seriesListView?.selectedRow ?? -1;
                 if (!seriesListView || n < 0 || n >= seriesData.length) {
                     return;
@@ -3565,7 +3567,7 @@ export function setting(locSearch: string) {
 
         Generic.createNewButton(gbSeriesItemData, "削除", "", 90, 15,
             function () {
-                const seriesData = attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
+                const seriesData = state.attrData.nowSeries().DataItem as strSeries_DataSet_Item_Info[];
                 const n = seriesListView?.selectedRow ?? -1;
                 if (!seriesListView || n < 0 || n >= seriesData.length) {
                     return;
@@ -3579,10 +3581,10 @@ export function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbSeriesDataSetItem, "反転", "", 190, 245,
             function () {
-                if (attrData.nowSeries().DataItem.length < 2) {
+                if (state.attrData.nowSeries().DataItem.length < 2) {
                     return;
                 }
-                const series = attrData.TotalData.TotalMode.Series;
+                const series = state.attrData.TotalData.TotalMode.Series;
                 const seriesSelD = series.DataSet[series.SelectedIndex];
                 const seriesItems = seriesSelD.DataItem as JsonObject[];
                 const n = seriesItems.length;
@@ -3596,7 +3598,7 @@ export function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbSeriesDataSetItem, "すべて削除", "", 260, 245,
             function () {
-                attrData.nowSeries().DataItem = [];
+                state.attrData.nowSeries().DataItem = [];
                 seriesListView.clear();
                 gbSeriesItemData?.setVisibility?.(false);
             }, "width:100px");
@@ -3695,7 +3697,7 @@ export function setting(locSearch: string) {
                 for (let i = 0; i < selGraph.Data.length; i++) {
                     preAsta.push(selGraph.Data[i].DataNumber);
                 }
-                clsSelectData(e, attrData, graphAttrData.TotalData.LV1.SelectedLayer,
+                clsSelectData(e, state.attrData, graphAttrData.TotalData.LV1.SelectedLayer,
                     function (selectedStatus: boolean[], selectedNumber: number[]) {
                         const graphData = selGraph.Data as GraphModeDataItem[];
                         const colorPat = [];
@@ -3848,7 +3850,7 @@ export function setting(locSearch: string) {
         Generic.createNewCheckBox(gbLabelObjName, "最大幅を超えたら折り返す", "chkLblObjectNameReturn", false, 15, 42, undefined,
             function (obj: HTMLInputElement) { labelAttrData.nowLabel().ObjectName_Turn_Flag = obj.checked }, "");
         Generic.createNewButton(gbLabelObjName, "フォント", "", 155, 12, function (e: MouseEvent) {
-            clsFontSet(e, labelAttrData.nowLabel().ObjectName_Font, function (newFont: Font_Property) { labelAttrData.nowLabel().ObjectName_Font = newFont }, attrData);
+            clsFontSet(e, labelAttrData.nowLabel().ObjectName_Font, function (newFont: Font_Property) { labelAttrData.nowLabel().ObjectName_Font = newFont }, state.attrData);
         }, "");
 
         const gbLabelMaxSize = Generic.createNewFrame(labelView, "gbLabelDataSetItem", "", 240, 110, 110, 70, "最大幅");
@@ -3905,7 +3907,7 @@ export function setting(locSearch: string) {
                 for (let i = 0; i < labelDataItems.length; i++) {
                     preAsta.push(labelDataItems[i]);
                 }
-                clsSelectData(e, attrData, labelAttrData.TotalData.LV1.SelectedLayer,
+                clsSelectData(e, state.attrData, labelAttrData.TotalData.LV1.SelectedLayer,
                     function (selected: boolean[], selectedNumber: number[]) {
                         const adList = [];
                         let selN = lstLabelDataItem.length;
@@ -3913,7 +3915,7 @@ export function setting(locSearch: string) {
                         const Layernum = labelAttrData.TotalData.LV1.SelectedLayer;
                         for (let i = 0; i < selectedNumber.length; i++) {
                             labelDataItems.push(selectedNumber[i]);
-                            adList.push({ value: String(selectedNumber[i]), text: attrData.Get_DataTitle(Layernum, selectedNumber[i], true) });
+                            adList.push({ value: String(selectedNumber[i]), text: state.attrData.Get_DataTitle(Layernum, selectedNumber[i], true) });
                         }
                         lstLabelDataItem.addList(adList, selN);
                     }, preAsta, true, true, true, true);
@@ -3941,7 +3943,7 @@ export function setting(locSearch: string) {
         Generic.createNewCheckBox(gbLabelDataItem, "最大幅を超えたら折り返す", "chkLblDataValue_TurnFlag", false, 15, 130, undefined,
             function (obj: HTMLInputElement) { labelAttrData.nowLabel().DataValue_TurnFlag = obj.checked }, "");
         Generic.createNewButton(gbLabelDataItem, "フォント", "", 230, 125, function (e: MouseEvent) {
-            clsFontSet(e, labelAttrData.nowLabel().DataValue_Font, function (newFont: Font_Property) { labelAttrData.nowLabel().DataValue_Font = newFont }, attrData);
+            clsFontSet(e, labelAttrData.nowLabel().DataValue_Font, function (newFont: Font_Property) { labelAttrData.nowLabel().DataValue_Font = newFont }, state.attrData);
         }, "");
 
         const gbLabelFrame = Generic.createNewFrame(labelView, "gbLabelFrame", "", 0, 365, 350, 40, "枠");
@@ -3950,7 +3952,7 @@ export function setting(locSearch: string) {
                 clsLinePatternSet(e, labelAttrData.nowLabel().BorderLine,
                     function (Lpat: Line_Property) {
                         labelAttrData.nowLabel().BorderLine = Lpat;
-                        attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
+                        state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
                     }
                 );
             }
@@ -3974,7 +3976,7 @@ export function setting(locSearch: string) {
     /**設定のエラーをチェックして確認ボタンを表示 */
     function Check_Print_err() {
         const errButton = doc.getElementById("settingWindowBtnPrintError");
-        const retV = attrData.Get_PrintError();
+        const retV = state.attrData.Get_PrintError();
         switch (retV.Print_Enable) {
             case enmPrint_Enable.Printable:
                 errButton.setVisibility(false);
@@ -3991,15 +3993,15 @@ export function setting(locSearch: string) {
 
         //属性検索設定の有無
         let f = false;
-        switch (attrData.TotalData.LV1.Print_Mode_Total) {
+        switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
             case enmTotalMode_Number.DataViewMode: {
-                f = attrData.Check_Condition_UMU(attrData.TotalData.LV1.SelectedLayer);
+                f = state.attrData.Check_Condition_UMU(state.attrData.TotalData.LV1.SelectedLayer);
                 break;
             }
             case enmTotalMode_Number.OverLayMode: {
-                const n = attrData.TotalData.TotalMode.OverLay.SelectedIndex
-                for (i = 0; i < attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem.length; i++) {
-                    f = attrData.Check_Condition_UMU(attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem[i].Layer);
+                const n = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex
+                for (i = 0; i < state.attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem.length; i++) {
+                    f = state.attrData.Check_Condition_UMU(state.attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem[i].Layer);
                     if (f === true) {
                         break;
                     }
@@ -4007,23 +4009,23 @@ export function setting(locSearch: string) {
                 break;
             }
             case enmTotalMode_Number.SeriesMode: {
-                const n = attrData.TotalData.TotalMode.Series.SelectedIndex
-                const seriesItems = attrData.TotalData.TotalMode.Series.DataSet[n].DataItem as { Layer: number; Data: number }[];
+                const n = state.attrData.TotalData.TotalMode.Series.SelectedIndex
+                const seriesItems = state.attrData.TotalData.TotalMode.Series.DataSet[n].DataItem as { Layer: number; Data: number }[];
                 for (i = 0; i < seriesItems.length; i++) {
                     const ad = seriesItems[i];
-                    switch (attrData.Print_Mode_Total) {
+                    switch (state.attrData.Print_Mode_Total) {
                         case enmTotalMode_Number.DataViewMode: {
-                            f = attrData.Check_Condition_UMU(ad.Layer);
+                            f = state.attrData.Check_Condition_UMU(ad.Layer);
                             if (f === true) {
                                 break;
                             }
                             break;
                         }
                         case enmTotalMode_Number.OverLayMode: {
-                            for (let j = 0; j < attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem.length; j++) {
+                            for (let j = 0; j < state.attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem.length; j++) {
                                 // ループでjを最後の値まで進めるための空ループ
                             }
-                            f = attrData.Check_Condition_UMU(attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem[j].Layer);
+                            f = state.attrData.Check_Condition_UMU(state.attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem[j].Layer);
                             if (f === true) {
                                 break;
                             }
@@ -4047,9 +4049,9 @@ export function setting(locSearch: string) {
         Generic.readingIcon(filename +"データ読み込み");
         Generic.getMapfileByHttpRequest(url, function (getData: string | MapData) {
             const getDataStr = typeof getData === 'string' ? getData : JSON.stringify(getData);
-            attrData = new clsAttrData();
+            setAttrData(new clsAttrData());
             const mapdata: clsMapdata[] = [];
-            const retv = attrData.OpenNewMandaraFile(mapdata, getDataStr, filename, ext);
+            const retv = state.attrData.OpenNewMandaraFile(mapdata, getDataStr, filename, ext);
             if (retv.emes !== "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
@@ -4059,7 +4061,7 @@ export function setting(locSearch: string) {
             } else {
                 Generic.clear_backDiv();
                 initAfterGetData(true);
-                man_Data = attrData.TotalData.LV1.DataSourceType;
+                man_Data = state.attrData.TotalData.LV1.DataSourceType;
             }
 
         });

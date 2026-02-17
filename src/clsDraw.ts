@@ -828,6 +828,9 @@ class _clsDrawMarkFan {
     }
 }
 
+class clsDrawMarkFan extends _clsDrawMarkFan {}
+(globalThis as typeof globalThis & Record<string, unknown>).clsDrawMarkFan = clsDrawMarkFan;
+
 class clsSpline {
     static Spline_Get(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
 
@@ -4289,4 +4292,4 @@ class _clsTileMap {
 class clsTileMap extends _clsTileMap {}
 (globalThis as typeof globalThis & Record<string, unknown>).clsTileMap = clsTileMap;
 
-export { clsDraw, clsSpline, clsTileMap };
+export { clsDraw, clsSpline, clsTileMap, clsDrawMarkFan };

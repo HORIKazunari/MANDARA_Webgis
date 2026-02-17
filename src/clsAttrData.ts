@@ -2622,7 +2622,7 @@ class Screen_info {
     //線幅を返す（線幅が0の場合は最小値に）
     Get_Line_Width(Percentage: number): number {
         if (Percentage === 0) {
-            return (clsSettingData.MinimumLineWidth*0.2+0.1);
+            return (appState().settingData.MinimumLineWidth*0.2+0.1);
         } else {
             return this.Get_Length_On_Screen(Percentage);
         }
@@ -5553,10 +5553,10 @@ class clsAttrData {
                         existFont.push(fnt.Name);
                     }else{
                         nonExistFont.push(fnt.Name);
-                        fnt.Name=clsSettingData.SetFont;
+                        fnt.Name=appState().settingData.SetFont;
                     }
                 }else{
-                    fnt.Name=clsSettingData.SetFont;
+                    fnt.Name=appState().settingData.SetFont;
                 }
             }
             return fnt;

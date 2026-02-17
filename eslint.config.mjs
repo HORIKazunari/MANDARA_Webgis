@@ -84,6 +84,22 @@ export default tseslint.config(
       
       // TypeScript handles this
       'no-undef': 'off',
+
+      // Runtime safety: avoid legacy implicit globals that caused white-screen ReferenceErrors
+      'no-restricted-globals': ['error',
+        {
+          name: 'clsSettingData',
+          message: 'Use appState().settingData instead of legacy global clsSettingData.',
+        },
+        {
+          name: 'mapMouse',
+          message: 'Import mapMouseInternal (or alias) from frmPrint instead of relying on global mapMouse.',
+        },
+        {
+          name: 'mousePointingSituations',
+          message: 'Define/import mousePointingSituations in module scope; do not rely on implicit global declarations.',
+        },
+      ],
       
       // Prevent interface/class merge pitfalls
       '@typescript-eslint/no-unsafe-declaration-merging': 'error',
@@ -102,6 +118,51 @@ export default tseslint.config(
     ],
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'error',
+    },
+  },
+  {
+    files: ['src/clsSubWindows.ts'],
+    rules: {
+      'no-restricted-globals': ['error',
+        {
+          name: 'Frm_Print',
+          message: 'Use appState().frmPrint instead of legacy global Frm_Print.',
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/clsWindow.ts'],
+    rules: {
+      'no-restricted-globals': ['error',
+        {
+          name: 'attrData',
+          message: 'Use state.attrData (or local binding synchronized with AppState) instead of legacy global attrData.',
+        },
+        {
+          name: 'Frm_Print',
+          message: 'Use state.frmPrint (AppState) instead of legacy global Frm_Print.',
+        },
+        {
+          name: 'propertyWindow',
+          message: 'Use state.propertyWindow (AppState) instead of legacy global propertyWindow.',
+        },
+        {
+          name: 'settingModeWindow',
+          message: 'Use state.settingModeWindow (AppState) instead of legacy global settingModeWindow.',
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/frmPrint.ts'],
+    rules: {
+      'no-restricted-globals': ['error',
+        {
+          name: 'Frm_Print',
+          message: 'Use state.frmPrint (AppState) instead of legacy global Frm_Print.',
+        },
+      ],
     },
   },
 );

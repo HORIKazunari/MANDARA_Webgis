@@ -5,7 +5,7 @@ import { Object_NameTimeStac_Data, EnableMPLine_Data } from './clsMapdata';
 import { enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, Screen_info } from './clsAttrData';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
-import { enmAttDataType, enmLayerType, enmMatchingMode, enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
@@ -18,6 +18,13 @@ import { enmAttDataType, enmLayerType, enmMatchingMode, enmShape, enmZahyo_mode_
 // enmMatchingMode は globals.d.ts で定義済み
 
 // cstRectangle_Cross は globals.d.ts で定義済み
+
+const mousePointingSituations = {
+    up: 0,
+    down: 1,
+    downAndMove: 2,
+    pinch: 3
+} as const;
 
 class EllipPar {
     a: number = 0;
@@ -39,9 +46,6 @@ export class TKY2JGDInfo_Impl {
     private readonly PID = 3.14159265358979;
     private readonly TWO_PI = 6.28318530717959;
     private readonly ROBYO = 206264.806247;
-
-    constructor() {
-    }
 
     private ensureParametersInitialized(): void {
         if (this.parametersInitialized === true) {
@@ -1930,8 +1934,9 @@ export class Generic {
 
     /**オブジェクト名の漢字を統一する。比較する漢字が含まれていた場合にtrue */
     static ObjName_Kanji_Compatible(objName: string){
+        const settingData = appState().settingData;
 
-        const Word_Compatible  = clsSettingData.ObjectName_Word_Compatible.split("|");
+        const Word_Compatible  = settingData.ObjectName_Word_Compatible.split("|");
         let f = false;
 
         const oldCharacter  = "亞圍壹飮榮艷應毆穩壞覺樂寬罐陷戲據峽鄕驅徑溪莖鷄缺圈獻險嚴恆國濟劑慘贊絲兒實釋獸肅緖敍稱剩條疊囑愼盡醉數聲攝專潛錢壯插裝續對臺澤擔彈遲鑄敕遞點黨當獨屆貳霸發濱福變辨舖寶餠藥餘搖來龍獵禮齡戀爐朗惡爲隱衞圓鹽橫假畫繪擴學勸歡觀顏歸龜犧擧挾勳惠經螢藝儉檢顯效鑛碎櫻雜棧殘辭舍壽從縱處奬燒證壤淨讓觸眞圖隨樞靜竊戰纖禪總騷臟墮帶瀧單膽斷晝鎭鐵傳盜讀繩惱廢賣髮甁拂邊瓣襃沒萬譯與樣賴覽綠隸勞樓灣壓醫稻營驛奧歐價會懷殼嶽卷關氣僞舊狹曉區薰繼輕劍權縣驗廣號黑齋册參蠶齒濕寫收澁諸將祥乘孃釀寢神粹髓瀨齊淺踐曾雙搜爭莊增藏屬體滯擇團癡蟲廳聽塚轉都燈德腦拜麥拔蠻祕佛竝辯穗豐飜滿默彌豫譽謠亂隆兩壘勵靈";
@@ -1947,7 +1952,7 @@ export class Generic {
             }
         }
 
-        if(clsSettingData.KatakanaCheck === true ){
+        if(settingData.KatakanaCheck === true ){
             const katakana=Generic.Array2Dimension(3,2, undefined); 
             katakana[0][ 0] = "ヴァ"
             katakana[0][ 1] = "バ"
@@ -1965,7 +1970,7 @@ export class Generic {
         }
 
         //新字体旧字体比較
-        if(clsSettingData.SinKyuCharacter === true ){
+        if(settingData.SinKyuCharacter === true ){
             for(let j  = 1 ;j<  objName.length;j++){
                 const k  = oldCharacter.indexOf( objName.mid( j, 1));
                 if(k !== -1 ){
@@ -2792,6 +2797,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
     /**緯度経度(point)の文字列取得*/
     static Get_LatLon_PointStrings(Pos: point, Header_Flag=true){
+        const settingData = appState().settingData;
 
         const P = Pos.Clone();
         const retPS = {x: "", y: ""};
@@ -2824,7 +2830,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             retPS.x = "";
             retPS.y = "";
         }
-        if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
+        if (settingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
             const LatLonDMS = new latlon(P.y,P.x).toDegreeMinuteSecond();
             const o = LatLonDMS.LongitudeDMS;
             retPS.x += String(o.degree) + "度" + String(o.minute) + "分" + o.second.toFixed(4) + "秒"

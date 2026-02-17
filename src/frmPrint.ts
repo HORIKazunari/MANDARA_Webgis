@@ -54,7 +54,12 @@ type EnableLineInfo = {
     LineCode: number;
 };
 
-// mousePointingSituations は globals.d.ts で定義済み
+const mousePointingSituations = {
+    up: 0,
+    down: 1,
+    downAndMove: 2,
+    pinch: 3
+} as const;
 
 // enmPrintMouseMode は globals.d.ts で定義済み
 
@@ -86,8 +91,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     document.addEventListener('keydown', function (e: KeyboardEvent): void {
         const elm: NodeListOf<HTMLElement> = document.getElementsByName("backDiv");
         if (elm.length === 0) {
-            if (Frm_Print.style.zIndex === "2") {
-                if (typeof Frm_Print.getVisibility === "function" && Frm_Print.getVisibility() === true) {
+            if (state.frmPrint.style.zIndex === "2") {
+                if (typeof state.frmPrint.getVisibility === "function" && state.frmPrint.getVisibility() === true) {
                     keyOperation(e.keyCode, e.shiftKey, e.ctrlKey);
                 }
             }
@@ -420,8 +425,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                         break;
                     }
                 }
-                clsPrint.printMapScreen(Frm_Print.picMap);
-                Frm_Print.picMap.style.cursor = 'default';
+                clsPrint.printMapScreen(state.frmPrint.picMap);
+                state.frmPrint.picMap.style.cursor = 'default';
                 mousePointingSituation = mousePointingSituations.up;
                 tmp.PrintMouseMode = enmPrintMouseMode.Normal;
                 tmp.MouseDownF = false;
@@ -477,7 +482,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
                     const odra = state.attrData.TempData.frmPrint_Temp.OD_Drag;
                     state.attrData.LayerData[Layernum].Add_OD_Bezier(odra.ObjectPos, odra.Data, mouseUpSRXT);
-                    clsPrint.printMapScreen(Frm_Print.picMap);
+                    clsPrint.printMapScreen(state.frmPrint.picMap);
                     break;
                 }
                 case enmPrintMouseMode.Fig: {
@@ -522,37 +527,37 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                     if (av.MapTitle.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "タイトル表示",
-                                            event: function () { state.attrData.TotalData.ViewStyle.MapTitle.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
+                                            event: function () { state.attrData.TotalData.ViewStyle.MapTitle.Visible = true; clsPrint.printMapScreen(state.frmPrint.picMap); }
                                         });
                                     }
                                     if (av.MapLegend.Base.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "凡例表示",
-                                            event: function () { state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
+                                            event: function () { state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible = true; clsPrint.printMapScreen(state.frmPrint.picMap); }
                                         });
                                     }
                                     if (av.MapScale.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "スケール表示",
-                                            event: function () { state.attrData.TotalData.ViewStyle.MapScale.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
+                                            event: function () { state.attrData.TotalData.ViewStyle.MapScale.Visible = true; clsPrint.printMapScreen(state.frmPrint.picMap); }
                                         });
                                     }
                                     if (av.AttMapCompass.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "方位表示",
-                                            event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap) }
+                                            event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = true; clsPrint.printMapScreen(state.frmPrint.picMap) }
                                         });
                                     }
                                     if (av.DataNote.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "注表示",
-                                            event: function () { state.attrData.TotalData.ViewStyle.DataNote.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
+                                            event: function () { state.attrData.TotalData.ViewStyle.DataNote.Visible = true; clsPrint.printMapScreen(state.frmPrint.picMap); }
                                         });
                                     }
                                     if (av.AccessoryGroupBox.Visible === false) {
                                         mnuAccPopupVisible.push({
                                             caption: "飾りグループボックス表示",
-                                            event: function () { state.attrData.TotalData.ViewStyle.AccessoryGroupBox.Visible = true; clsPrint.printMapScreen(Frm_Print.picMap); }
+                                            event: function () { state.attrData.TotalData.ViewStyle.AccessoryGroupBox.Visible = true; clsPrint.printMapScreen(state.frmPrint.picMap); }
                                         });
                                     }
                                     if(state.attrData.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido){
@@ -606,27 +611,27 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                     const mnuAccPopupVisible: MenuItem[] = [];
                                     switch (retV.type) {
                                         case Check_Acc_Result.Compass:
-                                            mnuAccPopupVisible.push({ caption: "方位非表示", event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap) } });
+                                            mnuAccPopupVisible.push({ caption: "方位非表示", event: function () { state.attrData.TotalData.ViewStyle.AttMapCompass.Visible = false; clsPrint.printMapScreen(state.frmPrint.picMap) } });
                                             mnuAccPopupVisible.push({ caption: "方位設定", event: accVisible });
                                             break;
                                         case Check_Acc_Result.GroupBox:
-                                            mnuAccPopupVisible.push({ caption: "飾りグループボックス非表示", event: function () { state.attrData.TotalData.ViewStyle.AccessoryGroupBox.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap) } });
+                                            mnuAccPopupVisible.push({ caption: "飾りグループボックス非表示", event: function () { state.attrData.TotalData.ViewStyle.AccessoryGroupBox.Visible = false; clsPrint.printMapScreen(state.frmPrint.picMap) } });
                                             mnuAccPopupVisible.push({ caption: "飾りグループボックス設定", event: accVisible });
                                             break;
                                         case Check_Acc_Result.Legend:
-                                            mnuAccPopupVisible.push({ caption: "凡例非表示", event: function () { state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap); } });
+                                            mnuAccPopupVisible.push({ caption: "凡例非表示", event: function () { state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible = false; clsPrint.printMapScreen(state.frmPrint.picMap); } });
                                             mnuAccPopupVisible.push({ caption: "凡例設定", event: accVisible });
                                             break;
                                         case Check_Acc_Result.Scale:
-                                            mnuAccPopupVisible.push({ caption: "スケール非表示", event: function () { state.attrData.TotalData.ViewStyle.MapScale.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap); } });
+                                            mnuAccPopupVisible.push({ caption: "スケール非表示", event: function () { state.attrData.TotalData.ViewStyle.MapScale.Visible = false; clsPrint.printMapScreen(state.frmPrint.picMap); } });
                                             mnuAccPopupVisible.push({ caption: "スケール設定", event: accVisible });
                                             break;
                                         case Check_Acc_Result.Note:
-                                            mnuAccPopupVisible.push({ caption: "注釈非表示", event: function () { state.attrData.TotalData.ViewStyle.DataNote.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap); } });
+                                            mnuAccPopupVisible.push({ caption: "注釈非表示", event: function () { state.attrData.TotalData.ViewStyle.DataNote.Visible = false; clsPrint.printMapScreen(state.frmPrint.picMap); } });
                                             mnuAccPopupVisible.push({ caption: "注釈設定", event: accVisible });
                                             break
                                         case Check_Acc_Result.Title:
-                                            mnuAccPopupVisible.push({ caption: "タイトル非表示", event: function () { state.attrData.TotalData.ViewStyle.MapTitle.Visible = false; clsPrint.printMapScreen(Frm_Print.picMap); } });
+                                            mnuAccPopupVisible.push({ caption: "タイトル非表示", event: function () { state.attrData.TotalData.ViewStyle.MapTitle.Visible = false; clsPrint.printMapScreen(state.frmPrint.picMap); } });
                                             mnuAccPopupVisible.push({ caption: "タイトル設定", event: accVisible });
                                             break
                                     }
@@ -641,7 +646,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                                 frmCompassSettings(state.attrData.TotalData.ViewStyle.AttMapCompass,
                                                     function (v: MapCompass) {
                                                         state.attrData.TotalData.ViewStyle.AttMapCompass = v;
-                                                        clsPrint.printMapScreen(Frm_Print.picMap);
+                                                        clsPrint.printMapScreen(state.frmPrint.picMap);
                                                     });
                                                 break;
                                             case "スケール設定":
@@ -665,7 +670,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                     function odReset() {
                                         const state = appState();
                                         state.attrData.LayerData[Layernum].Remove_OD_Bezier(ato.ObjectPos, ato.Data);
-                                        clsPrint.printMapScreen(Frm_Print.picMap);
+                                        clsPrint.printMapScreen(state.frmPrint.picMap);
                                     }
                                 }
                                 break;
@@ -774,7 +779,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         if (window.confirm("新しい記号表示位置をクリックして指定します(右クリックでキャンセル)。") === false) {return;}
                                     }
                                     state.attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage = false;
-                                    Frm_Print.picMap.style.cursor = 'crosshair';
+                                    state.frmPrint.picMap.style.cursor = 'crosshair';
                                     state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.SymbolPoint;
                                 }
                             });
@@ -784,7 +789,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         const on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
                                         const d = state.attrData.LayerData[on.objLayer].atrObject.atrObjectData[on.ObjNumber];
                                         d.Symbol = d.CenterPoint;
-                                        clsPrint.printMapScreen(Frm_Print.picMap);
+                                        clsPrint.printMapScreen(state.frmPrint.picMap);
                                     }
                                 });
                             }
@@ -797,7 +802,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         if (window.confirm("新しいラベル表示位置をクリックして指定します(右クリックでキャンセル)。") === false) { return; }
                                     }
                                     state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage = false;
-                                    Frm_Print.picMap.style.cursor = 'crosshair';
+                                    state.frmPrint.picMap.style.cursor = 'crosshair';
                                     state.attrData.TempData.frmPrint_Temp.PrintMouseMode = enmPrintMouseMode.LabelPoint;
                                 }
                             });
@@ -807,7 +812,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         const on = state.attrData.TempData.frmPrint_Temp.OnObject[0];
                                         const d = state.attrData.LayerData[on.objLayer].atrObject.atrObjectData[on.ObjNumber];
                                         d.Label = d.CenterPoint;
-                                        clsPrint.printMapScreen(Frm_Print.picMap);
+                                        clsPrint.printMapScreen(state.frmPrint.picMap);
                                     }
                                 });
                             }
@@ -957,9 +962,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         const odc = Near_OD(MapP);
         if (odc !== -1) {
             const tx4 = "OD" + state.attrData.Get_KenObjName(state.attrData.TotalData.LV1.SelectedLayer, odc);
-            const label1 = Frm_Print.label1;
-            const label2 = Frm_Print.label2;
-            const label3 = Frm_Print.label3;
+            const label1 = state.frmPrint.label1;
+            const label2 = state.frmPrint.label2;
+            const label3 = state.frmPrint.label3;
             if (label1 && label2 && label3) {
                 label3.style.left=(label1.offsetWidth+label2.offsetWidth+20).px();
                 label3.innerHTML = tx4;
@@ -1090,7 +1095,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     tx4 = "等値線" + cdt.Value.toString() + state.attrData.Get_DataUnit(cdt.Layernum, cdt.DataNum);
                     let conDiv=document.getElementById("contourDataTip");
                     if(conDiv===undefined){
-                        conDiv=Generic.createNewSpan(Frm_Print as unknown as HTMLElement,tx4,"contourDataTip","",ScreenP.x+5,ScreenP.y+state.scrMargin.top-15,"z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffff",undefined)
+                        conDiv=Generic.createNewSpan(state.frmPrint as unknown as HTMLElement,tx4,"contourDataTip","",ScreenP.x+5,ScreenP.y+state.scrMargin.top-15,"z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffff",undefined)
                     }else{
                         conDiv.innerHTML=tx4;
                         conDiv.style.left=(ScreenP.x+5).px();
@@ -1102,7 +1107,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         if(tx4===""){
             const dv=document.getElementById("contourDataTip")
             if( dv!==undefined){
-                Frm_Print.removeChild(dv);
+                state.frmPrint.removeChild(dv);
             }
     }
 
@@ -1271,8 +1276,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     switch (OnObject.length) {
                         case 0: {
                             state.propertyWindow.pnlProperty?.setVisibility?.(false);
-                            if (Frm_Print.label2) {
-                                Frm_Print.label2.innerHTML="";
+                            if (state.frmPrint.label2) {
+                                state.frmPrint.label2.innerHTML="";
                             }
                             break;
                         }
@@ -1304,9 +1309,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                         }
                     }
                 }
-                if (Frm_Print.label1 && Frm_Print.label2) {
-                    Frm_Print.label2.style.left=(Frm_Print.label1.offsetWidth+10).px();
-                    Frm_Print.label2.innerHTML= tx;
+                if (state.frmPrint.label1 && state.frmPrint.label2) {
+                    state.frmPrint.label2.style.left=(state.frmPrint.label1.offsetWidth+10).px();
+                    state.frmPrint.label2.innerHTML= tx;
                 }
                 state.attrData.TempData.frmPrint_Temp.OnObject = OnObject;
                 if ((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.MultiObjectswitch) && (L_Print_Mode_Layer === enmLayerMode_Number.SoloMode)){
@@ -1385,9 +1390,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             //     frm_Property.pnlOverLayProperty.Visible = false;
             // }
         }
-        if (Frm_Print.label1 && Frm_Print.label2) {
-            Frm_Print.label2.style.left=(Frm_Print.label1.offsetWidth+10).px();
-            Frm_Print.label2.innerHTML = tx
+        if (state.frmPrint.label1 && state.frmPrint.label2) {
+            state.frmPrint.label2.style.left=(state.frmPrint.label1.offsetWidth+10).px();
+            state.frmPrint.label2.innerHTML = tx
         }
     }
 
@@ -1450,9 +1455,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)===true){
             const P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo) as point;
             const PSt  = Generic.Get_PositionCoordinate_Strings(P, vs.Zahyo);
-            Frm_Print.label1.innerHTML=PSt.x + "/" + PSt.y;
+            state.frmPrint.label1.innerHTML=PSt.x + "/" + PSt.y;
         }else{
-            Frm_Print.label1.innerHTML="";
+            state.frmPrint.label1.innerHTML="";
         }
     }
 
@@ -1536,7 +1541,7 @@ class frmPrint {
         }
         tg.fillStyle = "#ffffff";//背後が透過色になるため白にする
         tg.fillRect(0, 0, tilecanvas.width, tilecanvas.height)
-        tg.drawImage(Frm_Print.picMap, 0, 0);
+        tg.drawImage(state.frmPrint.picMap, 0, 0);
         if (WindowOutFlag === true) {
             Generic.windowCenterOpen(tilecanvas.toDataURL(), tilecanvas.width, tilecanvas.height, "MANDARA JS");
         } else {
@@ -1613,7 +1618,7 @@ class frmPrint {
             }
             state.attrData.TotalData.ViewStyle.MeshLine = MeshLpat.Clone();
             Generic.clear_backDiv();
-            clsPrint.printMapScreen(Frm_Print.picMap);
+            clsPrint.printMapScreen(state.frmPrint.picMap);
         }
 
         function showLinePattern(){
@@ -1856,39 +1861,39 @@ class frmPrint {
         const marginSide = state.scrMargin.side ?? 0;
         const marginTop = state.scrMargin.top ?? 0;
         const marginBottom = state.scrMargin.bottom ?? 0;
-        Frm_Print.style.left = (FpicRect.left - marginSide).px();
-        Frm_Print.style.top = (FpicRect.top - marginTop).px();
-        Frm_Print.style.width =(FpicRect.width() + marginSide*2).px();
-        Frm_Print.style.height = (FpicRect.height() + marginTop + marginBottom).px();
-        state.propertyWindow.style.left=(Frm_Print.style.left.removePx()+Frm_Print.style.width.removePx()+10).px();
-        state.propertyWindow.style.top=(Frm_Print.style.top.removePx()+marginTop).px();
-        state.propertyWindow.style.height=Frm_Print.style.height;
+        state.frmPrint.style.left = (FpicRect.left - marginSide).px();
+        state.frmPrint.style.top = (FpicRect.top - marginTop).px();
+        state.frmPrint.style.width =(FpicRect.width() + marginSide*2).px();
+        state.frmPrint.style.height = (FpicRect.height() + marginTop + marginBottom).px();
+        state.propertyWindow.style.left=(state.frmPrint.style.left.removePx()+state.frmPrint.style.width.removePx()+10).px();
+        state.propertyWindow.style.top=(state.frmPrint.style.top.removePx()+marginTop).px();
+        state.propertyWindow.style.height=state.frmPrint.style.height;
         Generic.moveInnerElement(state.propertyWindow);
         this.resizeMapWindow();
     }
     
     static resizeMapWindow() {
         const state = appState();
-        const mapDIV = Frm_Print.picMap.parentElement as HTMLElement | null;
+        const mapDIV = state.frmPrint.picMap.parentElement as HTMLElement | null;
         if (!mapDIV) { return; }
         const marginSide = state.scrMargin.side ?? 0;
         const marginTop = state.scrMargin.top ?? 0;
         const marginBottom = state.scrMargin.bottom ?? 0;
-        Frm_Print.picMap.style.left = marginSide.px();
-        Frm_Print.picMap.style.top = marginTop.px();
-        Frm_Print.picMap.width = mapDIV.style.width.removePx() - marginSide * 2;
-        Frm_Print.picMap.height = mapDIV.style.height.removePx() - marginTop - marginBottom;
-        const p = new point(Frm_Print.style.left.removePx() + state.scrMargin.side, Frm_Print.style.top.removePx() + state.scrMargin.top);
-        const s = new size(Frm_Print.picMap.width, Frm_Print.picMap.height);
+        state.frmPrint.picMap.style.left = marginSide.px();
+        state.frmPrint.picMap.style.top = marginTop.px();
+        state.frmPrint.picMap.width = mapDIV.style.width.removePx() - marginSide * 2;
+        state.frmPrint.picMap.height = mapDIV.style.height.removePx() - marginTop - marginBottom;
+        const p = new point(state.frmPrint.style.left.removePx() + state.scrMargin.side, state.frmPrint.style.top.removePx() + state.scrMargin.top);
+        const s = new size(state.frmPrint.picMap.width, state.frmPrint.picMap.height);
         state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
-        Generic.moveInnerElement(Frm_Print);
-        if(Frm_Print.maxSizeFlag===false){
-            Frm_Print.oldpos=new rectangle(new point(Frm_Print.style.left.removePx(),Frm_Print.style.top.removePx()),
-                        new size(Frm_Print.style.width.removePx(),Frm_Print.style.height.removePx()));
+        Generic.moveInnerElement(state.frmPrint);
+        if(state.frmPrint.maxSizeFlag===false){
+            state.frmPrint.oldpos=new rectangle(new point(state.frmPrint.style.left.removePx(),state.frmPrint.style.top.removePx()),
+                        new size(state.frmPrint.style.width.removePx(),state.frmPrint.style.height.removePx()));
         }
-        Frm_Print.resetMaxButton?.(!Frm_Print.maxSizeFlag);
-        if (typeof Frm_Print.getVisibility === "function" && Frm_Print.getVisibility() === true) {
-            clsPrint.printMapScreen(Frm_Print.picMap);
+        state.frmPrint.resetMaxButton?.(!state.frmPrint.maxSizeFlag);
+        if (typeof state.frmPrint.getVisibility === "function" && state.frmPrint.getVisibility() === true) {
+            clsPrint.printMapScreen(state.frmPrint.picMap);
         }
     }
     static Init_FrmPrint() {
@@ -1909,10 +1914,10 @@ class frmPrint {
         const p = new point(ScreenW / 2 - psw / 2, ScreenH / 2 - psh / 2);
         const s = new size(psw, psh);
         state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
-        Frm_Print.resetMaxButton?.(true);
-        if (Frm_Print.label1) Frm_Print.label1.innerHTML="";
-        if (Frm_Print.label2) Frm_Print.label2.innerHTML="";
-        if (Frm_Print.label3) Frm_Print.label3.innerHTML="";
+        state.frmPrint.resetMaxButton?.(true);
+        if (state.frmPrint.label1) state.frmPrint.label1.innerHTML="";
+        if (state.frmPrint.label2) state.frmPrint.label2.innerHTML="";
+        if (state.frmPrint.label3) state.frmPrint.label3.innerHTML="";
     }
     
 
@@ -1932,7 +1937,7 @@ class frmPrint {
         const koma = atst.Koma ?? 0;
         const lastIndex = dataSet.DataItem.length - 1;
         atst.Koma = (koma === lastIndex) ? 0 : koma + 1;
-        clsPrint.printMapScreen(Frm_Print.picMap);
+        clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
     /**連続表示ボタン 前*/
@@ -1951,14 +1956,14 @@ class frmPrint {
         const koma = atst.Koma ?? 0;
         const lastIndex = dataSet.DataItem.length - 1;
         atst.Koma  = (koma === 0) ? lastIndex : koma - 1;
-        clsPrint.printMapScreen(Frm_Print.picMap);
+        clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
     //全体表示ボタン
     static wholeMapShow() {
         const state = appState();
         state.attrData.TotalData.ViewStyle.ScrData.ScrView = state.attrData.TotalData.ViewStyle.ScrData.MapRectangle.Clone();
-        clsPrint.printMapScreen(Frm_Print.picMap);
+        clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
     //カーソル位置のオブジェクトを強調
@@ -2053,5 +2058,8 @@ class frmPrint {
         }
     }
 }
+
+export const mapMouse = mapMouseInternal;
+(globalThis as typeof globalThis & Record<string, unknown>).mapMouse = mapMouseInternal;
 
 

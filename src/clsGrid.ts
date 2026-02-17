@@ -338,7 +338,7 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
     const errorInfo = Generic.createNewTextarea(picTop,"","",sideLeft,40,10,10,"font-size:12px;width:200px;height:70px;resize:none") as HTMLTextAreaElement;
     errorInfo.readOnly=true;
     
-    const ktGrid = new gridControl(backDiv, 10, gridTopY, gScreenWidth-layerDataWidth-30, gScreenHeight - gridTopY-10,clsSettingData.SetFont);
+    const ktGrid = new gridControl(backDiv, 10, gridTopY, gScreenWidth-layerDataWidth-30, gScreenHeight - gridTopY-10, appState().settingData.SetFont);
     const opeEnable= {
         RightClickEnabled:true, //  'グリッド上の右クリックでコピー以外は使えなくする
         RightClickAllEnabled:true, //  '右クリックメニューの使用可否

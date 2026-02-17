@@ -997,7 +997,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
             void 0;
         },"");
     }
-    if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
+    if (appState().settingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
         const LatLonDMS = LatLon.toDegreeMinuteSecond();
         Generic.createNewWordNumberInput(pnlLat, "", "度", Math.abs(LatLonDMS.LatitudeDMS.degree), "latDBox", 90, 15, undefined, 50, undefined, "");
         Generic.createNewWordNumberInput(pnlLat, "", "分", LatLonDMS.LatitudeDMS.minute, "latMBox", 170, 15, undefined, 30, undefined, "");
@@ -1011,7 +1011,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
         Generic.createNewWordNumberInput(pnlLon, "", "度", Math.abs(LatLon.lon), "lonDegreeBox", 90, 15, undefined, 100, undefined, ""); 
     }
     function buttonOK(){
-        if (clsSettingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
+        if (appState().settingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
             const dms = new strLatLonDegreeMinuteSecond();
             const latDBox = document.getElementById("latDBox") as HTMLInputElement;
             const latMBox = document.getElementById("latMBox") as HTMLInputElement;
@@ -1125,7 +1125,7 @@ function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) =>
 /**出力画面のオプション */
 function frmPrintOption(firstTab: number = 0) {
     const atv = appState().attrData.TotalData.ViewStyle.Clone() as ReturnType<typeof appState>['attrData']['TotalData']['ViewStyle'];
-    const sdata = clsSettingData.Clone() as typeof clsSettingData;
+    const sdata = appState().settingData.Clone();
     const backDiv = Generic.set_backDiv("", "オブション", 600, 420, true, true, buttonOK, 0.2, true);
     const tablist=["全般","背景・描画","凡例設定","欠損値","スケール設定"];
     const tab = Generic.createNewTab(backDiv, tablist, firstTab, 15, 40, 570, 330) as TabControl;
@@ -1411,9 +1411,9 @@ function frmPrintOption(firstTab: number = 0) {
         }) as HTMLElement;
     appState().attrData.Draw_Sample_LineBox(ClasMarkMDMultiEnMode_Lines, atv.MapLegend.MarkMD.MultiEnMode_Line);
     Generic.createNewWordWidthDiv(tabLegend.panel[2], "", "負の値の記号モードの既定凡例文字", 20, 110, 21, undefined, undefined);
-    Generic.createNewWordTextInput(tabLegend.panel[2], "正の値", "", clsSettingData.LegendPlusWord, "", 40, 130, undefined, 80, function (e: Event) {sdata.LegendPlusWord = (e.target as HTMLInputElement).value }, "");
-    Generic.createNewWordTextInput(tabLegend.panel[2], "負の値", "", clsSettingData.LegendMinusWord, "", 40, 155, undefined, 80, function (e: Event) { sdata.LegendMinusWord = (e.target as HTMLInputElement).value }, "");
-    Generic.createNewWordTextInput(tabLegend.panel[2], "記号の数モードの際の凡例文字", "", clsSettingData.LegendBlockmodeWord, "", 270, 20, 100, 100, function (e: Event) { sdata.LegendBlockmodeWord = (e.target as HTMLInputElement).value }, "");
+    Generic.createNewWordTextInput(tabLegend.panel[2], "正の値", "", appState().settingData.LegendPlusWord, "", 40, 130, undefined, 80, function (e: Event) {sdata.LegendPlusWord = (e.target as HTMLInputElement).value }, "");
+    Generic.createNewWordTextInput(tabLegend.panel[2], "負の値", "", appState().settingData.LegendMinusWord, "", 40, 155, undefined, 80, function (e: Event) { sdata.LegendMinusWord = (e.target as HTMLInputElement).value }, "");
+    Generic.createNewWordTextInput(tabLegend.panel[2], "記号の数モードの際の凡例文字", "", appState().settingData.LegendBlockmodeWord, "", 270, 20, 100, 100, function (e: Event) { sdata.LegendBlockmodeWord = (e.target as HTMLInputElement).value }, "");
     const gbEnGraphLegend = Generic.createNewFrame(tabLegend.panel[2], "", "", 270, 85, 150, 80, "円グラフの凡例形状");
     Generic.createNewRadioButtonList(gbEnGraphLegend, "enmMultiEnGraphPattern", [{ value: enmMultiEnGraphPattern.multiCircle, text: "複数の扇形に分ける" }, { value: enmMultiEnGraphPattern.oneCircle, text: "１つの円" }], 5, 20, 130, 30, atv.MapLegend.En_Graph_Pattern,
         function (v: number) { atv.MapLegend.En_Graph_Pattern = v }, "");
@@ -1535,9 +1535,9 @@ function frmPrintOption(firstTab: number = 0) {
 
     function buttonOK(){
         Generic.clear_backDiv();
-        clsSettingData = sdata.Clone();
+        appState().settingData = sdata.Clone();
         appState().attrData.TotalData.ViewStyle = atv.Clone();
-        clsPrint.printMapScreen(Frm_Print.picMap);
+        clsPrint.printMapScreen(appState().frmPrint.picMap);
     }
 }
 
@@ -3987,7 +3987,7 @@ function frmPrint_DummyObjectGroup(){
             }
         }
         appState().attrData.TotalData.ViewStyle.Dummy_Size_Flag = chkDummy_Size.checked;
-        clsPrint.printMapScreen(Frm_Print.picMap);
+        clsPrint.printMapScreen(appState().frmPrint.picMap);
     }
 }
 

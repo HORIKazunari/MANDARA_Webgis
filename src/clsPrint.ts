@@ -4045,4 +4045,6 @@ class clsPrint {
     }
 }
 
+(globalThis as typeof globalThis & Record<string, unknown>).clsPrint = clsPrint;
+
 export { clsPrint, Fringe_Line_Info };

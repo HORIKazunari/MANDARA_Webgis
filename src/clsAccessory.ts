@@ -1541,15 +1541,17 @@ export class Accessory {
         return true;
     }
     static getLegendMinusWord(s: string): string {
+        const settingData = appState().settingData;
         if (s === "") {
-            return clsSettingData.LegendMinusWord;
+            return settingData.LegendMinusWord;
         } else {
             return s;
         }
     }
     static getLegendPlusWord(s: string): string {
+        const settingData = appState().settingData;
         if (s === "") {
-            return clsSettingData.LegendPlusWord;
+            return settingData.LegendPlusWord;
         } else {
             return s;
         }

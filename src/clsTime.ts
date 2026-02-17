@@ -1,4 +1,4 @@
-﻿// import { appState } from './core/AppState';
+﻿import { appState } from './core/AppState';
 import type { JsonValue } from './types';
 import { enmMarkPrintType, enmProjection_Info, Start_End_Time_data, Screen_info } from './clsAttrData';
 
@@ -371,7 +371,7 @@ export class clsBase {
         Base.Color = new colorRGBA([0, 0, 0]);
         Base.italic = false;
         Base.Underline = false; //使えない
-        Base.Name =clsSettingData.SetFont;
+        Base.Name = appState().settingData?.SetFont ?? 'sans-serif';
         Base.bold = false;
         Base.Kakudo = 0;
         Base.FringeF = false;
