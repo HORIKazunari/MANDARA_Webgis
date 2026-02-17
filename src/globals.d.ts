@@ -42,9 +42,7 @@ interface MenuItem {
 
 // 旧互換性のためのグローバル宣言（新規コードでは使用しないでください）
 declare let attrData: IAttrData;
-declare let settingModeWindow: HTMLDivElement | undefined;
 declare let scrMargin: IScrMargin;
-declare let propertyWindow: IPropertyWindow;
 declare let frmPrint: IFrmPrint;
 declare let divmain: HTMLDivElement;
 declare let preReadMapFile: MapFileInfo[];
@@ -1200,24 +1198,10 @@ interface IClsDraw {
 // 強化されたグローバル変数宣言
 // attrData: AppStateで管理（削除済み）
 declare const Generic: IGeneric;
-declare let clsSettingData: {
-    MinimumLineWidth: number;
-    SetFont: string;
-    ObjectName_Word_Compatible: string;
-    KatakanaCheck: boolean;
-    SinKyuCharacter: boolean;
-    Ido_Kedo_Print_Pattern: number;
-    LegendPlusWord: string;
-    LegendMinusWord: string;
-    LegendBlockmodeWord: string;
-    Clone(): JsonObject;
-    [key: string]: JsonValue;
-};
 declare const clsTime: typeof import('./clsTime').clsTime;
 declare const clsDraw: IClsDraw;
 declare const clsPrint: IClsPrint;
 // frmPrint: AppStateで管理（削除済み）
-declare let Frm_Print: IFrmPrint; // 変更される可能性あり
 // propertyWindow: AppStateで管理（削除済み）
 // divmain: AppStateで管理（削除済み）
 declare class latlon {
