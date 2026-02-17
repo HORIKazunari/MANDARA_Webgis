@@ -5196,8 +5196,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
  
 (globalThis as Record<string, unknown>).Generic = Generic;
- 
-(globalThis as Record<string, unknown>).TKY2JGDInfo = new TKY2JGDInfo_Impl();
 
 // ESM-friendly export handles
 export const TKY2JGDInfo = new TKY2JGDInfo_Impl();

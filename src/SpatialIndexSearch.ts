@@ -1,4 +1,5 @@
 ﻿import { Generic } from './clsGeneric';
+import { chvValue_on_twoValue, cstRectangle_Cross } from './clsAttrData';
 
 
 const Add_or_Remove_Add_Obj = 1;
@@ -727,7 +728,7 @@ class SpatialIndexSearchInternal {
         //タグの値を変化させる
         for (let i = 0; i < this.ObjectNum; i++) {
             const tagNum = Number(this.ObjectXY[i].Tag);
-            if (Generic.Check_Two_Value_In(tagNum, StartRangeValue, LastRangeValue) !== (chvOuter as unknown as number)) {
+            if (Generic.Check_Two_Value_In(tagNum, StartRangeValue, LastRangeValue) !== chvValue_on_twoValue.chvOuter) {
                 this.ObjectXY[i].Tag = tagNum + ChangeValue;
             }
         }

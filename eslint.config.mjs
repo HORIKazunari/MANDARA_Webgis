@@ -107,6 +107,18 @@ export default tseslint.config(
           name: 'tileMapClass',
           message: 'Use appState().tileMapClass instead of implicit global tileMapClass.',
         },
+        {
+          name: 'Setting_Info',
+          message: 'Import Setting_Info from clsTime.ts instead of relying on implicit global Setting_Info.',
+        },
+        {
+          name: 'clsSortingSearch',
+          message: 'Use SortingSearch import from SortingSearch.ts instead of implicit global clsSortingSearch.',
+        },
+        {
+          name: 'clsGrid',
+          message: 'Import clsGrid from clsGrid.ts instead of relying on implicit global clsGrid.',
+        },
       ],
       
       // Prevent interface/class merge pitfalls
@@ -174,7 +186,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/clsGeneric.ts', 'src/clsDraw.ts', 'src/clsMapdata.ts'],
+    files: ['src/clsGeneric.ts', 'src/clsDraw.ts', 'src/clsMapdata.ts', 'src/SpatialIndexSearch.ts', 'src/MeshContour.ts'],
     rules: {
       'no-restricted-globals': ['error',
         {

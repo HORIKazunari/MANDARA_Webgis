@@ -299,9 +299,6 @@ export class Setting_Info {
     }
 }
 
-(globalThis as typeof globalThis & Record<string, unknown>).Setting_Info = Setting_Info;
-
-
 export class clsBase {
     static Arrow(): Arrow_Data {
 

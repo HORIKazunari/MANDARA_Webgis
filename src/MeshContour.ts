@@ -2,6 +2,7 @@
 import { SortingSearch } from './SortingSearch';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { Generic } from './clsGeneric';
+import { chvValue_on_twoValue } from './clsAttrData';
 
 type MeshCell = number | undefined;
 type MeshGrid = MeshCell[][];

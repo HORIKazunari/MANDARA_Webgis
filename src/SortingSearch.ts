@@ -258,6 +258,3 @@ export class SortingSearch {
     }
 }
 
-// Legacy global exposure for existing code paths
-// TODO: progressively replace with explicit imports where used
-(globalThis as typeof globalThis & { clsSortingSearch?: typeof SortingSearch }).clsSortingSearch = SortingSearch;

@@ -506,8 +506,6 @@ class colorRGBA {
     }
 }
 
-(globalThis as typeof globalThis & Record<string, unknown>).cstRectangle_Cross = cstRectangle_Cross;
-(globalThis as typeof globalThis & Record<string, unknown>).chvValue_on_twoValue = chvValue_on_twoValue;
 (globalThis as typeof globalThis & Record<string, unknown>).colorRGBA = colorRGBA;
 
 class _Cross_Line_Data {
@@ -3905,12 +3903,12 @@ class clsAttrData {
     }
 
     Draw_Fan(g: CanvasRenderingContext2D, OP: point, r: number, start_p: number, end_p: number, Lpat: Line_Property, Tile: Tile_Property): void {
-        clsDrawMarkFan.Draw_Fan?.(g,OP,r,start_p, end_p,Lpat,Tile,this.TotalData.ViewStyle.ScrData);
+        appState().clsDrawMarkFan?.Draw_Fan?.(g,OP,r,start_p, end_p,Lpat,Tile,this.TotalData.ViewStyle.ScrData);
     }
 
         // サンプル記号ボックスに記号を描画
     Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: Mark_Property): void {
-        clsDrawMarkFan.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
+        appState().clsDrawMarkFan?.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
     Draw_Sample_LineBox(picBox: HTMLElement, LinePat: Line_Property): void {
@@ -3918,7 +3916,7 @@ class clsAttrData {
     }
     //記号描画
     Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property): void {
-        clsDrawMarkFan.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
+        appState().clsDrawMarkFan?.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
     // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
     Radius(R_Percent: number, Value: number, max_Value: number): number {

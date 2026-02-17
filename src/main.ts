@@ -5,6 +5,8 @@
 
 import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
+import { clsDrawMarkFan, clsTileMap } from './clsDraw';
+import { Setting_Info } from './clsTime';
 import { enmZahyo_mode_info } from './constants/legacyEnums';
 import { mapMouseInternal as mapMouse } from './frmPrint';
 import { clsPrint } from './clsPrint';
@@ -59,6 +61,7 @@ function _init(): void {
     // 状態の初期化
     state.settingData = new Setting_Info();
     state.tileMapClass = new clsTileMap();
+    state.clsDrawMarkFan = clsDrawMarkFan;
     
     // フォント設定
     const testFont: string[] = [
@@ -170,7 +173,7 @@ function _init(): void {
     state.frmPrint.seriesBeforeButton = Generic.createNewButton(rightDIV, "▶", "", 270, 0, () => state.frmPrint.seriesNext?.(), "font-weight: 900;width:30px");
     
     mapMouse(state.frmPrint.picMap, clsPrint.printMapScreen);
-    clsDrawMarkFan?.init?.();
+    state.clsDrawMarkFan?.init?.();
 
     setting(location.search); // 設定画面の作成
 

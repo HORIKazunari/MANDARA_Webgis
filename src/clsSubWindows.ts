@@ -426,7 +426,7 @@ function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark
     }
     //記号選択ウインドウ
     function clsMarkSelect(event: MouseEvent, okEvent: (markNumber: number) => void, markNumber: number) {
-        const n = clsDrawMarkFan.getMarkShameNum();
+        const n = appState().clsDrawMarkFan?.getMarkShameNum?.() ?? 0;
         const turnN = 6;
         const tp = appState().scrMargin.top+5;
         const left = 15;

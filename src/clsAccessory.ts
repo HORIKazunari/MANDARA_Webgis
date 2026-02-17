@@ -1,6 +1,7 @@
 ﻿// JavaScript source code
 
 import { appState } from './core/AppState';
+import { SortingSearch } from './SortingSearch';
 import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBasePosition,
@@ -1562,7 +1563,7 @@ export class Accessory {
         const state = appState();
 
         const lval = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.MarkSizeMD.Value;
-        const ST = new clsSortingSearch();
+        const ST = new SortingSearch();
         for (let i = 0; i < lval.length; i++) {
             if (lval[i] > 0) {
                 ST.Add(lval[i]);

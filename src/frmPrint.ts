@@ -2060,6 +2060,5 @@ class frmPrint {
 }
 
 export const mapMouse = mapMouseInternal;
-(globalThis as typeof globalThis & Record<string, unknown>).mapMouse = mapMouseInternal;
 
 

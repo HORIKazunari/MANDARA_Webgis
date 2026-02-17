@@ -1,5 +1,6 @@
 ﻿import { Generic, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { appState } from './core/AppState';
+import { clsGrid } from './clsGrid';
 import { clsShapefile } from './shapeFile';
 import { SortingSearch } from './SortingSearch';
 import { enmAttDataType, enmGraphMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';

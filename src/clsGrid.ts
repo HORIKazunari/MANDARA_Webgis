@@ -187,8 +187,7 @@ class Layer_Data_InfoCheck {
     Value = 0; // Double
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
+export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
     // const state = appState();
     const GridLayerData = {
         MapFile: "MapFile" as const,
@@ -2157,8 +2156,5 @@ function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void
             }
     }
 }
-
-// グローバル関数として公開
-(globalThis as Record<string, unknown>).clsGrid = clsGrid;
 
 }

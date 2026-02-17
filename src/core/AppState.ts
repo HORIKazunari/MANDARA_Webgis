@@ -68,6 +68,17 @@ export class AppState {
     public tileMapClass!: clsTileMap;
 
     /**
+     * 記号描画クラス参照（循環依存回避のため AppState 経由で保持）
+     */
+    public clsDrawMarkFan?: {
+        init?: () => void;
+        getMarkShameNum?: () => number;
+        Draw_Fan?: (...args: unknown[]) => void;
+        Draw_Mark_Sample_Box?: (...args: unknown[]) => void;
+        Mark_Print?: (...args: unknown[]) => void;
+    };
+
+    /**
      * 事前読み込みマップファイル
      */
     public preReadMapFile: Record<string, JsonObject> = {};
