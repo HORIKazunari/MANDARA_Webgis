@@ -8875,7 +8875,9 @@ export {
     enmGraphMaxSize,
     enmMarkMaxValueType,
     enmBarLineMaxMinMode,
-    enmBarChartFrameAxePattern
+    enmBarChartFrameAxePattern,
+    cstRectangle_Cross,
+    chvValue_on_twoValue
 };
 
 // Export constructor functions

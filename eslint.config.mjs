@@ -173,4 +173,19 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['src/clsGeneric.ts', 'src/clsDraw.ts', 'src/clsMapdata.ts'],
+    rules: {
+      'no-restricted-globals': ['error',
+        {
+          name: 'cstRectangle_Cross',
+          message: 'Import cstRectangle_Cross from clsAttrData instead of using implicit global.',
+        },
+        {
+          name: 'chvValue_on_twoValue',
+          message: 'Import chvValue_on_twoValue from clsAttrData instead of using implicit global.',
+        },
+      ],
+    },
+  },
 );
