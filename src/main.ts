@@ -9,7 +9,7 @@ import { clsDrawMarkFan, clsTileMap } from './clsDraw';
 import { Setting_Info } from './clsTime';
 import { point, size } from './clsAttrData';
 import { enmZahyo_mode_info } from './constants/legacyEnums';
-import { mapMouseInternal as mapMouse } from './frmPrint';
+import { attachFrmPrintMethods, mapMouseInternal as mapMouse } from './frmPrint';
 import { clsPrint } from './clsPrint';
 import { setting } from './clsWindow';
 import {
@@ -104,6 +104,7 @@ function _init(): void {
         null, true, "printFoot", true, 
         null
     ) as IFrmPrint;
+    attachFrmPrintMethods(state.frmPrint);
     
     state.frmPrint.picMap = Generic.createNewCanvas(
         state.frmPrint, "mapArea", "", 0, 0, 0, 0, null, 

@@ -2066,6 +2066,25 @@ class frmPrint {
     }
 }
 
+export function attachFrmPrintMethods(target: IFrmPrint): void {
+    target.copyImageWindow = frmPrint.copyImageWindow;
+    target.savePNG = frmPrint.savePNG;
+    target.linePattern = frmPrint.linePattern;
+    target.windowClose = frmPrint.windowClose;
+    target.propertyWindowClose = frmPrint.propertyWindowClose;
+    target.copyProperty = frmPrint.copyProperty;
+    target.PropertyFix = frmPrint.PropertyFix;
+    target.ShowOverLayObjectProperty = frmPrint.ShowOverLayObjectProperty;
+    target.ShowOneObjectProperty = frmPrint.ShowOneObjectProperty;
+    target.set_frmPrint_Window_Size = frmPrint.set_frmPrint_Window_Size;
+    target.resizeMapWindow = frmPrint.resizeMapWindow;
+    target.Init_FrmPrint = frmPrint.Init_FrmPrint;
+    target.seriesNext = frmPrint.seriesNext;
+    target.seriesBefore = frmPrint.seriesBefore;
+    target.wholeMapShow = frmPrint.wholeMapShow;
+    target.PrintCursorObjectLine = frmPrint.PrintCursorObjectLine;
+}
+
 export const mapMouse = mapMouseInternal;
 
 
