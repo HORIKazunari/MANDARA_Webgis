@@ -16,6 +16,7 @@ import {
     enmMarkMaxValueType,
     enmMarkPrintType,
     enmMultiEnGraphPattern,
+    enmLatLonLine_Order,
     enmProjection_Info,
     enmScaleBarPattern,
     enmScaleUnit,
@@ -25,6 +26,11 @@ import {
     colorRGBA
 } from './clsAttrData';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
+
+const enmLatLonPrintPattern = {
+    DegreeMinuteSecond: 0,
+    DecimalDegree: 1
+} as const;
 
 type SelectControl = HTMLSelectElement & {
     getValue: () => string;

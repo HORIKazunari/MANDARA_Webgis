@@ -62,6 +62,24 @@ export default defineConfig({
           })
         }
       }
+    },
+    {
+      name: 'copy-image-directory-with-original-names',
+      apply: 'build',
+      generateBundle() {
+        const imageRoot = path.resolve(process.cwd(), 'image')
+        if (!fs.existsSync(imageRoot)) return
+
+        const imageFiles = collectFilesRecursively(imageRoot)
+        for (const filePath of imageFiles) {
+          const relativeFromImage = path.relative(imageRoot, filePath).replaceAll(path.sep, '/')
+          this.emitFile({
+            type: 'asset',
+            fileName: `image/${relativeFromImage}`,
+            source: fs.readFileSync(filePath)
+          })
+        }
+      }
     }
   ],
   esbuild: {

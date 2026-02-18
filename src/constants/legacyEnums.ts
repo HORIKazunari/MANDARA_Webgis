@@ -1,7 +1,7 @@
 export const enmZahyo_mode_info = {
-    Zahyo_No_Mode: 0,
-    Zahyo_Ido_Keido: 1,
-    Zahyo_Heimentyokukaku: 2
+    Zahyo_No_Mode: -1,
+    Zahyo_Ido_Keido: 0,
+    Zahyo_Heimentyokukaku: 1
 } as const;
 
 export const enmHorizontalAlignment = {
@@ -92,9 +92,9 @@ export const enmCircleMDLegendLine = {
 } as const;
 
 export const enmZahyo_mode_info_enum = {
-    Zahyo_No_Mode: 0,
-    Zahyo_Ido_Keido: 1,
-    Zahyo_Heimentyokukaku: 2
+    Zahyo_No_Mode: -1,
+    Zahyo_Ido_Keido: 0,
+    Zahyo_Heimentyokukaku: 1
 } as const;
 
 export const Add_or_Remove = {

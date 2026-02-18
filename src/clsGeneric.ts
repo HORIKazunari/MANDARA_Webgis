@@ -16,6 +16,12 @@ import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info, SpatialPoin
 // const EARTH_R = 6370;  // 削除
 // const chrLF = String.fromCharCode(10);  // 削除
 
+const EarthR = 6370;
+const enmLatLonPrintPattern = {
+    DegreeMinuteSecond: 0,
+    DecimalDegree: 1
+} as const;
+
 // SpatialPointType は globals.d.ts で定義済み（将来的にはtypes/へ移行）
 
 // enmMatchingMode は globals.d.ts で定義済み

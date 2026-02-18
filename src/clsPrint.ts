@@ -22,6 +22,7 @@ import {
     enmPointOnjectDrawOrder,
     enmStackedBarChart_Direction,
     enmGraphMaxSize,
+    enmLatLonLine_Order,
     enmSoloMode_Number,
     point,
     rectangle,

@@ -321,6 +321,7 @@ export function setting(locSearch: string) {
     divContour.tooltip = "等値線モード"
     divContour.selected = false;
     Generic.createNewDiv(divContour, "等値線", "modeclass", "", 0, 48, 50, 16, "font-size:11px;text-align: center", "");
+    Generic.createNewImage(divContour, "image/contour_mode.png", "等値線モード", "", "", 5, 5, "", "");
 
 
     const divMark = Generic.createNewDiv(divsolo, "", "SettingMark", "", 0, 190, 310, 90, "", "");

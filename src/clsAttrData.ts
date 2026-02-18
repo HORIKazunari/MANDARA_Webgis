@@ -584,10 +584,10 @@ class strSynthetic_Object_Data {
     }
 }
 
-// const enmLatLonLine_Order = {
-//     Back: 0,
-//     Front: 1
-// }
+const enmLatLonLine_Order = {
+    Back: 0,
+    Front: 1
+}
 
 const enmInner_Data_Info_Mode = {
     ClassPaint: 0,
@@ -8886,6 +8886,7 @@ export {
     enmZahyo_System_Info,
     enmScaleUnit,
     enmProjection_Info,
+    enmLatLonLine_Order,
     enmInner_Data_Info_Mode,
     enmMarkPrintType,
     enmBasePosition,
