@@ -176,8 +176,8 @@ class clsPrint {
         state.attrData.TotalData.ViewStyle.ScrData.OutputDevide = enmOutputDevice.Screen;
         const atp=state.attrData.TempData;
         atp.ContourMode_Temp.ContourDataResetF = true;
-        const dv = document.getElementById("contourDataTip")
-        if (dv !== undefined) {
+        const dv = document.getElementById("contourDataTip");
+        if (dv !== null && dv.parentNode === state.frmPrint) {
             state.frmPrint.removeChild(dv);
         }
         atp.DotMap_Temp.DotMapTempResetF = true;

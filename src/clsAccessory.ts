@@ -6,6 +6,7 @@ import { SortingSearch } from './SortingSearch';
 import { clsPrint } from './clsPrint';
 import { clsDraw, clsDrawLine, clsDrawTile } from './clsDraw';
 import { clsBase, LineEdge_Connect_Pattern_Data_Info, Mark_Property } from './clsTime';
+import { CHR_LF } from './constants/geometry';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     colorRGBA,
@@ -28,8 +29,11 @@ import {
     enmSoloMode_Number,
     point,
     rectangle,
-    size
+    size,
+    strScale_Attri
 } from './clsAttrData';
+
+const chrLF = CHR_LF;
 
 export class Accessory {
 

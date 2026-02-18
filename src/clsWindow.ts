@@ -1419,7 +1419,7 @@ export function setting(locSearch: string) {
     function SetPicPnlDataEnabled(Mode: SelectMode, Flag: boolean) {
         const name = GetModeControlName(Mode);
         const ele = doc.getElementById(name);
-        if(ele !== undefined) {
+        if (ele !== null) {
             Generic.setDisabled(ele, !Flag);
             if(Flag === true) {
                 ele.addEventListener("mouseenter", modeEnter, false);

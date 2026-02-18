@@ -374,11 +374,13 @@ const globalScope = globalThis as typeof globalThis & {
     logX?: (data: JsonValue) => void;
     init?: () => void;
     settingFront?: () => void;
+    frmPrintFront?: () => void;
 };
 
 globalScope.logX = _logX;
 globalScope.init = _init;
 globalScope.settingFront = _settingFront;
+globalScope.frmPrintFront = frmPrintFront;
 
 globalThis.onerror = function(message, source, lineno, colno, error) {
     _logX([String(message), String(source ?? ''), lineno ?? 0, colno ?? 0, String(error ?? '')]);

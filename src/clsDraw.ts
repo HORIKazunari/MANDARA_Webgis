@@ -5,6 +5,8 @@ import { clsBase, enmArrowHeadType } from './clsTime';
 import { enmHorizontalAlignment, enmVerticalAlignment } from './constants/legacyEnums';
 import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
 
+const chrLF = String.fromCharCode(10);
+
 class clsDraw {
 
     static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info): boolean {

@@ -2236,7 +2236,7 @@ class strViewStyle_Info {
 }
 
 //スケール設定（属性データ）
-class strScale_Attri {
+export class strScale_Attri {
     Visible: boolean = false; //Boolean
     Position: point = new point();
     Font: Font_Property = new Font_Property();
@@ -2419,20 +2419,23 @@ class Screen_info {
         const yw = this.ScrView.height();
         const n = xw / yw;
         if (n >= FN) {
-            this.ScreenMG.Mul = w / xw;
+            this.ScreenMG.Mul = (xw !== 0) ? (w / xw) : 1;
         } else {
-            this.ScreenMG.Mul = H / yw;
+            this.ScreenMG.Mul = (yw !== 0) ? (H / yw) : 1;
+        }
+        if (!Number.isFinite(this.ScreenMG.Mul) || this.ScreenMG.Mul <= 0) {
+            this.ScreenMG.Mul = 1;
         }
         this.ScreenMG.Xplus = (w - xw * this.ScreenMG.Mul) / 2 + Wwidth * this.Screen_Margin.rect.left / 100;
         this.ScreenMG.YPlus = (H - yw * this.ScreenMG.Mul) / 2 + Wheight * this.Screen_Margin.rect.top / 100;
         if (this.OutputDevide !== enmOutputDevice.Printer) {
-            this.MapScreen_Scale = new rectangle(0, 0, Wwidth, Wheight);
-            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRY(0), this.getSRX(Wwidth), this.getSRY(Wheight));
+            this.MapScreen_Scale = new rectangle(0, Wwidth, 0, Wheight);
+            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRX(Wwidth), this.getSRY(0), this.getSRY(Wheight));
         } else {
             this.OutputDevide = enmOutputDevice.Screen;
-            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRY(0), this.getSRX(Wwidth), this.getSRY(Wheight));
+            this.ScrRectangle = new rectangle(this.getSRX(0), this.getSRX(Wwidth), this.getSRY(0), this.getSRY(Wheight));
             this.OutputDevide = enmOutputDevice.Printer;
-            this.MapScreen_Scale = new rectangle(0, 0, this.ScrRectangle.width(), this.ScrRectangle.height());
+            this.MapScreen_Scale = new rectangle(0, this.ScrRectangle.width(), 0, this.ScrRectangle.height());
         }
         this.Get_Screen_BaseMul();
     }
@@ -2614,12 +2617,20 @@ class Screen_info {
     }
 
     getSRX(x: number): number {
-        const newx = (x - this.ScreenMG.Xplus) / this.ScreenMG.Mul + this.ScrView.left;
+        const mul = this.ScreenMG.Mul;
+        if (!Number.isFinite(mul) || mul === 0) {
+            return this.ScrView.left;
+        }
+        const newx = (x - this.ScreenMG.Xplus) / mul + this.ScrView.left;
         return newx;
     }
 
     getSRY(y: number): number {
-        const newy = (y - this.ScreenMG.YPlus) / this.ScreenMG.Mul + this.ScrView.top;
+        const mul = this.ScreenMG.Mul;
+        if (!Number.isFinite(mul) || mul === 0) {
+            return this.ScrView.top;
+        }
+        const newy = (y - this.ScreenMG.YPlus) / mul + this.ScrView.top;
         return newy;
     }
 
@@ -4276,8 +4287,10 @@ class clsAttrData {
     //オブジェクトの表示チェックをクリア
     ResetObjectPrintedCheckFlag(): void {
         this.TempData.ObjectPrintedCheckFlag = [];
-        for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
-            // 必要に応じて配列を初期化
+        const layMax = Math.max(this.TotalData.LV1.Lay_Maxn ?? 0, this.LayerData.length);
+        for (let i = 0; i < layMax; i++) {
+            const objNum = this.LayerData[i]?.atrObject?.ObjectNum ?? 0;
+            this.TempData.ObjectPrintedCheckFlag[i] = Array<boolean>(objNum).fill(false);
         }
     }
 

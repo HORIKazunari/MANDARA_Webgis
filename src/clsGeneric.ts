@@ -4217,7 +4217,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     //子要素までdisabledを設定
-    static setDisabled(element: HTMLElement, value: boolean) {
+    static setDisabled(element: HTMLElement | null | undefined, value: boolean) {
+
+        if (!element) {
+            return;
+        }
 
         const children = element.children;
         for (let i = 0; i < children.length; i++) {
@@ -4525,7 +4529,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const state = appState();
         const hiddenWindow = function () {
             window.setVisibility?.(false);
-            if(XmarkCall !==undefined){
+            if (typeof XmarkCall === 'function') {
                 XmarkCall();
             }
         }
@@ -4592,7 +4596,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     window.style.top = window.oldpos.top.px();
                     window.maxSizeFlag=false;
                 }
-                maxButtonCall();
+                if (typeof maxButtonCall === 'function') {
+                    maxButtonCall();
+                }
             }
         }
         window.setVisibility?.(visibilieF);

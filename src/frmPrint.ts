@@ -6,6 +6,7 @@ import { LPatSek_Info } from './clsMapdata';
 import { clsPrint } from './clsPrint';
 import { clsBase } from './clsTime';
 import { clsLinePatternSet, frmCompassSettings, frmPrintOption } from './clsSubWindows';
+import { CHR_LF } from './constants/geometry';
 import { enmGraphMode, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBasePosition,
@@ -69,9 +70,19 @@ const mousePointingSituations = {
     pinch: 3
 } as const;
 
+const chrLF = CHR_LF;
+
 // enmPrintMouseMode は globals.d.ts で定義済み
 
-// Check_Acc_Result は globals.d.ts で定義済み
+const Check_Acc_Result = {
+    NoAccessory: 0,
+    Title: 1,
+    Compass: 2,
+    Scale: 3,
+    Legend: 4,
+    GroupBox: 5,
+    Note: 6
+} as const;
 
 export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
     const state = appState();
@@ -1102,7 +1113,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     const cdt = contourTemp.Contour_Object[c];
                     tx4 = "等値線" + cdt.Value.toString() + state.attrData.Get_DataUnit(cdt.Layernum, cdt.DataNum);
                     let conDiv=document.getElementById("contourDataTip");
-                    if(conDiv===undefined){
+                    if (conDiv === null) {
                         conDiv=Generic.createNewSpan(state.frmPrint as unknown as HTMLElement,tx4,"contourDataTip","",ScreenP.x+5,ScreenP.y+state.scrMargin.top-15,"z-index:2000;font-size:12px;border: solid 1px; border-radius:3px; background-color:#ffffff",undefined)
                     }else{
                         conDiv.innerHTML=tx4;
@@ -1113,8 +1124,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             }
         }
         if(tx4===""){
-            const dv=document.getElementById("contourDataTip")
-            if( dv!==undefined){
+            const dv = document.getElementById("contourDataTip");
+            if (dv !== null && dv.parentNode === state.frmPrint) {
                 state.frmPrint.removeChild(dv);
             }
     }
@@ -1415,9 +1426,10 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             switch (state.attrData.LayerData[Layernum].Shape) {
                 case (enmShape.PolygonShape): {
                     const retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetRectIn(MapP.x, MapP.y);
+                    const printedFlags = state.attrData.TempData.ObjectPrintedCheckFlag[Layernum] ?? [];
                     if (retV.number > 0) {
                         for (let i = 0; i < retV.number; i++) {
-                            if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] === true) {
+                            if (printedFlags[retV.Tags[i]] === true) {
                                 if (state.attrData.Check_Point_in_Kencode_OneObject(Layernum, retV.Tags[i], MapP) === true) {
                                     const ObjData =new strLocationSearchObject(Layernum,retV.Tags[i]) ;
                                     OnObject.push(ObjData);
@@ -1435,10 +1447,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     } else {
                         retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetNearestLineNumber(MapP.x, MapP.y, mind);
                     }
+                    const printedFlags = state.attrData.TempData.ObjectPrintedCheckFlag[Layernum] ?? [];
                     if (retV.num > 0) {
                         let serarchNCount = 0;
                         for (let i = 0; i < retV.num; i++) {
-                            if (state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][retV.Tags[i]] === true) {
+                            if (printedFlags[retV.Tags[i]] === true) {
                                 const ObjData = new strLocationSearchObject(Layernum, retV.Tags[i]);
                                 OnObject.push(ObjData);
                                 serarchNCount++;
