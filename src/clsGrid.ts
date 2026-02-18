@@ -1,11 +1,14 @@
 import { appState } from './core/AppState';
-import { Generic, ListBox } from './clsGeneric';
+import { Generic, ListBox, spatial } from './clsGeneric';
 import { gridControl, type EventCallbacks } from './clsGridControl';
-import { openMapFile } from './clsSubWindows';
+import { clsMapdata } from './clsMapdata';
+import { clsTime } from './clsTime';
+import { frmCopyObjectName, openMapFile } from './clsSubWindows';
 import type { JsonObject, JsonValue } from './types';
 import { SortingSearch } from './SortingSearch';
-import { enmAttDataType, enmHorizontalAlignment, enmLayerType, enmMatchingMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmMatchingMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
+    clsAttrData,
     enmDataSource,
     enmMesh_Number,
     enmZahyo_System_Info,

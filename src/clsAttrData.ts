@@ -1,9 +1,10 @@
 ﻿import { appState } from './core/AppState';
-import { Generic, CheckedListBox, latlon } from './clsGeneric';
+import { Generic, CheckedListBox, latlon, spatial } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
-import { clsTime } from './clsTime';
-import { clsMapdata, EnableMPLine_Data } from './clsMapdata';
-import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
+import { BackGround_Box_Property, clsBase, clsTime, Font_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property, Tile_Property } from './clsTime';
+import { clsDraw, clsDrawTile } from './clsDraw';
+import { clsMapdata, EnableMPLine_Data, strCompass_Attri, Zahyo_info } from './clsMapdata';
+import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import type { strLayerInfo } from './clsWindow';
 import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
 
@@ -3723,8 +3724,7 @@ class clsAttrData {
                     break;
                 }
                 case enmKenCodeObjectstructure.SyntheticObj: {
-                    // @ts-expect-error TS2304: Cannot find name 'Check_Point_in_Kencode_oneObject_Box'.
-                    const f = Check_Point_in_Kencode_oneObject_Box(Layernum, ObjNum, MapP.x, MapP.y);
+                    const f = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum).contains(MapP);
                     if (f === true) {
                         const ELine = this.Get_Enable_KenCode_MPLine(Layernum, ObjNum)
                         const Fringe_Line: number[] = [];

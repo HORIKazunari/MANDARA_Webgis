@@ -170,7 +170,7 @@ class Font_Property {
     }
 }
 
-export { clsTime, Font_Property, BackGround_Box_Property, Line_Property, Tile_Property, Mark_Property };
+export { clsTime, Font_Property, BackGround_Box_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Tile_Property, Mark_Property };
 
 class BackGround_Box_Property {
     Tile = new Tile_Property();

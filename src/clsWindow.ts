@@ -1,7 +1,9 @@
-﻿import { Generic, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
+﻿import { Generic, spatial, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { appState } from './core/AppState';
 import { clsGrid } from './clsGrid';
+import { clsMapdata } from './clsMapdata';
 import { clsPrint } from './clsPrint';
+import { clsBase, clsTime } from './clsTime';
 import { clsShapefile } from './shapeFile';
 import { SortingSearch } from './SortingSearch';
 import {
@@ -17,14 +19,20 @@ import {
     graphModeOresen_Bou,
     clsColorChart,
     clsColorPicker,
+    clsFontSet,
     clsInnerDataSet,
+    clsLineEdgePattern,
+    clsLinePatternSet,
+    clsMarkSet,
+    clsTileSet,
     clsArrow,
     clsSelectData,
     frmMain_LayeObjectSelectOne,
     openMapFile
 } from './clsSubWindows';
-import { enmAttDataType, enmGraphMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmGraphMode, enmLayerMode_Number, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
+    clsAttrData,
     enmDataSource,
     enmSoloMode_Number,
     enmContourIntervalMode,
@@ -34,7 +42,10 @@ import {
     enmPrint_Enable,
     enmPaintColorSettingModeInfo,
     enmMarkBlockArrange,
-    enmZahyo_System_Info
+    enmZahyo_System_Info,
+    point,
+    size,
+    colorRGBA
 } from './clsAttrData';
 import type { 
   ExtendedHTMLElement, 
@@ -156,9 +167,9 @@ export function setting(locSearch: string) {
     state.divMain.style.userSelect='none';
     state.divMain.style.backgroundColor="#ffffdc";
     state.divMain.addEventListener('click', settingFront);
-    divmain.addEventListener('click', settingFront);
+    state.divMain.addEventListener('click', settingFront);
 
-    frmSettingMode();
+    // 右側設定ウィンドウは attrData 読み込み後に初期化する
     if (locSearch !== "") {
         const locData_v = locSearch.substring(1).split("&");
         for (let i = 0; i < locData_v.length; i++) {
@@ -1680,7 +1691,7 @@ export function setting(locSearch: string) {
         const graphAttrData = getGraphAttrData();
         const selGraph = graphAttrData.nowGraph();
         const datan = selGraph.Data.length;
-        const w = pnl.offsetWidth - scrMargin.scrollWidth - 10;
+        const w = pnl.offsetWidth - state.scrMargin.scrollWidth - 10;
         for (let i = pnl.inPanel; i < datan; i++) {
             const ele = Generic.createNewDiv(pnl, "", "pnlGraphIteminPanel" + String(i), "", 5, pnlGraphEachItemHeight * i, w, pnlGraphEachItemHeight, "border:solid 1px white;",eleClick);
             ele.tag = i;
@@ -2580,9 +2591,12 @@ export function setting(locSearch: string) {
         state.frmPrint?.setVisibility?.(false);
         state.propertyWindow.nextVisible = true;
         state.propertyWindow.setVisibility?.(false);
+        if (!state.settingModeWindow) {
+            frmSettingMode();
+        }
         Init_Screen_Set(non_clearf);
         initFirtScreen();
-        divmain?.setTitle?.(state.attrData.TotalData.LV1.FileName ?? "");
+        state.divMain?.setTitle?.(state.attrData.TotalData.LV1.FileName ?? "");
     }
 
     /**
@@ -2592,8 +2606,8 @@ export function setting(locSearch: string) {
 
         const sc = state.attrData.TotalData.ViewStyle.ScrData;
         if(Non_Clear_Flag === false) {
-            frmPrint.Init_FrmPrint();
-            frmPrint.set_frmPrint_Window_Size();
+            state.frmPrint.Init_FrmPrint();
+            state.frmPrint.set_frmPrint_Window_Size();
             const FpicRect = sc.frmPrint_FormSize;
             const sz = new size(FpicRect.width(), FpicRect.height())
             sc.init(sz, sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, true);
@@ -2601,7 +2615,7 @@ export function setting(locSearch: string) {
             state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage = true;
             state.attrData.Set_Acc_First_Position();
         } else {
-            frmPrint.set_frmPrint_Window_Size();
+            state.frmPrint.set_frmPrint_Window_Size();
             sc.init(sc.frmPrint_FormSize.size(), sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, false);
         }
     }
@@ -2653,7 +2667,7 @@ export function setting(locSearch: string) {
     function frmSettingMode() {
         const sw = 400;
         const sh = 450;
-        const xpos = divmain.style.left.removePx() + divmain.style.width.removePx() + 10;
+        const xpos = state.divMain.style.left.removePx() + state.divMain.style.width.removePx() + 10;
         state.settingModeWindow = Generic.createWindow("", "", "", xpos, 10, sw, sh, false, false, null, false, null, false, "", false, undefined) as HTMLDivElement;
         const settingModeWindow = state.settingModeWindow;
         settingModeWindow.style.backgroundColor = "#f0f0f0";
@@ -2661,7 +2675,7 @@ export function setting(locSearch: string) {
         settingModeWindow.addEventListener('click', settingFront)
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■階級区分モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const classView = Generic.createNewDiv(settingModeWindow, "", "classView", "rightSettingWindowControlBase", 10, scrMargin.top + 10, sw - 20, sh - 20, "", "");
+        const classView = Generic.createNewDiv(settingModeWindow, "", "classView", "rightSettingWindowControlBase", 10, state.scrMargin.top + 10, sw - 20, sh - 20, "", "");
         classView.style.backgroundColor = "#f0f0f0";
         //階級区分方法
         const gbDivNum = Generic.createNewFrame(classView, "gbDivNum", "", 0, 0, 140, 100, "階級区分方法");
@@ -2971,7 +2985,7 @@ export function setting(locSearch: string) {
         }
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■等値線モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const contourView = Generic.createNewDiv(settingModeWindow, "", "contourView", "rightSettingWindowControlBase", 10, scrMargin.top + 10, sw - 20, sh - 20, "", "");
+        const contourView = Generic.createNewDiv(settingModeWindow, "", "contourView", "rightSettingWindowControlBase", 10, state.scrMargin.top + 10, sw - 20, sh - 20, "", "");
         contourView.style.backgroundColor = "#f0f0f0";
         const gbContourMode = Generic.createNewFrame(contourView, "", "", 0, 0, 170, 100, "等値線の設定方法");
         const contourIntervalList = [{ value: enmContourIntervalMode.ClassPaint, text: 'ペイントモードで塗り分け' },
@@ -3188,7 +3202,7 @@ export function setting(locSearch: string) {
         }
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■記号の大きさモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const markSizeView = Generic.createNewDiv(settingModeWindow, "", "markSizeView", "rightSettingWindowControlBase", 10, scrMargin.top + 10, sw - 20, sh - 20, "", "");
+        const markSizeView = Generic.createNewDiv(settingModeWindow, "", "markSizeView", "rightSettingWindowControlBase", 10, state.scrMargin.top + 10, sw - 20, sh - 20, "", "");
         markSizeView.style.backgroundColor = "#f0f0f0";
         const gbMark = Generic.createNewFrame(markSizeView, "gbMark", "", 0, 0, 115, 95, "表示記号設定");
         Generic.createNewCanvas(gbMark, "picMarkSize", "imgButton", 25, 17, 65, 65, picMark_Click, "");
@@ -3275,7 +3289,7 @@ export function setting(locSearch: string) {
 
         }
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■記号の数モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const markBlockView = Generic.createNewDiv(settingModeWindow, "", "markBlockView", "rightSettingWindowControlBase", 10, scrMargin.top + 10, sw - 20, sh - 20, "", "");
+        const markBlockView = Generic.createNewDiv(settingModeWindow, "", "markBlockView", "rightSettingWindowControlBase", 10, state.scrMargin.top + 10, sw - 20, sh - 20, "", "");
         markBlockView.style.backgroundColor = "#f0f0f0";
         const gbBlockMark = Generic.createNewFrame(markBlockView, "", "", 0, 0, 115, 85, "表示記号設定");
         Generic.createNewCanvas(gbBlockMark, "picMarkBlockSize", "imgButton", 30, 17, 55, 55, picMark_Click, "");
@@ -3303,7 +3317,7 @@ export function setting(locSearch: string) {
         setMinusValueCase(markBlockView, "gbMarBlockMinusValueCase");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■棒の高さモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const markBarView = Generic.createNewDiv(settingModeWindow, "", "markBarView", "rightSettingWindowControlBase", 20, scrMargin.top, sw - 20, sh - 20, "", "");
+        const markBarView = Generic.createNewDiv(settingModeWindow, "", "markBarView", "rightSettingWindowControlBase", 20, state.scrMargin.top, sw - 20, sh - 20, "", "");
         Generic.createNewSizeSelect(markBarView, 0, "cboMarkBarHeightSize", "最大高さ", 0, 30, 60, 3,
             function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkBarMD.MaxHeight = v });
 
@@ -3359,7 +3373,7 @@ export function setting(locSearch: string) {
 
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■文字モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const stringView = Generic.createNewDiv(settingModeWindow, "", "stringView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
+        const stringView = Generic.createNewDiv(settingModeWindow, "", "stringView", "rightSettingWindowControlBase", 10, state.scrMargin.top, sw - 20, sh - 20, "", "");
         stringView.style.backgroundColor = "#f0f0f0";
         Generic.createNewButton(stringView, "フォント", "", 30, 30, function (e: MouseEvent) {
             const md = state.attrData.nowDataSolo().StringMD;
@@ -3373,7 +3387,7 @@ export function setting(locSearch: string) {
         Generic.createNewButton(stringView, "内部データ", "", 30, 150, innerDataSet, "");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■重ね合わせモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const overlayView = Generic.createNewDiv(settingModeWindow, "", "overlayView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
+        const overlayView = Generic.createNewDiv(settingModeWindow, "", "overlayView", "rightSettingWindowControlBase", 10, state.scrMargin.top, sw - 20, sh - 20, "", "");
         const gbOverlayDataSet = Generic.createNewFrame(overlayView, "gbOverlayDataSet", "", 0, 10, 380, 80, "重ね合わせデータセット");
         Generic.createNewSelect(gbOverlayDataSet, [], -1, "overlayDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
@@ -3494,7 +3508,7 @@ export function setting(locSearch: string) {
             }, "width:100px");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■連続表示モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const seriesView = Generic.createNewDiv(settingModeWindow, "", "seriesView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
+        const seriesView = Generic.createNewDiv(settingModeWindow, "", "seriesView", "rightSettingWindowControlBase", 10, state.scrMargin.top, sw - 20, sh - 20, "", "");
         const gbseriesDataSet = Generic.createNewFrame(seriesView, "gbSeriesDataSet", "", 0, 10, 380, 80, "連続表示データセット");
         Generic.createNewSelect(gbseriesDataSet, [], -1, "seriesDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
@@ -3625,7 +3639,7 @@ export function setting(locSearch: string) {
             }, "width:100px");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■グラフモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const graphView = Generic.createNewDiv(settingModeWindow, "", "graphView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
+        const graphView = Generic.createNewDiv(settingModeWindow, "", "graphView", "rightSettingWindowControlBase", 10, state.scrMargin.top, sw - 20, sh - 20, "", "");
         const gbgraphDataSet = Generic.createNewFrame(graphView, "gbgraphDataSet", "", 0, 10, 380, 80, "グラフデータセット");
         Generic.createNewSelect(gbgraphDataSet, [], -1, "graphDataSetList", 15, 15, false,
             function (obj: HTMLSelectElement, selectedIndex: number | number[], /*value?: string*/) {
@@ -3667,7 +3681,7 @@ export function setting(locSearch: string) {
 
         const gbGraphDataSetItem = Generic.createNewFrame(graphView, "gbGraphDataSetItem", "", 0, 110, 250, 290, "表示データ項目");
         const pnlGraphItemBase = Generic.createNewDiv(gbGraphDataSetItem, "", "pnlGraphItemBase", "grayFrame", 10, 15, 230, 200, "overflow-y:scroll;overflow-x:hidden;background-Color:#ffffff", undefined);
-        const pnlGraphItem = Generic.createNewDiv(pnlGraphItemBase, "", "pnlGraphItem", "", 0, 0, 230, 200 - scrMargin.scrollWidth, "overflow:hidden", undefined);
+        const pnlGraphItem = Generic.createNewDiv(pnlGraphItemBase, "", "pnlGraphItem", "", 0, 0, 230, 200 - state.scrMargin.scrollWidth, "overflow:hidden", undefined);
         pnlGraphItem.inPanel = 0;
         pnlGraphItem.selectedRow = -1;
         Generic.createNewImageButton(gbGraphDataSetItem, "", "image/112_UpArrowLong_Grey_24x24_72.png", 10, 225, 24, 24, function () {
@@ -3832,7 +3846,7 @@ export function setting(locSearch: string) {
 
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ラベルモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-        const labelView = Generic.createNewDiv(settingModeWindow, "", "labelView", "rightSettingWindowControlBase", 10, scrMargin.top, sw - 20, sh - 20, "", "");
+        const labelView = Generic.createNewDiv(settingModeWindow, "", "labelView", "rightSettingWindowControlBase", 10, state.scrMargin.top, sw - 20, sh - 20, "", "");
         const gblabelDataSet = Generic.createNewFrame(labelView, "gblabelDataSet", "", 0, 10, 380, 80, "ラベルデータセット");
         const labelAttrData = getLabelAttrData();
         Generic.createNewSelect(gblabelDataSet, [], -1, "labelDataSetList", 15, 15, false,
@@ -4094,7 +4108,7 @@ function readData(okCall: (mapdata: clsMapdata, attrText: string, filename: stri
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
     const mapList: Record<string, clsMapdata> = {};
     const bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);
-    const mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, scrMargin.top+5, 450, 140, "使用地図ファイル");
+    const mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, state.scrMargin.top+5, 450, 140, "使用地図ファイル");
     Generic.createNewSpan(mapFileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", undefined);
     const mapFileList = new ListBox(mapFileFrame, "", [], 15, 35, 200, 55, null, "");
     Generic.createNewButton(mapFileFrame, "地図ファイル追加", "", 230, 50, addMapOn, "");
@@ -4303,7 +4317,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
     let shapeFiles: { [key: string]: ShapeFileInfo } = {};
     /*const mapList: Record<string, clsMapdata> = {};*/
     const bbox = Generic.set_backDiv("", "シェープファイル読み込み", 630, 320, true, true, buttonOK, 0.2, false);
-    const fileFrame = Generic.createNewFrame(bbox, "", "", 15, scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
+    const fileFrame = Generic.createNewFrame(bbox, "", "", 15, state.scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
     { value: 'utf-8', text: 'UTF-8' }];
     const cboCode = Generic.createNewWordSelect(fileFrame,"dbfファイル文字コード", cboCodeList.map(item => item.text), 0,  "cboCode",15, 15,140,100,0,  undefined,"", "",false);
@@ -4313,7 +4327,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[])
     Generic.createNewButton(fileFrame, "削除", "", 250, 120, deleteFile, "");
     Generic.createNewButton(fileFrame, "全削除", "", 250, 150, deleteAllFile, "");
 
-    const infoFrame = Generic.createNewFrame(bbox, "", "", 370, scrMargin.top + 5, 245, 220, "シェープファイル情報");
+    const infoFrame = Generic.createNewFrame(bbox, "", "", 370, state.scrMargin.top + 5, 245, 220, "シェープファイル情報");
     const infoFileName = Generic.createNewDiv(infoFrame, "ファイル名", "", "", 15, 10, 215,20,"overflow:hidden;text-overflow:ellipsis;white-space:nowrap;");
     const relatedFile = Generic.createNewDiv(infoFrame, "関連ファイル", "", "grayFrame", 15, 30, 200, 50, "padding:5px;");
     const zahyoModeFrame = Generic.createNewFrame(infoFrame, "", "", 15, 100, 100, 100, "座標系");
@@ -4607,7 +4621,7 @@ function mapViewer(okCall: ((mapdata: clsMapdata, layerdata: strLayerInfo[]) => 
     const LayerData: strLayerInfo[] = [];
     const bbox = Generic.set_backDiv("", "白地図・初期属性データ表示", 600, 410, true, true, buttonOK, 0.2,false);
 
-    const fileFrame=Generic.createNewFrame(bbox, "file", "", 15, scrMargin.top+5, 450, 100, "地図ファイル");
+    const fileFrame=Generic.createNewFrame(bbox, "file", "", 15, state.scrMargin.top+5, 450, 100, "地図ファイル");
     Generic.createNewSpan(fileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", undefined);
     const fileList =new ListBox(fileFrame, "", [], 15, 35, 200, 55, null, "");
     Generic.createNewButton(fileFrame, "地図ファイル追加", "", 230, 50, addMapOn,"");

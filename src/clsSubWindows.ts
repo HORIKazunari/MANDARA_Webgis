@@ -1,7 +1,9 @@
 ﻿import { appState } from './core/AppState';
-import { CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
+import { Generic, latlon, spatial, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { clsPrint } from './clsPrint';
-import { enmAttDataType, enmGraphMode, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import { clsBase, clsTime, Line_Property, Tile_Property } from './clsTime';
+import { clsDrawTile } from './clsDraw';
+import { enmAttDataType, enmGraphMode, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBarChartFrameAxePattern,
     enmBarLineMaxMinMode,
@@ -15,7 +17,9 @@ import {
     enmScaleBarPattern,
     enmScaleUnit,
     enmSeparateClassWords,
-    enmSoloMode_Number
+    enmSoloMode_Number,
+    point,
+    colorRGBA
 } from './clsAttrData';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
@@ -313,7 +317,7 @@ export function clsColorPicker(event_point: point | MouseEvent, okEvent: (color:
     }
 }
 
-function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: IAttrData): void {
+export function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: IAttrData): void {
     /// <signature>
     /// <summary>記号選択</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -503,7 +507,7 @@ function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Propert
 }
 
 /**タイル設定 >eventの引数。表示位置を決める。tile:最初のタイル okEvent:された際に呼び出す関数 設定されたTileを返す*/
-function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void) {
+export function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void) {
 
     const backDiv = Generic.set_backDiv("", "タイル設定", 170, 140, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -532,7 +536,7 @@ function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void
     }
 }
 
-function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (line: Line_Property) => void) {
+export function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (line: Line_Property) => void) {
     /// <signature>
     /// <summary>ライン設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -578,7 +582,7 @@ function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (lin
     }
 }
 
-function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void, _attrData: IAttrData) {
+export function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void, _attrData: IAttrData) {
         /// <signature>
     /// <summary>フォント設定</summary>
     /// <param name="event" >eventの引数。表示位置を決める。</param>
@@ -671,7 +675,7 @@ export function clsInnerDataSet(event: MouseEvent, /*attrData: clsAttrData*/ ) {
 }
 
 //線端・中間点接合設定
-function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern_Data_Info, okEvent: (edgePat: LineEdge_Connect_Pattern_Data_Info) => void) {
+export function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern_Data_Info, okEvent: (edgePat: LineEdge_Connect_Pattern_Data_Info) => void) {
     const newEdge = edgePat.Clone();
     const backDiv = Generic.set_backDiv("", "線端・中間点接合設定", 290, 200, true, true, buttonOK, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, backDiv);
@@ -1093,7 +1097,7 @@ export function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okE
 }
 
 /**方位記号の設定 */
-function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) => void) {
+export function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) => void) {
     const comp = _compass.Clone() as MapCompass;
     const backDiv = Generic.set_backDiv("", "方位記号の設定", 280, 270, true, true, buttonOK, 0.2, true);
     Generic.createNewCheckBox(backDiv,"方位記号を表示","",comp.Visible,10,40,undefined, function(obj: HTMLInputElement){comp.Visible=obj.checked;},"");
@@ -3493,26 +3497,26 @@ export function openMapFile(call: (data: JsonValue, filename?: string) => void) 
     }, false);
 
     function addMandaraMapOn(e: MouseEvent){
-        const popmenu = [{ caption: "JAPAN.mpfj", event: mapRead1 },
-        { caption: "日本緯度経度.mpfj", event: mapRead1 },
-        { caption: "WORLD.mpfj", event: mapRead1 },
-        { caption: "日本市町村緯度経度.mpfj", event: mapRead2 },
-        { caption: "日本鉄道緯度経度.mpfj", event: mapRead2 },
-        { caption: "WORLD2.mpfj", event: mapRead2 },
-        { caption: "日本市町村.mpfj", event: mapRead2 },
-        { caption: "USA.mpfj", event: mapRead2 },
-        { caption: "CHINA.mpfj", event: mapRead2 }
+        const popmenu = [{ caption: "JAPAN.mpfj", event: () => mapRead1("JAPAN.mpfj") },
+        { caption: "日本緯度経度.mpfj", event: () => mapRead1("日本緯度経度.mpfj") },
+        { caption: "WORLD.mpfj", event: () => mapRead1("WORLD.mpfj") },
+        { caption: "日本市町村緯度経度.mpfj", event: () => mapRead2("日本市町村緯度経度.mpfj") },
+        { caption: "日本鉄道緯度経度.mpfj", event: () => mapRead2("日本鉄道緯度経度.mpfj") },
+        { caption: "WORLD2.mpfj", event: () => mapRead2("WORLD2.mpfj") },
+        { caption: "日本市町村.mpfj", event: () => mapRead2("日本市町村.mpfj") },
+        { caption: "USA.mpfj", event: () => mapRead2("USA.mpfj") },
+        { caption: "CHINA.mpfj", event: () => mapRead2("CHINA.mpfj") }
         ];
         Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
         
-        function mapRead1(obj: {caption: string}) {
-            const fup = obj.caption.toUpperCase();
+        function mapRead1(caption: string) {
+            const fup = caption.toUpperCase();
             Generic.clear_backDiv();
             call(appState().preReadMapFile[fup], fup);
         }
-        function mapRead2(obj: {caption: string}) {
+        function mapRead2(caption: string) {
             let serverFile = "";
-            const fup = obj.caption.toUpperCase();
+            const fup = caption.toUpperCase();
             if (appState().preReadMapFile[fup]) {
                 Generic.clear_backDiv();
                 call(appState().preReadMapFile[fup], fup);
@@ -3595,7 +3599,7 @@ interface CopyObjectKindInfo {
 }
 
 /**オブジェクト名コピー */
-function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
+export function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true);
     if (cancelEvent) {
         // cancelEventがある場合の処理は別途実装

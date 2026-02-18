@@ -2,9 +2,11 @@
 import { MeshContour, ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
 import { clsDraw } from './clsDraw';
+import { EnableMPLine_Data } from './clsMapdata';
 import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
+import { Font_Property, Line_Property, Mark_Property } from './clsTime';
 import {
     colorRGBA,
     enmBarChartFrameAxePattern,
@@ -24,7 +26,7 @@ import {
     Legend2_Atri
 } from './clsAttrData';
 import { SortingSearch } from './SortingSearch';
-import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 
 interface strInner_Data_Info {
     Flag: boolean;

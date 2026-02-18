@@ -55,6 +55,13 @@ export const enmLayerType = {
     DefPoint: 4
 } as const;
 
+export const enmLayerMode_Number = {
+    SoloMode: 0,
+    GraphMode: 1,
+    LabelMode: 2,
+    TripMode: 3
+} as const;
+
 export const enmTotalMode_Number = {
     DataViewMode: 0,
     OverLayMode: 1,

@@ -1,10 +1,10 @@
 // import { appState } from './core/AppState';
-import { Generic } from './clsGeneric';
-import { clsTime } from './clsTime';
+import { Generic, spatial } from './clsGeneric';
+import { BackGround_Box_Property, clsBase, clsTime, Font_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property, Tile_Property } from './clsTime';
 import { SortingSearch } from './SortingSearch';
 // import { clsDraw } from './clsDraw';
 import { SpatialIndexSearch, GetObjectPointTagInfo } from './SpatialIndexSearch';
-import { cstRectangle_Cross, enmLineConnect, enmMarkPrintType, enmScaleUnit, enmZahyo_System_Info, Start_End_Time_data } from './clsAttrData';
+import { colorRGBA, cstRectangle_Cross, enmLineConnect, enmMarkPrintType, enmScaleUnit, enmZahyo_System_Info, point, rectangle, Start_End_Time_data, strYMD } from './clsAttrData';
 import { Fringe_Line_Info } from './clsPrint';
 import { enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 import type { JsonObject, JsonValue } from './types';
@@ -3335,4 +3335,4 @@ class clsMapdata {
     }
 }
 
-export { clsMapdata, Object_NameTimeStac_Data };
+export { clsMapdata, Object_NameTimeStac_Data, Zahyo_info, strCompass_Attri };

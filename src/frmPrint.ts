@@ -1,14 +1,20 @@
 ﻿import { appState } from './core/AppState';
 import { Accessory } from './clsAccessory';
 import { clsSpline } from './clsDraw';
-import { Generic } from './clsGeneric';
+import { Generic, spatial } from './clsGeneric';
+import { LPatSek_Info } from './clsMapdata';
 import { clsPrint } from './clsPrint';
-import { frmPrintOption } from './clsSubWindows';
-import { enmGraphMode, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import { clsBase } from './clsTime';
+import { clsLinePatternSet, frmCompassSettings, frmPrintOption } from './clsSubWindows';
+import { enmGraphMode, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBasePosition,
     enmKenCodeObjectstructure,
-    enmSoloMode_Number
+    enmSoloMode_Number,
+    point,
+    size,
+    rectangle,
+    colorRGBA
 } from './clsAttrData';
 import type { JsonValue } from './types';
 

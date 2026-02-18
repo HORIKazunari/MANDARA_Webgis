@@ -1,5 +1,5 @@
-﻿import { Generic } from './clsGeneric';
-import { chvValue_on_twoValue, cstRectangle_Cross } from './clsAttrData';
+﻿import { Generic, spatial } from './clsGeneric';
+import { chvValue_on_twoValue, cstRectangle_Cross, point, rectangle } from './clsAttrData';
 
 
 const Add_or_Remove_Add_Obj = 1;

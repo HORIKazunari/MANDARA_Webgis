@@ -1,10 +1,12 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
-import { Object_NameTimeStac_Data, EnableMPLine_Data } from './clsMapdata';
-import { chvValue_on_twoValue, cstRectangle_Cross, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, point3, Screen_info } from './clsAttrData';
+import { Object_NameTimeStac_Data, EnableMPLine_Data, Zahyo_info } from './clsMapdata';
+import { Fringe_Line_Info } from './clsPrint';
+import { chvValue_on_twoValue, colorRGBA, cstRectangle_Cross, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, latlonbox, point, point3, rectangle, Screen_info, size } from './clsAttrData';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
+import { clsTime, Line_Property, Tile_Property } from './clsTime';
 import { clsColorPicker } from './clsSubWindows';
 import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 // CHR_LF は現在未使用のためコメントアウト
@@ -4177,7 +4179,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         function mouseLeave(this: HTMLSelectElement, _e: MouseEvent) {
             if (sbox.tooltip === 'true') {
-                this.parentNode.removeChild(this.parentNode.lastChild);
+                const parent = this.parentNode;
+                const last = parent?.lastChild;
+                if (parent && last) {
+                    parent.removeChild(last);
+                }
                 sbox.tooltip = '';
             }
         }
@@ -4905,8 +4911,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             div.onmouseover =function(){
                 const rect=div.getBoundingClientRect();
                 const oldm=document.getElementById("popmenu");
-                if(oldm!==undefined){
-                    document.body.removeChild(oldm);
+                if(oldm){
+                    oldm.parentNode?.removeChild(oldm);
                 }
                 Generic.ceatePopupMenu(data.child,new point(rect.left,rect.bottom));
                 const tm=document.getElementsByName("topmenu");
@@ -4935,8 +4941,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const deletediv = function () {
             //メニューを消す
             const nd=document.getElementById("popmenu");
-            if(nd!==undefined){
-                document.body.removeChild(nd);
+            if(nd){
+                nd.parentNode?.removeChild(nd);
             }
             //トップメニューがある場合は色をそろえる
             const tm=document.getElementsByName("topmenu");

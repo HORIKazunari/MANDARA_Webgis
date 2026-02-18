@@ -1,6 +1,6 @@
 ﻿// JavaScript source code
-import { Generic } from './clsGeneric';
-import { cstRectangle_Cross, enmEdge_Pattern, enmJoinPattern, enmMarkPrintType, Screen_info } from './clsAttrData';
+import { Generic, latlon, spatial } from './clsGeneric';
+import { cstRectangle_Cross, enmEdge_Pattern, enmJoinPattern, enmMarkPrintType, latlonbox, point, rectangle, Screen_info, size } from './clsAttrData';
 import { clsBase } from './clsTime';
 import { enmHorizontalAlignment, enmVerticalAlignment } from './constants/legacyEnums';
 import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
@@ -419,7 +419,7 @@ class clsDrawLine {
     }
 }
 
-class clsDrawTile {
+export class clsDrawTile {
 
     static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property): void {
 

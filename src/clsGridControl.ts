@@ -3,6 +3,7 @@
 import { Generic } from './clsGeneric';
 import type { JsonValue } from './types';
 import { colorRGBA, point, rectangle, size } from './clsAttrData';
+import { Font_Property } from './clsTime';
 import { enmHorizontalAlignment, enmMatchingMode } from './constants/legacyEnums';
 
 export {};

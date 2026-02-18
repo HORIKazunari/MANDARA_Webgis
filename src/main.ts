@@ -11,6 +11,7 @@ import { point, size } from './clsAttrData';
 import { enmZahyo_mode_info } from './constants/legacyEnums';
 import { mapMouseInternal as mapMouse } from './frmPrint';
 import { clsPrint } from './clsPrint';
+import { setting } from './clsWindow';
 import {
     frmProjectionConvert,
     frmPrintOption,
