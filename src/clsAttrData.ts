@@ -2391,8 +2391,26 @@ class Screen_info {
     }
 
     Set_PictureBox_and_CulculateMul(Size: rectangle): void {
-        const Wwidth = Size.width();
-        const Wheight = Size.height();
+        const normalizeRectangle = (value: rectangle | JsonObject | undefined): rectangle => {
+            if (value instanceof rectangle) {
+                return value;
+            }
+            const src = (value ?? {}) as JsonObject;
+            const left = Number(src.left ?? 0);
+            const top = Number(src.top ?? 0);
+            const right = Number(src.right ?? (left + Number(src.width ?? 0)));
+            const bottom = Number(src.bottom ?? (top + Number(src.height ?? 0)));
+            return new rectangle(left, right, top, bottom);
+        };
+
+        const normalizedSize = normalizeRectangle(Size as unknown as JsonObject);
+        this.ScrView = normalizeRectangle(this.ScrView as unknown as JsonObject);
+        this.ScrRectangle = normalizeRectangle(this.ScrRectangle as unknown as JsonObject);
+        this.MapRectangle = normalizeRectangle(this.MapRectangle as unknown as JsonObject);
+        this.MapScreen_Scale = normalizeRectangle(this.MapScreen_Scale as unknown as JsonObject);
+
+        const Wwidth = normalizedSize.width();
+        const Wheight = normalizedSize.height();
         const w = Wwidth * (1 - (this.Screen_Margin.rect.left + this.Screen_Margin.rect.right) / 100);
         const H = Wheight * (1 - (this.Screen_Margin.rect.top + this.Screen_Margin.rect.bottom) / 100);
 
