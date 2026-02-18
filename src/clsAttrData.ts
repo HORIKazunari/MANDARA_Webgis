@@ -1,8 +1,9 @@
 ﻿import { appState } from './core/AppState';
 import { Generic, CheckedListBox, latlon, spatial } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
+import { SpatialIndexSearch as clsSpatialIndexSearch } from './SpatialIndexSearch';
 import { Arrow_Data, BackGround_Box_Property, clsBase, clsTime, Font_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property, Tile_Property } from './clsTime';
-import { clsDraw, clsDrawTile } from './clsDraw';
+import { clsDraw, clsDrawLine, clsDrawTile } from './clsDraw';
 import { clsMapdata, EnableMPLine_Data, strCompass_Attri, Zahyo_info } from './clsMapdata';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmTripPositionType, enmVerticalAlignment, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 import type { strLayerInfo } from './clsWindow';
@@ -747,6 +748,11 @@ const enmMarkBarShape = {
     triangle: 1
 }
 
+const enmMarkSizeValueMode = {
+    inDataItem: 0,
+    UserDefinition: 1
+}
+
 class strMarkBar_Data {
     Width: number = 0;
     MaxHeight: number = 0;
@@ -973,6 +979,11 @@ const enmMarkMaxValueType = {
 const enmGraphMaxSize= {
     Fixed : 0,
     Changeable :1
+}
+
+const enmStackedBarChart_Direction = {
+    Vertical: 0,
+    Horizontal: 1
 }
 /** 折れ線・棒グラフの最大最小値*/
 const enmBarLineMaxMinMode= {
@@ -1669,10 +1680,12 @@ const enmCondition={
     Head : 8,
     Foot : 9
 }
-// var enmConditionAnd_Or={ // globals.d.tsで定義済み
-//     _And : 0,
-//     _Or :1
-// }
+const enmConditionAnd_Or = {
+    _And: 0,
+    _Or: 1,
+    And: 0,
+    Or: 1
+}
 class strCondition_Limitation_Info {
     Data: number = 0;// Integer
     Condition: number = 0;// enmCondition
@@ -8852,8 +8865,13 @@ export {
     enmMultiEnGraphPattern,
     enmGraphMaxSize,
     enmMarkMaxValueType,
+    enmMarkSizeValueMode,
+    enmMarkBarShape,
     enmBarLineMaxMinMode,
+    enmStackedBarChart_Direction,
     enmBarChartFrameAxePattern,
+    enmCondition,
+    enmConditionAnd_Or,
     cstRectangle_Cross,
     chvValue_on_twoValue
 };

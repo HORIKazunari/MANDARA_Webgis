@@ -1,15 +1,18 @@
 ﻿import { appState } from './core/AppState';
 import { Generic, latlon, spatial, CheckedListBox, ListBox, ListViewTable } from './clsGeneric';
 import { clsPrint } from './clsPrint';
-import { clsBase, clsTime, Line_Property, Tile_Property } from './clsTime';
+import { clsBase, clsTime, enmArrowHeadType, Line_Property, Tile_Property } from './clsTime';
 import { clsDrawTile } from './clsDraw';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBarChartFrameAxePattern,
     enmBarLineMaxMinMode,
     enmClassMode_Meshod,
+    enmCondition,
+    enmConditionAnd_Or,
     enmDrawTiming,
     enmGraphMaxSize,
+    enmStackedBarChart_Direction,
     enmMarkMaxValueType,
     enmMarkPrintType,
     enmMultiEnGraphPattern,

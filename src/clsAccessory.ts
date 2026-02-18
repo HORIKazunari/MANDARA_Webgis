@@ -4,7 +4,7 @@ import { appState } from './core/AppState';
 import { Generic, spatial } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
 import { clsPrint } from './clsPrint';
-import { clsDraw, clsDrawTile } from './clsDraw';
+import { clsDraw, clsDrawLine, clsDrawTile } from './clsDraw';
 import { clsBase, LineEdge_Connect_Pattern_Data_Info, Mark_Property } from './clsTime';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
@@ -16,12 +16,15 @@ import {
     enmGraphMaxSize,
     enmInner_Data_Info_Mode,
     enmMarkBlockArrange,
+    enmMarkBarShape,
+    enmMarkSizeValueMode,
     enmMarkPrintType,
     enmMultiEnGraphPattern,
     enmProjection_Info,
     enmScaleBarPattern,
     enmScaleUnit,
     enmSeparateClassWords,
+    enmStackedBarChart_Direction,
     enmSoloMode_Number,
     point,
     rectangle,

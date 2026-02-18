@@ -1,7 +1,7 @@
 ﻿// JavaScript source code
 import { Generic, latlon, spatial } from './clsGeneric';
 import { cstRectangle_Cross, enmEdge_Pattern, enmJoinPattern, enmMarkPrintType, latlonbox, point, rectangle, Screen_info, size } from './clsAttrData';
-import { clsBase } from './clsTime';
+import { clsBase, enmArrowHeadType } from './clsTime';
 import { enmHorizontalAlignment, enmVerticalAlignment } from './constants/legacyEnums';
 import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
 
@@ -4290,4 +4290,4 @@ class _clsTileMap {
 
 class clsTileMap extends _clsTileMap {}
 
-export { clsDraw, clsSpline, clsTileMap, clsDrawMarkFan };
+export { clsDraw, clsDrawLine, clsSpline, clsTileMap, clsDrawMarkFan };

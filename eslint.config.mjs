@@ -192,6 +192,38 @@ export default tseslint.config(
           message: 'Import LineEdge_Connect_Pattern_Data_Info from clsTime.ts instead of relying on implicit global LineEdge_Connect_Pattern_Data_Info.',
         },
         {
+          name: 'clsSpatialIndexSearch',
+          message: 'Import SpatialIndexSearch from SpatialIndexSearch.ts (or alias as clsSpatialIndexSearch) instead of relying on implicit global clsSpatialIndexSearch.',
+        },
+        {
+          name: 'clsDrawLine',
+          message: 'Import clsDrawLine from clsDraw.ts instead of relying on implicit global clsDrawLine.',
+        },
+        {
+          name: 'enmCondition',
+          message: 'Import enmCondition from clsAttrData.ts instead of relying on implicit global enmCondition.',
+        },
+        {
+          name: 'enmConditionAnd_Or',
+          message: 'Import enmConditionAnd_Or from clsAttrData.ts instead of relying on implicit global enmConditionAnd_Or.',
+        },
+        {
+          name: 'enmMarkSizeValueMode',
+          message: 'Import enmMarkSizeValueMode from clsAttrData.ts instead of relying on implicit global enmMarkSizeValueMode.',
+        },
+        {
+          name: 'enmMarkBarShape',
+          message: 'Import enmMarkBarShape from clsAttrData.ts instead of relying on implicit global enmMarkBarShape.',
+        },
+        {
+          name: 'enmStackedBarChart_Direction',
+          message: 'Import enmStackedBarChart_Direction from clsAttrData.ts instead of relying on implicit global enmStackedBarChart_Direction.',
+        },
+        {
+          name: 'enmArrowHeadType',
+          message: 'Import enmArrowHeadType from clsTime.ts instead of relying on implicit global enmArrowHeadType.',
+        },
+        {
           name: 'enmLayerMode_Number',
           message: 'Import enmLayerMode_Number from constants/legacyEnums.ts instead of relying on implicit global enmLayerMode_Number.',
         },

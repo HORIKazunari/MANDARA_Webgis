@@ -1,12 +1,12 @@
 ﻿import { Accessory } from './clsAccessory';
 import { MeshContour, ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
-import { clsDraw } from './clsDraw';
+import { clsDraw, clsDrawLine } from './clsDraw';
 import { EnableMPLine_Data } from './clsMapdata';
 import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
-import { Font_Property, Line_Property, Mark_Property } from './clsTime';
+import { enmArrowHeadType, Font_Property, Line_Property, Mark_Property } from './clsTime';
 import {
     colorRGBA,
     enmBarChartFrameAxePattern,
@@ -15,9 +15,12 @@ import {
     enmDivisionMethod,
     enmDrawTiming,
     enmMarkBlockArrange,
+    enmMarkBarShape,
+    enmMarkSizeValueMode,
     enmMarkPrintType,
     enmOutputDevice,
     enmPointOnjectDrawOrder,
+    enmStackedBarChart_Direction,
     enmGraphMaxSize,
     enmSoloMode_Number,
     point,

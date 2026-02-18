@@ -38,6 +38,8 @@ import {
     enmContourIntervalMode,
     enmDivisionMethod,
     enmMarkMaxValueType,
+    enmMarkBarShape,
+    enmMarkSizeValueMode,
     enmBarLineMaxMinMode,
     enmPrint_Enable,
     enmPaintColorSettingModeInfo,

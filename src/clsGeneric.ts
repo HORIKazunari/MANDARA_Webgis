@@ -3,7 +3,7 @@ import { appState } from './core/AppState';
 import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
 import { Object_NameTimeStac_Data, EnableMPLine_Data, Zahyo_info } from './clsMapdata';
 import { Fringe_Line_Info } from './clsPrint';
-import { chvValue_on_twoValue, colorRGBA, cstRectangle_Cross, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, latlonbox, point, point3, rectangle, Screen_info, size } from './clsAttrData';
+import { chvValue_on_twoValue, colorRGBA, cstRectangle_Cross, enmCondition, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, latlonbox, point, point3, rectangle, Screen_info, size } from './clsAttrData';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
 import { clsTime, Line_Property, Tile_Property } from './clsTime';
