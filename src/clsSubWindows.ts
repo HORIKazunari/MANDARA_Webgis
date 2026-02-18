@@ -3,7 +3,7 @@ import { Generic, latlon, spatial, CheckedListBox, ListBox, ListViewTable } from
 import { clsPrint } from './clsPrint';
 import { clsBase, clsTime, Line_Property, Tile_Property } from './clsTime';
 import { clsDrawTile } from './clsDraw';
-import { enmAttDataType, enmGraphMode, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBarChartFrameAxePattern,
     enmBarLineMaxMinMode,

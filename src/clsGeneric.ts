@@ -8,7 +8,7 @@ import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
 import { clsTime, Line_Property, Tile_Property } from './clsTime';
 import { clsColorPicker } from './clsSubWindows';
-import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
 
@@ -5999,7 +5999,6 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     let fTop: number;
     let mode: string | number;
     let mdownF=false;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias -- プロトタイプメソッド内でthisをキャプチャする必要がある
     const targetEle = this;
     const SR=10;
     const TR=state.scrMargin.top;
@@ -6476,7 +6475,6 @@ HTMLElement.prototype.btnDisabled = function (this: HTMLButtonElement | HTMLInpu
 };
 
 //文字列左から抜き出し
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface String {
     left(num: number): string;
 }
@@ -6519,7 +6517,6 @@ interface String {
 }
 
 // Number型の拡張: px()メソッド
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Number {
     px(): string;
 }

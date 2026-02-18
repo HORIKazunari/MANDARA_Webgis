@@ -1527,7 +1527,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class frmPrint {
 
     /** コピー画像ウインドウ表示*/

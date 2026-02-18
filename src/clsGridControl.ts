@@ -1893,7 +1893,6 @@ export class gridControl {
             { caption: this.Grid_Total.ColumnCaption+"削除", enabled: GPO.GridRowEnabled, event: mnuDeleteCol },
         ];
         Generic.ceatePopupMenu(popmenu, pos);
-        // eslint-disable-next-line @typescript-eslint/no-this-alias -- 複数の内部関数でthisにアクセスする必要がある
         const self = this;
         /**外部から貼り付け */
         function mnuouterPaste(/*event: Event*/){

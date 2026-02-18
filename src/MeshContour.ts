@@ -3,6 +3,7 @@ import { SortingSearch } from './SortingSearch';
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { Generic } from './clsGeneric';
 import { chvValue_on_twoValue, point, rectangle } from './clsAttrData';
+import { SpatialPointType } from './constants/legacyEnums';
 
 type MeshCell = number | undefined;
 type MeshGrid = MeshCell[][];

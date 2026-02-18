@@ -171,6 +171,46 @@ export default tseslint.config(
           name: 'latlonbox',
           message: 'Import latlonbox from clsAttrData.ts instead of relying on implicit global latlonbox.',
         },
+        {
+          name: 'Zahyo_info',
+          message: 'Import Zahyo_info from clsMapdata.ts instead of relying on implicit global Zahyo_info.',
+        },
+        {
+          name: 'strCompass_Attri',
+          message: 'Import strCompass_Attri from clsMapdata.ts instead of relying on implicit global strCompass_Attri.',
+        },
+        {
+          name: 'Arrow_Data',
+          message: 'Import Arrow_Data from clsTime.ts instead of relying on implicit global Arrow_Data.',
+        },
+        {
+          name: 'Mark_Property',
+          message: 'Import Mark_Property from clsTime.ts instead of relying on implicit global Mark_Property.',
+        },
+        {
+          name: 'LineEdge_Connect_Pattern_Data_Info',
+          message: 'Import LineEdge_Connect_Pattern_Data_Info from clsTime.ts instead of relying on implicit global LineEdge_Connect_Pattern_Data_Info.',
+        },
+        {
+          name: 'enmLayerMode_Number',
+          message: 'Import enmLayerMode_Number from constants/legacyEnums.ts instead of relying on implicit global enmLayerMode_Number.',
+        },
+        {
+          name: 'enmCircleMDLegendLine',
+          message: 'Import enmCircleMDLegendLine from constants/legacyEnums.ts instead of relying on implicit global enmCircleMDLegendLine.',
+        },
+        {
+          name: 'enmTripPositionType',
+          message: 'Import enmTripPositionType from constants/legacyEnums.ts instead of relying on implicit global enmTripPositionType.',
+        },
+        {
+          name: 'enmZahyo_mode_info_enum',
+          message: 'Import enmZahyo_mode_info_enum from constants/legacyEnums.ts instead of relying on implicit global enmZahyo_mode_info_enum.',
+        },
+        {
+          name: 'SpatialPointType',
+          message: 'Import SpatialPointType from constants/legacyEnums.ts instead of relying on implicit global SpatialPointType.',
+        },
       ],
       
       // Prevent interface/class merge pitfalls

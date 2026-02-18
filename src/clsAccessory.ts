@@ -6,7 +6,7 @@ import { SortingSearch } from './SortingSearch';
 import { clsPrint } from './clsPrint';
 import { clsDraw, clsDrawTile } from './clsDraw';
 import { clsBase, LineEdge_Connect_Pattern_Data_Info, Mark_Property } from './clsTime';
-import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     colorRGBA,
     enmBasePosition,

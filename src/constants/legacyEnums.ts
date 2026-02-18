@@ -62,6 +62,17 @@ export const enmLayerMode_Number = {
     TripMode: 3
 } as const;
 
+export const SpatialPointType = {
+    SinglePoint: 0,
+    SPILine: 1,
+    SPIRect: 2
+} as const;
+
+export const enmTripPositionType = {
+    LatLon: 0,
+    ObjectSet: 1
+} as const;
+
 export const enmTotalMode_Number = {
     DataViewMode: 0,
     OverLayMode: 1,
@@ -73,6 +84,29 @@ export const enmGraphMode = {
     StackedBarGraph: 1,
     LineGraph: 2,
     BarGraph: 3
+} as const;
+
+export const enmCircleMDLegendLine = {
+    Zigzag: 0,
+    Straight: 1
+} as const;
+
+export const enmZahyo_mode_info_enum = {
+    Zahyo_No_Mode: 0,
+    Zahyo_Ido_Keido: 1,
+    Zahyo_Heimentyokukaku: 2
+} as const;
+
+export const Add_or_Remove = {
+    Add_Obj: 0,
+    Remove_Obj: 1
+} as const;
+
+export const chvOuter = {
+    In: 0,
+    Out: 1,
+    Over: 2,
+    Under: 3
 } as const;
 
 export const enmAttDataType = {

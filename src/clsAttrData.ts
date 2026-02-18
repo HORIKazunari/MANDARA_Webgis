@@ -1,10 +1,10 @@
 ﻿import { appState } from './core/AppState';
 import { Generic, CheckedListBox, latlon, spatial } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
-import { BackGround_Box_Property, clsBase, clsTime, Font_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property, Tile_Property } from './clsTime';
+import { Arrow_Data, BackGround_Box_Property, clsBase, clsTime, Font_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property, Tile_Property } from './clsTime';
 import { clsDraw, clsDrawTile } from './clsDraw';
 import { clsMapdata, EnableMPLine_Data, strCompass_Attri, Zahyo_info } from './clsMapdata';
-import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
+import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmTripPositionType, enmVerticalAlignment, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 import type { strLayerInfo } from './clsWindow';
 import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
 

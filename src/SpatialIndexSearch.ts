@@ -1,5 +1,6 @@
 ﻿import { Generic, spatial } from './clsGeneric';
 import { chvValue_on_twoValue, cstRectangle_Cross, point, rectangle } from './clsAttrData';
+import { SpatialPointType } from './constants/legacyEnums';
 
 
 const Add_or_Remove_Add_Obj = 1;

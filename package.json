@@ -9,6 +9,7 @@
     "build:check": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src --report-unused-disable-directives --max-warnings 0",
+    "lint:runtime": "eslint src --config eslint.runtime.config.mjs",
     "lint:fix": "eslint src --fix",
     "type-check": "tsc --noEmit",
     "test": "vitest",
