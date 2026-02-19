@@ -18,6 +18,8 @@
  */
 
 import type { /*MapFileInfo,*/ JsonObject, JsonValue } from '../types';
+import type { Setting_Info as SettingInfoClass } from '../clsTime';
+import type { clsTileMap as TileMapClass, clsDrawMarkFan as DrawMarkFanClass } from '../clsDraw';
 
 /**
  * スクロールマージン情報
@@ -45,7 +47,7 @@ export class AppState {
     /**
      * 設定データ
      */
-    public settingData!: Setting_Info;
+    public settingData!: SettingInfoClass;
 
     /**
      * 印刷フォーム
@@ -65,18 +67,12 @@ export class AppState {
     /**
      * タイルマップクラス
      */
-    public tileMapClass!: clsTileMap;
+    public tileMapClass!: TileMapClass;
 
     /**
      * 記号描画クラス参照（循環依存回避のため AppState 経由で保持）
      */
-    public clsDrawMarkFan?: {
-        init?: () => void;
-        getMarkShameNum?: () => number;
-        Draw_Fan?: (...args: unknown[]) => void;
-        Draw_Mark_Sample_Box?: (...args: unknown[]) => void;
-        Mark_Print?: (...args: unknown[]) => void;
-    };
+    public clsDrawMarkFan?: typeof DrawMarkFanClass;
 
     /**
      * 事前読み込みマップファイル

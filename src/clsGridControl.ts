@@ -423,7 +423,7 @@ export class gridControl {
     this.addDocumentEvent();
     this.txtTextBox = Generic.createNewTextarea(this.picGrid, "text", "", 0, 0, 100, 50, "height:25px;width:10px;text-align:right;resize: none;padding:0px;border: 0px solid #ccc;appearance: none");
     
-    this.txtTextBox.onfocus = function (this: HTMLTextAreaElement) { this.select(); };
+    this.txtTextBox.addEventListener("focus", function (this: HTMLTextAreaElement, _ev: FocusEvent) { this.select(); });
 
     this.ctx = this.canvas.getContext("2d");
     if (this.ctx) {

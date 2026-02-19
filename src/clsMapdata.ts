@@ -1178,7 +1178,7 @@ class clsMapdata {
     //指定したラインコードの外接四角形を求める
     Check_Line_Maxmin(Lcode: number, MapRectCheckF: boolean) {
         const oldRect = this.MPLine[Lcode].Circumscribed_Rectangle;
-        this.MPLine[Lcode].Circumscribed_Rectangle = spatial.getCircumscribedRectangle(this.MPLine[Lcode].PointSTC);
+        this.MPLine[Lcode].Circumscribed_Rectangle = spatial.getCircumscribedRectangle(this.MPLine[Lcode].PointSTC, undefined);
         if (MapRectCheckF === true) {
             this.Check_MapCircumscribedRectangle(oldRect, this.MPLine[Lcode].Circumscribed_Rectangle);
         }
@@ -1270,7 +1270,7 @@ class clsMapdata {
             spxy.push(this.MPLine[LineNO].PointSTC[0]);
             epxy.push(this.MPLine[LineNO].PointSTC[this.MPLine[LineNO].NumOfPoint - 1]);
         }
-        const boundaryArrangeGeneral = Generic.BoundaryArrangeGeneral as (
+        const boundaryArrangeGeneral = spatial.BoundaryArrangeGeneral as (
             lineNum: number,
             startPoints: point[],
             endPoints: point[]
@@ -2000,7 +2000,7 @@ class clsMapdata {
                 const DD = spatial.Distance_PointLine2(P, ml.PointSTC[j], ml.PointSTC[j + 1]);
                 let dist = DD.distance;
                 if (this.Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
-                    dist = spatial.Distance_Ido_Kedo_XY(P, DD.nearP, this.Map.Zahyo)
+                    dist = spatial.Distance_Ido_Kedo_XY_Point(P, DD.nearP, this.Map.Zahyo)
                 }
                 if (f === false) {
                     mind = dist;

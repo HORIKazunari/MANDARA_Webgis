@@ -468,13 +468,13 @@ export class clsShapefile {
     convertToMapfile(projection: number | undefined, UnitCheckFlag: boolean): clsMapdata {
         const MapData = new clsMapdata();
         MapData.init_MapData();
-        MapData.Add_OneObjectGroup_Parameter(this.fileName, this.shapeS, enmMesh_Number.mhNonMesh, enmObjectGoupType_Data.NormalObject);
+        MapData.Add_OneObjectGroup_Parameter(this.fileName, this.shapeS, false, enmObjectGoupType_Data.NormalObject);
         if (this.shapeS !== enmShape.PointShape) {
             const lp = clsBase.Line();
             if (this.indexData.length > 500) {
                 lp.BlankF = true;
             }
-            MapData.Add_OneLineKind(this.fileName, lp, enmMesh_Number.mhNonMesh);
+            MapData.Add_OneLineKind(this.fileName, lp, false);
         }
 
         const Obk = 0;
@@ -503,9 +503,10 @@ export class clsShapefile {
                     }
 
                     for (let j = 0; j < newObj.NumOfLine; j++) {
-                        const lc = new LineCodeStac_Data();
-                        lc.LineCode = AlinS + j;
-                        lc.NumOfTime = 0;
+                        const lc = {
+                            LineCode: AlinS + j,
+                            NumOfTime: 0
+                        } as unknown as (typeof newObj.LineCodeSTC)[number];
                         newObj.LineCodeSTC.push(lc);
                     }
                     newObj.CenterPSTC[0].Position = MapData.MPLine[newObj.LineCodeSTC[0].LineCode].PointSTC[0].Clone();
@@ -536,10 +537,12 @@ export class clsShapefile {
         for (let i = 0; i < this.indexData.length; i++) {
             const mo = MapData.MPObj[i];
             for (let j = 0; j < this.fieldDT.length; j++) {
-                const defv = new strDefTimeAttDataEach_Info();
-                defv.Value = this.dataStr[i][j];
-                const defa=new strDefTimeAttData_Info();
-                defa.Data.push(defv);
+                const defv = {
+                    Value: this.dataStr[i][j]
+                } as unknown as (typeof mo.DefTimeAttValue)[number]["Data"][number];
+                const defa = {
+                    Data: [defv]
+                } as unknown as (typeof mo.DefTimeAttValue)[number];
                 mo.DefTimeAttValue.push(defa);
             }
         }

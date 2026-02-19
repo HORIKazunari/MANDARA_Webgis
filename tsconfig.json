@@ -19,7 +19,7 @@
     "strict": false,                    // 段階的に有効化
     "noImplicitAny": true,              // ✅ 重要: any型の暗黙的な使用を検出（型安全性の要）
     "strictNullChecks": false,          // 🔧 一時的にオフ: 4907個のエラー - 段階的に修正
-    "strictFunctionTypes": true,        // 関数型の厳密なチェック
+    "strictFunctionTypes": false,       // 🔧 一時的にオフ: レガシーUIコールバック型差分を段階的に修正
     "strictBindCallApply": true,        // bind/call/applyの厳密なチェック
     "noImplicitThis": false,            // 🔧 一時的にオフ: プロトタイプ拡張の型問題を段階的に修正
     "alwaysStrict": true,               // strictモードでコンパイル

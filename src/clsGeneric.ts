@@ -434,11 +434,13 @@ export class spatial {
         const RectLatLon  = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode, MeshType);
         RectLatLon.NorthWest = spatial.ConvertRefSystemLatLon(RectLatLon.NorthWest, refOrigin, refDestZahyo.System);
         RectLatLon.SouthEast = spatial.ConvertRefSystemLatLon(RectLatLon.SouthEast, refOrigin, refDestZahyo.System);
+        const northEast = new latlon(RectLatLon.NorthWest.lat, RectLatLon.SouthEast.lon);
+        const southWest = new latlon(RectLatLon.SouthEast.lat, RectLatLon.NorthWest.lon);
         const P=[];
         P[0] = spatial.Get_Converted_XY(RectLatLon.NorthWest.toPoint(), refDestZahyo);
-        P[1] = spatial.Get_Converted_XY(RectLatLon.NorthEast.toPoint(), refDestZahyo);
+        P[1] = spatial.Get_Converted_XY(northEast.toPoint(), refDestZahyo);
         P[2] = spatial.Get_Converted_XY(RectLatLon.SouthEast.toPoint(), refDestZahyo);
-        P[3] = spatial.Get_Converted_XY(RectLatLon.SouthWest.toPoint(), refDestZahyo);
+        P[3] = spatial.Get_Converted_XY(southWest.toPoint(), refDestZahyo);
         const filteredP = P.filter((p): p is point => p !== undefined);
         return { convRect: spatial.getCircumscribedRectangle(filteredP, undefined), latlonBox: RectLatLon, RPoint: P };
     }
@@ -932,7 +934,8 @@ export class spatial {
     //世界測地系の緯度経度の座標に変換して返す
     static Get_World_IdoKedo(oxy: point, MapZahyo_Info: Zahyo_info) {
 
-        let x2, y2;
+            let x2 = { value: 0 };
+            let y2 = { value: 0 };
         const LatLon = new latlon();
 
         if (MapZahyo_Info.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku) {
@@ -946,9 +949,9 @@ export class spatial {
                 }
             }
             const Kei = MapZahyo_Info.HeimenTyokkaku_KEI_Number;
-            TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, oxy.y, oxy.x, y2, x2);
-            LatLon.lon = x2 ?? 0;
-            LatLon.lat = y2 ?? 0;
+            const converted = TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, oxy.y, oxy.x);
+            LatLon.lon = converted.lon;
+            LatLon.lat = converted.lat;
         } else {
             LatLon.lat = oxy.y;
             LatLon.lon = oxy.x;
@@ -1004,10 +1007,8 @@ export class spatial {
                     if (oldMapZahyo.System === enmZahyo_System_Info.Zahyo_System_World) {
                         Ellip12 = 2;
                     }
-                    const y2 = { value: 0 };
-                    const x2 = { value: 0 };
-                    TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, P2.y, P2.x, y2, x2);
-                    XY2 = new latlon(y2.value, x2.value);
+                    const converted = TKY2JGDInfo.doCalcXy2bl(Ellip12, Kei, P2.y, P2.x);
+                    XY2 = new latlon(converted.lat, converted.lon);
                     if (newMapZahyo.System !== oldMapZahyo.System) {
                         //さらに測地系が違う場合
                         switch (oldMapZahyo.System) {
@@ -4023,7 +4024,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //** 色divボックス */
-    static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: colorRGBA) => void) | undefined) {
+    static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: any) => void) | undefined) {
 
         const sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", undefined);
         let sw = sp.offsetWidth;
@@ -4038,7 +4039,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         return colbox;
         function colSelect(e: MouseEvent) {
-            clsColorPicker(e, onclick);
+            (clsColorPicker as unknown as (...args: any[]) => void)(e, onclick);
         }
     }
 
@@ -6224,7 +6225,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
             Generic.moveInnerElement(targetEle);
         }
         if (mode !== 'move') {
-            targetEle.maxSizeFlag = false;
+            (targetEle as HTMLElement & { maxSizeFlag?: boolean }).maxSizeFlag = false;
             //リサイズ中に発生するコールバック
             if(typeof movingCall  === 'function'){
                 movingCall(targetEle);
@@ -6396,14 +6397,14 @@ HTMLElement.prototype.setSelectText = function (this: HTMLSelectElement, txt: st
 /**select要素の指定の位置のvalueとテキストを変更 */
 HTMLElement.prototype.setSelectData = function (this: HTMLSelectElement, n: number, value: string | number, text: string) {
     this.options[n].text=text;
-    this.options[n].value=value;
+    this.options[n].value=String(value);
 }
 
 //select要素で指定したvalueのテキストの先頭にアスタリスクを付ける、外す
 HTMLElement.prototype.setAstarisk = function (this: HTMLSelectElement, value: string | number, astariskAddF: boolean) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
-        let v=this.options[i].value;
+        let v: string | number = this.options[i].value;
         if ((isNaN(Number(v))===false)&&(isNaN(Number(value))===false)){
             v=Number(v);
         }
@@ -6430,7 +6431,7 @@ HTMLElement.prototype.setAstarisk = function (this: HTMLSelectElement, value: st
 HTMLElement.prototype.setSelectValue = function (this: HTMLSelectElement, value: string | number) {
     const n = this.options.length;
     for (let i = 0; i < n; i++) {
-        let v=this.options[i].value;
+        let v: string | number = this.options[i].value;
         if ((isNaN(Number(v))===false)&&(isNaN(Number(value))===false)){
             v=Number(v);
         }
