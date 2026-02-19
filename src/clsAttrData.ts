@@ -2117,8 +2117,8 @@ class strViewStyle_Info {
     mlb.Font.Size = 3.5;
     mlb.Back = clsBase.WhiteBackground();
     mlb.ModeValueInScreenFlag = false;
-    mlb.Back.Line.Edge_Connect_Pattern.Edge_Pattern = enmEdge_Pattern.Rectangle;
-    mlb.Back.Line.Edge_Connect_Pattern.Join_Pattern = enmJoinPattern.Miter;
+    mlb.Back.Line.Edge_Connect_Pattern.lineCap = enmEdge_Pattern.Rectangle as unknown as CanvasLineCap;
+    mlb.Back.Line.Edge_Connect_Pattern.lineJoin = enmJoinPattern.Miter as unknown as CanvasLineJoin;
     mlb.Legend_Num = 1;
     mlb.LegendXY = [];
 
@@ -2127,8 +2127,8 @@ class strViewStyle_Info {
 
     const cmd = ml.ClassMD;
     cmd.PaintMode_Line = clsBase.Line();
-    cmd.PaintMode_Line.Edge_Connect_Pattern.Edge_Pattern = 1;
-    cmd.PaintMode_Line.Edge_Connect_Pattern.Join_Pattern = 2;
+    cmd.PaintMode_Line.Edge_Connect_Pattern.lineCap = 1 as unknown as CanvasLineCap;
+    cmd.PaintMode_Line.Edge_Connect_Pattern.lineJoin = 2 as unknown as CanvasLineJoin;
     cmd.PaintMode_Method = enmClassModE_Meshod.Noral;
     cmd.CategorySeparate_f = true;
     cmd.PaintMode_Width = 1.2;
@@ -2506,7 +2506,7 @@ class Screen_info {
                 const TurnCenter = this.MapRectangle.centerP();
                 const INXY2 = [];
                 for (let i = 0; i < Pnum; i++) {
-                    INXY2.push(spatial.Trans3D(inXY[i].x, inXY[i].y, 0, TurnCenter, this.ThreeDMode.Expand, this.ThreeDMode.Pitch, this.ThreeDMode.Head, this.ThreeDMode.Bank, XYPara));
+                    INXY2.push(spatial.trans3D(inXY[i].x, inXY[i].y, 0, TurnCenter, this.ThreeDMode.Expand, this.ThreeDMode.Pitch, this.ThreeDMode.Head, this.ThreeDMode.Bank, XYPara));
                 }
                 return this.getSxSyArray(Pnum, INXY2, ReverseGetF, true);
             } else {
@@ -3930,11 +3930,11 @@ class clsAttrData {
 
         // サンプル記号ボックスに記号を描画
     Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: Mark_Property): void {
-        appState().clsDrawMarkFan?.Draw_Mark_Sample_Box?.(picBox, Mark, this.TotalData.ViewStyle.ScrData);
+        appState().clsDrawMarkFan?.Draw_Mark_Sample_Box?.(picBox as unknown as HTMLCanvasElement, Mark, this.TotalData.ViewStyle.ScrData);
     }
     //サンプルラインボックスにラインを描画
     Draw_Sample_LineBox(picBox: HTMLElement, LinePat: Line_Property): void {
-        clsDrawLine.Draw_Sample_LineBox?.(picBox, LinePat, this.TotalData.ViewStyle.ScrData);
+        clsDrawLine.Draw_Sample_LineBox?.(picBox as unknown as HTMLCanvasElement, LinePat, this.TotalData.ViewStyle.ScrData);
     }
     //記号描画
     Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property): void {
@@ -4361,24 +4361,24 @@ class clsAttrData {
                         XYSize = Math.sqrt(obn);
                     }
                     const index = new clsSpatialIndexSearch(SpatialPointType.SinglePoint, true, mrect, mrect.width() / XYSize);
-                    LD.PrtSpatialIndex = index;
+                    LD.PrtSpatialIndex = index as unknown as ClsSpatialIndexSearchInstance;
                     for (let j = 0; j < obn; j++) {
-                        index.AddSinglePoint(LD.atrObject.atrObjectData[j].CenterPoint, j)
+                        index.AddSinglePoint(LD.atrObject.atrObjectData[j].CenterPoint as unknown as latlon, j)
                     }
                     break;
                 }
                 case enmShape.LineShape: {
                     const XYSize = Math.sqrt(obn) / 4;
                     const index = new clsSpatialIndexSearch(SpatialPointType.SPILine, true, mrect, mrect.width() / XYSize);
-                    LD.PrtSpatialIndex = index;
+                    LD.PrtSpatialIndex = index as unknown as ClsSpatialIndexSearchInstance;
                     for (let j = 0; j < obn; j++) {
                         if (LD.Type === enmLayerType.Mesh) {
-                            index.AddLine(4, LD.atrObject.atrObjectData[j].MeshPoint, j)
+                            index.AddLine(4, LD.atrObject.atrObjectData[j].MeshPoint as unknown as latlon[], j)
                         } else {
                             const ELine = this.Get_Enable_KenCode_MPLine(i, j);
                             for (const k in ELine) {
                                 const LDM = LD.MapFileData.MPLine[ELine[k].LineCode];
-                                index.AddLine(LDM.NumOfPoint, LDM.PointSTC, j);
+                                index.AddLine(LDM.NumOfPoint, LDM.PointSTC as unknown as latlon[], j);
                             }
                         }
                     }
@@ -4386,7 +4386,7 @@ class clsAttrData {
                 }
                 case enmShape.PolygonShape: {
                     const index = new clsSpatialIndexSearch(SpatialPointType.SPIRect, false, mrect);
-                    LD.PrtSpatialIndex = index;
+                    LD.PrtSpatialIndex = index as unknown as ClsSpatialIndexSearchInstance;
                     for (let j = 0; j < obn; j++) {
                         const ObjRect = this.Get_Kencode_Object_Circumscribed_Rectangle(i, j);
                         index.AddRect(ObjRect, j);
@@ -4414,7 +4414,7 @@ class clsAttrData {
             case enmLayerType.DefPoint: {
                 const LDA = LD.atrObject.atrObjectData[ObjNum];
                 const pt: point[] = [LDA.CenterPoint, LDA.Symbol, LDA.Label];
-                const rect = spatial.getCircumscribedRectangle(pt);
+                const rect = (spatial.getCircumscribedRectangle as unknown as (points: point[]) => rectangle)(pt);
                 return rect;
                 break;
             }
@@ -4819,7 +4819,7 @@ class clsAttrData {
         for (let i = 0; i <  ml.NumOfPoint;i++){
             LP.push( spatial.Get_Reverse_XY(ml.PointSTC[i], this.TotalData.ViewStyle.Zahyo))
         }
-        const rectf = spatial.getCircumscribedRectangle(LP);
+        const rectf = (spatial.getCircumscribedRectangle as unknown as (points: point[]) => rectangle)(LP);
         const newRect = spatial.getCircumscribedRectangle(rect, rectf)  ;
         return newRect;
     }
@@ -4911,7 +4911,7 @@ class clsAttrData {
                 const src = d[i];
                 const dd = new strDummyObjectPointMark_Info();
                 dd.ObjectKindName = src.ObjectKindName;
-                dd.Mark = cnvMarkProperty(src.Mark);
+                dd.Mark = cnvMarkProperty(src.Mark as unknown as JsonObject);
                 nd.push(dd);
             }
             vs.DummyObjectPointMark[key] = nd;
@@ -4926,36 +4926,37 @@ class clsAttrData {
         };
         lp.Lat_Interval = olp.Lat_Interval ?? 1;
         lp.Lon_Interval = olp.Lon_Interval ?? 1;
-        lp.LPat = cnvLineProperty(olp.LPat);
+        lp.LPat = cnvLineProperty(olp.LPat as unknown as JsonObject);
         lp.Order = olp.Order;
         lp.Visible = olp.Visible;
 
-        vs.MapLegend = cnvMapLegend(oldvs.MapLegend);
+        vs.MapLegend = cnvMapLegend(oldvs.MapLegend as unknown as JsonObject);
 
         vs.MapPrint_Flag = oldvs.MapPrint_Flag;
-        vs.MapScale = cnvMapSCL(oldvs.MapScale);
-        vs.MapTitle = cnvMapTitle(oldvs.MapTitle);
-        vs.DataNote = cnvDataNode(oldvs.DataNote);
-        vs.Missing_Data = cnvMissingData(oldvs.Missing_Data);
+        vs.MapScale = cnvMapSCL(oldvs.MapScale as unknown as JsonObject);
+        vs.MapTitle = cnvMapTitle(oldvs.MapTitle as unknown as JsonObject);
+        vs.DataNote = cnvDataNode(oldvs.DataNote as unknown as JsonObject);
+        vs.Missing_Data = cnvMissingData(oldvs.Missing_Data as unknown as JsonObject);
         vs.PointPaint_Order = oldvs.PointPaint_Order;
         if(vs.PointPaint_Order===undefined){//試作版0.0のmdrjファイルの問題への対処
             vs.PointPaint_Order=enmPointOnjectDrawOrder.LowerToUpperCategory;
         }
-        vs.Screen_Back = cnvScreen_Back(oldvs.Screen_Back);
-        vs.AccessoryGroupBox = cnvAccessoryGroupBox(oldvs.AccessoryGroupBox);
-        vs.Screen_Setting = cnvScreen_Setting(oldvs.Screen_Setting);
+        vs.Screen_Back = cnvScreen_Back(oldvs.Screen_Back as unknown as JsonObject);
+        vs.AccessoryGroupBox = cnvAccessoryGroupBox(oldvs.AccessoryGroupBox as unknown as JsonObject);
+        const oldvsAny = oldvs as unknown as { Screen_Setting: JsonObject[] };
+        vs.Screen_Setting = cnvScreen_Setting(oldvsAny.Screen_Setting);
         vs.ValueShow=cnvValueShow(oldvs.ValueShow);
         vs.SouByou = cnvSouByou(oldvs.SouByou);
         vs.TileMapView = cnvTileMapView(oldvs.TileMapView);
         const oldSymbolLine = oldvs.SymbolLine ?? { Visible: false, Line: clsBase.Line() };
         vs.SymbolLine.Visible = oldSymbolLine.Visible ?? false;
-        vs.SymbolLine.Line = cnvLineProperty(oldSymbolLine.Line ?? clsBase.Line());
+        vs.SymbolLine.Line = cnvLineProperty((oldSymbolLine.Line ?? clsBase.Line()) as unknown as JsonObject);
         vs.Zahyo = new Zahyo_info();
         Object.assign(vs.Zahyo, oldvs.Zahyo);
-        vs.Zahyo.CenterXY=cnvPoint(oldvs.Zahyo.CenterXY);
+        vs.Zahyo.CenterXY=cnvPoint(oldvs.Zahyo.CenterXY as unknown as JsonObject);
 
-        this.TotalData.Condition = cnvCondition(odata.TotalData.Condition);
-        this.TotalData.TotalMode = cnvTotalmode(odata.TotalData.TotalMode);
+        this.TotalData.Condition = cnvCondition(odata.TotalData.Condition as unknown as JsonObject[]);
+        this.TotalData.TotalMode = cnvTotalmode(odata.TotalData.TotalMode as unknown as JsonObject);
         //レイヤデータの読み込み
         for (let i = 0; i < lv1.Lay_Maxn; i++) {
             this.LayerData[i] = cnvLayerData(odata.LayerData[i] as JsonObject);
@@ -6098,7 +6099,7 @@ class clsAttrData {
         }
         const DN_Str = Generic.Array2Dimension(MxData, LayerReadingObjectDataStac.length);
         
-        const Get_Obj: Array<strObject_Data_Info | strTripObjData_Info | string> = [];
+        const Get_Obj: Array<strObject_Data_Info | InstanceType<typeof strTripObjData_Info> | string> = [];
         let MeshCodeLen = 0;
         const LayerReadingType = LayerReading.Type as number;
         if (LayerReadingType === enmLayerType.Mesh) {
@@ -6217,7 +6218,7 @@ class clsAttrData {
         
         const layerTime = LayerReading.Time;
         this.Add_one_Layer(LayerReading.Name as string, LayerReading.Type as number, LayerReading.MeshType as number, LayerReading.Shape as number, LayerReading.MapFile as string,
-            layerTime, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj);
+            layerTime, LayerReading.ReferenceSystem as number, LayerReading.Comment_Temp as string, Object_num, Get_Obj as unknown as strObject_Data_Info[]);
 
         const Laye_Shape_Emes = this.Check_LayerShape();
         if (Laye_Shape_Emes !== "") {
@@ -6425,7 +6426,7 @@ class clsAttrData {
                 const O = L.atrObject.atrObjectData[j];
                 const mapZahyo = this.SetMapFile("").Map.Zahyo;
                 const retV=spatial.Get_MeshCode_Rectangle( O.Name, L.MeshType, L.ReferenceSystem, mapZahyo);
-                O.CenterPoint = spatial.Get_Converted_XY(retV.latlonBox.CenterPoint().toPoint(), mapZahyo);
+                O.CenterPoint = spatial.Get_Converted_XY((retV.latlonBox as unknown as { CenterPoint: () => latlon }).CenterPoint().toPoint(), mapZahyo);
                 O.Symbol = O.CenterPoint.Clone();
                 O.Label = O.CenterPoint.Clone();
                 O.MeshRect = retV.convRect;
@@ -6492,7 +6493,7 @@ class clsAttrData {
                         if (Data_Val_STR[j] !== "") {
                             Data_Val_STR[j] = Data_Val_STR[j].replace(/,/g, "");
                         }
-                        if ((isNaN(Data_Val_STR[j]) === true)||(Data_Val_STR[j] === "")) {
+                        if ((isNaN(Number(Data_Val_STR[j])) === true)||(Data_Val_STR[j] === "")) {
                             if (Data_Val_STR[j] === "") {
                                 if (DTMissing[i] === false) {
                                     if ((TTL[i] !== "") || (UNT[i] !== "")) {
@@ -7668,7 +7669,7 @@ class clsAttrData {
             cs.ODLinePat = clsBase.Line();
             cs.ODLinePat.Color = col;
             cs.ODLinePat.Width = w;
-            cs.ODLinePat.Edge_Connect_Pattern.Edge_Pattern = enmEdge_Pattern.Flat;
+            cs.ODLinePat.Edge_Connect_Pattern.lineCap = enmEdge_Pattern.Flat as unknown as CanvasLineCap;
             if ((j === n - 1) && (this.LayerData[Layernum].atrData.Data[DataNum].DataType === enmAttDataType.Normal) &&
                 (this.LayerData[Layernum].Shape === enmShape.PolygonShape) || (this.LayerData[Layernum].Shape === enmShape.PointShape)) {
                 cs.ODLinePat.BlankF=true;
@@ -8384,7 +8385,7 @@ class clsAttrData {
                 d = this.MapData.SetMapFile(MapFile).Get_Distance_Between_ObjectLine_and_Point(ObjCode2, Time, P1);
             } else {
                 P1 = this.MapData.SetMapFile(MapFile).Get_Enable_CenterP(ObjCode2, Time);
-                if (P1 && P2 && z.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
+                if (P1 && P2 && z.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
                     d = spatial.Distance_Ido_Kedo_XY_Point(P1, P2, z);
                 } else if (P1 && P2) {
                     d = spatial.Distance_Point(P1, P2) / this.MapData.SetMapFile("").Map.SCL;

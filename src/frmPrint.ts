@@ -209,7 +209,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         MouseDownF = true;
         touchStartTime=new Date().getTime();
         mousePointingSituation = mousePointingSituations.down;
-        mouseDownPosition = Generic.getCanvasXY(event);
+        mouseDownPosition = Generic.getCanvasXY(event as unknown as MouseEvent);
 
     }
 
@@ -234,7 +234,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 event = (e as TouchEvent).changedTouches[0];
             }
         }
-        const p = Generic.getCanvasXY(event);
+        const p = Generic.getCanvasXY(event as unknown as MouseEvent);
         const vs = state.attrData.TotalData.ViewStyle;
         const MapPos = vs.ScrData.getSRXY(p);
         switch (mousePointingSituation) {
@@ -421,7 +421,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
              event = (e as TouchEvent).changedTouches[0];
         }
         const vs = state.attrData.TotalData.ViewStyle;
-        const mouseUpPosition = Generic.getCanvasXY(event);
+        const mouseUpPosition = Generic.getCanvasXY(event as unknown as MouseEvent);
         const mouseUpSRXT = vs.ScrData.getSRXY(mouseUpPosition);
 
         if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.LabelPoint )){
@@ -699,7 +699,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     }
                     case false: {//左クリック
                         if ((e.type === "touchend") && (mousePointingSituation === mousePointingSituations.down)) {
-                            const p = Generic.getCanvasXY(event);
+                            const p = Generic.getCanvasXY(event as unknown as MouseEvent);
                             LocationSearch(p);
                         } else {
                             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
@@ -870,8 +870,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     function pinch(event: TouchEvent){
         // const state = appState();
         const touches=event.changedTouches;
-        const p1=Generic.getCanvasXY(touches[0]);
-        const p2=Generic.getCanvasXY(touches[1]);
+        const p1=Generic.getCanvasXY(touches[0] as unknown as MouseEvent);
+        const p2=Generic.getCanvasXY(touches[1] as unknown as MouseEvent);
         pinchCenter=new point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
         pinchBaseDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
     }
@@ -879,8 +879,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         // const state = appState();
         const touches=event.changedTouches;
         if(touches.length>1){
-            const p1=Generic.getCanvasXY(touches[0]);
-            const p2=Generic.getCanvasXY(touches[1]);
+            const p1=Generic.getCanvasXY(touches[0] as unknown as MouseEvent);
+            const p2=Generic.getCanvasXY(touches[1] as unknown as MouseEvent);
             pinchCenter=new point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
             pinchPresentDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
         }
@@ -1429,9 +1429,10 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     const printedFlags = state.attrData.TempData.ObjectPrintedCheckFlag[Layernum] ?? [];
                     if (retV.number > 0) {
                         for (let i = 0; i < retV.number; i++) {
-                            if (printedFlags[retV.Tags[i]] === true) {
-                                if (state.attrData.Check_Point_in_Kencode_OneObject(Layernum, retV.Tags[i], MapP) === true) {
-                                    const ObjData =new strLocationSearchObject(Layernum,retV.Tags[i]) ;
+                            const tag = Number(retV.Tags[i]);
+                            if (printedFlags[tag] === true) {
+                                if (state.attrData.Check_Point_in_Kencode_OneObject(Layernum, tag, MapP) === true) {
+                                    const ObjData =new strLocationSearchObject(Layernum, tag) ;
                                     OnObject.push(ObjData);
                                 }
                             }
@@ -1451,8 +1452,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     if (retV.num > 0) {
                         let serarchNCount = 0;
                         for (let i = 0; i < retV.num; i++) {
-                            if (printedFlags[retV.Tags[i]] === true) {
-                                const ObjData = new strLocationSearchObject(Layernum, retV.Tags[i]);
+                            const tag = Number(retV.Tags[i]);
+                            if (printedFlags[tag] === true) {
+                                const ObjData = new strLocationSearchObject(Layernum, tag);
                                 OnObject.push(ObjData);
                                 serarchNCount++;
                                 if (serarchNCount === 5) {//候補は最大で5つ
@@ -1580,14 +1582,14 @@ class frmPrint {
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
         Generic.Set_Box_Position_in_Browser(e as MouseEvent, backDiv);
 
-        Generic.createNewSpan(backDiv, "地図ファイル", "", "", 15, 35, "", "");
+        Generic.createNewSpan(backDiv, "地図ファイル", "", "", 15, 35, "", undefined);
         const NewLineKind: LPatSek_Info[][] = [];
         const MapFileList = state.attrData.GetMapFileName()
-        const list: Array<{value: string, text: string}> = [];
+        const list: string[] = [];
         for (let i = 0; i < MapFileList.length; i++) {
             const LK = state.attrData.SetMapFile(MapFileList[i]).Get_TotalLineKind();
-            NewLineKind.push(LK);
-            list.push({ value: MapFileList[i], text: MapFileList[i] });
+            NewLineKind.push(LK as unknown as LPatSek_Info[]);
+            list.push(MapFileList[i]);
         }
         const selectDataItem = Generic.createNewSelect(backDiv, list, 0, "", 15, 55, false, mapListchange, "width:210px;");
         const pnlLinePattern = Generic.createNewDiv(backDiv, "", "", "", 15, 85, 210, 200, "overflow-y:scroll;overflow-x:hidden;border:solid 1px;border-color:#666666;", "");
@@ -1871,7 +1873,7 @@ class frmPrint {
         state.propertyWindow.oData = DataNumber;
 
         const y=state.propertyWindow.pnlProperty.objInfo.offsetHeight;
-        const gd=Generic.createNewGrid(state.propertyWindow.pnlProperty, "", "", "", "", data, 0, y, '100%', state.propertyWindow.pnlProperty.offsetHeight - 70,'100%', "", "font-size:13px", 1, "background-color:#aaffaa;",  "", "", "");
+        const gd=Generic.createNewGrid(state.propertyWindow.pnlProperty as unknown as HTMLElement, "", "", "", "", data, 0, y, '100%', state.propertyWindow.pnlProperty.offsetHeight - 70, state.propertyWindow.pnlProperty.offsetWidth, "", "font-size:13px", 1, "background-color:#aaffaa;",  "", "", "");
         gd.name="grid";
 }
 
@@ -1888,7 +1890,7 @@ class frmPrint {
         state.propertyWindow.style.left=(state.frmPrint.style.left.removePx()+state.frmPrint.style.width.removePx()+10).px();
         state.propertyWindow.style.top=(state.frmPrint.style.top.removePx()+marginTop).px();
         state.propertyWindow.style.height=state.frmPrint.style.height;
-        Generic.moveInnerElement(state.propertyWindow);
+        Generic.moveInnerElement(state.propertyWindow as unknown as HTMLElement);
         this.resizeMapWindow();
     }
     
@@ -1906,7 +1908,7 @@ class frmPrint {
         const p = new point(state.frmPrint.style.left.removePx() + state.scrMargin.side, state.frmPrint.style.top.removePx() + state.scrMargin.top);
         const s = new size(state.frmPrint.picMap.width, state.frmPrint.picMap.height);
         state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
-        Generic.moveInnerElement(state.frmPrint);
+        Generic.moveInnerElement(state.frmPrint as unknown as HTMLElement);
         if(state.frmPrint.maxSizeFlag===false){
             state.frmPrint.oldpos=new rectangle(new point(state.frmPrint.style.left.removePx(),state.frmPrint.style.top.removePx()),
                         new size(state.frmPrint.style.width.removePx(),state.frmPrint.style.height.removePx()));
@@ -2082,7 +2084,7 @@ class frmPrint {
 export function attachFrmPrintMethods(target: IFrmPrint): void {
     target.copyImageWindow = frmPrint.copyImageWindow;
     target.savePNG = frmPrint.savePNG;
-    target.linePattern = frmPrint.linePattern;
+    target.linePattern = frmPrint.linePattern as unknown as () => void;
     target.windowClose = frmPrint.windowClose;
     target.propertyWindowClose = frmPrint.propertyWindowClose;
     target.copyProperty = frmPrint.copyProperty;

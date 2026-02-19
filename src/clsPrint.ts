@@ -118,11 +118,14 @@ interface TempDataLegendInfo {
 
 interface LabelModeDataSetInfo {
     Location_Mark: Mark_Property;
-    DataItem: Array<{ Data: number; title: string; Unit_Flag?: boolean }>;
+    Location_Mark_Flag?: boolean;
+    DataItem: Array<number | { Data: number; title: string; Unit_Flag?: boolean }>;
     Width: number;
     ObjectName_Print_Flag: boolean;
+    ObjectName_Turn_Flag?: boolean;
     ObjectName_Font: Font_Property;
     DataName_Print_Flag: boolean;
+    DataValue_Print_Flag?: boolean;
     DataValue_Unit_Flag: boolean;
     DataValue_Font: Font_Property;
     DataValue_TurnFlag: boolean;
@@ -520,7 +523,7 @@ class clsPrint {
         const av=state.attrData.TotalData.ViewStyle.ScrData;
         const rect  = av.getSxSyRect(av.ScrRectangle);
         const sv=state.attrData.TotalData.ViewStyle.Screen_Back;
-        let penw  = parseInt(state.attrData.Get_Length_On_Screen(sv.ScreenFrameLine.Width), 10) % 2;
+        let penw  = Math.trunc(state.attrData.Get_Length_On_Screen(sv.ScreenFrameLine.Width)) % 2;
         penw = (penw===0) ? 1:penw;
         rect.inflate(-penw, -penw);
         state.attrData.Draw_Tile_Box(g, rect, sv.ScreenFrameLine, clsBase.BlancTile(), 0)
@@ -571,8 +574,8 @@ class clsPrint {
             Dummy_F = false;
         } else if (DummyClip_F === true) {
             for (let i = 0; i < al.Dummy.length; i++) {
-                const c = al.Dummy[i].code
-                const mapObj = al.MapFileData.MPObj[c] as MapObjectShapeInfo;
+                const c = Number(al.Dummy[i].code);
+                const mapObj = al.MapFileData.MPObj[c] as unknown as MapObjectShapeInfo;
                 if ((mapObj.Shape === enmShape.PolygonShape) && (state.attrData.Check_Screen_Objcode_In(Layernum, c) === true)) {
                     MultiObj.push(c);
                 }
@@ -581,7 +584,7 @@ class clsPrint {
             if (dobgRet.trueNum > 0) {
                 const alm = al.MapFileData;
                 for (let j = 0; j < alm.Map.Kend; j++) {
-                    const mapObj = alm.MPObj[j] as MapObjectShapeInfo;
+                    const mapObj = alm.MPObj[j] as unknown as MapObjectShapeInfo;
                     if ((dobgRet.DummyOBGArray[mapObj.Kind] === true) && (mapObj.Shape === enmShape.PolygonShape)) {
                         if (alm.CheckEnableObject(mapObj, LT) === true) {
                             MultiObj.push(j);
@@ -646,7 +649,7 @@ class clsPrint {
 
         let MultiObj: number[] = [];
         for (let i = 0; i < al.Dummy.length; i++) {
-            const c = al.Dummy[i].code;
+            const c = Number(al.Dummy[i].code);
             const mapObject = al.MapFileData.MPObj[c] as PolygonShapeInfo;
             if ((mapObject.Shape === enmShape.PolygonShape) && (
                 state.attrData.Check_Screen_Objcode_In(Layernum, c) === true)) {
@@ -1168,7 +1171,7 @@ class clsPrint {
         const Lpat = av.Screen_Back.MapAreaFrameLine;
         if(Lpat.BlankF === false) {
             const marginRect = av.ScrData.getSXSY_Margin();
-            let penw = parseInt(state.attrData.Get_Length_On_Screen(Lpat.Width), 10) / 2;
+            let penw = Math.trunc(state.attrData.Get_Length_On_Screen(Lpat.Width)) / 2;
             if(penw === 0) {
                 penw = 1;
             }
@@ -1270,7 +1273,7 @@ class clsPrint {
     static Legend_Data_Set() {
         const state = appState();
         let n = 0;
-        const at = state.attrData.TempData as TempDataLegendInfo;
+        const at = state.attrData.TempData as unknown as TempDataLegendInfo;
         if(state.attrData.TotalData.TotalMode.OverLay.Always_Overlay_Index !== -1) {
 
             at.Accessory_Temp.MapLegend_W.length = at.OverLay_Temp.Always_Ove_DataStac.length;
@@ -1409,7 +1412,7 @@ class clsPrint {
                 }
             }
         }
-        at.Accessory_Temp.Legend_No_Max = n;
+        (at.Accessory_Temp as unknown as { Legend_No_Max: number }).Legend_No_Max = n;
     }
 
     /**重ね合わせモードのデータセット内の表示項目ごとの凡例セット */
@@ -1726,7 +1729,7 @@ class clsPrint {
                                             if (H !== 0) {
                                                 const start_p = acum;
                                                 const end_p = start_p + 2 * Math.PI * H;
-                                                state.attrData.Draw_Fan(g, OP, r, start_p, end_p, selGraph.En_Obi.BoaderLine, selGraph.Data[j].Tile);
+                                                appState().clsDrawMarkFan?.Draw_Fan?.(g, OP, r, start_p, end_p, selGraph.En_Obi.BoaderLine as unknown as Tile_Property, selGraph.Data[j].Tile, state.attrData.TotalData.ViewStyle.ScrData);
                                                 acum = end_p;
                                             }
                                         }
@@ -2024,7 +2027,8 @@ class clsPrint {
 
                     for (let j = 0; j < Data_n; j++) {
                         let wo2 = "";
-                        const DataNum = attLbl.DataItem[j];
+                        const dataItem = attLbl.DataItem[j];
+                        const DataNum = typeof dataItem === 'number' ? dataItem : dataItem.Data;
                         if (attLbl.DataName_Print_Flag === true) {
                             wo2 = state.attrData.Get_DataTitle(Layernum, DataNum, false) + "："
                         }
@@ -2067,7 +2071,7 @@ class clsPrint {
                     let O_TxHeight = 0;
                     if (attLbl.ObjectName_Print_Flag === true) {
                         const retV = clsDraw.TextCut_for_print(g, state.attrData.Get_KenObjName(Layernum, i),
-                            attLbl.ObjectName_Font, attLbl.ObjectName_Turn_Flag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
+                            attLbl.ObjectName_Font, Boolean(attLbl.ObjectName_Turn_Flag), BoxWidth, state.attrData.TotalData.ViewStyle.ScrData);
                         O_Word_Cut = retV.Out_Text;
                         O_TxHeight = retV.Height;
                     }
@@ -2098,7 +2102,7 @@ class clsPrint {
                             y2++;
                         }
 
-                        if (attLbl.DataValue_Print_Flag === true) {
+                        if (attLbl.DataValue_Print_Flag !== false) {
                             const Rect = new rectangle(AP.x - 1, BP.x, AP.y + y2 - 1, AP.y + y2 + D_TxHeight * D_Word_Cut.length);
                             state.attrData.Draw_Tile_Box(g, Rect, attLbl.BorderLine, attLbl.BorderDataTile, 0);
                             for (let j = 0; j < D_Word_Cut.length; j++) {
@@ -2706,7 +2710,7 @@ class clsPrint {
             case enmContourIntervalMode.ClassPaint: {
                 hn = ad.SoloModeViewSettings.Div_Num - 1
                 for (let i = 0; i < hn; i++) {
-                    Contour_High_M.push(ad.SoloModeViewSettings.Class_Div[hn - 1 - i].Value);
+                    Contour_High_M.push(Number(ad.SoloModeViewSettings.Class_Div[hn - 1 - i].Value));
                     C_Line_Pat.push(this.cloneLineProperty(c_md.Regular.Line_Pat));
                 }
                 break;
@@ -3247,7 +3251,7 @@ class clsPrint {
             case enmShape.LineShape:
                 if(state.attrData.Check_screen_Kencode_In(Layernum, kpos) === true) {
                     state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][kpos] = true;
-                    const LineSize = Math.abs(MV) / maxv * mmv.LineShape.LineWidth;
+                    const LineSize = Math.abs(MV) / maxv * mmv.LineShape.Width;
                     const ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, kpos);
                     for (let j = 0; j < ELine.length; j++) {
                         const mpl = al.MapFileData.MPLine[ELine[j].LineCode] as { NumOfPoint: number; PointSTC: point[] };
@@ -3342,10 +3346,8 @@ class clsPrint {
                             if((OD_MD.Arrow.End_Arrow_F === true) && (OD_MD.Arrow.ArrowHeadType === enmArrowHeadType.Fill)) {
                                 //塗りつぶしの矢印付き
                                 if (clsDrawLine.Check_Draw_Arrow_Line) {
-                                    const Cp = clsDrawLine.Check_Draw_Arrow_Line(DestFP, Refp[1], Refp[1], Refp[0], ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
-                                    if (Cp !== undefined) {
-                                        Refp[0] = Cp;
-                                    } else {
+                                    const canDrawArrow = clsDrawLine.Check_Draw_Arrow_Line(DestFP, Refp[1], Refp[1], Refp[0], ODLinePat, OD_MD.Arrow, state.attrData.TotalData.ViewStyle.ScrData);
+                                    if (canDrawArrow !== true) {
                                         Refp[0] = Refp[1].Clone();
                                     }
                                 }
@@ -3672,7 +3674,7 @@ class clsPrint {
 
     static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, /* Dummy_F: boolean */) {
         const state = appState();
-        let ELine: EnableMPLine_Data[] = []
+        let ELine: Array<{ LineCode: number }> = []
         const ad = state.attrData.LayerData[Layernum];
         let pxy: point[] = [];
         // if(false) { // Dummy_F === true
@@ -3692,7 +3694,7 @@ class clsPrint {
             state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
             return;
         } else {
-            ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code);
+            ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code) as unknown as Array<{ LineCode: number }>;
         }
         // }
         // const MPFileNapa = ad.MapFileName;
@@ -3951,7 +3953,7 @@ class clsPrint {
             }
             case enmVerticalAlignment.Center: {
                 if (avv.ObjNameVisible === true) {
-                    let opos = enmVerticalAlignment.Center;
+                    let opos: number = enmVerticalAlignment.Center;
                     if (avv.ValueVisible === true) {
                         opos = enmVerticalAlignment.Bottom;
                     }
@@ -3959,7 +3961,7 @@ class clsPrint {
                     state.attrData.Draw_Print(g, name, Pos, avv.ObjNameFont, enmHorizontalAlignment.Center, opos);
                 }
                 if (avv.ValueVisible === true) {
-                    let opos = enmVerticalAlignment.Center;
+                    let opos: number = enmVerticalAlignment.Center;
                     if (avv.ObjNameVisible === true) {
                         opos = enmVerticalAlignment.Top;
                     }
@@ -3992,8 +3994,8 @@ class clsPrint {
             }
         }
         for (let i = 0; i < ad.Dummy.length; i++) {
-            const c = ad.Dummy[i].code;
-            const mc = ad.MapFileData.MPObj[c] as DummyMapObjectInfo;
+            const c = Number(ad.Dummy[i].code);
+            const mc = ad.MapFileData.MPObj[c] as unknown as DummyMapObjectInfo;
             if((mc.Shape === enmShape.PolygonShape) && (Polygon_F === true) || (mc.Shape !== enmShape.PolygonShape) && (nonPolygon_F === true)){
                 this.Vector_Dummy_Draw(g, c, Layernum);
             }
@@ -4023,7 +4025,7 @@ class clsPrint {
             const ad = state.attrData.LayerData[Layernum];
             type DummyMapObjectInfo = { Shape: number; Kind: number };
             type DummyObjectKindInfo = { Name: string };
-            const mapObj = ad.MapFileData.MPObj[code] as DummyMapObjectInfo;
+            const mapObj = ad.MapFileData.MPObj[code] as unknown as DummyMapObjectInfo;
             if(mapObj.Shape === enmShape.PointShape) {
                 const ok = mapObj.Kind;
                 const CP = ad.MapFileData.Get_Enable_CenterP(code, ad.Time);
