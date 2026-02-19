@@ -15,7 +15,8 @@ import {
     point,
     size,
     rectangle,
-    colorRGBA
+    colorRGBA,
+    strLocationSearchObject
 } from './clsAttrData';
 import type { JsonValue } from './types';
 

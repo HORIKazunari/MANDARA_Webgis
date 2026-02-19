@@ -2775,7 +2775,7 @@ class AccessoryTemp_Infp {
 
 //一時データ
 
-class strLocationSearchObject {
+export class strLocationSearchObject {
     objLayer: number;
     ObjNumber: number;
 

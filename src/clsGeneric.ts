@@ -1,6 +1,6 @@
 ﻿// ESM化ステップ: モジュールシステムへの完全移行
 import { appState } from './core/AppState';
-import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator } from './types';
+import type { RadioValue, RadioListItem, TableData, MapData, ExtendedNavigator, ListItem } from './types';
 import { Object_NameTimeStac_Data, EnableMPLine_Data, Zahyo_info } from './clsMapdata';
 import { Fringe_Line_Info } from './clsPrint';
 import { chvValue_on_twoValue, colorRGBA, cstRectangle_Cross, enmCondition, enmMesh_Number, enmProjection_Info, enmScaleUnit, enmSoloMode_Number, enmZahyo_System_Info, latlonbox, point, point3, rectangle, Screen_info, size } from './clsAttrData';
@@ -4127,7 +4127,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
     /**文つきselect要素作成 selectPosition:0は右、1は下*/
-    static createNewWordSelect(ParentObj: HTMLElement, headWord: string, list: string[] | undefined, firstSelectIndex: number, ID: string, x: number, y: number, headWordWidth: number, selectWidth: number, selectPosition: number, onChange: ((sbox: HTMLSelectElement, sel: number | number[], v?: string) => void) | undefined, divStyle: string, selectStyleinfo: string, astariskNonF: boolean = true) {
+    static createNewWordSelect(ParentObj: HTMLElement, headWord: string, list: string[] | ListItem[] | undefined, firstSelectIndex: number, ID: string, x: number, y: number, headWordWidth: number, selectWidth: number, selectPosition: number, onChange: ((sbox: HTMLSelectElement, sel: number | number[], v?: string) => void) | undefined, divStyle: string, selectStyleinfo: string, astariskNonF: boolean = true) {
 
         const lineH = this.getDivSize("A", undefined, divStyle).height ;
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, lineH, headWordWidth, undefined,divStyle);
@@ -4144,7 +4144,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return sbox;
     }
     /**select要素作成 list.value,.text *は非選択が標準、onChangeでは要素,selectedIndex,valueを返す*/
-    static createNewSelect(ParentObj: HTMLElement, list: string[] | undefined, firstSelectIndex: number, ID: string, x: number, y: number, multipleFlag: boolean, onChange: ((sbox: HTMLSelectElement, sel: number | number[], v?: string) => void) | undefined, styleinfo: string, size: number = 1, astariskNonF: boolean = true) {
+    static createNewSelect(ParentObj: HTMLElement, list: string[] | ListItem[] | undefined, firstSelectIndex: number, ID: string, x: number, y: number, multipleFlag: boolean, onChange: ((sbox: HTMLSelectElement, sel: number | number[], v?: string) => void) | undefined, styleinfo: string, size: number = 1, astariskNonF: boolean = true) {
 
         const sbox = document.createElement("select")
         sbox.setAttribute("id", ID)
@@ -4170,7 +4170,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.addEventListener("mouseenter", mouseEnter, false);
         sbox.addEventListener("mouseleave", mouseLeave, false);
         if (list !== undefined) {
-            const listItems: ListItem[] = list.map(item => ({value: item, text: item}));
+            const listItems: ListItem[] = list.map(item => {
+                if (typeof item === 'string') {
+                    return { value: item, text: item };
+                }
+                return { value: item.value, text: String(item.text) };
+            });
             sbox.addSelectList?.(listItems, firstSelectIndex, true, astariskNonF);
             sbox.selectedIndex = firstSelectIndex;
         }

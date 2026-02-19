@@ -816,10 +816,11 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
         taglist.push({ value: tag[i], text: tag[i] });
     }
     const finedx = tag.indexOf(avt.TileMapDataSet.opt.tag);
-    const tileTagSelect = Generic.createNewSelect(gbTIle, taglist as unknown as string[], finedx, "", 15, 15, false, function () {
+    let tileSelect: SelectControl;
+    const tileTagSelect = Generic.createNewSelect(gbTIle, taglist, finedx, "", 15, 15, false, function () {
         setTileMapListByTag("");
     }, "width:180px", 1, false) as SelectControl;
-    const tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false) as SelectControl;
+    tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false) as SelectControl;
     setTileMapListByTag(avt.TileMapDataSet.opt.id);
 
     const gbTIming = Generic.createNewFrame(backDiv, "", "", 15, 170, 120, 70, "描画タイミング");
@@ -843,6 +844,9 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
 
     /**タグリストが変更になった場合は子要素リストを変更 */
     function setTileMapListByTag(firstID: string) {
+        if (!tileSelect) {
+            return;
+        }
         const tag = tileTagSelect.getValue();
         const tlist = appState().tileMapClass.getTileMapListByTag(tag) as Array<{ opt: { id: string } }>;
         const list: Array<{ value: string; text: string }> = [];

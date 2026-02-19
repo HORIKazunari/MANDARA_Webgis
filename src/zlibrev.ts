@@ -1,7 +1,9 @@
 // @ts-nocheck
+import './encoding.min.ts';
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';const COMPILED = false;
 /** revise  2020 ktani*/
 const globalScope = typeof globalThis !== "undefined" ? globalThis : this;
+const Encoding = (globalThis as { Encoding?: { detect: (data: Uint8Array) => string } }).Encoding;
 var goog = globalScope.goog || {};
 goog.global = globalScope;
 globalScope.goog = goog;
