@@ -850,8 +850,7 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
         if (!tileSelect) {
             return;
         }
-        const selectedTag = tileTagSelect.getValue as (() => unknown);
-        const tagValue = selectedTag();
+        const tagValue = tileTagSelect.getValue();
         const selectedTagText = typeof tagValue === 'string' ? tagValue : '';
         const tlist = appState().tileMapClass.getTileMapListByTag(selectedTagText) as Array<{ opt: { id: string } }>;
         const list: Array<{ value: string; text: string }> = [];
@@ -3192,8 +3191,7 @@ export function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let Shukei_V;
         let Add_Data: number[] = [];
         if(chkObjectData.checked === true ){
-            const getRegistMode = cboRegistMode.getValue as (() => unknown);
-            RegistMode = getRegistMode();
+            RegistMode = cboRegistMode.getValue();
             F_ObjectData = true;
             Add_Data=selectDataItem.getChecked().checkedArray;
             Rdn = Add_Data.length;
