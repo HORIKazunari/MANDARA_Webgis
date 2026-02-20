@@ -13,6 +13,7 @@ import {
     enmKenCodeObjectstructure,
     enmSoloMode_Number,
     point,
+    Screen_info as AttrScreenInfo,
     size,
     rectangle,
     colorRGBA,
@@ -309,8 +310,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                             const stp=new point(0, 0);
                             const smode = (vs.ScrData.Accessory_Base === enmBasePosition.Screen);
                             if (smode) {
-                                stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width;
-                                stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height;
+                                stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width();
+                                stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height();
                             } else {
                                 stp.x = MapPos.x - MouseDownSRxy.x;
                                 stp.y = MapPos.y - MouseDownSRxy.y;
@@ -470,8 +471,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
 
                             const gr = state.attrData.TempData.Accessory_Temp;
                             const movePx = new point(gr.GroupBox_Rect.left - gr.OriginalGroupBoxRect.left, gr.GroupBox_Rect.top - gr.OriginalGroupBoxRect.top);
-                            stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width;
-                            stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height;
+                            stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width();
+                            stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height();
                         } else {
                             stp = mapstep;
                         }
@@ -967,7 +968,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
         const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData);
+        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo);
         const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
         O_LPat.Color=clsBase.ColorRed();
