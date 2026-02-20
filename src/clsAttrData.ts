@@ -6128,7 +6128,7 @@ class clsAttrData {
         }
         const DN_Str = Generic.Array2Dimension(MxData, LayerReadingObjectDataStac.length);
         
-        const Get_Obj: Array<strObject_Data_Info | InstanceType<typeof strTripObjData_Info> | string> = [];
+        const Get_Obj: Array<strObject_Data_Info | TripObjData | string> = [];
         let MeshCodeLen = 0;
         const LayerReadingType = LayerReading.Type as number;
         if (LayerReadingType === enmLayerType.Mesh) {
@@ -6164,8 +6164,11 @@ class clsAttrData {
                     break;
                 }
                 case (enmLayerType.Trip): {
-                    const d = new  strTripObjData_Info();
-                    d.TripPersonName = OBName;
+                    const d: TripObjData = {
+                        TripPersonName: OBName,
+                        TripPersonCode: 0,
+                        PositionObjName: ""
+                    };
                     Get_Obj.push(d);
                     break;
                 }
