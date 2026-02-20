@@ -46,8 +46,8 @@ import {
     enmMarkBlockArrange,
     enmZahyo_System_Info,
     point,
-    size,
-    colorRGBA
+    colorRGBA,
+    Screen_info
 } from './clsAttrData';
 import type { 
   ExtendedHTMLElement, 
@@ -61,7 +61,6 @@ import type {
   LinePattern, 
   Color, 
   // Font, 
-  Edge,
     JsonObject,
     JsonValue,
   // JsonObject,
@@ -604,12 +603,16 @@ export function setting(locSearch: string) {
         const backDiv = Generic.set_backDiv("", "プロパティ", 650, 360, true, true, buttonOK, 0.2, true);
         const layn = state.attrData.TotalData.LV1?.Lay_Maxn ?? 0;
         const data = Generic.Array2Dimension(2, layn*10+4,"");
+        const mapData = state.attrData.MapData as unknown as {
+            GetNumOfMapFile: () => number;
+            GetMapFileName: () => (string | number)[];
+        };
         data[0][0] = "項目";
         data[1][0] = "値";
         data[0][1] = "地図ファイル数";
-        data[1][1] = String(state.attrData.MapData.GetNumOfMapFile());
+        data[1][1] = String(mapData.GetNumOfMapFile());
         data[0][2] = "地図ファイル";
-        const mapFileNames = state.attrData.MapData.GetMapFileName() as (string | number)[];
+        const mapFileNames = mapData.GetMapFileName() as (string | number)[];
         data[1][2] = mapFileNames.map((name) => String(name)).join(",");
         data[0][3] = "レイヤ数";
         data[1][3] = layn.toString();
@@ -1045,11 +1048,11 @@ export function setting(locSearch: string) {
             const ad = al.atrData.Data[DataNum];
             const MDLayer = al.Print_Mode_Layer;
 
-            let SoloMd;
-            let MultiDataSetIndex
+            let SoloMd: number | undefined;
+            let MultiDataSetIndex: number | undefined;
             switch (MDLayer) {
                 case enmLayerMode_Number.SoloMode:
-                    SoloMd = ad.ModeData;
+                    SoloMd = Number(ad.ModeData);
                     break;
                 case enmLayerMode_Number.GraphMode:
                     MultiDataSetIndex = al.LayerModeViewSettings.GraphMode.SelectedIndex;
@@ -1120,11 +1123,11 @@ export function setting(locSearch: string) {
                 switch (MDLayer) {
                     case enmLayerMode_Number.SoloMode:
                         d.DataNumber = DataNum;
-                        d.Mode = SoloMd;
+                        d.Mode = SoloMd ?? enmSoloMode_Number.ClassPaintMode;
                         lpf = true;
                         switch (d.Mode) {
                             case enmSoloMode_Number.ContourMode: {
-                                const alc = ad.SoloModeViewSettings.ContourMD;
+                                const alc = ad.SoloModeViewSettings.ContourMD as { Interval_Mode: number };
                                 if((alc.Interval_Mode === enmContourIntervalMode.RegularInterval) || (
                                     alc.Interval_Mode === enmContourIntervalMode.SeparateSettings)) {
                                     lpf = false;
@@ -1197,10 +1200,10 @@ export function setting(locSearch: string) {
         function setSeries(DataSetNum: number) {
             const ats = state.attrData.TotalData.TotalMode.Series;
             const atsd = ats.DataSet[DataSetNum];
-            let Layernum;
-            let DataNum;
-            let ModeData;
-            let Print_Mode_Layer;
+            let Layernum = 0;
+            let DataNum = 0;
+            let ModeData: number | undefined;
+            let Print_Mode_Layer: number = enmLayerMode_Number.SoloMode;
             const Print_Mode_Total = state.attrData.TotalData.LV1.Print_Mode_Total;
             switch (Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
@@ -1210,7 +1213,7 @@ export function setting(locSearch: string) {
                     switch (Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode:
                             DataNum = al.atrData.SelectedIndex
-                            ModeData = al.atrData.Data[DataNum].ModeData;
+                            ModeData = Number(al.atrData.Data[DataNum].ModeData);
                             break;
                         case enmLayerMode_Number.GraphMode:
                             DataNum = al.LayerModeViewSettings.GraphMode.SelectedIndex;
@@ -1227,7 +1230,10 @@ export function setting(locSearch: string) {
                     DataNum = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex
                     break;
             }
-            atsd.AddData(Layernum, DataNum, Print_Mode_Total, Print_Mode_Layer, ModeData);
+            const addData = (atsd as unknown as {
+                AddData: (layernum: number, dataNum: number, printModeTotal: number, printModeLayer: number, modeData?: number) => void;
+            }).AddData;
+            addData(Layernum, DataNum, Print_Mode_Total, Print_Mode_Layer, ModeData);
             Generic.alert(new point(e.clientX, e.clientY),"「" + ttl[DataSetNum] + "」にセットしました。");
             if (DataSetNum !== ats.SelectedIndex) {
                 ats.SelectedIndex = DataSetNum;
@@ -1909,9 +1915,10 @@ export function setting(locSearch: string) {
     function seriesDatasetDataItem() {
         const series = state.attrData.TotalData.TotalMode.Series;
         const seriesSelD = series.DataSet[series.SelectedIndex];
+        const seriesDataItems = seriesSelD.DataItem as Array<number | string>;
         doc.getElementById("seriesDatasetTitle").value = seriesSelD.title;
-        doc.getElementById("gbSeriesItemData").setVisibility(seriesSelD.DataItem.length > 0);
-        state.attrData.SeriesMode_to_ListViewData(seriesListView, seriesSelD.DataItem);
+        doc.getElementById("gbSeriesItemData").setVisibility(seriesDataItems.length > 0);
+        state.attrData.SeriesMode_to_ListViewData(seriesListView, seriesDataItems);
         Check_Print_err();
     }
 
@@ -2025,7 +2032,13 @@ export function setting(locSearch: string) {
             //面以外は面積分位数を選べない
             doc.getElementById("cboDivisionMethod").setAstarisk(enmDivisionMethod.AreaQuantile, (layShape !== enmShape.PolygonShape));
             doc.getElementById("cboDivisionCount").value = String(data.SoloModeViewSettings.Div_Num);
-            Generic.checkRadioByValue("PaintColorSettingMode", data.SoloModeViewSettings.ClassPaintMD.Color_Mode);
+            const classPaintMd = data.SoloModeViewSettings.ClassPaintMD as {
+                Color_Mode: number;
+                color1: colorRGBA;
+                color2: colorRGBA;
+                color3: colorRGBA;
+            };
+            Generic.checkRadioByValue("PaintColorSettingMode", classPaintMd.Color_Mode);
             const div_num = data.SoloModeViewSettings.Div_Num;
             const pnlClassDiv = doc.getElementById("pnlClassDiv");
             const ph = picClassBoxHeight;
@@ -2136,9 +2149,10 @@ export function setting(locSearch: string) {
                             }
                         }
                         //カテゴリーの元を新名称に書き換える
+                        const valueList = ld.atrData.Data[D].Value as string[];
                         for (let i = 0; i < ld.atrObject.ObjectNum; i++) {
-                            if(ld.atrData.Data[D].Value[i] === oldTx) {
-                                ld.atrData.Data[D].Value[i] = newTx;
+                            if(valueList[i] === oldTx) {
+                                valueList[i] = newTx;
                             }
                         }
                         ldd.Class_Div[n as number].Value = newTx;
@@ -2175,14 +2189,20 @@ export function setting(locSearch: string) {
                 const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
                 const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
                 const DivNum = data.Div_Num;
+                const classPaintMd = data.ClassPaintMD as {
+                    Color_Mode: number;
+                    color1: colorRGBA;
+                    color2: colorRGBA;
+                    color3: colorRGBA;
+                };
                 data.Class_Div[n].PaintColor = col;
-                switch (data.ClassPaintMD.Color_Mode) {
+                switch (classPaintMd.Color_Mode) {
                     case enmPaintColorSettingModeInfo.twoColor:
                             SelectedCategoryIndex = -1;
                         if(n === 0) {
-                            data.ClassPaintMD.color1 = col;
+                            classPaintMd.color1 = col;
                         } else {
-                            data.ClassPaintMD.color2 = col;
+                            classPaintMd.color2 = col;
                         }
                         state.attrData.Twocolort(Layernum, DataNum);
                         break;
@@ -2190,15 +2210,15 @@ export function setting(locSearch: string) {
                             SelectedCategoryIndex = -1;
                         switch (n) {
                             case 0:
-                                data.ClassPaintMD.color1 = col;
+                                classPaintMd.color1 = col;
                                 state.attrData.Twocolort(Layernum, DataNum);
                                 break;
                             case DivNum - 1:
-                                data.ClassPaintMD.color2 = col;
+                                classPaintMd.color2 = col;
                                 state.attrData.Twocolort(Layernum, DataNum);
                                 break;
                             default:
-                                data.ClassPaintMD.color3 = col;
+                                classPaintMd.color3 = col;
                                 state.attrData.Threecolor(Layernum, DataNum, n);
                                 break;
                         }
@@ -2206,24 +2226,24 @@ export function setting(locSearch: string) {
                     case enmPaintColorSettingModeInfo.multiColor:
                         switch (n) {
                             case 0:
-                                data.ClassPaintMD.color1 = col;
+                                classPaintMd.color1 = col;
                                 state.attrData.Twocolort(Layernum, DataNum);
                                 SelectedCategoryIndex = -1;
                                 break;
                             case DivNum - 1:
-                                data.ClassPaintMD.color2 = col;
+                                classPaintMd.color2 = col;
                                 state.attrData.Twocolort(Layernum, DataNum);
                                 SelectedCategoryIndex = -1;
                                 break;
                             default://中間
                                 if(SelectedCategoryIndex === -1) {
                                     SelectedCategoryIndex = n;
-                                    data.ClassPaintMD.color3 = col;
+                                    classPaintMd.color3 = col;
                                     state.attrData.Threecolor(Layernum, DataNum, n);
                                 } else {
                                     state.attrData.FourColor(Layernum, DataNum, n);
                                     SelectedCategoryIndex = n;
-                                    data.ClassPaintMD.color3 = col;
+                                    classPaintMd.color3 = col;
                                 }
                                 break;
                         }
@@ -2232,10 +2252,10 @@ export function setting(locSearch: string) {
                             SelectedCategoryIndex = -1;
                         switch (n) {
                             case 0:
-                                data.ClassPaintMD.color1 = col;
+                                classPaintMd.color1 = col;
                                 break;
                             case DivNum - 1:
-                                data.ClassPaintMD.color2 = col;
+                                classPaintMd.color2 = col;
                                 break;
                         }
                         break;
@@ -2590,7 +2610,8 @@ export function setting(locSearch: string) {
             selDiv.selected = true;
             selDiv.style.backgroundColor = '#ff6464';
         }
-        state.settingModeWindow?.setTitle?.(state.attrData.getSolomodeWord(md));
+        const getSolomodeWord = state.attrData.getSolomodeWord as ((mode: number) => string) | undefined;
+        state.settingModeWindow?.setTitle?.(getSolomodeWord?.(md) ?? "");
         rightSettingWindowControlVisibilitySet();
         Check_Print_err();
     }
@@ -2614,19 +2635,19 @@ export function setting(locSearch: string) {
     */
     function Init_Screen_Set(Non_Clear_Flag: boolean) {
 
-        const sc = state.attrData.TotalData.ViewStyle.ScrData;
+        const sc = state.attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info;
+        const initFrmPrint = state.frmPrint.Init_FrmPrint as (() => void) | undefined;
+        const setFrmPrintWindowSize = state.frmPrint.set_frmPrint_Window_Size as (() => void) | undefined;
         if(Non_Clear_Flag === false) {
-            state.frmPrint.Init_FrmPrint();
-            state.frmPrint.set_frmPrint_Window_Size();
-            const FpicRect = sc.frmPrint_FormSize;
-            const sz = new size(FpicRect.width(), FpicRect.height())
-            sc.init(sz, sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, true);
+            initFrmPrint?.();
+            setFrmPrintWindowSize?.();
+            sc.init(sc.frmPrint_FormSize, sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, true);
             state.attrData.TempData.frmPrint_Temp.SymbolPointFirstMessage = true;
             state.attrData.TempData.frmPrint_Temp.LabelPointFirstMessage = true;
             state.attrData.Set_Acc_First_Position();
         } else {
-            state.frmPrint.set_frmPrint_Window_Size();
-            sc.init(sc.frmPrint_FormSize.size(), sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, false);
+            setFrmPrintWindowSize?.();
+            sc.init(sc.frmPrint_FormSize, sc.Screen_Margin, sc.MapRectangle, sc.Accessory_Base, false);
         }
     }
 
@@ -2656,12 +2677,16 @@ export function setting(locSearch: string) {
     function SetPicClassBoxCursol() {
         const data = state.attrData.nowDataSolo();
         const DivNum = data.Div_Num;
+        const classPaintMd = data.ClassPaintMD as {
+            Color_Mode: number;
+            color2: colorRGBA;
+        };
         for (let i = 0; i < DivNum; i++) {
             const p = doc.getElementById("picClassBox" + i);
             p.style.cursor = 'crosshair';
         }
         if (state.attrData.nowData().ModeData === enmSoloMode_Number.ClassPaintMode) {
-            switch (data.ClassPaintMD.Color_Mode) {
+            switch (classPaintMd.Color_Mode) {
                 case enmPaintColorSettingModeInfo.twoColor:
                     for (let i = 1; i < DivNum - 1; i++) {
                         const p = doc.getElementById("picClassBox" + i);
@@ -2897,7 +2922,10 @@ export function setting(locSearch: string) {
         function PaintColorSettingModeChange(value: RadioValue) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
-            state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD.Color_Mode = value;
+            const classPaintMd = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD as {
+                Color_Mode: number;
+            };
+            classPaintMd.Color_Mode = Number(value);
             switch (value) {
                 case enmPaintColorSettingModeInfo.twoColor:
                     state.attrData.Twocolort(Layernum, DataNum);
@@ -2921,6 +2949,9 @@ export function setting(locSearch: string) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
             const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+            const classPaintMd = data.ClassPaintMD as {
+                Color_Mode: number;
+            };
             const dc = doc.getElementById("cboDivisionCount");
             const lshape = state.attrData.LayerData[Layernum].Shape;
             dc.disabled = false;
@@ -2943,7 +2974,7 @@ export function setting(locSearch: string) {
                         }
                         state.attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
                     }
-                    if (data.ClassPaintMD.Color_Mode !== enmPaintColorSettingModeInfo.SoloColor) {
+                    if (classPaintMd.Color_Mode !== enmPaintColorSettingModeInfo.SoloColor) {
                         state.attrData.Twocolort(Layernum, DataNum);
                     }
                     break;
@@ -2960,6 +2991,10 @@ export function setting(locSearch: string) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
             const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
+            const classPaintMd = data.ClassPaintMD as {
+                Color_Mode: number;
+                color2: colorRGBA;
+            };
             const oldDivNum = data.Div_Num;
             if (oldDivNum === selectedValue) {
                 return;
@@ -2972,12 +3007,12 @@ export function setting(locSearch: string) {
                 }
                 state.attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
             }
-            switch (data.ClassPaintMD.Color_Mode) {
+            switch (classPaintMd.Color_Mode) {
                 case enmPaintColorSettingModeInfo.SoloColor:
                     for (let i = oldDivNum; i < selectedValue; i++) {
                         data.Class_Div[i].PaintColor = data.Class_Div[oldDivNum - 1].PaintColor.Clone();
                     }
-                    data.ClassPaintMD.color2 = data.Class_Div[selectedValue - 1].PaintColor.Clone();
+                    classPaintMd.color2 = data.Class_Div[selectedValue - 1].PaintColor.Clone();
                     break;
                 default:
                     state.attrData.Twocolort(Layernum, DataNum);
@@ -3170,14 +3205,18 @@ export function setting(locSearch: string) {
             function () {
                 const ns = state.attrData.nowDataSolo();
                 const n = ns.Div_Num - 1;
-                ns.ContourMD.IrregularNum = n;
-                ns.ContourMD.Irregular = [];
+                const contourMd = ns.ContourMD as {
+                    IrregularNum: number;
+                    Irregular: strContour_Data_Irregular_interval[];
+                };
+                contourMd.IrregularNum = n;
+                contourMd.Irregular = [];
                 const lst = [];
                 for (let i = 0; i < n; i++) {
                     const dt = new strContour_Data_Irregular_interval()
                     dt.Line_Pat = clsBase.Line();
                     dt.Value = ns.Class_Div[i].Value;
-                    const irregular = ns.ContourMD.Irregular as strContour_Data_Irregular_interval[];
+                    const irregular = contourMd.Irregular;
                     irregular.push(dt as unknown as strContour_Data_Irregular_interval);
                     lst.push({ value: String(dt.Value), text: String(dt.Value) });
                 }
@@ -3203,7 +3242,7 @@ export function setting(locSearch: string) {
             for (let i = 0; i < nsc.IrregularNum; i++) {
                 const dt = stac[sort.DataPositionRev(i)];
                 nsc.Irregular[i] = dt as unknown as ContourIrregularItem;
-                lst.push({ value: dt.Value, text: String(dt.Value) });
+                lst.push({ value: String(dt.Value), text: String(dt.Value) });
             }
             const newn = sort.getAfterSortPositionRev(n);
             lstcontourSeparateValue.removeAll();
@@ -3294,9 +3333,9 @@ export function setting(locSearch: string) {
             );
             Generic.createNewSpan(gbBlockMinusValueCase, "凡例文字", "", "", 10, 45, "", undefined);
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "正の値", "", "", ID + "_txtMarkSizePlusValue", 20, 62, undefined, 80,
-                function (e: Event) { state.attrData.nowDataSolo().MarkCommon.LegendPlusWord = e.target.value }, "text-align:left");
+                function (e: Event) { state.attrData.nowDataSolo().MarkCommon.LegendPlusWord = (e.target as HTMLInputElement).value }, "text-align:left");
             Generic.createNewWordTextInput(gbBlockMinusValueCase, "負の値", "", "", ID + "_txtMarkSizeMinusValue", 20, 92, undefined, 80,
-                function (e: Event) { state.attrData.nowDataSolo().MarkCommon.LegendMinusWord = e.target.value }, "text-align:left");
+                function (e: Event) { state.attrData.nowDataSolo().MarkCommon.LegendMinusWord = (e.target as HTMLInputElement).value }, "text-align:left");
 
         }
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■記号の数モード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -3387,14 +3426,18 @@ export function setting(locSearch: string) {
         const stringView = Generic.createNewDiv(settingModeWindow, "", "stringView", "rightSettingWindowControlBase", 10, state.scrMargin.top, sw - 20, sh - 20, "", "");
         stringView.style.backgroundColor = "#f0f0f0";
         Generic.createNewButton(stringView, "フォント", "", 30, 30, function (e: MouseEvent) {
-            const md = state.attrData.nowDataSolo().StringMD;
+            const md = state.attrData.nowDataSolo().StringMD as {
+                Font: Font_Property;
+                maxWidth: number;
+                WordTurnF: boolean;
+            };
             clsFontSet(e, md.Font, function (newFont: Font_Property) { md.Font = newFont }, state.attrData);
         }, "");
 
         Generic.createNewSizeSelect(stringView, 0, "txtStringSizeChange", "最大幅", 30, 70, 40, 3,
-            function (obj: HTMLInputElement, value: number) { state.attrData.nowDataSolo().StringMD.maxWidth = value; });
+            function (obj: HTMLInputElement, value: number) { (state.attrData.nowDataSolo().StringMD as { maxWidth: number }).maxWidth = value; });
         Generic.createNewCheckBox(stringView, "最大幅を超えたら折り返す", "chkStringReturn", false, 30, 110, undefined,
-            function (obj: HTMLInputElement) { state.attrData.nowDataSolo().StringMD.WordTurnF = obj.checked }, "");
+            function (obj: HTMLInputElement) { (state.attrData.nowDataSolo().StringMD as { WordTurnF: boolean }).WordTurnF = obj.checked }, "");
         Generic.createNewButton(stringView, "内部データ", "", 30, 150, innerDataSet, "");
 
         //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■重ね合わせモード■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -3627,7 +3670,8 @@ export function setting(locSearch: string) {
             }, "width:50px");
         Generic.createNewButton(gbSeriesDataSetItem, "反転", "", 190, 245,
             function () {
-                if (state.attrData.nowSeries().DataItem.length < 2) {
+                const currentDataItems = state.attrData.nowSeries().DataItem as JsonObject[];
+                if (currentDataItems.length < 2) {
                     return;
                 }
                 const series = state.attrData.TotalData.TotalMode.Series;
@@ -4406,7 +4450,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
         const sFiles: { [key: string]: ShapeFileInfo } = {};
         let er = "";
         let er_sub = "";
-        const encode = cboCode?.getValue ? cboCode.getValue() : undefined;
+        const encode = cboCode?.getValue ? String(cboCode.getValue()) : undefined;
         const firstSel = fileList.length;
         let n=0;
         for(let i = 0; i < files.length; i++) {
@@ -4594,7 +4638,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
 
         const mapList: Record<string, clsMapdata> = {};
         const LayerData: strLayerInfo[] = [];
-        const prjValue = cboProjection?.getValue ? cboProjection.getValue() : "0";
+        const prjValue = cboProjection?.getValue ? String(cboProjection.getValue()) : "0";
         const prj = parseInt(String(prjValue));
         for (const i in shapeFiles) {
             const sfile = shapeFiles[i];

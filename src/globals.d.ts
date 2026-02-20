@@ -4,13 +4,15 @@
 type JsonValue = any;
 type JsonObject = Record<string, any>;
 type JsonArray = any[];
+type VariadicJsonFn = (...args: JsonValue[]) => JsonValue;
+type VariadicVoidFn = (...args: JsonValue[]) => void;
 
 // ==================== 共通型定義 ====================
 // リストアイテムの型定義（select要素やListBoxで使用）
 type ListItem = { value: string | number; text: string };
 
 // 互換性維持のための属性値型（移行期間中は柔軟に扱う）
-type AttrValue = any;
+type AttrValue = JsonValue;
 
 // ListViewTable互換のインターフェース（clsGenericのListViewTableクラスと互換）
 interface IListViewTable {
@@ -279,36 +281,7 @@ interface IAttrData {
         ViewStyle: {
             Clone?: () => ViewStyleCloneResult;
             Dummy_Size_Flag?: boolean;
-            ScrData: any & {
-                frmPrint_FormSize: rectangle;
-                ScrView?: rectangle;
-                MapScreen_Scale?: size;
-                MapRectangle?: rectangle;
-                MapRectanglem?: rectangle;
-                getSXSY_Margin?: () => rectangle;
-                getSRXY?: (p: point) => point;
-                getSxSy?: (arg1: point, arg2?: point) => point;
-                getSRXYfromRatio?: (p: point) => point;
-                Get_SxSy_With_3D?: (arg1: point, arg2?: point) => point; // 3D変換を含む座標変換
-                // Get_SxSy_With_3Dはオーバーロードがあるため、Screen_infoクラスの定義を使用
-                ThreeDMode?: {
-                    Set3D_F: boolean;
-                    Pitch?: number;
-                    Head?: number;
-                    Bank?: number;
-                };
-                Accessory_Base?: number;
-                OutputDevide?: number; // enmOutputDevice
-                Set_PictureBox_and_CulculateMul?: (arg1?: rectangle) => void;
-                ScrRectangle?: rectangle;
-                Screen_Margin?: ScreenMargin; // ScreenMargin class from clsAttrData.ts
-                getSxSyRect?: (arg1?: rectangle) => rectangle;
-                ScreenMG?: {
-                    Mul?: number;
-                    [key: string]: JsonValue;
-                }; // ScreenMultiply_Data_Info
-                init?: (sz?: size, margin?: ScreenMargin, mapRect?: rectangle, accessoryBase?: number, clearFlag?: boolean) => void;
-            };
+            ScrData: Screen_info & JsonObject;
             AttMapCompass?: strCompass_Attri; // strMapCompass_Attri from clsAttrData.ts
             MapLegend: {
                 Base: {
@@ -1105,7 +1078,7 @@ interface IFrmPrint extends ExtendedHTMLDivElement {
     seriesNext?: () => void;
     copyImageWindow?: () => void;
     linePattern?: () => void;
-    [key: string]: any;
+    [key: string]: JsonValue;
 }
 
 // プロパティウィンドウ（拡張）
@@ -1124,56 +1097,56 @@ interface IPropertyWindow extends ExtendedHTMLDivElement {
 
 // Generic ユーティリティクラス（拡張）
 interface IGeneric {
-    alert: (...args: any[]) => any;
-    prompt: (...args: any[]) => any;
-    confirm: (...args: any[]) => any;
-    createNewDiv: (...args: any[]) => any;
-    createNewButton: (...args: any[]) => any;
-    createNewSpan: (...args: any[]) => any;
-    createNewCanvas: (...args: any[]) => any;
-    createNewTextarea: (...args: any[]) => any;
-    createNewFrame: (...args: any[]) => any;
-    createNewCheckBox: (...args: any[]) => any;
-    createNewRadioButtonList: (...args: any[]) => any;
-    createNewWordNumberInput: (...args: any[]) => any;
-    set_backDiv: (...args: any[]) => any;
-    getBrowserWidth: (...args: any[]) => any;
-    getBrowserHeight: (...args: any[]) => any;
-    copyText: (...args: any[]) => any;
-    Set_Box_Position_in_Browser: (...args: any[]) => any;
-    convValue: (...args: any[]) => any;
-    Get_New_Numbering_Strings: (...args: any[]) => any;
-    Array2Dimension: (...args: any[]) => any;
-    Array2Clone: (...args: any[]) => any;
-    ceatePopupMenu: (...args: any[]) => any;
-    Figure_Using_Solo: (...args: any[]) => any;
-    Figure_Using3: (...args: any[]) => any;
-    Figure_Arrange: (...args: any[]) => any;
-    Remove_Same_String: (...args: any[]) => any;
-    GetColorArrange: (...args: any[]) => any;
-    getScaleUnitStrings: (...args: any[]) => any;
-    strToUtf8Array: (...args: any[]) => any;
-    unzipFile: (...args: any[]) => any;
-    zipFile: (...args: any[]) => any;
-    [key: string]: any;
+    alert: VariadicJsonFn;
+    prompt: VariadicJsonFn;
+    confirm: VariadicJsonFn;
+    createNewDiv: VariadicJsonFn;
+    createNewButton: VariadicJsonFn;
+    createNewSpan: VariadicJsonFn;
+    createNewCanvas: VariadicJsonFn;
+    createNewTextarea: VariadicJsonFn;
+    createNewFrame: VariadicJsonFn;
+    createNewCheckBox: VariadicJsonFn;
+    createNewRadioButtonList: VariadicJsonFn;
+    createNewWordNumberInput: VariadicJsonFn;
+    set_backDiv: VariadicJsonFn;
+    getBrowserWidth: VariadicJsonFn;
+    getBrowserHeight: VariadicJsonFn;
+    copyText: VariadicJsonFn;
+    Set_Box_Position_in_Browser: VariadicJsonFn;
+    convValue: VariadicJsonFn;
+    Get_New_Numbering_Strings: VariadicJsonFn;
+    Array2Dimension: VariadicJsonFn;
+    Array2Clone: VariadicJsonFn;
+    ceatePopupMenu: VariadicJsonFn;
+    Figure_Using_Solo: VariadicJsonFn;
+    Figure_Using3: VariadicJsonFn;
+    Figure_Arrange: VariadicJsonFn;
+    Remove_Same_String: VariadicJsonFn;
+    GetColorArrange: VariadicJsonFn;
+    getScaleUnitStrings: VariadicJsonFn;
+    strToUtf8Array: VariadicJsonFn;
+    unzipFile: VariadicJsonFn;
+    zipFile: VariadicJsonFn;
+    [key: string]: JsonValue;
 }
 
 // clsPrint クラス（拡張）
 interface IClsPrint {
-    printMapScreen: (...args: any[]) => any;
-    MarkBarRectPrint?: (...args: any[]) => any;
-    [key: string]: any;
+    printMapScreen: VariadicJsonFn;
+    MarkBarRectPrint?: VariadicJsonFn;
+    [key: string]: JsonValue;
 }
 
 // clsDraw クラス（拡張）
 interface IClsDraw {
-    print: (...args: any[]) => any;
-    DrawText2: (...args: any[]) => any;
-    Line: (...args: any[]) => any;
-    Draw_Tile_and_Paint_and_Line: (...args: any[]) => any;
-    Arrow: (...args: any[]) => any;
-    TextCut_for_print: (...args: any[]) => any;
-    [key: string]: any;
+    print: VariadicJsonFn;
+    DrawText2: VariadicJsonFn;
+    Line: VariadicJsonFn;
+    Draw_Tile_and_Paint_and_Line: VariadicJsonFn;
+    Arrow: VariadicJsonFn;
+    TextCut_for_print: VariadicJsonFn;
+    [key: string]: JsonValue;
 }
 
 // 強化されたグローバル変数宣言
@@ -1455,7 +1428,7 @@ declare class Font_Property {
     Back: BackGround_Box_Property;
     Body?: Font_Property; // 再帰的プロパティ（一部のコードで使用）
     Clone(): Font_Property;
-    toContextFont(ScrData: any): { font: string | undefined; height: number };
+    toContextFont(ScrData: JsonValue): { font: string | undefined; height: number };
 }
 
 // BackGround_Box_Property クラス (clsTime.tsで実装)
@@ -1759,7 +1732,7 @@ declare class Font_Property {
     Back: BackGround_Box_Property;
     constructor();
     Clone?(): Font_Property;
-    toContextFont?(ScrData: any): { font: string | undefined; height: number };
+    toContextFont?(ScrData: JsonValue): { font: string | undefined; height: number };
 }
 
 declare class Mark_Property {
@@ -2030,17 +2003,17 @@ declare class clsTileMap {
     getTileMapDataById: (id: number) => JsonObject | undefined;
     getTileMapTagList: () => string[];
     getTileMapListByTag: (tag: string) => JsonObject[];
-    drawTileMap?: (...args: any[]) => void;
-    PrintCopyright?: (...args: any[]) => void;
+    drawTileMap?: VariadicVoidFn;
+    PrintCopyright?: VariadicVoidFn;
     [key: string]: JsonValue;
     constructor(...args: JsonValue[]);
 }
 declare class clsDrawMarkFan {
-    static init?: (...args: any[]) => void;
-    static getMarkShameNum?: (...args: any[]) => number;
-    static Draw_Fan?: (...args: any[]) => void;
-    static Draw_Mark_Sample_Box?: (...args: any[]) => void;
-    static Mark_Print?: (...args: any[]) => void;
+    static init?: VariadicVoidFn;
+    static getMarkShameNum?: (...args: JsonValue[]) => number;
+    static Draw_Fan?: VariadicVoidFn;
+    static Draw_Mark_Sample_Box?: VariadicVoidFn;
+    static Mark_Print?: VariadicVoidFn;
 }
 declare const ListBox: typeof import('./clsGeneric').ListBox;
 declare const CheckedListBox: typeof import('./clsGeneric').CheckedListBox;

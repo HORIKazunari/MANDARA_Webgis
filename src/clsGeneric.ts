@@ -933,9 +933,6 @@ export class spatial {
 
     //世界測地系の緯度経度の座標に変換して返す
     static Get_World_IdoKedo(oxy: point, MapZahyo_Info: Zahyo_info) {
-
-            let x2 = { value: 0 };
-            let y2 = { value: 0 };
         const LatLon = new latlon();
 
         if (MapZahyo_Info.Mode === enmZahyo_mode_info.Zahyo_Heimentyokukaku) {
@@ -4024,7 +4021,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     //** 色divボックス */
-    static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: any) => void) | undefined) {
+    static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: colorRGBA) => void) | undefined) {
 
         const sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", undefined);
         let sw = sp.offsetWidth;
@@ -4039,7 +4036,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         return colbox;
         function colSelect(e: MouseEvent) {
-            (clsColorPicker as unknown as (...args: any[]) => void)(e, onclick);
+            if (onclick !== undefined) {
+                const pickerHandler: Parameters<typeof clsColorPicker>[1] = (pickedColor) => {
+                    onclick(pickedColor as unknown as colorRGBA);
+                };
+                clsColorPicker(e, pickerHandler);
+            }
         }
     }
 
@@ -4156,7 +4158,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 let v;
                 if(multipleFlag===false){
                     sel=sbox.selectedIndex;
-                    v=sbox.getValue ? sbox.getValue() : undefined;
+                    const getValue = sbox.getValue as (() => unknown) | undefined;
+                    const value = getValue?.();
+                    v = typeof value === "string" ? value : undefined;
                 }else{
                     sel=Generic.getMultipleSelectIndex(sbox,0) as number[];
                 }
@@ -6017,6 +6021,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     let fTop: number;
     let mode: string | number;
     let mdownF=false;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const targetEle = this;
     const SR=10;
     const TR=state.scrMargin.top;
@@ -6493,9 +6498,6 @@ HTMLElement.prototype.btnDisabled = function (this: HTMLButtonElement | HTMLInpu
 };
 
 //文字列左から抜き出し
-interface String {
-    left(num: number): string;
-}
 (String.prototype as { left: (this: string, num: number) => string }).left = function (num: number): string {
     return this.substr(0, num);
 };
@@ -6505,9 +6507,6 @@ interface String {
     return this.substr(this.length - num);
 };
 /**文字を途中から抜き出し lengthがundefinedの場合最後まで*/
-interface String {
-    mid(start: number, length?: number): string;
-}
 (String.prototype as { mid: (this: string, start: number, length?: number) => string }).mid = function (start: number, length?: number): string {
     if(length===undefined){
         return this.slice(start);
@@ -6515,30 +6514,21 @@ interface String {
     }else{
         return this.slice(start, start + length);
     }
-}
+};
 /**文字列の指定位置に文字列を差し替え */
-interface String {
-    midReplace(start: number, replaceString?: string): string;
-}
-(String.prototype as { midReplace: (this: string, start: number, replaceString?: string) => string }).midReplace = function (start: number, replaceString?: string): string {
+(String.prototype as { midReplace: (this: string, start: number, replaceString?: string) => string }).midReplace = function (this: string, start: number, replaceString?: string): string {
     const rep = replaceString ?? "";
     const tx = this.substring(0, start ) + rep + this.substring(start + rep.length);
    return tx;
-}
+};
 
 //文字列全置換
-interface String {
-    replaceAll(org: string, dest?: string): string;
-}
-(String.prototype as { replaceAll: (this: string, org: string, dest?: string) => string }).replaceAll = function (org: string, dest?: string): string {
+(String.prototype as { replaceAll: (this: string, org: string, dest?: string) => string }).replaceAll = function (this: string, org: string, dest?: string): string {
     return this.split(org).join(dest);
-}
+};
 
 // Number型の拡張: px()メソッド
-interface Number {
-    px(): string;
-}
-(Number.prototype as { px: (this: number) => string }).px = function(): string {
+(Number.prototype as { px: (this: number) => string }).px = function(this: number): string {
     return this.toString() + "px";
 };
 
@@ -6551,9 +6541,6 @@ interface Number {
 };
 
 // String型の拡張: removePx()メソッド
-interface String {
-    removePx(): number;
-}
 (String.prototype as { removePx: (this: string) => number }).removePx = function(): number {
     return parseFloat(this.replace("px", "")) || 0;
 };

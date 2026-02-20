@@ -2958,6 +2958,31 @@ type MDRJData = {
     mapData?: Record<string, JsonObject>;
 };
 
+type LegacyScrData = {
+    Accessory_Base: number;
+    frmPrint_FormSize: JsonObject;
+    GSMul: number;
+    MapRectangle: JsonObject;
+    MapScreen_Scale: JsonObject;
+    PrinterMG: JsonObject;
+    ScreenMG: JsonObject;
+    Screen_Margin: {
+        ClipF: boolean;
+        rect: JsonObject;
+    };
+    ScrRectangle: JsonObject;
+    ScrView: JsonObject;
+    ThreeDMode: JsonObject;
+};
+
+type LegacyLatLonLinePrint = {
+    Lat_Interval?: number;
+    Lon_Interval?: number;
+    LPat?: JsonObject | Line_Property;
+    Order?: number;
+    Visible?: boolean;
+};
+
 class clsAttrData {
     TempData: strTem;
     LayerData: strLayerDataInfo[];
@@ -3506,7 +3531,11 @@ class clsAttrData {
 
     Check_Missing_Value(Layernum: number, DataNumber: number, objNumber: number): boolean {
         const state = appState();
-        const ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber];
+        const ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber] as unknown as {
+            MissingValueNum: number;
+            MissingF: boolean;
+            Value: unknown[];
+        };
         if ((ad.MissingValueNum === 0) || (ad.MissingF === false)) {
             return false;
         } else {
@@ -4885,7 +4914,7 @@ class clsAttrData {
         const vs = this.TotalData.ViewStyle;
         const oldvs = odata.TotalData.ViewStyle;
         vs.AttMapCompass = cnvCompass(oldvs.AttMapCompass);
-        const oldSCR = oldvs.ScrData;
+        const oldSCR = oldvs.ScrData as unknown as LegacyScrData;
         const vss = vs.ScrData;
         vss.Accessory_Base = oldSCR.Accessory_Base;
         vss.frmPrint_FormSize = cnvRectgle(oldSCR.frmPrint_FormSize);
@@ -4917,7 +4946,7 @@ class clsAttrData {
             vs.DummyObjectPointMark[key] = nd;
         }
         const lp = vs.LatLonLine_Print;
-        const olp = oldvs.LatLonLine_Print ?? {
+        const olp: LegacyLatLonLinePrint = (oldvs.LatLonLine_Print as unknown as LegacyLatLonLinePrint | undefined) ?? {
             Lat_Interval: 1,
             Lon_Interval: 1,
             LPat: clsBase.Line(),
@@ -4926,9 +4955,9 @@ class clsAttrData {
         };
         lp.Lat_Interval = olp.Lat_Interval ?? 1;
         lp.Lon_Interval = olp.Lon_Interval ?? 1;
-        lp.LPat = cnvLineProperty(olp.LPat as unknown as JsonObject);
-        lp.Order = olp.Order;
-        lp.Visible = olp.Visible;
+        lp.LPat = cnvLineProperty((olp.LPat ?? clsBase.Line()) as unknown as JsonObject);
+        lp.Order = olp.Order ?? 0;
+        lp.Visible = olp.Visible ?? false;
 
         vs.MapLegend = cnvMapLegend(oldvs.MapLegend as unknown as JsonObject);
 

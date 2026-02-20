@@ -23,7 +23,8 @@ import {
     enmSeparateClassWords,
     enmSoloMode_Number,
     point,
-    colorRGBA
+    colorRGBA,
+    Screen_info
 } from './clsAttrData';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
@@ -378,7 +379,7 @@ export function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mar
     const sizeBox = Generic.createNewSizeSelect(gbSize, mk.WordFont.Size, "","サイズ", 15, 15,40,2, undefined) as NumberControl;
     const innerColorBox = Generic.createNewTileBox(gbSize, "", "内部", mk.Tile, 150, 15,undefined, tileClick) as HTMLElement;
     const backrColorBox = Generic.createNewWordDivCanvas(gbSize, "", "背景", 150, 45,undefined, backClick) as HTMLCanvasElement;
-    clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData);
+    clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info);
     const angleBox = Generic.createNewWordNumberInput(gbSize, "回転角度", "度", mk.WordFont.Kakudo, "", 15,45,undefined, 40, undefined, "");
 
     function fontClick(e: MouseEvent) {
@@ -392,7 +393,7 @@ export function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mar
             txtWord.style.color = mk.WordFont.Color.toHex();
             mk.Tile.Color = mk.WordFont.Color;
             Generic.setTileDiv(innerColorBox, mk.Tile);
-            clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info);
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
         }
     }
@@ -400,7 +401,7 @@ export function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mar
         clsBackgroundPatternSet(e, mk.WordFont.Back, backGet, _attrData);
         function backGet(back: BackGround_Box_Property) {
             mk.WordFont.Back = back;
-            clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(backrColorBox, mk.WordFont.Back, _attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info);
             _attrData.Draw_Sample_Mark_Box(picMark, mk);
         }
     }
@@ -611,7 +612,7 @@ export function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) 
     const italic = Generic.createNewCheckBox(backDiv, "イタリック", "italic", ft.italic, 100, 80,undefined,  undefined, "") as HTMLInputElement;
     const Kakudo = Generic.createNewWordNumberInput(backDiv, "回転角度", "度", ft.Kakudo, "", 190, 80,undefined, 40, undefined, "");
     const backColorBox = Generic.createNewWordDivCanvas(backDiv, "", "文字背景", 320, 80,undefined, backClick) as HTMLCanvasElement;
-    clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData);
+    clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info);
     const gbSize = Generic.createNewFrame(backDiv, "", "", 15, 115, 380, 40, "縁取り");
     const fringe = Generic.createNewCheckBox(gbSize, "縁取り", "fringe", ft.FringeF, 10, 10,undefined,  undefined, "") as HTMLInputElement;
     Generic.createNewSizeSelect(gbSize, ft.FringeWidth, "", "文字に対する幅", 90, 10,60, 4,function (_obj: HTMLInputElement, v: number) { ft.FringeWidth = v;}, true);
@@ -621,7 +622,7 @@ export function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) 
         clsBackgroundPatternSet(e, ft.Back, backGet, _attrData);
         function backGet(back: BackGround_Box_Property) {
             ft.Back = back;
-            clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info);
             _attrData.Draw_Sample_Mark_Box(picMark, ft);
         }
     }
@@ -781,8 +782,10 @@ export function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum:
 /**出力画面：オブジェクト名・データ値表示 */
 export function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名・データ値表示", 210, 280, true, true, buttonOK, 0.2, true);
-
-    const avs = _attrData.TotalData.ViewStyle.ValueShow.Clone() as typeof _attrData.TotalData.ViewStyle.ValueShow;
+    const valueShow = _attrData.TotalData.ViewStyle.ValueShow as {
+        Clone?: () => unknown;
+    } & typeof _attrData.TotalData.ViewStyle.ValueShow;
+    const avs = (typeof valueShow.Clone === 'function' ? valueShow.Clone() : valueShow) as typeof _attrData.TotalData.ViewStyle.ValueShow;
     const objNameFrame = Generic.createNewFrame(backDiv, "", "", 15, 40, 180, 50, "オブジェクト名");
     Generic.createNewCheckBox(objNameFrame, "表示", "", avs.ObjNameVisible, 15, 15,undefined,  function (obj: HTMLInputElement) { avs.ObjNameVisible = obj.checked; }, "");
     Generic.createNewButton(objNameFrame, "フォント", "", 90, 15,
@@ -815,13 +818,13 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
     for (const i in tag) {
         taglist.push({ value: tag[i], text: tag[i] });
     }
-    const finedx = tag.indexOf(avt.TileMapDataSet.opt.tag);
-    let tileSelect: SelectControl;
+    const currentTileMap = avt.TileMapDataSet as { opt: { tag: string; id: string } };
+    const finedx = tag.indexOf(currentTileMap.opt.tag);
     const tileTagSelect = Generic.createNewSelect(gbTIle, taglist, finedx, "", 15, 15, false, function () {
         setTileMapListByTag("");
     }, "width:180px", 1, false) as SelectControl;
-    tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false) as SelectControl;
-    setTileMapListByTag(avt.TileMapDataSet.opt.id);
+    const tileSelect = Generic.createNewSelect(gbTIle, [], 0, "", 30, 45, false, undefined, "width:180px", 1, false) as SelectControl;
+    setTileMapListByTag(currentTileMap.opt.id);
 
     const gbTIming = Generic.createNewFrame(backDiv, "", "", 15, 170, 120, 70, "描画タイミング");
     const timing = [{ value: enmDrawTiming.BeforeDataDraw, text: "データ描画前" }, { value: enmDrawTiming.AfterDataDraw, text: "データ描画後" }]
@@ -847,8 +850,10 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
         if (!tileSelect) {
             return;
         }
-        const tag = tileTagSelect.getValue();
-        const tlist = appState().tileMapClass.getTileMapListByTag(tag) as Array<{ opt: { id: string } }>;
+        const selectedTag = tileTagSelect.getValue as (() => unknown);
+        const tagValue = selectedTag();
+        const selectedTagText = typeof tagValue === 'string' ? tagValue : '';
+        const tlist = appState().tileMapClass.getTileMapListByTag(selectedTagText) as Array<{ opt: { id: string } }>;
         const list: Array<{ value: string; text: string }> = [];
         let seln = 0;
         for (const i in tlist) {
@@ -1030,7 +1035,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     }
     function buttonOK(){
         if (appState().settingData.Ido_Kedo_Print_Pattern === enmLatLonPrintPattern.DegreeMinuteSecond) {
-            const dms = new strLatLonDegreeMinuteSecond();
+            const dms = new strLatLonDegreeMinuteSecond() as IStrLatLonDegreeMinuteSecond;
             const latDBox = document.getElementById("latDBox") as unknown as HTMLInputElement;
             const latMBox = document.getElementById("latMBox") as unknown as HTMLInputElement;
             const latSBox = document.getElementById("latSox") as unknown as HTMLInputElement;
@@ -1049,7 +1054,7 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
             if (Generic.getRadioCheckByValue("lonEastWest") === 1) {
                 dms.LongitudeDMS.Degree = -dms.LongitudeDMS.Degree;
             }
-            LatLon = dms.toLatLon() as latlon;
+            LatLon = dms.toLatLon();
         }else{
             const latDegreeBox = document.getElementById("latDegreeBox") as unknown as HTMLInputElement;
             const lonDegreeBox = document.getElementById("lonDegreeBox") as unknown as HTMLInputElement;
@@ -1142,7 +1147,8 @@ export function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapComp
 
 /**出力画面のオプション */
 export function frmPrintOption(firstTab: number = 0) {
-    const atv = appState().attrData.TotalData.ViewStyle.Clone() as ReturnType<typeof appState>['attrData']['TotalData']['ViewStyle'];
+    const atv = appState().attrData.TotalData.ViewStyle.Clone() as unknown as IAttrData['TotalData']['ViewStyle'];
+    const atvScrData = atv.ScrData as unknown as Screen_info;
     const sdata = appState().settingData.Clone();
     const backDiv = Generic.set_backDiv("", "オブション", 600, 420, true, true, buttonOK, 0.2, true);
     const tablist=["全般","背景・描画","凡例設定","欠損値","スケール設定"];
@@ -1204,10 +1210,10 @@ export function frmPrintOption(firstTab: number = 0) {
         clsBackgroundPatternSet(e, atva.Back, backGet, appState().attrData);
         function backGet(back: BackGround_Box_Property) {
             atva.Back = back;
-            clsDrawTile.Darw_Sample_BackGroundBox(atvaBackCanvas, back, atv.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(atvaBackCanvas, back, atvScrData);
         }
     }) as HTMLCanvasElement;
-    clsDrawTile.Darw_Sample_BackGroundBox(atvaBackCanvas, atva.Back, atv.ScrData);
+    clsDrawTile.Darw_Sample_BackGroundBox(atvaBackCanvas, atva.Back, atvScrData);
 
     const tab03 = Generic.createNewFrame(tab.panel[0], "", "", 180, 235, 170, 50, "幅が「0」のライン幅");
         const zeroWidthList=[{value:0,text:"0.1ピクセル"},{value:1,text:"0.3ピクセル"},{value:2,text:"0.5ピクセル"},{value:3,text:"0.7ピクセル"},{value:4,text:"0.9ピクセル"}];
@@ -1239,7 +1245,8 @@ export function frmPrintOption(firstTab: number = 0) {
     const cboSobyouAutoDegree=Generic.createNewSelect(tab04,autoLst as unknown as string[],-1,"",100,12,false,function(sbox: HTMLSelectElement, sel: number, v?: string | number){
         atv.SouByou.AutoDegree=v !== undefined ? Number(v) : 0;
     },"") as SelectControl;
-    cboSobyouAutoDegree.setSelectValue(atv.SouByou.AutoDegree.toString());
+    const setSelectValue = cboSobyouAutoDegree.setSelectValue as ((value: string) => void) | undefined;
+    setSelectValue?.(String(atv.SouByou.AutoDegree));
     Generic.createNewCheckBox(tab04, "曲線近似", "", atv.SouByou.Spline_F,15,32,undefined, function(obj: HTMLInputElement){atv.SouByou.Spline_F=obj.checked;},"");
     const soubyouManual = Generic.createNewFrame(tab04, "", "", 10, 50, 170, 122, "マニュアル設定");
     Generic.createNewCheckBox(soubyouManual, "ポイント間引き", "", atv.SouByou.ThinningPrint_F, 5, 15,undefined,  function (obj) { atv.SouByou.ThinningPrint_F = obj.checked; }, "");
@@ -1251,14 +1258,20 @@ export function frmPrintOption(firstTab: number = 0) {
     Generic.setDisabled( soubyouManual,(atv.SouByou.Auto===true));
 
     /**背景・描画●●●●●●●●●●●●●●●●●●●●● */
+    const screenMargin = (atv.ScrData as {
+        Screen_Margin: {
+            rect: { top: number; bottom: number; right: number; left: number };
+            ClipF: boolean;
+        };
+    }).Screen_Margin;
     const tab10 = Generic.createNewFrame(tab.panel[1], "", "", 15, 10, 260, 80, "ウインドウ内余白");
-    Generic.createNewWordNumberInput(tab10, "上余白", "%", atv.ScrData.Screen_Margin.rect.top, "", 10, 15,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.top = v; }, "")
-    Generic.createNewWordNumberInput(tab10, "下余白", "%", atv.ScrData.Screen_Margin.rect.bottom, "", 10, 45,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.bottom = v; }, "")
-    Generic.createNewWordNumberInput(tab10, "右余白", "%", atv.ScrData.Screen_Margin.rect.right, "", 130, 15,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.right = v; }, "")
-    Generic.createNewWordNumberInput(tab10, "左余白", "%", atv.ScrData.Screen_Margin.rect.left, "", 130, 45,undefined, 40, function (obj: HTMLInputElement, v: number) { atv.ScrData.Screen_Margin.rect.left = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "上余白", "%", screenMargin.rect.top, "", 10, 15,undefined, 40, function (obj: HTMLInputElement, v: number) { screenMargin.rect.top = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "下余白", "%", screenMargin.rect.bottom, "", 10, 45,undefined, 40, function (obj: HTMLInputElement, v: number) { screenMargin.rect.bottom = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "右余白", "%", screenMargin.rect.right, "", 130, 15,undefined, 40, function (obj: HTMLInputElement, v: number) { screenMargin.rect.right = v; }, "")
+    Generic.createNewWordNumberInput(tab10, "左余白", "%", screenMargin.rect.left, "", 130, 45,undefined, 40, function (obj: HTMLInputElement, v: number) { screenMargin.rect.left = v; }, "")
 
     const tab11 = Generic.createNewFrame(tab.panel[1], "", "", 15, 110, 260, 140, "枠・色");
-    Generic.createNewCheckBox(tab11, "余白で地図画像クリップ", "", atv.ScrData.Screen_Margin.ClipF, 10, 15,undefined,  function (obj: HTMLInputElement) { atv.ScrData.Screen_Margin.ClipF = obj.checked }, "");
+    Generic.createNewCheckBox(tab11, "余白で地図画像クリップ", "", screenMargin.ClipF, 10, 15,undefined,  function (obj: HTMLInputElement) { screenMargin.ClipF = obj.checked }, "");
     Generic.createNewWordDivCanvas(tab11, "MapAreaFrameLine", "地図領域枠線", 10, 45, 60,
         function (e: MouseEvent) {
             clsLinePatternSet(e, atv.Screen_Back.MapAreaFrameLine,
@@ -1361,10 +1374,10 @@ export function frmPrintOption(firstTab: number = 0) {
         clsBackgroundPatternSet(e, atv.MapLegend.Base.Back, backGet, appState().attrData);
         function backGet(back: BackGround_Box_Property) {
             atv.MapLegend.Base.Back = back;
-            clsDrawTile.Darw_Sample_BackGroundBox(baseBackCanvas, back, atv.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(baseBackCanvas, back, atvScrData);
         }
     }) as HTMLCanvasElement;
-    clsDrawTile.Darw_Sample_BackGroundBox(baseBackCanvas, atv.MapLegend.Base.Back, atv.ScrData);
+    clsDrawTile.Darw_Sample_BackGroundBox(baseBackCanvas, atv.MapLegend.Base.Back, atvScrData);
     Generic.createNewCheckBox(tabLegend.panel[0], "局地変動モード", "", atv.MapLegend.Base.ModeValueInScreenFlag, 30, 130,undefined,  function (obj: HTMLInputElement) { atv.MapLegend.Base.ModeValueInScreenFlag = obj.checked }, "");
 
     const tabLegendtab00 = Generic.createNewFrame(tabLegend.panel[0], "", "", 200, 25, 200, 120, "重ね合わせの凡例タイトル");
@@ -1456,10 +1469,10 @@ export function frmPrintOption(firstTab: number = 0) {
         clsBackgroundPatternSet(e, atvl.Back, backGet, appState().attrData);
         function backGet(back: BackGround_Box_Property) {
             atvl.Back = back;
-            clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, back, atv.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, back, atvScrData);
         }
     }) as HTMLCanvasElement;
-    clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, atvl.Back, atv.ScrData);
+    clsDrawTile.Darw_Sample_BackGroundBox(MapLegendLine_DummyKind, atvl.Back, atvScrData);
     const gbMapLegendLine = Generic.createNewFrame(tabLegend.panel[3], "", "", 190, 85, 100, 80, "線の描き方");
     Generic.createNewRadioButtonList(gbMapLegendLine, "enmCircleMDLegendLine", [{ value: enmCircleMDLegendLine.Zigzag, text: "＼／＼" }, { value: enmCircleMDLegendLine.Straight, text: "───" }], 5, 20, 130, 30, atvl.Line_Pattern,
         function (v: number) { atvl.Line_Pattern = v }, "");
@@ -1532,10 +1545,10 @@ export function frmPrintOption(firstTab: number = 0) {
         clsBackgroundPatternSet(e, atvs.Back, backGet, appState().attrData);
         function backGet(back: BackGround_Box_Property) {
             atvs.Back = back;
-            clsDrawTile.Darw_Sample_BackGroundBox(atvsBack, back, atv.ScrData);
+            clsDrawTile.Darw_Sample_BackGroundBox(atvsBack, back, atvScrData);
         }
     }) as HTMLCanvasElement;
-    clsDrawTile.Darw_Sample_BackGroundBox(atvsBack, atvs.Back, atv.ScrData);
+    clsDrawTile.Darw_Sample_BackGroundBox(atvsBack, atvs.Back, atvScrData);
     Generic.createNewSpan(tab.panel[4], "スケールバーの表示単位", "", "", 30, 125, "", undefined);
     const scaleList = Generic.getScaleUnit_for_select() as Array<{ value: number; text: string }>;
     Generic.createNewSelect(tab.panel[4], scaleList as unknown as string[], atvs.Unit, "", 40, 150, false,
@@ -2061,10 +2074,17 @@ export function frmMain_ConditionSettings(okEvent: () => void){
             clbList.setCheckStatus(n, Con.Enabled)
         }
     },"width:80px");
+    const conditions = appState().attrData.TotalData.Condition as Array<{
+        Name: string;
+        Enabled: boolean;
+        Layer: number;
+        Condition_Class: strCondition_Data_Info[];
+    }>;
+
     Generic.createNewButton(backDiv,"追加","",110,275,function(){
         const cttl=[];
-        for(let  i = 0 ;i< appState().attrData.TotalData.Condition.length;i++){
-            cttl[i] = appState().attrData.TotalData.Condition[i].Name;
+        for(let  i = 0 ;i< conditions.length;i++){
+            cttl[i] = String(conditions[i].Name);
         }
         const ConItem = new strCondition_DataSet_Info();
         ConItem.Layer = DefoLay;
@@ -2073,7 +2093,8 @@ export function frmMain_ConditionSettings(okEvent: () => void){
         const cdt = new strCondition_Data_Info();
         cdt.And_OR = enmConditionAnd_Or._And;
         cdt.Condition = [];// List(Of clsAttrData.strCondition_Limitation_Info)
-        ConItem.Condition_Class.push(cdt);
+        const conditionClasses = ConItem.Condition_Class as strCondition_Data_Info[];
+        conditionClasses.push(cdt);
         ConItem.Enabled = true;
         frmMain_ConditionSettingSub(ConItem,btnOK);
         function btnOK(Con: strCondition_DataSet_Info){
@@ -2109,7 +2130,7 @@ export function frmMain_ConditionSettings(okEvent: () => void){
 
     const DefoLay = appState().attrData.TotalData.LV1.SelectedLayer;
 
-    const atc = appState().attrData.TotalData.Condition;
+    const atc = conditions;
     const list = [];
     for (let i = 0; i < atc.length; i++) {
         const layer = Number(atc[i].Layer);
@@ -2134,7 +2155,13 @@ export function frmMain_ConditionSettings(okEvent: () => void){
 function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEvent: (ConItem: strCondition_DataSet_Info) => void) {
 
     const backDiv = Generic.set_backDiv("", "属性検索条件設定", 450, 540, true, true, buttonOK, 0.2, true);
-    const ConItem = _ConItem.Clone() as strCondition_DataSet_Info;
+    const sourceConItem = _ConItem as strCondition_DataSet_Info & { Clone?: () => unknown };
+    const ConItem = (typeof sourceConItem.Clone === 'function' ? sourceConItem.Clone() : sourceConItem) as strCondition_DataSet_Info & {
+        Layer: number;
+        Name: string;
+        Enabled: boolean;
+        Condition_Class: strCondition_Data_Info[];
+    };
     const LayerNum = ConItem.Layer;//appState().attrData.TotalData.LV1.SelectedLayer;
     const grTop = Generic.createNewFrame(backDiv, "", "", 15, 40, 400, 90, "");
     const cboLayerLabel = Generic.createNewWordSelect(grTop, "レイヤ", undefined, -1, "", 15, 10, 60, 150, 0, changeLayer, "", "") as SelectControl;
@@ -2836,10 +2863,14 @@ export function frmMain_GetDistance(okEvent: () => void){
                     }
                     case DisType.LayerDummy: {
                         const L = appState().attrData.LayerData[LayerNum];
+                        const mapFileData = L.MapFileData as unknown as {
+                            Distance_ObjectCenterP: (...args: unknown[]) => unknown;
+                            Distance_Object: (...args: unknown[]) => unknown;
+                        };
                         if((L.Type===enmLayerType.DefPoint)||(L.Type===enmLayerType.Mesh)){
-                                d = Number(L.MapFileData.Distance_ObjectCenterP(L.atrObject.atrObjectData[j].CenterPoint, pos[i].objpos, L.Time));
+                            d = Number(mapFileData.Distance_ObjectCenterP(L.atrObject.atrObjectData[j].CenterPoint, pos[i].objpos, L.Time));
                         }else{
-                                d = Number(L.MapFileData.Distance_Object(appState().attrData.Get_KenObjCode(LayerNum, j), pos[i].objpos, L.Time, L.Time));
+                            d = Number(mapFileData.Distance_Object(appState().attrData.Get_KenObjCode(LayerNum, j), pos[i].objpos, L.Time, L.Time));
                         }
                         break;
                     }
@@ -3161,7 +3192,8 @@ export function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let Shukei_V;
         let Add_Data: number[] = [];
         if(chkObjectData.checked === true ){
-            RegistMode=cboRegistMode.getValue();
+            const getRegistMode = cboRegistMode.getValue as (() => unknown);
+            RegistMode = getRegistMode();
             F_ObjectData = true;
             Add_Data=selectDataItem.getChecked().checkedArray;
             Rdn = Add_Data.length;
@@ -3636,8 +3668,9 @@ export function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyOb
     gbShape.disabled = !initParapeter.ShapeChangeEnabled;
     Generic.createNewSpan(backDiv, "オブジェクトグループ", "", "", 10, 180, "", undefined);
     const lObjGList: {text: string; value: string; checked: boolean}[] = [];
+    const objectKinds = MapData.ObjectKind as CopyObjectKindInfo[];
     for (let i = 0; i < MapData.Map.OBKNum; i++) {
-        const objectKind = MapData.ObjectKind[i] as CopyObjectKindInfo;
+        const objectKind = objectKinds[i];
         lObjGList.push({ text: String(objectKind.Name), value: String(i), checked: Boolean(initParapeter.ObjectGroupChecked[i]) });
     }
     const lstObjGroup=new CheckedListBox(backDiv, "", lObjGList, 20, 200, 160, 110,false, change, "");
@@ -3750,7 +3783,7 @@ export function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyOb
         const copyObjname: string[] = [];
         for (let i = 0; i < MapData.Map.OBKNum; i++) {
             if (lstObjGroup.getCheckedStatus(i) === true) {
-                const objectKind = MapData.ObjectKind[i] as CopyObjectKindInfo;
+                const objectKind = objectKinds[i];
                 const onl = objectKind.ObjectNameList;
                 maxOname = Math.max(maxOname, onl.length);
                 for (let j = 0; j < onl.length; j++) {
@@ -3846,8 +3879,10 @@ export function frmPrint_DummyObjectGroup(){
         const mp = appState().attrData.LayerData[LayerNum].MapFileData as unknown as IMapData;
         const init_para = new strFrmCopyObjectName_init_parameter_data();
         init_para.Time = appState().attrData.LayerData[LayerNum].Time;
-        init_para.ObjectGroupChecked.length = mp.Map.OBKNum;
-        init_para.ObjectGroupChecked.fill(true);
+        const objectGroupChecked = init_para.ObjectGroupChecked as boolean[];
+        const obkNum = Number(mp.Map.OBKNum);
+        objectGroupChecked.length = obkNum;
+        objectGroupChecked.fill(true);
         init_para.TimeChangeEnabled = false;
         frmCopyObjectName(mp,init_para,function (copyData: string) {
             const str=copyData.split("\n");
