@@ -1880,45 +1880,31 @@ export class gridControl {
             }
         };
         
-        const popmenu = [
-            { caption: "元に戻す"+udo, enabled: true, event: this.Undo },
-            { caption: "コピー", enabled: true, event: this.Grid_Copy },
-            { caption: "貼り付け", enabled: GPO.RightClickEnabled,child:[{caption:"内部から", event: mnuPaste },{caption:"外部クリップボードから",event: mnuouterPaste}]},
-            { caption: "切り取り", enabled: GPO.RightClickEnabled, event: mnuCut },
-            { caption: this.Grid_Total.ColumnCaption+"数指定", enabled: GPO.GridColEnabled, event: mnuColNumber },
-            { caption: this.Grid_Total.RowCaption+"数指定", enabled: GPO.GridRowEnabled, event: mnuRowNumber },
-            { caption: this.Grid_Total.RowCaption+"挿入", enabled: GPO.GridColEnabled, child: [{ caption: "前に挿入", event: mnuInsertRow }, { caption: "後ろに挿入", event: mnuInsertRow }] },
-            { caption: this.Grid_Total.ColumnCaption+"挿入", enabled: GPO.GridRowEnabled, child: [{ caption: "左に挿入", event: mnuInsertCOl }, { caption: "右に挿入", event: mnuInsertCOl }] },
-            { caption: this.Grid_Total.RowCaption+"削除", enabled: GPO.GridColEnabled, event: mnuDeleteRow },
-            { caption: this.Grid_Total.ColumnCaption+"削除", enabled: GPO.GridRowEnabled, event: mnuDeleteCol },
-        ];
-        Generic.ceatePopupMenu(popmenu, pos);
-        const self = this;
         /**外部から貼り付け */
-        function mnuouterPaste(/*event: Event*/){
-            self.removeEventlister();
+        const mnuouterPaste = (/*event: Event*/) => {
+            this.removeEventlister();
             document.body.removeEventListener("contextmenu", contextMenuPrevent);
-            self.base.removeEventListener("contextmenu", contextMenuPrevent);
-            Generic.outerPaste(function (tx: string) {
-                self.addDocumentEvent();
-                self.base.addEventListener("contextmenu", contextMenuPrevent);
+            this.base.removeEventListener("contextmenu", contextMenuPrevent);
+            Generic.outerPaste((tx: string) => {
+                this.addDocumentEvent();
+                this.base.addEventListener("contextmenu", contextMenuPrevent);
                 document.body.addEventListener("contextmenu", contextMenuPrevent);
                 if (tx !== "") {
-                    self.inClipboard = tx;
-                    self.Grid_Paste(self.inClipboard, false);
+                    this.inClipboard = tx;
+                    this.Grid_Paste(this.inClipboard, false);
                 }
-            },function(){
-                self.addDocumentEvent();
-                self.base.addEventListener("contextmenu",contextMenuPrevent);
+            }, () => {
+                this.addDocumentEvent();
+                this.base.addEventListener("contextmenu",contextMenuPrevent);
                 document.body.addEventListener("contextmenu",contextMenuPrevent);
             });
         }
 
-        function mnuCut() { self.Grid_Copy(); self.Grid_Clear("切り取り") }
-        function mnuRowNumber() {
-            const PV = self.Grid_Property[self.Grid_Total.Layer].Ymax;
-            self.removeEventlister();
-            Generic.prompt(undefined, self.Grid_Total.RowCaption + "数指定", String(PV), function (SF: string) {
+        const mnuCut = () => { this.Grid_Copy(); this.Grid_Clear("切り取り") }
+        const mnuRowNumber = () => {
+            const PV = this.Grid_Property[this.Grid_Total.Layer].Ymax;
+            this.removeEventlister();
+            Generic.prompt(undefined, this.Grid_Total.RowCaption + "数指定", String(PV), (SF: string) => {
                 if (SF !== "") {
                     const convertedValue = Generic.convValue(SF);
                     const numValue = Number(convertedValue);
@@ -1929,26 +1915,26 @@ export class gridControl {
                     const n = V - PV;
                     if ((V > 0) && (n !== 0)) {
                         if (n < 0) {
-                            self.SetUndo_DeleteRows(self.Grid_Total.RowCaption + "数変更", PV + n, -n);
-                            self.DeleteRows(self.Grid_Total.Layer, PV + n, -n);
-                            self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedXS?.();
-                            self.eventCall.evtChange_Data?.();
+                            this.SetUndo_DeleteRows(this.Grid_Total.RowCaption + "数変更", PV + n, -n);
+                            this.DeleteRows(this.Grid_Total.Layer, PV + n, -n);
+                            this.Print_Grid_Data();
+                            this.eventCall.evtChange_FixedXS?.();
+                            this.eventCall.evtChange_Data?.();
                         } else {
-                            self.InsertRows(self.Grid_Total.Layer, PV, n);
-                            self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedXS?.();
-                            self.eventCall.evtChange_Data?.();
+                            this.InsertRows(this.Grid_Total.Layer, PV, n);
+                            this.Print_Grid_Data();
+                            this.eventCall.evtChange_FixedXS?.();
+                            this.eventCall.evtChange_Data?.();
                         }
                     }
-                    self.addDocumentEvent();
+                    this.addDocumentEvent();
                 }
-            },"right",self.addDocumentEvent);
+            },"right",this.addDocumentEvent);
         }
-        function mnuColNumber(){
-            const PV = self.Grid_Property[self.Grid_Total.Layer].Xmax;
-            self.removeEventlister();
-            Generic.prompt(undefined, self.Grid_Total.ColumnCaption + "数指定", String(PV), function (SF: string) {
+        const mnuColNumber = () => {
+            const PV = this.Grid_Property[this.Grid_Total.Layer].Xmax;
+            this.removeEventlister();
+            Generic.prompt(undefined, this.Grid_Total.ColumnCaption + "数指定", String(PV), (SF: string) => {
                 if (SF !== "") {
                     const convertedValue = Generic.convValue(SF);
                     const numValue = Number(convertedValue);
@@ -1959,26 +1945,26 @@ export class gridControl {
                     const n = V - PV;
                     if ((V > 0) && (n !== 0)) {
                         if (n < 0) {
-                            self.SetUndo_DeleteColumns(self.Grid_Total.ColumnCaption + "数指定", PV + n, -n)
-                            self.DeleteColumns(self.Grid_Total.Layer, PV + n, -n);
-                            self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedYS?.();
-                            self.eventCall.evtChange_Data?.();
+                            this.SetUndo_DeleteColumns(this.Grid_Total.ColumnCaption + "数指定", PV + n, -n)
+                            this.DeleteColumns(this.Grid_Total.Layer, PV + n, -n);
+                            this.Print_Grid_Data();
+                            this.eventCall.evtChange_FixedYS?.();
+                            this.eventCall.evtChange_Data?.();
                         } else {
-                            self.SetUndo_InsertColumns(self.Grid_Total.ColumnCaption + "数指定", PV, n)
-                            self.InsertColumns(self.Grid_Total.Layer, PV, n);
-                            self.Print_Grid_Data();
-                            self.eventCall.evtChange_FixedYS?.();
-                            self.eventCall.evtChange_Data?.();
+                            this.SetUndo_InsertColumns(this.Grid_Total.ColumnCaption + "数指定", PV, n)
+                            this.InsertColumns(this.Grid_Total.Layer, PV, n);
+                            this.Print_Grid_Data();
+                            this.eventCall.evtChange_FixedYS?.();
+                            this.eventCall.evtChange_Data?.();
                         }
                     }
-                    self.addDocumentEvent();
+                    this.addDocumentEvent();
                 }
-            },"right",self.addDocumentEvent);
+            },"right",this.addDocumentEvent);
         }
 
-        function mnuInsertRow(e: Event) {
-            const GP = self.Grid_Property[self.Grid_Total.Layer];
+        const mnuInsertRow = (e: Event) => {
+            const GP = this.Grid_Property[this.Grid_Total.Layer];
             let ip;
             const rect = GP.MouseUpDownRect();
             if (rect.top < 0) { return; }
@@ -1991,14 +1977,14 @@ export class gridControl {
                 GP.MouseUpY = GP.MouseUpY + r;
             }
 
-            self.SetUndo_InsertRows(self.Grid_Total.RowCaption + "挿入", ip, r);
-            self.InsertRows(self.Grid_Total.Layer, ip, r);
-            self.eventCall.evtChange_FixedXS();
-            self.eventCall.evtChange_Data()
-            self.Print_Grid_Data();
+            this.SetUndo_InsertRows(this.Grid_Total.RowCaption + "挿入", ip, r);
+            this.InsertRows(this.Grid_Total.Layer, ip, r);
+            this.eventCall.evtChange_FixedXS();
+            this.eventCall.evtChange_Data()
+            this.Print_Grid_Data();
         }
-        function mnuInsertCOl(e: Event) {
-            const GP = self.Grid_Property[self.Grid_Total.Layer];
+        const mnuInsertCOl = (e: Event) => {
+            const GP = this.Grid_Property[this.Grid_Total.Layer];
             const rect = GP.MouseUpDownRect();
             if (rect.left < 0) {
                 return;
@@ -2013,50 +1999,64 @@ export class gridControl {
                 GP.MouseDownX = GP.MouseDownX + r;
                 GP.MouseUpX = GP.MouseUpX + r;
             }
-            self.SetUndo_InsertColumns("列挿入", ip, r);
-            self.InsertColumns(self.Grid_Total.Layer, ip, r);
-            self.eventCall.evtChange_FixedYS();
-            self.eventCall.evtChange_Data();
-            self.Print_Grid_Data()
+            this.SetUndo_InsertColumns("列挿入", ip, r);
+            this.InsertColumns(this.Grid_Total.Layer, ip, r);
+            this.eventCall.evtChange_FixedYS();
+            this.eventCall.evtChange_Data();
+            this.Print_Grid_Data()
         }
-        function mnuDeleteCol() {
-            const GP = self.Grid_Property[self.Grid_Total.Layer];
+        const mnuDeleteCol = () => {
+            const GP = this.Grid_Property[this.Grid_Total.Layer];
             const rect = GP.MouseUpDownRect();
             const r1 = rect.left;
             const r2 = rect.right;
             const r = r2 - r1 + 1;
             if ((r1 < 0) || (r === GP.Xmax)) { return; }
-            self.SetUndo_DeleteColumns(self.Grid_Total.ColumnCaption + "削除", r1, r);
-            self.DeleteColumns(self.Grid_Total.Layer, r1, r);
+            this.SetUndo_DeleteColumns(this.Grid_Total.ColumnCaption + "削除", r1, r);
+            this.DeleteColumns(this.Grid_Total.Layer, r1, r);
             if ((GP.Xmax <= GP.MouseUpX)) {
                 GP.MouseUpX = GP.Xmax - 1;
             }
             if ((GP.Xmax <= GP.MouseDownX)) {
                 GP.MouseDownX = GP.Xmax - 1;
             }
-            self.Print_Grid_Data();
-            self.eventCall.evtChange_FixedYS();
-            self.eventCall.evtChange_Data();
+            this.Print_Grid_Data();
+            this.eventCall.evtChange_FixedYS();
+            this.eventCall.evtChange_Data();
         }
-        function mnuDeleteRow() {
-            const GP = self.Grid_Property[self.Grid_Total.Layer];
+        const mnuDeleteRow = () => {
+            const GP = this.Grid_Property[this.Grid_Total.Layer];
             const rect = GP.MouseUpDownRect();
             const r1 = rect.top;
             const r2 = rect.bottom;
             const r = r2 - r1 + 1;
             if ((r1 < 0) || (r === GP.Ymax)) { return; }
-            self.SetUndo_DeleteRows(self.Grid_Total.RowCaption + "削除", r1, r)
-            self.DeleteRows(self.Grid_Total.Layer, r1, r);
+            this.SetUndo_DeleteRows(this.Grid_Total.RowCaption + "削除", r1, r)
+            this.DeleteRows(this.Grid_Total.Layer, r1, r);
             if ((GP.Ymax <= GP.MouseUpY)) {
                 GP.MouseUpY = GP.Ymax - 1;
             }
             if ((GP.Xmax <= GP.MouseDownY)) {
                 GP.MouseDownY = GP.Ymax - 1;
             }
-            self.Print_Grid_Data();
-            self.eventCall.evtChange_FixedXS();
-            self.eventCall.evtChange_Data();
+            this.Print_Grid_Data();
+            this.eventCall.evtChange_FixedXS();
+            this.eventCall.evtChange_Data();
         }
+
+        const popmenu = [
+            { caption: "元に戻す"+udo, enabled: true, event: this.Undo },
+            { caption: "コピー", enabled: true, event: this.Grid_Copy },
+            { caption: "貼り付け", enabled: GPO.RightClickEnabled,child:[{caption:"内部から", event: mnuPaste },{caption:"外部クリップボードから",event: mnuouterPaste}]},
+            { caption: "切り取り", enabled: GPO.RightClickEnabled, event: mnuCut },
+            { caption: this.Grid_Total.ColumnCaption+"数指定", enabled: GPO.GridColEnabled, event: mnuColNumber },
+            { caption: this.Grid_Total.RowCaption+"数指定", enabled: GPO.GridRowEnabled, event: mnuRowNumber },
+            { caption: this.Grid_Total.RowCaption+"挿入", enabled: GPO.GridColEnabled, child: [{ caption: "前に挿入", event: mnuInsertRow }, { caption: "後ろに挿入", event: mnuInsertRow }] },
+            { caption: this.Grid_Total.ColumnCaption+"挿入", enabled: GPO.GridRowEnabled, child: [{ caption: "左に挿入", event: mnuInsertCOl }, { caption: "右に挿入", event: mnuInsertCOl }] },
+            { caption: this.Grid_Total.RowCaption+"削除", enabled: GPO.GridColEnabled, event: mnuDeleteRow },
+            { caption: this.Grid_Total.ColumnCaption+"削除", enabled: GPO.GridRowEnabled, event: mnuDeleteCol },
+        ];
+        Generic.ceatePopupMenu(popmenu, pos);
     }
     /**レイヤのグリッド初期化 */
     Init_Grid = (L: number) => {
