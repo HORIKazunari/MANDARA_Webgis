@@ -850,8 +850,7 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
         if (!tileSelect) {
             return;
         }
-        const tagValue = tileTagSelect.getValue();
-        const selectedTagText = typeof tagValue === 'string' ? tagValue : '';
+        const selectedTagText = tileTagSelect.options[tileTagSelect.selectedIndex]?.value ?? '';
         const tlist = appState().tileMapClass.getTileMapListByTag(selectedTagText) as Array<{ opt: { id: string } }>;
         const list: Array<{ value: string; text: string }> = [];
         let seln = 0;
@@ -865,17 +864,18 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
     }
     /**OKボタン */
     function buttonOK() {
-        const tileMapDataSet = appState().tileMapClass.getTileMapDataById(tileSelect.getValue()) as typeof _attrData.TotalData.ViewStyle.TileMapView.TileMapDataSet;
-        const drawTimingRaw: unknown = Generic.getRadioCheckByValue("drawTiming");
-        const drawTiming = Number(drawTimingRaw);
-        const tileMapView = _attrData.TotalData.ViewStyle.TileMapView as unknown as {
-            Visible: boolean;
-            TileMapDataSet: typeof _attrData.TotalData.ViewStyle.TileMapView.TileMapDataSet;
-            DrawTiming: number;
-            AlphaValue: number;
+        const tileIdRaw = tileSelect.options[tileSelect.selectedIndex]?.value;
+        const tileId = tileIdRaw !== undefined ? Number(tileIdRaw) : NaN;
+        const tileMapClass = appState().tileMapClass as {
+            getTileMapDataById: (id: number) => JsonObject | undefined;
         };
+        const tileMapDataSet = tileMapClass.getTileMapDataById(tileId);
+        const drawTiming = Number(Generic.getRadioCheckByValue("drawTiming"));
+        const tileMapView = _attrData.TotalData.ViewStyle.TileMapView;
         tileMapView.Visible = chkVisible.checked;
-        tileMapView.TileMapDataSet = tileMapDataSet;
+        if (tileMapDataSet !== undefined) {
+            tileMapView.TileMapDataSet = tileMapDataSet;
+        }
         tileMapView.DrawTiming = drawTiming;
         tileMapView.AlphaValue = parseInt(rangeObj.value) / 100;
         Generic.clear_backDiv();
@@ -3191,7 +3191,7 @@ export function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
         let Shukei_V;
         let Add_Data: number[] = [];
         if(chkObjectData.checked === true ){
-            RegistMode = cboRegistMode.getValue();
+            RegistMode = Number(cboRegistMode.options[cboRegistMode.selectedIndex]?.value ?? 0);
             F_ObjectData = true;
             Add_Data=selectDataItem.getChecked().checkedArray;
             Rdn = Add_Data.length;

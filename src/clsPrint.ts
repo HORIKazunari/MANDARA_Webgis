@@ -178,7 +178,8 @@ class clsPrint {
 
     static setData(picMap: HTMLCanvasElement){
         const state = appState();
-        state.attrData.TotalData.ViewStyle.ScrData.OutputDevide = enmOutputDevice.Screen;
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        scrData.OutputDevide = enmOutputDevice.Screen;
         const atp=state.attrData.TempData;
         atp.ContourMode_Temp.ContourDataResetF = true;
         const dv = document.getElementById("contourDataTip");
@@ -197,7 +198,7 @@ class clsPrint {
     }
     static printMapScreen(picMap: HTMLCanvasElement) {
         const state = appState();
-        const avs = state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo;
+        const avs = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const g = picMap.getContext('2d');
         if (!g) return;
         
@@ -293,7 +294,8 @@ class clsPrint {
     static printMap(g: CanvasRenderingContext2D) {
         const state = appState();
         const picMapRect = new rectangle(0, 0, state.frmPrint.picMap.width, state.frmPrint.picMap.height);
-        state.attrData.TotalData.ViewStyle.ScrData.Set_PictureBox_and_CulculateMul(picMapRect)
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        scrData.Set_PictureBox_and_CulculateMul(picMapRect)
         state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = false;
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         let ca = "";
@@ -334,7 +336,7 @@ class clsPrint {
     static showMap(g: CanvasRenderingContext2D) {
         const state = appState();
         const av=state.attrData.TotalData.ViewStyle;
-        const avs = av.ScrData as unknown as AttrScreenInfo;
+        const avs = av.ScrData as AttrScreenInfo;
         state.attrData.TempData.drawing=true;
         avs.SampleBoxFlag = false;
         state.attrData.ResetMPSubLineXY();
@@ -345,7 +347,7 @@ class clsPrint {
             state.attrData.check_AutoSoubyou_Enable();
         }
         if (avb.Auto === true) {
-            const avss = av.ScrData.ScrRectangle;
+            const avss = avs.ScrRectangle;
             //ラインのポイント自動間引き用に画面の対角線の距離を取得（座標系設定ありの場合）
             let D;
             if (state.attrData.TotalData.ViewStyle.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) {
@@ -457,8 +459,8 @@ class clsPrint {
             }
             state.attrData.TempData.frmPrint_Temp.image = g.getImageData(0, 0, state.frmPrint.picMap.width, state.frmPrint.picMap.height);
             tilecanvas = document.createElement("canvas");
-            tilecanvas.width = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width();
-            tilecanvas.height = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height(); 
+            tilecanvas.width = avs.frmPrint_FormSize.width();
+            tilecanvas.height = avs.frmPrint_FormSize.height(); 
             tilecanvas.style.vivility=false;
             const tilecanvasg = tilecanvas.getContext('2d');
             state.tileMapClass.drawTileMap(tilecanvasg, avt.TileMapDataSet, av.Zahyo, avs, 2, tileMapAcc);
@@ -523,7 +525,7 @@ class clsPrint {
     /** 最後に画面枠線を描く*/
     static Screen_BackLine(g: CanvasRenderingContext2D){
         const state = appState();
-        const av=state.attrData.TotalData.ViewStyle.ScrData;
+        const av = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const rect  = av.getSxSyRect(av.ScrRectangle);
         const sv=state.attrData.TotalData.ViewStyle.Screen_Back;
         let penw  = Math.trunc(state.attrData.Get_Length_On_Screen(sv.ScreenFrameLine.Width)) % 2;
@@ -613,9 +615,10 @@ class clsPrint {
     static Screen_Area_Back(g: CanvasRenderingContext2D){
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
-        const Scrrect  = av.ScrData.getSxSyRect(av.ScrData.ScrRectangle);
+        const avs = av.ScrData as AttrScreenInfo;
+        const Scrrect  = avs.getSxSyRect(avs.ScrRectangle);
         state.attrData.Draw_Tile_Box(g, Scrrect, clsBase.BlankLine(), av.Screen_Back.ScreenAreaBack, 0);
-        const marginRect  = av.ScrData.getSXSY_Margin();
+        const marginRect  = avs.getSXSY_Margin();
         state.attrData.Draw_Tile_Box(g, marginRect, clsBase.BlankLine(), av.Screen_Back.MapAreaBack, 0);
     }
 
@@ -813,7 +816,7 @@ class clsPrint {
                 switch (LayerShape) {
                     case enmShape.PointShape:{
                         const CP = al.atrObject.atrObjectData[dod].Symbol;
-                        const OP = vs.ScrData.Get_SxSy_With_3D(CP);
+                        const OP = (vs.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                         ShowF[dod] = state.attrData.Check_Screen_In(OP, pointR);
                         break;
                     }
@@ -1038,7 +1041,7 @@ class clsPrint {
         }
         for (let i = 0; i < Objn; i++) {
             const CP = al.atrObject.atrObjectData[i].Symbol;
-            ObjP[i] = vs.ScrData.Get_SxSy_With_3D(CP);
+            ObjP[i] = (vs.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
         }
         switch (mode) {
             case enmSoloMode_Number.MarkSizeMode:
@@ -1183,13 +1186,14 @@ class clsPrint {
     static Screen_MapAreaLine(g: CanvasRenderingContext2D){
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
+        const avs = av.ScrData as AttrScreenInfo;
         if((av.Zahyo.Mode === enmZahyo_mode_info.Zahyo_Ido_Keido) && (av.LatLonLine_Print.Order === enmLatLonLine_Order.Front) && (av.LatLonLine_Print.Visible === true)) {
             Accessory.LatLonLine_Print(g);
         }
 
         const Lpat = av.Screen_Back.MapAreaFrameLine;
         if(Lpat.BlankF === false) {
-            const marginRect = av.ScrData.getSXSY_Margin();
+            const marginRect = avs.getSXSY_Margin();
             let penw = Math.trunc(state.attrData.Get_Length_On_Screen(Lpat.Width)) / 2;
             if(penw === 0) {
                 penw = 1;
@@ -1412,7 +1416,7 @@ class clsPrint {
             am.Base.Legend_Num = n
             am.Base.LegendXY.length = n;
             for (let i = oldn; i < n; i++) {
-                const avs = av.ScrData;
+                const avs = av.ScrData as AttrScreenInfo;
                 const amb = am.Base;
                 if(avs.Accessory_Base === enmBasePosition.Screen) {
                     amb.LegendXY[i] = amb.LegendXY[i - 1].Clone();
@@ -1734,7 +1738,7 @@ class clsPrint {
             if ((SortSumDataValue !== 0) && (state.attrData.Check_Condition(Layernum, SortObjPos) === true)) {
 
                 const CP = al.atrObject.atrObjectData[SortObjPos].Symbol;
-                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
 
                 state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][SortObjPos] = true;
                 switch (selGraph.GraphMode) {
@@ -1767,7 +1771,7 @@ class clsPrint {
                                             if (H !== 0) {
                                                 const start_p = acum;
                                                 const end_p = start_p + 2 * Math.PI * H;
-                                                const scrData = state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo;
+                                                const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
                                                 appState().clsDrawMarkFan?.Draw_Fan?.(g, OP, r, start_p, end_p, selGraph.En_Obi.BoaderLine as unknown as Tile_Property, selGraph.Data[j].Tile, scrData);
                                                 acum = end_p;
                                             }
@@ -1929,7 +1933,7 @@ class clsPrint {
                 }
 
                 const CP = al.atrObject.atrObjectData[i].Symbol;
-                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                 state.attrData.TempData.ObjectPrintedCheckFlag[Layernum][i] = true;
                 OP.offset(-ww / 2, -wrh / 2);
                 const Rect = new rectangle(OP, new size(ww, wrh));
@@ -2051,7 +2055,7 @@ class clsPrint {
         const XY = []
         for (let i = 0; i < obn; i++) {
             const CP = al.atrObject.atrObjectData[i].Label;
-            XY.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP));
+            XY.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP));
         }
 
         const Data_n = attLbl.DataItem.length;
@@ -2097,7 +2101,7 @@ class clsPrint {
 
                             }
                             const retV = clsDraw.TextCut_for_print(g, wo2,
-                                attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo);
+                                attLbl.DataValue_Font, attLbl.DataValue_TurnFlag, BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo);
                             Array.prototype.push.apply(D_Word_Cut, retV.Out_Text);
                             D_TxHeight = retV.Height;
                         }
@@ -2110,7 +2114,7 @@ class clsPrint {
                     let O_TxHeight = 0;
                     if (attLbl.ObjectName_Print_Flag === true) {
                         const retV = clsDraw.TextCut_for_print(g, state.attrData.Get_KenObjName(Layernum, i),
-                            attLbl.ObjectName_Font, Boolean(attLbl.ObjectName_Turn_Flag), BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo);
+                            attLbl.ObjectName_Font, Boolean(attLbl.ObjectName_Turn_Flag), BoxWidth, state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo);
                         O_Word_Cut = retV.Out_Text;
                         O_TxHeight = retV.Height;
                     }
@@ -2298,7 +2302,7 @@ class clsPrint {
                 pxy = clsSpline.Spline_Get(0, pci.NumOfPoint, pci.points, ST, state.attrData.TotalData.ViewStyle.ScrData) as point[];
             } else {
                 for (let j = 0; j < pci.NumOfPoint; j++) {
-                    pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(pci.points[ j]));
+                    pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(pci.points[ j]));
                 }
             }
             state.attrData.Draw_Line(g, C_Line_Pat[pci.ContourNumber], pxy);
@@ -2384,22 +2388,22 @@ class clsPrint {
                     } else {
                         if (revf === false) {
                             for (let k = 0; k < n; k++) {
-                                pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Pre_CStac[hc].points[k]));
+                                pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(Pre_CStac[hc].points[k]));
                             }
                         } else {
                             for (let k = 0; k < n; k++) {
-                                pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(Pre_CStac[hc].points[ n - 1 - k]));
+                                pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(Pre_CStac[hc].points[ n - 1 - k]));
                             }
                         }
                     }
                     np2 += n;
                 } else {
                     if (revf === false) {
-                        pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(spxy[L]));
-                        pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(epxy[L]));
+                        pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(spxy[L]));
+                        pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(epxy[L]));
                     } else {
-                        pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(epxy[L]));
-                        pxy.push(state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(spxy[L]));
+                        pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(epxy[L]));
+                        pxy.push((state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(spxy[L]));
                     }
                     np2 += 2;
                 }
@@ -2425,7 +2429,7 @@ class clsPrint {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
         const ad = al.atrData.Data[DataNum];
-        const vs = state.attrData.TotalData.ViewStyle.ScrData;
+        const vs = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
 
         const mw = vs.MapRectangle.width();
         const mh = vs.MapRectangle.height();
@@ -2519,7 +2523,7 @@ class clsPrint {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
         const ad = al.atrData.Data[DataNum];
-        const vs = state.attrData.TotalData.ViewStyle.ScrData;
+        const vs = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const xx = parseInt(((P.x - vs.MapRectangle.left) / md).toString());
         const yy = parseInt(((P.y - vs.MapRectangle.top) / md).toString());
         const F_Mesh_W = F_Mesh.length-1;
@@ -2791,9 +2795,9 @@ class clsPrint {
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][i] = true;
                 const tx = state.attrData.Get_Data_Value(LayerNum, DataNum, i, state.attrData.TotalData.ViewStyle.Missing_Data.Label);
                 const CP = al.atrObject.atrObjectData[i].Label;
-                const LP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const LP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                 const atx = String(tx);
-                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw, state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo)
+                const d_an2 = clsDraw.TextCut_for_print(g, atx, Font, turnF, xw, state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo)
                 let outTx = d_an2.Out_Text[0];
                 for (let j = 1; j<d_an2.Out_Text.length; j++) {
                     outTx += "\n" + d_an2.Out_Text[j];
@@ -2992,7 +2996,7 @@ class clsPrint {
                 const Hasu = Math.abs(MV) - (mbmd.Value * Block_n);
                 const Hasu_R = state.attrData.Radius(mbmd.Mark.WordFont.Size, Hasu, mbmd.Value);
                 const CP = al.atrObject.atrObjectData[i].Symbol;
-                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][i] = true;
                 if(Missing_DataArray[i] === true) {
                     Vector_Block_Draw_Block(g, LayerNum, i, OP, r, state.attrData.TotalData.ViewStyle.Missing_Data.BlockMark, 1, enmMarkBlockArrange.Block, false, 0, 0, 1);
@@ -3116,7 +3120,7 @@ class clsPrint {
                                 inf = state.attrData.Check_Point_in_Kencode_OneObject(Layernum, ObjNum, p);
                             } while (inf === false);
                             onP.push(p);
-                            ap = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(p);
+                            ap = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(p);
                             if(r !== 0) {
                                 Vector_Block_Draw_Block2(g, ap, r, MK);
                             } else {
@@ -3127,7 +3131,7 @@ class clsPrint {
                     } else {
                         const pOn = dotMapPoint[ObjNum] as point[];
                         for (let j = 0; j < Block_n; j++) {
-                            ap = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(pOn[j])
+                            ap = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(pOn[j])
                             if(r !== 0) {
                                 Vector_Block_Draw_Block2(g, ap, r, MK);
                             } else {
@@ -3298,7 +3302,7 @@ class clsPrint {
                         const lineCode = Number((ELine[j] as { LineCode: number }).LineCode);
                         const mpl = al.MapFileData.MPLine[lineCode] as { NumOfPoint: number; PointSTC: point[] };
                         const np= mpl.NumOfPoint;
-                        const pxy = vs.ScrData.Get_SxSy_With_3D(np, mpl.PointSTC, false) as point[];
+                        const pxy = (vs.ScrData as AttrScreenInfo).Get_SxSy_With_3D(np, mpl.PointSTC, false) as point[];
 
                         let LineShapeLine;
                         if(MisF === true) {
@@ -3335,7 +3339,7 @@ class clsPrint {
         this.Vector_Object_Boundary(g, LayerNum);
         this.Vector_Dummy_Boundary(g, LayerNum, true, true);
         const OD_MD = ad.SoloModeViewSettings.ClassODMD;
-        const scrData = state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo;
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
 
         const adobl=state.attrData.LayerData[OD_MD.o_Layer];
         let StartFP;
@@ -3495,7 +3499,7 @@ class clsPrint {
                     MK.WordFont.Color = MK.Tile.Color.Clone();
                 }
                 const CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
-                const vs = state.attrData.TotalData.ViewStyle.ScrData;
+                const vs = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
                 let OP = vs.Get_SxSy_With_3D(CP);
                 const r = 5; // vs.Radius(MK.WordFont.Size, 1, 1); // Property not available1, 1); // Property not available
                 // const ot = state.attrData.TempData.OverLay_Temp;
@@ -3567,7 +3571,7 @@ class clsPrint {
                 }
                 state.attrData.TempData.ObjectPrintedCheckFlag[LayerNum][DrawOrder] = true;
                 const CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
-                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                 switch (LayerShape) {
                     case enmShape.PointShape: {
                         PointLayerMark = al.LayerModeViewSettings.PointLineShape.PointMark.Clone();
@@ -3598,7 +3602,7 @@ class clsPrint {
 
                         if (al.Type === enmLayerType.Mesh) {
                             const meshPoint: point[] = al.atrObject.atrObjectData[DrawOrder].MeshPoint;
-                            const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint.length, meshPoint, false);
+                            const pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(meshPoint.length, meshPoint, false);
                             state.attrData.Draw_Line(g, LineShapeLine, pxy);
                         } else {
                             const ELine = state.attrData.Get_Enable_KenCode_MPLine(LayerNum, DrawOrder);
@@ -3630,7 +3634,7 @@ class clsPrint {
                 const DrawOrder = D_Order[i];
                 if (ShowF[DrawOrder] === true) {
                     const CP = al.atrObject.atrObjectData[DrawOrder].Symbol;
-                    const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                    const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                         this.ObjectValue_and_Name_Print(g, OP, enmVerticalAlignment.Center, LayerNum, DataNum, DrawOrder);
                 }
             }
@@ -3732,7 +3736,7 @@ class clsPrint {
         }
         if(ad.Type === enmLayerType.Mesh) {
             const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
-            pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint.length, meshPoint, false);
+            pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(meshPoint.length, meshPoint, false);
             pxy.push(this.clonePointValue(pxy[0]));
             state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
             return;
@@ -3793,8 +3797,8 @@ class clsPrint {
             const cp = al.atrObject.atrObjectData[i].CenterPoint;
             const sp = al.atrObject.atrObjectData[i].Symbol;
             if (cp.Equals(sp) === false) {
-                const cp2 = av.ScrData.Get_SxSy_With_3D(cp);
-                const sp2 = av.ScrData.Get_SxSy_With_3D(sp);
+                const cp2 = (av.ScrData as AttrScreenInfo).Get_SxSy_With_3D(cp);
+                const sp2 = (av.ScrData as AttrScreenInfo).Get_SxSy_With_3D(sp);
                 state.attrData.Draw_Line(g, av.SymbolLine.Line, [cp2, sp2]);
             }
         }
@@ -3821,7 +3825,7 @@ class clsPrint {
         if(Dummy_F === false) {
             if(state.attrData.LayerData[Layernum].Type === enmLayerType.Mesh) {
                 const meshPoint: point[] = ad.atrObject.atrObjectData[O_ObjNum_Code].MeshPoint;
-                const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(meshPoint.length, meshPoint, false) as point[];
+                const pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(meshPoint.length, meshPoint, false) as point[];
                 const nPolyP: number[] = [];
                 nPolyP[0] = pxy.length;
                 if(pxy.length >= 4) {
@@ -3951,7 +3955,7 @@ class clsPrint {
                 }
             } else {
                 const spxyPoints: point[] = spxy as point[];
-                pxy = av.ScrData.Get_SxSy_With_3D(np, spxyPoints, ReverseGetF);
+                pxy = (av.ScrData as AttrScreenInfo).Get_SxSy_With_3D(np, spxyPoints, ReverseGetF);
             }
             state.attrData.Set_MPSubLineXY(mpfilename, LCode, pxy, ReverseGetF);
         }
@@ -3965,7 +3969,7 @@ class clsPrint {
             for (let i = 0; i < state.attrData.LayerData[Layernum].atrObject.ObjectNum; i++) {
                 if (state.attrData.Check_Condition(Layernum, i) === true) {
                     const CP = state.attrData.LayerData[Layernum].atrObject.atrObjectData[i].Symbol;
-                    const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                    const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                     this.ObjectValue_and_Name_Print(g, OP, enmVerticalAlignment.Center, Layernum, DataNum, i);
                 }
             }
@@ -4074,7 +4078,7 @@ class clsPrint {
             if(mapObj.Shape === enmShape.PointShape) {
                 const ok = mapObj.Kind;
                 const CP = ad.MapFileData.Get_Enable_CenterP(code, ad.Time);
-                const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                 const objectKind = ad.MapFileData.ObjectKind[ok] as DummyObjectKindInfo;
                 const MK = this.getPointDummyMark(ad.MapFileName, objectKind.Name);
                 const r = state.attrData.Radius(MK.WordFont.Size, 1, 1);
