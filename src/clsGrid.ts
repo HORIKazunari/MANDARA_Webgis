@@ -11,6 +11,7 @@ import {
     clsAttrData,
     enmDataSource,
     enmMesh_Number,
+    Screen_info,
     enmZahyo_System_Info,
     enmBasePosition,
     enmKenCodeObjectstructure,
@@ -28,51 +29,51 @@ type GraphModeDataSet = { Data: GraphModeDataItem[]; Clone: () => GraphModeDataS
 type GraphModeInfo = { SelectedIndex: number; DataSet: GraphModeDataSet[]; initDataSet?: () => void };
 type LabelModeDataSet = { DataItem: number[]; Clone: () => LabelModeDataSet };
 type LabelModeInfo = { DataSet: LabelModeDataSet[]; initDataSet?: () => void };
-type InnerData = { Data: number; Flag: boolean };
+type InnerData = { Data: number; Flag: number | boolean };
 type BezierData = { Data: number; ObjectPos: number; Clone: () => BezierData };
-type LayerDataInfo = any;
+type LayerDataInfo = IAttrData['LayerData'][number];
 type DummyObjectNameAndCode = { code: number; Name: string };
-type AttrDataItem = any;
-type AtrDataInfo = {
+type AttrDataItem = IAttrDataInfo['Data'][number];
+type _AtrDataInfo = {
     Data: AttrDataItem[];
     Count: number;
     SelectedIndex: number;
 };
-type SeriesDataItem = {
+type _SeriesDataItem = {
     Print_Mode_Total: number;
     Print_Mode_Layer: number;
     Layer: number;
     Data: number;
-    Clone: () => SeriesDataItem;
+    Clone: () => _SeriesDataItem;
 };
-type OverLayDataItem = {
+type _OverLayDataItem = {
     Print_Mode_Total: number;
     Print_Mode_Layer: number;
     Layer: number;
     DataNumber: number;
-    Clone: () => OverLayDataItem;
+    Clone: () => _OverLayDataItem;
 };
-type OverLayDatasetInfo = any;
-type OverLayInfo = any;
-type SeriesDatasetInfo = any;
-type SeriesInfo = any;
+type OverLayDatasetInfo = IOverLayDatasetInfo;
+type OverLayInfo = NonNullable<NonNullable<IAttrData['TotalData']['TotalMode']>['OverLay']>;
+type SeriesDatasetInfo = ISeriesDatasetInfo;
+type SeriesInfo = NonNullable<NonNullable<IAttrData['TotalData']['TotalMode']>['Series']>;
 type ConditionDataItem = { Data: number; Clone: () => ConditionDataItem };
 type ConditionList = { Count: number; [index: number]: ConditionDataItem };
-type ConditionClassInfo = { And_OR: number; Condition: ConditionList };
-type ConditionDataSetInfo = any;
+type _ConditionClassInfo = { And_OR: number; Condition: ConditionList };
+type _ConditionDataSetInfo = strCondition_DataSet_Info;
 type MarkInfo = { Clone: () => MarkInfo };
-type DummyPointMark = { ObjectKindName: string; Mark: MarkInfo };
+type _DummyPointMark = { ObjectKindName: string; Mark: MarkInfo };
 type PositionInfo = { x: number; y: number };
-type RectLike = any;
-type MapLegendInfo = { Base: { Legend_Num: number; LegendXY: PositionInfo[] } };
-type ScrDataInfo = {
+type RectLike = rectangle;
+type _MapLegendInfo = { Base: { Legend_Num: number; LegendXY: PositionInfo[] } };
+type _ScrDataInfo = {
     MapRectangle: RectLike;
     ScrView: RectLike;
     Accessory_Base: number;
-    ScrData: ScrDataInfo;
-    Clone: () => ScrDataInfo;
+    ScrData: _ScrDataInfo;
+    Clone: () => _ScrDataInfo;
 };
-type ViewStyleInfo = any;
+type ViewStyleInfo = IAttrData['TotalData']['ViewStyle'];
 type MPSyntheticObjItem = { Clone: () => MPSyntheticObjItem };
 type AtrObjectInfo = {
     ObjectNum: number;
@@ -80,8 +81,16 @@ type AtrObjectInfo = {
     NumOfSyntheticObj: number;
     MPSyntheticObj: MPSyntheticObjItem[];
 };
-type AtrObjectData = any;
-type ObjectDataInfo = any;
+type AtrObjectData = IObjectInfo['atrObjectData'][number];
+type ObjectDataInfo = {
+    MpObjCode: number;
+    Name: string;
+    Objectstructure: number;
+    CenterPoint: point;
+    Symbol: point;
+    Label: point;
+    [key: string]: JsonValue | point | number | string | boolean | undefined;
+};
 type MapFileInfo = {
     Map: { Kend: number; Zahyo: { Mode: number }; Time_Mode: boolean };
     MPObj: Array<{ NumOfNameTime: number; NameTimeSTC: Array<{ NamesList: string[] }>; Shape: number }>;
@@ -192,10 +201,15 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         ktGrid.removeEventlister();
         const mp = newAttrData.SetMapFile(ktGrid.getLayerData(ktGrid.getLayer(), GridLayerData.MapFile)) as MapWithObkNum;
         const init_para = new strFrmCopyObjectName_init_parameter_data();
-        init_para.Time = ktGrid.getLayerData(ktGrid.getLayer(), GridLayerData.Time);
-        init_para.ObjectGroupChecked.length = mp.Map.OBKNum;
-        init_para.ObjectGroupChecked.fill(true);
-        init_para.TimeChangeEnabled=!init_para.Time.nullFlag();
+        const initPara = init_para as unknown as {
+            Time: strYMD;
+            ObjectGroupChecked: boolean[];
+            TimeChangeEnabled: boolean;
+        };
+        initPara.Time = ktGrid.getLayerData(ktGrid.getLayer(), GridLayerData.Time) as unknown as strYMD;
+        initPara.ObjectGroupChecked.length = mp.Map.OBKNum;
+        initPara.ObjectGroupChecked.fill(true);
+        initPara.TimeChangeEnabled = !initPara.Time.nullFlag();
         (frmCopyObjectName as unknown as (mapData: IMapData, init: unknown, ok: (copyData: string) => void, cancel: () => void) => void)(mp as unknown as IMapData, init_para as unknown, function (copyData: string) {
             Generic.copyText(copyData);
             ktGrid.setCopyText(copyData);
@@ -367,13 +381,18 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             }
             for (let k = 0; k < al.atrObject.ObjectNum; k++) {
                 ktGrid.setFixedXSData(i, 1, k, state.attrData.Get_KenObjName(i, k));
-                const alo = al.atrObject.atrObjectData[k];
+                const alo = al.atrObject.atrObjectData[k] as unknown as {
+                    defPoint: { lon: number; lat: number };
+                    HyperLinkNum: number;
+                    HyperLink: Array<{ Name: string; Address: string }>;
+                };
                 if (al.Type === enmLayerType.DefPoint) {
                     ktGrid.setGridData(i, 0, k,String( alo.defPoint.lon));
                     ktGrid.setGridData(i, 1, k,String( alo.defPoint.lat));
                 }
                 for (let j = 0; j < al.atrData.Count; j++) {
-                    ktGrid.setGridData(i, DefPointPlus + j, k, String(al.atrData.Data[j].Value[k]));
+                    const dataItem = al.atrData.Data[j] as unknown as { Value: Array<string | number> };
+                    ktGrid.setGridData(i, DefPointPlus + j, k, String(dataItem.Value[k]));
                 }
                 for (let j = 0; j < alo.HyperLinkNum; j++) {
                     ktGrid.setGridData(i, DefPointPlus + Datan + j * 2, k, alo.HyperLink[j].Name);
@@ -627,9 +646,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         //新しいデータの凡例をD_、D2にセット
 
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
-            const newAL = newAttrData.LayerData[i] as LayerDataInfo;
+            const newAL = newAttrData.LayerData[i] as unknown as LayerDataInfo;
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
-            const oldAL = oldAttrData.LayerData[L] as LayerDataInfo;
+            const oldAL = oldAttrData.LayerData[L] as unknown as LayerDataInfo;
             if (L === -1) {
                 newAL.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
                 //新しいレイヤの場合
@@ -641,7 +660,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     case enmLayerType.DefPoint:
                         break;
                     case enmLayerType.Mesh:
-                        if (newAL.ReferenceSystem === (oldAttrData.LayerData[L] as LayerDataInfo).ReferenceSystem) {
+                        if (newAL.ReferenceSystem === (oldAttrData.LayerData[L] as unknown as LayerDataInfo).ReferenceSystem) {
                             Check_Kencode_XY(i, L);
                         }
                         break;
@@ -730,13 +749,14 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     const DD = Conv[i][j].Data;
                     const dL = Conv[i][j].Layer;
 
-                    const oldLayer = oldAttrData.LayerData[dL] as LayerDataInfo;
-                    const O_Data = oldLayer.atrData.Data[DD];
+                    const oldLayer = oldAttrData.LayerData[dL] as unknown as LayerDataInfo;
+                    const O_Data = oldLayer.atrData.Data[DD] as unknown as { ModeData: number } & Parameters<clsAttrData['Set_Legend']>[2];
                     if (newAttrData.Check_Enable_SoloMode(O_Data.ModeData, i, j) === true) {
-                        newAL.atrData.Data[j].ModeData = O_Data.ModeData;
+                        const newDataItem = newAL.atrData.Data[j] as unknown as { ModeData: number };
+                        newDataItem.ModeData = O_Data.ModeData;
                     }
 
-                    newAttrData.Set_Legend(i, j, O_Data, true, shapeNoChange, shapeNoChange, true, shapeNoChange, true, shapeNoChange, true, true, true, (i === dL));
+                    newAttrData.Set_Legend(i, j, O_Data as unknown as Parameters<clsAttrData['Set_Legend']>[2], true, shapeNoChange, shapeNoChange, true, shapeNoChange, true, shapeNoChange, true, true, true, (i === dL));
 
                     if (newAL.MapFileName !== oldLayer.MapFileName) {
                         //地図ファイルが変更された場合に線モードのチェック
@@ -744,7 +764,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                         newALD.SoloModeViewSettings.ClassODMD.O_object = 0;
                         newALD.SoloModeViewSettings.ClassODMD.o_Layer = i;
                         for (let kk = 0; kk < newAttrData.TotalData.LV1.Lay_Maxn; kk++) {
-                            const layerObj = (newAttrData.LayerData[kk] as LayerDataInfo).atrObject as { ObjectNum: number };
+                            const layerObj = (newAttrData.LayerData[kk] as unknown as LayerDataInfo).atrObject as { ObjectNum: number };
                             for (let k = 0; k < layerObj.ObjectNum; k++) {
                                 if (newALD.Title.indexOf(newAttrData.Get_KenObjName(kk, k)) !== -1) {
                                     newALD.SoloModeViewSettings.ClassODMD.O_object = k;
@@ -802,7 +822,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         // console.log(newAttrData.LayerData[0].atrData.Data)
         //---------------------線モードのベジェ曲線をチェック
         for(let L  = 0 ;L< oldAttrData.TotalData.LV1.Lay_Maxn ; L++) {
-            const oldAL=oldAttrData.LayerData[L] as LayerDataInfo;
+            const oldAL=oldAttrData.LayerData[L] as unknown as LayerDataInfo;
             if((oldAL.Type === enmLayerType.Normal)||(oldAL.Type === enmLayerType.Mesh )){
                 const odBezier = oldAL.ODBezier_DataStac as BezierData[];
                 for(let i  = 0 ;i< odBezier.length ;i++){
@@ -817,8 +837,8 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                                 d.Data = aD;
                                 d.ObjectPos = newObj;
                             }
-                            const targetLayer = newAttrData.LayerData[aL] as LayerDataInfo;
-                            targetLayer.ODBezier_DataStac.push(d);
+                            const targetLayer = newAttrData.LayerData[aL] as unknown as LayerDataInfo;
+                            targetLayer.ODBezier_DataStac.push(d as unknown as ODBezier_Data);
                         }
                     }
                 }
@@ -952,7 +972,22 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         for(let i  = 0 ;i< oldATS.DataSet.length ; i++) {
             const SeriesDataset = new strSeries_Dataset_Info() as SeriesDatasetInfo & { initData: () => void };
             SeriesDataset.initData();
-            const oldATSDataset = oldATS.DataSet[i] as SeriesDatasetInfo;
+            const oldATSDataset = oldATS.DataSet[i] as unknown as {
+                title: string;
+                SelectedIndex: number;
+                DataItem: Array<{
+                    Print_Mode_Total: number;
+                    Print_Mode_Layer: number;
+                    Layer: number;
+                    Data: number;
+                    Clone: () => {
+                        Print_Mode_Total: number;
+                        Print_Mode_Layer: number;
+                        Layer: number;
+                        Data: number;
+                    };
+                }>;
+            };
             SeriesDataset.title = oldATSDataset.title;
             for (let j = 0; j < oldATSDataset.DataItem.length; j++) {
                 const seriesDt = oldATSDataset.DataItem[j].Clone();
@@ -989,10 +1024,10 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     case enmTotalMode_Number.OverLayMode:
                 }
                 if (f === true) {
-                    SeriesDataset.DataItem.push(seriesDt);
+                    (SeriesDataset.DataItem as unknown as unknown[]).push(seriesDt as unknown);
                 }
             }
-            SeriesDataset.SelectedIndex = Math.min(oldATS.DataSet[i].SelectedIndex, SeriesDataset.DataItem.length - 1);
+            SeriesDataset.SelectedIndex = Math.min(oldATSDataset.SelectedIndex, (SeriesDataset.DataItem as unknown as unknown[]).length - 1);
             newATS.DataSet.push(SeriesDataset as unknown as ISeriesDatasetInfo);
         }
         newATS.SelectedIndex = oldATS.SelectedIndex
@@ -1001,32 +1036,47 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         //属性検索データをチェック
         newAttrData.TotalData.Condition =[];// New List(Of strCondition_DataSet_Info)
         for(let i  = 0 ;i< oldAttrData.TotalData.Condition.length ; i++) {
-            const oldATC = oldAttrData.TotalData.Condition[i] as ConditionDataSetInfo;
+            const oldATC = oldAttrData.TotalData.Condition[i] as unknown as {
+                Layer: number;
+                Enabled: boolean;
+                Name: string;
+                Condition_Class: Array<{
+                    And_OR: number;
+                    Condition: Array<{ Data: number; Clone: () => { Data: number } }>;
+                }>;
+            };
             const oldL = oldATC.Layer;
             const L = R_Layer_Convert[oldL];
             //レイヤが削除された場合は属性検索は削除
             if(L !== -1 ){
                 const conDataset = new strCondition_DataSet_Info();
-                conDataset.Enabled = oldATC.Enabled;
-                conDataset.Layer = L;
-                conDataset.Name = oldATC.Name;
-                conDataset.Condition_Class = []; //New List(Of strCondition_Data_Info)
+                const conDatasetTyped = conDataset as unknown as {
+                    Enabled: boolean;
+                    Layer: number;
+                    Name: string;
+                    Condition_Class: unknown[];
+                };
+                conDatasetTyped.Enabled = oldATC.Enabled;
+                conDatasetTyped.Layer = L;
+                conDatasetTyped.Name = oldATC.Name;
+                conDatasetTyped.Condition_Class = []; //New List(Of strCondition_Data_Info)
                 for (let j = 0; j < oldATC.Condition_Class.length; j++) {
                     const dt = new strCondition_Data_Info();
-                    const oldATCC = oldATC.Condition_Class[j] as ConditionClassInfo;
-                    const oldCondition = oldATCC.Condition as ConditionList;
-                    dt.And_OR = oldATCC.And_OR
-                    dt.Condition = [];// New List(Of strCondition_Limitation_Info)
-                    for (let k = 0; k < oldCondition.Count; k++) {
-                        const dtItem = oldCondition[k].Clone() as ConditionDataItem;
+                    const oldATCC = oldATC.Condition_Class[j];
+                    const oldCondition = oldATCC.Condition as unknown as Array<{ Data: number; Clone: () => { Data: number } }>;
+                    const dtTyped = dt as unknown as { And_OR: number; Condition: Array<{ Data: number }> };
+                    dtTyped.And_OR = oldATCC.And_OR
+                    dtTyped.Condition = [];// New List(Of strCondition_Limitation_Info)
+                    for (let k = 0; k < oldCondition.length; k++) {
+                        const dtItem = oldCondition[k].Clone() as { Data: number };
                         const D = R_Conv[oldL][dtItem.Data].Data;
                         if (D !== -1) {
                             dtItem.Data = D;
-                            dt.Condition.push(dtItem);
+                            dtTyped.Condition.push(dtItem);
                         }
                     }
                     //データが無くなった場合でも、コレクションは残す
-                    conDataset.Condition_Class.push(dt);
+                    conDatasetTyped.Condition_Class.push(dt as unknown);
                 }
                 (newAttrData.TotalData.Condition as unknown as unknown[]).push(conDataset as unknown);
             }
@@ -1037,7 +1087,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
             let d = 0;
             if (L !== -1) {
-                const oldLayer = oldAttrData.LayerData[L] as LayerDataInfo;
+                const oldLayer = oldAttrData.LayerData[L] as unknown as LayerDataInfo;
                 d = R_Conv[L][oldLayer.atrData.SelectedIndex].Data;
                 if (d === -1) {
                     d = 0;
@@ -1059,8 +1109,8 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
 
     /**古いシンボル位置・ラベル位置で変更してあるものがあったら新しい箇所にコピーする */
     function Check_Kencode_XY(NewL: number, OldL: number){
-        const newAL = newAttrData.LayerData[NewL] as LayerDataInfo;
-        const oldAL = oldAttrData.LayerData[OldL] as LayerDataInfo;
+        const newAL = newAttrData.LayerData[NewL] as unknown as LayerDataInfo;
+        const oldAL = oldAttrData.LayerData[OldL] as unknown as LayerDataInfo;
         const time = newAL.Time;
         if (newAL.Type === enmLayerType.Normal) {
             if (newAL.MapFileName !== oldAL.MapFileName) {
@@ -1083,27 +1133,42 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
 
         const newALObj = (newAL.atrObject as AtrObjectInfo).atrObjectData;
         const oldALObj = (oldAL.atrObject as AtrObjectInfo).atrObjectData;
-        const mapFileData = newAL.MapFileData as MapFileInfo | undefined;
+        const mapFileData = newAL.MapFileData as unknown as MapFileInfo | undefined;
         for (let i = 0; i < newAttrData.Get_ObjectNum(NewL); i++) {
             const objName = String(newAttrData.Get_KenObjName(NewL, i));
             const oldN = sortoldObjName.get(objName) ?? -1;
             const naa = newALObj[i] as AtrObjectData;
+            const naaObj = naa as unknown as {
+                defPoint: { Equals: (other: unknown) => boolean };
+                CenterPoint: point;
+                Symbol: point;
+                Label: point;
+                Visible: boolean;
+                MeshRect?: rectangle;
+                MeshPoint?: point[];
+                MpObjCode: number;
+            };
             switch (newAL.Type) {
                 case enmLayerType.Normal: {
                     if ((oldN === -1) || (ZahyoOk === false)) {
                         if (mapFileData) {
-                            naa.CenterPoint = mapFileData.Get_Enable_CenterP(naa.MpObjCode, time);
-                            const center = naa.CenterPoint as { Clone: () => point };
-                            naa.Symbol = center.Clone();
-                            naa.Label = center.Clone();
+                            naaObj.CenterPoint = mapFileData.Get_Enable_CenterP(naaObj.MpObjCode, time);
+                            const center = naaObj.CenterPoint as { Clone: () => point };
+                            naaObj.Symbol = center.Clone();
+                            naaObj.Label = center.Clone();
                         }
-                        naa.Visible = true;
+                        naaObj.Visible = true;
                     } else {
-                        const oldALA = oldALObj[oldN] as AtrObjectData;
-                        naa.CenterPoint = (oldALA.CenterPoint as { Clone: () => point }).Clone();
-                        naa.Symbol = (oldALA.Symbol as { Clone: () => point }).Clone();
-                        naa.Label = (oldALA.Label as { Clone: () => point }).Clone();
-                        naa.Visible = oldALA.Visible;
+                        const oldALA = oldALObj[oldN] as unknown as {
+                            CenterPoint: { Clone: () => point };
+                            Symbol: { Clone: () => point };
+                            Label: { Clone: () => point };
+                            Visible: boolean;
+                        };
+                        naaObj.CenterPoint = oldALA.CenterPoint.Clone();
+                        naaObj.Symbol = oldALA.Symbol.Clone();
+                        naaObj.Label = oldALA.Label.Clone();
+                        naaObj.Visible = oldALA.Visible;
                     }
                     break;
                 }
@@ -1111,19 +1176,26 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     if ((oldN === -1) || (ZahyoOk === false)) {
                         // データなしまたは座標不正の場合は処理をスキップ
                     } else {
-                        const oldALA = oldALObj[oldN] as AtrObjectData;
-                        naa.CenterPoint = (oldALA.CenterPoint as { Clone: () => point }).Clone();
-                        naa.Symbol = (oldALA.Symbol as { Clone: () => point }).Clone();
-                        naa.Label = (oldALA.Label as { Clone: () => point }).Clone();
-                        const meshRect = (oldALA.MeshRect as RectLike).Clone();
-                        naa.MeshRect = meshRect;
+                        const oldALA = oldALObj[oldN] as unknown as {
+                            CenterPoint: { Clone: () => point };
+                            Symbol: { Clone: () => point };
+                            Label: { Clone: () => point };
+                            MeshRect: RectLike;
+                            MeshPoint: point[];
+                            Visible: boolean;
+                        };
+                        naaObj.CenterPoint = oldALA.CenterPoint.Clone();
+                        naaObj.Symbol = oldALA.Symbol.Clone();
+                        naaObj.Label = oldALA.Label.Clone();
+                        const meshRect = oldALA.MeshRect.Clone();
+                        naaObj.MeshRect = meshRect;
                         const meshPoints: point[] = [];
-                        const oldMesh = oldALA.MeshPoint as point[];
+                        const oldMesh = oldALA.MeshPoint;
                         for (let idx = 0; idx < oldMesh.length; idx++) {
                             meshPoints.push(oldMesh[idx]);
                         }
-                        naa.MeshPoint = meshPoints;
-                        naa.Visible = oldALA.Visible;
+                        naaObj.MeshPoint = meshPoints;
+                        naaObj.Visible = oldALA.Visible;
                     }
                     break;
                 }
@@ -1131,12 +1203,18 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     if ((oldN === -1) || (ZahyoOk === false)) {
                         // データなしまたは座標不正の場合は処理をスキップ
                     } else {
-                        const oldALA = oldALObj[oldN] as AtrObjectData;
-                        if (naa.defPoint.Equals(oldALA.defPoint)) {
-                            naa.CenterPoint = (oldALA.CenterPoint as { Clone: () => point }).Clone();
-                            naa.Symbol = (oldALA.Symbol as { Clone: () => point }).Clone();
-                            naa.Label = (oldALA.Label as { Clone: () => point }).Clone();
-                            naa.Visible = oldALA.Visible;
+                        const oldALA = oldALObj[oldN] as unknown as {
+                            defPoint: unknown;
+                            CenterPoint: { Clone: () => point };
+                            Symbol: { Clone: () => point };
+                            Label: { Clone: () => point };
+                            Visible: boolean;
+                        };
+                        if (naaObj.defPoint.Equals(oldALA.defPoint)) {
+                            naaObj.CenterPoint = oldALA.CenterPoint.Clone();
+                            naaObj.Symbol = oldALA.Symbol.Clone();
+                            naaObj.Label = oldALA.Label.Clone();
+                            naaObj.Visible = oldALA.Visible;
                         }
                     }
                     break;
@@ -1314,8 +1392,8 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         newAttrData.Check_Vector_Object();
         //ダミー点オブジェクトの記号
         newAttrData.initDummuyPointObjectMark();
-        const newTV = newAttrData.TotalData.ViewStyle as ViewStyleInfo;
-        const oldTV = oldAttrData.TotalData.ViewStyle as ViewStyleInfo;
+        const newTV = newAttrData.TotalData.ViewStyle as unknown as ViewStyleInfo;
+        const oldTV = oldAttrData.TotalData.ViewStyle as unknown as ViewStyleInfo;
         const oldDummy = oldTV.DummyObjectPointMark;
         if (Object.keys(newTV.DummyObjectPointMark).length > 0) {
             const newMapfile = newAttrData.GetMapFileName() as string[];
@@ -1335,10 +1413,11 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             }
         }
 
-        const oldTTS  = oldTV.ScrData;
-        const newTTS=newTV.ScrData;
+        const oldTTS = oldTV.ScrData as unknown as Screen_info;
+        const newTTS = newTV.ScrData as unknown as Screen_info;
         if(oldTTS.MapRectangle.Equals(newTTS.MapRectangle) === true ){
-            newTTS.ScrData = oldTTS.Clone();
+            const newTVTyped = newTV as unknown as { ScrData: Screen_info };
+            newTVTyped.ScrData = oldTTS.Clone() as unknown as Screen_info;
             //地図領域が同じ場合はここまで
             return;
         }
@@ -1381,7 +1460,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 for (let i = 0; i < mlb.Legend_Num; i++) {
                     if ((mlb.LegendXY[i].x < WAKU.left) || (mlb.LegendXY[i].x > WAKU.right) || (
                         mlb.LegendXY[i].y < WAKU.top) || (mlb.LegendXY[i].y > WAKU.bottom)) {
-                        mlb.LegendXY[i].x = MapRect.right + (1 - i) * (WAKU.width as number) / 50;
+                        mlb.LegendXY[i].x = MapRect.right + (1 - i) * WAKU.width() / 50;
                         mlb.LegendXY[i].y = (MapRect.top + MapRect.bottom) / 2 + (1 - i) * (sz.height as number) / 50; // + wy2) / 2 + (1 - i) * h / 50
                     }
                 }
@@ -1441,8 +1520,8 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             if (SyntheticObjF === true) {
                 //時系列集計したレイヤの場合は，変更前のオブジェクトコード・合成オブジェクトデータを設定する
 
-                const oldLayer = oldAttrData.LayerData[OldLay] as LayerDataInfo & { atrObject: AtrObjectInfo };
-                const oldObjData = oldLayer.atrObject.atrObjectData as Array<{
+                const oldLayer = oldAttrData.LayerData[OldLay] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo };
+                const oldObjData = oldLayer.atrObject.atrObjectData as unknown as Array<{
                     Objectstructure: number;
                     MpObjCode: number;
                     Name: string;
@@ -1457,7 +1536,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 for (let j = 0; j < LayYMax; j++) {
                     if (YChange[j] !== -1) {
                         const tx = String(ktGrid.getFixedXSData(i, 1, j));
-                        const UseMap = newAttrData.SetMapFile(Lmapfile) as MapFileInfo;
+                        const UseMap = newAttrData.SetMapFile(Lmapfile) as unknown as MapFileInfo;
                         const gobj = Get_Obj[YChange[j]] as ObjectDataInfo;
                         switch (LType) {
                             case enmLayerType.Mesh:
@@ -1483,12 +1562,12 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     }
                 }
             }
-            newAttrData.Add_one_Layer(ktGrid.getLayerName(i), LType, Lmesh, LSP, Lmapfile, LTime, RefSystem, LayComment, LayYMaxReal, Get_Obj);
+            newAttrData.Add_one_Layer(ktGrid.getLayerName(i), LType, Lmesh, LSP, Lmapfile, LTime, RefSystem, LayComment, LayYMaxReal, Get_Obj as unknown as Parameters<clsAttrData['Add_one_Layer']>[9]);
 
-            const newAt = newAttrData.LayerData[i] as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
+            const newAt = newAttrData.LayerData[i] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
             newAt.Type = LType;
             if (SyntheticObjF === true) {
-                const oldLayer = oldAttrData.LayerData[OldLay] as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
+                const oldLayer = oldAttrData.LayerData[OldLay] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
                 const n = oldLayer.atrObject.NumOfSyntheticObj;
                 newAt.atrObject.NumOfSyntheticObj = n;
                 newAt.atrObject.MPSyntheticObj = [];
@@ -1574,7 +1653,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         for (let i = 0; i < ktGrid.getLayerMax(); i++) {
             const laytype = ktGrid.getLayerData(i, GridLayerData.Type);
             const mpFileName = ktGrid.getLayerData(i, GridLayerData.MapFile);
-            const mpFile = newAttrData.SetMapFile(mpFileName) as MapFileInfo;
+            const mpFile = newAttrData.SetMapFile(mpFileName) as unknown as MapFileInfo;
             const mpn = mfileList.indexOf(mpFileName.toUpperCase());
             if (mpn !== -1) {
                 mfileList[mpn] = "";
@@ -1663,7 +1742,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         const LayerType  = ktGrid.getLayerData(LayerNum, GridLayerData.Type) as LayerTypeValue;
         const SyntheticObjF  = ktGrid.getLayerData(LayerNum, GridLayerData.SyntheticObjF) as boolean;
         const mpFileName = ktGrid.getLayerData(LayerNum, GridLayerData.MapFile) as string;
-        const mpFile = newAttrData.SetMapFile(mpFileName) as MapFileInfo;
+        const mpFile = newAttrData.SetMapFile(mpFileName) as unknown as MapFileInfo;
 
         if (SyntheticObjF === false) {
             let L_Time: strYMD;
@@ -1695,7 +1774,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                                     for (let k2 = 0; k2 < mpFile.MPObj[k].NumOfNameTime; k2++) {
                                         const mnt = mpFile.MPObj[k].NameTimeSTC[k2];
                                         if (mnt.NamesList.indexOf(ObjName) !== -1) {
-                                            em2 += Generic.getTimeList(mpFile.MPObj[k].NameTimeSTC[k2] as unknown as any) + "\n";
+                                            em2 += Generic.getTimeList(mpFile.MPObj[k].NameTimeSTC[k2] as unknown as Parameters<typeof Generic.getTimeList>[0]) + "\n";
                                         }
                                     }
                                 }
@@ -1968,7 +2047,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             mapdata.openJsonMapData(jsonMapData);
             mapdata.Map.FileName = filename;
             if (fname.length > 0) {
-                const z = (newAttrData.SetMapFile("") as MapFileInfo).Map.Zahyo;
+                const z = (newAttrData.SetMapFile("") as unknown as MapFileInfo).Map.Zahyo;
                 const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z as unknown as zahyohenkan, mapdata.Map.Zahyo);
                 if (retv.ok === false) {
                     Generic.alert(undefined, filename + "は既存の読み込み地図ファイルと座標系が異なります。");
@@ -2046,7 +2125,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     
             newAttrData.RemoveMapData(repFname);
             if (newAttrData.GetNumOfMapFile() > 0) {
-                const z = (newAttrData.SetMapFile("") as MapFileInfo).Map.Zahyo;
+                const z = (newAttrData.SetMapFile("") as unknown as MapFileInfo).Map.Zahyo;
                 const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z as unknown as zahyohenkan, mData.Map.Zahyo);
                 if (retv.ok === false) {
                     Generic.alert(undefined, retv.emes);
@@ -2064,7 +2143,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 if (oldFname === repFname) {
                     ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
                     const LTime = ktGrid.getLayerData(i, GridLayerData.Time) as strYMD;
-                    const mapInfo = newAttrData.SetMapFile(filename) as MapFileInfo;
+                    const mapInfo = newAttrData.SetMapFile(filename) as unknown as MapFileInfo;
                     if ((mapInfo.Map.Time_Mode === true) && (LTime.nullFlag() === true)) {
                         ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetYMD(new Date()) as unknown as JsonValue);
                     } else if ((mapInfo.Map.Time_Mode === false) && (LTime.nullFlag() === false)) {

@@ -29,11 +29,13 @@ import {
     enmSoloMode_Number,
     point,
     rectangle,
+    Screen_info,
     size,
     strScale_Attri
 } from './clsAttrData';
 
 const chrLF = CHR_LF;
+type ViewStyleWithScreen = IAttrData['TotalData']['ViewStyle'] & { ScrData: Screen_info };
 
 export class Accessory {
 
@@ -41,7 +43,7 @@ export class Accessory {
     static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean): boolean {
         const state = appState();
 
-        const av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
         const LFont  = av.MapLegend.Base.Font;
         const getAllMapLineKind = state.attrData.Get_AllMapLineKind;
         const getLineKindUsedList = state.attrData.Get_LineKindUsedList;
@@ -130,7 +132,7 @@ export class Accessory {
     static Draw_PointObject(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
-        const av = state.attrData.TotalData.ViewStyle;
+        const av = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
 
         const LFont = av.MapLegend.Base.Font;
         const lineDummyKind = av.MapLegend.Line_DummyKind;
@@ -204,7 +206,8 @@ export class Accessory {
 
         const Agb = state.attrData.TotalData.ViewStyle.AccessoryGroupBox;
         if (Agb.Visible === true) {
-            clsDrawTile.Draw_Tile_RoundBox?.(g, state.attrData.TempData.Accessory_Temp.GroupBox_Rect, Agb.Back, 0, state.attrData.TotalData.ViewStyle.ScrData);
+              const scrData = state.attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info;
+              clsDrawTile.Draw_Tile_RoundBox?.(g, state.attrData.TempData.Accessory_Temp.GroupBox_Rect, Agb.Back, 0, scrData);
         }
     }
     /**経緯線表示 */
@@ -212,11 +215,12 @@ export class Accessory {
         const state = appState();
 
 
-        const av = state.attrData.TotalData.ViewStyle;
-        if (!av.ScrData?.ThreeDMode || !av.LatLonLine_Print || !av.ScrData.getSxSy) {
+        const av = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const avScrData = av.ScrData as unknown as Screen_info;
+        if (!avScrData?.ThreeDMode || !av.LatLonLine_Print || !avScrData.getSxSy) {
             return;
         }
-        if (av.ScrData.ThreeDMode.Set3D_F === true) {
+        if (avScrData.ThreeDMode.Set3D_F === true) {
             return;
         }
         const MapIdoKedoRect = state.attrData.TempData.MapAreaLatLon as rectangle;
@@ -288,8 +292,8 @@ export class Accessory {
                 case enmProjection_Info.prjEckert4: {
                     const P1 = spatial.Get_Converted_XY(new point(Start_Kedo, Ido), av.Zahyo);
                     const P2 = spatial.Get_Converted_XY(new point(End_kedo, Ido), av.Zahyo);
-                    const PC1 = av.ScrData.getSxSy(P1);
-                    const PC2 = av.ScrData.getSxSy(P2);
+                    const PC1 = avScrData.getSxSy(P1);
+                    const PC2 = avScrData.getSxSy(P2);
                     let lpt = av.LatLonLine_Print.LPat
                     if ((i === 0) || (i === idon - 1)) {
                         if ((Ido === End_Ido) || (i === 0)) {
@@ -299,7 +303,7 @@ export class Accessory {
                     if (Ido === 0) {
                         lpt = av.LatLonLine_Print.Equator;
                     }
-                    clsDrawLine.Line?.(g, lpt, PC1, PC2, av.ScrData);
+                    clsDrawLine.Line?.(g, lpt, PC1, PC2, avScrData);
                     break;
                 }
             }
@@ -308,9 +312,9 @@ export class Accessory {
             if (End_Ido === 85) {
                 const P1 = spatial.Get_Converted_XY(new point(Start_Kedo, End_Ido), av.Zahyo);
                 const P2 = spatial.Get_Converted_XY(new point(End_kedo, End_Ido), av.Zahyo);
-                const PC1 = av.ScrData.getSxSy(P1);
-                const PC2 = av.ScrData.getSxSy(P2);
-                clsDrawLine.Line?.(g, av.LatLonLine_Print.OuterPat, PC1, PC2, av.ScrData);
+                const PC1 = avScrData.getSxSy(P1);
+                const PC2 = avScrData.getSxSy(P2);
+                clsDrawLine.Line?.(g, av.LatLonLine_Print.OuterPat, PC1, PC2, avScrData);
             }
         }
 
@@ -341,10 +345,10 @@ export class Accessory {
                 case enmProjection_Info.prjEckert4: {
                     const P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
                     const P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
-                    const PC1 = av.ScrData.getSxSy(P1);
-                    const PC2 = av.ScrData.getSxSy(P2);
+                    const PC1 = avScrData.getSxSy(P1);
+                    const PC2 = avScrData.getSxSy(P2);
                     if ((PC1.x === PC2.x) && (End_Ido * Start_Ido >= 0)) {
-                        clsDrawLine.Line?.(g, av.LatLonLine_Print.LPat, PC1, PC2, av.ScrData);
+                        clsDrawLine.Line?.(g, av.LatLonLine_Print.LPat, PC1, PC2, avScrData);
                     } else if (End_Ido * Start_Ido >= 0) {
                         //赤道を挟まない場合
                         const w = Math.abs(PC2.x - PC1.x);
@@ -352,25 +356,25 @@ export class Accessory {
                         const pxy: point[] = [];
                         for (let j = 0; j <= w; j++) {
                             const PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / w)), av.Zahyo);
-                            pxy.push(av.ScrData.getSxSy(PP1));
+                            pxy.push(avScrData.getSxSy(PP1));
                         }
-                        clsDrawLine.Line?.(g, lpt, pxy, av.ScrData);
+                        clsDrawLine.Line?.(g, lpt, pxy, avScrData);
                     } else {
                         //赤道を挟む場合
                         const P3 = spatial.Get_Converted_XY(new point(Kedo, 0), av.Zahyo);
-                        const PC3 = av.ScrData.getSxSy(P3);
+                        const PC3 = avScrData.getSxSy(P3);
                         const w = Math.abs(PC1.x - PC3.x);
                         const w2 = Math.abs(PC2.x - PC3.x);
                         if (w + w2 === 0) {
-                            clsDrawLine.Line?.(g, lpt, [PC1, PC2], av.ScrData);
+                            clsDrawLine.Line?.(g, lpt, [PC1, PC2], avScrData);
                         } else {
                             const H = Math.abs(Start_Ido) + End_Ido
                             const pxy: point[] = [];
                             for (let j = 0; j <= w + w2; j++) {
                                 const PP1 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido + H * (j / (w + w2))), av.Zahyo);
-                                pxy.push(av.ScrData.getSxSy(PP1));
+                                pxy.push(avScrData.getSxSy(PP1));
                             }
-                            clsDrawLine.Line?.(g, lpt, pxy, av.ScrData);
+                            clsDrawLine.Line?.(g, lpt, pxy, avScrData);
                         }
                     }
                     break;
@@ -384,15 +388,15 @@ export class Accessory {
                     if (av.Zahyo.Projection === enmProjection_Info.prjMercator) {
                         const P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
                         const P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
-                        PC1 = av.ScrData.getSxSy(P1);
-                        PC2 = av.ScrData.getSxSy(P2);
+                        PC1 = avScrData.getSxSy(P1);
+                        PC2 = avScrData.getSxSy(P2);
                     } else {
                         const P1 = spatial.Get_Converted_XY(new point(Kedo, End_Ido), av.Zahyo);
                         const P2 = spatial.Get_Converted_XY(new point(Kedo, Start_Ido), av.Zahyo);
-                        PC1 = av.ScrData.getSxSy(P1);
-                        PC2 = av.ScrData.getSxSy(P2);
+                        PC1 = avScrData.getSxSy(P1);
+                        PC2 = avScrData.getSxSy(P2);
                     }
-                    clsDrawLine.Line?.(g, lpt, PC1, PC2, av.ScrData);
+                    clsDrawLine.Line?.(g, lpt, PC1, PC2, avScrData);
                     break;
                 }
             }
@@ -403,19 +407,20 @@ export class Accessory {
     static Legend_print(g: CanvasRenderingContext2D, legendNo: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[legendNo];
-        const vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const scrData = vs.ScrData as unknown as Screen_info;
         if ((vs.MapLegend.Base.Visible === false) && (
             LegendW.LineKind_Flag === false) && (LegendW.PointObject_Flag === false)) {
             return;
         }
         let ALP;
         const P_Legend = vs.MapLegend;
-        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
+        if (scrData.Accessory_Base === enmBasePosition.Screen) {
             const p = P_Legend.Base.LegendXY[legendNo];
-            ALP = vs.ScrData.getSxSy(vs.ScrData.getSRXYfromRatio(p));
+            ALP = scrData.getSxSy(scrData.getSRXYfromRatio(p));
         } else {
             const p = P_Legend.Base.LegendXY[legendNo];
-            ALP = vs.ScrData.getSxSy(p);
+            ALP = scrData.getSxSy(p);
         }
         const LFont = P_Legend.Base.Font;
 
@@ -500,7 +505,8 @@ export class Accessory {
                                 const PushMisF = vs.Missing_Data.Print_Flag;
                                 //等値線モードの場合は欠損値の凡例を表示しない
                                 vs.Missing_Data.Print_Flag = false;
-                                switch (state.attrData.LayerData[Layn2].atrData.Data[datn2].SoloModeViewSettings.ContourMD.Interval_Mode) {
+                                const contourMD = state.attrData.LayerData[Layn2].atrData.Data[datn2].SoloModeViewSettings.ContourMD as { Interval_Mode: number };
+                                switch (contourMD.Interval_Mode) {
                                     case enmContourIntervalMode.ClassPaint:
                                         screen_in = this.Draw_ClassPaintHatchMode(g, ALP, BoxSize, UTX, Layn2, datn2, SizeGetOnlyF);
                                         break;
@@ -601,7 +607,7 @@ export class Accessory {
             }
             case (enmTotalMode_Number.OverLayMode): {
                 const ov = state.attrData.TotalData.TotalMode.OverLay;
-                nt = ov.DataSet[ov.SelectedIndex].Note;
+                nt = String(ov.DataSet[ov.SelectedIndex].Note);
                 break;
             }
             case (enmTotalMode_Number.SeriesMode): {
@@ -613,14 +619,15 @@ export class Accessory {
             return { note:"",rect:new rectangle(0,0,0,0)}
         }
         const P_Note= state.attrData.TotalData.ViewStyle.DataNote.Clone();
-        const vs = state.attrData.TotalData.ViewStyle;
-        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
-            P_Note.Position = vs.ScrData.getSRXYfromRatio(P_Note.Position);
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const vsScrData = vs.ScrData as unknown as Screen_info;
+        if (vsScrData.Accessory_Base === enmBasePosition.Screen) {
+            P_Note.Position = vsScrData.getSRXYfromRatio(P_Note.Position);
         }
         const atx = nt;
         const xw = state.attrData.Get_Length_On_Screen(P_Note.MaxWidth);
 
-        const txp = clsDraw.TextCut_for_print(g, atx, P_Note.Font, true, xw, vs.ScrData);
+        const txp = clsDraw.TextCut_for_print(g, atx, P_Note.Font, true, xw, vsScrData);
         const d_an2 = txp.Out_Text;
         let yw = txp.Height;
         const RealW = txp.RealWidth;
@@ -629,7 +636,7 @@ export class Accessory {
             outTx += chrLF + d_an2[i];
         }
         yw *= d_an2.length;
-        const tP = state.attrData.TotalData.ViewStyle.ScrData.getSxSy(P_Note.Position);
+        const tP = vsScrData.getSxSy(P_Note.Position);
         const Rect = new rectangle(new point(tP.x - RealW / 2, tP.y - yw / 2), new size(RealW, yw));
         return {
             note: outTx, rect: Rect
@@ -640,10 +647,11 @@ export class Accessory {
     static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
-        const vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const vsScrData = vs.ScrData as unknown as Screen_info;
         const LFont = vs.MapLegend.Base.Font;
         const TH = state.attrData.Get_Length_On_Screen(LFont.Size);
-        g.font = LFont.toContextFont(vs.ScrData).font;
+        g.font = LFont.toContextFont(vsScrData).font;
 
         const EN_TP = clsBase.Tile();
 
@@ -718,7 +726,7 @@ export class Accessory {
                     const a = gData.Data[i].DataNumber;
                     const fp = ALP.Clone();
                     fp.offset(-Xsmin, size2.height + TH / 2 + UnderH / 2);
-                    appState().clsDrawMarkFan?.Draw_Fan?.(g, fp, rmaxw, sr, Er, gData.En_Obi.BoaderLine as unknown as Tile_Property, gData.Data[i].Tile, state.attrData.TotalData.ViewStyle.ScrData);
+                    appState().clsDrawMarkFan?.Draw_Fan?.(g, fp, rmaxw, sr, Er, gData.En_Obi.BoaderLine as unknown as Tile_Property, gData.Data[i].Tile, vsScrData);
                     const p = WordP[i].Clone();
                     p.offset(ALP.x - Xsmin, ALP.y + size2.height + TH / 2 + UnderH / 2);
                     state.attrData.Draw_Print(g, state.attrData.Get_DataTitle(Layn2, a, false), p, LFont, xposi[i], yposi[i]);
@@ -753,10 +761,11 @@ export class Accessory {
     /**グラフ表示モードの円・帯グラフ */
     static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
-        const vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const vsScrData = vs.ScrData as unknown as Screen_info;
         const LFont = vs.MapLegend.Base.Font;
         const TH = state.attrData.Get_Length_On_Screen(LFont.Size);
-        g.font = LFont.toContextFont(vs.ScrData).font;
+        g.font = LFont.toContextFont(vsScrData).font;
 
         if (vs.MapLegend.Base.Visible === false) {
             return false;
@@ -855,7 +864,7 @@ export class Accessory {
                         if (rep === 1) {
                             state.attrData.Draw_Print(g, state.attrData.Get_DataTitle(Layn2, a, false),
                                 new point(ALP.x + TH * 2, ALP.y + size2.height), LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
-                            appState().clsDrawMarkFan?.Draw_Fan?.(g, new point(ALP.x, ALP.y + size2.height + TH / 2), TH * 1.5, 1.2, 1.9, gData.En_Obi.BoaderLine as unknown as Tile_Property, gData.Data[i].Tile, state.attrData.TotalData.ViewStyle.ScrData);
+                            appState().clsDrawMarkFan?.Draw_Fan?.(g, new point(ALP.x, ALP.y + size2.height + TH / 2), TH * 1.5, 1.2, 1.9, gData.En_Obi.BoaderLine as unknown as Tile_Property, gData.Data[i].Tile, vsScrData);
                         }
                         size2.height += TH * 1.2;
                         break;
@@ -902,7 +911,7 @@ export class Accessory {
         if (state.attrData.TotalData.ViewStyle.MapLegend.Base.Visible === false) {
             return false
         }
-        const vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
         const LFont = vs.MapLegend.Base.Font.Clone();
         const TH = state.attrData.Get_Length_On_Screen(LFont.Size);
         g.font = LFont.toContextFont(vs.ScrData).font;
@@ -1047,7 +1056,7 @@ export class Accessory {
     static Draw_MarkBlockMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
-        const vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
         const PData  = state.attrData.LayerData[Layn2].atrData.Data[datn2];
         const MkCommon  = PData.SoloModeViewSettings.MarkCommon;
 
@@ -2280,10 +2289,10 @@ export class Accessory {
 
         let sujiw2 = 0;
         if ((CMethod === enmClassMode_Meshod.Separated) || (PData.DataType === enmAttDataType.Category)) {
-            let fu
+            let fu = ""
             for (let i = 0; i < vn; i++) {
                 if (PData.DataType === enmAttDataType.Category) {
-                    fu = Class_div[i].Cat_Name;
+                    fu = String(Class_div[i].Cat_Name);
                 } else {
                     fu = this.Get_SeparateClassWords( PData.SoloModeViewSettings.Class_Div, i, Div_Num, LL, RR);
                 }
@@ -2377,13 +2386,14 @@ export class Accessory {
             }
         }
         const P_Title = vs.MapTitle.Clone();
-        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
-            P_Title.Position = vs.ScrData.getSRXYfromRatio(P_Title.Position);
+        const vsScrData = vs.ScrData as unknown as Screen_info;
+        if (vsScrData.Accessory_Base === enmBasePosition.Screen) {
+            P_Title.Position = vsScrData.getSRXYfromRatio(P_Title.Position);
         }
         const atx = tt;
         const xw = state.attrData.Get_Length_On_Screen(P_Title.MaxWidth);
         
-        const txp  = clsDraw.TextCut_for_print(g, atx, P_Title.Font, true, xw,vs.ScrData);
+        const txp  = clsDraw.TextCut_for_print(g, atx, P_Title.Font, true, xw, vsScrData);
         const d_an2 = txp.Out_Text;
         let yw = txp.Height;
         const RealW = txp.RealWidth;
@@ -2395,7 +2405,7 @@ export class Accessory {
             outTx += chrLF + d_an2[i];
         }
         yw *= d_an2.length;
-        const tP = vs.ScrData.getSxSy(P_Title.Position);
+        const tP = vsScrData.getSxSy(P_Title.Position);
         const Rect = new rectangle(new point(tP.x - RealW / 2, tP.y - yw / 2), new size(RealW, yw));
         return {
             title: outTx, rect: Rect
@@ -2406,14 +2416,15 @@ export class Accessory {
     static Compass_print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
-        const vs = state.attrData.TotalData.ViewStyle;
-        const threed  = vs.ScrData.ThreeDMode;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const vsScrData = vs.ScrData as unknown as Screen_info;
+        const threed  = vsScrData.ThreeDMode;
         if ((vs.AttMapCompass.Visible ===false)||(threed.Set3D_F ===true)&&((threed.Pitch !== 0)||(threed.Head !==0)) ){
             return;
         }
         const P_Comp = vs.AttMapCompass.Clone();
-        if(vs.ScrData.Accessory_Base === enmBasePosition.Screen ){
-            P_Comp.Position = vs.ScrData.getSRXYfromRatio(P_Comp.Position);
+        if(vsScrData.Accessory_Base === enmBasePosition.Screen ){
+            P_Comp.Position = vsScrData.getSRXYfromRatio(P_Comp.Position);
         }
 
         const fmap = state.attrData.SetMapFile("");
@@ -2423,7 +2434,7 @@ export class Accessory {
         }
         P_Comp.Mark.WordFont.Kakudo = CompD;
         const r = state.attrData.Radius(P_Comp.Mark.WordFont.Size, 1, 1);
-        const centerP = state.attrData.TotalData.ViewStyle.ScrData.getSxSy(P_Comp.Position);
+        const centerP = vsScrData.getSxSy(P_Comp.Position);
         const checkRect = new rectangle(new point(centerP.x - r, centerP.y - r), new size(r * 2, r * 2));
         if(state.attrData.Check_Screen_In(checkRect) ===true ){
             state.attrData.Draw_Mark(g, centerP, r, P_Comp.Mark);
@@ -2540,14 +2551,15 @@ export class Accessory {
             zeroW: 0, ScaleLength: 0, ScaleMaxW: 0,
             rect: new rectangle()
         }
-        const vs =  state.attrData.TotalData.ViewStyle;
-        const threed = vs.ScrData.ThreeDMode;
+        const vs =  state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const vsScrData = vs.ScrData as unknown as Screen_info;
+        const threed = vsScrData.ThreeDMode;
         if ((vs.MapScale.Visible === false) || ((threed.Set3D_F === true) && ((threed.Pitch !== 0) || (threed.Head !== 0)))) {
             return retV;
         } 
         const P_Scl = vs.MapScale.Clone();
-        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
-            P_Scl.Position = vs.ScrData.getSRXYfromRatio(P_Scl.Position);
+        if (vsScrData.Accessory_Base === enmBasePosition.Screen) {
+            P_Scl.Position = vsScrData.getSRXYfromRatio(P_Scl.Position);
 
         }
         const Map = state.attrData.SetMapFile("").Map;
@@ -2556,7 +2568,7 @@ export class Accessory {
         let SCM = 0;
         let MapScaleBairitu;
         if (P_Scl.BarAuto === true) {
-            const xw = vs.ScrData.ScrView.width();
+            const xw = vsScrData.ScrView.width();
             MapScaleBairitu = spatial.Get_Scale_Baititu_IdoKedo(P_Scl.Position, Map.Zahyo);
             MapScaleBairitu /= Generic.Convert_ScaleUnit(enmScaleUnit.kilometer, P_Scl.Unit);
             let i = 5;
@@ -2616,17 +2628,17 @@ export class Accessory {
             return retV;
         }
 
-        retV.sxy = vs.ScrData.getSxSy(P_Scl.Position);
+        retV.sxy = vsScrData.getSxSy(P_Scl.Position);
         retV.scaleMax = SCM;
         if (Map.Zahyo.Mode === enmZahyo_mode_info.Zahyo_No_Mode) {
-            retV.ScaleLength = SCM * Map.SCL * MapScaleBairitu * vs.ScrData.ScreenMG.Mul;
+            retV.ScaleLength = SCM * Map.SCL * MapScaleBairitu * vsScrData.ScreenMG.Mul;
         } else {
-            retV.ScaleLength = SCM * MapScaleBairitu * vs.ScrData.ScreenMG.Mul;
+            retV.ScaleLength = SCM * MapScaleBairitu * vsScrData.ScreenMG.Mul;
         }
 
         const H = state.attrData.Get_Length_On_Screen(P_Scl.Font.Size)
         if (H > 0) {
-            g.font = P_Scl.Font.toContextFont(vs.ScrData).font;
+            g.font = P_Scl.Font.toContextFont(vsScrData).font;
             retV.zeroW = g.measureText("0").width / 2;
             retV.ScaleMaxW = g.measureText(String(retV.scaleMax)).width / 2;
             const ww2 = g.measureText(Generic.getScaleUnitStrings(undefined, P_Scl.Unit)).width;
@@ -2643,14 +2655,15 @@ export class Accessory {
     static GetCompassRect(_g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
 
-        const vs = state.attrData.TotalData.ViewStyle;
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const vsScrData = vs.ScrData as unknown as Screen_info;
         const P_Comp = vs.AttMapCompass;
         let pp = P_Comp.Position.Clone();
-        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
-            pp = vs.ScrData.getSRXYfromRatio(P_Comp.Position);
+        if (vsScrData.Accessory_Base === enmBasePosition.Screen) {
+            pp = vsScrData.getSRXYfromRatio(P_Comp.Position);
         }
         const r = state.attrData.Radius(P_Comp.Mark.WordFont.Size, 1, 1);
-        const cp = vs.ScrData.getSxSy(pp);
+        const cp = vsScrData.getSxSy(pp);
         cp.offset(-r, -r);
         return new rectangle(cp, new size(r * 2, r * 2));
     }
