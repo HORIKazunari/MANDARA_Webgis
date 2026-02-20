@@ -137,7 +137,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         if (mousePointingSituation !== mousePointingSituations.up) {
             return;
         }
-        const vs = state.attrData.TotalData.ViewStyle.ScrData.ScrView;
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const vs = scrData.ScrView;
         const w: number = vs.width();
         const h: number = vs.height();
         switch (keyCode) {
@@ -193,7 +194,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     }
                 }
                 const ratio = 1 - bairitsu;
-                expansionMap(state.attrData.TotalData.ViewStyle.ScrData.getSXSY_Margin().centerP(), ratio);             
+                expansionMap(scrData.getSXSY_Margin().centerP(), ratio);
                 break;
             }
         }
@@ -237,8 +238,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             }
         }
         const p = Generic.getCanvasXY(event as unknown as MouseEvent);
-        const vs = state.attrData.TotalData.ViewStyle;
-        const MapPos = vs.ScrData.getSRXY(p);
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const MapPos = scrData.getSRXY(p);
         switch (mousePointingSituation) {
             case mousePointingSituations.up: {
                 //ボタンを押さずに移動中
@@ -246,7 +247,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     case enmPrintMouseMode.od:
                     case enmPrintMouseMode.Normal: {
                         let mCursorF = false;
-                        if (state.attrData.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F === false) {
+                        if (scrData.ThreeDMode.Set3D_F === false) {
                             if (state.propertyWindow.fixed === false) {
                                 LocationSearch(p);
                             } else {
@@ -296,7 +297,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 //マウスダウンとドラッグ開始後
                 if (p.Equals(mousePreviousPosition) === false) {
                     const vs = state.attrData.TotalData.ViewStyle;
-                    const MouseDownSRxy = vs.ScrData.getSRXY(mouseDownPosition);
+                    const scrDataDrag = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+                    const MouseDownSRxy = scrDataDrag.getSRXY(mouseDownPosition);
                     const movePx = new point(p.x - mouseDownPosition.x, p.y - mouseDownPosition.y);
                     switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                         case enmPrintMouseMode.RangePrint: {
@@ -308,10 +310,10 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                             g.putImageData(state.attrData.TempData.frmPrint_Temp.image, 0, 0);
 
                             const stp=new point(0, 0);
-                            const smode = (vs.ScrData.Accessory_Base === enmBasePosition.Screen);
+                            const smode = (scrDataDrag.Accessory_Base === enmBasePosition.Screen);
                             if (smode) {
-                                stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width();
-                                stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height();
+                                stp.x = movePx.x / scrDataDrag.MapScreen_Scale.width();
+                                stp.y = movePx.y / scrDataDrag.MapScreen_Scale.height();
                             } else {
                                 stp.x = MapPos.x - MouseDownSRxy.x;
                                 stp.y = MapPos.y - MouseDownSRxy.y;
@@ -374,7 +376,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                     if (smode) {
                                         let atg = state.attrData.TempData.Accessory_Temp.GroupBox_Rect;
                                         let rcp = atg.centerP();
-                                        rcp = spatial.checkAndModifyPointInRect(rcp, new rectangle(0, 0, vs.ScrData.frmPrint_FormSize.width(), vs.ScrData.frmPrint_FormSize.height()));
+                                        rcp = spatial.checkAndModifyPointInRect(rcp, new rectangle(0, 0, scrDataDrag.frmPrint_FormSize.width(), scrDataDrag.frmPrint_FormSize.height()));
                                         atg = new rectangle(rcp.x - atg.width() / 2, rcp.y - atg.height() / 2, atg.width(), atg.height());
                                     }
                                     Accessory.AccGroupBoxDraw(g);
@@ -423,8 +425,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
              event = (e as TouchEvent).changedTouches[0];
         }
         const vs = state.attrData.TotalData.ViewStyle;
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const mouseUpPosition = Generic.getCanvasXY(event as unknown as MouseEvent);
-        const mouseUpSRXT = vs.ScrData.getSRXY(mouseUpPosition);
+        const mouseUpSRXT = scrData.getSRXY(mouseUpPosition);
 
         if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.LabelPoint )){
         //シンボル位置／ラベル位置移動
@@ -432,7 +435,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 // 右クリックの場合は何もしない
             } else {
                 const tmp = state.attrData.TempData;
-                const P = vs.ScrData.getSRXY(mouseDownPosition);
+                const P = scrData.getSRXY(mouseDownPosition);
 
                 switch (tmp.PrintMouseMode) {
                     case enmPrintMouseMode.SymbolPoint: {
@@ -456,7 +459,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
 
         if (mousePointingSituation === mousePointingSituations.downAndMove) {
-            const StartP = vs.ScrData.getSRXY(mouseDownPosition);
+            const StartP = scrData.getSRXY(mouseDownPosition);
             const EndP = mouseUpSRXT;
             const mapstep = new point(EndP.x - StartP.x, EndP.y - StartP.y);
             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
@@ -467,12 +470,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     if (state.attrData.TempData.frmPrint_Temp.mouseAccesoryDragType === Check_Acc_Result.GroupBox) {
                         //グループボックスのドラッグの場合
                         let stp = new point(0, 0);
-                        if (vs.ScrData.Accessory_Base === enmBasePosition.Screen) {
+                        if (scrData.Accessory_Base === enmBasePosition.Screen) {
 
                             const gr = state.attrData.TempData.Accessory_Temp;
                             const movePx = new point(gr.GroupBox_Rect.left - gr.OriginalGroupBoxRect.left, gr.GroupBox_Rect.top - gr.OriginalGroupBoxRect.top);
-                            stp.x = movePx.x / vs.ScrData.MapScreen_Scale.width();
-                            stp.y = movePx.y / vs.ScrData.MapScreen_Scale.height();
+                            stp.x = movePx.x / scrData.MapScreen_Scale.width();
+                            stp.y = movePx.y / scrData.MapScreen_Scale.height();
                         } else {
                             stp = mapstep;
                         }
@@ -510,7 +513,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     break;
                 }
                 case enmPrintMouseMode.Normal: {
-                    vs.ScrData.ScrView.offset(StartP.x - EndP.x, StartP.y - EndP.y);
+                    scrData.ScrView.offset(StartP.x - EndP.x, StartP.y - EndP.y);
                     callback(elem, state.attrData);
                     break;
                 }
@@ -533,8 +536,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                 const retV = Check_Acc(mouseUpPosition);
                                 if (retV.type === Check_Acc_Result.NoAccessory) {
                                     const av = state.attrData.TotalData.ViewStyle;
+                                    const avScrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
                                     const mnuAccPopupVisible: MenuItem[] = [];
-                                    if (av.ScrData.ThreeDMode.Set3D_F === false) {
+                                    if (avScrData.ThreeDMode.Set3D_F === false) {
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
                                     }
@@ -593,7 +597,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         mnuAccPopupVisible.push(pmnu);
                                         function showWebMap(data: MenuItem/*, e?: Event*/) {
                                             const state = appState();
-                                            const p = vs.ScrData.getSRXY(mouseDownPosition);
+                                            const p = scrData.getSRXY(mouseDownPosition);
                                             const xy1=spatial.Get_Reverse_XY(p,state.attrData.TotalData.ViewStyle.Zahyo);   
                                             const xy=spatial.Get_World_IdoKedo(xy1,state.attrData.TotalData.ViewStyle.Zahyo);   
                                             let url="";
@@ -916,7 +920,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
 
     function expansionMap(cpos: point, ratio: number){
         const state = appState();
-        const sd = state.attrData.TotalData.ViewStyle.ScrData;
+        const sd = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const sv = sd.ScrView;
         const Pos = sd.getSRXY(cpos);
         const h1 = Pos.y - sv.top;
@@ -925,7 +929,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         const w2 = sv.right - Pos.x;
         const rec = new rectangle(Pos.x - w1 / ratio, Pos.x + w2 / ratio, Pos.y - h1 / ratio, Pos.y + h2 / ratio);
         if (Generic.Check_New_ScrView(sd.MapRectangle, rec) === true) {
-            state.attrData.TotalData.ViewStyle.ScrData.ScrView = rec;
+            sd.ScrView = rec;
             callback(elem);
             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                 case enmPrintMouseMode.Fig: {
@@ -968,7 +972,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
         const DestP = al.atrObject.atrObjectData[ObNum].CenterPoint;
         const poxy = Generic.Get_OD_Spline_Point(P, OriginP, DestP);
-        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData as unknown as AttrScreenInfo);
+        const pxy = clsSpline.Spline_Get(0, 4, poxy, 0.1, state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo);
         const Cate  = state.attrData.Get_Categoly(Layernum, DataNum, ObNum);
         const O_LPat  = al.atrData.Data[DataNum].SoloModeViewSettings.Class_Div[Cate].ODLinePat.Clone();
         O_LPat.Color=clsBase.ColorRed();
@@ -979,7 +983,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     /**線モードのラインの移動チェック */
     function LocationODSearch(ScreenP: point) {
         const state = appState();
-        const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const MapP = scrData.getSRXY(ScreenP);
         const odc = Near_OD(MapP);
         if (odc !== -1) {
             const tx4 = "OD" + state.attrData.Get_KenObjName(state.attrData.TotalData.LV1.SelectedLayer, odc);
@@ -1083,7 +1088,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                             D = Math.min(d1, d2);
                             D = Math.min(D, d3);
                         }
-                        D *= state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
+                        D *= (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).ScreenMG.Mul;
                         if (D < mind) {
                             mind = D;
                             Near_Obj = i;
@@ -1100,7 +1105,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     /**等値線の位置とカーソルチェック */
     function LocationContourSearch(ScreenP: point) {
         const state = appState();
-        const MapP = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const MapP = scrData.getSRXY(ScreenP);
         const contourTemp = state.attrData.TempData.ContourMode_Temp as ContourModeTemp | undefined;
         let tx4 = ""
         if (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.Normal) {
@@ -1174,7 +1180,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 if ((atco.Flag === true) && (spatial.Check_PointInBox(MapP, 0, atco.Circumscribed_Rectangle) === true)) {
                     for (let j = atco.PointStac; j <= atco.PointStac + atco.NumOfPoint - 2; j++) {
                         const retV = spatial.Distance_PointLine(MapP.x,MapP.y, atc.Contour_Point[j].x,atc.Contour_Point[j].y, atc.Contour_Point[j + 1].x, atc.Contour_Point[j + 1].y ) ;
-                        const screenMul = state.attrData.TotalData.ViewStyle.ScrData.ScreenMG?.Mul ?? 1;
+                        const screenMul = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).ScreenMG?.Mul ?? 1;
                         const d = retV.distance * screenMul;
                         if (d < mind) {
                             mind = d;
@@ -1190,7 +1196,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     /**マウス位置の情報、カーソルを＋に変える場合trueを返す*/
     function LocationSearch(ScreenP: point) {
         const state = appState();
-        const MapP  = state.attrData.TotalData.ViewStyle.ScrData.getSRXY(ScreenP);
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const MapP  = scrData.getSRXY(ScreenP);
         picMapMouseMovePointInformation(ScreenP);
         let L_Print_Mode_Total: number;
         let L_Layer: number;
@@ -1444,7 +1451,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 }
                 default: {
                     let retV;
-                    const mind = 10 / state.attrData.TotalData.ViewStyle.ScrData.ScreenMG.Mul;
+                    const mind = 10 / (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).ScreenMG.Mul;
                     if (state.attrData.LayerData[Layernum].Shape === enmShape.PointShape) {
                         retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetNearPointNumber(MapP.x, MapP.y, mind);
                     } else {
@@ -1476,7 +1483,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     function picMapMouseMovePointInformation(MousePosition: point) {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
-        const originalP = vs.ScrData.getSRXY(MousePosition);
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const originalP = scrData.getSRXY(MousePosition);
         if(spatial.Check_PsitionReverse_Enable(originalP, vs.Zahyo)===true){
             const P  = spatial.Get_Reverse_XY(originalP, vs.Zahyo) as point;
             const PSt  = Generic.Get_PositionCoordinate_Strings(P, vs.Zahyo);
@@ -1489,7 +1497,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     function Check_Acc(ScreenP: point) {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
-        const threed = vs.ScrData.ThreeDMode;
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const threed = scrData.ThreeDMode;
         const ata = state.attrData.TempData.Accessory_Temp;
         if (vs.MapTitle.Visible === true) {
             if (spatial.Check_PointInBox(ScreenP, vs.MapTitle.Font.Kakudo, ata.MapTitle_Rect) === true) {
@@ -1498,14 +1507,14 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             }
         }
         //------方位
-        if ((vs.AttMapCompass.Visible === true) && ((vs.ScrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
+        if ((vs.AttMapCompass.Visible === true) && ((scrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
             if (spatial.Check_PointInBox(ScreenP, 0, ata.MapCompass_Rect) === true) {
                 ata.Push_CompassXY = vs.AttMapCompass.Position.Clone();
                 return { type: Check_Acc_Result.Compass, rect: ata.MapCompass_Rect };
             }
         }
         //------スケール
-        if ((vs.MapScale.Visible === true) && ((vs.ScrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
+        if ((vs.MapScale.Visible === true) && ((scrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
             if (spatial.Check_PointInBox(ScreenP, 0, ata.MapScale_Rect) === true) {
                 ata.Push_ScaleXY = vs.MapScale.Position.Clone();
                 return { type: Check_Acc_Result.Scale, rect: ata.MapScale_Rect };
@@ -1530,7 +1539,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             }
         }
         //------グループボックス
-        if ((vs.AccessoryGroupBox.Visible === true) && (vs.ScrData.ThreeDMode.Set3D_F === false)) {
+        if ((vs.AccessoryGroupBox.Visible === true) && (scrData.ThreeDMode.Set3D_F === false)) {
             const Acc_Rect = ata.GroupBox_Rect.Clone();
             const pad = state.attrData.Get_PaddingPixcel(vs.AccessoryGroupBox.Back);
             Acc_Rect.inflate(pad, pad);
@@ -1555,9 +1564,10 @@ class frmPrint {
     //画像ファイルに保存
     static savePNG(WindowOutFlag = false) {
         const state = appState();
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const tilecanvas = document.createElement("canvas");
-        tilecanvas.width = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.width();
-        tilecanvas.height = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize.height();
+        tilecanvas.width = scrData.frmPrint_FormSize.width();
+        tilecanvas.height = scrData.frmPrint_FormSize.height();
         tilecanvas.style.vivility = false;
         const tg = tilecanvas.getContext('2d');
         if (!tg) {
@@ -1881,7 +1891,8 @@ class frmPrint {
 
     static set_frmPrint_Window_Size() {
         const state = appState();
-        const FpicRect  = state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize;
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        const FpicRect  = scrData.frmPrint_FormSize;
         const marginSide = state.scrMargin.side ?? 0;
         const marginTop = state.scrMargin.top ?? 0;
         const marginBottom = state.scrMargin.bottom ?? 0;
@@ -1909,7 +1920,7 @@ class frmPrint {
         state.frmPrint.picMap.height = mapDIV.style.height.removePx() - marginTop - marginBottom;
         const p = new point(state.frmPrint.style.left.removePx() + state.scrMargin.side, state.frmPrint.style.top.removePx() + state.scrMargin.top);
         const s = new size(state.frmPrint.picMap.width, state.frmPrint.picMap.height);
-        state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
+        (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).frmPrint_FormSize = new rectangle(p, s);
         Generic.moveInnerElement(state.frmPrint as unknown as HTMLElement);
         if(state.frmPrint.maxSizeFlag===false){
             state.frmPrint.oldpos=new rectangle(new point(state.frmPrint.style.left.removePx(),state.frmPrint.style.top.removePx()),
@@ -1937,7 +1948,7 @@ class frmPrint {
     
         const p = new point(ScreenW / 2 - psw / 2, ScreenH / 2 - psh / 2);
         const s = new size(psw, psh);
-        state.attrData.TotalData.ViewStyle.ScrData.frmPrint_FormSize = new rectangle(p, s);
+        (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).frmPrint_FormSize = new rectangle(p, s);
         state.frmPrint.resetMaxButton?.(true);
         if (state.frmPrint.label1) state.frmPrint.label1.innerHTML="";
         if (state.frmPrint.label2) state.frmPrint.label2.innerHTML="";
@@ -1986,7 +1997,8 @@ class frmPrint {
     //全体表示ボタン
     static wholeMapShow() {
         const state = appState();
-        state.attrData.TotalData.ViewStyle.ScrData.ScrView = state.attrData.TotalData.ViewStyle.ScrData.MapRectangle.Clone();
+        const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
+        scrData.ScrView = scrData.MapRectangle.Clone();
         clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
@@ -2030,7 +2042,7 @@ class frmPrint {
             switch (sp) {
                 case enmShape.PointShape: {
                     const CP = state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Symbol;
-                    const OP = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(CP);
+                    const OP = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(CP);
                     const Mk = clsBase.Mark();
                     Mk.Tile.Color = new colorRGBA(255, 0, 150, 150);
                     state.attrData.Draw_Mark(g, OP, 10, Mk)
@@ -2046,7 +2058,7 @@ class frmPrint {
                     if (state.attrData.LayerData[Layernum].Type === enmLayerType.Mesh) {
                         const meshP = Generic.ArrayClone(state.attrData.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
                         meshP[4] = meshP[0].Clone();
-                        const pxy = state.attrData.TotalData.ViewStyle.ScrData.Get_SxSy_With_3D(5, meshP, false);
+                        const pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(5, meshP, false);
                         drawLines(g, pxy, 3, new colorRGBA(255, 0, 150, 200));
                     } else {
                         const getEnableLine = state.attrData.Get_Enable_KenCode_MPLine as ((layer: number, obj: number) => EnableLineInfo[]) | undefined;
