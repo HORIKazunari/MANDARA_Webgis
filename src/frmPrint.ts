@@ -1893,7 +1893,7 @@ class frmPrint {
         state.propertyWindow.style.top=(state.frmPrint.style.top.removePx()+marginTop).px();
         state.propertyWindow.style.height=state.frmPrint.style.height;
         Generic.moveInnerElement(state.propertyWindow as unknown as HTMLElement);
-        this.resizeMapWindow();
+        frmPrint.resizeMapWindow();
     }
     
     static resizeMapWindow() {
