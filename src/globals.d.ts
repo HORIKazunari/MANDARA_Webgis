@@ -1,9 +1,9 @@
 // MANDARA GIS Application - 型定義ファイル（強化版）
 
 // 互換レイヤー用: 移行期間中は柔軟なJSON型を許容
-type JsonValue = any;
-type JsonObject = Record<string, any>;
-type JsonArray = any[];
+type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+type JsonObject = Record<string, JsonValue>;
+type JsonArray = JsonValue[];
 type VariadicJsonFn = (...args: JsonValue[]) => JsonValue;
 type VariadicVoidFn = (...args: JsonValue[]) => void;
 
