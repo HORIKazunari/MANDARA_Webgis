@@ -3721,7 +3721,8 @@ class clsPrint {
 
     static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, /* Dummy_F: boolean */) {
         const state = appState();
-        let ELine: Array<{ LineCode: number }> = []
+        type DrawEnableLine = { LineCode: number; Kind: number };
+        let ELine: DrawEnableLine[] = []
         const ad = state.attrData.LayerData[Layernum];
         let pxy: point[] = [];
         // if(false) { // Dummy_F === true
@@ -3741,32 +3742,35 @@ class clsPrint {
             state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
             return;
         } else {
-            ELine = state.attrData.Get_Enable_KenCode_MPLine( Layernum, Obj_Num_code) as unknown as Array<{ LineCode: number }>;
+            ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, Obj_Num_code) as unknown as DrawEnableLine[];
         }
         // }
         // const MPFileNapa = ad.MapFileName;
         const layerForLine = ad as ILayerDataInfo & { ObjectGroupRelatedLine: number[] };
         for (let j = 0; j < ELine.length; j++) {
             const lc = ELine[j].LineCode;
-            // const lcc = ELine[j].Kind;
+            const lcc = ELine[j].Kind;
             const objectGroupRelatedLine = layerForLine.ObjectGroupRelatedLine;
             let PatNum = Number(objectGroupRelatedLine[lc] ?? 0);
             if(Number.isNaN(PatNum)) {
                 PatNum = 0;
             }
-            // Property not available: ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern
-            // 本来のプロパティが取得できないため、この処理はスキップ
-            /*
-            const Lpat = ad.MapFileData.LineKind[lcc].ObjGroup[PatNum].Pattern;
-            if((Lpat.BlankF===false) && (state.attrData.getMpLineDrawn(MPFileNapa, lc) !== true)) {
-                const pxy = this.Get_PointXY_by_LineCode(Layernum, lc, false);
-                if(pxy !== undefined) {
-                    state.attrData.Draw_Line(g, Lpat, pxy);
-                    state.attrData.setMpLineDrawn(MPFileNapa, lc, true);
-                    state.attrData.setLineKindUseChecked(MPFileNapa, lcc, PatNum, true);
-                    }
+            const lineKind = ad.MapFileData.LineKind[lcc];
+            if (!lineKind || lineKind.NumofObjectGroup === 0) {
+                continue;
             }
-            */
+            if (PatNum >= lineKind.NumofObjectGroup) {
+                PatNum = 0;
+            }
+            const Lpat = lineKind.ObjGroup[PatNum].Pattern;
+            if ((Lpat.BlankF === false) && (state.attrData.getMpLineDrawn(ad.MapFileName, lc) !== true)) {
+                const pxy = this.Get_PointXY_by_LineCode(Layernum, lc, false);
+                if (pxy !== undefined) {
+                    state.attrData.Draw_Line(g, Lpat, pxy);
+                    state.attrData.setMpLineDrawn(ad.MapFileName, lc, true);
+                    state.attrData.setLineKindUseChecked(ad.MapFileName, lcc, PatNum, true);
+                }
+            }
         }
     }
 

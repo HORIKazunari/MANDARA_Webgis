@@ -2538,7 +2538,7 @@ class Screen_info {
                 miny = Math.min(miny, pxy[i].y)
                 maxy = Math.max(maxy, pxy[i].y)
             }
-            const ret = new rectangle(minx, miny, maxx, maxy);
+            const ret = new rectangle(minx, maxx, miny, maxy);
             return ret;
         } else if ((p1 instanceof point) === true) {
             const P = [(p1 as point).Clone()];
@@ -6642,11 +6642,16 @@ class clsAttrData {
                 if (layData.UseObjectKind[UseMap.MPObj[i].Kind] === true) {
                     fobk = UseMap.MPObj[i].Kind;
                     const objName = UseMap.Get_Enable_ObjectName(i, layData.Time, false);
-                    if (objName !== undefined && typeof objName !== 'string') {
+                    if (objName !== undefined) {
                         const CP = UseMap.Get_Enable_CenterP(i, layData.Time);
                         const ob = new strObject_Data_Info();
                         ob.MpObjCode = i;
-                        ob.Name = String(objName[0]);
+                        if (Array.isArray(objName) === true) {
+                            const n = objName.find((name) => name !== undefined && name !== "");
+                            ob.Name = (n !== undefined) ? String(n) : String(i + 1);
+                        } else {
+                            ob.Name = String(objName);
+                        }
                         ob.Objectstructure = enmKenCodeObjectstructure.MapObj;
                         ob.CenterPoint = CP.Clone();
                         ob.Symbol = CP.Clone();
