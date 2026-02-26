@@ -7,6 +7,12 @@ import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
 
 const chrLF = String.fromCharCode(10);
 
+class tileList_Data_Info {
+    LatLonBox: latlonbox | undefined = undefined;
+    ScrPosition: rectangle = new rectangle();
+    URL: string = "";
+}
+
 class clsDraw {
 
     static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info): boolean {
@@ -1126,8 +1132,8 @@ class _clsTileMap {
         };
         
         for (let i = 0; i < numofTile; i++) {
-            const d = tileList_Data[i] as JsonObject;
-            request(d.URL as string, d.ScrPosition as unknown as rectangle);
+            const d = tileList_Data[i];
+            request(d.URL, d.ScrPosition);
         }
     }
 
@@ -1208,7 +1214,7 @@ class _clsTileMap {
         return TileXY;
     }
 
-    Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): JsonArray {
+    Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): tileList_Data_Info[] {
 
         const FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
         if (!ScrLatLonBox.NorthWest || !ScrLatLonBox.SouthEast) {

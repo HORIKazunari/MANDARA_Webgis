@@ -3018,6 +3018,7 @@ class clsMapdata {
     m.SCL_U = mapData.SCL_U as number;
     m.Time_Mode = mapData.Time_Mode as boolean;
     m.Comment = mapData.Comment as string;
+    m.Circumscribed_Rectangle = this.cnvJsonRect(mapData.Circumscribed_Rectangle as JsonObject, mdrmjFlag);
     m.Zahyo.Mode = zahyoData.Mode as number;
     m.Zahyo.System = zahyoData.System as number;
     m.Zahyo.HeimenTyokkaku_KEI_Number = zahyoData.HeimenTyokkaku_KEI_Number as number;
@@ -3174,6 +3175,10 @@ class clsMapdata {
         }
         this.MPObj[i] = o;
     }
+
+    this.Checl_All_Line_Maxmin();
+    this.Check_All_Obj_MaxMin();
+    this.Map.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle();
 }
 
     private cnvJsonstrYMD(json: JsonValue) {

@@ -293,7 +293,7 @@ class clsPrint {
 
     static printMap(g: CanvasRenderingContext2D) {
         const state = appState();
-        const picMapRect = new rectangle(0, 0, state.frmPrint.picMap.width, state.frmPrint.picMap.height);
+        const picMapRect = new rectangle(0, state.frmPrint.picMap.width, 0, state.frmPrint.picMap.height);
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         scrData.Set_PictureBox_and_CulculateMul(picMapRect)
         state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag = false;

@@ -376,7 +376,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                     if (smode) {
                                         let atg = state.attrData.TempData.Accessory_Temp.GroupBox_Rect;
                                         let rcp = atg.centerP();
-                                        rcp = spatial.checkAndModifyPointInRect(rcp, new rectangle(0, 0, scrDataDrag.frmPrint_FormSize.width(), scrDataDrag.frmPrint_FormSize.height()));
+                                        rcp = spatial.checkAndModifyPointInRect(rcp, new rectangle(0, scrDataDrag.frmPrint_FormSize.width(), 0, scrDataDrag.frmPrint_FormSize.height()));
                                         atg = new rectangle(rcp.x - atg.width() / 2, rcp.y - atg.height() / 2, atg.width(), atg.height());
                                     }
                                     Accessory.AccGroupBoxDraw(g);
@@ -2061,8 +2061,7 @@ class frmPrint {
                         const pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(5, meshP, false);
                         drawLines(g, pxy, 3, new colorRGBA(255, 0, 150, 200));
                     } else {
-                        const getEnableLine = state.attrData.Get_Enable_KenCode_MPLine as ((layer: number, obj: number) => EnableLineInfo[]) | undefined;
-                        const enableLines = getEnableLine ? getEnableLine(Layernum, ObjNum) : [];
+                        const enableLines = state.attrData.Get_Enable_KenCode_MPLine(Layernum, ObjNum) as unknown as EnableLineInfo[];
                         if (enableLines.length === 0) {
                             break;
                         }
