@@ -3,10 +3,9 @@ import { MeshContour, ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
 import { clsDraw, clsDrawLine } from './clsDraw';
 import { EnableMPLine_Data } from './clsMapdata';
-import { clsBase } from './clsGeneric'; // clsBaseを有効化
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
-import { enmArrowHeadType, Font_Property, Line_Property, Mark_Property } from './clsTime';
+import { clsBase, enmArrowHeadType, Font_Property, Line_Property, Mark_Property } from './clsTime';
 import {
     colorRGBA,
     enmBarChartFrameAxePattern,
@@ -449,9 +448,10 @@ class clsPrint {
         }
         let tilecanvas: HTMLCanvasElement | null = null;
         const avt = av.TileMapView;
+        const drawTiming = Number(avt.DrawTiming) === enmDrawTiming.AfterDataDraw ? enmDrawTiming.AfterDataDraw : enmDrawTiming.BeforeDataDraw;
         if ((avt.Visible === true) && (avs.ThreeDMode.Set3D_F === false)) {
             //背景画像を表示
-            if (avt.DrawTiming === enmDrawTiming.BeforeDataDraw) {
+            if (drawTiming === enmDrawTiming.BeforeDataDraw) {
                 this.Legend_Data_Set();
                 this.Screen_MapAreaLine(g);
                 this.GetAccessoryRectangles(g);
@@ -481,7 +481,18 @@ class clsPrint {
         /**背景地図読み込み後に、背景を地図上に配置、最後に凡例等を描画 */
         function tileMapAcc() {
 
-            switch (avt.DrawTiming) {
+            if (!tilecanvas) {
+                return;
+            }
+
+            let mgr;
+            if (avs.Screen_Margin.ClipF === true) {
+                mgr = avs.getSXSY_Margin();
+            } else {
+                mgr = new rectangle(0, tilecanvas.width, 0, tilecanvas.height);
+            }
+
+            switch (drawTiming) {
                 case enmDrawTiming.BeforeDataDraw:
                     g.globalCompositeOperation = "destination-over";
                     break;
@@ -490,21 +501,13 @@ class clsPrint {
                     break;
             }
             g.globalAlpha = avt.AlphaValue;
-            let mgr;
-            if (avs.Screen_Margin.ClipF === true) {
-                mgr = avs.getSXSY_Margin();
-            } else {
-                if (!tilecanvas) return;
-                mgr = new rectangle(0, tilecanvas.width, 0, tilecanvas.height);
-            }
-            if (tilecanvas) {
-                g.drawImage(tilecanvas, mgr.left, mgr.top, mgr.width(), mgr.height(), mgr.left, mgr.top, mgr.width(), mgr.height());
-            }
+            g.drawImage(tilecanvas, mgr.left, mgr.top, mgr.width(), mgr.height(), mgr.left, mgr.top, mgr.width(), mgr.height());
             g.globalAlpha = 1;
             g.globalCompositeOperation = "source-over";
+
             state.tileMapClass.PrintCopyright(g, avt.TileMapDataSet, avs);
 
-            switch (avt.DrawTiming) {
+            switch (drawTiming) {
                 case enmDrawTiming.BeforeDataDraw:
                     clsPrint.Screen_BackLine(g);
                     break;

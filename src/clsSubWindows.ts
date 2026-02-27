@@ -3,6 +3,7 @@ import { Generic, latlon, spatial, CheckedListBox, ListBox, ListViewTable } from
 import { clsPrint } from './clsPrint';
 import { clsBase, clsTime, enmArrowHeadType, Line_Property, Tile_Property } from './clsTime';
 import { clsDrawTile } from './clsDraw';
+import { contextMenuPrevent } from './contextMenu';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBarChartFrameAxePattern,
@@ -811,6 +812,7 @@ export function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) 
 export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "背景画像設定", 260, 300, true, true, buttonOK, 0.2, true);
     const avt: typeof _attrData.TotalData.ViewStyle.TileMapView = _attrData.TotalData.ViewStyle.TileMapView;
+    const normalizedDrawTiming = Number(avt.DrawTiming) === enmDrawTiming.AfterDataDraw ? enmDrawTiming.AfterDataDraw : enmDrawTiming.BeforeDataDraw;
     const chkVisible = Generic.createNewCheckBox(backDiv, "背景画像を表示", "", avt.Visible, 15, 40,undefined,  undefined, "");
     const gbTIle = Generic.createNewFrame(backDiv, "", "", 15, 70, 230, 80, "表示地図タイル");
     const tag = ["国土地理院地図", "国土地理院主題図", "国土地理院空中写真", "国土地理院東日本大震災", "国土地理院災害", "オープンストリートマップ", "人口","今昔マップ", "その他"];
@@ -828,7 +830,7 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
 
     const gbTIming = Generic.createNewFrame(backDiv, "", "", 15, 170, 120, 70, "描画タイミング");
     const timing = [{ value: enmDrawTiming.BeforeDataDraw, text: "データ描画前" }, { value: enmDrawTiming.AfterDataDraw, text: "データ描画後" }]
-    Generic.createNewRadioButtonList(gbTIming, "drawTiming", timing, 10, 15,undefined, 25,avt.DrawTiming, undefined, "");
+    Generic.createNewRadioButtonList(gbTIming, "drawTiming", timing, 10, 15,undefined, 25,normalizedDrawTiming, undefined, "");
 
     const gbAlpha = Generic.createNewFrame(backDiv, "", "", 150, 170, 95, 50, "不透明度");
     const rangeObj = document.createElement('input');
@@ -870,14 +872,15 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
             getTileMapDataById: (id: number) => JsonObject | undefined;
         };
         const tileMapDataSet = tileMapClass.getTileMapDataById(tileId);
-        const drawTiming = Number(Generic.getRadioCheckByValue("drawTiming"));
+        const drawTimingRaw = Generic.getRadioCheckByValue("drawTiming");
+        const drawTiming = drawTimingRaw === enmDrawTiming.AfterDataDraw ? enmDrawTiming.AfterDataDraw : enmDrawTiming.BeforeDataDraw;
         const tileMapView = _attrData.TotalData.ViewStyle.TileMapView;
         tileMapView.Visible = chkVisible.checked;
         if (tileMapDataSet !== undefined) {
             tileMapView.TileMapDataSet = tileMapDataSet;
         }
         tileMapView.DrawTiming = drawTiming;
-        tileMapView.AlphaValue = parseInt(rangeObj.value) / 100;
+        tileMapView.AlphaValue = Math.max(0, Math.min(1, parseInt(rangeObj.value, 10) / 100));
         Generic.clear_backDiv();
         okEvent();
     }

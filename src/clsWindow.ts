@@ -5,6 +5,7 @@ import { clsMapdata } from './clsMapdata';
 import { clsPrint } from './clsPrint';
 import { clsBase, clsTime } from './clsTime';
 import { clsShapefile } from './shapeFile';
+import { contextMenuPrevent } from './contextMenu';
 import { SortingSearch } from './SortingSearch';
 import {
     frmMain_Buffer,
@@ -2249,14 +2250,12 @@ export function setting(locSearch: string) {
                         }
                         break;
                     case enmPaintColorSettingModeInfo.SoloColor:
-                            SelectedCategoryIndex = -1;
-                        switch (n) {
-                            case 0:
-                                classPaintMd.color1 = col;
-                                break;
-                            case DivNum - 1:
-                                classPaintMd.color2 = col;
-                                break;
+                        SelectedCategoryIndex = -1;
+                        classPaintMd.color1 = col.Clone();
+                        classPaintMd.color2 = col.Clone();
+                        classPaintMd.color3 = col.Clone();
+                        for (let i = 0; i < DivNum; i++) {
+                            data.Class_Div[i].PaintColor = col.Clone();
                         }
                         break;
                 }
@@ -2899,8 +2898,8 @@ export function setting(locSearch: string) {
                 for (let i = 0; i < DivNum; i++) {
                     sv.Class_Div[i].PaintColor = col[i];
                 }
-                sv.color1 = col[0].Clone();
-                sv.color2 = col[DivNum - 1].Clone();
+                sv.ClassPaintMD.color1 = col[0].Clone();
+                sv.ClassPaintMD.color2 = col[DivNum - 1].Clone();
                 setSettingSoloModeWindow();
             }
         }
@@ -2925,8 +2924,9 @@ export function setting(locSearch: string) {
             const classPaintMd = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD as {
                 Color_Mode: number;
             };
-            classPaintMd.Color_Mode = Number(value);
-            switch (value) {
+            const modeValue = Number(value);
+            classPaintMd.Color_Mode = modeValue;
+            switch (modeValue) {
                 case enmPaintColorSettingModeInfo.twoColor:
                     state.attrData.Twocolort(Layernum, DataNum);
                     break;
@@ -2936,6 +2936,21 @@ export function setting(locSearch: string) {
                     state.attrData.Twocolort(Layernum, DataNum);
                     break;
                 case enmPaintColorSettingModeInfo.SoloColor:
+                    {
+                        const soloCol = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[0].PaintColor.Clone();
+                        const classPaintMd2 = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.ClassPaintMD as {
+                            color1: colorRGBA;
+                            color2: colorRGBA;
+                            color3: colorRGBA;
+                        };
+                        classPaintMd2.color1 = soloCol.Clone();
+                        classPaintMd2.color2 = soloCol.Clone();
+                        classPaintMd2.color3 = soloCol.Clone();
+                        const divNum = state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Div_Num;
+                        for (let i = 0; i < divNum; i++) {
+                            state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Class_Div[i].PaintColor = soloCol.Clone();
+                        }
+                    }
                     break;
 
             }

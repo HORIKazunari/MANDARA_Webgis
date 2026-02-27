@@ -4036,12 +4036,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         return colbox;
         function colSelect(e: MouseEvent) {
-            if (onclick !== undefined) {
-                const pickerHandler: Parameters<typeof clsColorPicker>[1] = (pickedColor) => {
-                    onclick(pickedColor as unknown as colorRGBA);
-                };
-                clsColorPicker(e, pickerHandler);
-            }
+            import('./clsSubWindows').then(({ clsColorPicker }) => {
+                clsColorPicker(e, (pickedColor) => {
+                    const selected = pickedColor as unknown as colorRGBA;
+                    colbox.style.backgroundColor = selected.toRGBA();
+                    onclick?.(selected);
+                });
+            });
         }
     }
 

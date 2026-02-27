@@ -5,6 +5,7 @@ import type { JsonValue } from './types';
 import { colorRGBA, point, rectangle, size } from './clsAttrData';
 import { Font_Property } from './clsTime';
 import { enmHorizontalAlignment, enmMatchingMode } from './constants/legacyEnums';
+import { contextMenuPrevent } from './contextMenu';
 
 export {};
 
@@ -458,6 +459,9 @@ export class gridControl {
             this.Set_Data_from_txtBox_To_Grid();
         }
         const GP = this.Grid_Property[this.Grid_Total.Layer];
+        if (!GP) {
+            return;
+        }
         GP.scrollTop = this.vScroll.getPosition();
         GP.scrollLeft = this.hScroll.getPosition();
         this.Print_Grid_Data();
@@ -1374,6 +1378,9 @@ export class gridControl {
         if (!this.ctx) return;
 
         const GP = this.Grid_Property[this.Grid_Total.Layer];
+        if (!GP) {
+            return;
+        }
         const xs = GP.Xmax;
         const ys = GP.Ymax;
         const topPixcel = this.vScroll.getPosition();

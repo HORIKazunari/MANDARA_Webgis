@@ -12,6 +12,7 @@ import { enmZahyo_mode_info } from './constants/legacyEnums';
 import { attachFrmPrintMethods, mapMouseInternal as mapMouse } from './frmPrint';
 import { clsPrint } from './clsPrint';
 import { setting } from './clsWindow';
+import { contextMenuPrevent } from './contextMenu';
 import {
     frmProjectionConvert,
     frmPrintOption,
@@ -233,13 +234,6 @@ function _init(): void {
             frmPrint_DummyObjectGroup();
         }
     }
-}
-
-/**
- * コンテキストメニュー無効化
- */
-function contextMenuPrevent(e: Event): void {
-    e.preventDefault();
 }
 
 /**

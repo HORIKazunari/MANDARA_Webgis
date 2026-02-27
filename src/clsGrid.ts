@@ -135,14 +135,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     };
     
     // 関数の前方宣言
-    let Check_DataKind: (Layernum: number) => void;
-    let Set_LayerTypeShape: () => void;
-    let ErrorCheck: () => boolean;
-    let setIniform: () => void;
-    let set_First_GridCellWidthHeight: (Layernum: number) => void;
-    let Get_Data_Property_Value: (_attrData: clsAttrData, Layernum: number, DataNum: number) => number;
-    let check_DataKind_and_Allignment: (Layernum: number) => void;
-    let SetMapFileList_to_CboBox: () => void;
+    
     let Get_E_Data: () => { ok: boolean; emes: string };
     let Reset_SCRView_Size: () => void;
     let btnReplaceMapfileClick: () => void;
@@ -231,7 +224,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         const lay=ktGrid.getLayer();
         const layerType = ltype !== undefined ? Number(ltype) : Number(sel);
         ktGrid.setLayerData(lay, GridLayerData.Type, layerType);
-        Check_DataKind(lay);
+        gridCheckDataKind(lay);
         ktGrid.setLayerData(lay, GridLayerData.MapFile,cboLayerMapFile.getText());
         switch (layerType) {
             case enmLayerType.DefPoint:
@@ -244,23 +237,23 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 }
                 break;
         }
-        Set_LayerTypeShape()
+        gridSetLayerTypeShape()
         ktGrid.refresh();
-        ErrorCheck();
+        gridErrorCheck();
     }, "", "", false) as HTMLSelectElement;
     const cboLayerShape = Generic.createNewWordSelect(gbLayerData, "レイヤの形状", [], 0, "", 10, 260, undefined, 100, 1, function (obj: HTMLSelectElement, sel: number | number[], v?: string) {
         ktGrid.setLayerData(ktGrid.getLayer(), GridLayerData.Shape, v !== undefined ? Number(v) : Number(sel));
-        ErrorCheck();
+        gridErrorCheck();
     }, "", "", false) as HTMLSelectElement;
     const cboMesh = Generic.createNewWordSelect(gbLayerData, "メッシュ", [], 0, "", 10, 315, undefined, 100, 1, function (obj: HTMLSelectElement, sel: number | number[], v?: string) {
         ktGrid.setLayerData(ktGrid.getLayer(), GridLayerData.Mesh, v !== undefined ? Number(v) : Number(sel));
-        ErrorCheck();
+        gridErrorCheck();
     }, "", "", false) as HTMLSelectElement;
     Generic.createNewSpan(gbLayerData, "時期設定", "", "", 10, 370, "", undefined);
     const DateTimePickerLayer = Generic.createNewInput(gbLayerData, "date", "", "", 20, 390, "", "width:130px") as HTMLInputElement;
     DateTimePickerLayer.onchange = function () {
         ktGrid.setLayerData(ktGrid.getLayer(), GridLayerData.Time, clsTime.GetFromInputDate(DateTimePickerLayer.value) as unknown as JsonValue);
-        ErrorCheck();
+        gridErrorCheck();
     }
     //layerTime.onchange = layerTimeChange;
     const zahyoSystemFrame = Generic.createNewFrame(gbLayerData, "", "", 10, 415, 140, 60, "測地系");
@@ -296,7 +289,78 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         evtChange_FixedUpperLeft:Change_FixedUpperLeft,//左上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生
         evtChange_Layer:Change_Layer//レイヤ名の変更、レイヤの移動などで発生
       }
-    setIniform();
+        const setupGridInfo = function () {
+                const ltype: Array<{ value: number; text: string }> = [
+                { value: enmLayerType.Normal, text: Generic.ConvertStringFromLayerType(enmLayerType.Normal) as string },
+                { value: enmLayerType.DefPoint, text: Generic.ConvertStringFromLayerType(enmLayerType.DefPoint) as string },
+                { value: enmLayerType.Mesh, text: Generic.ConvertStringFromLayerType(enmLayerType.Mesh) as string }];
+                cboLayerType.addSelectList(ltype, 0, false, false)
+                const lShape: Array<{ value: number; text: string }> = [
+                { value: enmShape.NotDeffinition, text: Generic.ConvertShapeEnumString(enmShape.NotDeffinition) as string },
+                { value: enmShape.PointShape, text: Generic.ConvertShapeEnumString(enmShape.PointShape) as string },
+                { value: enmShape.LineShape, text: Generic.ConvertShapeEnumString(enmShape.LineShape) as string },
+                { value: enmShape.PolygonShape, text: Generic.ConvertShapeEnumString(enmShape.PolygonShape) as string }];
+                cboLayerShape.addSelectList(lShape, 0, false, false);
+                cboMesh.addSelectList(lShape, 0, false, false);
+        };
+            const syncDataKindAndAlignment = function (Layernum: number) {
+                for (let i = 0; i < ktGrid.getXsize(Layernum); i++) {
+                    const dtype = Generic.getAttDataType_From_TitleUnit(
+                        String(ktGrid.getFixedYSData(Layernum, i, 3)),
+                        String(ktGrid.getFixedYSData(Layernum, i, 4))
+                    ) as AttDataTypeValue;
+                    ktGrid.setFixedYSData(Layernum, i, 1, Generic.ConvertAttDataTypeString(dtype) as string);
+                    switch (dtype) {
+                        case enmAttDataType.Normal:
+                        case enmAttDataType.Lat:
+                        case enmAttDataType.Lon:
+                            ktGrid.setGridAlligntment(Layernum, i, enmHorizontalAlignment.Right);
+                            break;
+                        default:
+                            ktGrid.setGridAlligntment(Layernum, i, enmHorizontalAlignment.Left);
+                            break;
+                    }
+                }
+            };
+        const setFirstGridCellWidthHeightLocal = function (Layernum: number) {
+            ktGrid.setFixedXSWidth(Layernum, 0, 50);
+            ktGrid.setFixedXSWidth(Layernum, 1, 150);
+            ktGrid.setFixedYSHeight(Layernum, 3, 38);
+            ktGrid.setFixedUpperLeftData(Layernum, 1, 1, "データの種類");
+            ktGrid.setFixedUpperLeftData(Layernum, 1, 2, "空白セル");
+            ktGrid.setFixedUpperLeftData(Layernum, 1, 3, "タイトル");
+            ktGrid.setFixedUpperLeftData(Layernum, 1, 4, "単位");
+            ktGrid.setFixedUpperLeftData(Layernum, 1, 5, "注");
+        };
+        const getDataPropertyValueLocal = function (_attrData: clsAttrData, Layernum: number, DataNum: number): number {
+            const al = _attrData.LayerData[Layernum] as {
+                atrData: { Data: Array<{ DataType: number; Statistics: { Ave: number } }> };
+                atrObject: { ObjectNum: number };
+            };
+            switch (al.atrData.Data[DataNum].DataType) {
+                case enmAttDataType.Normal:
+                    return al.atrData.Data[DataNum].Statistics.Ave as number;
+                case enmAttDataType.Category: {
+                    let n = 0;
+                    const retV = _attrData.Get_ClassFrequency(Layernum, DataNum, false) as { frequency: number[] };
+                    const freq = retV.frequency;
+                    for (let i = 0; i < freq.length; i++) {
+                        n += freq[i];
+                    }
+                    return n / freq.length;
+                }
+                case enmAttDataType.Strings: {
+                    let n = 0;
+                    for (let i = 0; i < al.atrObject.ObjectNum; i++) {
+                        n += String(_attrData.Get_Data_Value(Layernum, DataNum, i, "")).length;
+                    }
+                    return n / al.atrObject.ObjectNum;
+                }
+                default:
+                    return 0;
+            }
+        };
+        setupGridInfo();
     ktGrid.init("レイヤ", "オブジェクト", "属性データ",  2, 1, 6, 3, opeEnable, eventCall as EventCallbacks);
     if (newDataFlag === true) {
         ktGrid.addLayer("新しいレイヤ", 0, 5, 50);
@@ -311,7 +375,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         for (let i = 0; i < ktGrid.getXsize(0); i++) {
             ktGrid.setFixedYSData(0, i, 2, Generic.ConvertMissingValueFromBool(false));
         }
-        set_First_GridCellWidthHeight(0);
+        setFirstGridCellWidthHeightLocal(0);
         const newTL = newAttrData.TotalData.LV1;
         newTL.DataSourceType = enmDataSource.DataEdit;
         newTL.FileName = "DataEditor";
@@ -347,7 +411,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             }
             const d = [];
             for (let j = 0; j < al.atrData.length; j++) {
-                d[j] = Get_Data_Property_Value(state.attrData as unknown as clsAttrData, i, j);
+                d[j] = getDataPropertyValueLocal(state.attrData as unknown as clsAttrData, i, j);
             }
             D_CheckDataValue.push(d);
             let SideE = true;
@@ -403,7 +467,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 ktGrid.setFixedYSData(i, Datan + j * 2, 3, "URL_NAME");
                 ktGrid.setFixedYSData(i, Datan + j * 2 + 1, 3, "URL");
             }
-            check_DataKind_and_Allignment(i);
+            syncDataKindAndAlignment(i);
             ktGrid.setLayerData(i, GridLayerData.MapFile, al.MapFileName);
             ktGrid.setLayerData(i, GridLayerData.Shape, al.Shape);
             ktGrid.setLayerData(i, GridLayerData.Time, al.Time as unknown as JsonValue);
@@ -413,7 +477,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             ktGrid.setLayerData(i, GridLayerData.SyntheticObjF, SyntheticObjF);
             ktGrid.setLayerData(i, GridLayerData.ReferenceSystem, al.ReferenceSystem);
             ktGrid.setLayerData(i, GridLayerData.Comment, al.Comment);
-            set_First_GridCellWidthHeight(i);
+            setFirstGridCellWidthHeightLocal(i);
             const atl = state.attrData.TotalData.LV1;
             newAttrData.TotalData.LV1.DataSourceType = atl.DataSourceType;
             newAttrData.TotalData.LV1.FileName = atl.FileName;
@@ -423,10 +487,10 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     }
     ktGrid.show();
     window.addEventListener('resize',windowResize );
-    SetMapFileList_to_CboBox();
-    Check_DataKind(0);
-    Set_LayerTypeShape();
-    ErrorCheck();
+    gridSetMapFileListToCboBox();
+    gridCheckDataKind(0);
+    gridSetLayerTypeShape();
+    gridErrorCheck();
 
     /**ブラウザのリサイズイベントでサイズ変更 */
     function windowResize(){
@@ -442,7 +506,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         errorInfo.style.left = sideLeft;
     }
     function okButton(){
-        if( ErrorCheck() === true){
+        if( gridErrorCheck() === true){
             Generic.alert(undefined, "エラーがあります");
             return;
         }
@@ -485,7 +549,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     /**データがどこか変更された場合に発生 */
     function eventChange_Data() {
         // console.log("Change_Data");
-        ErrorCheck();
+        gridErrorCheck();
     }
     /**レイヤの追加メニューを選択した場合に発生 */
     function Add_Layer(InsertPoint: number) {
@@ -509,17 +573,17 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             ktGrid.setFixedYSData(InsertPoint, i, 2,Generic.ConvertMissingValueFromBool(false))
         }
         ktGrid.setLayerData(InsertPoint, GridLayerData.Comment, "");
-       set_First_GridCellWidthHeight(InsertPoint);
+    setFirstGridCellWidthHeightLocal(InsertPoint);
         ktGrid.setLayer ( InsertPoint);
-        Check_DataKind(InsertPoint);
+        gridCheckDataKind(InsertPoint);
         ktGrid.refresh();
-        Set_LayerTypeShape();
-        ErrorCheck();
+        gridSetLayerTypeShape();
+        gridErrorCheck();
     }
     /**表示レイヤを変更した場合に発生 */
     function Change_LayerSelect(_Layer: number, _PreviousLayer: number) {
-        Set_LayerTypeShape();
-        ErrorCheck();
+        gridSetLayerTypeShape();
+        gridErrorCheck();
     }
     /**上部の固定部分の枠２行目をクリックした場合に発生 */
     function Click_FixedYS2(cbl: number, cbx: number, cby: number, Value: string, Top: number, Left: number, Width: number, Height: number, e: MouseEvent) {
@@ -573,7 +637,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     break;
             }
             ktGrid.refresh();
-            ErrorCheck();
+            gridErrorCheck();
         }
     }
 
@@ -585,14 +649,14 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     /**上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
     function Change_FixedYS() {
         // console.log("Change_FixedYS");
-        check_DataKind_and_Allignment(ktGrid.getLayer());
+        syncDataKindAndAlignment(ktGrid.getLayer());
         ktGrid.refresh()
-        ErrorCheck();
+        gridErrorCheck();
     }
     /**左部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
     function Change_FixedXS() {
         // console.log("Change_FixedXS");
-        ErrorCheck();
+        gridErrorCheck();
     }
     /** 左上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生*/
     function Change_FixedUpperLeft() {
@@ -603,7 +667,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     function Change_Layer(LayerNameChange: boolean, LayerMove: boolean, LayerDelete: boolean) {
         // console.log("Change_Layer", LayerNameChange, LayerMove, LayerDelete);
         if(LayerDelete===true){
-            Set_LayerTypeShape();
+            gridSetLayerTypeShape();
         }
     }
 
@@ -1302,7 +1366,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             return CheckDataRet;
         }
 
-        const Data_Prop_Value = Get_Data_Property_Value(newAttrData, L, D);
+        const Data_Prop_Value = gridGetDataPropertyValue(newAttrData, L, D);
 
         const Kouho = [];// New List(Of Layer_Data_InfoCheck)
         const Sort_KouhoV = new SortingSearch()
@@ -1617,7 +1681,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     }
 
     /**データエラーのチェック */
-    ErrorCheck = function() {
+    function gridErrorCheck() {
         errorInfo.value="";
         const emes = ErrorCheckLayerMapFile();
         if (emes.length !== 0) {
@@ -1838,7 +1902,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     }
 
     /**レイヤ情報の画面セット */
-    Set_LayerTypeShape = function(){
+    function gridSetLayerTypeShape(){
         cboLayerMapFile.disabled= true;
         cboLayerType.disabled=true;
         cboLayerShape.disabled= true;
@@ -1893,7 +1957,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
         txtLayerComment.value = ktGrid.getLayerData(LayerNum, GridLayerData.Comment);
 }
-    Check_DataKind = function(Layernum: number){
+    function gridCheckDataKind(Layernum: number){
         for (let i = 0; i < ktGrid.getXsize(Layernum); i++) {
             const lType = ktGrid.getLayerData(Layernum, GridLayerData.Type) as LayerTypeValue;
             let ttl = "通常のデータ";
@@ -1926,7 +1990,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             ktGrid.setFixedYSData(Layernum, i, 1, ttl);
         }
 }
-    set_First_GridCellWidthHeight = function(Layernum: number){
+    function gridSetFirstGridCellWidthHeight(Layernum: number){
        ktGrid.setFixedXSWidth(Layernum, 0,50);
        ktGrid.setFixedXSWidth(Layernum, 1,150);
        ktGrid.setFixedYSHeight(Layernum, 3,38);
@@ -1936,7 +2000,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
        ktGrid.setFixedUpperLeftData(Layernum, 1, 4,"単位");
        ktGrid.setFixedUpperLeftData(Layernum, 1, 5,"注");
     }
-    Get_Data_Property_Value = function(_attrData: clsAttrData, Layernum: number, DataNum: number): number{
+    function gridGetDataPropertyValue(_attrData: clsAttrData, Layernum: number, DataNum: number): number{
         const al = _attrData.LayerData[Layernum] as {
             atrData: { Data: Array<{ DataType: number; Statistics: { Ave: number } }> };
             atrObject: { ObjectNum: number };
@@ -1968,27 +2032,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
     }
 
-    check_DataKind_and_Allignment = function(Layernum: number){
-        for(let i  = 0 ;i< ktGrid.getXsize(Layernum);i++){
-            const dtype  = Generic.getAttDataType_From_TitleUnit(
-                String(ktGrid.getFixedYSData(Layernum, i, 3)),
-                String(ktGrid.getFixedYSData(Layernum, i, 4))
-            ) as AttDataTypeValue;
-            ktGrid.setFixedYSData(Layernum, i, 1, Generic.ConvertAttDataTypeString(dtype) as string);
-            switch( dtype){
-                case enmAttDataType.Normal:
-                case enmAttDataType.Lat:
-                case  enmAttDataType.Lon:
-                    ktGrid.setGridAlligntment(Layernum, i, enmHorizontalAlignment.Right);
-                    break;
-                default:
-                    ktGrid.setGridAlligntment(Layernum, i, enmHorizontalAlignment.Left);
-                    break;
-                }
-            }
-    }
-
-    SetMapFileList_to_CboBox = function(){
+    function gridSetMapFileListToCboBox(){
         const Mapfiles = newAttrData.GetMapFileName() as string[];
         if(Mapfiles.length===0){return;}
         const lst: Array<{ text: string; value: number }> = [];
@@ -1998,39 +2042,6 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         cboLayerMapFile.addSelectList(lst,undefined,true,false);
 
     }
-    setIniform = function() {
-        const gl = GridLayerData;
-        gl.MapFile = "MapFile";
-        gl.Type = "Type";
-        gl.Shape = "Shape";
-        gl.Time = "Time";
-        gl.OldIndex = "OldIndex";
-        gl.Mesh = "Mesh";
-        gl.SyntheticObjF = "SyntheticObjF";
-        gl.Comment = "Comment";
-        gl.ReferenceSystem = "ReferenceSystem";
-        // _Change_Data = false; // constなので代入不可
-        const ltype: Array<{ value: number; text: string }> = [
-        { value: enmLayerType.Normal, text: Generic.ConvertStringFromLayerType(enmLayerType.Normal) as string },
-        { value: enmLayerType.DefPoint, text: Generic.ConvertStringFromLayerType(enmLayerType.DefPoint) as string },
-        { value: enmLayerType.Mesh, text: Generic.ConvertStringFromLayerType(enmLayerType.Mesh) as string }];
-        cboLayerType.addSelectList(ltype, 0, false, false)
-        const lShape: Array<{ value: number; text: string }> = [
-        { value: enmShape.NotDeffinition, text: Generic.ConvertShapeEnumString(enmShape.NotDeffinition) as string },
-        { value: enmShape.PointShape, text: Generic.ConvertShapeEnumString(enmShape.PointShape) as string },
-        { value: enmShape.LineShape, text: Generic.ConvertShapeEnumString(enmShape.LineShape) as string },
-        { value: enmShape.PolygonShape, text: Generic.ConvertShapeEnumString(enmShape.PolygonShape) as string }];
-        cboLayerShape.addSelectList(lShape, 0, false, false);
-        // const lMesh = [{ value: enmMesh_Number.mhFirst, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhFirst) },
-        // { value: enmMesh_Number.mhSecond, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhSecond) },
-        // { value: enmMesh_Number.mhThird, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhThird) },
-        // { value: enmMesh_Number.mhHalf, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhHalf) },
-        // { value: enmMesh_Number.mhQuarter, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhQuarter) },
-        // { value: enmMesh_Number.mhOne_Eighth, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhOne_Eighth) },
-        // { value: enmMesh_Number.mhOne_Tenth, text: Generic.ConvertMeshTypeFromEnum(enmMesh_Number.mhOne_Tenth) }];
-        cboMesh.addSelectList(lShape, 0, false, false);
-    }
-
     btnAddMapfile = function() {
         openMapFile(getFile);
         function getFile(jsonMapData: JsonObject | undefined, filename: string) {
@@ -2067,9 +2078,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 for (let i = 0; i < ktGrid.getLayerMax(); i++) {
                     ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
                 }
-                Set_LayerTypeShape()
+                gridSetLayerTypeShape()
             }
-            ErrorCheck();
+            gridErrorCheck();
         }
 
     }
@@ -2090,7 +2101,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         newAttrData.RemoveMapData(fname);
         lstMapFile.removeList(sel,1);
         cboLayerMapFile.remove(sel);
-        Set_LayerTypeShape();
+        gridSetLayerTypeShape();
     }
 
     btnReplaceMapfileClick = function() {
@@ -2151,8 +2162,8 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     }
                 }
             }
-            Set_LayerTypeShape();
-            ErrorCheck();
+            gridSetLayerTypeShape();
+            gridErrorCheck();
             }
     }
 }

@@ -5,7 +5,7 @@ import { Generic, spatial } from './clsGeneric';
 import { SortingSearch } from './SortingSearch';
 import { clsPrint } from './clsPrint';
 import { clsDraw, clsDrawLine, clsDrawTile } from './clsDraw';
-import { clsBase, LineEdge_Connect_Pattern_Data_Info, Mark_Property } from './clsTime';
+import { clsBase, Font_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property } from './clsTime';
 import { CHR_LF } from './constants/geometry';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
@@ -38,6 +38,28 @@ const chrLF = CHR_LF;
 type ViewStyleWithScreen = IAttrData['TotalData']['ViewStyle'] & { ScrData: Screen_info };
 
 export class Accessory {
+
+    private static drawTextFallback(g: CanvasRenderingContext2D, text: string, p: point, font: Font_Property, backgroundColor?: string): void {
+        const state = appState();
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const fontInfo = font.toContextFont(vs.ScrData);
+        if (!fontInfo.font) {
+            return;
+        }
+        g.save();
+        g.font = fontInfo.font;
+        g.textBaseline = 'top';
+        if (backgroundColor !== undefined) {
+            const w = g.measureText(text).width;
+            const h = Math.max(1, fontInfo.height);
+            const pad = Math.max(1, Math.round(h * 0.15));
+            g.fillStyle = backgroundColor;
+            g.fillRect(p.x - pad, p.y - pad, w + pad * 2, h + pad * 2);
+        }
+        g.fillStyle = font.Color.toRGBA();
+        g.fillText(text, p.x, p.y);
+        g.restore();
+    }
 
     /**線種の凡例 */
     static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean): boolean {
@@ -2438,6 +2460,16 @@ export class Accessory {
         const checkRect = new rectangle(new point(centerP.x - r, centerP.y - r), new size(r * 2, r * 2));
         if(state.attrData.Check_Screen_In(checkRect) ===true ){
             state.attrData.Draw_Mark(g, centerP, r, P_Comp.Mark);
+            if (P_Comp.Mark.ShapeNumber === 10 || P_Comp.Mark.ShapeNumber === 11) {
+                const lineWidth = vsScrData.Get_Line_Width(P_Comp.Mark.Line.Width);
+                g.save();
+                g.beginPath();
+                g.arc(centerP.x, centerP.y, r, 0, 2 * Math.PI, false);
+                g.strokeStyle = P_Comp.Mark.Line.Color.toRGBA();
+                g.lineWidth = lineWidth;
+                g.stroke();
+                g.restore();
+            }
             const ww = state.attrData.Get_Length_On_Screen(P_Comp.Font.Size) * 0.7;
             const PlusFont = P_Comp.Font.Clone();
             PlusFont.Kakudo += P_Comp.Mark.WordFont.Kakudo;
@@ -2461,7 +2493,12 @@ export class Accessory {
                         break;
                 }
                 if (CmpassWord !== "") {
-                    state.attrData.Draw_Print(g, CmpassWord, wpos, PlusFont, enmHorizontalAlignment.Center, enmVerticalAlignment.Center);
+                    const printed = clsDraw.print(g, CmpassWord, wpos, PlusFont, enmHorizontalAlignment.Center, enmVerticalAlignment.Center, vsScrData);
+                    if (printed === false) {
+                        const wp = wpos.Clone();
+                        wp.offset(-state.attrData.Get_Length_On_Screen(PlusFont.Size) * 0.4, -state.attrData.Get_Length_On_Screen(PlusFont.Size) * 0.4);
+                        this.drawTextFallback(g, CmpassWord, wp, PlusFont);
+                    }
                 }
             }
         }
@@ -2534,10 +2571,18 @@ export class Accessory {
                 }
         }
 
-            state.attrData.Draw_Print(g, "0", sxy, P_Scl.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
+            const zeroPrinted = clsDraw.print(g, "0", sxy, P_Scl.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top, state.attrData.TotalData.ViewStyle.ScrData);
+            if (zeroPrinted === false) {
+                const scaleLabelBack = P_Scl.Back.Tile.BlankF === false ? P_Scl.Back.Tile.Color.toRGBA() : "rgba(255,255,255,0.9)";
+                this.drawTextFallback(g, "0", sxy, P_Scl.Font, scaleLabelBack);
+            }
             const tx = Generic.getScaleUnitStrings(Number(scaleMax), P_Scl.Unit);
             const p = new point(sxy.x + ScaleLength + zeroW - ScaleMaxW, sxy.y);
-            state.attrData.Draw_Print(g, tx, p, P_Scl.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
+            const scalePrinted = clsDraw.print(g, tx, p, P_Scl.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top, state.attrData.TotalData.ViewStyle.ScrData);
+            if (scalePrinted === false) {
+                const scaleLabelBack = P_Scl.Back.Tile.BlankF === false ? P_Scl.Back.Tile.Color.toRGBA() : "rgba(255,255,255,0.9)";
+                this.drawTextFallback(g, tx, p, P_Scl.Font, scaleLabelBack);
+            }
         }
 
     }
