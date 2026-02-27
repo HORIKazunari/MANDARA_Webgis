@@ -8,6 +8,7 @@ import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
 import { clsTime, Line_Property, Tile_Property } from './clsTime';
 import { clsColorPicker } from './clsSubWindows';
+import { boundArrangeData } from './boundArrangeData';
 import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 // CHR_LF は現在未使用のためコメントアウト
 // import { CHR_LF } from './constants/geometry';
@@ -2668,7 +2669,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             if (f === false) {
                 //文字列のデータ項目の場合
                 for (let j = 0; j < ObjNum; j++) {
-                    SS.Add(Number(aData[j][i]) || 0);
+                    SS.Add(aData[j][i]);
                 }
                 SS.AddEnd()
                 const ctn = SS.EachValue_Array();

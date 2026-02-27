@@ -6,6 +6,7 @@ import { SortingSearch } from './SortingSearch';
 import { SpatialIndexSearch, GetObjectPointTagInfo } from './SpatialIndexSearch';
 import { colorRGBA, cstRectangle_Cross, enmLineConnect, enmMarkPrintType, enmScaleUnit, enmZahyo_System_Info, point, rectangle, Start_End_Time_data, strYMD } from './clsAttrData';
 import { Fringe_Line_Info } from './clsPrint';
+import { boundArrangeData } from './boundArrangeData';
 import { enmShape, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 import type { JsonObject, JsonValue } from './types';
 

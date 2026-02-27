@@ -30,6 +30,7 @@ import {
     Legend2_Atri
 } from './clsAttrData';
 import { SortingSearch } from './SortingSearch';
+import { boundArrangeData } from './boundArrangeData';
 import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 
 interface strInner_Data_Info {

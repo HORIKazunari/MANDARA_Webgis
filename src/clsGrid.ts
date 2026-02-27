@@ -151,6 +151,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String
     let D_CheckDataValue: number[][] = []; // List(Of Double())
+    let gridErrorCheck: () => boolean = () => false;
     const oldAttrData=state.attrData; // clsAttrData
     const gridTopY=150;
     const layerDataWidth=200;
@@ -1681,7 +1682,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     }
 
     /**データエラーのチェック */
-    function gridErrorCheck() {
+    gridErrorCheck = function () {
         errorInfo.value="";
         const emes = ErrorCheckLayerMapFile();
         if (emes.length !== 0) {

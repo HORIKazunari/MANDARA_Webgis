@@ -5,6 +5,7 @@ import { SpatialIndexSearch as clsSpatialIndexSearch } from './SpatialIndexSearc
 import { Arrow_Data, BackGround_Box_Property, clsBase, clsTime, Font_Property, Line_Property, LineEdge_Connect_Pattern_Data_Info, Mark_Property, Tile_Property } from './clsTime';
 import { clsDraw, clsDrawLine, clsDrawTile } from './clsDraw';
 import { clsMapdata, EnableMPLine_Data, strCompass_Attri, Zahyo_info } from './clsMapdata';
+import { boundArrangeData } from './boundArrangeData';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmTripPositionType, enmVerticalAlignment, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 import type { strLayerInfo } from './clsWindow';
 import type { JsonObject, JsonValue, JsonArray, ListItem } from './types';
@@ -7034,9 +7035,11 @@ class clsAttrData {
             }
         } else {
             newD.Value = Dn_Val_str.map(v => {
-                if (v === undefined) return undefined;
-                return typeof v === 'number' ? v : Number(v);
-            }) as (number | undefined)[];
+                if (v === undefined) {
+                    return undefined;
+                }
+                return String(v);
+            }) as (string | undefined)[];
         }
         this.LayerData[Layernum].atrData.Data.push(newD);
         this.LayerData[Layernum].atrData.Count++;
