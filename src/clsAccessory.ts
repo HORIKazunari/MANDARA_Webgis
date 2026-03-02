@@ -41,9 +41,37 @@ const LEGEND_FORCE_DRAW_DEBUG = false;
 
 export class Accessory {
     private static legendDrawnInFrame = false;
+    private static classLegendDrawnInFrame = false;
 
     static BeginLegendFrame(): void {
         this.legendDrawnInFrame = false;
+        this.classLegendDrawnInFrame = false;
+    }
+
+    private static getFallbackLegendAnchor(g: CanvasRenderingContext2D, legendNo: number): point {
+        const state = appState();
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const scrData = vs.ScrData as unknown as Screen_info;
+        const legendXY = vs.MapLegend.Base.LegendXY[legendNo] ?? new point(0.05, 0.08);
+        let anchor: point;
+        if (scrData.Accessory_Base === enmBasePosition.Screen) {
+            anchor = scrData.getSxSy(scrData.getSRXYfromRatio(legendXY));
+        } else {
+            anchor = scrData.getSxSy(legendXY);
+        }
+        const canvasW = g.canvas?.width ?? 0;
+        const canvasH = g.canvas?.height ?? 0;
+        const outsideCanvas =
+            Number.isFinite(anchor.x) === false ||
+            Number.isFinite(anchor.y) === false ||
+            anchor.x < -200 ||
+            anchor.y < -200 ||
+            (canvasW > 0 && anchor.x > canvasW + 200) ||
+            (canvasH > 0 && anchor.y > canvasH + 200);
+        if (outsideCanvas) {
+            return new point(16, 72 + legendNo * 140);
+        }
+        return anchor;
     }
 
     private static getCategoryLegendLabel(classDiv: { Value: number | string; Cat_Name?: string }): string {
@@ -115,7 +143,7 @@ export class Accessory {
     }
 
     static EnsureLegendFallback(g: CanvasRenderingContext2D): void {
-        if (this.legendDrawnInFrame === true) {
+        if (this.classLegendDrawnInFrame === true) {
             return;
         }
         const state = appState();
@@ -130,9 +158,11 @@ export class Accessory {
         const dataNum = layer.atrData.SelectedIndex;
         const soloMode = state.attrData.getSoloMode(layerNum, dataNum);
         if (soloMode === enmSoloMode_Number.ClassPaintMode || soloMode === enmSoloMode_Number.ContourMode) {
-            const ok = this.drawClassPaintLegendFallback(g, new point(16, 72), layerNum, dataNum);
+            const anchor = this.getFallbackLegendAnchor(g, 0);
+            const ok = this.drawClassPaintLegendFallback(g, anchor, layerNum, dataNum);
             if (ok === true) {
                 this.legendDrawnInFrame = true;
+                this.classLegendDrawnInFrame = true;
             }
         }
     }
@@ -154,6 +184,8 @@ export class Accessory {
         }
 
         const data = layer.atrData.Data[dataNum];
+        const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
+        const scrData = vs.ScrData as unknown as Screen_info;
         const solo = data.SoloModeViewSettings as unknown as {
             Class_Div?: Array<{ Value: number | string; Cat_Name?: string; PaintColor?: colorRGBA }>;
         };
@@ -163,19 +195,27 @@ export class Accessory {
         }
 
         const rows = Math.min(classDiv.length, 12);
-        const left = 12;
-        const top = 56;
+        const canvasW = g.canvas?.width ?? 0;
+        const canvasH = g.canvas?.height ?? 0;
         const rowH = 16;
         const boxW = 16;
-        const panelW = 240;
-        const panelH = rows * rowH + 12;
+        const panelH = rows * rowH;
+
+        const mapScreenRect = scrData.getSxSyRect(scrData.ScrView);
+        const mapRight = Number.isFinite(mapScreenRect.right) ? mapScreenRect.right : 0;
+        const mapBottom = Number.isFinite(mapScreenRect.bottom) ? mapScreenRect.bottom : canvasH;
+
+        const leftOutsideMap = mapRight + 8;
+        const availableRightWidth = Math.max(80, canvasW - leftOutsideMap - 8);
+        const panelW = Math.min(220, availableRightWidth);
+
+        let left = leftOutsideMap;
+        let top = mapBottom - panelH;
+
+        left = Math.max(8, left);
+        top = Math.max(8, Math.min(top, Math.max(8, canvasH - panelH - 8)));
 
         g.save();
-        g.fillStyle = 'rgba(255,255,255,0.92)';
-        g.fillRect(left - 6, top - 6, panelW, panelH);
-        g.strokeStyle = 'rgba(0,0,0,0.25)';
-        g.lineWidth = 1;
-        g.strokeRect(left - 6, top - 6, panelW, panelH);
         g.font = '12px sans-serif';
         g.textBaseline = 'middle';
 
@@ -185,8 +225,6 @@ export class Accessory {
             const color = classDiv[i]?.PaintColor ?? new colorRGBA(220, 220, 220, 255);
             g.fillStyle = color.toRGBA();
             g.fillRect(left, y, boxW, boxH);
-            g.strokeStyle = 'rgba(0,0,0,0.7)';
-            g.strokeRect(left, y, boxW, boxH);
 
             let label = '';
             if (data.DataType === enmAttDataType.Category) {
@@ -201,6 +239,7 @@ export class Accessory {
         }
         g.restore();
         this.legendDrawnInFrame = true;
+        this.classLegendDrawnInFrame = true;
     }
 
     private static drawTextFallback(g: CanvasRenderingContext2D, text: string, p: point, font: Font_Property, backgroundColor?: string): void {
@@ -791,8 +830,12 @@ export class Accessory {
         if (TX !== "") {
             state.attrData.Draw_Print(g, TX, ALP, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
         }
-        if (screen_in === true || TX !== "" || LegendW.LineKind_Flag === true || LegendW.PointObject_Flag === true) {
+        if (screen_in === true) {
             this.legendDrawnInFrame = true;
+            if (LegendW.Print_Mode_Layer === enmLayerMode_Number.SoloMode &&
+                (LegendW.SoloMode === enmSoloMode_Number.ClassPaintMode || LegendW.SoloMode === enmSoloMode_Number.ContourMode)) {
+                this.classLegendDrawnInFrame = true;
+            }
         }
         if (legendFontAdjusted) {
             P_Legend.Base.Font.Color = originalLegendFontColor;
