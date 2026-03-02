@@ -79,6 +79,7 @@ type GraphOresenBouControl = {
 export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: colorRGBA[]) => void) {
     const colorChart = Generic.set_backDiv("", "カラーチャート", 260, 400, false, true, undefined, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, colorChart);
+    const classCount = Math.max(2, Number(ClassN) || 0);
     const pnlColorPattern = Generic.createNewDiv(colorChart, "", "", "", 10, appState().scrMargin.top + 10, 240, 310, "overflow-y: scroll;border:solid 1px;border-color:#666666;", "");
     const pnlPatternList = Generic.createNewDiv(pnlColorPattern, "", "", "", 0, 0, 210, 100, "", "");
 
@@ -126,7 +127,7 @@ export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colo
     const ConvColor: colorRGBA[][] = [];
     let maxn: number = colorPat.length;
     for (let i = 0; i < colorPat.length; i++) {
-        if (colorPat[i].length > ClassN) {
+        if (colorPat[i].length > classCount) {
             maxn = i;
             break;
         }
@@ -144,19 +145,19 @@ export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colo
         const colnum = colorPat[i].length;
         switch (colnum) {
             case 2:
-                ColData = Generic.TwoColorGradation(colcol[0], colcol[1], ClassN) as colorRGBA[];
+                ColData = Generic.TwoColorGradation(colcol[0], colcol[1], classCount) as colorRGBA[];
                 break;
             case 3: {
-                const cp = Math.floor(ClassN / 2);
-                ColData = Generic.ThreeColorGradation(colcol[0], colcol[1], colcol[2], ClassN, cp) as colorRGBA[];
+                const cp = Math.floor(classCount / 2);
+                ColData = Generic.ThreeColorGradation(colcol[0], colcol[1], colcol[2], classCount, cp) as colorRGBA[];
                 break;
             }
             default: {
                 const pos: number[] = [];
                 for (let j = 0; j < colnum - 1; j++) {
-                    pos.push(Math.floor((j / (colnum - 1)) * ClassN));
+                    pos.push(Math.floor((j / (colnum - 1)) * classCount));
                 }
-                pos.push(ClassN - 1);
+                pos.push(classCount - 1);
                 for (let j = 0; j < colnum - 1; j++) {
                     const tcol = Generic.TwoColorGradation(colcol[j], colcol[j + 1], pos[j + 1] - pos[j] + 1) as colorRGBA[];
                     for (let k=0;k< tcol.length;k++) {
@@ -168,9 +169,12 @@ export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colo
         }
 
         const ctx = canvas.getContext("2d");
-        for (let j = 0; j < ClassN; j++) {
-            const left = picw * (j / ClassN);
-            const right = picw * ((j + 1) / ClassN);
+        if (!ctx) {
+            continue;
+        }
+        for (let j = 0; j < classCount; j++) {
+            const left = picw * (j / classCount);
+            const right = picw * ((j + 1) / classCount);
             ctx.fillStyle = ColData[j].toRGBA();
             ctx.fillRect(left, 0, right - left, pich-4);
         }

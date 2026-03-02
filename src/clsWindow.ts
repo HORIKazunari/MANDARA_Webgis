@@ -2892,7 +2892,11 @@ export function setting(locSearch: string) {
         //ペイントモードカラーチャート
         function colorChart(e: MouseEvent) {
             const sv = state.attrData.nowDataSolo();
-            const DivNum = sv.Div_Num;
+            const DivNum = Number(sv.Div_Num ?? sv.Class_Div?.length ?? 0);
+            if (DivNum <= 0) {
+                Generic.alert(new point(e.clientX, e.clientY), "階級区分数が取得できないため、カラーチャートを表示できません。", undefined);
+                return;
+            }
             clsColorChart(e, DivNum, okButton);
             function okButton(col: colorRGBA[]) {
                 for (let i = 0; i < DivNum; i++) {

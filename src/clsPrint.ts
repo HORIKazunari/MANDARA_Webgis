@@ -749,7 +749,8 @@ class clsPrint {
         const Use_Line: number[] = Array.from({ length: ALineN }, () => 0);
         for (let i = 0; i < ObjCode.length; i++) {
             if (Dummy_F === false) {
-                const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, ObjCode[i]) as boundArrangeData[];
+                const badataRaw = state.attrData.Boundary_Kencode_Arrange(Layernum, ObjCode[i]) as boundArrangeData | boundArrangeData[] | undefined;
+                const badataArray = Array.isArray(badataRaw) ? badataRaw : (badataRaw ? [badataRaw] : []);
                 for (let k = 0; k < badataArray.length; k++) {
                     const badata = badataArray[k] as boundArrangeData;
                     for (let j = 0; j < badata.Fringe.length; j++) {
@@ -3848,7 +3849,8 @@ class clsPrint {
                 Polydata.nPolyP = nPolyP;
                 return Polydata;
             } else {
-                const badataArray = state.attrData.Boundary_Kencode_Arrange(Layernum, O_ObjNum_Code) as boundArrangeData[];
+                const badataRaw = state.attrData.Boundary_Kencode_Arrange(Layernum, O_ObjNum_Code) as boundArrangeData | boundArrangeData[] | undefined;
+                const badataArray = Array.isArray(badataRaw) ? badataRaw : (badataRaw ? [badataRaw] : []);
                 if (badataArray.length > 0) {
                     badata = badataArray[0] as boundArrangeData;
                 }
