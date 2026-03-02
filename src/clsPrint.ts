@@ -1277,11 +1277,13 @@ class clsPrint {
             Accessory.Note_Print(g);
             Accessory.Compass_print(g);
             Accessory.Title_Print(g);
+            Accessory.BeginLegendFrame();
             for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
-                if(state.attrData.Check_Screen_In(state.attrData.TempData.Accessory_Temp.MapLegend_W[i].Rect) === true) {
-                    Accessory.Legend_print(g, i, false);
-                }
+                Accessory.Legend_print(g, i, false);
             }
+            Accessory.EnsureLegendFallback(g);
+            Accessory.LegendHardFallback_Print(g);
+            Accessory.LegendDebug_Print(g);
         }
     }
 
@@ -1329,8 +1331,9 @@ class clsPrint {
                             atw.Layn = Layernum;
                             atw.Print_Mode_Layer = state.attrData.LayerData[Layernum].Print_Mode_Layer;
                             atw.title = "";
-                            atw.SoloMode = att_Data.ModeData;
-                            switch (att_Data.ModeData) {
+                            const currentSoloMode = state.attrData.getSoloMode(Layernum, Datanum);
+                            atw.SoloMode = currentSoloMode;
+                            switch (currentSoloMode) {
                                 case enmSoloMode_Number.MarkSizeMode:
                                 case enmSoloMode_Number.MarkBlockMode:
                                 case enmSoloMode_Number.MarkTurnMode:
@@ -1416,6 +1419,24 @@ class clsPrint {
             n++;
         }
 
+        if (n === 0 && state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
+            const selectedLayer = state.attrData.TotalData.LV1.SelectedLayer;
+            const layer = state.attrData.LayerData[selectedLayer];
+            if (layer.Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
+                const selectedData = layer.atrData.SelectedIndex;
+                const atw = new Legend2_Atri();
+                atw.DatN = selectedData;
+                atw.Layn = selectedLayer;
+                atw.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
+                atw.title = "";
+                atw.SoloMode = state.attrData.getSoloMode(selectedLayer, selectedData);
+                atw.LineKind_Flag = false;
+                atw.PointObject_Flag = false;
+                at.Accessory_Temp.MapLegend_W[0] = atw;
+                n = 1;
+            }
+        }
+
         if(n > am.Base.Legend_Num) {
             const oldn= am.Base.Legend_Num;
             am.Base.Legend_Num = n
@@ -1482,7 +1503,8 @@ class clsPrint {
                         atm.SoloMode = Over_D.Mode;
                         state.attrData.TempData.Accessory_Temp.MapLegend_W[n]=atm;
                         let lwl;
-                        switch (OVerData.ModeData) {
+                        const overlaySoloMode = state.attrData.getSoloMode(L, dt);
+                        switch (overlaySoloMode) {
                             case enmSoloMode_Number.MarkSizeMode:
                             case enmSoloMode_Number.MarkBlockMode:
                             case enmSoloMode_Number.MarkTurnMode:

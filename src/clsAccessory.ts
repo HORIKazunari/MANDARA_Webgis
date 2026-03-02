@@ -36,8 +36,172 @@ import {
 
 const chrLF = CHR_LF;
 type ViewStyleWithScreen = IAttrData['TotalData']['ViewStyle'] & { ScrData: Screen_info };
+const LEGEND_DEBUG_ENABLED = false;
+const LEGEND_FORCE_DRAW_DEBUG = false;
 
 export class Accessory {
+    private static legendDrawnInFrame = false;
+
+    static BeginLegendFrame(): void {
+        this.legendDrawnInFrame = false;
+    }
+
+    private static getCategoryLegendLabel(classDiv: { Value: number | string; Cat_Name?: string }): string {
+        if (classDiv.Cat_Name !== undefined && classDiv.Cat_Name !== null && String(classDiv.Cat_Name) !== "") {
+            return String(classDiv.Cat_Name);
+        }
+        return String(classDiv.Value ?? "");
+    }
+
+    private static getClassDivCount(soloModeViewSettings: { Div_Num?: number; Class_Div: Array<unknown> }): number {
+        const fromDivNum = Number(soloModeViewSettings.Div_Num ?? 0);
+        const fromArray = Array.isArray(soloModeViewSettings.Class_Div) ? soloModeViewSettings.Class_Div.length : 0;
+        return Math.max(fromDivNum, fromArray);
+    }
+
+    private static getReadableLegendFontColor(source: colorRGBA): colorRGBA {
+        const luminance = 0.299 * source.r + 0.587 * source.g + 0.114 * source.b;
+        if (luminance >= 175) {
+            return new colorRGBA(32, 32, 32, source.a);
+        }
+        return source.Clone();
+    }
+
+    private static drawClassPaintLegendFallback(g: CanvasRenderingContext2D, anchor: point, layerNum: number, dataNum: number): boolean {
+        const state = appState();
+        const vs = state.attrData.TotalData.ViewStyle;
+        const font = vs.MapLegend.Base.Font;
+        const data = state.attrData.LayerData[layerNum]?.atrData?.Data?.[dataNum];
+        if (!data) {
+            return false;
+        }
+        const solo = data.SoloModeViewSettings as unknown as {
+            Class_Div?: Array<{ Value: number | string; Cat_Name?: string; PaintColor?: colorRGBA }>;
+            Div_Num?: number;
+        };
+        const classDiv = Array.isArray(solo.Class_Div) ? solo.Class_Div : [];
+        const rowCount = Math.min(classDiv.length, 30);
+        if (rowCount <= 0) {
+            return false;
+        }
+
+        const rowH = 16;
+        const boxW = 20;
+        const textX = anchor.x + boxW + 8;
+
+        g.save();
+        g.font = font.toContextFont(vs.ScrData).font;
+        for (let i = 0; i < rowCount; i++) {
+            const rowY = anchor.y + i * rowH;
+            const color = classDiv[i]?.PaintColor ?? new colorRGBA(220, 220, 220, 255);
+            g.fillStyle = color.toRGBA();
+            g.fillRect(anchor.x, rowY, boxW, rowH - 2);
+            g.strokeStyle = 'rgba(0,0,0,0.85)';
+            g.lineWidth = 1;
+            g.strokeRect(anchor.x, rowY, boxW, rowH - 2);
+
+            let label = '';
+            if (data.DataType === enmAttDataType.Category) {
+                label = this.getCategoryLegendLabel(classDiv[i] as unknown as { Value: number | string; Cat_Name?: string });
+            } else if (i < rowCount - 1 && classDiv[i]) {
+                label = String(classDiv[i].Value ?? '');
+            }
+            if (label !== '') {
+                state.attrData.Draw_Print(g, label, new point(textX, rowY), font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
+            }
+        }
+        g.restore();
+        return true;
+    }
+
+    static EnsureLegendFallback(g: CanvasRenderingContext2D): void {
+        if (this.legendDrawnInFrame === true) {
+            return;
+        }
+        const state = appState();
+        if (state.attrData.TotalData.LV1.Print_Mode_Total !== enmTotalMode_Number.DataViewMode) {
+            return;
+        }
+        const layerNum = state.attrData.TotalData.LV1.SelectedLayer;
+        const layer = state.attrData.LayerData[layerNum];
+        if (!layer || layer.Print_Mode_Layer !== enmLayerMode_Number.SoloMode) {
+            return;
+        }
+        const dataNum = layer.atrData.SelectedIndex;
+        const soloMode = state.attrData.getSoloMode(layerNum, dataNum);
+        if (soloMode === enmSoloMode_Number.ClassPaintMode || soloMode === enmSoloMode_Number.ContourMode) {
+            const ok = this.drawClassPaintLegendFallback(g, new point(16, 72), layerNum, dataNum);
+            if (ok === true) {
+                this.legendDrawnInFrame = true;
+            }
+        }
+    }
+
+    static LegendHardFallback_Print(g: CanvasRenderingContext2D): void {
+        const state = appState();
+        if (state.attrData.TotalData.LV1.Print_Mode_Total !== enmTotalMode_Number.DataViewMode) {
+            return;
+        }
+        const layerNum = state.attrData.TotalData.LV1.SelectedLayer;
+        const layer = state.attrData.LayerData[layerNum];
+        if (!layer || layer.Print_Mode_Layer !== enmLayerMode_Number.SoloMode) {
+            return;
+        }
+        const dataNum = layer.atrData.SelectedIndex;
+        const soloMode = state.attrData.getSoloMode(layerNum, dataNum);
+        if (soloMode !== enmSoloMode_Number.ClassPaintMode && soloMode !== enmSoloMode_Number.ContourMode) {
+            return;
+        }
+
+        const data = layer.atrData.Data[dataNum];
+        const solo = data.SoloModeViewSettings as unknown as {
+            Class_Div?: Array<{ Value: number | string; Cat_Name?: string; PaintColor?: colorRGBA }>;
+        };
+        const classDiv = Array.isArray(solo.Class_Div) ? solo.Class_Div : [];
+        if (classDiv.length === 0) {
+            return;
+        }
+
+        const rows = Math.min(classDiv.length, 12);
+        const left = 12;
+        const top = 56;
+        const rowH = 16;
+        const boxW = 16;
+        const panelW = 240;
+        const panelH = rows * rowH + 12;
+
+        g.save();
+        g.fillStyle = 'rgba(255,255,255,0.92)';
+        g.fillRect(left - 6, top - 6, panelW, panelH);
+        g.strokeStyle = 'rgba(0,0,0,0.25)';
+        g.lineWidth = 1;
+        g.strokeRect(left - 6, top - 6, panelW, panelH);
+        g.font = '12px sans-serif';
+        g.textBaseline = 'middle';
+
+        for (let i = 0; i < rows; i++) {
+            const y = top + i * rowH;
+            const boxH = rowH - 3;
+            const color = classDiv[i]?.PaintColor ?? new colorRGBA(220, 220, 220, 255);
+            g.fillStyle = color.toRGBA();
+            g.fillRect(left, y, boxW, boxH);
+            g.strokeStyle = 'rgba(0,0,0,0.7)';
+            g.strokeRect(left, y, boxW, boxH);
+
+            let label = '';
+            if (data.DataType === enmAttDataType.Category) {
+                label = this.getCategoryLegendLabel(classDiv[i] as unknown as { Value: number | string; Cat_Name?: string });
+            } else if (i < rows - 1) {
+                label = String(classDiv[i]?.Value ?? '');
+            }
+            g.fillStyle = '#111111';
+            if (label !== '') {
+                g.fillText(label, left + boxW + 8, y + boxH / 2);
+            }
+        }
+        g.restore();
+        this.legendDrawnInFrame = true;
+    }
 
     private static drawTextFallback(g: CanvasRenderingContext2D, text: string, p: point, font: Font_Property, backgroundColor?: string): void {
         const state = appState();
@@ -431,18 +595,35 @@ export class Accessory {
         const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[legendNo];
         const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
         const scrData = vs.ScrData as unknown as Screen_info;
-        if ((vs.MapLegend.Base.Visible === false) && (
-            LegendW.LineKind_Flag === false) && (LegendW.PointObject_Flag === false)) {
-            return;
+        if ((LegendW.LineKind_Flag === true) || (LegendW.PointObject_Flag === true)) {
+            // 継続
         }
         let ALP;
         const P_Legend = vs.MapLegend;
+        const originalLegendFontColor = P_Legend.Base.Font.Color.Clone();
+        const readableLegendFontColor = this.getReadableLegendFontColor(originalLegendFontColor);
+        const legendFontAdjusted = readableLegendFontColor.Equals(originalLegendFontColor) === false;
+        if (legendFontAdjusted) {
+            P_Legend.Base.Font.Color = readableLegendFontColor;
+        }
         if (scrData.Accessory_Base === enmBasePosition.Screen) {
             const p = P_Legend.Base.LegendXY[legendNo];
             ALP = scrData.getSxSy(scrData.getSRXYfromRatio(p));
         } else {
             const p = P_Legend.Base.LegendXY[legendNo];
             ALP = scrData.getSxSy(p);
+        }
+        const canvasW = g.canvas?.width ?? 0;
+        const canvasH = g.canvas?.height ?? 0;
+        const outsideCanvas =
+            Number.isFinite(ALP.x) === false ||
+            Number.isFinite(ALP.y) === false ||
+            ALP.x < -200 ||
+            ALP.y < -200 ||
+            (canvasW > 0 && ALP.x > canvasW + 200) ||
+            (canvasH > 0 && ALP.y > canvasH + 200);
+        if (outsideCanvas) {
+            ALP = new point(16, 72 + legendNo * 140);
         }
         const LFont = P_Legend.Base.Font;
 
@@ -556,10 +737,65 @@ export class Accessory {
             LegendW.Rect = new rectangle(ALP, BoxSize);
             const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag === true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
             LegendW.Rect.inflate(padw, padw);
+            if (legendFontAdjusted) {
+                P_Legend.Base.Font.Color = originalLegendFontColor;
+            }
             return;
         }
-        if ((TX !== "") && (screen_in === true)) {
+
+        if (screen_in !== true && LegendW.Print_Mode_Layer === enmLayerMode_Number.SoloMode && LegendW.SoloMode === enmSoloMode_Number.ClassPaintMode) {
+            const layerNum = Number(LegendW.Layn ?? -1);
+            const dataNum = Number(LegendW.DatN ?? -1);
+            if (layerNum >= 0 && dataNum >= 0) {
+                const fallbackOk = this.drawClassPaintLegendFallback(g, ALP, layerNum, dataNum);
+                if (fallbackOk === true) {
+                    screen_in = true;
+                }
+            }
+        }
+
+        if (LEGEND_FORCE_DRAW_DEBUG === true) {
+            g.save();
+            g.font = 'bold 12px monospace';
+            g.fillStyle = '#ff3030';
+            g.fillText('LEGEND DRAWN', ALP.x + 8, ALP.y + 16);
+
+            if (LegendW.Print_Mode_Layer === enmLayerMode_Number.SoloMode && LegendW.SoloMode === enmSoloMode_Number.ClassPaintMode) {
+                const layerNum = Number(LegendW.Layn ?? -1);
+                const dataNum = Number(LegendW.DatN ?? -1);
+                if (layerNum >= 0 && dataNum >= 0) {
+                    const solo = state.attrData.LayerData[layerNum].atrData.Data[dataNum].SoloModeViewSettings as unknown as {
+                        Div_Num?: number;
+                        Class_Div?: Array<{ Value: number | string; PaintColor?: colorRGBA }>;
+                    };
+                    const classDiv = Array.isArray(solo.Class_Div) ? solo.Class_Div : [];
+                    const divCount = Math.max(Number(solo.Div_Num ?? 0), classDiv.length);
+                    const rows = Math.min(Math.max(divCount, 0), 6);
+                    g.font = '11px monospace';
+                    for (let i = 0; i < rows; i++) {
+                        const y = ALP.y + 24 + i * 16;
+                        const c = classDiv[i]?.PaintColor ?? new colorRGBA(255, 0, 255, 255);
+                        g.fillStyle = c.toRGBA();
+                        g.fillRect(ALP.x + 8, y, 18, 12);
+                        g.strokeStyle = '#000000';
+                        g.strokeRect(ALP.x + 8, y, 18, 12);
+                        g.fillStyle = '#ffff66';
+                        const label = String(classDiv[i]?.Value ?? `row${i}`);
+                        g.fillText(label, ALP.x + 32, y + 10);
+                    }
+                }
+            }
+            g.restore();
+        }
+
+        if (TX !== "") {
             state.attrData.Draw_Print(g, TX, ALP, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
+        }
+        if (screen_in === true || TX !== "" || LegendW.LineKind_Flag === true || LegendW.PointObject_Flag === true) {
+            this.legendDrawnInFrame = true;
+        }
+        if (legendFontAdjusted) {
+            P_Legend.Base.Font.Color = originalLegendFontColor;
         }
         vs.MapLegend = P_Legend;//必要？
     }
@@ -963,7 +1199,7 @@ export class Accessory {
         }
 
         if (state.attrData.Check_Screen_In(C_Rect) === false) {
-            return false;
+            // 画面内判定に失敗しても凡例描画自体は継続する
         }
 
         //ここから描画
@@ -1275,7 +1511,7 @@ export class Accessory {
 
         const C_Rect = new rectangle(ALP, FigSize);
         if (state.attrData.Check_Screen_In(C_Rect) === false) {
-            return false;
+            // 画面内判定に失敗しても凡例描画自体は継続する
         }
 
         this.LegendBoxBack(g, C_Rect);
@@ -1459,7 +1695,7 @@ export class Accessory {
         }
         const C_Rect = new rectangle(ALP, HeadBoxSize);
         if (state.attrData.Check_Screen_In(C_Rect) === false) {
-            return false;
+            // 画面内判定に失敗しても凡例描画自体は継続する
         }
 
         //--------描画
@@ -1733,7 +1969,7 @@ export class Accessory {
         const LFont = vs.MapLegend.Base.Font;
         const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
         const sv = PData.SoloModeViewSettings;
-        const Div_Num = sv.Div_Num;
+        const Div_Num = this.getClassDivCount(sv as unknown as { Div_Num?: number; Class_Div: Array<unknown> });
 
         const retv = this.Paint_Tile_Word_Set(g, UnitTx, Layn2, datn2,false);
         const ww = retv.ww;
@@ -1742,7 +1978,7 @@ export class Accessory {
         const byh = retv.byh;
         const vn = retv.vn ?? 0;
         const sujiW = retv.sujiW;
-        const freqW = retv.freqW;
+        const freqW = retv.freqW ?? 0;
         const LL = retv.LL;
         const RR = retv.RR;
         const inBox = new size(bxw, 0);
@@ -1818,7 +2054,7 @@ export class Accessory {
             for (let i = 0; i <= vn; i++) {
                 let fu;
                 if (PData.DataType === enmAttDataType.Category) {
-                    fu = sv.Class_Div[i]?.Value || '';
+                    fu = this.getCategoryLegendLabel(sv.Class_Div[i] as unknown as { Value: number | string; Cat_Name?: string });
                 } else {
                     fu = this.Get_SeparateClassWords(sv.Class_Div, i, Div_Num, LL, RR);
                 }
@@ -1894,7 +2130,7 @@ export class Accessory {
         const vs = state.attrData.TotalData.ViewStyle;
         const LFont  = vs.MapLegend.Base.Font;
         const UH  = state.attrData.Get_Length_On_Screen(LFont.Size)+3;
-        const Div_Num  = PData.SoloModeViewSettings.Div_Num;
+        const Div_Num  = this.getClassDivCount(PData.SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div: Array<unknown> });
         let LL  = 1;
         let RR  = 0;
         if(PData.DataType !== enmAttDataType.Category ){
@@ -2002,7 +2238,7 @@ export class Accessory {
                     state.attrData.Draw_Line(g, cvi.ODLinePat, [new point(ALP.x + r, ALP.y + Y), new point(ALP.x + x2 - r, ALP.y + Y)]);
                     let fu ;
                     if(PData.DataType === enmAttDataType.Category ){
-                        fu = cvi.Value;
+                        fu = this.getCategoryLegendLabel(cvi as unknown as { Value: number | string; Cat_Name?: string });
                     }else{
                         fu = this.Get_SeparateClassWords(Class_div, i, Div_Num, LL, RR);
                     }
@@ -2089,7 +2325,7 @@ export class Accessory {
 
         const PointLayerMark  = state.attrData.LayerData[Layn2].LayerModeViewSettings.PointLineShape;
 
-        const dvn  = PData.SoloModeViewSettings.Div_Num
+        const dvn  = this.getClassDivCount(PData.SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div: Array<unknown> });
         const LinePush: Line_Property[] = [];
         for (let i = 0; i < dvn;i++){
             const linePat = PData.SoloModeViewSettings.Class_Div[i].ODLinePat ?? clsBase.Line();
@@ -2128,7 +2364,7 @@ export class Accessory {
         let byh = retv.byh;
         const vn = retv.vn ?? 0;
         const sujiW = retv.sujiW;
-        const freqW = retv.freqW;
+        const freqW = retv.freqW ?? 0;
         const LL = retv.LL;
         const RR = retv.RR;
         HeadBoxSize.width = Math.max(HeadBoxSize.width, bxw + ww / 2 + sujiW + freqW);
@@ -2136,7 +2372,8 @@ export class Accessory {
         if (this.GetClassMethod(Layn2, datn2,true) === enmClassMode_Meshod.Separated) {
             byh = byh * (vs.MapLegend.ClassMD.SeparateGapSize + 1);
         }
-        let ysize2 = HeadBoxSize.height + byh * (PData.SoloModeViewSettings.Div_Num + 0.1) + hu;
+        const classDivNum = this.getClassDivCount(PData.SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div: Array<unknown> });
+        let ysize2 = HeadBoxSize.height + byh * (classDivNum + 0.1) + hu;
         //    Ysize2 = YSize + bxw * (PData.Div_Num + 0.1) + hu + (PData.Div_Num - 1) * bxwy
         if ((PData.MissingValueNum > 0) && (vs.Missing_Data.Print_Flag === true) && (
             state.attrData.LayerData[Layn2].Type !== enmLayerType.Trip)) {
@@ -2159,27 +2396,41 @@ export class Accessory {
         state.attrData.Draw_Print(g, UnitTx, P, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
         const ClassBoxLine = vs.MapLegend.ClassMD.PaintMode_Line;
 
-        for (let i = 0; i < PData.SoloModeViewSettings.Div_Num; i++) {
+        for (let i = 0; i < classDivNum; i++) {
             const PaintBox = new rectangle(new point(ALP.x, ALP.y + i * byh + hu + HeadBoxSize.height), new size(bxw + 1, fbyh));
             const TilePat = clsBase.Tile();
+            TilePat.BlankF = false;
             TilePat.Color = PData.SoloModeViewSettings.Class_Div[i].PaintColor;
-            state.attrData.Draw_Tile_Box(g, PaintBox, ClassBoxLine, TilePat, 0);
+            g.save();
+            g.fillStyle = TilePat.Color.toRGBA();
+            g.fillRect(PaintBox.left, PaintBox.top, PaintBox.width(), PaintBox.height());
+            g.restore();
+            if (ClassBoxLine.BlankF === false) {
+                const borderPoly = [
+                    new point(PaintBox.left, PaintBox.top),
+                    new point(PaintBox.right, PaintBox.top),
+                    new point(PaintBox.right, PaintBox.bottom),
+                    new point(PaintBox.left, PaintBox.bottom),
+                    new point(PaintBox.left, PaintBox.top)
+                ];
+                state.attrData.Draw_Line(g, ClassBoxLine, borderPoly);
+            }
         }
         if ((this.GetClassMethod(Layn2, datn2,true) === enmClassMode_Meshod.Separated) || (PData.DataType === enmAttDataType.Category)) {
             //分離表示またはカテゴリー
             for (let  i = 0; i <= vn; i++) {
                 let fu;
                 if (PData.DataType === enmAttDataType.Category) {
-                    fu = String(PData.SoloModeViewSettings.Class_Div[i].Value);
+                    fu = this.getCategoryLegendLabel(PData.SoloModeViewSettings.Class_Div[i] as unknown as { Value: number | string; Cat_Name?: string });
                 } else {
-                    fu = this.Get_SeparateClassWords(PData.SoloModeViewSettings.Class_Div, i, PData.SoloModeViewSettings.Div_Num, LL, RR);
+                    fu = this.Get_SeparateClassWords(PData.SoloModeViewSettings.Class_Div, i, classDivNum, LL, RR);
                 }
                 const cwp = ALP.Clone();;
                 cwp.offset(bxw + ww / 2, i * byh + hu + HeadBoxSize.height);
                 state.attrData.Draw_Print(g, fu, cwp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
             }
         } else {
-            for (let i = 0; i <= PData.SoloModeViewSettings.Div_Num - 2; i++) {
+            for (let i = 0; i <= classDivNum - 2; i++) {
                 const fu = Generic.Figure_Using3(Number(PData.SoloModeViewSettings.Class_Div[i].Value), LL, RR, vs.MapLegend.Base.Comma_f);
                 const cwp = ALP.Clone();
                 cwp.offset(bxw + ww / 2, (i + 0.5) * byh + hu + HeadBoxSize.height);
@@ -2203,9 +2454,24 @@ export class Accessory {
         if ((PData.MissingValueNum > 0) && (vs.Missing_Data.Print_Flag === true) && (
             state.attrData.LayerData[Layn2].Type !== enmLayerType.Trip)) {
             //欠損値
-            const MissRect = new rectangle(new point(ALP.x, ALP.y + (PData.SoloModeViewSettings.Div_Num + 0.5) * byh + hu + HeadBoxSize.height), new size(bxw, fbyh));
+            const MissRect = new rectangle(new point(ALP.x, ALP.y + (classDivNum + 0.5) * byh + hu + HeadBoxSize.height), new size(bxw, fbyh));
             const am = vs.Missing_Data;
-            state.attrData.Draw_Tile_Box(g, MissRect, ClassBoxLine, am.PaintTile, 0);
+            g.save();
+            if (am.PaintTile.BlankF === false) {
+                g.fillStyle = am.PaintTile.Color.toRGBA();
+                g.fillRect(MissRect.left, MissRect.top, MissRect.width(), MissRect.height());
+            }
+            g.restore();
+            if (ClassBoxLine.BlankF === false) {
+                const missBorder = [
+                    new point(MissRect.left, MissRect.top),
+                    new point(MissRect.right, MissRect.top),
+                    new point(MissRect.right, MissRect.bottom),
+                    new point(MissRect.left, MissRect.bottom),
+                    new point(MissRect.left, MissRect.top)
+                ];
+                state.attrData.Draw_Line(g, ClassBoxLine, missBorder);
+            }
             const mistxp = new point(ALP.x + bxw + ww / 2, MissRect.top);
             state.attrData.Draw_Print(g, am.Text, mistxp, LFont, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
 
@@ -2236,7 +2502,7 @@ export class Accessory {
         return CMethod;
     }
 
-    static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; FreqW: number; vn?: number; LL?: number; RR?: number; freqW?: number} {
+    static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; freqW: number; vn?: number; LL?: number; RR?: number} {
         const state = appState();
 
         let ww = 0;
@@ -2246,7 +2512,7 @@ export class Accessory {
         let byh = 0;
         let vn;
         let sujiW=0;
-        const freqW=0;
+        const initialFreqW = 0;
         let LL = 1;
         let RR = 0;
         const PData = state.attrData.LayerData[Layn2].atrData.Data[datn2];
@@ -2256,7 +2522,7 @@ export class Accessory {
         if (PData.DataType === enmAttDataType.Category) {
             n = 0;
         }
-        const Div_Num = PData.SoloModeViewSettings.Div_Num;
+        const Div_Num = this.getClassDivCount(PData.SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div: Array<unknown> });
         for (let i = 0; i <= (Div_Num -1- n); i++) {
             const a = Number(Class_div[i].Value);
             const deci =Generic.Figure_Arrange(a);
@@ -2279,7 +2545,7 @@ export class Accessory {
                 byh: byh,
                 vn: vn,
                 sujiW: sujiW,
-                FreqW: freqW,
+                freqW: initialFreqW,
                 LL: LL,
                 RR: RR
             };
@@ -2314,7 +2580,7 @@ export class Accessory {
             let fu = ""
             for (let i = 0; i < vn; i++) {
                 if (PData.DataType === enmAttDataType.Category) {
-                    fu = String(Class_div[i].Cat_Name);
+                    fu = this.getCategoryLegendLabel(Class_div[i] as unknown as { Value: number | string; Cat_Name?: string });
                 } else {
                     fu = this.Get_SeparateClassWords( PData.SoloModeViewSettings.Class_Div, i, Div_Num, LL, RR);
                 }
@@ -2331,13 +2597,13 @@ export class Accessory {
 
         sujiW = Math.max(sujiW, sujiw2);
 
-        let FreqW = 0;
+        let freqW = 0;
         if (vs.MapLegend.ClassMD.FrequencyPrint === true) {
             const retV=state.attrData.Get_ClassFrequency(Layn2, datn2, true);
             if (retV.ok === true && retV.frequency) {
                 for (let j = 0; j < retV.frequency.length; j++) {
                     const fq="(" + String(retV.frequency[j]) + ")";
-                    FreqW = Math.max(FreqW, g.measureText(fq).width);
+                    freqW = Math.max(freqW, g.measureText(fq).width);
                 }
             }
         }
@@ -2351,7 +2617,7 @@ export class Accessory {
             byh: byh,
             vn: vn,
             sujiW: sujiW,
-            FreqW: FreqW,
+            freqW: freqW,
             LL: LL,
             RR: RR
         }
@@ -2694,6 +2960,55 @@ export class Accessory {
         }
         retV.P_Scl = P_Scl;
         return retV;
+    }
+
+    static LegendDebug_Print(g: CanvasRenderingContext2D): void {
+        if (LEGEND_DEBUG_ENABLED === false) {
+            return;
+        }
+        const state = appState();
+        const layerNum = state.attrData.TotalData.LV1.SelectedLayer;
+        const dataNum = state.attrData.LayerData[layerNum].atrData.SelectedIndex;
+        const soloMode = state.attrData.getSoloMode(layerNum, dataNum);
+        const solo = state.attrData.LayerData[layerNum].atrData.Data[dataNum].SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div?: Array<unknown> };
+        const divNum = Number(solo.Div_Num ?? 0);
+        const classDivLen = Array.isArray(solo.Class_Div) ? solo.Class_Div.length : 0;
+        const legendW = state.attrData.TempData.Accessory_Temp.MapLegend_W as Array<{ Layn?: number; DatN?: number; SoloMode?: number; Print_Mode_Layer?: number; LineKind_Flag?: boolean; PointObject_Flag?: boolean }>;
+        const legendNoMax = Number((state.attrData.TempData.Accessory_Temp as unknown as { Legend_No_Max?: number }).Legend_No_Max ?? 0);
+
+        const lines: string[] = [];
+        lines.push('[Legend Debug]');
+        lines.push(`Layer=${layerNum} Data=${dataNum} SoloMode=${soloMode}`);
+        lines.push(`Div_Num=${divNum} Class_Div.length=${classDivLen}`);
+        lines.push(`Legend_No_Max=${legendNoMax} MapLegend_W.length=${legendW.length}`);
+
+        const maxRows = Math.min(legendW.length, 6);
+        for (let i = 0; i < maxRows; i++) {
+            const lw = legendW[i];
+            if (!lw) {
+                lines.push(`#${i}: <undefined>`);
+                continue;
+            }
+            lines.push(`#${i}: PM=${lw.Print_Mode_Layer} SM=${lw.SoloMode} L=${lw.Layn} D=${lw.DatN} LK=${lw.LineKind_Flag ? 1 : 0} PO=${lw.PointObject_Flag ? 1 : 0}`);
+        }
+
+        const lineHeight = 14;
+        const boxWidth = 560;
+        const boxHeight = lineHeight * (lines.length + 1);
+        const left = 10;
+        const top = 10;
+
+        g.save();
+        g.globalAlpha = 0.92;
+        g.fillStyle = 'rgba(0,0,0,0.75)';
+        g.fillRect(left, top, boxWidth, boxHeight);
+        g.globalAlpha = 1;
+        g.fillStyle = '#00ffcc';
+        g.font = '12px monospace';
+        for (let i = 0; i < lines.length; i++) {
+            g.fillText(lines[i], left + 8, top + 18 + i * lineHeight);
+        }
+        g.restore();
     }
 
     //方位記号の外接四角形領域取得
