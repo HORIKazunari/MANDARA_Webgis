@@ -949,13 +949,13 @@ export function setting(locSearch: string) {
         const tx3="<b>左上のメニューから始めてください</b>"
         const tx4='<a href="https://webgis.celas.osaka-u.ac.jp/" target="_blank">MANDARA Webgisのページ（大阪大学）</a>';
         const tx5='<a href="index.html" target="_blank">本サイトのトップページ</a>'
-        const tx6='<a href="https://github.com/HORIKazunari/MANDARA_JS_followup" target="_blank">GitHub MANDARA_JS_followupのページ</a>'
+        const tx6='<a href="https://github.com/HORIKazunari/MANDARA_Webgis" target="_blank">GitHub MANDARA_Webgisのページ</a>'
         Generic.createNewSpan(frame,tx1,"","",15,15,"",undefined);
         Generic.createNewSpan(frame,tx2,"","",100,40,"",undefined);
         Generic.createNewSpan(frame,tx3,"","",50,70,"",undefined);
         Generic.createNewSpan(frame,tx4,"","",15,100,"",undefined);
-        Generic.createNewSpan(frame,tx5,"","",70,150,"",undefined);
-        Generic.createNewSpan(frame,tx6,"","",70,125,"",undefined);
+        Generic.createNewSpan(frame,tx5,"","",15,150,"",undefined);
+        Generic.createNewSpan(frame,tx6,"","",15,125,"",undefined);
         return frame;
     }
 
