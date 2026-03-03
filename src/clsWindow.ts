@@ -944,8 +944,8 @@ export function setting(locSearch: string) {
     function AbountInner(parent: HTMLElement, x: number, y: number){
         const frame=Generic.createNewFrame(parent,"","",x,y,300,185);
         frame.style.backgroundColor="#ffffff";
-        const tx1="ブラウザGIS MANDARA JS";
-        const tx2="バージョン 1.003";
+        const tx1="ブラウザGIS MANDARA Webgis";
+        const tx2="バージョン 2.001";
         const tx3="<b>左上のメニューから始めてください</b>"
         const tx4='<a href="https://webgis.celas.osaka-u.ac.jp/" target="_blank">MANDARA Webgisのページ（大阪大学）</a>';
         const tx5='<a href="index.html" target="_blank">本サイトのトップページ</a>'
