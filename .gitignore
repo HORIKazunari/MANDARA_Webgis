@@ -30,3 +30,4 @@ readme.txt
 *.bak
 lint_results.txt
 prefer_const_errors.txt
+vite-ts-mandara.code-workspace
