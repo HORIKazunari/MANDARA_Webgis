@@ -1258,7 +1258,10 @@ class clsPrint {
             }
             if((Agb.Legend === true) && (av.MapLegend.Base.Visible === true)) {
                 for (let i = 0; i < at.Legend_No_Max; i++) {
-                    Rects.push(at.MapLegend_W[i].Rect);
+                    const legendRect = at.MapLegend_W[i].Rect;
+                    if (legendRect.width() > 0 && legendRect.height() > 0) {
+                        Rects.push(legendRect);
+                    }
                 }
             }
             let rect = Rects[0].Clone();
@@ -1272,18 +1275,25 @@ class clsPrint {
     static Figure_Print(g: CanvasRenderingContext2D, back_gazo_f: boolean) {
         const state = appState();
         if(back_gazo_f === false) {
+            const viewStyle = state.attrData.TotalData.ViewStyle;
+            const shouldDrawLegend =
+                viewStyle.MapLegend.Base.Visible === true ||
+                viewStyle.MapLegend.Line_DummyKind.Line_Visible === true ||
+                viewStyle.MapLegend.Line_DummyKind.Dummy_Point_Visible === true;
             Accessory.AccGroupBoxDraw(g);
             Accessory.Scale_Print(g);
             Accessory.Note_Print(g);
             Accessory.Compass_print(g);
             Accessory.Title_Print(g);
-            Accessory.BeginLegendFrame();
-            for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
-                Accessory.Legend_print(g, i, false);
+            if (shouldDrawLegend === true) {
+                Accessory.BeginLegendFrame();
+                for (let i = 0; i < state.attrData.TempData.Accessory_Temp.Legend_No_Max; i++) {
+                    Accessory.Legend_print(g, i, false);
+                }
+                Accessory.EnsureLegendFallback(g);
+                Accessory.LegendHardFallback_Print(g);
+                Accessory.LegendDebug_Print(g);
             }
-            Accessory.EnsureLegendFallback(g);
-            Accessory.LegendHardFallback_Print(g);
-            Accessory.LegendDebug_Print(g);
         }
     }
 
@@ -1417,24 +1427,6 @@ class clsPrint {
             atw.PointObject_Flag = true;
             at.Accessory_Temp.MapLegend_W[n]=atw;
             n++;
-        }
-
-        if (n === 0 && state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.DataViewMode) {
-            const selectedLayer = state.attrData.TotalData.LV1.SelectedLayer;
-            const layer = state.attrData.LayerData[selectedLayer];
-            if (layer.Print_Mode_Layer === enmLayerMode_Number.SoloMode) {
-                const selectedData = layer.atrData.SelectedIndex;
-                const atw = new Legend2_Atri();
-                atw.DatN = selectedData;
-                atw.Layn = selectedLayer;
-                atw.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
-                atw.title = "";
-                atw.SoloMode = state.attrData.getSoloMode(selectedLayer, selectedData);
-                atw.LineKind_Flag = false;
-                atw.PointObject_Flag = false;
-                at.Accessory_Temp.MapLegend_W[0] = atw;
-                n = 1;
-            }
         }
 
         if(n > am.Base.Legend_Num) {

@@ -287,6 +287,13 @@ export class Accessory {
             }
         }
         const n=Use_Line_Number.length;
+        if (n === 0) {
+            if (HeadBoxSize) {
+                HeadBoxSize.width = 0;
+                HeadBoxSize.height = 0;
+            }
+            return false;
+        }
         const getLengthOnScreen = state.attrData.Get_Length_On_Screen;
         if (!getLengthOnScreen || !LFont?.Size) {
             return false;
@@ -381,6 +388,11 @@ export class Accessory {
         let mxw2 = 0;
         let Ys = 0;
         const pointObjectStack = state.attrData.TempData.PointObjectKindUsedStack;
+        if (!Array.isArray(pointObjectStack) || pointObjectStack.length === 0) {
+            HeadBoxSize.width = 0;
+            HeadBoxSize.height = 0;
+            return false;
+        }
         for (const pok of pointObjectStack) {
             const radiusFunc = state.attrData.Radius;
             if (!radiusFunc) continue;
@@ -773,9 +785,13 @@ export class Accessory {
             }
         }
         if (SizeGetOnlyF === true) {
-            LegendW.Rect = new rectangle(ALP, BoxSize);
-            const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag === true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
-            LegendW.Rect.inflate(padw, padw);
+            if (screen_in === true && BoxSize.width > 0 && BoxSize.height > 0) {
+                LegendW.Rect = new rectangle(ALP, BoxSize);
+                const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag === true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
+                LegendW.Rect.inflate(padw, padw);
+            } else {
+                LegendW.Rect = new rectangle(0, 0, 0, 0);
+            }
             if (legendFontAdjusted) {
                 P_Legend.Base.Font.Color = originalLegendFontColor;
             }
