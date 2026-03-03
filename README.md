@@ -35,6 +35,32 @@ npm run build
 2. 生成された `dist/` 一式を Web サーバーへ転送
 3. `dist/index.html`（または `dist/mandarawebgis.html`）を公開
 
+## Git運用（ローカル専用管理）
+
+このリポジトリは、管理方針として **ローカル専用** で運用できます。
+
+- push 先 URL を無効化
+	- `git remote set-url --push origin DISABLED`
+- upstream 追跡を解除
+	- `git branch --unset-upstream`
+- 二重ブロック（ローカルフック）
+	- `.git/hooks/pre-push` を作成して `exit 1` で常時ブロック
+
+確認コマンド:
+
+```bash
+git remote -v
+git branch -vv
+```
+
+解除が必要な場合:
+
+```bash
+rm -f .git/hooks/pre-push
+git remote set-url --push origin https://github.com/HORIKazunari/MANDARA_Webgis.git
+git branch --set-upstream-to=origin/main main
+```
+
 ## 静的データ配置ポリシー（重要）
 
 このプロジェクトは **`public` 非使用** に統一しています。
