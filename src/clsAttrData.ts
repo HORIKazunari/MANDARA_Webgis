@@ -3451,6 +3451,17 @@ class clsAttrData {
                 }
             }
         }
+
+        const viewStyle = this.TotalData.ViewStyle;
+        if (viewStyle.ScrData.Accessory_Base === enmBasePosition.Map) {
+            viewStyle.MapTitle.Position = spatial.Get_Reverse_and_Convert_XY(viewStyle.MapTitle.Position, oldZahyo, newZahyo);
+            viewStyle.MapScale.Position = spatial.Get_Reverse_and_Convert_XY(viewStyle.MapScale.Position, oldZahyo, newZahyo);
+            viewStyle.DataNote.Position = spatial.Get_Reverse_and_Convert_XY(viewStyle.DataNote.Position, oldZahyo, newZahyo);
+            viewStyle.AttMapCompass.Position = spatial.Get_Reverse_and_Convert_XY(viewStyle.AttMapCompass.Position, oldZahyo, newZahyo);
+            for (let i = 0; i < viewStyle.MapLegend.Base.LegendXY.length; i++) {
+                viewStyle.MapLegend.Base.LegendXY[i] = spatial.Get_Reverse_and_Convert_XY(viewStyle.MapLegend.Base.LegendXY[i], oldZahyo, newZahyo);
+            }
+        }
     }
 
     /**重ね合わせデータセットの内容を自動で並べ替える */

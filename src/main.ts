@@ -7,7 +7,7 @@ import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsDrawMarkFan, clsTileMap } from './clsDraw';
 import { Setting_Info } from './clsTime';
-import { point, size } from './clsAttrData';
+import { point, size, enmBasePosition } from './clsAttrData';
 import { enmZahyo_mode_info } from './constants/legacyEnums';
 import { attachFrmPrintMethods, mapMouseInternal as mapMouse } from './frmPrint';
 import { clsPrint } from './clsPrint';
@@ -285,6 +285,44 @@ function frmPrintProjection(): void {
             if (state.attrData?.Check_Vector_Object) {
                 state.attrData.Check_Vector_Object();
             }
+
+            if (nextViewStyle.ScrData.Accessory_Base === enmBasePosition.Map) {
+                const mapRect = nextViewStyle.ScrData.MapRectangle;
+                const mapSize = mapRect.size();
+                const legendBase = nextViewStyle.MapLegend.Base;
+                for (let i = 0; i < legendBase.LegendXY.length; i++) {
+                    const legendPos = legendBase.LegendXY[i];
+                    const inMap =
+                        legendPos.x >= mapRect.left && legendPos.x <= mapRect.right &&
+                        legendPos.y >= mapRect.top && legendPos.y <= mapRect.bottom;
+                    if (inMap) {
+                        legendPos.x = mapRect.right + (1 - i) * mapSize.width / 50;
+                        legendPos.y = mapRect.centerP().y + (1 - i) * mapSize.height / 50;
+                    }
+                }
+            } else {
+                const scrData = nextViewStyle.ScrData;
+                const mapRectOnScreen = scrData.getSxSyRect(scrData.MapRectangle);
+                const canvasW = Math.max(1, scrData.frmPrint_FormSize.width());
+                const canvasH = Math.max(1, scrData.frmPrint_FormSize.height());
+                const legendBase = nextViewStyle.MapLegend.Base;
+                for (let i = 0; i < legendBase.LegendXY.length; i++) {
+                    const ratioPos = legendBase.LegendXY[i];
+                    const legendScreenPos = scrData.getSxSy(scrData.getSRXYfromRatio(ratioPos));
+                    const inMap =
+                        legendScreenPos.x >= mapRectOnScreen.left && legendScreenPos.x <= mapRectOnScreen.right &&
+                        legendScreenPos.y >= mapRectOnScreen.top && legendScreenPos.y <= mapRectOnScreen.bottom;
+                    if (inMap) {
+                        const rightX = Math.min(0.98, (mapRectOnScreen.right + 12) / canvasW);
+                        const centerY = mapRectOnScreen.centerP().y / canvasH;
+                        legendBase.LegendXY[i] = new point(
+                            Math.max(0.02, rightX),
+                            Math.max(0.02, Math.min(0.98, centerY + (1 - i) * 0.05))
+                        );
+                    }
+                }
+            }
+
             state.attrData?.PrtObjectSpatialIndex?.();
             clsPrint.printMapScreen(state.frmPrint.picMap);
             Generic.alert(
