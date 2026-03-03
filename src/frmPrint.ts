@@ -1589,19 +1589,22 @@ class frmPrint {
     }
 
     //線種ラインパターン設定
-    static linePattern(_data: JsonValue, e: Event) {
+    static linePattern(_data?: JsonValue, e?: Event) {
         const state = appState();
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
-        Generic.Set_Box_Position_in_Browser(e as MouseEvent, backDiv);
+        const pos = (e instanceof MouseEvent)
+            ? e
+            : new point(document.body.scrollLeft + 30, document.body.scrollTop + 40);
+        Generic.Set_Box_Position_in_Browser(pos, backDiv);
 
         Generic.createNewSpan(backDiv, "地図ファイル", "", "", 15, 35, "", undefined);
         const NewLineKind: LPatSek_Info[][] = [];
         const MapFileList = state.attrData.GetMapFileName()
-        const list: string[] = [];
+        const list: Array<{ value: string; text: string }> = [];
         for (let i = 0; i < MapFileList.length; i++) {
             const LK = state.attrData.SetMapFile(MapFileList[i]).Get_TotalLineKind();
             NewLineKind.push(LK as unknown as LPatSek_Info[]);
-            list.push(MapFileList[i]);
+            list.push({ value: MapFileList[i], text: MapFileList[i] });
         }
         const selectDataItem = Generic.createNewSelect(backDiv, list, 0, "", 15, 55, false, mapListchange, "width:210px;");
         const pnlLinePattern = Generic.createNewDiv(backDiv, "", "", "", 15, 85, 210, 200, "overflow-y:scroll;overflow-x:hidden;border:solid 1px;border-color:#666666;", "");
@@ -1662,6 +1665,10 @@ class frmPrint {
                 pnlLineList.removeChild(pnlLineList.lastChild);
             }
             const Mpindex  = selectDataItem.selectedIndex
+            if (Mpindex < 0 || NewLineKind[Mpindex] === undefined) {
+                pnlLineList.style.height = '0px';
+                return;
+            }
             const lnum  = NewLineKind[Mpindex].length;
             pnlLineList.style.height = (lnum * LineKindHeight + 10).px();
 
@@ -1675,8 +1682,8 @@ class frmPrint {
             function inePatternClick(e: Event){
                 // const state = appState();
                 const target = e.target as HTMLElement;
-                if (!target?.tag) { return; }
-                const n = target.tag as number;
+                const n = Number(target?.tag);
+                if (!Number.isFinite(n) || NewLineKind[Mpindex]?.[n] === undefined) { return; }
                 clsLinePatternSet(e as MouseEvent, NewLineKind[Mpindex][n].Pat, LinePatternGet);
                 function LinePatternGet(Lpat: Line_Property) {
                     // const state = appState();
