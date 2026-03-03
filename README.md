@@ -1,143 +1,80 @@
-# MANDARA_JS_followup
-「ブラウザGIS」MANDARA_JS を継続的に更新していくプロジェクト
+# MANDARA_Webgis
 
-このリポジトリは、
-谷　謙二氏が継続して開発された Webブラウザ上で動作する「ブラウザGIS」MANDARA_JSを
-支障なく動作し広く活用され続けるように、可能な作業を行い公開するものです。
+Webブラウザ上で動作する GIS ソフトウェア **MANDARA JS** の継続改良プロジェクトです。  
+元ソフトウェア（MANDARA_JS 1.003）をベースに、TypeScript 化・品質改善・運用性向上を進めています。
 
-このリポジトリはソースコードの公開のみの機能です。
-実際の利用は、当面は、
-https://ktgis.net/mdrjs/
-をご利用ください。
-別サーバーでも利用していただけるよう、計画中です。
+## プロジェクト方針
 
-[ 展開したJavaScriptソースコードの公開 ]
+- 元ソフトウェアの機能を維持しつつ、現代ブラウザ環境で安定動作させる
+- TypeScript / ESLint / テストにより保守性を高める
+- `dist` をそのまま Web サーバーへ配置できる成果物を作る
 
-このプロジェクトのソースコードは、ktgis.net で谷謙二氏が提供された
-MANDARA　JS バージョン 1.003 (2022/3/7) mandara_js1_003.zip
-を展開したものです。
-また、実際の操作に必要な data, image, map フォルダの
-ファイルも公開するものです。
+## 開発環境
 
-このソースコードは、谷謙二氏が書かれているように　
-Webブラウザ内で動作するプログラミング言語JavaScriptで作られています。
+- Node.js 18+ 推奨
+- npm
+- Vite 7
+- TypeScript 5.9
 
-今後、動作上必要であれば、修正を加え、活用され続けるようにしたいと考えています。
+## 主要コマンド
 
-[ mpfjマップファイルの扱い ]
+```bash
+npm install
+npm run dev
+npm run type-check
+npm run lint
+npm test
+npm run build
+```
 
-MANDARA JS用のマップファイル形式 mpfj ファイルは、
-実行に必要な mpfj ファイルのみを map フォルダに置いています。
-展開した json ファイルを収めたフォルダは、現在このリポジトリには含めていません。
+`npm run build` 実行後、配備対象は `dist/` です。
 
-mpfj ファイルは、地図データを json 形式であらわしたデータファイルを
-ZIPで圧縮し、拡張子を mpfj に変更したものです。
+## 配備（Webサーバー転送）
 
-ただし、GitHubのファイルアップロードサイズの制限から、
-展開するとjsonファイルのサイズが25MBを越えてしまう
+1. `npm run build` を実行
+2. 生成された `dist/` 一式を Web サーバーへ転送
+3. `dist/index.html`（または `dist/mandarawebgis.html`）を公開
 
-japanadm.mpfj
+## 静的データ配置ポリシー（重要）
 
-japanadOld.mpfj
+このプロジェクトは **`public` 非使用** に統一しています。
 
-japanRail.mpfj
+- `vite.config.ts` で `publicDir: false`
+- 元データはプロジェクト直下の以下フォルダで管理
+	- `map/`
+	- `data/`
+	- `image/`
+- ビルド時に Vite プラグインで `dist/map`, `dist/data`, `dist/image` へコピー
 
-については、アップロードしていません。
+運用上の混乱を避けるため、`public` 配下に同名データを重複配置しない方針です。
 
-[ mdrj 属性データファイルを展開した json ファイルの公開 ]
+## データファイルについて
 
-MANDARA JS用の属性データファイル形式 mdrj ファイルを理解するために、
-展開した json ファイルを収めたフォルダを
-data フォルダの下に置いています。
+- `map/` には `.mpfj`（地図データ）
+- `data/` には `.mdrj`, `.mdrmj`（属性データ）
+- `image/` には UI 用画像
 
-mdrj ファイルは、csvなどで入力した属性データと、地図の各種設定結果のデータを json 形式であらわしたデータファイルを
-ZIPで圧縮し、拡張子を mdrj に変更したものです。
+GitHub のサイズ制限の都合で、一部の大型展開データは含めていません。
 
-ただし、GitHubのファイルアップロードサイズの制限から、
-展開するとjsonファイルのサイズが25MBを越えてしまう
+## ライセンス・クレジット
 
-japan_sityoson_pop.mdrj
+元ソフトウェア（MANDARA_JS）に添付されたライセンス方針に基づき、
+本プロジェクトの提供物も継承条件付きで公開します。
 
-landprice2021.mdrj
+- 作品名: `MANDARA_JS`
+- 作者名: `谷 謙二`
+- 派生コード公開時は元ライセンス条件の継承を遵守
 
-tokyo4mesh2015population.mdrj
+`zlibrev` は imaya 氏のコード（MIT License）を含みます。
 
-については、アップロードしていません。
+## 改良ドキュメント
 
-[ mdrmjマップ情報付きデータファイルを展開した json ファイルの公開 ]
+- [IMPROVEMENTS.md](IMPROVEMENTS.md)
+- [TYPESCRIPT_IMPROVEMENT_GUIDELINES.md](TYPESCRIPT_IMPROVEMENT_GUIDELINES.md)
+- [TYPE_ORGANIZATION.md](TYPE_ORGANIZATION.md)
+- [ESM_IMPLEMENTATION_GUIDE.md](ESM_IMPLEMENTATION_GUIDE.md)
 
-MANDARA JS用のマップ情報付きデータファイル形式 mdrmj ファイルを理解するために、
-展開した json ファイルを収めたフォルダを
-data フォルダの下に置いています。
+## 免責
 
-mdrmj ファイルは、地図データと属性データをあわせて、 json 形式であらわしたデータファイル(拡張子は .mdrmjin)を
-ZIPで圧縮し、拡張子を mdrmji に変更したものです。
-
-ただし、GitHubのファイルアップロードサイズの制限から、
-展開するとjsonファイルのサイズが25MBを越えてしまう
-
-japan_sityoson_pop.mdrmj
-
-tokyo_census2015.mdrmj
-
-については、アップロードしていません。
-
-[ このプロジェクトで提供するファイルのライセンスについて ]
-
-このプロジェクトのもとになっている MANDARA_JS_1.003 のソースコードに添付されているライセンス記述を転記します。
-
-「本ソースコードのライセンスは、CC BY-SA です。
-作品名（MANDARA_JS）、作者（谷謙二）を表示し、
-改変した場合には元の作品と同じCCライセンス（このライセンス）で公開することを主な条件に、
-営利目的での二次利用も許可されるCCライセンスです。
-zlibrev.jsはimaya様のコード（ MIT License）を使用しています。」
-
-このプロジェクトで提供するファイルも、
-同じくクリエイティブ コモンズ 表示 - 継承 4.0 国際ライセンス （CC BY-SA 4.0） で公開します。
-表示を必要とする作品名は  「MANDARA_JS」、作者名は 「谷 謙二」です。
-
-
-本プロジェクト提供ファイルの利用によって生じる一切の損害等について
-プロジェクト管理者（堀一成）は何らの責任を負いません。
-
----
-
-## TypeScript改良プロジェクト
-
-### 📋 概要
-2025年12月より、TypeScriptコードの品質向上を目的とした改良作業を実施しています。
-
-### ✅ 完了した改良
-1. **TypeScript strict型チェックの強化** - tsconfig.jsonの最適化
-2. **ESLint設定の強化** - 型安全性とコード品質の向上
-3. **型定義の改善** - clsWindow.tsのany型削減
-4. **テスト環境の充実** - 47個のテストケースを実装
-
-### 📊 成果
-- **型安全性**: any型を部分的に削減、適切な型定義を追加
-- **コード品質**: ESLintルール強化により一貫性向上
-- **テストカバレッジ**: UIコンポーネントと統合テストを実装
-- **開発効率**: 型補完とエラー検出の改善
-
-### 🛠️ 運用手順（2026-02 更新）
-- `npm run lint` は `--max-warnings 0` で実行され、警告が1件でも失敗します。
-- `@typescript-eslint/no-unsafe-assignment` / `no-unsafe-member-access` / `no-unsafe-call` / `no-unsafe-return` は `error` 運用です。
-- 日常運用は `npm run type-check` → `npm run lint` の順で実行してください。
-- 現在の基準状態は `src` 全体で `warnings 0 / errors 0` です。
-
-### 🚀 dist確認を素早く行う手順
-- `npm run preview:dist` で `build` 実行後に `dist` をローカルサーバーで起動します（`http://localhost:4173`）。
-- `npm run preview:dist:open` で上記を実行しつつブラウザを自動で開きます。
-- 停止はターミナルで `Ctrl + C` です。
-
-### 📚 ドキュメント
-- [改良報告書](TYPESCRIPT_IMPROVEMENT_REPORT.md) - 実施内容の詳細
-- [改良ガイドライン](TYPESCRIPT_IMPROVEMENT_GUIDELINES.md) - 今後の作業指針
-
-### 🎯 今後の計画
-- clsGeneric.tsのany型削減
-- コンストラクタ関数のクラス化
-- 長大なクラス・関数の分割
-- strict modeの完全有効化
-
-詳細は改良ドキュメントをご参照ください。
+本プロジェクト提供ファイルの利用により生じた損害等について、
+プロジェクト管理者は責任を負いません。
