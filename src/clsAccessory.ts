@@ -168,6 +168,9 @@ export class Accessory {
     }
 
     static LegendHardFallback_Print(g: CanvasRenderingContext2D): void {
+        if (this.classLegendDrawnInFrame === true) {
+            return;
+        }
         const state = appState();
         if (state.attrData.TotalData.LV1.Print_Mode_Total !== enmTotalMode_Number.DataViewMode) {
             return;
@@ -798,7 +801,8 @@ export class Accessory {
             return;
         }
 
-        if (screen_in !== true && LegendW.Print_Mode_Layer === enmLayerMode_Number.SoloMode && LegendW.SoloMode === enmSoloMode_Number.ClassPaintMode) {
+        if (LegendW.Print_Mode_Layer === enmLayerMode_Number.SoloMode &&
+            (LegendW.SoloMode === enmSoloMode_Number.ClassPaintMode || LegendW.SoloMode === enmSoloMode_Number.ContourMode)) {
             const layerNum = Number(LegendW.Layn ?? -1);
             const dataNum = Number(LegendW.DatN ?? -1);
             if (layerNum >= 0 && dataNum >= 0) {

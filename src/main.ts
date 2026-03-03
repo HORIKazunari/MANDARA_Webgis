@@ -261,9 +261,8 @@ function frmPrintProjection(): void {
         if ((newZahyo.Projection !== state.attrData.TotalData.ViewStyle.Zahyo.Projection) || 
             (centerLon !== state.attrData.TotalData.ViewStyle.Zahyo.CenterXY.x)) {
             
-            const convertZahyo = state.attrData.Convert_Zahyo as ((zahyo: Zahyo_info) => void) | undefined;
-            if (convertZahyo) {
-                convertZahyo(newZahyo);
+            if (typeof state.attrData.Convert_Zahyo === "function") {
+                state.attrData.Convert_Zahyo(newZahyo);
             }
             const MapFileList: string[] = state.attrData?.GetMapFileName?.() ?? [];
             

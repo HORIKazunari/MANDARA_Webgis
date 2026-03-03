@@ -1104,6 +1104,10 @@ export function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okE
         function(v: number){Zahyo.Projection=v;}, "");
       
     function buttonOK(){
+        const selectedProjection = Generic.getRadioCheckByValue("Projection");
+        if (selectedProjection !== undefined) {
+            Zahyo.Projection = Number(selectedProjection);
+        }
         const csel = Number(Generic.getRadioCheckByValue("rdCenter") as unknown as number);
         switch (csel) {
             case 0:

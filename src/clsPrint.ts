@@ -203,7 +203,7 @@ class clsPrint {
         if (!g) return;
         
         g.save();
-        g.clearRect(0, 0, avs.frmPrint_FormSize.width(), avs.frmPrint_FormSize.height());
+        g.clearRect(0, 0, picMap.width, picMap.height);
 
         if (state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.SeriesMode) {
             if (state.frmPrint.seriesNextButton?.btnDisabled) state.frmPrint.seriesNextButton.btnDisabled(false);
