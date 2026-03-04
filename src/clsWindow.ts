@@ -1402,12 +1402,15 @@ export function setting(locSearch: string) {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
         const data = state.attrData.LayerData[Layernum].atrData.Data[DataNum];
-        const div_num = data.SoloModeViewSettings.Div_Num;
+        const div_num = ensureSoloModeClassDivConsistency(data.SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
         const retv = state.attrData.Get_ClassFrequency(Layernum, DataNum, false);
 
         for (let j = 0; j < div_num; j++) {
             const fbox = doc.getElementById("freqBox" + j);
-            if(retv.ok === true) {
+            if (!fbox) {
+                continue;
+            }
+            if(retv.ok === true && Array.isArray(retv.frequency) && j < retv.frequency.length) {
                 fbox.innerHTML = String(retv.frequency[j]);
             } else {
                 fbox.innerHTML = "--";
@@ -2004,6 +2007,30 @@ export function setting(locSearch: string) {
         }
     }
 
+    function ensureSoloModeClassDivConsistency(soloModeView: {
+        Div_Num?: number;
+        Class_Div?: Array<unknown>;
+    }): number {
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum]?.atrData?.SelectedIndex ?? 0;
+        const ensureReady = (state.attrData as unknown as {
+            EnsureSoloModeClassDivReady?: (layerNum: number, dataNum: number) => number;
+        }).EnsureSoloModeClassDivReady;
+        if (typeof ensureReady === 'function') {
+            return ensureReady.call(state.attrData, Layernum, DataNum);
+        }
+        if (Array.isArray(soloModeView.Class_Div) === false) {
+            soloModeView.Class_Div = [];
+        }
+        const classDiv = soloModeView.Class_Div;
+        const normalizedCount = Math.max(Number(soloModeView.Div_Num ?? 0), classDiv.length);
+        for (let i = classDiv.length; i < normalizedCount; i++) {
+            classDiv[i] = new strClass_Div_data();
+        }
+        soloModeView.Div_Num = normalizedCount;
+        return normalizedCount;
+    }
+
     //●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
     /**単独表示モードの設定画面の要素設定*/
     function setSettingSoloModeWindow() {
@@ -2040,7 +2067,7 @@ export function setting(locSearch: string) {
                 color3: colorRGBA;
             };
             Generic.checkRadioByValue("PaintColorSettingMode", classPaintMd.Color_Mode);
-            const div_num = data.SoloModeViewSettings.Div_Num;
+            const div_num = ensureSoloModeClassDivConsistency(data.SoloModeViewSettings as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
             const pnlClassDiv = doc.getElementById("pnlClassDiv");
             const ph = picClassBoxHeight;
             pnlClassDiv.style.height = (ph * div_num + 2).px();
@@ -2090,7 +2117,7 @@ export function setting(locSearch: string) {
                 txtNum--;
             }
             const txtStyle = "border:solid 1px;height:" + picClassBoxHeight.px();
-            for (let i = (pnlClassDiv as {inTxt: number}).inTxt; i < txtNum; i++) {
+            for (let i = ((pnlClassDiv as {inTxt?: number}).inTxt ?? 0); i < txtNum; i++) {
                 const txele=Generic.createNewNumberInput(pnlClassDiv,0,"txtClassValue" + i,picClassBoxWidth + 2, i * picClassBoxHeight, txtClassValueWidth,txeleOnChange,txtStyle);
                 txele.ondragstart = function (e: DragEvent) {
                     if (!e.dataTransfer || !e.target) { return; }
@@ -2394,28 +2421,34 @@ export function setting(locSearch: string) {
 
     //階級区分の区分ボックスを設定
     function SetPictureBox() {
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
         const ldd = state.attrData.nowDataSolo() as {
-            Div_Num: number;
-            Class_Div: { PaintColor: { toRGBA: () => string }; ClassMark: Mark; ODLinePat: LinePattern }[];
+            Div_Num?: number;
+            Class_Div?: Array<{ PaintColor: { toRGBA: () => string }; ClassMark: Mark; ODLinePat: LinePattern }>;
         };
-        const md = (state.attrData.nowData() as unknown as { ModeData: number }).ModeData;
-        for (let i = 0; i < ldd.Div_Num; i++) {
+        const classDivNum = ensureSoloModeClassDivConsistency(ldd as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
+        const md = state.attrData.getSoloMode(Layernum, DataNum);
+        for (let i = 0; i < classDivNum; i++) {
             const p = doc.getElementById("picClassBox" + i) as HTMLCanvasElement;
             if (!p) { continue; }
             const ctx = p.getContext("2d");
             if (!ctx) { continue; }
+            ctx.clearRect(0, 0, p.width, p.height);
+            const classDiv = ldd.Class_Div?.[i];
+            if (!classDiv) { continue; }
             switch (md) {
                 case enmSoloMode_Number.ClassPaintMode: {
-                    ctx.fillStyle = ldd.Class_Div[i].PaintColor.toRGBA();
+                    ctx.fillStyle = classDiv.PaintColor.toRGBA();
                     ctx.fillRect(0, 0, p.offsetWidth, p.offsetHeight);
                     break;
                 }
                 case enmSoloMode_Number.ClassMarkMode: {
-                    state.attrData.Draw_Sample_Mark_Box(p,ldd.Class_Div[i].ClassMark);
+                    state.attrData.Draw_Sample_Mark_Box(p,classDiv.ClassMark);
                     break;
                 }
                 case enmSoloMode_Number.ClassODMode: {
-                    state.attrData.Draw_Sample_LineBox(p,ldd.Class_Div[i].ODLinePat);
+                    state.attrData.Draw_Sample_LineBox(p,classDiv.ODLinePat);
                     break;
                 }
             }
@@ -2424,14 +2457,26 @@ export function setting(locSearch: string) {
     //階級区分の区分テキストボックスを設定
     function SetClassDivValueTextBox() {
         const DDType=state.attrData.nowData().DataType;
-        const ldd = state.attrData.nowDataSolo();
-        for (let i = 0; i < ldd.Div_Num; i++) {
-            if((i !== ldd.Div_Num - 1) || (DDType === enmAttDataType.Category)){
+        const ldd = state.attrData.nowDataSolo() as {
+            Div_Num?: number;
+            Class_Div?: Array<{ Value: number | string }>;
+            Div_Method?: number;
+        };
+        const classDivNum = ensureSoloModeClassDivConsistency(ldd as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
+        for (let i = 0; i < classDivNum; i++) {
+            if((i !== classDivNum - 1) || (DDType === enmAttDataType.Category)){
                 const t = doc.getElementById("txtClassValue" + i);
+                if (!t) {
+                    continue;
+                }
+                const classDiv = ldd.Class_Div?.[i];
+                if (!classDiv) {
+                    continue;
+                }
                 let df = false;
                 let ttop = picClassBoxHeight * i;
                 if(DDType === enmAttDataType.Category) {
-                    t.value = String(ldd.Class_Div[i].Value);
+                    t.value = String(classDiv.Value ?? "");
                     t.numberCheck=false;
                     t.style.textAlign = 'left';
                     t.draggable = true;
@@ -2439,7 +2484,7 @@ export function setting(locSearch: string) {
                     if(ldd.Div_Method !== enmDivisionMethod.Free) {
                         df = true;
                     }
-                    t.setNumberValue(Number(ldd.Class_Div[i].Value));
+                    t.setNumberValue(Number(classDiv.Value ?? 0));
                     ttop += + picClassBoxHeight / 2;
                     t.numberCheck=true;
                     t.style.textAlign = 'right';
@@ -2674,21 +2719,29 @@ export function setting(locSearch: string) {
 
     //階級区分のピクチャボックス、テキストボックスの可否
     function SetPicClassBoxCursol() {
+        const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
+        const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
         const data = state.attrData.nowDataSolo();
-        const DivNum = data.Div_Num;
+        const DivNum = ensureSoloModeClassDivConsistency(data as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
         const classPaintMd = data.ClassPaintMD as {
             Color_Mode: number;
             color2: colorRGBA;
         };
         for (let i = 0; i < DivNum; i++) {
             const p = doc.getElementById("picClassBox" + i);
+            if (!p) {
+                continue;
+            }
             p.style.cursor = 'crosshair';
         }
-        if (state.attrData.nowData().ModeData === enmSoloMode_Number.ClassPaintMode) {
+        if (state.attrData.getSoloMode(Layernum, DataNum) === enmSoloMode_Number.ClassPaintMode) {
             switch (classPaintMd.Color_Mode) {
                 case enmPaintColorSettingModeInfo.twoColor:
                     for (let i = 1; i < DivNum - 1; i++) {
                         const p = doc.getElementById("picClassBox" + i);
+                        if (!p) {
+                            continue;
+                        }
                         p.style.cursor = 'default';
                     }
                     break;
@@ -2984,7 +3037,7 @@ export function setting(locSearch: string) {
                 case enmDivisionMethod.StandardDeviation: {
                     dc.selectedIndex = 2;
                     dc.disabled = true;
-                    const oldDivNum = data.Div_Num;
+                    const oldDivNum = ensureSoloModeClassDivConsistency(data as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
                     data.Div_Num = 6;
                     data.Class_Div.length = 6;
                     if (6 > oldDivNum) {
@@ -2993,6 +3046,7 @@ export function setting(locSearch: string) {
                         }
                         state.attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
                     }
+                    ensureSoloModeClassDivConsistency(data as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
                     if (classPaintMd.Color_Mode !== enmPaintColorSettingModeInfo.SoloColor) {
                         state.attrData.Twocolort(Layernum, DataNum);
                     }
@@ -3014,7 +3068,7 @@ export function setting(locSearch: string) {
                 Color_Mode: number;
                 color2: colorRGBA;
             };
-            const oldDivNum = data.Div_Num;
+            const oldDivNum = ensureSoloModeClassDivConsistency(data as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
             if (oldDivNum === selectedValue) {
                 return;
             }
@@ -3026,6 +3080,7 @@ export function setting(locSearch: string) {
                 }
                 state.attrData.Set_Class_Div(Layernum, DataNum, oldDivNum);
             }
+            ensureSoloModeClassDivConsistency(data as unknown as { Div_Num?: number; Class_Div?: Array<unknown> });
             switch (classPaintMd.Color_Mode) {
                 case enmPaintColorSettingModeInfo.SoloColor:
                     for (let i = oldDivNum; i < selectedValue; i++) {

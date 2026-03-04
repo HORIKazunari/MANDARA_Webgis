@@ -3919,13 +3919,20 @@ class clsAttrData {
 
     //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
     //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
-    Get_Length_On_Screen(Percentage: number): string {
+    Get_Length_On_Screen(Percentage: number): number {
         const s = this.TotalData.ViewStyle.ScrData;
         if (s.SampleBoxFlag === false) {
             const RR = s.STDWsize * Percentage / 100 * s.ScreenMG.Mul * s.GSMul;
-            return parseInt(RR.toString()).toString();
+            if (Number.isFinite(RR) === false) {
+                return 0;
+            }
+            return Math.trunc(RR);
         } else {
-            return parseInt((s.STDWsize * Percentage / 100 * s.FirstScreenMGMul).toString()).toString();
+            const RR = s.STDWsize * Percentage / 100 * s.FirstScreenMGMul;
+            if (Number.isFinite(RR) === false) {
+                return 0;
+            }
+            return Math.trunc(RR);
         }
 
     }
@@ -6648,11 +6655,11 @@ class clsAttrData {
         for (const key in LayDataInf) {
             const layData = LayDataInf[key];
             const Get_Obj = [];
-            let fobk = 0;
+            const usedObjectKinds = new Set<number>();
             const UseMap = this.SetMapFile(String(layData.MapfileName));
             for (let i = 0; i < UseMap.Map.Kend; i++) {
-                if (layData.UseObjectKind[UseMap.MPObj[i].Kind] === true) {
-                    fobk = UseMap.MPObj[i].Kind;
+                const objKind = UseMap.MPObj[i].Kind;
+                if (layData.UseObjectKind[objKind] === true) {
                     const objName = UseMap.Get_Enable_ObjectName(i, layData.Time, false);
                     if (objName !== undefined) {
                         const CP = UseMap.Get_Enable_CenterP(i, layData.Time);
@@ -6671,9 +6678,23 @@ class clsAttrData {
                         ob.Visible = true;
                         ob.HyperLinkNum=0;
                         Get_Obj.push(ob);
+                        usedObjectKinds.add(objKind);
                     }
                 }
             }
+
+            const candidateKinds = Array.from(usedObjectKinds);
+            let attrSourceKind = -1;
+            let attrDataCount = 0;
+            for (let i = 0; i < candidateKinds.length; i++) {
+                const kind = candidateKinds[i];
+                const defCount = Number(UseMap.ObjectKind[kind]?.DefTimeAttDataNum ?? 0);
+                if (defCount > attrDataCount) {
+                    attrDataCount = defCount;
+                    attrSourceKind = kind;
+                }
+            }
+
             let layshape = layData.Shape as number;
             if (layshape === enmShape.NotDeffinition) {
                 layshape = UseMap.MPObj[Get_Obj[0].MpObjCode].Shape;
@@ -6682,7 +6703,7 @@ class clsAttrData {
             const objn = Get_Obj.length;
             this.Add_one_Layer(layData.Name, enmLayerType.Normal, enmMesh_Number.mhNonMesh, layshape, String(layData.MapfileName), layData.Time,
                 enmZahyo_System_Info.Zahyo_System_No, "", objn, Get_Obj);
-            if (UseMap.ObjectKind[fobk].DefTimeAttDataNum === 0) {
+            if ((attrSourceKind === -1) || (attrDataCount === 0)) {
                 //初期属性が無い場合の色の設定
 
                 this.Add_One_Data_Value(LayN, "地図表示", "CAT", "", new Array(objn).fill(''), false)
@@ -6691,10 +6712,14 @@ class clsAttrData {
                 }
             } else {
                 noAttrData = false;
-                const nDX = UseMap.ObjectKind[fobk].DefTimeAttDataNum;
+                const sourceObjectKind = UseMap.ObjectKind[attrSourceKind];
+                const nDX = attrDataCount;
                 let misf = false;
                 for (let j = 0; j < nDX; j++) {
-                    const attData = UseMap.ObjectKind[fobk].DefTimeAttSTC[j].attData;
+                    const attData = sourceObjectKind.DefTimeAttSTC[j]?.attData;
+                    if (!attData) {
+                        continue;
+                    }
                     const Data_Val = [];
                     for (let k = 0; k < objn; k++) {
                         let v = UseMap.Get_DefTimeAttrValue(Get_Obj[k].MpObjCode, j, layData.Time);
@@ -6712,7 +6737,12 @@ class clsAttrData {
                     this.Add_One_Data_Value(LayN, attData.Title, attData.Unit, attData.Note, Data_Val, misf);
                 }
                 if (DeleteDefDataFlag === true) {
-                    UseMap.DeleteAllDefAttrData(fobk);
+                    for (let i = 0; i < candidateKinds.length; i++) {
+                        const kind = candidateKinds[i];
+                        if (Number(UseMap.ObjectKind[kind]?.DefTimeAttDataNum ?? 0) > 0) {
+                            UseMap.DeleteAllDefAttrData(kind);
+                        }
+                    }
                 }
             }
             LayN += 1;
@@ -7450,6 +7480,7 @@ class clsAttrData {
         }
         data.ModeData = m;
         data.SoloModeViewSettings.Div_Method = enmDivisionMethod.Free;
+        data.SoloModeViewSettings.Class_Div = [];
 
         if (DType === enmAttDataType.Category) {
             //'カテゴリーデータの階級区分
@@ -7728,17 +7759,158 @@ class clsAttrData {
         }
     }
 
+    EnsureSoloModeClassDivReady(Layernum: number, DataNum: number): number {
+        const data = this.LayerData[Layernum]?.atrData?.Data?.[DataNum];
+        if (!data) {
+            return 0;
+        }
+
+        const solo = data.SoloModeViewSettings;
+        if (Array.isArray(solo.Class_Div) === false) {
+            solo.Class_Div = [];
+        }
+        const classDiv = solo.Class_Div;
+        const normalizedCount = Math.max(Number(solo.Div_Num ?? 0), classDiv.length);
+        const oldLength = classDiv.length;
+        let replacedEntry = false;
+        let firstReplacedIndex = normalizedCount;
+
+        for (let i = 0; i < normalizedCount; i++) {
+            if (classDiv[i] instanceof strClass_Div_data) {
+                continue;
+            }
+            const oldClassDiv = classDiv[i] as Partial<strClass_Div_data> | undefined;
+            const nextClassDiv = new strClass_Div_data();
+            if (oldClassDiv && oldClassDiv.Value !== undefined) {
+                nextClassDiv.Value = oldClassDiv.Value;
+            }
+            const oldPaintColor = oldClassDiv?.PaintColor;
+            if (oldPaintColor instanceof colorRGBA) {
+                nextClassDiv.PaintColor = oldPaintColor.Clone();
+            } else if (oldPaintColor && typeof oldPaintColor === 'object') {
+                const r = Number((oldPaintColor as { r?: number }).r);
+                const g = Number((oldPaintColor as { g?: number }).g);
+                const b = Number((oldPaintColor as { b?: number }).b);
+                const aRaw = (oldPaintColor as { a?: number }).a;
+                const a = Number.isFinite(Number(aRaw)) ? Number(aRaw) : 255;
+                if (Number.isFinite(r) && Number.isFinite(g) && Number.isFinite(b)) {
+                    nextClassDiv.PaintColor = new colorRGBA(r, g, b, a);
+                }
+            }
+            if (oldClassDiv?.ClassMark instanceof Mark_Property) {
+                nextClassDiv.ClassMark = oldClassDiv.ClassMark.Clone();
+            }
+            if (oldClassDiv?.ODLinePat instanceof Line_Property) {
+                nextClassDiv.ODLinePat = oldClassDiv.ODLinePat.Clone();
+            }
+            classDiv[i] = nextClassDiv;
+            replacedEntry = true;
+            firstReplacedIndex = Math.min(firstReplacedIndex, i);
+        }
+
+        solo.Div_Num = normalizedCount;
+        if (normalizedCount === 0) {
+            return 0;
+        }
+
+        if (oldLength < normalizedCount) {
+            this.Set_Class_Div(Layernum, DataNum, oldLength);
+        }
+        if (replacedEntry === true && firstReplacedIndex < normalizedCount) {
+            this.Set_Class_Div(Layernum, DataNum, firstReplacedIndex);
+        }
+
+        if (data.DataType !== enmAttDataType.Category) {
+            const boundaryCount = Math.max(0, normalizedCount - 1);
+            let needDivValueInit = replacedEntry;
+            for (let i = 0; i < boundaryCount; i++) {
+                if (Number.isFinite(Number(classDiv[i].Value)) === false) {
+                    needDivValueInit = true;
+                    break;
+                }
+            }
+            if (needDivValueInit === true) {
+                if (solo.Div_Method !== enmDivisionMethod.Free) {
+                    this.Set_Div_Value(Layernum, DataNum);
+                } else {
+                    const maxValue = Number(data.Statistics.Max ?? 0);
+                    const minValue = Number(data.Statistics.Min ?? 0);
+                    const decimalNum = Number(data.Statistics.AfterDecimalNum ?? 0) + 1;
+                    if (boundaryCount > 0 && Number.isFinite(maxValue) && Number.isFinite(minValue) && maxValue !== minValue) {
+                        const step = (maxValue - minValue) / normalizedCount;
+                        for (let i = 0; i < boundaryCount; i++) {
+                            classDiv[i].Value = Number(Generic.Figure_Using(maxValue - step * (i + 1), decimalNum));
+                        }
+                    } else {
+                        for (let i = 0; i < boundaryCount; i++) {
+                            classDiv[i].Value = Number(classDiv[i].Value ?? 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        let needPaintColorInit = (oldLength < normalizedCount) || (replacedEntry === true);
+        if (needPaintColorInit === false) {
+            const defaultBlack = new colorRGBA();
+            const allDefaultBlack = classDiv
+                .slice(0, normalizedCount)
+                .every((div) => (div.PaintColor instanceof colorRGBA) && div.PaintColor.Equals(defaultBlack));
+            if (allDefaultBlack === true) {
+                const classPaintColor1 = solo.ClassPaintMD.color1;
+                if ((solo.ClassPaintMD.Color_Mode !== enmPaintColorSettingModeInfo.SoloColor) ||
+                    ((classPaintColor1 instanceof colorRGBA) && (classPaintColor1.Equals(defaultBlack) === false))) {
+                    needPaintColorInit = true;
+                }
+            }
+        }
+        if (needPaintColorInit === false) {
+            for (let i = 0; i < normalizedCount; i++) {
+                if ((classDiv[i].PaintColor instanceof colorRGBA) === false) {
+                    needPaintColorInit = true;
+                    break;
+                }
+            }
+        }
+
+        if (needPaintColorInit === true) {
+            if (solo.ClassPaintMD.Color_Mode === enmPaintColorSettingModeInfo.SoloColor) {
+                const baseColor = (solo.ClassPaintMD.color1 instanceof colorRGBA)
+                    ? solo.ClassPaintMD.color1.Clone()
+                    : this.defaultColor.paintMode[0].Clone();
+                solo.ClassPaintMD.color1 = baseColor.Clone();
+                solo.ClassPaintMD.color2 = baseColor.Clone();
+                solo.ClassPaintMD.color3 = baseColor.Clone();
+                for (let i = 0; i < normalizedCount; i++) {
+                    classDiv[i].PaintColor = baseColor.Clone();
+                }
+            } else {
+                this.Twocolort(Layernum, DataNum);
+            }
+        }
+
+        return normalizedCount;
+    }
+
     //2色グラテーション設定
     Twocolort(Layernum: number, DataNum: number): void {
         const pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         const n = pms.Div_Num;
+        if (n <= 0) {
+            return;
+        }
+        for (let i = 0; i < n; i++) {
+            if ((pms.Class_Div[i] instanceof strClass_Div_data) === false) {
+                pms.Class_Div[i] = new strClass_Div_data();
+            }
+        }
         if (n === 1) {
-            pms.Class_Div[0].PaintColor = pms.ClassPaintMD.color1;
-        } else {
-            const coldata = Generic.TwoColorGradation(pms.ClassPaintMD.color1, pms.ClassPaintMD.color2, n);
-            for (let i = 0; i < n; i++) {
-                pms.Class_Div[i].PaintColor = coldata[i];
-           }
+            pms.Class_Div[0].PaintColor = pms.ClassPaintMD.color1.Clone();
+            return;
+        }
+        const coldata = Generic.TwoColorGradation(pms.ClassPaintMD.color1, pms.ClassPaintMD.color2, n);
+        for (let i = 0; i < n; i++) {
+            pms.Class_Div[i].PaintColor = coldata[i].Clone();
         }
     }
 
@@ -7994,6 +8166,9 @@ class clsAttrData {
             }
         }
         for (let i = 0; i < div_num; i++) {
+            if ((L.SoloModeViewSettings.Class_Div[i] instanceof strClass_Div_data) === false) {
+                L.SoloModeViewSettings.Class_Div[i] = new strClass_Div_data();
+            }
             L.SoloModeViewSettings.Class_Div[i].Value = Div_Value[i];
         }
     }

@@ -57,7 +57,7 @@ class clsDraw {
 
         let f = false;
         if (ScrData.SampleBoxFlag === false) {
-            const screenRect = ScrData.ScrRectangle ?? new rectangle(0, 0, 0, 0);
+            const screenRect = ScrData.MapScreen_Scale ?? new rectangle(0, g.canvas?.width ?? 0, 0, g.canvas?.height ?? 0);
             if (spatial.Compare_Two_Rectangle_Position_turned(C_Rect, Font_P.Kakudo ?? 0, screenRect) !== cstRectangle_Cross.cstOuter) {
                 f = true;
             } else {

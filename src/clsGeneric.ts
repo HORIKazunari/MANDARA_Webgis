@@ -4160,8 +4160,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 let v;
                 if(multipleFlag===false){
                     sel=sbox.selectedIndex;
-                    const getValue = sbox.getValue as (() => unknown) | undefined;
-                    const value = getValue?.();
+                    const value = (sbox as HTMLSelectElement & { getValue?: () => unknown }).getValue?.();
                     v = typeof value === "string" ? value : undefined;
                 }else{
                     sel=Generic.getMultipleSelectIndex(sbox,0) as number[];

@@ -3597,7 +3597,11 @@ export function openMapFile(call: (data: JsonValue, filename?: string) => void) 
                         serverFile = "CHINA.mpfj";
                         break;
                 }
-                Generic.getMapfileByHttpRequest("/map/" + serverFile, function (jsonData: string | IMapData) {
+                if (serverFile === "") {
+                    Generic.alert(undefined, "地図ファイルの読み込み設定が見つかりませんでした。");
+                    return;
+                }
+                Generic.getMapfileByHttpRequest("map/" + serverFile, function (jsonData: string | IMapData) {
                     appState().preReadMapFile[fup] = jsonData as JsonObject;                    
                     Generic.clear_backDiv();
                     call(appState().preReadMapFile[fup], fup);
