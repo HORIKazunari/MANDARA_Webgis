@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-03-04 (v2.002)
+
+### 変更概要
+- 凡例文字の可視判定を画面座標系に修正。
+- 凡例フォールバックの重複描画を抑止。
+- `Class_Div` の欠損/疎配列を補完する整合化を追加。
+- 設定画面の階級色表示を Solo Mode 基準に修正。
+- 画面デバッグ表示を通常モードで無効化。
+- 関連回帰テストを追加。
+
+### 主な変更ファイル
+- `src/clsAccessory.ts`
+- `src/clsAttrData.ts`
+- `src/clsDraw.ts`
+- `src/clsWindow.ts`
+- `tests/japanadm-classdiv.test.ts`
+- `tests/select-getvalue-binding.test.ts`
+
+### 確認
+- `npm run build` が成功。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.001...v2.002
+
 ## 2026-03-02
 
 ### 修正内容
