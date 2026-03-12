@@ -4632,15 +4632,17 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     static clear_backDiv() {
-
-        //固定ウインドウを消す
-        const last1 = document.body.lastChild;
-        if (last1) {
-            document.body.removeChild(last1);
+        // Remove the top-most modal pair explicitly instead of relying on DOM tail order.
+        const frontList = document.querySelectorAll<HTMLElement>('#frontDIV');
+        if (frontList.length > 0) {
+            const topFront = frontList[frontList.length - 1];
+            topFront.parentElement?.removeChild(topFront);
         }
-        const last2 = document.body.lastChild;
-        if (last2) {
-            document.body.removeChild(last2);
+
+        const backList = document.querySelectorAll<HTMLElement>('#backDiv[name="backDiv"]');
+        if (backList.length > 0) {
+            const topBack = backList[backList.length - 1];
+            topBack.parentElement?.removeChild(topBack);
         }
     }
 
@@ -4675,14 +4677,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const deletediv = function (e: Event | undefined): void {
         //固定ウインドウを消す
             if (e) e.preventDefault();
-            const last1 = document.body.lastChild;
-            if (last1) {
-                document.body.removeChild(last1);
-            }
-            const last2 = document.body.lastChild;
-            if (last2) {
-                document.body.removeChild(last2);
-            }
+            Generic.clear_backDiv();
         };
 
         if (outerClickF === true) {

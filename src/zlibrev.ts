@@ -3,7 +3,29 @@ import './encoding.min.ts';
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';const COMPILED = false;
 /** revise  2020 ktani*/
 const globalScope = typeof globalThis !== "undefined" ? globalThis : this;
-const Encoding = (globalThis as { Encoding?: { detect: (data: Uint8Array) => string } }).Encoding;
+type EncodingLike = { detect: (data: ArrayLike<number>) => string };
+const runtimeGlobal = globalScope as typeof globalScope & { Encoding?: EncodingLike };
+const detectZipFilenameEncoding = (bytes, flags) => {
+  if((flags & 2048) !== 0) {
+    return "utf-8";
+  }
+
+  const encoding = runtimeGlobal.Encoding;
+  if(encoding && typeof encoding.detect === "function") {
+    try {
+      return encoding.detect(Array.from(bytes));
+    }catch(_error) {
+      // Fall through to built-in detection.
+    }
+  }
+
+  try {
+    new TextDecoder("utf-8", {fatal:true}).decode(bytes);
+    return "utf-8";
+  }catch(_error) {
+    return "shift_jis";
+  }
+};
 var goog = globalScope.goog || {};
 goog.global = globalScope;
 globalScope.goog = goog;
@@ -3325,9 +3347,10 @@ goog.scope(function() {
     for (let i = 0; i < this.fileNameLength; i++) {
       ubt.push(input[ip + i]);
     }
-    const detected = Encoding.detect(ubt);
+    const filenameBytes = Uint8Array.from(ubt);
+    const detected = detectZipFilenameEncoding(filenameBytes, this.flags);
     const text_decoder = new TextDecoder(detected);
-    this.filename = text_decoder.decode( Uint8Array.from(ubt).buffer);
+    this.filename = text_decoder.decode(filenameBytes.buffer);
     //this.filename = String.fromCharCode.apply(null, USE_TYPEDARRAY ? input.subarray(ip, ip += this.fileNameLength) : input.slice(ip, ip += this.fileNameLength));
 
     ip+=this.fileNameLength;
@@ -3379,9 +3402,10 @@ goog.scope(function() {
     for (let i = 0; i < this.fileNameLength; i++) {
       ubt.push(input[ip + i]);
     }
-    const detected = Encoding.detect(ubt);
+    const filenameBytes = Uint8Array.from(ubt);
+    const detected = detectZipFilenameEncoding(filenameBytes, this.flags);
     const text_decoder = new TextDecoder(detected);
-    this.filename = text_decoder.decode(Uint8Array.from(ubt).buffer);
+    this.filename = text_decoder.decode(filenameBytes.buffer);
     //this.filename = String.fromCharCode.apply(null, USE_TYPEDARRAY ? input.subarray(ip, ip += this.fileNameLength) : input.slice(ip, ip += this.fileNameLength));
     ip+=this.fileNameLength;
     this.extraField = USE_TYPEDARRAY ? input.subarray(ip, ip += this.extraFieldLength) : input.slice(ip, ip += this.extraFieldLength);
