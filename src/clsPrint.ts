@@ -1,7 +1,7 @@
 ﻿import { Accessory } from './clsAccessory';
 import { MeshContour, ContourLineStackInfo } from './MeshContour';
 import { appState } from './core/AppState';
-import { clsDraw, clsDrawLine } from './clsDraw';
+import { clsDraw, clsDrawLine, clsSpline } from './clsDraw';
 import { EnableMPLine_Data } from './clsMapdata';
 import { Generic } from './clsGeneric';
 import { spatial } from './clsGeneric';
@@ -26,6 +26,7 @@ import {
     point,
     rectangle,
     Screen_info as AttrScreenInfo,
+    strContour_Line_property,
     size,
     Legend2_Atri
 } from './clsAttrData';
@@ -2453,11 +2454,11 @@ class clsPrint {
         const mw = vs.MapRectangle.width();
         const mh = vs.MapRectangle.height();
         const ObjN = al.atrObject.ObjectNum;
-        const StdWSize = 10; // vs.STDWsize; // Property not available, using default
+        const StdWSize = (vs.STDWsize > 0) ? vs.STDWsize : Math.sqrt(Math.max(mw * mh, 1));
         let md = Math.sqrt(15 * mw * mh / ObjN);
         md = Math.min(md, StdWSize * 0.05);
-        const F_Meshx = parseInt((mw / md).toString());
-        const F_Meshy = parseInt((mh / md).toString());
+        const F_Meshx = Math.max(1, parseInt((mw / md).toString()));
+        const F_Meshy = Math.max(1, parseInt((mh / md).toString()));
         const F_Mesh: number[][][] = Generic.Array2Dimension(F_Meshx + 1, F_Meshy + 1);
         for (let j = 0; j <= F_Meshx; j++) {
             for (let k = 0; k <= F_Meshy; k++) {
@@ -2516,8 +2517,8 @@ class clsPrint {
         }
         if (!md2) return;
         
-        const D_Meshx = parseInt((mw / md2).toString());
-        const D_Meshy = parseInt((mh / md2).toString());
+        const D_Meshx = Math.max(1, parseInt((mw / md2).toString()));
+        const D_Meshy = Math.max(1, parseInt((mh / md2).toString()));
         const cont = state.attrData.TempData.ContourMode_Temp;
         cont.Contour_All_Number = 0;
         cont.Contour_All_Point = 0;
@@ -3738,32 +3739,30 @@ class clsPrint {
         }
     }
 
-    static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, /* Dummy_F: boolean */) {
+    static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, Dummy_F: boolean = false) {
         const state = appState();
         type DrawEnableLine = { LineCode: number; Kind: number };
         let ELine: DrawEnableLine[] = []
         const ad = state.attrData.LayerData[Layernum];
         let pxy: point[] = [];
-        // if(false) { // Dummy_F === true
-        //     if(!(false)) { // state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false
-        //         return;
-        //     } else {
-        //         ELine = []; // ad.MapFileData.Get_EnableMPLine( Obj_Num_code, ad.Time); // Property not available
-        //     }
-        // } else {
-        if(state.attrData.Check_screen_Kencode_In(Layernum, Obj_Num_code) === false) {
-            return;
-        }
-        if(ad.Type === enmLayerType.Mesh) {
-            const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
-            pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(meshPoint.length, meshPoint, false);
-            pxy.push(this.clonePointValue(pxy[0]));
-            state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
-            return;
+        if (Dummy_F === true) {
+            if ((ad.MapFileData.MPObj[Obj_Num_code] === undefined) || (state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false)) {
+                return;
+            }
+            ELine = ad.MapFileData.Get_EnableMPLine(Obj_Num_code, ad.Time) as unknown as DrawEnableLine[];
         } else {
+            if ((ad.atrObject.atrObjectData[Obj_Num_code] === undefined) || (state.attrData.Check_screen_Kencode_In(Layernum, Obj_Num_code) === false)) {
+                return;
+            }
+            if(ad.Type === enmLayerType.Mesh) {
+                const meshPoint: point[] = ad.atrObject.atrObjectData[Obj_Num_code].MeshPoint;
+                pxy = (state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo).Get_SxSy_With_3D(meshPoint.length, meshPoint, false);
+                pxy.push(this.clonePointValue(pxy[0]));
+                state.attrData.Draw_Line(g, state.attrData.TotalData.ViewStyle.MeshLine, pxy);
+                return;
+            }
             ELine = state.attrData.Get_Enable_KenCode_MPLine(Layernum, Obj_Num_code) as unknown as DrawEnableLine[];
         }
-        // }
         // const MPFileNapa = ad.MapFileName;
         const layerForLine = ad as ILayerDataInfo & { ObjectGroupRelatedLine: number[] };
         for (let j = 0; j < ELine.length; j++) {
@@ -3781,7 +3780,11 @@ class clsPrint {
             if (PatNum >= lineKind.NumofObjectGroup) {
                 PatNum = 0;
             }
-            const Lpat = lineKind.ObjGroup[PatNum].Pattern;
+            const lineGroup = lineKind.ObjGroup[PatNum];
+            if (!lineGroup) {
+                continue;
+            }
+            const Lpat = lineGroup.Pattern;
             if ((Lpat.BlankF === false) && (state.attrData.getMpLineDrawn(ad.MapFileName, lc) !== true)) {
                 const pxy = this.Get_PointXY_by_LineCode(Layernum, lc, false);
                 if (pxy !== undefined) {
@@ -4112,7 +4115,7 @@ class clsPrint {
                     state.attrData.AddPointObjectKindUsed(ad.MapFileName, okIndex, MK);
                 }
             } else {
-                this.Vector_Boundary_Draw(g,  Layernum, code);
+                this.Vector_Boundary_Draw(g,  Layernum, code, true);
             }
         }
 

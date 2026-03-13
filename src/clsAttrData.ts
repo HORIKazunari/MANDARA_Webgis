@@ -887,7 +887,7 @@ class strContour_Data {
     }
 }
 
-class strContour_Line_property {
+export class strContour_Line_property {
     Flag: boolean = false; // Boolean
     Layernum: number = 0; // Integer
     DataNum: number = 0; // Integer
@@ -1038,6 +1038,9 @@ class strData_info {
         Object.assign(dt.Statistics, this.Statistics);
         dt.ModeData = this.ModeData;
         const dts = dt.SoloModeViewSettings;
+        dts.SoloMode = typeof this.SoloModeViewSettings.SoloMode === 'number'
+            ? this.SoloModeViewSettings.SoloMode
+            : this.ModeData;
         dts.Div_Num = this.SoloModeViewSettings.Div_Num;
         dts.Div_Method = this.SoloModeViewSettings.Div_Method;
         dts.Class_Div = [];
@@ -5168,6 +5171,9 @@ class clsAttrData {
                 Object.assign(d.Statistics, od.Statistics);
                 const dts = new strSoloModeViewSettings_Data();
                 const odts = od.SoloModeViewSettings as JsonObject;
+                dts.SoloMode = typeof odts.SoloMode === 'number'
+                    ? odts.SoloMode as number
+                    : d.ModeData;
                 dts.Div_Method = odts.Div_Method as number;
                 dts.Div_Num = odts.Div_Num as number;
                 dts.Class_Div = [];
