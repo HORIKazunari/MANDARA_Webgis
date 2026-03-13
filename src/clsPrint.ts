@@ -29,7 +29,8 @@ import {
     strContour_Line_property,
     size,
     Legend2_Atri,
-    strOverLay_DataSet_Item_Info
+    strOverLay_DataSet_Item_Info,
+    strSeries_DataSet_Item_Info
 } from './clsAttrData';
 import { SortingSearch } from './SortingSearch';
 import { boundArrangeData } from './boundArrangeData';

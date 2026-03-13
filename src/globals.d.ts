@@ -14,6 +14,19 @@ type ListItem = { value: string | number; text: string };
 // 互換性維持のための属性値型（移行期間中は柔軟に扱う）
 type AttrValue = JsonValue;
 
+// Module-backed types exposed only for legacy type compatibility.
+type GraphModeDataItem = import('./clsAttrData').GraphModeDataItem;
+type strClass_Div_data = import('./clsAttrData').strClass_Div_data;
+type strCondition_DataSet_Info = import('./clsAttrData').strCondition_DataSet_Info;
+type strCondition_Data_Info = import('./clsAttrData').strCondition_Data_Info;
+type strCondition_Limitation_Info = import('./clsAttrData').strCondition_Limitation_Info;
+type strContour_Data_Irregular_interval = import('./clsAttrData').strContour_Data_Irregular_interval;
+type strObject_Data_Info = import('./clsAttrData').strObject_Data_Info;
+type strOverLay_DataSet_Item_Info = import('./clsAttrData').strOverLay_DataSet_Item_Info;
+type strOverLay_Dataset_Info = import('./clsAttrData').strOverLay_Dataset_Info;
+type strSeries_Dataset_Info = import('./clsAttrData').strSeries_Dataset_Info;
+type strSeries_DataSet_Item_Info = import('./clsAttrData').strSeries_DataSet_Item_Info;
+
 // ListViewTable互換のインターフェース（clsGenericのListViewTableクラスと互換）
 interface IListViewTable {
     clear?: () => void;
@@ -40,13 +53,8 @@ interface MenuItem {
 // - propertyWindow: IPropertyWindow
 // - frmPrint: IFrmPrint
 // - divmain: HTMLDivElement
-// - preReadMapFile: MapFileInfo[]
 
-// 旧互換性のためのグローバル宣言（新規コードでは使用しないでください）
-declare let preReadMapFile: MapFileInfo[];
-
-// レイヤーデータ（未使用の可能性が高い）
-declare let clsLayerData: typeof ILayerDataInfo | undefined;
+// 旧互換の実行時グローバル変数は撤去済みです。状態は AppState から参照してください。
 
 // Window拡張（グローバルプロパティ）
 interface Window {
@@ -1939,13 +1947,6 @@ interface Math {
 
 // Legacy globals still referenced across the codebase (typed as unknown for now)
 declare function clsSelectData(...args: JsonValue[]): void;
-declare class GraphModeDataItem {
-    DataNumber: number;
-    Tile?: Tile_Property;
-    Clone?: () => GraphModeDataItem;
-    [key: string]: JsonValue;
-    constructor(...args: JsonValue[]);
-}
 declare function clsTileSet(...args: JsonValue[]): void;
 declare function clsLinePatternSet(event: MouseEvent, line: LinePattern, okEvent: (line: LinePattern) => void): void;
 declare function graphModeEn_Obi(...args: JsonValue[]): void;
@@ -2043,23 +2044,10 @@ declare class strDummyObjectPointMark_Info {
     Mark: Mark_Property;
     Clone(): strDummyObjectPointMark_Info;
 }
-declare class strCondition_Limitation_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strDummyObjectName_and_Code {
     Name?: string;
     code: string | number;
     Time?: strYMD;
-    [key: string]: AttrValue;
-    constructor(...args: JsonValue[]);
-}
-declare class strOverLay_DataSet_Item_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strContour_Data_Irregular_interval { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strClass_Div_data {
-    ODLinePat?: Line_Property;
-    BlankF?: boolean;
-    Value?: number | string;
-    ClassMark?: Mark_Property;
-    PaintColor?: colorRGBA;
-    Clone?: () => strClass_Div_data;
     [key: string]: AttrValue;
     constructor(...args: JsonValue[]);
 }
@@ -2092,18 +2080,7 @@ declare class clsSpatialIndexSearch implements ClsSpatialIndexSearchInstance {
     AddRect: (xy1Rectangle: point | rectangle, xy2TagData: latlon | string | number, TagData?: string | number) => void;
     AddEnd: () => void;
 }
-declare class strFrmCopyObjectName_init_parameter_data { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare function frmCopyObjectName(...args: JsonValue[]): void;
-declare class strOverLay_Dataset_Info { 
-    [key: string]: JsonValue;
-    Clone?: () => strOverLay_Dataset_Info;
-    constructor(...args: JsonValue[]); 
-}
-declare class strSeries_Dataset_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strCondition_DataSet_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strCondition_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strObject_Data_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
-declare class strSeries_DataSet_Item_Info { [key: string]: JsonValue; constructor(...args: JsonValue[]); }
 declare class strLKOjectGroup_Info { 
     Name?: string;
     GroupNumber?: number;
@@ -2171,7 +2148,6 @@ declare function clsFontSet(...args: JsonValue[]): void;
 declare function clsDrawTileSample(...args: JsonValue[]): void;
 declare const enmBasePosition: { readonly [key: string]: number };
 declare const enmKenCodeObjectstructure: { readonly MapObj: number; readonly SyntheticObj: number };
-declare const enmObjectGoupType_Data: { readonly [key: string]: number };
 declare const enmCondition: { readonly [key: string]: number };
 declare const enmDataSource: {
     NoData: number;
@@ -2393,11 +2369,6 @@ interface ZlibZip {
     compress(): Uint8Array;
 }
 
-declare const Zlib: {
-    Zip: new() => ZlibZip;
-    Unzip: new(buffer: Uint8Array) => ZlibUnzip;
-};
-
 // Navigator extensions
 interface Navigator {
     msSaveBlob?: (blob: Blob, filename: string) => void;
@@ -2456,12 +2427,6 @@ interface HTMLSelectElement {
 
 // Global functions
 declare function Check_Print_err(): void;
-
-// Shapefile class
-declare const clsShapefile: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
-
-// Additional global variables
-declare let lstDummyItem: HTMLElement | undefined; // 変更される可能性あり
 
 // Array extensions
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -31,6 +31,7 @@ import {
     rectangle,
     Screen_info,
     size,
+    strClass_Div_data,
     strScale_Attri
 } from './clsAttrData';
 
@@ -115,6 +116,12 @@ export class Accessory {
             return new colorRGBA(32, 32, 32, source.a);
         }
         return source.Clone();
+    }
+
+    private static isFlatLineCap(pattern: LineEdge_Connect_Pattern_Data_Info & { Edge_Pattern?: number }): boolean {
+        return pattern.lineCap === 'butt'
+            || (pattern.lineCap as unknown as number) === enmEdge_Pattern.Flat
+            || pattern.Edge_Pattern === enmEdge_Pattern.Flat;
     }
 
     private static drawClassPaintLegendFallback(g: CanvasRenderingContext2D, anchor: point, layerNum: number, dataNum: number): boolean {
@@ -1937,7 +1944,7 @@ export class Accessory {
                     if (md.LineShape.BlankF===false) {
                         let r;
                         const MaxLW = state.attrData.Get_Length_On_Screen(md.LineShape.Width)
-                        if (md.LineShape.Edge_Connect_Pattern.Edge_Pattern === 2) {
+                        if (this.isFlatLineCap(md.LineShape.Edge_Connect_Pattern)) {
                             r = 0;
                         } else {
                             r = MaxLW;
@@ -2298,7 +2305,7 @@ export class Accessory {
                 const LW = state.attrData.Get_Length_On_Screen(cvi.ODLinePat.Width)
                 const H = Math.max(UH, LW)
                 let _r;
-                if (cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern === enmEdge_Pattern.Flat) {
+                if (this.isFlatLineCap(cvi.ODLinePat.Edge_Connect_Pattern)) {
                     _r = state.attrData.Radius(rm, 0, rm);
                 } else {
                     _r = state.attrData.Radius(rm, cvi.ODLinePat.Width, rm);
@@ -2362,7 +2369,7 @@ export class Accessory {
                     const H  = Math.max(UH, LW);
                     const Y  = HeadBoxSize.height + UH / 2;
                     let r ;
-                    if(cvi.ODLinePat.Edge_Connect_Pattern.Edge_Pattern === enmEdge_Pattern.Flat ){
+                    if(this.isFlatLineCap(cvi.ODLinePat.Edge_Connect_Pattern)){
                         r = 0;
                     }else{
                         r = LW / 2;
@@ -2390,7 +2397,7 @@ export class Accessory {
                 state.attrData.LayerData[Layn2].Shape === enmShape.LineShape) ){
                 const LW  = state.attrData.Get_Length_On_Screen(misv.LineShape.Width);
                 let r ;
-                if(misv.LineShape.Edge_Connect_Pattern.Edge_Pattern === enmEdge_Pattern.Flat ){
+                if(this.isFlatLineCap(misv.LineShape.Edge_Connect_Pattern)){
                     r = 0;
                 }else{
                     r = LW / 2;
