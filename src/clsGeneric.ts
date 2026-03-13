@@ -2118,7 +2118,7 @@ export class Generic {
         xhr.onload = function () {
             if (xhr.status === 200) {
                 const file = new Blob([xhr.response]);
-                Generic.unzipFile(file, unzipOk, unzipError);
+                Generic.unzipFile(file, unzipOk, unzipError, unzipReadError);
                 function unzipOk(data: {[key: string]: Uint8Array}) {
                     const key = Object.keys(data)[0];
                     if(ext==="mpfj"){
@@ -2131,6 +2131,10 @@ export class Generic {
                 function unzipError(_err: Error) {
                     Generic.clear_backDiv();
                     alert(url+"の展開に失敗しました");
+                }
+                function unzipReadError(_err: Error) {
+                    Generic.clear_backDiv();
+                    alert(url+"の内容の読み込みに失敗しました");
                 }
             }
         };
@@ -2254,12 +2258,17 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     /**圧縮ファイルを展開 展開後のファイル名の連想配列のバイナリデータを返す*/
-    static unzipFile(file: Blob, onOK: (data: {[key: string]: Uint8Array}) => void, onError: (err: Error) => void) {
+    static unzipFile(file: Blob, onOK: (data: {[key: string]: Uint8Array}) => void, onError: (err: Error) => void, onReadError: (err: Error) => void = onError) {
 
         const zipReader = new FileReader();
-        zipReader.readAsArrayBuffer(file);
-        const unZipData: {[key: string]: Uint8Array} = {};
+        const handleError = function (error: unknown, callback: (err: Error) => void) {
+            const normalizedError = error instanceof Error ? error : new Error(String(error));
+            console.error(normalizedError);
+            callback(normalizedError);
+        };
+
         zipReader.onload = function () {
+            const unZipData: {[key: string]: Uint8Array} = {};
             try {
                 const zipArr = new Uint8Array(zipReader.result as ArrayBuffer);
                 const unzip = new Zlib.Unzip(zipArr);
@@ -2269,12 +2278,23 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                     //let jsonBuffer = utf8ArrayToStr(unzip.decompress(importFile));
                     unZipData[importFile] = unzip.decompress(importFile);
                 }
-               onOK(unZipData);
             } catch (e) {
-                console.error(e);
-                 onError(e as Error);
-             }
+                handleError(e, onError);
+                return;
+            }
+
+            try {
+                onOK(unZipData);
+            } catch (e) {
+                handleError(e, onReadError);
+            }
         }
+
+        zipReader.onerror = function () {
+            handleError(zipReader.error ?? new Error("zip file read error"), onError);
+        }
+
+        zipReader.readAsArrayBuffer(file);
     }
 
     /**データ（バイナリ）と対応するファイル名をtotalFileNameにZIP圧縬 */

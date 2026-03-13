@@ -3031,7 +3031,7 @@ class clsMapdata {
     m.Detail.ScaleVisible = detailData.ScaleVisible as boolean;
     m.MapCompass.Visible = compassData.Visible as boolean;
     m.MapCompass.Position = this.cnvJsonPoint(compassData.Position as JsonObject, mdrmjFlag);
-    m.MapCompass.Mark = this.cnvJsonMark_Property(compassData.Mark as JsonObject);
+    m.MapCompass.Mark = this.cnvJsonMark_Property(compassData.Mark as JsonObject, mdrmjFlag);
     Object.assign(m.MapCompass.dirWord, compassData.dirWord);
     // m.MapCompass.dirWord.East = JsonData.Map.MapCompass.dirWord.East;
     // m.MapCompass.dirWord.West = JsonData.Map.MapCompass.dirWord.West;
@@ -3213,7 +3213,7 @@ class clsMapdata {
             newf.FringeF = bodyObj.FringeF as boolean;
             newf.FringeWidth = bodyObj.FringeWidth as number;
             newf.FringeColor = this.cnvJsonColor(bodyObj.FringeColor);
-            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back as JsonObject);
+            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back as JsonObject, mdrmjFlag);
         } else {
             newf.Color = this.cnvJsonColor(jsonf.Color);
             newf.Size = jsonf.Size as number;
@@ -3225,7 +3225,7 @@ class clsMapdata {
             newf.FringeF = jsonf.FringeF as boolean;
             newf.FringeWidth = jsonf.FringeWidth as number;
             newf.FringeColor = this.cnvJsonColor(jsonf.FringeColor);
-            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back as JsonObject);
+            newf.Back = this.cnvJsonBackGround_Box_Property(jsonf.Back as JsonObject, mdrmjFlag);
         }
         return newf;
     }
