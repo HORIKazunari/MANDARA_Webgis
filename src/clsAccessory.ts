@@ -882,7 +882,7 @@ export class Accessory {
             }
         }
 
-        if (LEGEND_FORCE_DRAW_DEBUG === true) {
+        if (LEGEND_FORCE_DRAW_DEBUG) {
             g.save();
             g.font = 'bold 12px monospace';
             g.fillStyle = '#ff3030';

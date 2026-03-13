@@ -12,6 +12,21 @@ interface GetRectInResult {
     ObStac: number[];
 }
 
+type SpatialCoordinate =
+    | point
+    | { x: number; y: number; toPoint?: () => point }
+    | { lat: number; lon: number; toPoint?: () => point };
+
+function normalizeSpatialCoordinate(value: SpatialCoordinate): point {
+    if ('toPoint' in value && typeof value.toPoint === 'function') {
+        return value.toPoint().Clone();
+    }
+    if ('x' in value && 'y' in value) {
+        return new point(value.x, value.y);
+    }
+    return new point(value.lon, value.lat);
+}
+
 export class GetObjectPointTagInfo {
     ObjectNumber: number;
     PointNumber: number;
@@ -41,13 +56,13 @@ class IndexContentsInfo {
 
 class ObjectXYInfo {
     Pnum: number;
-    Point: Array<{ x: number; y: number; toPoint?: () => point }>;
+    Point: point[];
     Tag: string | number;
     RemoveF: boolean;
     
-    constructor(Pnum: number, Point: Array<{ x: number; y: number; toPoint?: () => point }>, Tag: string | number, RemoveF: boolean) {
+    constructor(Pnum: number, Point: SpatialCoordinate[], Tag: string | number, RemoveF: boolean) {
         this.Pnum = Pnum;
-        this.Point = Generic.ArrayClone(Point);
+        this.Point = Point.map(normalizeSpatialCoordinate);
         this.Tag = Tag;
         this.RemoveF = RemoveF;
     }
@@ -69,11 +84,8 @@ class SpatialIndexSearchInternal {
     private RectSetF: boolean = false;
     private LineCutNum: number = 0;
 
-    private toPointValue(value: { x: number; y: number; toPoint?: () => point }): point {
-        if (typeof value.toPoint === 'function') {
-            return value.toPoint();
-        }
-        return new point(value.x, value.y);
+    private toPointValue(value: point): point {
+        return value;
     }
     
     constructor(ObjType: SpatialPointType, ExtraRangeFlag: boolean, Rect?: rectangle, extraRangeSize?: number) {
@@ -317,7 +329,7 @@ class SpatialIndexSearchInternal {
             return false;
         }
     }
-    private Add_Point_Sub(Pnum: number, XY: Array<{ x: number; y: number; toPoint?: () => point }>, TagData: string | number): void {
+    private Add_Point_Sub(Pnum: number, XY: SpatialCoordinate[], TagData: string | number): void {
         this.ObjectXY[this.ObjectNum] = new ObjectXYInfo(Pnum, XY, TagData,false);
         if (this.AddEndF === true) {
             switch (this.ObjectType) {
@@ -335,7 +347,7 @@ class SpatialIndexSearchInternal {
         this.ObjectNum++;
 
     }
-    AddMultiPoint(Pnum: number, XY: Array<{ x: number; y: number; toPoint?: () => point }>, TagData: string | number): void {
+    AddMultiPoint(Pnum: number, XY: SpatialCoordinate[], TagData: string | number): void {
         //複数地点オブジェクトを追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -343,7 +355,7 @@ class SpatialIndexSearchInternal {
         }
         this.Add_Point_Sub(Pnum, XY, TagData);
     }
-    AddDoublePoint(XY1: { x: number; y: number; toPoint?: () => point }, XY2: { x: number; y: number; toPoint?: () => point }, TagData: string | number): void {
+    AddDoublePoint(XY1: SpatialCoordinate, XY2: SpatialCoordinate, TagData: string | number): void {
         //2地点オブジェクトを追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -353,7 +365,7 @@ class SpatialIndexSearchInternal {
         this.Add_Point_Sub(2, XY, TagData);
     }
 
-    AddSinglePoint(XY1: { x: number; y: number; toPoint?: () => point }, TagData: string | number): void {
+    AddSinglePoint(XY1: SpatialCoordinate, TagData: string | number): void {
         /// <signature>
         /// <summary>地点オブジェクトを追加</summary>
         /// <returns type="Number" >同じ値の数</returns>
@@ -365,7 +377,7 @@ class SpatialIndexSearchInternal {
         const XY = new Array(XY1);
         this.Add_Point_Sub(1, XY, TagData);
     }
-    AddSinglePoint_Array(Num: number, XY: Array<{ x: number; y: number; toPoint?: () => point }>, TagData: string | number): void {
+    AddSinglePoint_Array(Num: number, XY: SpatialCoordinate[], TagData: string | number): void {
         //1地点オブジェクトを配列で追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -723,7 +735,7 @@ class SpatialIndexSearchInternal {
         }
     }
 
-    AddLine(Pnum: number, XY: Array<{ x: number; y: number; toPoint?: () => point }>, TagData: string | number): void {
+    AddLine(Pnum: number, XY: SpatialCoordinate[], TagData: string | number): void {
         //線オブジェクト追加
         if (this.ObjectType !== SpatialPointType.SPILine) {
             alert("線以外はできません。");

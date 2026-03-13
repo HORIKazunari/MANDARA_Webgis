@@ -1293,7 +1293,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                         if (OnObject.length === 0) {
                             //frm_PropertypnlProperty.Visible = false;
                         } else {
-                            if (mnuPropertyWindow.checked === true) {
+                            if (state.mnuPropertyWindow?.checked === true) {
                                 //frm_Property.ShowTripModeProperty(state.attrData, Layernum, OnObject, dtindex);
                             }
                         }

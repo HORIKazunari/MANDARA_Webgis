@@ -25,7 +25,12 @@ import {
     enmSoloMode_Number,
     point,
     colorRGBA,
-    Screen_info
+    Screen_info,
+    strCondition_DataSet_Info,
+    strCondition_Data_Info,
+    strCondition_Limitation_Info,
+    strLatLonDegreeMinuteSecond,
+    strSeries_DataSet_Item_Info
 } from './clsAttrData';
 import type { Color, Mark, LinePattern, Font, Tile, JsonValue, JsonObject } from './types';
 
@@ -628,7 +633,6 @@ export function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) 
         function backGet(back: BackGround_Box_Property) {
             ft.Back = back;
             clsDrawTile.Darw_Sample_BackGroundBox(backColorBox, ft.Back, _attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info);
-            _attrData.Draw_Sample_Mark_Box(picMark, ft);
         }
     }
 
@@ -2075,7 +2079,7 @@ export function frmMain_ConditionSettings(okEvent: () => void){
             return;
         }
         const ConItem = appState().attrData.TotalData.Condition[n];
-        frmMain_ConditionSettingSub(ConItem,btnOK);
+        frmMain_ConditionSettingSub(ConItem as unknown as strCondition_DataSet_Info,btnOK);
         function btnOK(Con: strCondition_DataSet_Info){
             appState().attrData.TotalData.Condition[n] = Con;
             const layer = Number(Con.Layer);
@@ -2271,7 +2275,7 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
             Lim.Val = String(txtValue.value);
         Lim.Condition = Number(cboCondition.getValue());
         if (appState().attrData.Get_DataType(ConItem.Layer, Lim.Data) === enmAttDataType.Normal) {
-            if (isNaN(Lim.Val)) {
+            if (isNaN(Number(Lim.Val))) {
                 Generic.alert(new point(e.clientX, e.clientY),"数値以外の文字が含まれています。");
                 return;
             }
@@ -3611,7 +3615,7 @@ export function openMapFile(call: (data: JsonValue, filename?: string) => void) 
     }
 }
 
-class strFrmCopyObjectName_init_parameter_data {
+export class strFrmCopyObjectName_init_parameter_data {
     ObjName: string = "";
     Time: strYMD = clsTime.GetNullYMD();
     TimeChangeEnabled: boolean = true;

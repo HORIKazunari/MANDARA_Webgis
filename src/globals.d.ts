@@ -43,10 +43,6 @@ interface MenuItem {
 // - preReadMapFile: MapFileInfo[]
 
 // 旧互換性のためのグローバル宣言（新規コードでは使用しないでください）
-declare let attrData: IAttrData;
-declare let scrMargin: IScrMargin;
-declare let frmPrint: IFrmPrint;
-declare let divmain: HTMLDivElement;
 declare let preReadMapFile: MapFileInfo[];
 
 // レイヤーデータ（未使用の可能性が高い）
@@ -1173,12 +1169,6 @@ declare class latlon {
 // scrMargin: AppStateで管理（削除済み）
 // logWindow: AppStateで管理（削除済み）
 
-declare let tx: string; // 一時変数
-declare let mnuPropertyWindow: HTMLElement | undefined; // 変更される可能性あり
-declare let fname: string; // 一時変数
-declare let i: number; // ループカウンタ
-declare let j: number; // ループカウンタ
-declare let k: number; // ループカウンタ
 // settingModeWindow: AppStateで管理（削除済み）
 
 // 列挙型の追加
@@ -2091,7 +2081,6 @@ declare function frmMainCopyDataSettings(...args: JsonValue[]): void;
 declare function frmMain_SetSeriesMode(...args: JsonValue[]): void;
 declare function frmMain_MarkPosition(...args: JsonValue[]): void;
 declare function frmMain_LayeObjectSelectOne(...args: JsonValue[]): void;
-declare function settingFront(...args: JsonValue[]): void;
 declare function Check_Point_in_Kencode_oneObject_Box(layernum: number, objNum: number, x: number, y: number): boolean;
 declare class clsSpatialIndexSearch implements ClsSpatialIndexSearchInstance {
     constructor(objType: SpatialPointType, extraRangeFlag: boolean, rect?: rectangle, extraRangeSize?: number);
@@ -2347,7 +2336,6 @@ declare function logX(data: JsonValue): void;
 declare function init(): void;
 declare function setting(search: string): void;
 declare function contextMenuPrevent(e: Event): void;
-declare function frmPrintFront(): void;
 declare function FrmprintMenuClick(pos: point): void;
 declare function dataValueShow(): void;
 declare function backImageButton(): void;
@@ -2473,7 +2461,6 @@ declare function Check_Print_err(): void;
 declare const clsShapefile: { new(...args: JsonValue[]): JsonObject; [key: string]: JsonValue };
 
 // Additional global variables
-declare let picMark: HTMLElement | undefined; // 変更される可能性あり
 declare let lstDummyItem: HTMLElement | undefined; // 変更される可能性あり
 
 // Array extensions

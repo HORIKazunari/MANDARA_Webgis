@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode development",
-    "build:check": "tsc --noEmit && vite build",
+    "build:check": "npm run check:ambient-runtime && tsc --noEmit && vite build",
+    "check:ambient-runtime": "node check_ambient_runtime_deps.cjs",
     "preview": "vite preview",
     "preview:dist": "npm run build && vite preview --host --port 4173 --strictPort",
     "preview:dist:open": "npm run preview:dist -- --open",

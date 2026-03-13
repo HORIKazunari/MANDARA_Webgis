@@ -3748,5 +3748,6 @@ goog.scope(function() {
 
 }).call(this);
 
-// Ensure module scope for TypeScript side-effect import
-export {};
+const runtimeGlobalZlib = globalThis.Zlib;
+
+export { runtimeGlobalZlib as Zlib };

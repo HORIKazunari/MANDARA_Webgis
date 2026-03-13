@@ -92,7 +92,7 @@ class LineCodeStac_Data {
  *
  * @type {{ NormalObject: number; AggregationObject: number; }}
  */
-const enmObjectGoupType_Data = {
+export const enmObjectGoupType_Data = {
     NormalObject: 0, //通常のオブジェクト
     AggregationObject: 1//集成オブジェクト
 }

@@ -205,6 +205,45 @@ test.describe('URL指定ファイル読み込み', () => {
     await expect(page.locator('#frmPrint')).toBeVisible({ timeout: 10000 });
   });
 
+  test('japan_data.mdrj 読み込み後に重ね合わせセットを押しても実行時エラーが発生しない', async ({ page }) => {
+    const dialogs: string[] = [];
+    const pageErrors: string[] = [];
+    const consoleErrors: string[] = [];
+
+    page.on('dialog', async dialog => {
+      dialogs.push(dialog.message());
+      await dialog.dismiss();
+    });
+
+    page.on('pageerror', error => {
+      pageErrors.push(String(error));
+    });
+
+    page.on('console', message => {
+      if (message.type() === 'error') {
+        consoleErrors.push(message.text());
+      }
+    });
+
+    await page.goto(FILE_OPEN_URL, {
+      waitUntil: 'domcontentloaded',
+    });
+
+    const settingPanel = page.locator('#SettingPanel');
+    const overlaySetButton = page.locator('#btnOverlaySet');
+
+    await expect(settingPanel).toBeVisible({ timeout: 10000 });
+    await expect(overlaySetButton).toBeVisible();
+    await expect(overlaySetButton).toBeEnabled();
+
+    await overlaySetButton.click();
+    await page.waitForTimeout(500);
+
+    expect(dialogs).toEqual([]);
+    expect(pageErrors).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  });
+
   test('japan_sityoson_pop.mdrmj 読み込み後に描画開始で地図画面が開く', async ({ page }) => {
     await page.goto(MDRMJ_FILE_OPEN_URL, {
       waitUntil: 'domcontentloaded',

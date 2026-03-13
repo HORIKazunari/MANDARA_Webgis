@@ -7,8 +7,10 @@ import { appState } from './core/AppState';
 import { Generic } from './clsGeneric';
 import { clsDrawMarkFan, clsTileMap } from './clsDraw';
 import { Setting_Info } from './clsTime';
-import { point, size, enmBasePosition } from './clsAttrData';
+import { point, Screen_info, size, enmBasePosition } from './clsAttrData';
+import type { Zahyo_info } from './clsMapdata';
 import { enmZahyo_mode_info } from './constants/legacyEnums';
+import { frmPrintFront, settingFront } from './frontHandlers';
 import { attachFrmPrintMethods, mapMouseInternal as mapMouse } from './frmPrint';
 import { clsPrint } from './clsPrint';
 import { setting } from './clsWindow';
@@ -250,6 +252,7 @@ function frmPrintProjection(): void {
     const viewStyle = state.attrData.TotalData.ViewStyle as {
         Zahyo: Zahyo_info;
         ScrData: Screen_info;
+        MapLegend: typeof state.attrData.TotalData.ViewStyle.MapLegend;
     };
     const mapRect = viewStyle.ScrData.MapRectangle;
     frmProjectionConvert(viewStyle.Zahyo, mapRect, okButton);
@@ -276,6 +279,7 @@ function frmPrintProjection(): void {
             const nextViewStyle = state.attrData.TotalData.ViewStyle as {
                 Zahyo: Zahyo_info;
                 ScrData: Screen_info;
+                MapLegend: typeof state.attrData.TotalData.ViewStyle.MapLegend;
             };
             const scrData = nextViewStyle.ScrData;
             nextViewStyle.Zahyo = newZahyo;
@@ -369,38 +373,6 @@ function backImageButton(): void {
     }
 }
 
-/**
- * 設定画面を前面に
- */
-function _settingFront(): void {
-    const state = appState();
-    
-    if (state.divMain?.style) {
-        state.divMain.style.zIndex = "2";
-    }
-    if (state.settingModeWindow?.style) {
-        state.settingModeWindow.style.zIndex = "2";
-    }
-    if (state.frmPrint?.style) {
-        state.frmPrint.style.zIndex = "1";
-    }
-    if (state.propertyWindow?.style) {
-        state.propertyWindow.style.zIndex = "1";
-    }
-}
-
-/**
- * 印刷画面を前面に
- */
-function frmPrintFront(): void {
-    const state = appState();
-    
-    void (state.divMain?.style && (state.divMain.style.zIndex = "1"));
-    void (state.settingModeWindow?.style && (state.settingModeWindow.style.zIndex = "1"));
-    void (state.frmPrint?.style && (state.frmPrint.style.zIndex = "2"));
-    void (state.propertyWindow?.style && (state.propertyWindow.style.zIndex = "3"));
-}
-
 const globalScope = globalThis as typeof globalThis & {
     logX?: (data: JsonValue) => void;
     init?: () => void;
@@ -410,7 +382,7 @@ const globalScope = globalThis as typeof globalThis & {
 
 globalScope.logX = _logX;
 globalScope.init = _init;
-globalScope.settingFront = _settingFront;
+globalScope.settingFront = settingFront;
 globalScope.frmPrintFront = frmPrintFront;
 
 globalThis.onerror = function(message, source, lineno, colno, error) {

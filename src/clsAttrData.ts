@@ -277,7 +277,7 @@ class strDegreeMinuteSeconde {
 }
 
 //度分秒緯度経度構造体
-class _strLatLonDegreeMinuteSecond {
+class strLatLonDegreeMinuteSecond {
     LatitudeDMS: strDegreeMinuteSeconde;
     LongitudeDMS: strDegreeMinuteSeconde;
 
@@ -1725,6 +1725,13 @@ class strCondition_DataSet_Info {
         d.Condition_Class = Generic.ArrayClone(this.Condition_Class);
         return d;
     }
+}
+
+class strObjectKindUsed_Info {
+    MapFileName: string = "";
+    ObjectKindNumber: number = 0;
+    Mark: Mark_Property = new Mark_Property();
+    ObjectKindName: string = "";
 }
 
 // 図形データの基本型（FigureStacで使用される図形オブジェクト）
@@ -3590,7 +3597,7 @@ class clsAttrData {
                 ls.Div_Num = O_Data.SoloModeViewSettings.Div_Num;
                 ls.Div_Method = O_Data.SoloModeViewSettings.Div_Method;
                 if (ls.Div_Method === enmDivisionMethod.Free) {
-                    for (j = 0; j < p; j++) {
+                    for (let j = 0; j < p; j++) {
                         ls.Class_Div[j].Value = O_Data.SoloModeViewSettings.Class_Div[j].Value;
                     }
                 } else {
@@ -3598,13 +3605,13 @@ class clsAttrData {
                 }
                 if (ClassPaintF === true) {
                     ls.ClassPaintMD = O_Data.SoloModeViewSettings.ClassPaintMD.Clone();
-                    for (j = 0; j < p; j++) {
+                    for (let j = 0; j < p; j++) {
                         ls.Class_Div[j].PaintColor = O_Data.SoloModeViewSettings.Class_Div[j].PaintColor;
                     }
                 }
                 if (ClassMarkF === true) {
                     ls.ClassMarkMD = O_Data.SoloModeViewSettings.ClassMarkMD.Clone();
-                    for (j = 0; j < p; j++) {
+                    for (let j = 0; j < p; j++) {
                         ls.Class_Div[j].ClassMark = O_Data.SoloModeViewSettings.Class_Div[j].ClassMark;
                     }
                 }
@@ -3614,7 +3621,7 @@ class clsAttrData {
                     } else {
                         ls.ClassODMD.Arrow = O_Data.SoloModeViewSettings.ClassODMD.Arrow.Clone();
                     }
-                    for (j = 0; j < p; j++) {
+                    for (let j = 0; j < p; j++) {
                         ls.Class_Div[j].ODLinePat = O_Data.SoloModeViewSettings.Class_Div[j].ODLinePat.Clone();
                     }
                 }
@@ -3631,23 +3638,23 @@ class clsAttrData {
                 }
                 const P1 = O_Data.SoloModeViewSettings.Div_Num;
                 const O_CateStr = [];
-                for (j = 0; j < P1; j++) {
+                for (let j = 0; j < P1; j++) {
                     O_CateStr[j] = O_Data.SoloModeViewSettings.Class_Div[j].Value;
                 }
 
                 const P2 = ls.Div_Num;
                 const Con_Class_Div_Temp = [];
-                for (j = 0; j < P2; j++) {
+                for (let j = 0; j < P2; j++) {
                     Con_Class_Div_Temp[j] = ls.Class_Div[j];
                 }
                 const Con_CateStr = [];
-                for (j = 0; j < P2; j++) {
+                for (let j = 0; j < P2; j++) {
                     Con_CateStr[j] = ls.Class_Div[j].Value;
                 }
 
                 const okf = [];
                 let caten = 0;
-                for (j = 0; j < P1; j++) {
+                for (let j = 0; j < P1; j++) {
                     const k = Con_CateStr.indexOf(O_CateStr[j]);
                     if (k !== -1) {
                         const o_Class_Div_Temp = O_Data.SoloModeViewSettings.Class_Div[j]
@@ -3666,7 +3673,7 @@ class clsAttrData {
                         okf[k] = true;
                     }
                 }
-                for (j = 0; j < P2; j++) {
+                for (let j = 0; j < P2; j++) {
                     if (okf[j] === false) {
                         ls.Class_Div[caten] = Con_Class_Div_Temp[j];
                         caten++;
@@ -9142,4 +9149,21 @@ export {
 };
 
 // Export constructor functions
-export { clsAttrData, clsAttrMapData, Screen_info };
+export {
+    clsAttrData,
+    clsAttrMapData,
+    Screen_info,
+    GraphModeDataItem,
+    strClass_Div_data,
+    strCondition_DataSet_Info,
+    strCondition_Data_Info,
+    strCondition_Limitation_Info,
+    strContour_Data_Irregular_interval,
+    strOverLay_DataSet_Item_Info,
+    strOverLay_Dataset_Info,
+    strLatLonDegreeMinuteSecond,
+    strObject_Data_Info,
+    strObjectKindUsed_Info,
+    strSeries_Dataset_Info,
+    strSeries_DataSet_Item_Info
+};

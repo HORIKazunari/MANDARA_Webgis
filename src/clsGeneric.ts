@@ -8,6 +8,7 @@ import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
 import { clsTime, Line_Property, Tile_Property } from './clsTime';
 import { clsColorPicker } from './clsSubWindows';
+import { Zlib } from './zlibrev';
 import { boundArrangeData } from './boundArrangeData';
 import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 // CHR_LF は現在未使用のためコメントアウト
@@ -2668,7 +2669,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static Check_DataType(DataNum: number, ObjNum: number, aData: string[][]) {
 
         const UNT = [];
-        const SS = new SortingSearch();
         for (let i = 0; i < DataNum; i++) {
             let f = true;
             for (let j = 0; j < ObjNum; j++) {
@@ -2688,13 +2688,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             }
             if (f === false) {
                 //文字列のデータ項目の場合
+                const categories = new Set<string>();
                 for (let j = 0; j < ObjNum; j++) {
-                    SS.Add(aData[j][i]);
+                    categories.add(aData[j][i]);
                 }
-                SS.AddEnd()
-                const ctn = SS.EachValue_Array();
                 //カテゴリー数が256未満の場合はカテゴリーデータ
-                if (ctn.length < 256) {
+                if (categories.size < 256) {
                     UNT[i] = "CAT";
                 } else {
                     UNT[i] = "STR";

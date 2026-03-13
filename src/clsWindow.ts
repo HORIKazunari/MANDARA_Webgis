@@ -6,6 +6,7 @@ import { clsPrint } from './clsPrint';
 import { clsBase, clsTime } from './clsTime';
 import { clsShapefile } from './shapeFile';
 import { contextMenuPrevent } from './contextMenu';
+import { frmPrintFront, settingFront } from './frontHandlers';
 import { SortingSearch } from './SortingSearch';
 import {
     frmMain_Buffer,
@@ -46,9 +47,14 @@ import {
     enmPaintColorSettingModeInfo,
     enmMarkBlockArrange,
     enmZahyo_System_Info,
+    GraphModeDataItem,
     point,
     colorRGBA,
-    Screen_info
+    Screen_info,
+    strClass_Div_data,
+    strContour_Data_Irregular_interval,
+    strSeries_DataSet_Item_Info,
+    strOverLay_DataSet_Item_Info
 } from './clsAttrData';
 import type { 
   ExtendedHTMLElement, 
@@ -3298,7 +3304,7 @@ export function setting(locSearch: string) {
                 for (let i = 0; i < n; i++) {
                     const dt = new strContour_Data_Irregular_interval()
                     dt.Line_Pat = clsBase.Line();
-                    dt.Value = ns.Class_Div[i].Value;
+                    dt.Value = Number(ns.Class_Div[i].Value);
                     const irregular = contourMd.Irregular;
                     irregular.push(dt as unknown as strContour_Data_Irregular_interval);
                     lst.push({ value: String(dt.Value), text: String(dt.Value) });
@@ -4173,7 +4179,7 @@ export function setting(locSearch: string) {
             }
             case enmTotalMode_Number.OverLayMode: {
                 const n = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex
-                for (i = 0; i < state.attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem.length; i++) {
+                for (let i = 0; i < state.attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem.length; i++) {
                     f = state.attrData.Check_Condition_UMU(state.attrData.TotalData.TotalMode.OverLay.DataSet[n].DataItem[i].Layer);
                     if (f === true) {
                         break;
@@ -4184,7 +4190,7 @@ export function setting(locSearch: string) {
             case enmTotalMode_Number.SeriesMode: {
                 const n = state.attrData.TotalData.TotalMode.Series.SelectedIndex
                 const seriesItems = state.attrData.TotalData.TotalMode.Series.DataSet[n].DataItem as { Layer: number; Data: number }[];
-                for (i = 0; i < seriesItems.length; i++) {
+                for (let i = 0; i < seriesItems.length; i++) {
                     const ad = seriesItems[i];
                     switch (state.attrData.Print_Mode_Total) {
                         case enmTotalMode_Number.DataViewMode: {
@@ -4195,10 +4201,13 @@ export function setting(locSearch: string) {
                             break;
                         }
                         case enmTotalMode_Number.OverLayMode: {
-                            for (let j = 0; j < state.attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem.length; j++) {
-                                // ループでjを最後の値まで進めるための空ループ
+                            const overlayItems = state.attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem;
+                            for (let j = 0; j < overlayItems.length; j++) {
+                                f = state.attrData.Check_Condition_UMU(overlayItems[j].Layer);
+                                if (f === true) {
+                                    break;
+                                }
                             }
-                            f = state.attrData.Check_Condition_UMU(state.attrData.TotalData.TotalMode.OverLay.DataSet[ad.Data].DataItem[j].Layer);
                             if (f === true) {
                                 break;
                             }

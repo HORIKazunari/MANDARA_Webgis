@@ -28,7 +28,8 @@ import {
     Screen_info as AttrScreenInfo,
     strContour_Line_property,
     size,
-    Legend2_Atri
+    Legend2_Atri,
+    strOverLay_DataSet_Item_Info
 } from './clsAttrData';
 import { SortingSearch } from './SortingSearch';
 import { boundArrangeData } from './boundArrangeData';
@@ -1678,7 +1679,7 @@ class clsPrint {
             }
         }
 
-        const d2 = state.attrData.Sort_OverLay_Data_Sub(tmpo.Always_Ove_DataStac)
+        const d2 = state.attrData.Sort_OverLay_Data_Sub(tmpo.Always_Ove_DataStac) as strOverLay_DataSet_Item_Info[];
         tmpo.OverLay_Printing_Flag = true;
         for (let i = 0; i < d2.length; i++) {
             tmpo.Printing_Number = i;
@@ -3421,7 +3422,7 @@ class clsPrint {
                             }
                             const ln = 4;
                             if (clsSpline.Spline_Get) {
-                                const pxy = clsSpline.Spline_Get(0, ln, Refp, 0.05, scrData as unknown as Screen_info);
+                                const pxy = clsSpline.Spline_Get(0, ln, Refp, 0.05, scrData as AttrScreenInfo);
                                 state.attrData.Draw_Line(g, ODLinePat, pxy);
                             }
 
