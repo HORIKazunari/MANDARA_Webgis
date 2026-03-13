@@ -155,6 +155,39 @@ test.describe('URL指定ファイル読み込み', () => {
     expect(consoleErrors).toEqual([]);
   });
 
+  test('japan_climate.mdrj は別データ項目へ切り替えても等値線モードを維持できる', async ({ page }) => {
+    const pageErrors: string[] = [];
+    const consoleErrors: string[] = [];
+
+    page.on('pageerror', error => {
+      pageErrors.push(String(error));
+    });
+
+    page.on('console', message => {
+      if (message.type() === 'error') {
+        consoleErrors.push(message.text());
+      }
+    });
+
+    await page.goto(CLIMATE_FILE_OPEN_URL, {
+      waitUntil: 'domcontentloaded',
+    });
+
+    await expect(page.locator('#SettingPanel')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#contourView')).toBeVisible();
+
+    await page.selectOption('#selectDataItem', '0');
+
+    await expect(page.locator('#contourView')).toBeVisible();
+    await expect(page.locator('#classView')).not.toBeVisible();
+
+    await page.locator('#btnDraw').click();
+    await expect(page.locator('#frmPrint')).toBeVisible({ timeout: 10000 });
+
+    expect(pageErrors).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  });
+
   test('japan_data.mdrj 読み込み後に描画開始で地図画面が開く', async ({ page }) => {
     await page.goto(FILE_OPEN_URL, {
       waitUntil: 'domcontentloaded',

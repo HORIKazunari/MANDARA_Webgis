@@ -1294,7 +1294,16 @@ export function setting(locSearch: string) {
     function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /* v: string | number = "" */) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
+        const layer = state.attrData.LayerData[LayerNum];
+        const currentPrintModeLayer = layer.Print_Mode_Layer;
+        const previousDataNum = layer.atrData.SelectedIndex;
+        const previousSoloMode = currentPrintModeLayer === enmLayerMode_Number.SoloMode
+            ? state.attrData.getSoloMode(LayerNum, previousDataNum)
+            : undefined;
         state.attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
+        if (previousSoloMode !== undefined && state.attrData.Check_Enable_SoloMode(previousSoloMode, LayerNum, selNum) === true) {
+            state.attrData.setSoloMode(LayerNum, selNum, previousSoloMode);
+        }
         for (const k in enmSoloMode_Number) {
             const n = (enmSoloMode_Number as Record<string, number>)[k];
             SetPicPnlSoloDataEnabled(n, LayerNum, selNum);
