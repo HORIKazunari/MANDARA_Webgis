@@ -1656,7 +1656,7 @@ class clsPrint {
                     d.DataNumber = DataNum;
                     d.Layer = Layernum;
                     d.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
-                    d.Mode = Number((al.atrData.Data[DataNum] as unknown as { ModeData: number }).ModeData);
+                    d.Mode = state.attrData.getSoloMode(Layernum, DataNum);
                     d.Legend_Print_Flag = true;
                     tmpo.Always_Ove_DataStac.push(d);
                 } else {
@@ -3554,7 +3554,8 @@ class clsPrint {
         const al = state.attrData.LayerData[LayerNum];
         const ad = al.atrData.Data[DataNum];
         const LayerShape = al.Shape;
-        if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F === true) {
+        const useDummyPolygonClip = (al.LayerModeViewSettings.PolygonDummy_ClipSet_F === true) && (LayerShape !== enmShape.PointShape);
+        if (useDummyPolygonClip === true) {
             g.save();
             if (LayerShape !== enmShape.PolygonShape) {
                 this.Vector_Dummy_Boundary(g, LayerNum, true, false);
@@ -3581,7 +3582,15 @@ class clsPrint {
         if(LayerShape === enmShape.PointShape) {
             this.Vector_Connect_CenterP_To_SymbolPoint(g, LayerNum);
             PointLayerMark = al.LayerModeViewSettings.PointLineShape.PointMark.Clone();
-            pointR = 5; // state.attrData.TotalData.ViewStyle.ScrData.Radius(PointLayerMark.WordFont.Size, 1, 1); // Property not available
+            PointLayerMark.PrintMark = enmMarkPrintType.Mark;
+            PointLayerMark.ShapeNumber = 0;
+            PointLayerMark.wordmark = "";
+            PointLayerMark.WordFont.Back = al.LayerModeViewSettings.PointLineShape.PointMark.WordFont.Back.Clone();
+            if ((PointLayerMark.Line.BlankF === true) || (PointLayerMark.Line.Width === 0)) {
+                PointLayerMark.Line = clsBase.Line();
+                PointLayerMark.Line.Width = 0.3;
+            }
+            pointR = Math.max(5, state.attrData.Radius(al.LayerModeViewSettings.PointLineShape.PointMark.WordFont.Size, 1, 1));
         }
         for (let i = 0; i < al.atrObject.ObjectNum; i++) {
             const DrawOrder = D_Order[i];
@@ -3597,12 +3606,20 @@ class clsPrint {
                 switch (LayerShape) {
                     case enmShape.PointShape: {
                         PointLayerMark = al.LayerModeViewSettings.PointLineShape.PointMark.Clone();
+                        PointLayerMark.PrintMark = enmMarkPrintType.Mark;
+                        PointLayerMark.ShapeNumber = 0;
+                        PointLayerMark.wordmark = "";
+                        PointLayerMark.WordFont.Back = al.LayerModeViewSettings.PointLineShape.PointMark.WordFont.Back.Clone();
+                        if ((PointLayerMark.Line.BlankF === true) || (PointLayerMark.Line.Width === 0)) {
+                            PointLayerMark.Line = clsBase.Line();
+                            PointLayerMark.Line.Width = 0.3;
+                        }
                         if (colpos === -1) {
                             PointLayerMark.Tile = state.attrData.TotalData.ViewStyle.Missing_Data.PaintTile.Clone();
                         } else {
                             PointLayerMark.Tile.BlankF = false;
-                            PointLayerMark.Tile.Color = col;
-                            PointLayerMark.WordFont.Color = col;
+                            PointLayerMark.Tile.Color = col.Clone();
+                            PointLayerMark.WordFont.Color = col.Clone();
                         }
                         state.attrData.Draw_Mark(g, OP, pointR, PointLayerMark);
                         const OVP = OP.Clone();
@@ -3661,7 +3678,7 @@ class clsPrint {
                 }
             }
         }
-        if (al.LayerModeViewSettings.PolygonDummy_ClipSet_F === true) {
+        if (useDummyPolygonClip === true) {
             g.restore();
             this.Vector_Dummy_Boundary(g,  LayerNum, true, false);
         }else{

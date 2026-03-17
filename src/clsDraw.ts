@@ -733,7 +733,7 @@ class _clsDrawMarkFan {
             const C_Rect = new rectangle(new point(Position.x - XR, Position.y - YR), new size(XR * 2, YR * 2));
 
             if (ScrData.SampleBoxFlag === false) {
-                const screenRect = ScrData.ScrRectangle ?? new rectangle(0, 0, 0, 0);
+                const screenRect = ScrData.MapScreen_Scale ?? new rectangle(0, g.canvas?.width ?? 0, 0, g.canvas?.height ?? 0);
                 if (spatial.Compare_Two_Rectangle_Position_turned(C_Rect, Kakudo, screenRect) === cstRectangle_Cross.cstOuter) {
                     return false;
                 }

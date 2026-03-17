@@ -7099,6 +7099,7 @@ class clsAttrData {
         this.LayerData[Layernum].atrData.Count++;
         this.CulcuOne(Layernum, DataNum);//データの統計情報取得
         this.SetIniHanrei(Layernum, DataNum)
+        newD.SoloModeViewSettings.SoloMode = newD.ModeData;
         return true;
     }
 

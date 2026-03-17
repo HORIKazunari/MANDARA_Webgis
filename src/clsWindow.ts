@@ -1059,7 +1059,7 @@ export function setting(locSearch: string) {
             let MultiDataSetIndex: number | undefined;
             switch (MDLayer) {
                 case enmLayerMode_Number.SoloMode:
-                    SoloMd = Number(ad.ModeData);
+                    SoloMd = state.attrData.getSoloMode(Layernum, DataNum);
                     break;
                 case enmLayerMode_Number.GraphMode:
                     MultiDataSetIndex = al.LayerModeViewSettings.GraphMode.SelectedIndex;
@@ -1220,7 +1220,7 @@ export function setting(locSearch: string) {
                     switch (Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode:
                             DataNum = al.atrData.SelectedIndex
-                            ModeData = Number(al.atrData.Data[DataNum].ModeData);
+                            ModeData = state.attrData.getSoloMode(Layernum, DataNum);
                             break;
                         case enmLayerMode_Number.GraphMode:
                             DataNum = al.LayerModeViewSettings.GraphMode.SelectedIndex;
@@ -1296,20 +1296,41 @@ export function setting(locSearch: string) {
         setDataItemList();
     }
 
+    function ensureSelectableSoloMode(LayerNum: number, DataNum: number) {
+        const currentSoloMode = state.attrData.getSoloMode(LayerNum, DataNum);
+        if (typeof currentSoloMode === 'number' && state.attrData.Check_Enable_SoloMode(currentSoloMode, LayerNum, DataNum) === true) {
+            return;
+        }
+
+        const data = state.attrData.LayerData[LayerNum].atrData.Data[DataNum];
+        const fallbackModes = [
+            Number(data.ModeData),
+            enmSoloMode_Number.ClassPaintMode,
+            enmSoloMode_Number.ClassMarkMode,
+            enmSoloMode_Number.ClassODMode,
+            enmSoloMode_Number.MarkSizeMode,
+            enmSoloMode_Number.MarkBlockMode,
+            enmSoloMode_Number.MarkBarMode,
+            enmSoloMode_Number.ContourMode,
+            enmSoloMode_Number.MarkTurnMode,
+            enmSoloMode_Number.StringMode,
+        ];
+
+        for (const mode of fallbackModes) {
+            if (Number.isFinite(mode) && state.attrData.Check_Enable_SoloMode(mode, LayerNum, DataNum) === true) {
+                state.attrData.setSoloMode(LayerNum, DataNum, mode);
+                return;
+            }
+        }
+    }
+
     //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
     function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /* v: string | number = "" */) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
         const layer = state.attrData.LayerData[LayerNum];
-        const currentPrintModeLayer = layer.Print_Mode_Layer;
-        const previousDataNum = layer.atrData.SelectedIndex;
-        const previousSoloMode = currentPrintModeLayer === enmLayerMode_Number.SoloMode
-            ? state.attrData.getSoloMode(LayerNum, previousDataNum)
-            : undefined;
         state.attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
-        if (previousSoloMode !== undefined && state.attrData.Check_Enable_SoloMode(previousSoloMode, LayerNum, selNum) === true) {
-            state.attrData.setSoloMode(LayerNum, selNum, previousSoloMode);
-        }
+        ensureSelectableSoloMode(LayerNum, selNum);
         for (const k in enmSoloMode_Number) {
             const n = (enmSoloMode_Number as Record<string, number>)[k];
             SetPicPnlSoloDataEnabled(n, LayerNum, selNum);
@@ -2730,6 +2751,9 @@ export function setting(locSearch: string) {
             state.propertyWindow.nextVisible = false;
         }
         clsPrint.setData(state.frmPrint.picMap);
+        window.requestAnimationFrame(() => {
+            state.frmPrint.resizeMapWindow?.();
+        });
     }
 
     //階級区分のピクチャボックス、テキストボックスの可否
