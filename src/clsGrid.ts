@@ -2018,7 +2018,6 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
 
         if (SyntheticObjF === false) {
             let L_Time: strYMD;
-            const LAY_Time = true;
             if (LayerType === enmLayerType.Trip_Definition) {
                 L_Time = clsTime.GetNullYMD();
             } else if (mpFile.Map.Time_Mode === false) {
@@ -2026,6 +2025,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             } else {
                 L_Time = ktGrid.getLayerData(LayerNum, GridLayerData.Time) as strYMD;
             }
+            const LAY_Time = (mpFile.Map.Time_Mode === true) && (L_Time.nullFlag() === false);
             let MeshCodeLen = 0;
             if (LayerType === enmLayerType.Mesh) {
                 MeshCodeLen = Generic.getMeshCodeLength(ktGrid.getLayerData(LayerNum, GridLayerData.Mesh) as MeshNumberValue) as number;

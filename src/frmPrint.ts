@@ -1577,7 +1577,7 @@ class frmPrint {
         tg.fillRect(0, 0, tilecanvas.width, tilecanvas.height)
         tg.drawImage(state.frmPrint.picMap, 0, 0);
         if (WindowOutFlag === true) {
-            Generic.windowCenterOpen(tilecanvas.toDataURL(), tilecanvas.width, tilecanvas.height, "MANDARA JS");
+            Generic.windowCenterOpen(tilecanvas.toDataURL(), tilecanvas.width, tilecanvas.height, "MANDARA Webgis");
         } else {
             Generic.prompt(undefined, "画像ファイル名", "mandara.png", function (v: string) {
                 const a = document.createElement('a');

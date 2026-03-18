@@ -836,17 +836,17 @@ export class gridControl {
         this.Grid_Property[LayerNum].FixedObjectName[X][Y].Text = value;
     }
    /**グリッドの左端固定部分の文字設定取得  XY指定なしの場合は配列で取得*/
-   getFixedXSData(LayerNum: number, X: number = -1, Y: number = -1) {
+   getFixedXSData(LayerNum: number, X?: number, Y?: number) {
     const GP = this.Grid_Property[LayerNum];
-    if (X !== undefined) {
-        return GP.FixedObjectName[X][Y].Text;    
-    }else{
+    if ((X !== undefined) && (Y !== undefined)) {
+        return GP.FixedObjectName[X]?.[Y]?.Text ?? "";
+    } else {
         const xs = this.Grid_Total.FixedObjectName_n;
         const ys = GP.Ymax;
         const dt = Generic.Array2Dimension<string>(xs, ys);
         for (let i = 0; i < xs; i++) {
             for (let j = 0; j < ys; j++) {
-                dt[i][j] = GP.FixedObjectName[i][j].Text;
+                dt[i][j] = GP.FixedObjectName[i]?.[j]?.Text ?? "";
             }
         }
         return dt;
@@ -1065,9 +1065,9 @@ export class gridControl {
         const xs = this.Grid_Total.FixedObjectName_n;
         const ys = this.Grid_Total.FixedDataItem_n;
         const dt = Generic.Array2Dimension<string>(xs, ys);
-        for (let i = 0; i <= xs; i++) {
-            for (let j = 0; j <= ys; j++) {
-                dt[i][j] = GP.FixedUpperLeft[i][j].Text;
+        for (let i = 0; i < xs; i++) {
+            for (let j = 0; j < ys; j++) {
+                dt[i][j] = GP.FixedUpperLeft[i]?.[j]?.Text ?? "";
             }
         }
         return dt;
@@ -1117,15 +1117,15 @@ export class gridControl {
     /**グリッドの上端固定部分の文字設定取得 XY指定なしの場合は配列で取得*/
     getFixedYSData(LayerNum: number, X?: number, Y?: number) {
         const GP = this.Grid_Property[LayerNum];
-        if (X !== undefined) {
-            return GP.FixedDataItem[X][Y].Text;
+        if ((X !== undefined) && (Y !== undefined)) {
+            return GP.FixedDataItem[X]?.[Y]?.Text ?? "";
         } else {
             const xs = GP.Xmax;
             const ys = this.Grid_Total.FixedDataItem_n;
             const dt = Generic.Array2Dimension<string>(xs, ys);
             for (let i = 0; i < xs; i++) {
                 for (let j = 0; j < ys; j++) {
-                    dt[i][j] = GP.FixedDataItem[i][j].Text;
+                    dt[i][j] = GP.FixedDataItem[i]?.[j]?.Text ?? "";
                 }
             }
             return dt;
@@ -1170,7 +1170,7 @@ export class gridControl {
 
     /**グリッド上端固定部分の文字設定 */
     getFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number) {
-        return this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text;
+        return this.Grid_Property[LayerNum].FixedUpperLeft[X]?.[Y]?.Text ?? "";
     }
     setFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text = value;

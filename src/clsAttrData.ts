@@ -9032,6 +9032,7 @@ class clsAttrMapData {
 class clsObjectNameSearch {
     private Object_Name_Search: SortingSearch;
     private Object_Name_Stac_for_Search_O_Code: InstanceType<clsObjectNameSearch['ObjNameAndTime_Info']>[];
+    private Object_Name_Index: Map<string, number[]>;
     private checkObjectNameKanjiCompatibleFF: boolean;
 
     ObjNameAndTime_Info = class {
@@ -9043,6 +9044,7 @@ class clsObjectNameSearch {
         //オブジェクト名検索用クラス
         this.Object_Name_Search = new SortingSearch();
         this.Object_Name_Stac_for_Search_O_Code = []; //ObjNameAndTime_Info
+        this.Object_Name_Index = new Map();
         this.checkObjectNameKanjiCompatibleFF = CheckKanjiCompatibleFlag; //Boolean
         // let Name_n = 0
         // for (let i = 0; i < MapData.Map.Kend; i++) {
@@ -9058,6 +9060,14 @@ class clsObjectNameSearch {
                         if (this.checkObjectNameKanjiCompatibleFF === true) {
                             const retV=Generic.ObjName_Kanji_Compatible(nam);
                             nam=retV.newObjname;
+                        }
+                        const position = this.Object_Name_Stac_for_Search_O_Code.length;
+                        const key = nam.toUpperCase();
+                        const indexList = this.Object_Name_Index.get(key);
+                        if (indexList === undefined) {
+                            this.Object_Name_Index.set(key, [position]);
+                        } else {
+                            indexList.push(position);
                         }
                         this.Object_Name_Search.Add(Number(nam));
                         const dt = new this.ObjNameAndTime_Info();
@@ -9096,7 +9106,7 @@ class clsObjectNameSearch {
             const retV=Generic.ObjName_Kanji_Compatible(ObjName);
             ObjName=retV.newObjname;
         }
-        const DataList = this.Object_Name_Search.SearchData_Array(Number(ObjName));
+        const DataList = this.Object_Name_Index.get(ObjName.toUpperCase()) ?? [];
         for (const i in DataList) {
             const j = DataList[i];
             if (clsTime.checkDurationIn(this.Object_Name_Stac_for_Search_O_Code[j].SETime, Time) === true) {

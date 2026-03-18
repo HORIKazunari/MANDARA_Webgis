@@ -56,6 +56,66 @@ export class Accessory {
         return new point(clampedX, clampedY);
     }
 
+    private static setLegendAnchorFromScreen(scrData: Screen_info, legendPositions: point[], legendNo: number, anchor: point): void {
+        if (scrData.Accessory_Base === enmBasePosition.Screen) {
+            const screenRect = scrData.ScrRectangle;
+            const originalPoint = scrData.getSRXY(anchor);
+            const width = Math.max(1, screenRect.width());
+            const height = Math.max(1, screenRect.height());
+            legendPositions[legendNo] = new point(
+                Generic.m_min_max((originalPoint.x - screenRect.left) / width, 0, 1),
+                Generic.m_min_max((originalPoint.y - screenRect.top) / height, 0, 1)
+            );
+            return;
+        }
+        legendPositions[legendNo] = scrData.getSRXY(anchor);
+    }
+
+    private static resolveLegendRectOverlap(currentRect: rectangle, previousRects: rectangle[], canvasWidth: number, canvasHeight: number): rectangle {
+        const width = currentRect.width();
+        const height = currentRect.height();
+        if (width <= 0 || height <= 0 || previousRects.length === 0) {
+            return currentRect;
+        }
+
+        const padding = 8;
+        const maxLeft = Math.max(padding, canvasWidth - width - padding);
+        const maxTop = Math.max(padding, canvasHeight - height - padding);
+        const usablePreviousRects = previousRects
+            .filter((rect) => rect.width() > 0 && rect.height() > 0)
+            .map((rect) => rect.Clone())
+            .sort((a, b) => (a.top - b.top) || (a.left - b.left));
+
+        if (usablePreviousRects.length === 0) {
+            return currentRect;
+        }
+
+        const createRect = (left: number, top: number): rectangle => {
+            const normalizedLeft = Math.min(Math.max(left, padding), maxLeft);
+            const normalizedTop = Math.min(Math.max(top, padding), maxTop);
+            return new rectangle(normalizedLeft, normalizedLeft + width, normalizedTop, normalizedTop + height);
+        };
+
+        let candidate = createRect(currentRect.left, currentRect.top);
+        for (let attempt = 0; attempt < usablePreviousRects.length * 4; attempt++) {
+            const overlap = usablePreviousRects.find((rect) => candidate.IntersectsWith(rect));
+            if (!overlap) {
+                return candidate;
+            }
+
+            let nextLeft = candidate.left;
+            let nextTop = overlap.bottom + padding;
+            if (nextTop + height > canvasHeight - padding) {
+                const rightMost = Math.max(...usablePreviousRects.map((rect) => rect.right));
+                nextLeft = rightMost + padding;
+                nextTop = padding;
+            }
+            candidate = createRect(nextLeft, nextTop);
+        }
+
+        return candidate;
+    }
+
     static BeginLegendFrame(): void {
         this.legendDrawnInFrame = false;
         this.classLegendDrawnInFrame = false;
@@ -855,7 +915,7 @@ export class Accessory {
             }
         }
         if (SizeGetOnlyF === true) {
-            if (screen_in === true && BoxSize.width > 0 && BoxSize.height > 0) {
+            if (BoxSize.width > 0 && BoxSize.height > 0) {
                 LegendW.Rect = new rectangle(ALP, BoxSize);
                 const padw = state.attrData.Get_PaddingPixcel((LegendW.LineKind_Flag === true) ? state.attrData.TotalData.ViewStyle.MapLegend.Line_DummyKind.Back : state.attrData.TotalData.ViewStyle.MapLegend.Base.Back);
                 LegendW.Rect.inflate(padw, padw);
@@ -867,6 +927,15 @@ export class Accessory {
                     canvasH
                 );
                 LegendW.Rect.offset(clampedTopLeft.x - LegendW.Rect.left, clampedTopLeft.y - LegendW.Rect.top);
+                if (legendNo > 0) {
+                    const previousLegendRects = state.attrData.TempData.Accessory_Temp.MapLegend_W
+                        .slice(0, legendNo)
+                        .map((legend) => legend?.Rect)
+                        .filter((rect): rect is rectangle => rect instanceof rectangle);
+                    LegendW.Rect = this.resolveLegendRectOverlap(LegendW.Rect, previousLegendRects, canvasW, canvasH);
+                }
+                ALP = LegendW.Rect.topLeft();
+                this.setLegendAnchorFromScreen(scrData, P_Legend.Base.LegendXY, legendNo, ALP);
             } else {
                 LegendW.Rect = new rectangle(0, 0, 0, 0);
             }

@@ -2180,7 +2180,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const gsize = Generic.getDivSize(promptText, 270, "");
         const fheight = (gsize.height) + 130;
-        const alertObj = Generic.set_backDiv("", "MANDARA JS", 300, fheight, true, true, buttonOK, 0.2, false,true,cancelCall);
+        const alertObj = Generic.set_backDiv("", "MANDARA Webgis", 300, fheight, true, true, buttonOK, 0.2, false,true,cancelCall);
         if (event_point !== undefined) {
             Generic.Set_Box_Position_in_Browser(event_point, alertObj);
         }
@@ -2218,7 +2218,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const gsize=Generic.getDivSize(text,220,"");
         const fheight=(gsize.height)+100;
         const fw=250;
-        const confirmObj = Generic.set_backDiv("", "MANDARA JS",fw, fheight, false, false, undefined, 0.2,false);
+        const confirmObj = Generic.set_backDiv("", "MANDARA Webgis",fw, fheight, false, false, undefined, 0.2,false);
         if(event_point!==undefined){
             Generic.Set_Box_Position_in_Browser(event_point, confirmObj);
         }
@@ -2245,7 +2245,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
         const gsize=Generic.getDivSize(text,220,"");
         const fheight=(gsize.height)+100;
-        const alertObj = Generic.set_backDiv("", "MANDARA JS",250, fheight, true, false, buttonOK, 0.2,false,true,returnFunction);
+        const alertObj = Generic.set_backDiv("", "MANDARA Webgis",250, fheight, true, false, buttonOK, 0.2,false,true,returnFunction);
         if(event_point!==undefined){
             Generic.Set_Box_Position_in_Browser(event_point, alertObj);
         }
