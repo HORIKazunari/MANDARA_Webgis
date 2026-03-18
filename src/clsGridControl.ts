@@ -1590,19 +1590,43 @@ export class gridControl {
         }
     }
 
+    Get_CellInfo = (Grid_Lay: number, X: number, Y: number) => {
+        const GP = this.Grid_Property[Grid_Lay];
+        if ((GP === undefined) || (X === undefined) || (Y === undefined)) {
+            return undefined;
+        }
+        if ((X < 0) && (Y < 0)) {
+            return GP.FixedUpperLeft[X + this.Grid_Total.FixedObjectName_n]?.[Y + this.Grid_Total.FixedDataItem_n];
+        } else if (X < 0) {
+            return GP.FixedObjectName[X + this.Grid_Total.FixedObjectName_n]?.[Y];
+        } else if (Y < 0) {
+            return GP.FixedDataItem[X]?.[Y + this.Grid_Total.FixedDataItem_n];
+        } else {
+            return GP.Grid_Text[X]?.[Y];
+        }
+    }
+
+    CanEditCell = (Grid_Lay: number, X: number, Y: number) => {
+        const GP = this.Grid_Property[Grid_Lay];
+        if ((GP === undefined) || (X === undefined) || (Y === undefined)) {
+            return false;
+        }
+        const gpo = GP.Ope;
+        if ((X < 0) && (Y < 0)) {
+            return gpo.FixedUpperLeftEnabeld;
+        }
+        if (X < 0) {
+            return gpo.FixedXSEnabled;
+        }
+        if (Y < 0) {
+            return gpo.FixedYSEnabled;
+        }
+        return gpo.InputEnabled;
+    }
+
     /** 指定された位置のグリッド配列のデータを取得する*/
     Get_Data_from_Grid = (Grid_Lay: number, X: number, Y: number) => {
-        let tx;
-        const GP = this.Grid_Property[Grid_Lay];
-        if ((X < 0) && (Y < 0)) {
-            tx = GP.FixedUpperLeft[X + this.Grid_Total.FixedObjectName_n][Y + this.Grid_Total.FixedDataItem_n].Text;
-        } else if (X < 0) {
-            tx = GP.FixedObjectName[X + this.Grid_Total.FixedObjectName_n][Y].Text;
-        } else if (Y < 0) {
-            tx = GP.FixedDataItem[X][Y + this.Grid_Total.FixedDataItem_n].Text;
-        } else {
-            tx = GP.Grid_Text[X][Y].Text;
-        }
+        let tx = this.Get_CellInfo(Grid_Lay, X, Y)?.Text;
         if (tx === undefined) {
             tx = "";
         }
@@ -1635,15 +1659,24 @@ export class gridControl {
         let w, H;
         let n;
         const GP = this.Grid_Property[this.Grid_Total.Layer];
+        if ((GP === undefined) || (X === undefined) || (Y === undefined)) {
+            return false;
+        }
         let lef =0;
         let tp = 0;
         if (X < 0) {
             n = X + this.Grid_Total.FixedObjectName_n
+            if ((n < 0) || (n >= GP.FixedObjectNameData.length) || (GP.FixedObjectNameData[n] === undefined)) {
+                return false;
+            }
             for (let i = 0; i < n ; i++) {
                 lef += GP.FixedObjectNameData[i].Width;
             }
             w = GP.FixedObjectNameData[n].Width;
         } else {
+            if (GP.DataItemData[X] === undefined) {
+                return false;
+            }
             lef += GP.FixedObjectNameDataWidth();
             for (let i = GP.LeftCell; i < X; i++) {
                 lef += GP.DataItemData[i].Width;
@@ -1652,11 +1685,17 @@ export class gridControl {
         }
         if (Y < 0) {
             n = Y + this.Grid_Total.FixedDataItem_n;
+            if ((n < 0) || (n >= GP.FixedDataItemData.length) || (GP.FixedDataItemData[n] === undefined)) {
+                return false;
+            }
             for (let i = 0; i < n; i++) {
                 tp += GP.FixedDataItemData[i].Height;
             }
             H = GP.FixedDataItemData[n].Height;
         } else {
+            if (GP.CellHeight[Y] === undefined) {
+                return false;
+            }
             tp += GP.FixedDataItemHeight();
             for (let i = GP.TopCell; i < Y; i++) {
                 tp += GP.CellHeight[i];
@@ -1667,17 +1706,29 @@ export class gridControl {
         Obj.style.left = (lef + 1).px();
         Obj.style.height = (H - 1).px();
         Obj.style.top = (tp + 1).px();
+        return true;
     }
 
     SetTextBox = (X: number, Y: number) => {
         let AL, n;
-        this.Get_Object_to_Cell_Size(X, Y, this.txtTextBox as HTMLElement);
+        if (this.CanEditCell(this.Grid_Total.Layer, X, Y) === false) {
+            if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(false);
+            return;
+        }
+        if (this.Get_Object_to_Cell_Size(X, Y, this.txtTextBox as HTMLElement) === false) {
+            if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(false);
+            return;
+        }
         const GP = this.Grid_Property[this.Grid_Total.Layer];
         if (X < 0) {
             n = X + this.Grid_Total.FixedObjectName_n;
-            AL = GP.FixedObjectNameData[n].Allignment;
+            AL = GP.FixedObjectNameData[n]?.Allignment;
         } else {
-            AL = GP.DataItemData[X].Allignment;
+            AL = GP.DataItemData[X]?.Allignment;
+        }
+        if (AL === undefined) {
+            if (this.txtTextBox?.setVisibility) this.txtTextBox.setVisibility(false);
+            return;
         }
 
         const tx = this.Get_Data_from_Grid(this.Grid_Total.Layer, X, Y);
@@ -2381,37 +2432,17 @@ export class gridControl {
 
     /**指定された位置のグリッド配列にﾃﾞｰﾀをｾｯﾄする Check_F:変更できるかどうかチェックする */
     Set_Data_To_Grid = ( Grid_Lay: number ,  X: number ,  Y: number ,  tx: string ,  Check_F: boolean ) => {
-        if (Check_F === true) {
-            const gpo = this.Grid_Property[this.Grid_Total.Layer].Ope;
-            if (((Y < 0) && (X >= 0)) && (gpo.FixedYSEnabled === false) ||
-                ((X < 0) && (Y >= 0)) && (gpo.FixedXSEnabled === false) ||
-                ((X < 0) && (Y < 0)) && (gpo.FixedUpperLeftEnabeld === false)) {
-                return;
-            }
+        if ((Check_F === true) && (this.CanEditCell(Grid_Lay, X, Y) === false)) {
+            return;
         }
-        const gp = this.Grid_Property[Grid_Lay];
-        if ((X < 0) && (Y < 0)) {
-            gp.FixedUpperLeft[X + this.Grid_Total.FixedObjectName_n][ Y + this.Grid_Total.FixedDataItem_n].Text = tx;
-        } else if (X < 0) {
-            gp.FixedObjectName[X + this.Grid_Total.FixedObjectName_n][ Y].Text = tx;
-        } else if (Y < 0) {
-            gp.FixedDataItem[X][ Y + this.Grid_Total.FixedDataItem_n].Text = tx;
-        } else {
-            gp.Grid_Text[X][Y].Text = tx;
+        const cell = this.Get_CellInfo(Grid_Lay, X, Y);
+        if (cell !== undefined) {
+            cell.Text = tx;
         }
     }
 
     Get_XYData = (Layer: number, X: number, Y: number) => {
-        const GP = this.Grid_Property[Layer];
-        if ((X < 0) && (Y < 0)) {
-            return GP.FixedUpperLeft[X + this.Grid_Total.FixedObjectName_n][Y + this.Grid_Total.FixedDataItem_n].Text;
-        } else if (X < 0) {
-            return GP.FixedObjectName[X + this.Grid_Total.FixedObjectName_n][Y].Text;
-        } else if (Y < 0) {
-            return  GP.FixedDataItem[X][Y + this.Grid_Total.FixedDataItem_n].Text;
-        } else {
-            return  GP.Grid_Text[X][Y].Text;
-        }
+        return this.Get_Data_from_Grid(Layer, X, Y);
     }
 
 Grid_Copy = () => {
@@ -3110,8 +3141,13 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                         for (let i = 0; i < Y2; i++) {
                             Celltop += GP.FixedDataItemData[i].Height;
                         }
+                        const cellWidth = GP.DataItemData[xx]?.Width;
+                        const cellHeight = GP.FixedDataItemData[Y2]?.Height;
+                        if ((cellWidth === undefined) || (cellHeight === undefined)) {
+                            return;
+                        }
                         const mpos=new point(event.clientX,event.clientY)
-                        this.eventCall.evtClick_FixedYS2(this.Grid_Total.Layer, xx, Y2, GP.FixedDataItem[xx][ Y2].Text, Celltop, CellLeft, GP.DataItemData[xx].Width, GP.FixedDataItemData[Y2].Height,mpos);
+                        this.eventCall.evtClick_FixedYS2(this.Grid_Total.Layer, xx, Y2, this.Get_Data_from_Grid(this.Grid_Total.Layer, xx, yy), Celltop, CellLeft, cellWidth, cellHeight,mpos);
                         return;
                     } else {
                         //グリッドのデータ部分
@@ -3608,7 +3644,11 @@ Check_ChangeEventRange = (X: number , Y: number , Xn: number , Yn: number ) => {
                             for (let i = 0; i < yy; i++) {
                                 Celltop += GP.CellHeight[i];
                             }
-                            this.eventCall.evtClick_DataGrid(this.Grid_Total.Layer, xx, yy, GP.Grid_Text[xx][ yy].Text, Celltop, CellLeft, GP.DataItemData[xx].Width, GP.CellHeight[yy]);
+                            const cellWidth = GP.DataItemData[xx]?.Width;
+                            const cellHeight = GP.CellHeight[yy];
+                            if ((cellWidth !== undefined) && (cellHeight !== undefined)) {
+                                this.eventCall.evtClick_DataGrid(this.Grid_Total.Layer, xx, yy, this.Get_Data_from_Grid(this.Grid_Total.Layer, xx, yy), Celltop, CellLeft, cellWidth, cellHeight);
+                            }
                         }
                     }
                 }

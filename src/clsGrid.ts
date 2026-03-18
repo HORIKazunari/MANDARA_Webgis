@@ -141,11 +141,130 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     
     // 関数の前方宣言
     
-    let Get_E_Data: () => { ok: boolean; emes: string };
+    let Get_E_Data: () => { ok: boolean; emes: string } = function(){
+        const L = ktGrid.getLayerMax();
+        newAttrData.TotalData.LV1.Lay_Maxn = 0
+        for (let i = 0; i < L; i++) {
+            const LayYMax = ktGrid.getYsize(i);
+            const LayXMax = ktGrid.getXsize(i);
+            const YChange = new Array<number>(LayYMax - 1);
+            let LayYMaxReal = 0;
+            for (let j = 0; j < LayYMax; j++) {
+                if (ktGrid.getFixedXSData(i, 1, j) === "") {
+                    YChange[j] = -1;
+                } else {
+                    YChange[j] = LayYMaxReal;
+                    LayYMaxReal++;
+                }
+            }
+            const LType = ktGrid.getLayerData(i, GridLayerData.Type) as LayerTypeValue;
+            const LSP = ktGrid.getLayerData(i, GridLayerData.Shape) as ShapeValue;
+            const Lmesh = ktGrid.getLayerData(i, GridLayerData.Mesh) as MeshNumberValue;
+            const Lmapfile = ktGrid.getLayerData(i, GridLayerData.MapFile) as string;
+            const LTime = ktGrid.getLayerData(i, GridLayerData.Time) as strYMD;
+            const OldLay = ktGrid.getLayerData(i, GridLayerData.OldIndex) as number;
+            const SyntheticObjF = ktGrid.getLayerData(i, GridLayerData.SyntheticObjF) as boolean;
+            const RefSystem = ktGrid.getLayerData(i, GridLayerData.ReferenceSystem) as number;
+            const LayComment = ktGrid.getLayerData(i, GridLayerData.Comment) as string;
+
+            const Get_Obj = Array.from({ length: LayYMaxReal }, () => new strObject_Data_Info() as unknown as ObjectDataInfo);
+            if (SyntheticObjF === true) {
+                const oldLayer = oldAttrData.LayerData[OldLay] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo };
+                const oldObjData = oldLayer.atrObject.atrObjectData as unknown as Array<{
+                    Objectstructure: number;
+                    MpObjCode: number;
+                    Name: string;
+                }>;
+                for (let j = 0; j < oldLayer.atrObject.ObjectNum; j++) {
+                    const gob = Get_Obj[j] as ObjectDataInfo;
+                    gob.Objectstructure = oldObjData[j].Objectstructure;
+                    gob.MpObjCode = oldObjData[j].MpObjCode;
+                    gob.Name = oldObjData[j].Name;
+                }
+            } else {
+                for (let j = 0; j < LayYMax; j++) {
+                    if (YChange[j] !== -1) {
+                        const tx = String(ktGrid.getFixedXSData(i, 1, j));
+                        const UseMap = newAttrData.SetMapFile(Lmapfile) as unknown as MapFileInfo;
+                        const gobj = Get_Obj[YChange[j]] as ObjectDataInfo;
+                        switch (LType) {
+                            case enmLayerType.Mesh:
+                                gobj.Objectstructure = enmKenCodeObjectstructure.MapObj;
+                                gobj.Name = tx;
+                                gobj.MpObjCode = -2;
+                                break;
+                            case enmLayerType.Normal: {
+                                gobj.Objectstructure = enmKenCodeObjectstructure.MapObj;
+                                gobj.Name = tx;
+                                gobj.MpObjCode = newAttrData.Get_ObjectCode_from_ObjName(Lmapfile, tx, LTime) as number;
+                                gobj.CenterPoint = UseMap.Get_Enable_CenterP(gobj.MpObjCode, LTime);
+                                const center = gobj.CenterPoint as { Clone: () => point };
+                                gobj.Symbol = center.Clone();
+                                gobj.Label = center.Clone();
+                                break;
+                            }
+                            case enmLayerType.DefPoint:
+                                gobj.Objectstructure = enmKenCodeObjectstructure.MapObj;
+                                gobj.Name = tx;
+                                break;
+                        }
+                    }
+                }
+            }
+            newAttrData.Add_one_Layer(ktGrid.getLayerName(i), LType, Lmesh, LSP, Lmapfile, LTime, RefSystem, LayComment, LayYMaxReal, Get_Obj as unknown as Parameters<clsAttrData['Add_one_Layer']>[9]);
+
+            const newAt = newAttrData.LayerData[i] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
+            newAt.Type = LType;
+            if (SyntheticObjF === true) {
+                const oldLayer = oldAttrData.LayerData[OldLay] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
+                const n = oldLayer.atrObject.NumOfSyntheticObj;
+                newAt.atrObject.NumOfSyntheticObj = n;
+                newAt.atrObject.MPSyntheticObj = [];
+                for (let j = 0; j < n; j++) {
+                    newAt.atrObject.MPSyntheticObj.push(oldLayer.atrObject.MPSyntheticObj[j].Clone());
+                }
+                newAt.Shape = oldLayer.Shape;
+            } else {
+                if (LSP === enmShape.NotDeffinition) {
+                    const shapeInfo = newAttrData.Check_LayerShape_Sub(i) as { shape: number };
+                    newAt.Shape = shapeInfo.shape;
+                } else {
+                    newAt.Shape = LSP;
+                }
+            }
+            const DN_Str = Array.from({ length: LayXMax }, () => new Array<string>(LayYMax));
+            const TTL: string[] = [];
+            const UNT: string[] = [];
+            const Mis: boolean[] = [];
+            const Note: string[] = [];
+            for (let j = 0; j < LayXMax; j++) {
+                TTL[j] = String(ktGrid.getFixedYSData(i, j, 3));
+                UNT[j] = String(ktGrid.getFixedYSData(i, j, 4));
+                Mis[j] = Generic.ConvertMissingValueFromString(String(ktGrid.getFixedYSData(i, j, 2))) as boolean;
+                Note[j] = String(ktGrid.getFixedYSData(i, j, 5));
+            }
+            for (let j = 0; j < LayYMax; j++) {
+                if (YChange[j] !== -1) {
+                    for (let k = 0; k < LayXMax; k++) {
+                        DN_Str[k][YChange[j]] = String(ktGrid.getGridData(i, k, j));
+                    }
+                }
+            }
+            const retv = newAttrData.Set_STRData_To_Cell(i, LayXMax, TTL, UNT, Mis, Note, DN_Str) as { ok: boolean; emes: string };
+            if(retv.ok===false){
+                return retv as {ok: boolean; emes: string};
+            }
+            switch (newAt.Type) {
+                case enmLayerType.Normal:
+                case enmLayerType.Mesh:
+                    newAt.LayerModeViewSettings.GraphMode.initDataSet?.();
+                    newAt.LayerModeViewSettings.LabelMode.initDataSet?.();
+                    break;
+            }
+        }
+        return {ok:true, emes: ""};
+    };
     let Reset_SCRView_Size: () => void;
-    let btnReplaceMapfileClick: () => void;
-    let btnRemoveMapfileClick: () => void;
-    let btnAddMapfile: () => void;
     
     // パラメータから実際の値を取得
     const newDataFlag = _newDataFlag;
@@ -156,8 +275,151 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String
     let D_CheckDataValue: number[][] = []; // List(Of Double())
-    let gridErrorCheck: () => boolean = () => false;
+    let gridErrorCheck: () => boolean = function () {
+        errorInfo.value="";
+        const emes = ErrorCheckLayerMapFile();
+        if (emes.length !== 0) {
+            let tx = "";
+            for (const i in emes) {
+                tx += emes[i] + "\n";
+            }
+            errorInfo.value = tx;
+            return true;
+        }
+        let tx2 = "";
+        for (let i = 0; i < ktGrid.getLayerMax(); i++) {
+            const mes = Check_ObjectNameLayer(i);
+            for (const i in mes) {
+                tx2 += mes[i] + "\n";
+            }
+        }
+        if (tx2 !== "") {
+            errorInfo.value = tx2;
+            return true;
+        }
+        return false;
+    };
     const oldAttrData=state.attrData; // clsAttrData
+    const handleAddMapfile = function() {
+        openMapFile(getFile);
+        function getFile(jsonMapData: JsonObject | undefined, filename: string) {
+            if (jsonMapData === undefined) {
+                Generic.alert(undefined, "読み込めませんでした。");
+                return;
+            }
+            const fname = newAttrData.GetMapFileName() as string[];
+            if (fname.indexOf(filename.toUpperCase()) !== -1) {
+                Generic.alert(undefined, filename + "は既に読み込まれています。");
+            }
+
+            const mapdata = new clsMapdata();
+            mapdata.openJsonMapData(jsonMapData);
+            mapdata.Map.FileName = filename;
+            if (fname.length > 0) {
+                const z = (newAttrData.SetMapFile("") as unknown as MapFileInfo).Map.Zahyo;
+                const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z as unknown as zahyohenkan, mapdata.Map.Zahyo);
+                if (retv.ok === false) {
+                    Generic.alert(undefined, filename + "は既存の読み込み地図ファイルと座標系が異なります。");
+                    return;
+                }
+            }
+            newAttrData.AddExistingMapData(mapdata, filename);
+            lstMapFile.add(filename);
+            cboLayerMapFile.addSelectList([{ value: filename, text: filename }], undefined, false, false);
+            btnRemoveMapfile.disabled = false;
+            btnReplaceMapFile.disabled = false;
+            btnObjectNameCopy.disabled = false;
+            btnAddDefAttr.disabled = false;
+            gbSearch.disabled = false;
+            if (newAttrData.GetNumOfMapFile() === 1) {
+                for (let i = 0; i < ktGrid.getLayerMax(); i++) {
+                    ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
+                }
+                updateLayerTypeShapeUi()
+            }
+            gridErrorCheck();
+        }
+    }
+    const handleRemoveMapfileClick = function() {
+        const sel = lstMapFile.selectedIndex;
+        if (sel === -1) {
+            Generic.alert(undefined, "地図ファイルを選択して下さい。");
+            return;
+        }
+        const fname = lstMapFile.getText();
+        for (let i = 0; i < ktGrid.getLayerMax(); i++) {
+            if (ktGrid.getLayerData(i, GridLayerData.MapFile).toUpperCase() === fname.toUpperCase()) {
+                Generic.alert(undefined, fname + "は使用されています。");
+                return;
+            }
+        }
+        newAttrData.RemoveMapData(fname);
+        lstMapFile.removeList(sel, 1);
+        cboLayerMapFile.remove(sel);
+        updateLayerTypeShapeUi();
+    }
+    const handleReplaceMapfileClick = function() {
+        const sel = lstMapFile.selectedIndex;
+        if (sel === -1) {
+            Generic.alert(undefined, "地図ファイルを選択して下さい。");
+            return;
+        }
+        const repFname = lstMapFile.getText();
+
+        for (let i = 0; i < ktGrid.getLayerMax(); i++) {
+            const synf = ktGrid.getLayerData(i, GridLayerData.SyntheticObjF);
+            if ((synf === true) && (ktGrid.getLayerData(i, GridLayerData.MapFile) === repFname)) {
+                Generic.alert(undefined, "時系列集計されたレイヤで使われているので、差し替えできません。");
+                return;
+            }
+        }
+
+        openMapFile(getFile);
+        function getFile(jsonMapData: JsonObject | undefined, filename: string) {
+            if (jsonMapData === undefined) {
+                Generic.alert(undefined, "読み込めませんでした。");
+                return;
+            }
+            const fname = newAttrData.GetMapFileName() as string[];
+            if (fname.indexOf(filename.toUpperCase()) !== -1) {
+                Generic.alert(undefined, filename + "は既に読み込まれています。");
+            }
+            const mData = new clsMapdata();
+            mData.openJsonMapData(jsonMapData);
+            mData.Map.FileName = filename;
+
+            newAttrData.RemoveMapData(repFname);
+            if (newAttrData.GetNumOfMapFile() > 0) {
+                const z = (newAttrData.SetMapFile("") as unknown as MapFileInfo).Map.Zahyo;
+                const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z as unknown as zahyohenkan, mData.Map.Zahyo);
+                if (retv.ok === false) {
+                    Generic.alert(undefined, retv.emes);
+                    return;
+                }
+            }
+
+            newAttrData.AddExistingMapData(mData, filename);
+            lstMapFile.removeList(sel, 1);
+            lstMapFile.add(filename)
+            cboLayerMapFile.remove(sel);
+            cboLayerMapFile.addSelectList([{ value: filename, text: filename }], undefined, false, false);
+            for (let i = 0; i < ktGrid.getLayerMax(); i++) {
+                const oldFname = ktGrid.getLayerData(i, GridLayerData.MapFile) as string;
+                if (oldFname === repFname) {
+                    ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
+                    const LTime = ktGrid.getLayerData(i, GridLayerData.Time) as strYMD;
+                    const mapInfo = newAttrData.SetMapFile(filename) as unknown as MapFileInfo;
+                    if ((mapInfo.Map.Time_Mode === true) && (LTime.nullFlag() === true)) {
+                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetYMD(new Date()) as unknown as JsonValue);
+                    } else if ((mapInfo.Map.Time_Mode === false) && (LTime.nullFlag() === false)) {
+                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetNullYMD() as unknown as JsonValue);
+                    }
+                }
+            }
+            updateLayerTypeShapeUi();
+            gridErrorCheck();
+        }
+    }
     const gridTopY=150;
     const layerDataWidth=200;
     let gScreenWidth =( Generic.getBrowserWidth()-50*2);
@@ -168,9 +430,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     Generic.createNewButton(picTop, "Cancel", "", 480, 50, cancelButton, "width:70px;height:25px");
     const gbMapFile=Generic.createNewFrame(picTop,"","",10,10,220,90,"地図ファイル");
     const lstMapFile = new ListBox(gbMapFile, "", [], 10, 10, 120, 70, undefined, "");
-    const btnReplaceMapFile =Generic.createNewButton(gbMapFile, "差し替え", "", 140, 10, btnReplaceMapfileClick, "width:70px;font-size:10.5px");
-    const btnRemoveMapfile = Generic.createNewButton(gbMapFile, "削除", "", 140, 35, btnRemoveMapfileClick, "width:70px;font-size:10.5px");
-    Generic.createNewButton(gbMapFile, "追加", "", 140, 60,  btnAddMapfile, "width:70px;font-size:10.5px");
+    const btnReplaceMapFile =Generic.createNewButton(gbMapFile, "差し替え", "", 140, 10, handleReplaceMapfileClick, "width:70px;font-size:10.5px");
+    const btnRemoveMapfile = Generic.createNewButton(gbMapFile, "削除", "", 140, 35, handleRemoveMapfileClick, "width:70px;font-size:10.5px");
+    Generic.createNewButton(gbMapFile, "追加", "", 140, 60, handleAddMapfile, "width:70px;font-size:10.5px");
     const gbSearch=Generic.createNewFrame(picTop,"","",240,10,190,40,"検索");
     Generic.createNewButton(gbSearch, "検索", "", 10, 10, function(){
         ktGrid.removeEventlister();
@@ -1543,10 +1805,12 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                     CheckedData[BL][BD] = true;
                 }
             }
-            CheckDataRet.Layer = BL;
-            CheckDataRet.Data = BD;
-            return CheckDataRet
-    }
+                CheckDataRet.Layer = BL;
+                CheckDataRet.Data = BD;
+                return CheckDataRet;
+            }
+
+            }
 
     Reset_SCRView_Size = function(){
 
@@ -1648,159 +1912,6 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
                 }
             }
         }
-    }
-
-    /**グリッド上のデータを取得 */
-    Get_E_Data = function(){
-        const L = ktGrid.getLayerMax();
-        newAttrData.TotalData.LV1.Lay_Maxn = 0
-        for (let i = 0; i < L; i++) {
-            const LayYMax = ktGrid.getYsize(i);
-            const LayXMax = ktGrid.getXsize(i);
-            const YChange = new Array<number>(LayYMax - 1);
-            let LayYMaxReal = 0;
-            for (let j = 0; j < LayYMax; j++) {
-                if (ktGrid.getFixedXSData(i, 1, j) === "") {
-                    YChange[j] = -1;
-                } else {
-                    YChange[j] = LayYMaxReal;
-                    LayYMaxReal++;
-                }
-            }
-            const LType = ktGrid.getLayerData(i, GridLayerData.Type) as LayerTypeValue;
-            const LSP = ktGrid.getLayerData(i, GridLayerData.Shape) as ShapeValue;
-            const Lmesh = ktGrid.getLayerData(i, GridLayerData.Mesh) as MeshNumberValue;
-            const Lmapfile = ktGrid.getLayerData(i, GridLayerData.MapFile) as string;
-            const LTime = ktGrid.getLayerData(i, GridLayerData.Time) as strYMD;
-            const OldLay = ktGrid.getLayerData(i, GridLayerData.OldIndex) as number;
-            const SyntheticObjF = ktGrid.getLayerData(i, GridLayerData.SyntheticObjF) as boolean;
-            const RefSystem = ktGrid.getLayerData(i, GridLayerData.ReferenceSystem) as number;
-            const LayComment = ktGrid.getLayerData(i, GridLayerData.Comment) as string;
-
-            const Get_Obj = Array.from({ length: LayYMaxReal }, () => new strObject_Data_Info() as unknown as ObjectDataInfo);
-            if (SyntheticObjF === true) {
-                //時系列集計したレイヤの場合は，変更前のオブジェクトコード・合成オブジェクトデータを設定する
-
-                const oldLayer = oldAttrData.LayerData[OldLay] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo };
-                const oldObjData = oldLayer.atrObject.atrObjectData as unknown as Array<{
-                    Objectstructure: number;
-                    MpObjCode: number;
-                    Name: string;
-                }>;
-                for (let j = 0; j < oldLayer.atrObject.ObjectNum; j++) {
-                    const gob = Get_Obj[j] as ObjectDataInfo;
-                    gob.Objectstructure = oldObjData[j].Objectstructure;
-                    gob.MpObjCode = oldObjData[j].MpObjCode;
-                    gob.Name = oldObjData[j].Name;
-                }
-            } else {
-                for (let j = 0; j < LayYMax; j++) {
-                    if (YChange[j] !== -1) {
-                        const tx = String(ktGrid.getFixedXSData(i, 1, j));
-                        const UseMap = newAttrData.SetMapFile(Lmapfile) as unknown as MapFileInfo;
-                        const gobj = Get_Obj[YChange[j]] as ObjectDataInfo;
-                        switch (LType) {
-                            case enmLayerType.Mesh:
-                                gobj.Objectstructure = enmKenCodeObjectstructure.MapObj;
-                                gobj.Name = tx;
-                                gobj.MpObjCode = -2;
-                                break;
-                            case enmLayerType.Normal: {
-                                gobj.Objectstructure = enmKenCodeObjectstructure.MapObj;
-                                gobj.Name = tx;
-                                gobj.MpObjCode = newAttrData.Get_ObjectCode_from_ObjName(Lmapfile, tx, LTime) as number;
-                                gobj.CenterPoint = UseMap.Get_Enable_CenterP(gobj.MpObjCode, LTime);
-                                const center = gobj.CenterPoint as { Clone: () => point };
-                                gobj.Symbol = center.Clone();
-                                gobj.Label = center.Clone();
-                                break;
-                            }
-                            case enmLayerType.DefPoint:
-                                gobj.Objectstructure = enmKenCodeObjectstructure.MapObj;
-                                gobj.Name = tx;
-                                break;
-                        }
-                    }
-                }
-            }
-            newAttrData.Add_one_Layer(ktGrid.getLayerName(i), LType, Lmesh, LSP, Lmapfile, LTime, RefSystem, LayComment, LayYMaxReal, Get_Obj as unknown as Parameters<clsAttrData['Add_one_Layer']>[9]);
-
-            const newAt = newAttrData.LayerData[i] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
-            newAt.Type = LType;
-            if (SyntheticObjF === true) {
-                const oldLayer = oldAttrData.LayerData[OldLay] as unknown as LayerDataInfo & { atrObject: AtrObjectInfo; Shape: number };
-                const n = oldLayer.atrObject.NumOfSyntheticObj;
-                newAt.atrObject.NumOfSyntheticObj = n;
-                newAt.atrObject.MPSyntheticObj = [];
-                for (let j = 0; j < n; j++) {
-                    newAt.atrObject.MPSyntheticObj.push(oldLayer.atrObject.MPSyntheticObj[j].Clone());
-                }
-                newAt.Shape = oldLayer.Shape;
-            } else {
-                if (LSP === enmShape.NotDeffinition) {
-                    const shapeInfo = newAttrData.Check_LayerShape_Sub(i) as { shape: number };
-                    newAt.Shape = shapeInfo.shape;
-                } else {
-                    newAt.Shape = LSP;
-                }
-            }
-            const DN_Str = Array.from({ length: LayXMax }, () => new Array<string>(LayYMax));
-            const TTL: string[] = [];
-            const UNT: string[] = [];
-            const Mis: boolean[] = [];
-            const Note: string[] = [];
-            for (let j = 0; j < LayXMax; j++) {
-                TTL[j] = String(ktGrid.getFixedYSData(i, j, 3));
-                UNT[j] = String(ktGrid.getFixedYSData(i, j, 4));
-                Mis[j] = Generic.ConvertMissingValueFromString(String(ktGrid.getFixedYSData(i, j, 2))) as boolean;
-                Note[j] = String(ktGrid.getFixedYSData(i, j, 5));
-            }
-            for (let j = 0; j < LayYMax; j++) {
-                if (YChange[j] !== -1) {
-                    for (let k = 0; k < LayXMax; k++) {
-                        DN_Str[k][YChange[j]] = String(ktGrid.getGridData(i, k, j));
-                    }
-                }
-            }
-            const retv = newAttrData.Set_STRData_To_Cell(i, LayXMax, TTL, UNT, Mis, Note, DN_Str) as { ok: boolean; emes: string };
-            if(retv.ok===false){
-                return retv as {ok: boolean; emes: string};
-            }
-            switch (newAt.Type) {
-                case enmLayerType.Normal:
-                case enmLayerType.Mesh:
-                    newAt.LayerModeViewSettings.GraphMode.initDataSet?.();
-                    newAt.LayerModeViewSettings.LabelMode.initDataSet?.();
-                    break;
-            }
-        }
-        return {ok:true, emes: ""};
-    }
-
-    /**データエラーのチェック */
-    gridErrorCheck = function () {
-        errorInfo.value="";
-        const emes = ErrorCheckLayerMapFile();
-        if (emes.length !== 0) {
-            let tx = "";
-            for (const i in emes) {
-                tx += emes[i] + "\n";
-            }
-            errorInfo.value = tx;
-            return true;
-        }
-        let tx2 = "";
-        for (let i = 0; i < ktGrid.getLayerMax(); i++) {
-            const mes = Check_ObjectNameLayer(i);
-            for (const i in mes) {
-                tx2 += mes[i] + "\n";
-            }
-        }
-        if (tx2 !== "") {
-            errorInfo.value = tx2;
-            return true;
-        }
-        return false;
     }
 
     /**レイヤ全体にかかわる項目エラーのチェック */
@@ -2128,141 +2239,5 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             }
         }
     }
-
-    function gridSetMapFileListToCboBox(){
-        const Mapfiles = newAttrData.GetMapFileName() as string[];
-        if(Mapfiles.length===0){return;}
-        const lst: Array<{ text: string; value: number }> = [];
-        for (let i = 0; i < Mapfiles.length; i++) {
-            lst.push({text:Mapfiles[i],value:i});
-        }
-        cboLayerMapFile.addSelectList(lst,undefined,true,false);
-
-    }
-    btnAddMapfile = function() {
-        openMapFile(getFile);
-        function getFile(jsonMapData: JsonObject | undefined, filename: string) {
-            if (jsonMapData === undefined) {
-                Generic.alert(undefined, "読み込めませんでした。");
-                return;
-            }
-            const fname = newAttrData.GetMapFileName() as string[];
-            if (fname.indexOf(filename.toUpperCase()) !== -1) {
-                Generic.alert(undefined, filename + "は既に読み込まれています。");
-            }
-
-            const mapdata = new clsMapdata();
-            mapdata.openJsonMapData(jsonMapData);
-            mapdata.Map.FileName = filename;
-            if (fname.length > 0) {
-                const z = (newAttrData.SetMapFile("") as unknown as MapFileInfo).Map.Zahyo;
-                const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z as unknown as zahyohenkan, mapdata.Map.Zahyo);
-                if (retv.ok === false) {
-                    Generic.alert(undefined, filename + "は既存の読み込み地図ファイルと座標系が異なります。");
-                    return;
-                }
-            }
-            newAttrData.AddExistingMapData(mapdata, filename);
-            lstMapFile.add(filename);
-            cboLayerMapFile.addSelectList([{ value: filename, text: filename }], undefined, false, false);
-            btnRemoveMapfile.disabled = false;
-            btnReplaceMapFile.disabled = false;
-            btnObjectNameCopy.disabled = false;
-            btnAddDefAttr.disabled = false;
-            //ktGrid.setVisibility(true);
-            gbSearch.disabled = false;
-            if (newAttrData.GetNumOfMapFile() === 1) {
-                for (let i = 0; i < ktGrid.getLayerMax(); i++) {
-                    ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
-                }
-                updateLayerTypeShapeUi()
-            }
-            gridErrorCheck();
-        }
-
-    }
-    
-    btnRemoveMapfileClick = function(){
-        const sel  = lstMapFile.selectedIndex;
-        if( sel === -1){
-            Generic.alert(undefined,"地図ファイルを選択して下さい。");
-            return;
-        }
-        const fname = lstMapFile.getText();
-        for(let i  = 0 ;i< ktGrid.getLayerMax();i++){
-            if (ktGrid.getLayerData(i, GridLayerData.MapFile).toUpperCase() === fname.toUpperCase()){
-                Generic.alert(undefined,fname + "は使用されています。");
-                return;
-            }
-        }
-        newAttrData.RemoveMapData(fname);
-        lstMapFile.removeList(sel,1);
-        cboLayerMapFile.remove(sel);
-        updateLayerTypeShapeUi();
-    }
-
-    btnReplaceMapfileClick = function() {
-        const sel = lstMapFile.selectedIndex;
-        if (sel === -1) {
-            Generic.alert(undefined, "地図ファイルを選択して下さい。");
-            return;
-        }
-        const repFname = lstMapFile.getText();
-
-        for (let i = 0; i < ktGrid.getLayerMax(); i++) {
-            const synf = ktGrid.getLayerData(i, GridLayerData.SyntheticObjF);
-            if ((synf === true) && (ktGrid.getLayerData(i, GridLayerData.MapFile) === repFname)) {
-                Generic.alert(undefined, "時系列集計されたレイヤで使われているので、差し替えできません。");
-                return;
-            }
-        }
-
-        openMapFile(getFile);
-        function getFile(jsonMapData: JsonObject | undefined, filename: string) {
-            if (jsonMapData === undefined) {
-                Generic.alert(undefined, "読み込めませんでした。");
-                return;
-            }
-            const fname = newAttrData.GetMapFileName() as string[];
-            if (fname.indexOf(filename.toUpperCase()) !== -1) {
-                Generic.alert(undefined, filename + "は既に読み込まれています。");
-            }
-            const mData = new clsMapdata();
-            mData.openJsonMapData(jsonMapData);
-            mData.Map.FileName = filename;
-    
-            newAttrData.RemoveMapData(repFname);
-            if (newAttrData.GetNumOfMapFile() > 0) {
-                const z = (newAttrData.SetMapFile("") as unknown as MapFileInfo).Map.Zahyo;
-                const retv = spatial.Check_Zahyo_Projection_Convert_Enabled(z as unknown as zahyohenkan, mData.Map.Zahyo);
-                if (retv.ok === false) {
-                    Generic.alert(undefined, retv.emes);
-                    return;
-                }
-            }
-    
-            newAttrData.AddExistingMapData(mData, filename);
-            lstMapFile.removeList(sel,1);
-            lstMapFile.add(filename)
-            cboLayerMapFile.remove(sel);
-            cboLayerMapFile.addSelectList([{ value: filename, text: filename }], undefined, false, false);
-            for (let i = 0; i < ktGrid.getLayerMax(); i++) {
-                const oldFname = ktGrid.getLayerData(i, GridLayerData.MapFile) as string;
-                if (oldFname === repFname) {
-                    ktGrid.setLayerData(i, GridLayerData.MapFile, filename);
-                    const LTime = ktGrid.getLayerData(i, GridLayerData.Time) as strYMD;
-                    const mapInfo = newAttrData.SetMapFile(filename) as unknown as MapFileInfo;
-                    if ((mapInfo.Map.Time_Mode === true) && (LTime.nullFlag() === true)) {
-                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetYMD(new Date()) as unknown as JsonValue);
-                    } else if ((mapInfo.Map.Time_Mode === false) && (LTime.nullFlag() === false)) {
-                        ktGrid.setLayerData(i, GridLayerData.Time, clsTime.GetNullYMD() as unknown as JsonValue);
-                    }
-                }
-            }
-            updateLayerTypeShapeUi();
-            gridErrorCheck();
-            }
-    }
-}
 
 }
