@@ -1300,16 +1300,20 @@ class clsPrint {
         }
     }
 
-    static Legend_Mark_Mode_Inner_Data_set(InnerData: strInner_Data_Info, Layernum: number, Datanum?: number): Legend2_Atri | undefined {
+    static Legend_Mark_Mode_Inner_Data_set(InnerData: strInner_Data_Info, Layernum: number): Legend2_Atri | undefined {
         const state = appState();
-        if(InnerData.Flag === false) {
+        if (Boolean(InnerData.Flag) === false) {
+            return undefined;
+        }
+        const innerDataNum = Number(InnerData.Data);
+        if (Number.isFinite(innerDataNum) === false) {
             return undefined;
         }
         const mlw = new Legend2_Atri();
-        mlw.DatN = Datanum !== undefined ? Datanum : InnerData.Data;
+        mlw.DatN = innerDataNum;
         mlw.Layn = Layernum;
         mlw.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
-        mlw.title = state.attrData.Get_DataTitle(Layernum, Datanum !== undefined ? Datanum : InnerData.Data, false);
+        mlw.title = state.attrData.Get_DataTitle(Layernum, innerDataNum, false);
         mlw.SoloMode = enmSoloMode_Number.ClassPaintMode;
         return mlw;
     }
@@ -1352,7 +1356,7 @@ class clsPrint {
                                 case enmSoloMode_Number.MarkTurnMode:
                                 case enmSoloMode_Number.MarkBarMode:
                                 case enmSoloMode_Number.StringMode: {
-                                    const lwl=this.Legend_Mark_Mode_Inner_Data_set(att_Data.SoloModeViewSettings.MarkCommon.Inner_Data, Layernum, Datanum);
+                                    const lwl=this.Legend_Mark_Mode_Inner_Data_set(att_Data.SoloModeViewSettings.MarkCommon.Inner_Data, Layernum);
                                     if(lwl !== undefined) {
                                         atw.title = state.attrData.Get_DataTitle(Layernum, Datanum, false);
                                         at.Accessory_Temp.MapLegend_W[1] = lwl;
@@ -1362,7 +1366,7 @@ class clsPrint {
                                 }
                                 case enmSoloMode_Number.ClassMarkMode: {
                                     const lwl = this.Legend_Mark_Mode_Inner_Data_set(state.attrData.LayerData[Layernum].atrData.Data[Datanum].SoloModeViewSettings.ClassMarkMD,
-                                        Layernum, Datanum);
+                                        Layernum);
                                     if(lwl !== undefined) {
                                         atw.title = state.attrData.Get_DataTitle(Layernum, Datanum, false);
                                         at.Accessory_Temp.MapLegend_W[1] = lwl;
@@ -1505,10 +1509,10 @@ class clsPrint {
                             case enmSoloMode_Number.MarkTurnMode:
                             case enmSoloMode_Number.MarkBarMode:
                             case enmSoloMode_Number.StringMode:
-                                 lwl = this.Legend_Mark_Mode_Inner_Data_set(OVerData.SoloModeViewSettings.MarkCommon.Inner_Data, L, atm.DatN);
+                                 lwl = this.Legend_Mark_Mode_Inner_Data_set(OVerData.SoloModeViewSettings.MarkCommon.Inner_Data, L);
                                 break;
                             case enmSoloMode_Number.ClassMarkMode:
-                                 lwl = this.Legend_Mark_Mode_Inner_Data_set(OVerData.SoloModeViewSettings.ClassMarkMD, L, atm.DatN);
+                                 lwl = this.Legend_Mark_Mode_Inner_Data_set(OVerData.SoloModeViewSettings.ClassMarkMD, L);
                                 break;
                         }
                         if (lwl !== undefined) {

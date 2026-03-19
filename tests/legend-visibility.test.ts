@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { appState } from '../src/core/AppState';
-import { clsAttrData, Legend2_Atri, point, rectangle } from '../src/clsAttrData';
+import { clsAttrData, Legend2_Atri, point, rectangle, strInner_Data_Info } from '../src/clsAttrData';
 import { clsPrint } from '../src/clsPrint';
 import { Accessory } from '../src/clsAccessory';
 import { enmLayerMode_Number, enmShape } from '../src/constants/legacyEnums';
@@ -142,5 +142,32 @@ describe('legend visibility regression', () => {
     expect(drawSpy).toHaveBeenCalledTimes(1);
     expect(state.attrData.TempData.Accessory_Temp.MapLegend_W[0].Rect.width()).toBeGreaterThan(0);
     expect(state.attrData.TempData.Accessory_Temp.MapLegend_W[0].Rect.height()).toBeGreaterThan(0);
+  });
+
+  it('内部データフラグが数値0でも追加凡例を作らない', () => {
+    const state = appState();
+    vi.spyOn(state.attrData, 'Get_DataTitle').mockReturnValue('unused');
+    const innerData = new strInner_Data_Info() as strInner_Data_Info & { Flag: boolean | number };
+    innerData.Flag = 0;
+    innerData.Data = 3;
+
+    const legend = clsPrint.Legend_Mark_Mode_Inner_Data_set(innerData, 0);
+
+    expect(legend).toBeUndefined();
+    expect(state.attrData.Get_DataTitle).not.toHaveBeenCalled();
+  });
+
+  it('内部データ凡例は内部データ項目を参照する', () => {
+    const state = appState();
+    vi.spyOn(state.attrData, 'Get_DataTitle').mockImplementation((_layerNum, dataNum) => `D${dataNum}`);
+    const innerData = new strInner_Data_Info();
+    innerData.Flag = true;
+    innerData.Data = 3;
+
+    const legend = clsPrint.Legend_Mark_Mode_Inner_Data_set(innerData, 0);
+
+    expect(legend).toBeDefined();
+    expect(legend?.DatN).toBe(3);
+    expect(legend?.title).toBe('D3');
   });
 });

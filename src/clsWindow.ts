@@ -526,7 +526,7 @@ export function setting(locSearch: string) {
         readData(okButton);
         function okButton(mapdata: clsMapdata[], attrText: string, filename: string, ext: string) {
             setAttrData(new clsAttrData() as unknown as IAttrData);
-            const retv = (state.attrData.OpenNewMandaraFile as unknown as (maps: unknown[], text: string, file: string, ex: string) => { ok: boolean; emes: string })([mapdata], attrText, filename, ext);
+            const retv = (state.attrData.OpenNewMandaraFile as unknown as (maps: unknown[], text: string, file: string, ex: string) => { ok: boolean; emes: string })(mapdata, attrText, filename, ext);
             if(retv.emes !== "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
             }
@@ -555,7 +555,7 @@ export function setting(locSearch: string) {
         readData(okButton);
         function okButton(mapdata: clsMapdata[], attrText: string, filename: string, ext: string) {
             const newAttrData = new clsAttrData() as unknown as IAttrData;
-            const retv = (newAttrData.OpenNewMandaraFile as unknown as ((maps: unknown[], text: string, file: string, ex: string) => { ok: boolean; emes: string }) | undefined)?.([mapdata], attrText, filename, ext);
+            const retv = (newAttrData.OpenNewMandaraFile as unknown as ((maps: unknown[], text: string, file: string, ex: string) => { ok: boolean; emes: string }) | undefined)?.(mapdata, attrText, filename, ext);
             if (!retv) {
                 Generic.alert(undefined, "データ読み込み処理を実行できませんでした。");
                 return;

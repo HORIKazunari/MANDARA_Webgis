@@ -616,12 +616,12 @@ const enmScaleBarPattern = {
 
 //記号の数，大きさ，階級記号，線モードの内部色設定
 export class strInner_Data_Info {
-    Flag: number = 0;
+    Flag: boolean = false;
     Data: number = 0;
 
     Clone(): strInner_Data_Info {
         const d = new strInner_Data_Info();
-        d.Flag = this.Flag;
+        d.Flag = Boolean(this.Flag);
         d.Data = this.Data;
         return d;
     }
@@ -5194,7 +5194,9 @@ class clsAttrData {
                     dts.Class_Div.push(s);
                 }
                 dts.ClassMarkMD = new strInner_Data_Info();
-                Object.assign(dts.ClassMarkMD, odts.ClassMarkMD);
+                const odtsClassMarkMD = odts.ClassMarkMD as JsonObject | undefined;
+                dts.ClassMarkMD.Flag = Boolean(odtsClassMarkMD?.Flag);
+                dts.ClassMarkMD.Data = Number(odtsClassMarkMD?.Data ?? 0);
                 dts.ClassODMD = new strClassODMode_data();
                 Object.assign(dts.ClassODMD, odts.ClassODMD);
                 dts.ClassODMD.Arrow = cnvArrow((odts.ClassODMD as JsonObject).Arrow as JsonObject);
@@ -5227,7 +5229,9 @@ class clsAttrData {
                 dts.MarkCommon = new strMarkCommon_Data();
                 const odtsMarkCommon = odts.MarkCommon as JsonObject;
                 dts.MarkCommon.Inner_Data = new strInner_Data_Info();
-                Object.assign(dts.MarkCommon.Inner_Data, odtsMarkCommon.Inner_Data);
+                const odtsInnerData = odtsMarkCommon.Inner_Data as JsonObject | undefined;
+                dts.MarkCommon.Inner_Data.Flag = Boolean(odtsInnerData?.Flag);
+                dts.MarkCommon.Inner_Data.Data = Number(odtsInnerData?.Data ?? 0);
                 dts.MarkCommon.MinusTile = cnvTileProperty(odtsMarkCommon.MinusTile as JsonObject);
                 dts.MarkCommon.MinusLineColor = cnvColorProperty(odtsMarkCommon.MinusLineColor as JsonObject);
                 dts.MarkCommon.LegendMinusWord = odtsMarkCommon.LegendMinusWord as string;
@@ -7516,7 +7520,7 @@ class clsAttrData {
             pmd.Color_Mode = enmPaintColorSettingModeInfo.SoloColor;
             const mmMD = data.SoloModeViewSettings.ClassMarkMD;
             mmMD.Data = DataNum;
-            mmMD.Flag = 0;
+            mmMD.Flag = false;
 
         } else {
             //通常のデータの階級区分値
@@ -7636,7 +7640,7 @@ class clsAttrData {
 
                 const mmMD = data.SoloModeViewSettings.ClassMarkMD;
                 mmMD.Data = DataNum;
-                mmMD.Flag = 0;
+                mmMD.Flag = false;
 
                 const mmt = data.SoloModeViewSettings.MarkTurnMD;
                 mmt.Dirction = 0;
@@ -7668,7 +7672,7 @@ class clsAttrData {
         mkc.MinusTile.Color = this.defaultColor.minusColor.Clone();
         mkc.MinusTile.BlankF = false;
         mkc.MinusLineColor = this.defaultColor.minusColor.Clone();
-        mkc.Inner_Data.Flag = 0;
+        mkc.Inner_Data.Flag = false;
         mkc.Inner_Data.Data = DataNum;
         mkc.LegendMinusWord = "";
         mkc.LegendPlusWord = "";
