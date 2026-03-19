@@ -1,28 +1,29 @@
 # Git / GitHub バージョン管理テンプレート
 
 このテンプレートは、ローカル Git 運用と GitHub 公開運用を同時に回すための実務用ひな形です。  
-本プロジェクトは **元ソフト最終版 1.003** から再構成したため、**2.001 から再スタート**します。
+本プロジェクトは **元ソフト最終版 1.003** から再構成したため、以後は **semver 形式で 2.2.2 のように管理**します。
 
 ---
 
 ## 1. バージョン規則
 
 ### 1.1 公開バージョン（Gitタグ / GitHub Release）
-- 正式版: `2.001`, `2.002`, `2.003` ...
-- 緊急修正版: `2.001.1`（必要な場合のみ）
-- 事前版: `2.002-rc.1`, `2.002-beta.1`
-- 破壊的変更（互換性を壊す）: `3.001` へ繰り上げ
+- 正式版: `2.2.2`, `2.2.3`, `2.3.0` ...
+- 緊急修正版: patch を 1 つ上げる（例: `2.2.2` → `2.2.3`）
+- 事前版: `2.2.2-rc.1`, `2.2.2-beta.1`
+- 破壊的変更（互換性を壊す）: `3.0.0` へ繰り上げ
 
-### 1.2 package.json との対応（推奨）
-`package.json` の `version` は semver 推奨のため、以下の対応にすると安全です。
+### 1.2 package.json / 表示 / タグの対応
+`package.json` の `version`、UI の表示バージョン、Git タグは同じ値にそろえます。
 
-| 表示用バージョン | package.json(version) |
+| 用途 | 例 |
 |---|---|
-| 2.001 | 2.1.0 |
-| 2.002 | 2.2.0 |
-| 2.010 | 2.10.0 |
+| 表示用バージョン | 2.2.2 |
+| package.json(version) | 2.2.2 |
+| Git タグ | v2.2.2 |
+| GitHub Release | v2.2.2 |
 
-※ GitHub のタグ/Release 表示は `v2.001` 形式を使います。
+※ GitHub のタグ/Release 表示は `v2.2.2` 形式を使います。
 
 ---
 
@@ -39,7 +40,7 @@
 - `fix: ...`
 - `refactor: ...`
 - `docs: ...`
-- `chore(release): 2.001`
+- `chore(release): 2.2.2`
 
 ### 2.3 1リリースの最小チェック
 - [ ] `npm run build` が成功
@@ -66,20 +67,20 @@ git checkout main
 git pull origin main
 
 # 任意: リリース調整ブランチ
-git checkout -b release/2.001
+git checkout -b release/2.2.2
 
 npm run build
 
 git add .
-git commit -m "chore(release): 2.001"
+git commit -m "chore(release): 2.2.2"
 
 # release ブランチを使った場合
 git checkout main
-git merge --no-ff release/2.001
+git merge --no-ff release/2.2.2
 
-git tag -a v2.001 -m "Release 2.001"
+git tag -a v2.2.2 -m "Release 2.2.2"
 git push origin main
-git push origin v2.001
+git push origin v2.2.2
 ```
 
 ---
@@ -87,7 +88,7 @@ git push origin v2.001
 ## 4. GitHub 運用テンプレート
 
 ### 4.1 Milestone テンプレート
-- タイトル: `v2.001`
+- タイトル: `v2.2.2`
 - 期限: `YYYY-MM-DD`
 - 説明:
   - 対象範囲:
@@ -108,7 +109,7 @@ git push origin v2.001
 - [ ]
 
 ## 関連
-- Milestone: v2.001
+- Milestone: v2.2.2
 - PR:
 ```
 
@@ -127,15 +128,15 @@ git push origin v2.001
 
 ## 関連 Issue / Milestone
 - Issue:
-- Milestone: v2.001
+- Milestone: v2.2.2
 ```
 
 ### 4.4 GitHub Release ノートテンプレート（コピペ用）
 ```markdown
-# v2.001
+# v2.2.2
 
 ## 概要
-2.001 系列の初回リリース。
+2.2.2 系列のリリース。
 
 ## 追加
 -
@@ -150,23 +151,23 @@ git push origin v2.001
 -
 
 ## ハッシュ
-- Tag: v2.001
+- Tag: v2.2.2
 - Commit: <SHA>
 ```
 
 ---
 
-## 5. 初回導入テンプレート（v2.001）
+## 5. 初回導入テンプレート（v2.2.2）
 
 ### 5.1 初回だけ実施
-- [ ] リポジトリに Milestone `v2.001` を作成
+- [ ] リポジトリに Milestone `v2.2.2` を作成
 - [ ] ブランチ保護（`main`）を設定（PR 必須・レビュー必須）
-- [ ] `CHANGELOG.md` に `v2.001` セクション作成
-- [ ] タグ `v2.001` を作成
+- [ ] `CHANGELOG.md` に `v2.2.2` セクション作成
+- [ ] タグ `v2.2.2` を作成
 - [ ] GitHub Release を公開
 
 ### 5.2 以降の繰り返し
-- [ ] 次版 Milestone（`v2.002` など）を先に作成
+- [ ] 次版 Milestone（`v2.2.3` や `v2.3.0` など）を先に作成
 - [ ] Issue を Milestone に必ず紐付け
 - [ ] リリース時にタグ + Release ノートを同時作成
 

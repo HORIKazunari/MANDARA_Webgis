@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-03-19 (v2.2.2)
+
+### 変更概要
+- 階級記号表示時に不要な凡例が二重表示される問題を修正。
+- 属性データ読み込み時に地図配列が二重に渡され、実行時 TypeError で開始画面に戻る問題を修正。
+- 内部データ凡例フラグの読込値を boolean に正規化し、表示項目番号の参照先を補正。
+- `package.json`、About 表示、トップページ更新履歴、運用文書の版数表記を `2.2.2` / `v2.2.2` に統一。
+
+### 主な変更ファイル
+- `src/clsAttrData.ts`
+- `src/clsPrint.ts`
+- `src/clsWindow.ts`
+- `tests/legend-visibility.test.ts`
+
+### 確認
+- `npm run build` が成功。
+- WebServer 上の実操作で以下を確認済み:
+  - WORLD2.mpfj の階級記号表示で凡例が二重にならない
+  - 属性データ読み込みで TypeError が発生しない
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.002...v2.2.2
+
 ## 2026-03-04 (v2.002)
 
 ### 変更概要
