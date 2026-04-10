@@ -64,6 +64,7 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'eqeqeq': ['error', 'always', { null: 'ignore' }],
+      'no-useless-assignment': 'off',
       'no-console': ['error', { allow: ['warn', 'error'] }],
       
       // TS comment policy

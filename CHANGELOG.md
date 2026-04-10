@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-04-10 (v2.2.3)
+
+### 変更概要
+- TypeScript 6.0.2、ESLint 10.2.0、Vite 8.0.8、Vitest 4.1.4 へ更新。
+- `npm audit` で検出されていた依存関係の脆弱性を解消。
+- Vite 8 のビルド警告を設定回避ではなくコードと設定の整理で解消。
+- 単体テストと E2E テストで見つかった不具合を修正し、全テスト通過を確認。
+- `package.json`、About 表示、トップページ更新履歴、運用文書の版数表記を `2.2.3` / `v2.2.3` に更新。
+
+### 主な変更ファイル
+- `package.json`
+- `vite.config.ts`
+- `src/clsGeneric.ts`
+- `src/clsMapdata.ts`
+- `src/clsWindow.ts`
+- `tests/e2e/app.spec.ts`
+
+### 確認
+- `npm run build` が成功。
+- `npm run lint` が成功。
+- Vitest 61 件成功。
+- Playwright 42 件成功。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.2.2...v2.2.3
+
 ## 2026-03-19 (v2.2.2)
 
 ### 変更概要

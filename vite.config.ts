@@ -107,8 +107,6 @@ export default defineConfig({
         warn(warning)
       },
       output: {
-        // inlineDynamicImportsを無効化
-        inlineDynamicImports: false,
         // 大きなバンドルを分割
         manualChunks(id) {
           if (id.includes('node_modules')) return 'vendor';

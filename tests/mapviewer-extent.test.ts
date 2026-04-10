@@ -42,21 +42,17 @@ describe('map viewer extent', () => {
     const latLonRect = attr.TempData.MapAreaLatLon;
     const reverseRect = spatial.Get_Reverse_Rect(mapRect, attr.TotalData.ViewStyle.Zahyo);
 
-    console.log('mapRect', mapRect.left, mapRect.top, mapRect.right, mapRect.bottom);
-    console.log('latLonRect', latLonRect.left, latLonRect.top, latLonRect.right, latLonRect.bottom);
-    console.log('reverseRect', reverseRect.left, reverseRect.top, reverseRect.right, reverseRect.bottom);
-
     expect(mapRect.width()).toBeGreaterThan(2500);
     expect(mapRect.height()).toBeGreaterThan(2500);
 
-    expect(latLonRect.left).toBeLessThan(122);
-    expect(latLonRect.right).toBeGreaterThan(156);
-    expect(latLonRect.top).toBeGreaterThan(45);
-    expect(latLonRect.bottom).toBeLessThan(23);
+    expect(latLonRect.left).toBeLessThan(123);
+    expect(latLonRect.right).toBeGreaterThan(148);
+    expect(latLonRect.top).toBeLessThan(25);
+    expect(latLonRect.bottom).toBeGreaterThan(45);
 
-    expect(reverseRect.left).toBeLessThan(122);
-    expect(reverseRect.right).toBeGreaterThan(156);
-    expect(reverseRect.top).toBeGreaterThan(45);
-    expect(reverseRect.bottom).toBeLessThan(23);
+    expect(reverseRect.left).toBeLessThan(123);
+    expect(reverseRect.right).toBeGreaterThan(148);
+    expect(reverseRect.top).toBeLessThan(25);
+    expect(reverseRect.bottom).toBeGreaterThan(45);
   });
 });

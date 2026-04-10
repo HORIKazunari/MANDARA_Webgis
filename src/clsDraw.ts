@@ -3,7 +3,7 @@ import { Generic, latlon, spatial } from './clsGeneric';
 import { cstRectangle_Cross, enmEdge_Pattern, enmJoinPattern, enmMarkPrintType, latlonbox, point, rectangle, Screen_info, size } from './clsAttrData';
 import { clsBase, enmArrowHeadType } from './clsTime';
 import { enmHorizontalAlignment, enmVerticalAlignment } from './constants/legacyEnums';
-import type { JsonObject, /* JsonValue, */ JsonArray } from './types';
+import type { JsonObject /* JsonValue */ } from './types';
 
 const chrLF = String.fromCharCode(10);
 

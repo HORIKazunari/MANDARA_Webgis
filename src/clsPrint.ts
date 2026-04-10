@@ -201,7 +201,6 @@ class clsPrint {
     }
     static printMapScreen(picMap: HTMLCanvasElement) {
         const state = appState();
-        const avs = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
         const g = picMap.getContext('2d');
         if (!g) return;
         
@@ -3739,7 +3738,16 @@ class clsPrint {
 
     static Vector_Object_Boundary(g: CanvasRenderingContext2D,  Layernum: number) {
         const state = appState();
-        const ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum] as ILayerDataInfo & {
+            MapFileData: {
+                MPObj: unknown[];
+                Get_EnableMPLine: (objNum: number, time: unknown) => EnableMPLine_Data[];
+            };
+            Time: unknown;
+            atrObject: {
+                atrObjectData: Array<{ MeshPoint: point[] }>;
+            };
+        };
         if((ad.Shape === enmShape.LineShape)||(ad.Shape === enmShape.PointShape)|| (ad.Type === enmLayerType.Trip)) {
             // 線形、点形、またはTripタイプの場合は境界線を描画しない
         } else {
@@ -3766,13 +3774,23 @@ class clsPrint {
         const state = appState();
         type DrawEnableLine = { LineCode: number; Kind: number };
         let ELine: DrawEnableLine[] = []
-        const ad = state.attrData.LayerData[Layernum];
+        const ad = state.attrData.LayerData[Layernum] as ILayerDataInfo;
+        const mapFileData = ad.MapFileData as unknown as {
+            MPObj: unknown[];
+            Get_EnableMPLine: (objNum: number, time: unknown) => DrawEnableLine[];
+            LineKind: Array<{
+                NumofObjectGroup?: number;
+                ObjGroup: Array<{
+                    Pattern: Line_Property;
+                }>;
+            }>;
+        };
         let pxy: point[] = [];
         if (Dummy_F === true) {
-            if ((ad.MapFileData.MPObj[Obj_Num_code] === undefined) || (state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false)) {
+            if ((mapFileData.MPObj[Obj_Num_code] === undefined) || (state.attrData.Check_Screen_Objcode_In(Layernum, Obj_Num_code) === false)) {
                 return;
             }
-            ELine = ad.MapFileData.Get_EnableMPLine(Obj_Num_code, ad.Time) as unknown as DrawEnableLine[];
+            ELine = mapFileData.Get_EnableMPLine(Obj_Num_code, ad.Time);
         } else {
             if ((ad.atrObject.atrObjectData[Obj_Num_code] === undefined) || (state.attrData.Check_screen_Kencode_In(Layernum, Obj_Num_code) === false)) {
                 return;
@@ -3796,7 +3814,7 @@ class clsPrint {
             if(Number.isNaN(PatNum)) {
                 PatNum = 0;
             }
-            const lineKind = ad.MapFileData.LineKind[lcc];
+            const lineKind = mapFileData.LineKind[lcc];
             if (!lineKind || lineKind.NumofObjectGroup === 0) {
                 continue;
             }

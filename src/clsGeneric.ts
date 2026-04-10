@@ -7,7 +7,6 @@ import { chvValue_on_twoValue, colorRGBA, cstRectangle_Cross, enmCondition, enmM
 import { SpatialIndexSearch } from './SpatialIndexSearch';
 import { SortingSearch } from './SortingSearch';
 import { clsTime, Line_Property, Tile_Property } from './clsTime';
-import { clsColorPicker } from './clsSubWindows';
 import { Zlib } from './zlibrev';
 import { boundArrangeData } from './boundArrangeData';
 import { enmAttDataType, enmLayerType, enmShape, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
@@ -36,6 +35,26 @@ const mousePointingSituations = {
     downAndMove: 2,
     pinch: 3
 } as const;
+
+type ZlibUnzipInstance = {
+    getFilenames(): string[];
+    decompress(filename: string): Uint8Array;
+};
+
+type ZlibZipInstance = {
+    addFile(data: Uint8Array, options: { filename: Uint8Array }): void;
+    compress(): Uint8Array | number[];
+};
+
+type ZlibRuntime = {
+    Unzip: new (data: Uint8Array) => ZlibUnzipInstance;
+    Zip: new () => ZlibZipInstance;
+};
+
+const getZlibRuntime = (): ZlibRuntime => {
+    const globalRuntime = (globalThis as typeof globalThis & { Zlib?: unknown }).Zlib;
+    return (globalRuntime ?? Zlib) as unknown as ZlibRuntime;
+};
 
 class EllipPar {
     a: number = 0;
@@ -2262,6 +2281,7 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     static unzipFile(file: Blob, onOK: (data: {[key: string]: Uint8Array}) => void, onError: (err: Error) => void, onReadError: (err: Error) => void = onError) {
 
         const zipReader = new FileReader();
+        const zlibRuntime = getZlibRuntime();
         const handleError = function (error: unknown, callback: (err: Error) => void) {
             const normalizedError = error instanceof Error ? error : new Error(String(error));
             console.error(normalizedError);
@@ -2272,10 +2292,9 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             const unZipData: {[key: string]: Uint8Array} = {};
             try {
                 const zipArr = new Uint8Array(zipReader.result as ArrayBuffer);
-                const unzip = new Zlib.Unzip(zipArr);
+                const unzip = new zlibRuntime.Unzip(zipArr);
                 const importFileList = unzip.getFilenames();
-                for (const i in importFileList) {
-                    const importFile = importFileList[i];
+                for (const importFile of importFileList) {
                     //let jsonBuffer = utf8ArrayToStr(unzip.decompress(importFile));
                     unZipData[importFile] = unzip.decompress(importFile);
                 }
@@ -2301,7 +2320,8 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     /**データ（バイナリ）と対応するファイル名をtotalFileNameにZIP圧縬 */
     static zipFile(totalFileName: string, data: Uint8Array[], fileName: string[]) {
 
-        const zip = new Zlib.Zip();
+        const zlibRuntime = getZlibRuntime();
+        const zip = new zlibRuntime.Zip();
         for(const i in data){
             zip.addFile(data[i], {filename: Generic.strToUtf8Array(fileName[i])
         });
@@ -4056,11 +4076,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
         return colbox;
         function colSelect(e: MouseEvent) {
-            import('./clsSubWindows').then(({ clsColorPicker }) => {
+            void import('./clsSubWindows').then(({ clsColorPicker }) => {
                 clsColorPicker(e, (pickedColor) => {
-                    const selected = pickedColor as unknown as colorRGBA;
-                    colbox.style.backgroundColor = selected.toRGBA();
-                    onclick?.(selected);
+                    const selectedColor = pickedColor as unknown as colorRGBA;
+                    colbox.style.backgroundColor = selectedColor.toRGBA();
+                    onclick?.(selectedColor);
                 });
             });
         }
@@ -4175,12 +4195,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         sbox.onchange =function(){
             const nochange=false;
             if((typeof onChange==='function')&&(nochange===false)){
-                let sel;
-                let v;
+                let sel: number | number[];
+                let v: string | undefined;
                 if(multipleFlag===false){
                     sel=sbox.selectedIndex;
-                    const value = (sbox as HTMLSelectElement & { getValue?: () => unknown }).getValue?.();
-                    v = typeof value === "string" ? value : undefined;
+                    v = sbox.value;
                 }else{
                     sel=Generic.getMultipleSelectIndex(sbox,0) as number[];
                 }

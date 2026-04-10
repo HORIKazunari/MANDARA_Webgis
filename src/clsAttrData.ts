@@ -7799,13 +7799,13 @@ class clsAttrData {
             }
             const oldClassDiv = classDiv[i] as Partial<strClass_Div_data> | undefined;
             const nextClassDiv = new strClass_Div_data();
-            if (oldClassDiv && oldClassDiv.Value !== undefined) {
+            if (oldClassDiv?.Value !== undefined) {
                 nextClassDiv.Value = oldClassDiv.Value;
             }
             const oldPaintColor = oldClassDiv?.PaintColor;
             if (oldPaintColor instanceof colorRGBA) {
                 nextClassDiv.PaintColor = oldPaintColor.Clone();
-            } else if (oldPaintColor && typeof oldPaintColor === 'object') {
+            } else if (typeof oldPaintColor === 'object' && oldPaintColor !== null) {
                 const r = Number((oldPaintColor as { r?: number }).r);
                 const g = Number((oldPaintColor as { g?: number }).g);
                 const b = Number((oldPaintColor as { b?: number }).b);

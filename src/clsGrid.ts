@@ -141,7 +141,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     
     // 関数の前方宣言
     
-    let Get_E_Data: () => { ok: boolean; emes: string } = function(){
+    const Get_E_Data: () => { ok: boolean; emes: string } = function(){
         const L = ktGrid.getLayerMax();
         newAttrData.TotalData.LV1.Lay_Maxn = 0
         for (let i = 0; i < L; i++) {
@@ -264,8 +264,6 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
         return {ok:true, emes: ""};
     };
-    let Reset_SCRView_Size: () => void;
-    
     // パラメータから実際の値を取得
     const newDataFlag = _newDataFlag;
     
@@ -275,7 +273,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String
     let D_CheckDataValue: number[][] = []; // List(Of Double())
-    let gridErrorCheck: () => boolean = function () {
+    const gridErrorCheck: () => boolean = function () {
         errorInfo.value="";
         const emes = ErrorCheckLayerMapFile();
         if (emes.length !== 0) {
@@ -1812,7 +1810,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
 
             }
 
-    Reset_SCRView_Size = function(){
+    function Reset_SCRView_Size(){
 
         newAttrData.Check_Vector_Object();
         //ダミー点オブジェクトの記号
@@ -2109,105 +2107,6 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         return eMes;
     }
 
-    /**レイヤ情報の画面セット */
-    function gridSetLayerTypeShape(){
-        cboLayerMapFile.disabled= true;
-        cboLayerType.disabled=true;
-        cboLayerShape.disabled= true;
-        cboMesh.disabled=true;
-        DateTimePickerLayer.disabled = true;
-        zahyoSystemFrame.setVisibility(false);
-        if (newAttrData.GetNumOfMapFile() === 0) {
-            return;
-        }
-        const LayerNum  = ktGrid.getLayer();
-        const layMap  = ktGrid.getLayerData(LayerNum, GridLayerData.MapFile);
-        cboLayerMapFile.setSelectText(layMap);
-        const LayType  = ktGrid.getLayerData(LayerNum, GridLayerData.Type);
-        const LayShape  = ktGrid.getLayerData(LayerNum, GridLayerData.Shape);
-        const MeshType  = ktGrid.getLayerData(LayerNum, GridLayerData.Mesh);
-        const ReferenceSystm  = ktGrid.getLayerData(LayerNum, GridLayerData.ReferenceSystem);
-        cboLayerType.setSelectValue(LayType);
-        cboLayerShape.setSelectValue(LayShape);
-        cboMesh.setSelectValue(MeshType);
-        Generic.checkRadioByValue("zahyoSystem",ReferenceSystm);
-        const T  = ktGrid.getLayerData(LayerNum, GridLayerData.Time);
-        if(T.nullFlag()===false ){
-            DateTimePickerLayer.value = T.toInputDate();
-            DateTimePickerLayer.disabled=false;
-        }
-        cboLayerType.disabled=false;
-        const SymtheF  = ktGrid.getLayerData(LayerNum, GridLayerData.SyntheticObjF);
-        if(SymtheF === true ){
-            cboLayerMapFile.disabled= true;
-            cboLayerShape.disabled= false;
-            cboLayerType.disabled=true;
-            cboMesh.disabled=true;
-            DateTimePickerLayer.disabled=true;
-        }else{
-            cboLayerMapFile.disabled= false;
-            switch (LayType) {
-                case enmLayerType.Normal:
-                    cboLayerMapFile.disabled= false;
-                    cboLayerShape.disabled= false;
-                    break;
-                case enmLayerType.DefPoint:
-                    cboLayerMapFile.disabled= false;
-                    zahyoSystemFrame.setVisibility(true);
-                    break;
-                case enmLayerType.Mesh:
-                    cboLayerMapFile.disabled= false;
-                    cboLayerShape.disabled= false;
-                    cboMesh.disabled=false;
-                    zahyoSystemFrame.setVisibility(true);
-                    break;
-            }
-        }
-        txtLayerComment.value = ktGrid.getLayerData(LayerNum, GridLayerData.Comment);
-}
-    function gridCheckDataKind(Layernum: number){
-        for (let i = 0; i < ktGrid.getXsize(Layernum); i++) {
-            const lType = ktGrid.getLayerData(Layernum, GridLayerData.Type) as LayerTypeValue;
-            let ttl = "通常のデータ";
-            const titleCell = String(ktGrid.getFixedYSData(Layernum, i, 3)).toUpperCase();
-            const unitCell = String(ktGrid.getFixedYSData(Layernum, i, 4)).toUpperCase();
-
-            if (titleCell === "URL_NAME") {
-                ttl = Generic.ConvertAttDataTypeString(enmAttDataType.URL_Name) as string;
-            } else if (titleCell === "URL") {
-                ttl = Generic.ConvertAttDataTypeString(enmAttDataType.URL) as string;
-            } else if (unitCell === "CAT") {
-                ttl = Generic.ConvertAttDataTypeString(enmAttDataType.Category) as string;
-            } else if (unitCell === "STR") {
-                ttl = Generic.ConvertAttDataTypeString(enmAttDataType.Strings) as string;
-            } else {
-                switch (lType) {
-                    case enmLayerType.DefPoint: {
-                        switch (titleCell) {
-                            case "LON":
-                                ttl = Generic.ConvertAttDataTypeString(enmAttDataType.Lon) as string;
-                                break;
-                            case "LAT":
-                                ttl = Generic.ConvertAttDataTypeString(enmAttDataType.Lat) as string;
-                                break;
-                        }
-                        break;
-                    }
-                }
-            }
-            ktGrid.setFixedYSData(Layernum, i, 1, ttl);
-        }
-}
-    function gridSetFirstGridCellWidthHeight(Layernum: number){
-       ktGrid.setFixedXSWidth(Layernum, 0,50);
-       ktGrid.setFixedXSWidth(Layernum, 1,150);
-       ktGrid.setFixedYSHeight(Layernum, 3,38);
-       ktGrid.setFixedUpperLeftData(Layernum, 1, 1,"データの種類");
-       ktGrid.setFixedUpperLeftData(Layernum, 1, 2,"空白セル");
-       ktGrid.setFixedUpperLeftData(Layernum, 1, 3,"タイトル");
-       ktGrid.setFixedUpperLeftData(Layernum, 1, 4,"単位");
-       ktGrid.setFixedUpperLeftData(Layernum, 1, 5,"注");
-    }
     function gridGetDataPropertyValue(_attrData: clsAttrData, Layernum: number, DataNum: number): number{
         const al = _attrData.LayerData[Layernum] as {
             atrData: { Data: Array<{ DataType: number; Statistics: { Ave: number } }> };

@@ -1,5 +1,12 @@
 import { test, expect } from '@playwright/test';
 
+function isIgnorableConsoleError(message: string): boolean {
+  return message.includes('Permissions policy violation: compute-pressure is not allowed in this document.')
+    || (message.includes('youtube.com/embed/') && message.includes('SameSite'))
+    || message.includes('Cookie “__Secure-BUCKET” has been rejected because it is in a cross-site context')
+    || message.includes('Cookie “__Secure-YEC” has been rejected because it is in a cross-site context');
+}
+
 /**
  * アプリケーション起動の基本テスト
  */
@@ -20,7 +27,7 @@ test.describe('アプリケーション起動', () => {
     // コンソールエラーをキャプチャ
     const errors: string[] = [];
     page.on('console', msg => {
-      if (msg.type() === 'error') {
+      if (msg.type() === 'error' && isIgnorableConsoleError(msg.text()) === false) {
         errors.push(msg.text());
       }
     });

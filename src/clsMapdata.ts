@@ -1786,8 +1786,13 @@ class clsMapdata {
 
     //指定した時間に指定したオブジェクトが存在する場合trueを返す
     CheckEnableObject(ObjData: strObj_Data, Time: strYMD) {
-        for (let i = 0; i < ObjData.NumOfNameTime; i++) {
-            if (clsTime.checkDurationIn(ObjData.NameTimeSTC[i].SETime, Time) === true) {
+        if (!ObjData) {
+            return false;
+        }
+        const nameTimeCount = ObjData.NumOfNameTime ?? ObjData.NameTimeSTC.length;
+        for (let i = 0; i < nameTimeCount; i++) {
+            const nameTime = ObjData.NameTimeSTC[i];
+            if (nameTime && clsTime.checkDurationIn(nameTime.SETime, Time) === true) {
                 return true;
             }
         }
@@ -1833,21 +1838,35 @@ class clsMapdata {
     //オブジェクトの初期属性データ取得。時期がはずれてデータが取得できない場合はundefined
     Get_DefTimeAttrValue(ObjCode: number, defNumber: number, Time: strYMD) {
         const ob = this.MPObj[ObjCode];
+        if (!ob) {
+            return undefined;
+        }
         const ogp = ob.Kind;
+        const defTimeAttValue = ob.DefTimeAttValue[defNumber];
+        if (!defTimeAttValue) {
+            return undefined;
+        }
+        if (ogp === undefined || !this.ObjectKind[ogp]) {
+            return undefined;
+        }
         let Value;
         if (this.Map.Time_Mode === false) {
-            return ob.DefTimeAttValue[defNumber].Data[0].Value;
+            return defTimeAttValue.Data[0]?.Value;
         } else {
             if (Time.nullFlag() === true) {
                 return undefined;
             }
-            const dev = ob.DefTimeAttValue[defNumber];
+            const dev = defTimeAttValue;
             const n = dev.Data.length;
 
             if (n === 0) {
                 return undefined;
             }
-            switch (this.ObjectKind[ogp].DefTimeAttSTC[defNumber].Type) {
+            const defTimeAttSetting = this.ObjectKind[ogp].DefTimeAttSTC[defNumber];
+            if (!defTimeAttSetting) {
+                return undefined;
+            }
+            switch (defTimeAttSetting.Type) {
                 case enmDefTimeAttDataType.PointData:
                     //時点データの場合
                     for (let i = 0; i < n; i++) {

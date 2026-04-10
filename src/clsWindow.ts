@@ -951,7 +951,7 @@ export function setting(locSearch: string) {
         const frame=Generic.createNewFrame(parent,"","",x,y,300,185);
         frame.style.backgroundColor="#ffffff";
         const tx1="ブラウザGIS MANDARA Webgis";
-        const tx2="バージョン 2.2.2";
+        const tx2="バージョン 2.2.3";
         const tx3="<b>左上のメニューから始めてください</b>"
         const tx4='<a href="https://webgis.celas.osaka-u.ac.jp/" target="_blank">MANDARA Webgisのページ（大阪大学）</a>';
         const tx5='<a href="index.html" target="_blank">本サイトのトップページ</a>'
@@ -1328,7 +1328,6 @@ export function setting(locSearch: string) {
     function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /* v: string | number = "" */) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
-        const layer = state.attrData.LayerData[LayerNum];
         state.attrData.LayerData[LayerNum].atrData.SelectedIndex = selNum;
         ensureSelectableSoloMode(LayerNum, selNum);
         for (const k in enmSoloMode_Number) {
@@ -2991,11 +2990,15 @@ export function setting(locSearch: string) {
             }
             clsColorChart(e, DivNum, okButton);
             function okButton(col: colorRGBA[]) {
+                const classPaintMd = sv.ClassPaintMD as {
+                    color1: colorRGBA;
+                    color2: colorRGBA;
+                };
                 for (let i = 0; i < DivNum; i++) {
                     sv.Class_Div[i].PaintColor = col[i];
                 }
-                sv.ClassPaintMD.color1 = col[0].Clone();
-                sv.ClassPaintMD.color2 = col[DivNum - 1].Clone();
+                classPaintMd.color1 = col[0].Clone();
+                classPaintMd.color2 = col[DivNum - 1].Clone();
                 setSettingSoloModeWindow();
             }
         }

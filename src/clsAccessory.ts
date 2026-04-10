@@ -242,7 +242,7 @@ export class Accessory {
         }
         const layerNum = state.attrData.TotalData.LV1.SelectedLayer;
         const layer = state.attrData.LayerData[layerNum];
-        if (!layer || layer.Print_Mode_Layer !== enmLayerMode_Number.SoloMode) {
+        if (layer?.Print_Mode_Layer !== enmLayerMode_Number.SoloMode) {
             return;
         }
         const dataNum = layer.atrData.SelectedIndex;
@@ -267,7 +267,7 @@ export class Accessory {
         }
         const layerNum = state.attrData.TotalData.LV1.SelectedLayer;
         const layer = state.attrData.LayerData[layerNum];
-        if (!layer || layer.Print_Mode_Layer !== enmLayerMode_Number.SoloMode) {
+        if (layer?.Print_Mode_Layer !== enmLayerMode_Number.SoloMode) {
             return;
         }
         const dataNum = layer.atrData.SelectedIndex;
@@ -289,7 +289,6 @@ export class Accessory {
         }
 
         const rows = Math.min(classDiv.length, 12);
-        const canvasW = g.canvas?.width ?? 0;
         const canvasH = g.canvas?.height ?? 0;
         const rowH = 16;
         const boxW = 16;
@@ -300,8 +299,6 @@ export class Accessory {
         const mapBottom = Number.isFinite(mapScreenRect.bottom) ? mapScreenRect.bottom : canvasH;
 
         const leftOutsideMap = mapRight + 8;
-        const availableRightWidth = Math.max(80, canvasW - leftOutsideMap - 8);
-        const panelW = Math.min(220, availableRightWidth);
 
         let left = leftOutsideMap;
         let top = mapBottom - panelH;
