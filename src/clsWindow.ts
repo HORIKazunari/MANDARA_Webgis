@@ -15,6 +15,12 @@ import {
     isSafeStartupFilePath
 } from './startupPresets';
 import {
+    ensureServerMapCached,
+    extractReferencedMapFileNames,
+    getCachedServerMapData,
+    normalizeMapFileName
+} from './serverMapLoader';
+import {
     frmMain_Buffer,
     frmMain_AreaPeripheri,
     frmMain_Culc,
@@ -129,6 +135,33 @@ const pnlGraphEachItemHeight=25;
 
 const state = appState();
 let man_Data=enmDataSource.NoData;
+
+async function appendAutoLoadedServerMaps(baseMaps: clsMapdata[], attrText: string, ext: string): Promise<clsMapdata[]> {
+    const maps = [...baseMaps];
+    const loadedMapNames = new Set(maps.map((mapdata) => normalizeMapFileName(mapdata.Map.FileName ?? "")));
+
+    for (const mapFileName of extractReferencedMapFileNames(attrText, ext)) {
+        const normalizedMapFileName = normalizeMapFileName(mapFileName);
+        if (loadedMapNames.has(normalizedMapFileName) === true) {
+            continue;
+        }
+        const loaded = await ensureServerMapCached(mapFileName);
+        if (loaded === false) {
+            continue;
+        }
+        const cachedMapData = getCachedServerMapData(mapFileName);
+        if (cachedMapData === undefined) {
+            continue;
+        }
+        const mapdata = new clsMapdata();
+        mapdata.openJsonMapData(cachedMapData);
+        mapdata.Map.FileName = mapFileName;
+        maps.push(mapdata);
+        loadedMapNames.add(normalizedMapFileName);
+    }
+
+    return maps;
+}
 
 export function setting(locSearch: string, locHash: string = "") {
     const setAttrData = (newAttrData: IAttrData): void => {
@@ -4266,10 +4299,10 @@ export function setting(locSearch: string, locHash: string = "") {
             return;
         }
         Generic.readingIcon((label ?? filename) +"データ読み込み");
-        Generic.getMapfileByHttpRequest(filePath, function (getData: string | MapData) {
+        Generic.getMapfileByHttpRequest(filePath, async function (getData: string | MapData) {
             const getDataStr = typeof getData === 'string' ? getData : JSON.stringify(getData);
             setAttrData(new clsAttrData() as unknown as IAttrData);
-            const mapdata: clsMapdata[] = [];
+            const mapdata = await appendAutoLoadedServerMaps([], getDataStr, ext);
             const retv = (state.attrData.OpenNewMandaraFile as unknown as (maps: unknown[], text: string, file: string, ex: string) => { ok: boolean; emes: string })(mapdata, getDataStr, filename, ext);
             if (retv.emes !== "") {
                 Generic.createMsgBox("読み込みエラー", retv.emes, true);
@@ -4297,7 +4330,7 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
     const mapFileList = new ListBox(mapFileFrame, "", [], 15, 35, 200, 55, null, "");
     Generic.createNewButton(mapFileFrame, "地図ファイル追加", "", 230, 50, addMapOn, "");
     Generic.createNewButton(mapFileFrame, "削除", "", 360, 50, deleteMap, "");
-    Generic.createNewDiv(mapFileFrame,"※以下の地図ファイルは、読み込み済みのため設定不要です。<br>JAPAN、WORLD、日本緯度経度","","",15,95,430,50,"","");
+    Generic.createNewDiv(mapFileFrame,"※MDRJ / MDRMJ に含まれる地図指定が Web サーバーの map フォルダに存在する場合は自動取得します。<br>見つからない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。","","",15,95,430,50,"","");
     mapFileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
@@ -4463,13 +4496,14 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
         document.body.addEventListener("contextmenu",contextMenuPrevent);
     }
 
-    function buttonOK() {
-        if(Object.keys(mapList).length === 0) {
+    async function buttonOK() {
+        if((Object.keys(mapList).length === 0) && (ext !== "mdrj") && (ext !== "mdrmj")) {
             Generic.alert(undefined,"地図ファイルを設定してください。");
             return;
         }
         const attrText = dataTextArea.value;
-        if(attrText === "") {
+        const sourceAttrText = ((ext === "mdrj") || (ext === "mdrmj")) ? (mdrjString ?? "") : attrText;
+        if(sourceAttrText === "") {
             Generic.alert(undefined,"属性データを設定してください。");
             return;
         }
@@ -4477,12 +4511,13 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
         const mdata = [];
         for (const i in mapList) {
             mdata.push(mapList[i]);
-        } 
+        }
+        const preparedMapData = await appendAutoLoadedServerMaps(mdata, sourceAttrText, ext);
         Generic.clear_backDiv();
         if((ext==="mdrj")||(ext==="mdrmj")){
-            okCall(mdata, mdrjString,filename,ext);
+            okCall(preparedMapData, sourceAttrText,filename,ext);
         }else{
-            okCall(mdata, attrText,filename,ext);
+            okCall(preparedMapData, attrText,filename,ext);
         }
         document.body.addEventListener("contextmenu",contextMenuPrevent);
     }

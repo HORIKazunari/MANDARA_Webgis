@@ -4,6 +4,7 @@ import { clsPrint } from './clsPrint';
 import { clsBase, clsTime, enmArrowHeadType, Line_Property, Tile_Property } from './clsTime';
 import { clsDrawTile } from './clsDraw';
 import { contextMenuPrevent } from './contextMenu';
+import { ensureServerMapCached, getCachedServerMapData } from './serverMapLoader';
 import { enmAttDataType, enmCircleMDLegendLine, enmGraphMode, enmLayerMode_Number, enmLayerType, enmShape, enmTotalMode_Number, enmZahyo_mode_info } from './constants/legacyEnums';
 import {
     enmBarChartFrameAxePattern,
@@ -3569,48 +3570,18 @@ export function openMapFile(call: (data: JsonValue, filename?: string) => void) 
         ];
         Generic.ceatePopupMenu(popmenu, new point(e.clientX, e.clientY));
         
-        function mapRead1(caption: string) {
-            const fup = caption.toUpperCase();
+        async function mapRead1(caption: string) {
+            Generic.readingIcon(caption + "読み込み");
+            const loaded = await ensureServerMapCached(caption);
             Generic.clear_backDiv();
-            call(appState().preReadMapFile[fup], fup);
-        }
-        function mapRead2(caption: string) {
-            let serverFile = "";
-            const fup = caption.toUpperCase();
-            if (appState().preReadMapFile[fup]) {
-                Generic.clear_backDiv();
-                call(appState().preReadMapFile[fup], fup);
-            } else {
-                switch (fup) {
-                    case "日本市町村緯度経度.MPFJ":
-                        serverFile = "japanadm.mpfj";
-                        break;
-                    case "日本鉄道緯度経度.MPFJ":
-                        serverFile = "japanRail.mpfj";
-                        break;
-                    case "WORLD2.MPFJ":
-                        serverFile = "WORLD2.mpfj";
-                        break;
-                    case "日本市町村.MPFJ":
-                        serverFile = "japanadmOld.mpfj";
-                        break;
-                    case "USA.MPFJ":
-                        serverFile = "USA.mpfj";
-                        break;
-                    case "CHINA.MPFJ":
-                        serverFile = "CHINA.mpfj";
-                        break;
-                }
-                if (serverFile === "") {
-                    Generic.alert(undefined, "地図ファイルの読み込み設定が見つかりませんでした。");
-                    return;
-                }
-                Generic.getMapfileByHttpRequest("map/" + serverFile, function (jsonData: string | IMapData) {
-                    appState().preReadMapFile[fup] = jsonData as JsonObject;                    
-                    Generic.clear_backDiv();
-                    call(appState().preReadMapFile[fup], fup);
-                });
+            if (loaded === false) {
+                Generic.alert(undefined, caption + " は Web サーバーの map フォルダに見つかりませんでした。地図ファイル追加またはドラッグ&ドロップで読み込んでください。");
+                return;
             }
+            call(getCachedServerMapData(caption), caption);
+        }
+        async function mapRead2(caption: string) {
+            await mapRead1(caption);
         }
     }
 }

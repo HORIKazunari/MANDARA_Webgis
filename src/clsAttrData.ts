@@ -5044,7 +5044,7 @@ class clsAttrData {
                     this.LayerData[i].MapFileData = this.MapData.SetMapFile(fname);
                     this.LayerData[i].MapFileObjectNameSearch = this.MapData.SetObject_Name_Search( fname);
                 }else{
-                    mpfileEr += "地図ファイル" + fname + "を読み込んでください。\n";
+                    mpfileEr += "地図ファイル" + fname + "を読み込んでください。Webサーバーの map フォルダに存在しない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。\n";
                 }
             }
         }
@@ -5743,7 +5743,7 @@ class clsAttrData {
                                                 this.MapData.AddExistingMapData(mapdata, fu);
                                                 Map_readed = true;
                                             } else {
-                                                ObjectErrorMessage+="地図ファイル" + CutS[i] + "を読み込んでください。";
+                                                ObjectErrorMessage+="地図ファイル" + CutS[i] + "を読み込んでください。Webサーバーの map フォルダに存在しない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。";
                                                 return { ok: false, emes: ObjectErrorMessage };
                                             }
                                         }
@@ -5751,7 +5751,7 @@ class clsAttrData {
                                     }
                                     default:{
                                         if (this.MapData.CheckMapfileExists(fu) === false) {
-                                            ObjectErrorMessage+="地図ファイル" + CutS[i] + "を読み込んでください。";
+                                            ObjectErrorMessage+="地図ファイル" + CutS[i] + "を読み込んでください。Webサーバーの map フォルダに存在しない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。";
                                             return { ok: false, emes: ObjectErrorMessage };
                                         }
                                         break;
@@ -6005,7 +6005,7 @@ class clsAttrData {
                     }
                     if (LayerReading.MapFile !== "") {
                         if (this.MapData.CheckMapfileExists(LayerReading.MapFile) === false) {
-                            alert("レイヤ" + LayerReading.Name + "の地図ファイルを読み込んでください。");
+                            alert("レイヤ" + LayerReading.Name + "の地図ファイルを読み込んでください。地図ファイル追加またはドラッグ&ドロップで指定してください。");
                             return { ok: false, emes: ObjectErrorMessage };
                         }
                     }

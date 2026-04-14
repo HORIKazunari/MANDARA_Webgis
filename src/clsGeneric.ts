@@ -2127,7 +2127,7 @@ export class Generic {
     }
 
     /**地図ファイルをgetMapfileByHttpRequestで開き、JSONで返す */
-    static getMapfileByHttpRequest(url: string, readCall: (data: MapData | string) => void): void {
+    static getMapfileByHttpRequest(url: string, readCall: (data: MapData | string) => void, errorCall?: (message: string) => void): void {
 
         
         Generic.readingIcon("地図ファイル読み込み");
@@ -2150,17 +2150,40 @@ export class Generic {
                 }
                 function unzipError(_err: Error) {
                     Generic.clear_backDiv();
-                    alert(url+"の展開に失敗しました");
+                    const message = url+"の展開に失敗しました";
+                    if (errorCall !== undefined) {
+                        errorCall(message);
+                        return;
+                    }
+                    alert(message);
                 }
                 function unzipReadError(_err: Error) {
                     Generic.clear_backDiv();
-                    alert(url+"の内容の読み込みに失敗しました");
+                    const message = url+"の内容の読み込みに失敗しました";
+                    if (errorCall !== undefined) {
+                        errorCall(message);
+                        return;
+                    }
+                    alert(message);
                 }
+            } else {
+                Generic.clear_backDiv();
+                const message = url+"のダウンロードに失敗しました";
+                if (errorCall !== undefined) {
+                    errorCall(message);
+                    return;
+                }
+                alert(message);
             }
         };
         xhr.onerror=function(){
             Generic.clear_backDiv();
-            alert(url+"のダウンロードに失敗しました");
+            const message = url+"のダウンロードに失敗しました";
+            if (errorCall !== undefined) {
+                errorCall(message);
+                return;
+            }
+            alert(message);
         }
         xhr.send(null);
     }
