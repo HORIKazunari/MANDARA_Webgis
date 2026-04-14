@@ -13,8 +13,10 @@ Webブラウザ上で動作する GIS ソフトウェア **MANDARA JS** の継�
 
 - Node.js 18+ 推奨
 - npm
-- Vite 7
-- TypeScript 5.9
+- Vite 8.0.8
+- TypeScript 6.0.2
+- ESLint 10.2.0
+- Vitest 4.1.4
 
 ## 主要コマンド
 
