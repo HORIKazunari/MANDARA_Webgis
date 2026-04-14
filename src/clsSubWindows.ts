@@ -3578,6 +3578,7 @@ export function openMapFile(call: (data: JsonValue, filename?: string) => void) 
                 Generic.alert(undefined, caption + " は Web サーバーの map フォルダに見つかりませんでした。地図ファイル追加またはドラッグ&ドロップで読み込んでください。");
                 return;
             }
+            Generic.clear_backDiv();
             call(getCachedServerMapData(caption), caption);
         }
         async function mapRead2(caption: string) {
