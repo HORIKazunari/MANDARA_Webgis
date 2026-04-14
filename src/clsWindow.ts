@@ -9,6 +9,12 @@ import { contextMenuPrevent } from './contextMenu';
 import { frmPrintFront, settingFront } from './frontHandlers';
 import { SortingSearch } from './SortingSearch';
 import {
+    getStartupPresetById,
+    getStartupPresetRequest,
+    hasLegacyFileRequest,
+    isSafeStartupFilePath
+} from './startupPresets';
+import {
     frmMain_Buffer,
     frmMain_AreaPeripheri,
     frmMain_Culc,
@@ -124,7 +130,7 @@ const pnlGraphEachItemHeight=25;
 const state = appState();
 let man_Data=enmDataSource.NoData;
 
-export function setting(locSearch: string) {
+export function setting(locSearch: string, locHash: string = "") {
     const setAttrData = (newAttrData: IAttrData): void => {
         state.attrData = newAttrData;
     };
@@ -178,17 +184,17 @@ export function setting(locSearch: string) {
     state.divMain.addEventListener('click', settingFront);
 
     // 右側設定ウィンドウは attrData 読み込み後に初期化する
-    if (locSearch !== "") {
-        const locData_v = locSearch.substring(1).split("&");
-        for (let i = 0; i < locData_v.length; i++) {
-            const datav2 = locData_v[i].split("=");
-            switch (datav2[0]) {
-                case "file":
-                    //最初に読み込むファイルが指定されている
-                    getFirstFile(datav2[1]);
-                    
-                    break;
+    if ((locSearch !== "") || (locHash !== "")) {
+        const requestedPreset = getStartupPresetRequest(locSearch, locHash);
+        if (requestedPreset !== null) {
+            const startupPreset = getStartupPresetById(requestedPreset);
+            if (startupPreset === undefined) {
+                Generic.alert(undefined, "指定された起動プリセット「" + requestedPreset + "」は存在しません。");
+            } else {
+                getFirstFile(startupPreset.filePath, startupPreset.label);
             }
+        } else if (hasLegacyFileRequest(locSearch, locHash) === true) {
+            Generic.alert(undefined, "URL の file パラメータによる直接読み込みは廃止しました。トップページのサンプルリンク、または preset パラメータを利用してください。");
         }
     }
 
@@ -4247,16 +4253,20 @@ export function setting(locSearch: string) {
         }
         doc.getElementById("settingWindowBtnConditionInfo").setVisibility(f);
     }
-    /**最初に読み込むファイルがURLパラメータに指定されている */
-    function getFirstFile(url: string){
-        const filename=Generic.getFilename(url);
-        const ext=Generic.getExtension(url).toLowerCase();
+    /** 起動プリセットで指定されたファイルを読み込む */
+    function getFirstFile(filePath: string, label?: string){
+        if (isSafeStartupFilePath(filePath) === false) {
+            Generic.alert(undefined, "起動プリセットのファイル設定が不正です。");
+            return;
+        }
+        const filename=Generic.getFilename(filePath);
+        const ext=Generic.getExtension(filePath).toLowerCase();
         if((ext!=="mdrj")&&(ext!=="mdrmj")){
             Generic.alert(undefined,filename +"読み込めません。最初に読み込めるのはmdrj、mdrmjファイルのみです。");
             return;
         }
-        Generic.readingIcon(filename +"データ読み込み");
-        Generic.getMapfileByHttpRequest(url, function (getData: string | MapData) {
+        Generic.readingIcon((label ?? filename) +"データ読み込み");
+        Generic.getMapfileByHttpRequest(filePath, function (getData: string | MapData) {
             const getDataStr = typeof getData === 'string' ? getData : JSON.stringify(getData);
             setAttrData(new clsAttrData() as unknown as IAttrData);
             const mapdata: clsMapdata[] = [];

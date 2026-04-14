@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
 
-const FILE_OPEN_URL = '/mandarawebgis.html?file=data/japan_data.mdrj';
-const CLIMATE_FILE_OPEN_URL = '/mandarawebgis.html?file=data/japan_climate.mdrj';
-const LANDPRICE_FILE_OPEN_URL = '/mandarawebgis.html?file=data/landprice2021.mdrj';
-const MDRMJ_FILE_OPEN_URL = '/mandarawebgis.html?file=data/japan_sityoson_pop.mdrmj';
-const WORLD_MDRMJ_FILE_OPEN_URL = '/mandarawebgis.html?file=data/worldpopulation3.mdrmj';
+const FILE_OPEN_URL = '/mandarawebgis.html#preset=japan-pref';
+const CLIMATE_FILE_OPEN_URL = '/mandarawebgis.html#preset=japan-climate';
+const LANDPRICE_FILE_OPEN_URL = '/mandarawebgis.html#preset=japan-landprice-2021';
+const MDRMJ_FILE_OPEN_URL = '/mandarawebgis.html#preset=japan-city-population';
+const WORLD_MDRMJ_FILE_OPEN_URL = '/mandarawebgis.html#preset=world-population-centered';
 
 type RgbColor = [number, number, number];
 
@@ -88,9 +88,9 @@ async function selectFirstPointClassPaintDataItem(page: import('@playwright/test
 }
 
 /**
- * `?file=...` 指定での地図データ読み込み回帰テスト。
+ * `preset` 指定での地図データ読み込み回帰テスト。
  */
-test.describe('URL指定ファイル読み込み', () => {
+test.describe('起動プリセット読み込み', () => {
   test('japan_data.mdrj を開いても展開失敗エラーが発生しない', async ({ page }) => {
     const dialogs: string[] = [];
     const pageErrors: string[] = [];

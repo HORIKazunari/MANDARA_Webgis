@@ -2310,7 +2310,7 @@ interface EventTarget {
 // 関数
 declare function logX(data: JsonValue): void;
 declare function init(): void;
-declare function setting(search: string): void;
+declare function setting(search: string, hash?: string): void;
 declare function contextMenuPrevent(e: Event): void;
 declare function FrmprintMenuClick(pos: point): void;
 declare function dataValueShow(): void;

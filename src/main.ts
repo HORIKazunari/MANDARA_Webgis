@@ -188,7 +188,7 @@ function _init(): void {
     mapMouse(state.frmPrint.picMap, clsPrint.printMapScreen);
     state.clsDrawMarkFan?.init?.();
 
-    setting(location.search); // 設定画面の作成
+    setting(location.search, location.hash); // 設定画面の作成
 
 
     function FrmprintMenuClick(pos: point): void {
