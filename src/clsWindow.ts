@@ -990,7 +990,7 @@ export function setting(locSearch: string, locHash: string = "") {
         const frame=Generic.createNewFrame(parent,"","",x,y,300,185);
         frame.style.backgroundColor="#ffffff";
         const tx1="ブラウザGIS MANDARA Webgis";
-        const tx2="バージョン 2.2.3";
+        const tx2="バージョン 2.2.4";
         const tx3="<b>左上のメニューから始めてください</b>"
         const tx4='<a href="https://webgis.celas.osaka-u.ac.jp/" target="_blank">MANDARA Webgisのページ（大阪大学）</a>';
         const tx5='<a href="index.html" target="_blank">本サイトのトップページ</a>'
@@ -4324,13 +4324,13 @@ export function setting(locSearch: string, locHash: string = "") {
 function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: string, ext: string) => void) {
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
     const mapList: Record<string, clsMapdata> = {};
-    const bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 550, true, true, buttonOK, 0.2, false,true,buttonCancel);
-    const mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, state.scrMargin.top+5, 450, 140, "使用地図ファイル");
+    const bbox = Generic.set_backDiv("", "属性データ読み込み", 490, 575, true, true, buttonOK, 0.2, false,true,buttonCancel);
+    const mapFileFrame = Generic.createNewFrame(bbox, "mapFile", "", 15, state.scrMargin.top+5, 450, 160, "使用地図ファイル");
     Generic.createNewSpan(mapFileFrame, "<b>下に地図ファイル(MPFJ)をドロップしてください</b>", "", "", 15, 15, "", undefined);
     const mapFileList = new ListBox(mapFileFrame, "", [], 15, 35, 200, 55, null, "");
     Generic.createNewButton(mapFileFrame, "地図ファイル追加", "", 230, 50, addMapOn, "");
     Generic.createNewButton(mapFileFrame, "削除", "", 360, 50, deleteMap, "");
-    Generic.createNewDiv(mapFileFrame,"※MDRJ / MDRMJ に含まれる地図指定が Web サーバーの map フォルダに存在する場合は自動取得します。<br>見つからない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。","","",15,95,430,50,"","");
+    Generic.createNewDiv(mapFileFrame,"※MDRJ / MDRMJ に含まれる地図指定が Web サーバーの map フォルダに存在する場合は自動取得します。<br>見つからない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。","","",15,95,425,60,"font-size:11px;line-height:1.35em;","");
     mapFileList.frame.addEventListener('dragover', function (e: DragEvent) {
         e.stopPropagation();
         e.preventDefault();
@@ -4362,7 +4362,7 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
             Generic.clear_backDiv();
         }
     }
-    const dataFileFrame = Generic.createNewFrame(bbox, "dataFile", "", 15, 195, 450, 300, "属性データ");
+    const dataFileFrame = Generic.createNewFrame(bbox, "dataFile", "", 15, 215, 450, 300, "属性データ");
     const fileIn = Generic.createNewInput(dataFileFrame, "file", "", "", 15, 15, "", "");
     fileIn.accept=".csv,.mdrj,.mdrmj";
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },

@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-04-14 (v2.2.4)
+
+### 変更概要
+- サンプル起動を `?file=` 直読から `#preset=` allowlist 方式へ変更。
+- 地図データの起動時先読みを廃止し、`map/` 配下の `.mpfj` を必要時に自動取得する方式へ変更。
+- `.mdrj` / `.mdrmj` 読み込み時、参照地図がサーバー上に存在すれば自動取得し、存在しない場合は手動読み込みを案内するよう改善。
+- 地図ファイル選択ダイアログで、提供地図選択後にモーダルが残る不具合を修正。
+- README と UI 上の案内文、版数表示を `2.2.4` / `v2.2.4` に更新。
+
+### 主な変更ファイル
+- `index.html`
+- `README.md`
+- `package.json`
+- `src/index.ts`
+- `src/serverMapLoader.ts`
+- `src/clsSubWindows.ts`
+- `src/clsWindow.ts`
+- `tests/e2e/file-open.spec.ts`
+
+### 確認
+- `npm run build` が成功。
+- Vitest 9 件成功（`tests/startup-presets.test.ts`, `tests/server-map-loader.test.ts`）。
+- Playwright 30 件成功（`tests/e2e/file-open.spec.ts`、Chromium / Firefox / WebKit）。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.2.3...v2.2.4
+
 ## 2026-04-10 (v2.2.3)
 
 ### 変更概要
