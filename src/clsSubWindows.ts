@@ -260,8 +260,12 @@ export function clsColorPicker(event_point: point | MouseEvent, okEvent: (color:
         style.backgroundColor = colorList[i];
         colorDivObj.id = 'ColorPickerColorDivObj' + i;
         colorDivObj.onclick = setCol;
-        colorDivObj.setAttribute("onmouseover", "this.style.border = '2px solid #000000';");
-        colorDivObj.setAttribute("onmouseout", "this.style.border = '1px solid #888888';");
+        colorDivObj.addEventListener('mouseover', () => {
+            colorDivObj.style.border = '2px solid #000000';
+        });
+        colorDivObj.addEventListener('mouseout', () => {
+            colorDivObj.style.border = '1px solid #888888';
+        });
         colorPickerObj.appendChild(colorDivObj);
     }
 
@@ -469,8 +473,12 @@ export function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mar
             const x = left + (i % turnN) * size+1;
             const y = tp + Math.floor(i / turnN) * size+1;
             const c = Generic.createNewCanvas(backDiv, String(i), "grayFrame", x, y, size - 2, size - 2, clickMark, "");
-            c.setAttribute("onmouseover", "this.style.border = '1px solid #ff5500';");
-            c.setAttribute("onmouseout", "this.style.border = '1px solid #666666';");
+            c.addEventListener('mouseover', () => {
+                c.style.border = '1px solid #ff5500';
+            });
+            c.addEventListener('mouseout', () => {
+                c.style.border = '1px solid #666666';
+            });
             smk.ShapeNumber = i;
             _attrData.Draw_Sample_Mark_Box(c,  smk);
         }

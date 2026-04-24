@@ -2202,8 +2202,14 @@ export class Generic {
     const  imgs = "<img src=" + img + ">"
     new1.document.write(imgs);
     new1.document.write("</br>画像を右クリックして保存またはコピーして下さい。</br></br>");
-    new1.document.write("<center><input type=button value='このウインドウを閉じる' onClick='window.close()'></center>");
     new1.document.write("</body></html>");
+    const closeArea = new1.document.createElement("center");
+    const closeButton = new1.document.createElement("input");
+    closeButton.type = "button";
+    closeButton.value = "このウインドウを閉じる";
+    closeButton.addEventListener("click", () => new1.close());
+    closeArea.appendChild(closeButton);
+    new1.document.body.appendChild(closeArea);
     new1.document.close();
 }
 
@@ -3507,7 +3513,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         obj.alt = alt;
         obj.setAttribute("id", ID);
         obj.setAttribute("class", Class);
-        obj.setAttribute("onclick", onclick);
         obj.setAttribute("style", "position:absolute;" + styleinfo)
         obj.style.top = y.px();
         obj.style.left = x.px();
@@ -3829,9 +3834,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const obj = document.createElement("div");
         obj.setAttribute("id", ID);
         obj.setAttribute("class", Class);
-        if (onclick && typeof onclick === 'string') {
-            obj.setAttribute("onclick", onclick);
-        }
         obj.setAttribute("style", "position:absolute;" + styleinfo);
         if (onclick && typeof onclick === 'function') {
             obj.onclick = onclick;
@@ -4025,7 +4027,6 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         ok.setAttribute("type", type);
         ok.setAttribute("id", ID);
         ok.setAttribute("value", text);
-        ok.setAttribute("onclick", onClick);
         ok.setAttribute("style", "position:absolute;" + styleinfo);
         ok.style.top = y.px();
         ok.style.left = x.px();

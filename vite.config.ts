@@ -89,8 +89,8 @@ export default defineConfig({
   build: {
     // より多くのチャンクサイズを許可
     chunkSizeWarningLimit: 1600,
-    // ソースマップを生成してデバッグしやすく
-    sourcemap: true,
+    // 本番公開では source map を生成しない
+    sourcemap: false,
     // with文のためにターゲットを変更
     target: 'es2015',
     rollupOptions: {

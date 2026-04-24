@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-04-24 (v2.2.5)
+
+### 変更概要
+- 本番公開時の Content Security Policy に対応するため、UI 生成コードに残っていたインラインイベント属性を DOM イベント登録へ置き換え。
+- `onclick`、`onmouseover`、`onmouseout`、`ondragover` に起因する Firefox の CSP 警告を削減。
+- Vite 本番ビルドで source map を生成しないように変更し、公開物から `.map` を除外。
+- Apache の公開設定を見直し、HSTS / CSP / nosniff などのヘッダ有効化と公開確認を実施。
+- About 表示、トップページ更新履歴、`package.json` / `package-lock.json` の版数を `2.2.5` / `v2.2.5` に更新。
+
+### 主な変更ファイル
+- `package.json`
+- `package-lock.json`
+- `vite.config.ts`
+- `index.html`
+- `src/clsGeneric.ts`
+- `src/clsSubWindows.ts`
+- `src/clsWindow.ts`
+
+### 確認
+- `npm run build` が成功。
+- Firefox 実操作で主要機能と国土地理院タイル取得が正常動作。
+- 公開サイトの `curl -I` で HSTS / CSP / nosniff / Referrer-Policy が返ることを確認。
+- `.js.map` が公開されていないことを確認。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.2.4...v2.2.5
+
 ## 2026-04-14 (v2.2.4)
 
 ### 変更概要
