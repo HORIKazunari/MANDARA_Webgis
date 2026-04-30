@@ -4656,7 +4656,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
             Generic.unzipFile(zipFile, zipSOK, zipSErr)
             function zipSOK(unZipData: {[key: string]: Uint8Array}) {
                 for (const filename in unZipData) {
-                    checkSFiles(filename);
+                    checkSFiles(filename, true);
                 }
                 checkSFiles2();
                 if (er !== '') {
@@ -4670,13 +4670,21 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
                 Generic.alert(undefined,zipFile.name + "は読み込めませんでした。")
             }
         }
-        function checkSFiles(file: File | string, /* zipF: boolean */) {
+        function checkSFiles(file: File | string, zipF: boolean = false) {
             const ext = typeof file === 'string' 
                 ? Generic.getExtension(file).toLowerCase()
                 : Generic.getExtension(file.name).toLowerCase();
             const fname = typeof file === 'string'
                 ? Generic.getFilenameWithoutExtension(file)
                 : Generic.getFilenameWithoutExtension(file.name);
+            if (zipF === true) {
+                if (typeof file === 'string' && file.endsWith('/')) {
+                    return;
+                }
+                if (['shp', 'shx', 'prj', 'dbf'].includes(ext) === false) {
+                    return;
+                }
+            }
             switch (ext) {
                 case 'shp':
                 case 'shx':
