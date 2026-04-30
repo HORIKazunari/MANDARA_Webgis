@@ -31,3 +31,7 @@ readme.txt
 lint_results.txt
 prefer_const_errors.txt
 vite-ts-mandara.code-workspace
+
+# Public shapefile datasets downloaded for local testing
+L01-26_27_GML.zip
+L01-26_27_GML/
