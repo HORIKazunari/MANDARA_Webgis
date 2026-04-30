@@ -4369,7 +4369,7 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
     fileIn.accept=".csv,.mdrj,.mdrmj";
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
     { value: 'utf-8', text: 'UTF-8' }];
-    const cboCode = Generic.createNewWordSelect(dataFileFrame,"CSVファイル文字コード", cboCodeList.map(item => item.text), 0,  "cboCode", 270, 8,undefined,100,1,  undefined,"", "font-size:12px",false);
+    const cboCode = Generic.createNewWordSelect(dataFileFrame,"CSVファイル文字コード", cboCodeList, 0,  "cboCode", 270, 8,undefined,100,1,  undefined,"", "font-size:12px",false);
 
     let ext="clipboard";
     let filename="";
@@ -4541,7 +4541,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
     const fileFrame = Generic.createNewFrame(bbox, "", "", 15, state.scrMargin.top + 5, 340, 200, "読み込むシェープファイル");
     const cboCodeList = [{ value: 'shift-jis', text: 'シフトJIS' },
     { value: 'utf-8', text: 'UTF-8' }];
-    const cboCode = Generic.createNewWordSelect(fileFrame,"dbfファイル文字コード", cboCodeList.map(item => item.text), 0,  "cboCode",15, 15,140,100,0,  undefined,"", "",false);
+    const cboCode = Generic.createNewWordSelect(fileFrame,"dbfファイル文字コード", cboCodeList, 0,  "cboCode",15, 15,140,100,0,  undefined,"", "",false);
 
     Generic.createNewDiv(fileFrame, "<b>下にシェープファイル1式（shp,shx,dbf,prjファイル）ずつ（またはzip圧縮ファイル）ドロップしてください</b>", "", "", 15, 45, 310, 50, "", "");
     const fileList = new ListBox(fileFrame, "", [], 15, 90, 220, 95, setShapeFileInfo, "");
@@ -4573,7 +4573,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
     Generic.createNewRadioButtonList(zahyoSystemFrame, "zahyoSystem", ZahyoModeList, 10, 10,undefined, 22,undefined, zahyoSystemFrameChange, "");
     infoFrame?.setVisibility?.(false);
     const chkTopology=Generic.createNewCheckBox(bbox,"位相構造化","",false,30,260,120,undefined,"");
-    const cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList().map(item => item.text), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
+    const cboProjection = Generic.createNewWordSelect(bbox,"読み込み後の投影法", Generic.getProjectionList(), 0,  "cboProjection",150, 260,undefined,150,1,  undefined,"", "",false);
 
     function keiChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/){
         const fileKey = fileList.getValue();
@@ -4640,12 +4640,11 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
         }
 
         const key = Object.keys(sFiles)[0];
-        const keyNum = parseInt(key, 10);
         const filesArray = (sFiles[key].files || []).filter((f): f is File => f instanceof File);
-        sFiles[key].shape.fileRead(filesArray, encode as string | number, keyNum, onOk, onError);
+        sFiles[key].shape.fileRead(filesArray, encode as string | number, key, onOk, onError);
         function onOk(tag: string | number) {//読み込めた
             const lst=[{ value: tag, text: String(tag) + ".shp"  }];
-            fileList.addList(lst.map(item => item.text), firstSel);
+            fileList.addList(lst, firstSel);
             shapeFiles[tag] = sFiles[tag];
             setShapeFileInfo();
         }
@@ -4664,8 +4663,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
                     return;
                 }
                 const key = Object.keys(sFiles)[0];
-                const keyNum = parseInt(key, 10);
-                sFiles[key].shape.fileReadZip(unZipData, encode as string | number, keyNum, (tag: string | number) => onOk(tag));
+                sFiles[key].shape.fileReadZip(unZipData, encode as string | number, key, (tag: string | number) => onOk(tag));
 
             }
             function zipSErr(){
@@ -4748,7 +4746,7 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
             infoFrame?.setVisibility?.(true);
         }
         const data=shapeFiles[fileKey];
-        infoFileName.innerHTML=fileKey+".shp";
+        infoFileName.innerHTML=String(fileKey)+".shp";
         let tx="";
         if(data.shp === true){tx+="shpファイル：あり "}else{tx+="shpファイル：なし "};
         if(data.shx === true){tx+="shxファイル：あり "}else{tx+="shxファイル：なし "};
@@ -4808,19 +4806,17 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
         const prj = parseInt(String(prjValue));
         for (const i in shapeFiles) {
             const sfile = shapeFiles[i];
-            const iNum = parseInt(i, 10);
             const newMapData = sfile.shape.convertToMapfile(prj, true);
             newMapData.init_Compass_First();
             if(chkTopology.checked===true){
                 newMapData.TopologyStructure_SameLine([]);
             }
-            const keyNum = iNum;
-            const key = String(keyNum).toUpperCase();
+            const key = i.toUpperCase();
             mapList[key] = newMapData;
             const d = new strLayerInfo();
             d.Time = clsTime.GetYMD(new Date());
             d.Shape = sfile.shape.getShape();
-            d.MapfileName = keyNum;
+            d.MapfileName = i;
             d.Name = "レイヤ" + String(d.MapfileName);
             const okn = mapList[key].Map.OBKNum;
             d.UseObjectKind = Array<boolean>(okn).fill(false);
