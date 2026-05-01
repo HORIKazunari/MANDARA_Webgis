@@ -125,6 +125,13 @@ class Layer_Data_InfoCheck {
     Value = 0; // Double
 }
 
+function createEmptyLayerDataInfo(): Layer_Data_Info {
+    const info = new Layer_Data_Info();
+    info.Layer = -1;
+    info.Data = -1;
+    return info;
+}
+
 export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
     // const state = appState();
     const GridLayerData = {
@@ -1047,11 +1054,13 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         const Conv = Get_Data_Refference() as Layer_Data_Info[][];// List(Of Layer_Data_Info()) 
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             for (let j = 0; j < newAttrData.LayerData[i].atrData.Count; j++) {
-                const cv = Conv[i][j];
-                if (cv.Layer !== -1) {
+                const cv = Conv[i]?.[j] ?? createEmptyLayerDataInfo();
+                if (cv.Layer !== -1 && cv.Data !== -1) {
                     const d = R_Conv[cv.Layer];
-                    d[cv.Data].Layer = i;
-                    d[cv.Data].Data = j;
+                    if (d?.[cv.Data] !== undefined) {
+                        d[cv.Data].Layer = i;
+                        d[cv.Data].Data = j;
+                    }
                 }
             }
         }
@@ -1069,7 +1078,7 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             const newAL = newAttrData.LayerData[i] as unknown as LayerDataInfo;
             const L = ktGrid.getLayerData(i, GridLayerData.OldIndex);
-            const oldAL = oldAttrData.LayerData[L] as unknown as LayerDataInfo;
+            const oldAL = L !== -1 ? oldAttrData.LayerData[L] as unknown as LayerDataInfo : undefined;
             if (L === -1) {
                 newAL.Print_Mode_Layer = enmLayerMode_Number.SoloMode;
                 //新しいレイヤの場合
@@ -1155,22 +1164,30 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             }
 
             let shapeNoChange = true;
-            if (L !== -1) {
+            if (L !== -1 && oldAL !== undefined) {
                 if (newAL.Shape !== oldAL.Shape) {
                     shapeNoChange = false;
                 }
             }
 
             for (let j = 0; j < newAL.atrData.Count; j++) {
-                if ((Conv[i][j].Data === -1) || (newAttrData.Get_DataType(i, j) === enmAttDataType.Strings)) {
+                const conv = Conv[i]?.[j] ?? createEmptyLayerDataInfo();
+                if ((conv.Data === -1) || (newAttrData.Get_DataType(i, j) === enmAttDataType.Strings)) {
                     //グリッドのデータに対応する旧データがない場合、または文字モード
                 } else {
                     //グリッドのデータに対応する旧データがある場合、
                     //旧データの凡例を持ってくる
-                    const DD = Conv[i][j].Data;
-                    const dL = Conv[i][j].Layer;
+                    const DD = conv.Data;
+                    const dL = conv.Layer;
+
+                    if (dL < 0 || dL >= oldAttrData.LayerData.length) {
+                        continue;
+                    }
 
                     const oldLayer = oldAttrData.LayerData[dL] as unknown as LayerDataInfo;
+                    if (DD < 0 || DD >= oldLayer.atrData.Data.length) {
+                        continue;
+                    }
                     const O_Data = oldLayer.atrData.Data[DD] as unknown as { ModeData: number } & Parameters<clsAttrData['Set_Legend']>[2];
                     if (newAttrData.Check_Enable_SoloMode(O_Data.ModeData, i, j) === true) {
                         const newDataItem = newAL.atrData.Data[j] as unknown as { ModeData: number };
@@ -1658,14 +1675,16 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             const Dconv: Layer_Data_Info[] = [];//(datn - 1) As Layer_Data_Info
             for (let j = 0; j < newAttrData.LayerData[i].atrData.Count; j++) {
-                Dconv[j] = Check_Data2(i, j, 1, CheckedData);
+                Dconv[j] = Check_Data2(i, j, 1, CheckedData) ?? createEmptyLayerDataInfo();
             }
             Conv.push(Dconv);
         }
         for (let i = 0; i < newAttrData.TotalData.LV1.Lay_Maxn; i++) {
             for (let j = 0; j < newAttrData.LayerData[i].atrData.Count; j++) {
-                if (Conv[i][j].Layer === -1) {
-                    Conv[i][j] = Check_Data2(i, j, 2, CheckedData);
+                const current = Conv[i]?.[j] ?? createEmptyLayerDataInfo();
+                Conv[i][j] = current;
+                if (current.Layer === -1) {
+                    Conv[i][j] = Check_Data2(i, j, 2, CheckedData) ?? createEmptyLayerDataInfo();
                 }
             }
         }

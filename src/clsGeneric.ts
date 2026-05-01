@@ -3726,10 +3726,20 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
             Num++;
         }
         let FL = " ".repeat(LeftOfDecimalPoint);
+        const truncatedValue = Math.trunc(Value);
+        const integerPartText = (() => {
+            const absIntegerText = Comma_f === true
+                ? Math.abs(truncatedValue).toLocaleString()
+                : String(Math.abs(truncatedValue));
+            if (Value < 0 && truncatedValue === 0) {
+                return "-0";
+            }
+            return truncatedValue < 0 ? "-" + absIntegerText : absIntegerText;
+        })();
         if (Comma_f === true) {
-            FL += Math.floor(Value).toLocaleString();
+            FL += integerPartText;
         } else {
-            FL += String(Math.floor(Value));
+            FL += integerPartText;
         }
         if (RightOfDecimaplPoint !== 0) {
             FL += "." + Number(Value).toFixed(RightOfDecimaplPoint).split(".")[1];

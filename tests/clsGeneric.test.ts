@@ -92,3 +92,13 @@ describe('Generic.unzipFile', () => {
     expect(readError).not.toHaveBeenCalled();
   });
 });
+
+describe('Generic.Figure_Using3', () => {
+  it('keeps negative fractional values from shifting by one', () => {
+    expect(Generic.Figure_Using3(-0.5, 2, 1, false).trim()).toBe('-0.5');
+  });
+
+  it('preserves negative fractional values when commas are enabled', () => {
+    expect(Generic.Figure_Using3(-0.5, 2, 1, true).trim()).toBe('-0.5');
+  });
+});
