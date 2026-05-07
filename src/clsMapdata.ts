@@ -73,7 +73,7 @@ class Object_CenterPoint_Data {
 /**
  * Description placeholder
  */
-class LineCodeStac_Data {
+export class LineCodeStac_Data {
     LineCode?: number;
     NumOfTime?: number;
     Times: Start_End_Time_data[] = [];

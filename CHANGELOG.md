@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-05-07 (v2.2.6)
+
+### 変更概要
+- シェープファイル読み込み後、`OK` 実行時に `LineCodeSTC` が欠落して処理が停止する実行時不具合を修正。
+- シェープファイル変換処理で、境界線参照をプレーンオブジェクトではなく `LineCodeStac_Data` の実インスタンスとして保持するよう変更。
+- About 表示、トップページ更新履歴、`package.json` / `package-lock.json` の版数を `2.2.6` / `v2.2.6` に更新。
+
+### 主な変更ファイル
+- `package.json`
+- `package-lock.json`
+- `index.html`
+- `src/clsMapdata.ts`
+- `src/clsWindow.ts`
+- `src/shapeFile.ts`
+
+### 確認
+- `npm run build` が成功。
+- 実ブラウザで、シェープファイル読み込み後に `OK` を押してもエラーなく処理継続することを確認。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.2.5...v2.2.6
+
 ## 2026-04-24 (v2.2.5)
 
 ### 変更概要

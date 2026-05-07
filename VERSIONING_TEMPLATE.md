@@ -1,16 +1,16 @@
 # Git / GitHub バージョン管理テンプレート
 
 このテンプレートは、ローカル Git 運用と GitHub 公開運用を同時に回すための実務用ひな形です。  
-本プロジェクトは **元ソフト最終版 1.003** から再構成したため、以後は **semver 形式で 2.2.3 のように管理**します。
+本プロジェクトは **元ソフト最終版 1.003** から再構成したため、以後は **semver 形式で 2.2.6 のように管理**します。
 
 ---
 
 ## 1. バージョン規則
 
 ### 1.1 公開バージョン（Gitタグ / GitHub Release）
-- 正式版: `2.2.3`, `2.2.4`, `2.3.0` ...
-- 緊急修正版: patch を 1 つ上げる（例: `2.2.3` → `2.2.4`）
-- 事前版: `2.2.3-rc.1`, `2.2.3-beta.1`
+- 正式版: `2.2.6`, `2.2.7`, `2.3.0` ...
+- 緊急修正版: patch を 1 つ上げる（例: `2.2.6` → `2.2.7`）
+- 事前版: `2.2.6-rc.1`, `2.2.6-beta.1`
 - 破壊的変更（互換性を壊す）: `3.0.0` へ繰り上げ
 
 ### 1.2 package.json / 表示 / タグの対応
@@ -18,10 +18,10 @@
 
 | 用途 | 例 |
 |---|---|
-| 表示用バージョン | 2.2.3 |
-| package.json(version) | 2.2.3 |
-| Git タグ | v2.2.3 |
-| GitHub Release | v2.2.3 |
+| 表示用バージョン | 2.2.6 |
+| package.json(version) | 2.2.6 |
+| Git タグ | v2.2.6 |
+| GitHub Release | v2.2.6 |
 
 ※ GitHub のタグ/Release 表示は `v2.2.3` 形式を使います。
 
@@ -67,18 +67,18 @@ git checkout main
 git pull origin main
 
 # 任意: リリース調整ブランチ
-git checkout -b release/2.2.3
+git checkout -b release/2.2.6
 
 npm run build
 
 git add .
-git commit -m "chore(release): 2.2.3"
+git commit -m "chore(release): 2.2.6"
 
 # release ブランチを使った場合
 git checkout main
-git merge --no-ff release/2.2.3
+git merge --no-ff release/2.2.6
 
-git tag -a v2.2.3 -m "Release 2.2.3"
+git tag -a v2.2.6 -m "Release 2.2.6"
 git push origin main
 git push origin v2.2.3
 ```
