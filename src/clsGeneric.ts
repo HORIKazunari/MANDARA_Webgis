@@ -6089,147 +6089,40 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
     let fTop: number;
     let mode: string | number;
     let mdownF=false;
+    let pendingPointerX = 0;
+    let pendingPointerY = 0;
+    let moveFrameId: number | null = null;
+    let hasPendingMove = false;
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const targetEle = this;
     const SR=10;
     const TR=state.scrMargin.top;
 
-    const mmovef = (event: MouseEvent): void => {
-        const parentElement = targetEle.parentElement;
-        if (!parentElement) {
-            return;
+    const getPointerClientPosition = (event: MouseEvent | TouchEvent): { clientX: number; clientY: number } => {
+        if ('changedTouches' in event) {
+            const touch = event.changedTouches[0];
+            return { clientX: touch.clientX, clientY: touch.clientY };
         }
-        //要素内の相対座標を取得
-        fx = event.pageX- parentElement.offsetLeft;
-        fy = event.pageY- parentElement.offsetTop;
-        x = fx - targetEle.offsetLeft;
-        y = fy - targetEle.offsetTop;
-        fW = targetEle.style.width.removePx();
-        fH = targetEle.style.height.removePx()
-        const posX = fW - x;
-        const posY = fH - y;
-        const top = targetEle.offsetTop;
-        //拡大縮小エリアのカーソル
-        if ((posX < SR) && (posY < SR)) {
-            targetEle.style.cursor = 'se-resize';
-        } else if ((posX < SR) && (y < TR)) {
-            targetEle.style.cursor = 'ne-resize';
-        } else if ((x < SR) && (y < TR)) {
-            targetEle.style.cursor = 'nw-resize';
-        } else if ((x < SR) && (posY < SR)) {
-            targetEle.style.cursor = 'sw-resize';
-        } else if ((posX < SR) && (y > TR)) {
-            targetEle.style.cursor = 'e-resize';
-        } else if ((x < SR)) {
-            targetEle.style.cursor = 'w-resize';
-        } else if ((posY < SR) && (top > 0)) {
-            targetEle.style.cursor = 's-resize';
-        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (70<posX )&&(40<x)) {
-            if (y < 3) {
-                targetEle.style.cursor = 'n-resize';
-            } else {
-                targetEle.style.cursor = 'move';
-            }
-        } else {
-            targetEle.style.cursor = 'default';
-        }
+        return { clientX: event.clientX, clientY: event.clientY };
     };
 
-    this.addEventListener("mousedown", mdown, false);
-    this.addEventListener("touchstart", mdown, false);
-    this.addEventListener("mousemove", mmovef, false);
+    const updatePointerGeometry = (clientX: number, clientY: number, parentElement: HTMLElement): void => {
+        const parentRect = parentElement.getBoundingClientRect();
+        const targetRect = targetEle.getBoundingClientRect();
+        fx = clientX - parentRect.left;
+        fy = clientY - parentRect.top;
+        x = clientX - targetRect.left;
+        y = clientY - targetRect.top;
+    };
 
-    //マウスが押された際の関数
-    function mdown(e: MouseEvent) {
-        e.stopPropagation();
-        let checkF = true;
-         mdownF=true;
-        //タッチデイベントとマウスのイベントの差異を吸収
-        let event;
-        if (e.type === "mousedown") {
-             event = e;
-        } else {
-             event = e.changedTouches[0];
-        }
-
+    const applyDragMove = (clientX: number, clientY: number): void => {
         const parentElement = targetEle.parentElement;
         if (!parentElement) {
             return;
         }
-        //要素内の相対座標を取得
-        fx = event.pageX- parentElement.offsetLeft;
-        fy = event.pageY- parentElement.offsetTop;
-        fW = targetEle.style.width.removePx();
-        fH = targetEle.style.height.removePx();
-        fLeft = targetEle.style.left.removePx();
-        fTop = targetEle.style.top.removePx();
-        x = fx - targetEle.offsetLeft;
-        y = fy - targetEle.offsetTop;
-        const posX = fW - x;
-        const posY = fH - y;
-        const top = targetEle.offsetTop;
-        //拡大縮小エリアのカーソルとモード設定
-        if ((posX < SR) && (posY < SR)) {
-            targetEle.style.cursor = 'se-resize';
-            mode = 'se-resize';
-        } else if ((posX < SR) && (y < TR)) {
-            targetEle.style.cursor = 'ne-resize';
-            mode = 'ne-resize';
-        } else if ((x < SR) && (y < TR)) {
-            targetEle.style.cursor = 'nw-resize';
-            mode = 'nw-resize';
-        } else if ((x < SR) && (posY < SR)) {
-            targetEle.style.cursor = 'sw-resize';
-            mode = 'sw-resize';
-        } else if ((posX < SR) && (y > TR)) {
-            targetEle.style.cursor = 'e-resize';
-            mode = 'e-resize';
-        } else if ((x < SR) && (y > TR)) {
-            targetEle.style.cursor = 'w-resize';
-            mode = 'w-resize';
-        } else if ((posY < SR) && (top > 0)) {
-            targetEle.style.cursor = 's-resize';
-            mode = 's-resize';
-        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (posX > 60)) {
-            if (x > 40) {
-                if (y < 3) {
-                    targetEle.style.cursor = 'n-resize';
-                    mode = 'n-resize';
-                } else {
-                    targetEle.style.cursor = 'move';
-                    mode = 'move';
-                }
-            }
-        } else {
-            checkF = false;
-        }
-        //ムーブイベントにコールバック
-        if (checkF === true) {
-            targetEle.removeEventListener("mousemove", mmovef, false);
-            targetEle.parentElement.addEventListener("mousemove", mmove, false);
-            targetEle.parentElement.addEventListener("touchmove", mmove, false);
-            targetEle.addEventListener("mouseup", mdup, false);
-        }
-    }
-
-    //マウスカーソルが動いたときに発火
-    function mmove(e: MouseEvent) {
-        if(mdownF===false){
-            return;
-        }
-        //同様にマウスとタッチの差異を吸収
-        let event;
-        if (e.type === "mousemove") {
-             event = e;
-        } else {
-             event = e.changedTouches[0];
-        }
-
-        //フリックしたときに画面を動かさないようにデフォルト動作を抑制
-        e.preventDefault();
-        //マウスが動いた場所に要素を動かす
-        const epx = event.pageX- targetEle.parentElement.offsetLeft;
-        const epy = event.pageY- targetEle.parentElement.offsetTop;
+        const parentRect = parentElement.getBoundingClientRect();
+        const epx = clientX - parentRect.left;
+        const epy = clientY - parentRect.top;
         const newW = fW + epx - fx;
         const newH = fH + epy - fy;
         const newW2 = fW + fx - epx;
@@ -6238,7 +6131,7 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         switch (mode) {
             case 'move':
                 targetEle.style.top = (epy - y).px();
-                targetEle.style.left = (epx - x).px();           
+                targetEle.style.left = (epx - x).px();
                 break;
             case 'e-resize':
                 if (newW > minSize) {
@@ -6304,46 +6197,205 @@ const resetMaxButtonFunc = function(this: HTMLElement, MaxFlag?: boolean): void 
         }
         if (mode !== 'move') {
             (targetEle as HTMLElement & { maxSizeFlag?: boolean }).maxSizeFlag = false;
-            //リサイズ中に発生するコールバック
             if(typeof movingCall  === 'function'){
                 movingCall(targetEle);
             }
+        }
+    };
+
+    const flushPendingMove = (): void => {
+        if (moveFrameId !== null) {
+            cancelAnimationFrame(moveFrameId);
+            moveFrameId = null;
+        }
+        if (hasPendingMove === true) {
+            applyDragMove(pendingPointerX, pendingPointerY);
+            hasPendingMove = false;
+        }
+    };
+
+    const endDrag = (): void => {
+        const parentElement = targetEle.parentElement;
+        targetEle.style.cursor = 'default';
+        targetEle.addEventListener("mousemove", mmovef, false);
+        if (parentElement) {
+            parentElement.removeEventListener("touchleave", mup, false);
+        }
+        window.removeEventListener("mousemove", mmove, false);
+        window.removeEventListener("touchmove", mmove, false);
+        targetEle.removeEventListener("mouseup", mdup, false);
+        targetEle.removeEventListener("mouseup", mup, false);
+        targetEle.removeEventListener("touchend", mup, false);
+        window.removeEventListener("mouseup", mup, false);
+        window.removeEventListener("touchend", mup, false);
+        window.removeEventListener("touchcancel", mup, false);
+        window.removeEventListener("blur", mup, false);
+        mdownF=false;
+        hasPendingMove = false;
+    };
+
+    const mmovef = (event: MouseEvent): void => {
+        const parentElement = targetEle.parentElement;
+        if (!parentElement) {
+            return;
+        }
+        const pointer = getPointerClientPosition(event);
+        updatePointerGeometry(pointer.clientX, pointer.clientY, parentElement);
+        fW = targetEle.style.width.removePx();
+        fH = targetEle.style.height.removePx()
+        const posX = fW - x;
+        const posY = fH - y;
+        const top = targetEle.offsetTop;
+        //拡大縮小エリアのカーソル
+        if ((posX < SR) && (posY < SR)) {
+            targetEle.style.cursor = 'se-resize';
+        } else if ((posX < SR) && (y < TR)) {
+            targetEle.style.cursor = 'ne-resize';
+        } else if ((x < SR) && (y < TR)) {
+            targetEle.style.cursor = 'nw-resize';
+        } else if ((x < SR) && (posY < SR)) {
+            targetEle.style.cursor = 'sw-resize';
+        } else if ((posX < SR) && (y > TR)) {
+            targetEle.style.cursor = 'e-resize';
+        } else if ((x < SR)) {
+            targetEle.style.cursor = 'w-resize';
+        } else if ((posY < SR) && (top > 0)) {
+            targetEle.style.cursor = 's-resize';
+        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (70<posX )&&(40<x)) {
+            if (y < 3) {
+                targetEle.style.cursor = 'n-resize';
+            } else {
+                targetEle.style.cursor = 'move';
+            }
+        } else {
+            targetEle.style.cursor = 'default';
+        }
+    };
+
+    this.addEventListener("mousedown", mdown, false);
+    this.addEventListener("touchstart", mdown, false);
+    this.addEventListener("mousemove", mmovef, false);
+
+    //マウスが押された際の関数
+    function mdown(e: MouseEvent | TouchEvent) {
+        e.stopPropagation();
+        let checkF = true;
+        const parentElement = targetEle.parentElement;
+        if (!parentElement) {
+            return;
+        }
+        const pointer = getPointerClientPosition(e);
+        updatePointerGeometry(pointer.clientX, pointer.clientY, parentElement);
+        fW = targetEle.style.width.removePx();
+        fH = targetEle.style.height.removePx();
+        fLeft = targetEle.style.left.removePx();
+        fTop = targetEle.style.top.removePx();
+        const posX = fW - x;
+        const posY = fH - y;
+        const top = targetEle.offsetTop;
+        //拡大縮小エリアのカーソルとモード設定
+        if ((posX < SR) && (posY < SR)) {
+            targetEle.style.cursor = 'se-resize';
+            mode = 'se-resize';
+        } else if ((posX < SR) && (y < TR)) {
+            targetEle.style.cursor = 'ne-resize';
+            mode = 'ne-resize';
+        } else if ((x < SR) && (y < TR)) {
+            targetEle.style.cursor = 'nw-resize';
+            mode = 'nw-resize';
+        } else if ((x < SR) && (posY < SR)) {
+            targetEle.style.cursor = 'sw-resize';
+            mode = 'sw-resize';
+        } else if ((posX < SR) && (y > TR)) {
+            targetEle.style.cursor = 'e-resize';
+            mode = 'e-resize';
+        } else if ((x < SR) && (y > TR)) {
+            targetEle.style.cursor = 'w-resize';
+            mode = 'w-resize';
+        } else if ((posY < SR) && (top > 0)) {
+            targetEle.style.cursor = 's-resize';
+            mode = 's-resize';
+        } else if ((((0 <= y) && (y <= TR)) || ((posY < SR) && (top <= 0))) && (posX > 60)) {
+            if (x > 40) {
+                if (y < 3) {
+                    targetEle.style.cursor = 'n-resize';
+                    mode = 'n-resize';
+                } else {
+                    targetEle.style.cursor = 'move';
+                    mode = 'move';
+                }
+            }
+        } else {
+            checkF = false;
+        }
+        //ムーブイベントにコールバック
+        if (checkF === true) {
+            e.preventDefault();
+            mdownF=true;
+            pendingPointerX = pointer.clientX;
+            pendingPointerY = pointer.clientY;
+            hasPendingMove = false;
+            targetEle.removeEventListener("mousemove", mmovef, false);
+            window.addEventListener("mousemove", mmove, false);
+            window.addEventListener("touchmove", mmove, false);
+            targetEle.addEventListener("mouseup", mdup, false);
+            window.addEventListener("mouseup", mup, false);
+            window.addEventListener("touchend", mup, false);
+            window.addEventListener("touchcancel", mup, false);
+            window.addEventListener("blur", mup, false);
+        }
+    }
+
+    //マウスカーソルが動いたときに発火
+    function mmove(e: MouseEvent | TouchEvent) {
+        if(mdownF===false){
+            return;
+        }
+        //フリックしたときに画面を動かさないようにデフォルト動作を抑制
+        e.preventDefault();
+        const parentElement = targetEle.parentElement;
+        if (!parentElement) {
+            return;
+        }
+        const pointer = getPointerClientPosition(e);
+        pendingPointerX = pointer.clientX;
+        pendingPointerY = pointer.clientY;
+        hasPendingMove = true;
+        if (moveFrameId === null) {
+            moveFrameId = requestAnimationFrame(() => {
+                moveFrameId = null;
+                applyDragMove(pendingPointerX, pendingPointerY);
+                hasPendingMove = false;
+            });
         }
         targetEle.removeEventListener("mouseup", mdup, false);//移動した場合は同じ地点でマウスボタンが上がった場合の処理は行わない
         //マウスボタンが離されたとき、またはカーソルが外れたとき発火
         targetEle.addEventListener("mouseup", mup, false);
         targetEle.addEventListener("touchend", mup, false);
-        targetEle.parentElement.addEventListener("touchleave", mup, false);
+        targetEle.parentElement?.addEventListener("touchleave", mup, false);
     }
 
     //同じ地点でマウスボタンが上がった場合の処理
     function mdup(_e: MouseEvent) {
-        targetEle.style.cursor = 'default';
-        targetEle.addEventListener("mousemove", mmovef, false);
-        targetEle.parentElement.removeEventListener("mousemove", mmove, false);
-        targetEle.parentElement.removeEventListener("touchmove", mmove, false);
-        mdownF=false;
+        if (mdownF === false) {
+            return;
+        }
+        endDrag();
     }
 
     //マウスボタンが上がったら発火
-    function mup(_e: MouseEvent) {
+    function mup(_e: MouseEvent | TouchEvent | FocusEvent) {
         if(mdownF===false){
             return;
         }
 
-        targetEle.style.cursor = 'default';
-        targetEle.addEventListener("mousemove", mmovef, false);
-        //ムーブベントハンドラの消去
-        targetEle.parentElement.removeEventListener("mousemove", mmove, false);
-        targetEle.parentElement.removeEventListener("touchmove", mmove, false);
-        targetEle.removeEventListener("mouseup", mup, false);
-        targetEle.removeEventListener("touchend", mup, false);
+        flushPendingMove();
+        endDrag();
         if (mode !== 'move') {            
             if(typeof moveEndCall === 'function'){
                 moveEndCall(targetEle);
             }
         }
-        mdownF=false;
     }
 };
 
