@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-05-08 (v2.2.7)
+
+### 変更概要
+- CSV / クリップボード属性データ読み込みで、入力文字列を行単位へ正規化せず 1 文字ずつ処理していたため `有効なオブジェクトがありません。` になる実行時不具合を修正。
+- CSV の `MAP` 行に記載された `WORLD` などの提供地図名から、サーバー上の `.mpfj` を自動取得して読み込み継続できるよう修正。
+- 属性データ読み込みダイアログの `OK` 判定順を見直し、自動地図取得後の結果で地図未設定チェックを行うよう変更。
+- About 表示、トップページ更新履歴、`package.json` / `package-lock.json` の版数を `2.2.7` / `v2.2.7` に更新。
+
+### 主な変更ファイル
+- `package.json`
+- `package-lock.json`
+- `index.html`
+- `src/clsAttrData.ts`
+- `src/clsWindow.ts`
+- `src/serverMapLoader.ts`
+
+### 確認
+- `npm run build` が成功。
+- 実ブラウザで、`WORLD` を `MAP` 行に含む CSV を地図ファイル未選択のまま読み込んでも処理継続できることを確認。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.2.6...v2.2.7
+
 ## 2026-05-07 (v2.2.6)
 
 ### 変更概要

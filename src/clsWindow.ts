@@ -990,7 +990,7 @@ export function setting(locSearch: string, locHash: string = "") {
         const frame=Generic.createNewFrame(parent,"","",x,y,300,185);
         frame.style.backgroundColor="#ffffff";
         const tx1="ブラウザGIS MANDARA Webgis";
-        const tx2="バージョン 2.2.6";
+        const tx2="バージョン 2.2.7";
         const tx3="<b>左上のメニューから始めてください</b>"
         const tx4='<a href="https://webgis.celas.osaka-u.ac.jp/" target="_blank">MANDARA Webgisのページ（大阪大学）</a>';
         const tx5='<a href="index.html" target="_blank">本サイトのトップページ</a>'
