@@ -1276,10 +1276,9 @@ export function setting(locSearch: string, locHash: string = "") {
                     DataNum = state.attrData.TotalData.TotalMode.OverLay.SelectedIndex
                     break;
             }
-            const addData = (atsd as unknown as {
+            (atsd as unknown as {
                 AddData: (layernum: number, dataNum: number, printModeTotal: number, printModeLayer: number, modeData?: number) => void;
-            }).AddData;
-            addData(Layernum, DataNum, Print_Mode_Total, Print_Mode_Layer, ModeData);
+            }).AddData(Layernum, DataNum, Print_Mode_Total, Print_Mode_Layer, ModeData);
             Generic.alert(new point(e.clientX, e.clientY),"「" + ttl[DataSetNum] + "」にセットしました。");
             if (DataSetNum !== ats.SelectedIndex) {
                 ats.SelectedIndex = DataSetNum;
