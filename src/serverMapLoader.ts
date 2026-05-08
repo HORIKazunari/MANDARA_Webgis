@@ -18,6 +18,18 @@ export function normalizeMapFileName(mapFileName: string): string {
     return mapFileName.trim().toUpperCase();
 }
 
+function canonicalizeReferencedMapFileName(mapFileName: string): string {
+    const trimmed = mapFileName.trim();
+    if (trimmed === '') {
+        return '';
+    }
+    const baseName = getBaseMapFileName(trimmed);
+    if (/\.mpfj$/i.test(baseName) === true) {
+        return baseName;
+    }
+    return baseName + '.MPFJ';
+}
+
 function getBaseMapFileName(mapFileName: string): string {
     const trimmed = mapFileName.trim();
     const slashIndex = Math.max(trimmed.lastIndexOf('/'), trimmed.lastIndexOf('\\'));
@@ -53,6 +65,28 @@ export function getCachedServerMapData(mapFileName: string): JsonObject | undefi
 }
 
 export function extractReferencedMapFileNames(attrText: string, ext: string): string[] {
+    if ((ext === 'csv') || (ext === 'clipboard')) {
+        const uniqueMapNames = new Map<string, string>();
+        for (const line of attrText.split(/\r?\n/)) {
+            if (line.trim() === '') {
+                continue;
+            }
+            const splitter = (line.indexOf('\t') === -1) && (line.indexOf(',') !== -1) ? ',' : '\t';
+            const cells = Generic.String_Cut(line, splitter);
+            if (cells.length === 0 || cells[0].trim().toUpperCase() !== 'MAP') {
+                continue;
+            }
+            for (const mapFileName of cells.slice(1)) {
+                const canonicalMapFileName = canonicalizeReferencedMapFileName(mapFileName);
+                if (canonicalMapFileName === '') {
+                    continue;
+                }
+                uniqueMapNames.set(normalizeMapFileName(canonicalMapFileName), canonicalMapFileName);
+            }
+        }
+        return [...uniqueMapNames.values()];
+    }
+
     if ((ext !== 'mdrj') && (ext !== 'mdrmj')) {
         return [];
     }
@@ -66,8 +100,8 @@ export function extractReferencedMapFileNames(attrText: string, ext: string): st
         }
         const uniqueMapNames = new Map<string, string>();
         for (const layer of parsed.LayerData ?? []) {
-            const mapFileName = layer.MapFileName?.trim();
-            if (!mapFileName) {
+            const mapFileName = canonicalizeReferencedMapFileName(layer.MapFileName ?? '');
+            if (mapFileName === '') {
                 continue;
             }
             uniqueMapNames.set(normalizeMapFileName(mapFileName), mapFileName);

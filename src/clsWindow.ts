@@ -4499,10 +4499,6 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
     }
 
     async function buttonOK() {
-        if((Object.keys(mapList).length === 0) && (ext !== "mdrj") && (ext !== "mdrmj")) {
-            Generic.alert(undefined,"地図ファイルを設定してください。");
-            return;
-        }
         const attrText = dataTextArea.value;
         const sourceAttrText = ((ext === "mdrj") || (ext === "mdrmj")) ? (mdrjString ?? "") : attrText;
         if(sourceAttrText === "") {
@@ -4515,6 +4511,10 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
             mdata.push(mapList[i]);
         }
         const preparedMapData = await appendAutoLoadedServerMaps(mdata, sourceAttrText, ext);
+        if(preparedMapData.length === 0) {
+            Generic.alert(undefined,"地図ファイルを設定してください。");
+            return;
+        }
         Generic.clear_backDiv();
         if((ext==="mdrj")||(ext==="mdrmj")){
             okCall(preparedMapData, sourceAttrText,filename,ext);

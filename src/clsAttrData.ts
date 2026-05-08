@@ -5703,8 +5703,9 @@ class clsAttrData {
     }
 
     //Clipboard,CSVのデータを一行ずつ処理して読み込む
-    ReadAttrDataOneLine(STR: string): DataLoadResult {
+    ReadAttrDataOneLine(STR: string | string[]): DataLoadResult {
         const state = appState();
+        const lines = Array.isArray(STR) ? STR : STR.split(/\r?\n/);
         let ObjectErrorMessage = '';
         let lay = -1;
         const LayerReading = new strLayerReadingInfo();
@@ -5714,14 +5715,14 @@ class clsAttrData {
         let OK_Flag = true;
         let TotalMissing=false;
         let Map_readed = (this.MapData.GetNumOfMapFile()!==0);
-        for (let i = 0; i < STR.length; i++) {
-            const tb = STR[i].indexOf('\t');
-            const cm = STR[i].indexOf(',');
+        for (let i = 0; i < lines.length; i++) {
+            const tb = lines[i].indexOf('\t');
+            const cm = lines[i].indexOf(',');
             let splitter='\t';
             if ((tb === -1) && (cm !== -1)) {
                 splitter = ",";
             }
-            const CutS=Generic.String_Cut(STR[i],splitter);
+            const CutS=Generic.String_Cut(lines[i],splitter);
             const CutN = CutS.length;
             switch (CutS[0].toUpperCase()) {
                 case "": {
