@@ -86,6 +86,12 @@ const Check_Acc_Result = {
     Note: 6
 } as const;
 
+/**
+ * 出力画面キャンバスへマウス・タッチ・ホイール操作を関連付けます。
+ *
+ * @param elem 対象キャンバス要素です。
+ * @param callback 画面更新時に呼び出すコールバックです。
+ */
 export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HTMLCanvasElement, attrData?: IAttrData) => void): void {
     const state = appState();
 
@@ -132,6 +138,13 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     });
 
+    /**
+     * 出力画面に対するキーボード操作を処理します。
+     *
+     * @param keyCode 押下されたキーコードです。
+     * @param shiftKey Shift キー押下状態です。
+     * @param ctrlKey Ctrl キー押下状態です。
+     */
     function keyOperation(keyCode: number, shiftKey: boolean, ctrlKey: boolean): void {
         const state = appState();
         if (mousePointingSituation !== mousePointingSituations.up) {
@@ -200,6 +213,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
+    /**
+     * マウスまたはタッチの押下開始を処理します。
+     *
+     * @param e マウスまたはタッチイベントです。
+     */
     function mdown(e: MouseEvent | TouchEvent) {
         // const state = appState();
         e.preventDefault();
@@ -217,6 +235,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     }
 
 
+    /**
+     * マウスまたはタッチの移動を処理し、必要に応じて地図や飾りを更新します。
+     *
+     * @param e マウスまたはタッチイベントです。
+     */
     function mmove(e: MouseEvent | TouchEvent) {
         const state = appState();
         let event;
@@ -408,6 +431,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     }
 
 
+    /**
+     * マウスまたはタッチの終了を処理し、ドラッグ結果を確定します。
+     *
+     * @param e マウスまたはタッチイベントです。
+     */
     function mup(e: MouseEvent | TouchEvent) {
         const state = appState();
         
@@ -595,6 +623,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                             { caption: "今昔マップ", event:  showWebMap} as MenuItem
                                         ]};
                                         mnuAccPopupVisible.push(pmnu);
+                                        /**
+                                         * クリック地点を外部の Web 地図サービスで開きます。
+                                         *
+                                         * @param data 選択された地図サービスのメニュー項目です。
+                                         */
                                         function showWebMap(data: MenuItem/*, e?: Event*/) {
                                             const state = appState();
                                             const p = scrData.getSRXY(mouseDownPosition);
@@ -661,6 +694,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                             break
                                     }
                                     Generic.ceatePopupMenu(mnuAccPopupVisible, new point(event.clientX, event.clientY));
+                                    /**
+                                     * 飾り要素ごとの設定画面を開きます。
+                                     *
+                                     * @param data 選択されたメニュー項目です。
+                                     */
                                     function accVisible(data: {caption: string}/*, e: Event*/) {
                                         const state = appState();
                                         switch (data.caption) {
@@ -692,6 +730,9 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                 if (retV.ok === true) {
                                     const popmenu = [{ caption: "直線に戻す", event: odReset }];
                                     Generic.ceatePopupMenu(popmenu, new point(event.clientX, event.clientY));
+                                    /**
+                                     * OD 曲線のベジェ補間設定を解除して直線表示へ戻します。
+                                     */
                                     function odReset() {
                                         const state = appState();
                                         state.attrData.LayerData[Layernum].Remove_OD_Bezier(ato.ObjectPos, ato.Data);
@@ -731,6 +772,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
         MouseDownF = false;
 
+        /**
+         * 位置検索結果に応じた右クリックメニュー項目を組み立てます。
+         *
+         * @param mnuAccPopupVisible 追加先のメニュー配列です。
+         */
         function Loc_Data_Menu(mnuAccPopupVisible: MenuItem[]) {
             const state = appState();
             const alm = state.attrData.TempData.frmPrint_Temp.LocationMenuString;
@@ -873,6 +919,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     let pinchCenter=new point();
     let pinchBaseDis: number;
     let pinchPresentDis: number;
+    /**
+     * ピンチ操作開始時の中心点と基準距離を記録します。
+     *
+     * @param event タッチイベントです。
+     */
     function pinch(event: TouchEvent){
         // const state = appState();
         const touches=event.changedTouches;
@@ -881,6 +932,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         pinchCenter=new point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
         pinchBaseDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
     }
+    /**
+     * ピンチ操作中の中心点と現在距離を更新します。
+     *
+     * @param event タッチイベントです。
+     */
     function pinchMove(event: TouchEvent){
         // const state = appState();
         const touches=event.changedTouches;
@@ -891,11 +947,19 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             pinchPresentDis=spatial.Distance(p1.x,p1.y,p2.x,p2.y);
         }
     }
+    /**
+     * ピンチ操作終了時に拡大縮小率を確定して地図へ反映します。
+     */
     function pinchUp(/*event: TouchEvent*/){
         // const state = appState();
         const ratio=pinchPresentDis/pinchBaseDis;
         expansionMap(pinchCenter,ratio);
     }
+    /**
+     * ホイール操作による拡大縮小を処理します。
+     *
+     * @param event ホイールイベントです。
+     */
     function onWheel(event: WheelEvent) {
         const state = appState();
         if ((MouseDownF === true)||(state.attrData.TempData.drawing===true)) {
@@ -918,6 +982,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         expansionMap(cpos,ratio);
     }
 
+    /**
+     * 指定位置を中心に表示範囲を拡大縮小します。
+     *
+     * @param cpos 画面上の基準位置です。
+     * @param ratio 拡大縮小率です。
+     */
     function expansionMap(cpos: point, ratio: number){
         const state = appState();
         const sd = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -948,9 +1018,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
 
     }
-
-
-    /**ドラッグで移動中のOD曲線を描く */
+    /**
+     * ドラッグ中の OD 曲線プレビューを描画します。
+     *
+     * @param g 描画先のキャンバスコンテキストです。
+     * @param P 現在の制御点位置です。
+     */
     function OD_Line_Print(g: CanvasRenderingContext2D, P: point){
         const state = appState();
 
@@ -980,7 +1053,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         state.attrData.Draw_Line(g, O_LPat,  pxy);
     }
 
-    /**線モードのラインの移動チェック */
+    /**
+     * OD モードでドラッグ対象となるラインが近傍にあるかを判定します。
+     *
+     * @param ScreenP 画面座標です。
+     * @returns OD ラインが見つかりカーソル変更が必要な場合は true です。
+     */
     function LocationODSearch(ScreenP: point) {
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -1003,7 +1081,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
-    /**線モードの最寄りラインを求める */
+    /**
+     * OD モードで最寄りのライン対象オブジェクトを取得します。
+     *
+     * @param MapP 地図座標です。
+     * @returns 最寄りオブジェクト番号です。見つからない場合は -1 です。
+     */
     function Near_OD(MapP: point){
         const state = appState();
         let Near_ODNumber  = -1;
@@ -1048,6 +1131,14 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
         return Near_ODNumber;
 
+        /**
+         * 指定したレイヤ・データ項目の OD 線群から最も近い対象を探します。
+         *
+         * @param MapP 地図座標です。
+         * @param Layernum 判定対象レイヤ番号です。
+         * @param DataNum 判定対象データ項目です。
+         * @returns 最寄りのオブジェクト番号です。見つからない場合は -1 です。
+         */
         function Near_OD_sub(MapP: point, Layernum: number, DataNum: number){
             const state = appState();
             const al=state.attrData.LayerData[Layernum];
@@ -1102,7 +1193,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
-    /**等値線の位置とカーソルチェック */
+    /**
+     * 等値線上の位置判定を行い、ツールチップ表示を更新します。
+     *
+     * @param ScreenP 画面座標です。
+     */
     function LocationContourSearch(ScreenP: point) {
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -1138,7 +1233,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             }
     }
 
-        // 等値線モードが表示されているかチェック
+        /**
+         * 現在の表示モードで等値線が有効かどうかを判定します。
+         *
+         * @returns 等値線判定対象なら true です。
+         */
          function Check_Contour_in() {    
              const state = appState();
              switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
@@ -1166,7 +1265,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             }
             return false;
         }
-        // 最寄りの等値線取得
+        /**
+         * 指定位置に最も近い等値線番号を取得します。
+         *
+         * @param MapP 地図座標です。
+         * @returns 最寄りの等値線番号です。見つからない場合は -1 です。
+         */
         function Near_Contour(MapP: point) {
             const state = appState();
             if (!contourTemp) {
@@ -1193,7 +1297,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
-    /**マウス位置の情報、カーソルを＋に変える場合trueを返す*/
+    /**
+     * マウス位置に応じたオブジェクト情報表示とカーソル更新を行います。
+     *
+     * @param ScreenP 画面座標です。
+     * @returns 強調対象がありポインターカーソルへ変更すべき場合は true です。
+     */
     function LocationSearch(ScreenP: point) {
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -1362,7 +1471,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
-    /**重ね合わせモードの位置情報 */
+    /**
+     * 重ね合わせモードで指定位置にあるオブジェクト情報を収集して表示します。
+     *
+     * @param MapP 地図座標です。
+     * @param OverLayIndex 対象重ね合わせデータセット番号です。
+     */
     function Get_Object_By_XY_OverLayMode(MapP: point, OverLayIndex: number) {
         const state = appState();
         let tx = "";
@@ -1424,7 +1538,13 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
-    /**一番近いオブジェクトを探して数とオブジェクト番号を返す */
+    /**
+     * 指定位置に最も近いオブジェクト群を取得します。
+     *
+     * @param MapP 地図座標です。
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 近傍オブジェクト情報の配列です。
+     */
     function NearestObject(MapP: point, Layernum: number) {
         const state = appState();
         const OnObject = [];
@@ -1479,7 +1599,11 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         return OnObject;
     }
 
-    //地図上をカーソルが移動した場合に座標情報を表示
+    /**
+     * 出力画面上のカーソル位置に対応する座標文字列を表示します。
+     *
+     * @param MousePosition 画面上のマウス位置です。
+     */
     function picMapMouseMovePointInformation(MousePosition: point) {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1494,6 +1618,12 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         }
     }
 
+    /**
+     * 指定位置が飾り要素上かどうかを判定し、ドラッグ開始情報を記録します。
+     *
+     * @param ScreenP 画面座標です。
+     * @returns 該当する飾り種別と矩形です。
+     */
     function Check_Acc(ScreenP: point) {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
@@ -1553,15 +1683,24 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     }
 }
 
+/**
+ * 出力画面とプロパティ画面まわりの静的操作をまとめた補助クラスです。
+ */
 class frmPrint {
 
-    /** コピー画像ウインドウ表示*/
+    /**
+     * 現在の出力画面を別ウィンドウで画像表示します。
+     */
     static copyImageWindow(){
         const state = appState();
         state.frmPrint.savePNG(true)
     }
 
-    //画像ファイルに保存
+    /**
+     * 現在の出力画面を PNG として保存、または別ウィンドウ表示します。
+     *
+     * @param WindowOutFlag true の場合は保存せず別ウィンドウ表示します。
+     */
     static savePNG(WindowOutFlag = false) {
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -1588,7 +1727,12 @@ class frmPrint {
         }
     }
 
-    //線種ラインパターン設定
+    /**
+     * 地図ファイルごとの線種パターン設定ダイアログを開きます。
+     *
+     * @param _data 互換用の未使用引数です。
+     * @param e 呼び出し位置決定に使うイベントです。
+     */
     static linePattern(_data?: JsonValue, e?: Event) {
         const state = appState();
         const backDiv = Generic.set_backDiv("", "線種ラインパターン設定", 240, 380, true, true, buttonOK, 0.2, true);
@@ -1629,19 +1773,35 @@ class frmPrint {
         }
         showLinePattern();
 
+        /**
+         * メッシュ輪郭線の線種変更ダイアログを開きます。
+         *
+         * @param e クリックイベントです。
+         */
         function meshLinePatternClick(e: Event) {
             // const state = appState();
             clsLinePatternSet(e as MouseEvent, MeshLpat, LinePatternGet);
+            /**
+             * 選択したメッシュ輪郭線パターンを画面へ反映します。
+             *
+             * @param Lpat 更新後の線種設定です。
+             */
             function LinePatternGet(Lpat: Line_Property) {
                 // const state = appState();
                 MeshLpat = Lpat;
                 state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
             }
         }
+        /**
+         * 選択中の地図ファイルに応じて線種一覧を描き直します。
+         */
         function mapListchange() {
             // const state = appState();
             showLinePattern();
         }
+        /**
+         * 編集した線種設定を保存して地図を再描画します。
+         */
         function buttonOK() {
             // const state = appState();
             for (let i = 0; i < MapFileList.length; i++) {
@@ -1657,7 +1817,9 @@ class frmPrint {
             Generic.clear_backDiv();
             clsPrint.printMapScreen(state.frmPrint.picMap);
         }
-
+    /**
+     * 選択中の地図ファイルに属する線種一覧をダイアログへ表示します。
+     */
         function showLinePattern(){
             const state = appState();
             const LineKindHeight=35;
@@ -1679,12 +1841,22 @@ class frmPrint {
                 lc.tag=i;
                 state.attrData.Draw_Sample_LineBox(lc, lk.Pat);
             }
+            /**
+             * 個別の線種項目に対する編集ダイアログを開きます。
+             *
+             * @param e クリックイベントです。
+             */
             function inePatternClick(e: Event){
                 // const state = appState();
                 const target = e.target as HTMLElement;
                 const n = Number(target?.tag);
                 if (!Number.isFinite(n) || NewLineKind[Mpindex]?.[n] === undefined) { return; }
                 clsLinePatternSet(e as MouseEvent, NewLineKind[Mpindex][n].Pat, LinePatternGet);
+                /**
+                 * 編集した線種を一覧表示へ反映します。
+                 *
+                 * @param Lpat 更新後の線種設定です。
+                 */
                 function LinePatternGet(Lpat: Line_Property) {
                     // const state = appState();
                     NewLineKind[Mpindex][n].Pat = Lpat;
@@ -1694,6 +1866,9 @@ class frmPrint {
         }
 }
 
+    /**
+     * 出力画面を閉じ、必要に応じてプロパティ画面の表示状態を退避します。
+     */
     static windowClose(){
         const state = appState();
         state.propertyWindow.nextVisible=(typeof state.propertyWindow.getVisibility === "function") ? (state.propertyWindow.getVisibility()===true) : false;
@@ -1701,6 +1876,9 @@ class frmPrint {
         state.frmPrint.propertyWindowClose();
     }
 
+    /**
+     * プロパティ画面を閉じて固定状態を解除します。
+     */
     static propertyWindowClose(){
         const state = appState();
         state.propertyWindow.fixed=false;
@@ -1709,7 +1887,9 @@ class frmPrint {
 
     }
 
-    //プロパティウインドウの表をコピー
+    /**
+     * プロパティ画面に表示中の内容をテキストとしてコピーします。
+     */
     static copyProperty(){
         const state = appState();
         const toptx=state.propertyWindow.pnlProperty.objInfo.innerText+'\n'+'\n';
@@ -1725,7 +1905,9 @@ class frmPrint {
         Generic.copyText(toptx+gridtx);
     }
 
-    //プロパティウインドウの固定・解除
+    /**
+     * プロパティ画面の固定状態を切り替えます。
+     */
     static PropertyFix() {
         const state = appState();
         if (state.propertyWindow.pnlProperty.getVisibility() === true) {
@@ -1739,7 +1921,13 @@ class frmPrint {
         }
     }
 
-    //複数オブジェクトのプロパティ表示
+    /**
+     * 重ね合わせなどで選択された複数オブジェクトのプロパティを表示します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param dtindex 対象データ項目番号です。
+     * @param OnObject 対象オブジェクト一覧です。
+     */
     static ShowOverLayObjectProperty(Layernum: number, dtindex: number, OnObject: strLocationSearchObject[]) {
         const state = appState();
         if ((state.propertyWindow.pnlProperty.getVisibility()===true) && (state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.Normal)) {
@@ -1766,7 +1954,14 @@ class frmPrint {
         }
     }
 
-    //1オブジェクトのプロパティ表示
+    /**
+     * 単一オブジェクトのプロパティをプロパティ画面に表示します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param objNumber 対象オブジェクト番号です。
+     * @param DataNumber 対象データ項目番号です。
+     * @param LayerMode 現在のレイヤ表示モードです。
+     */
     static ShowOneObjectProperty(LayerNum: number, objNumber: number, DataNumber: number, LayerMode: number) {
         const state = appState();
         if ((state.propertyWindow.oObject === objNumber) && (state.propertyWindow.oLayer === LayerNum) && (state.propertyWindow.oData === DataNumber) && (state.propertyWindow.pnlProperty.getVisibility() === true)) {
@@ -1896,6 +2091,9 @@ class frmPrint {
         gd.name="grid";
 }
 
+    /**
+     * 出力画面とプロパティ画面のウィンドウサイズ・位置を現在設定へ合わせて更新します。
+     */
     static set_frmPrint_Window_Size() {
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -1914,6 +2112,9 @@ class frmPrint {
         frmPrint.resizeMapWindow();
     }
     
+    /**
+     * 出力画面キャンバスの実サイズをウィンドウ寸法に合わせて再計算します。
+     */
     static resizeMapWindow() {
         const state = appState();
         const mapDIV = state.frmPrint.picMap.parentElement as HTMLElement | null;
@@ -1938,6 +2139,10 @@ class frmPrint {
             clsPrint.printMapScreen(state.frmPrint.picMap);
         }
     }
+
+    /**
+     * 出力画面の初期サイズと関連ラベル状態を初期化します。
+     */
     static Init_FrmPrint() {
         const state = appState();
         const ScreenH = Generic.getBrowserHeight();
@@ -2001,7 +2206,9 @@ class frmPrint {
         clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
-    //全体表示ボタン
+    /**
+     * 地図表示範囲を全体表示へ戻します。
+     */
     static wholeMapShow() {
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -2009,7 +2216,12 @@ class frmPrint {
         clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
-    //カーソル位置のオブジェクトを強調
+    /**
+     * カーソル位置にあるオブジェクトを出力画面上で強調表示します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Draw_F 強制再描画する場合は true です。
+     */
     static PrintCursorObjectLine(g: CanvasRenderingContext2D, Draw_F: boolean) {
         const state = appState();
         const OnObject = state.attrData.TempData.frmPrint_Temp.OnObject;
@@ -2043,6 +2255,13 @@ class frmPrint {
             printSelectedObject(g, OnObject[i].objLayer, OnObject[i].ObjNumber);
         }
 
+        /**
+         * 指定オブジェクトの強調表示を描画します。
+         *
+         * @param g 描画先のキャンバスコンテキストです。
+         * @param Layernum 対象レイヤ番号です。
+         * @param ObjNum 対象オブジェクト番号です。
+         */
         function printSelectedObject(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number) {
             const state = appState();
             const sp = state.attrData.LayerData[Layernum].Shape;
@@ -2086,6 +2305,14 @@ class frmPrint {
                     break;
                 }
             }
+            /**
+             * 指定した頂点列を強調線として描画します。
+             *
+             * @param g 描画先のキャンバスコンテキストです。
+             * @param pxy 画面座標化済みの頂点列です。
+             * @param w 線幅です。
+             * @param col 線色です。
+             */
             function drawLines(g: CanvasRenderingContext2D, pxy: point[], w: number, col: colorRGBA) {
                 // const state = appState();
                 g.lineWidth = w;
@@ -2101,6 +2328,11 @@ class frmPrint {
     }
 }
 
+/**
+ * frmPrint の静的メソッドを実行時の出力画面オブジェクトへ割り当てます。
+ *
+ * @param target メソッドを付与する出力画面オブジェクトです。
+ */
 export function attachFrmPrintMethods(target: IFrmPrint): void {
     target.copyImageWindow = frmPrint.copyImageWindow;
     target.savePNG = frmPrint.savePNG;
@@ -2120,6 +2352,9 @@ export function attachFrmPrintMethods(target: IFrmPrint): void {
     target.PrintCursorObjectLine = frmPrint.PrintCursorObjectLine;
 }
 
+/**
+ * 出力画面キャンバス用のマウス操作設定関数です。
+ */
 export const mapMouse = mapMouseInternal;
 
 

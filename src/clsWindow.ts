@@ -113,6 +113,9 @@ const enmSelectMode = {
     TripMode: 23
 }
 
+/**
+ * 設定画面で扱うレイヤ情報です。
+ */
 export class strLayerInfo {
     Name?: string;
     MapfileName?: string | number;
@@ -136,6 +139,14 @@ const pnlGraphEachItemHeight=25;
 const state = appState();
 let man_Data=enmDataSource.NoData;
 
+/**
+ * 属性データが参照するサーバー地図を追加で読み込みます。
+ *
+ * @param baseMaps 既に読み込み済みの地図配列です。
+ * @param attrText 属性データ文字列です。
+ * @param ext 属性データ拡張子です。
+ * @returns 参照先地図を補完した地図配列です。
+ */
 async function appendAutoLoadedServerMaps(baseMaps: clsMapdata[], attrText: string, ext: string): Promise<clsMapdata[]> {
     const maps = [...baseMaps];
     const loadedMapNames = new Set(maps.map((mapdata) => normalizeMapFileName(mapdata.Map.FileName ?? "")));
@@ -163,6 +174,12 @@ async function appendAutoLoadedServerMaps(baseMaps: clsMapdata[], attrText: stri
     return maps;
 }
 
+/**
+ * アプリケーションの設定画面を初期化して表示します。
+ *
+ * @param locSearch URL の search 部分です。
+ * @param locHash URL の hash 部分です。
+ */
 export function setting(locSearch: string, locHash: string = "") {
     const setAttrData = (newAttrData: IAttrData): void => {
         state.attrData = newAttrData;
@@ -546,7 +563,9 @@ export function setting(locSearch: string, locHash: string = "") {
         setSettingSoloModeWindow();
     }
 
-    //シェープファイル読み込み
+    /**
+     * シェープファイル読込ダイアログを開き、レイヤとして取り込みます。
+     */
     function mnuOpenShapeFile() {
 
         openShapeFile(okButton);
@@ -559,7 +578,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    //属性データ読み込み
+    /**
+     * 属性データ読込ダイアログを開き、現在の属性データとして反映します。
+     */
     function menuReadData() {
 
         readData(okButton);
@@ -589,7 +610,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    /**データ挿入(既存属性データから) */
+    /**
+     * 既存属性データファイルを読み込み、現在の属性データへ追加します。
+     */
     function menuInsertDataFile(){
         readData(okButton);
         function okButton(mapdata: clsMapdata[], attrText: string, filename: string, ext: string) {
@@ -613,7 +636,9 @@ export function setting(locSearch: string, locHash: string = "") {
             }
         }
     }
-    /**データ挿入(シェープファイルから) */
+    /**
+     * シェープファイルを読み込み、現在の属性データへ追加します。
+     */
     function menuInsertShapefile() {
         openShapeFile(okButton);
         function okButton(mapdata: clsMapdata[], layerdata: strLayerInfo[]) {
@@ -629,7 +654,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     } 
     
-    /**データ挿入(白地図・初期属性データ表示から) */
+    /**
+     * 白地図・初期属性データ表示で選んだ内容を現在の属性データへ追加します。
+     */
     function menuInsertMapViewer(){
         mapViewer(okButton);
         function okButton(mapdata: clsMapdata[], layerdata: strLayerInfo[]) {
@@ -644,7 +671,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
     
-    /**プロパティ */
+    /**
+     * 現在の属性データとレイヤ構成のプロパティを表示します。
+     */
     function mnuProperty(){
         const backDiv = Generic.set_backDiv("", "プロパティ", 650, 360, true, true, buttonOK, 0.2, true);
         const layn = state.attrData.TotalData.LV1?.Lay_Maxn ?? 0;
@@ -698,7 +727,9 @@ export function setting(locSearch: string, locHash: string = "") {
 
     }
 
-    /**非表示オブジェクトの削除 */
+    /**
+     * 条件設定などで非表示になっているオブジェクトを削除します。
+     */
     function mnuDeleteInvisibleObject() {
         const ObjLive: boolean[][] = [];
         const LayMax = state.attrData.TotalData.LV1.Lay_Maxn;
@@ -736,7 +767,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    /**属性データ新規作成 */
+    /**
+     * 新規属性データ編集画面を開き、作成結果を現在データとして反映します。
+     */
     function mnuNewPropertyEdit() {
         Check_EraseSettei_OK(function () {
             clsGrid(true, buttonOK);
@@ -750,7 +783,9 @@ export function setting(locSearch: string, locHash: string = "") {
 
     }
 
-    /**属性データ編集 */
+    /**
+     * 現在の属性データを編集画面で開き、更新結果を反映します。
+     */
     function mnuPropertyEdit(){
         clsGrid(false,buttonOK);
         function buttonOK(newAttr: clsAttrData){
@@ -978,7 +1013,9 @@ export function setting(locSearch: string, locHash: string = "") {
         });
     
     }
-    /**本サイトについて */
+    /**
+     * このサイトの概要ダイアログを表示します。
+     */
     function mnuAbout(){
         const backDiv = Generic.set_backDiv("", "本サイトについて", 330, 285, true, false, buttonOK, 0.2, true);
         AbountInner(backDiv,15,50);
@@ -986,6 +1023,15 @@ export function setting(locSearch: string, locHash: string = "") {
             Generic.clear_backDiv();
         }
     }
+
+    /**
+     * About ダイアログの本文を生成します。
+     *
+     * @param parent 親要素です。
+     * @param x 配置する x 座標です。
+     * @param y 配置する y 座標です。
+     * @returns 生成したフレーム要素です。
+     */
     function AbountInner(parent: HTMLElement, x: number, y: number){
         const frame=Generic.createNewFrame(parent,"","",x,y,300,185);
         frame.style.backgroundColor="#ffffff";
@@ -1004,7 +1050,9 @@ export function setting(locSearch: string, locHash: string = "") {
         return frame;
     }
 
-    //属性データ保存
+    /**
+     * 現在の属性データを mdrj 形式で保存します。
+     */
     function menuSaveData(){
         switch(state.attrData.TotalData.LV1.DataSourceType){
             case enmDataSource.MDRMJ:
@@ -1023,7 +1071,9 @@ export function setting(locSearch: string, locHash: string = "") {
         })
     }
 
-    /**地図ファイル付属形式 */
+    /**
+     * 現在の属性データを地図ファイル付属の mdrmj 形式で保存します。
+     */
     function menuSaveMDRMJData(){
         let fname=Generic.getFilenameWithoutExtension(state.attrData.TotalData.LV1.FileName)+".mdrmj";
         Generic.prompt(undefined,"地図データ付属形式属性データファイル名",fname,function(v: string){
@@ -1032,7 +1082,9 @@ export function setting(locSearch: string, locHash: string = "") {
         })
     }
 
-    //白地図初期属性データ
+    /**
+     * 白地図と初期属性データの選択ダイアログを開きます。
+     */
     function mnuMapViewer(): void {
         mapViewer(okButton);
         function okButton(mapdata: clsMapdata[], layerdata: strLayerInfo[]): void {
@@ -1044,6 +1096,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
+    /**
+     * OD モードで基準オブジェクト表示欄の文言を更新します。
+     */
     function SetODModeOriginObject() {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const ldd = state.attrData.nowDataSolo().ClassODMD;
@@ -1059,7 +1114,11 @@ export function setting(locSearch: string, locHash: string = "") {
         doc.getElementById("ODOriginObjectDiv").innerHTML = tx;
     }
     
-    /**重ね合わせセットボタン */
+    /**
+     * 現在の表示内容を重ね合わせデータセットへ登録します。
+     *
+     * @param e クリックイベントです。
+     */
     function overlaySet(e: MouseEvent){
 
         const retV=state.attrData.Get_PrintError();
@@ -1216,7 +1275,11 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    /**連続表示セットボタン */
+    /**
+     * 現在の表示内容を連続表示データセットへ登録します。
+     *
+     * @param e クリックイベントです。
+     */
     function seriesSet(e: MouseEvent) {
 
         const retV=state.attrData.Get_PrintError();
@@ -1286,7 +1349,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    //データ値表示
+    /**
+     * 選択中データ項目のオブジェクト別値一覧を表示します。
+     */
     function showObjectData() {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -1303,7 +1368,9 @@ export function setting(locSearch: string, locHash: string = "") {
         Generic.createMsgTableBox(state.attrData.Get_DataTitle(Layernum, DataNum,false), data as (string | number)[][],300,500,true);
     }
 
-    //統計値表示
+    /**
+     * 選択中データ項目の統計値を表示します。
+     */
     function showStatistics() {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -1327,13 +1394,24 @@ export function setting(locSearch: string, locHash: string = "") {
             + "欠損値オブジェクト：" + ddata.MissingValueNum + '\n';
         Generic.createMsgBox("統計値表示", txt,true);
     }
-    //レイヤの変更
+    /**
+     * レイヤ選択変更を反映し、データ項目一覧を更新します。
+     *
+     * @param obj 変更元セレクト要素です。
+     * @param sel 選択されたレイヤ番号です。
+     */
     function changeLayer(obj: HTMLSelectElement, sel: number | number[], /*v: string = ""*/) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         state.attrData.TotalData.LV1.SelectedLayer = selNum;
         setDataItemList();
     }
 
+    /**
+     * 現在のデータ項目で選択不能な単独表示モードを代替モードへ補正します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目番号です。
+     */
     function ensureSelectableSoloMode(LayerNum: number, DataNum: number) {
         const currentSoloMode = state.attrData.getSoloMode(LayerNum, DataNum);
         if (typeof currentSoloMode === 'number' && state.attrData.Check_Enable_SoloMode(currentSoloMode, LayerNum, DataNum) === true) {
@@ -1457,7 +1535,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    //データ項目のリストを設定
+    /**
+     * 選択中レイヤに応じてデータ項目一覧と表示モード可否を更新します。
+     */
     function setDataItemList() {
         const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
         const al = state.attrData.LayerData[LayerNum].atrData;
@@ -1470,7 +1550,9 @@ export function setting(locSearch: string, locHash: string = "") {
         setSettingSoloModeWindow();
     }
 
-    //度数分布の表示
+    /**
+     * 階級区分の度数分布表示を更新します。
+     */
     function setFrequencyLabel() {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -1493,15 +1575,24 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
 
-    //データ項目が変更された際に、単独表示モードの可否を調べ、コントロールを設定
-    //solomode:enmSoloMode_Number
+    /**
+     * 単独表示モードごとの利用可否に応じてモード選択 UI を更新します。
+     *
+     * @param solomode 判定する単独表示モードです。
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目番号です。
+     */
     function SetPicPnlSoloDataEnabled(solomode: SoloMode, LayerNum: number, DataNum: number) {
         const f = state.attrData.Check_Enable_SoloMode(solomode, LayerNum, DataNum);
         SetPicPnlDataEnabled(GetSelectModeFromSoloMode(solomode), f);
     }
 
-    //表示モードセレクタのEnabel設定
-    //Mode:enmSelectMode
+    /**
+     * 表示モードセレクタの有効・無効状態とイベントを切り替えます。
+     *
+     * @param Mode 対象表示モードです。
+     * @param Flag 有効化する場合は true です。
+     */
     function SetPicPnlDataEnabled(Mode: SelectMode, Flag: boolean) {
         const name = GetModeControlName(Mode);
         const ele = doc.getElementById(name);
@@ -1522,8 +1613,12 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    //表示モード列挙型からコントロール名を取得
-    //sm:enmSelectMode
+    /**
+     * 表示モード列挙値から対応するコントロール名を取得します。
+     *
+     * @param sm 表示モードです。
+     * @returns 対応するコントロール ID です。
+     */
     function GetModeControlName(sm: SelectMode): string {
         switch (sm) {
             case enmSelectMode.ClassPaintMode:
@@ -1735,11 +1830,18 @@ export function setting(locSearch: string, locHash: string = "") {
         return soloData.ContourMD;
     }
 
+    /**
+     * グラフ表示モードの設定画面を現在のデータセット内容で更新します。
+     */
     function setSettingGraphModeWindow(){
         graphDatasetSelectSet();
         graphDatasetDataItem();
         Check_Print_err();
     }
+
+    /**
+     * グラフ表示モードのデータセット一覧 UI を更新します。
+     */
     function graphDatasetSelectSet(){
         const graphAttrData = getGraphAttrData();
         const graph = graphAttrData.layerGraph();
@@ -1945,6 +2047,9 @@ export function setting(locSearch: string, locHash: string = "") {
         labelDatasetDataItem();
     }
 
+    /**
+     * ラベル表示モードのデータセット一覧 UI を更新します。
+     */
     function labelDatasetSelectSet(){
         const labelAttrData = getLabelAttrData();
         const lbl = labelAttrData.layerLabel();
@@ -1952,6 +2057,10 @@ export function setting(locSearch: string, locHash: string = "") {
         const lblDataSetItems = lblDataSetList.map((text, index) => ({ value: String(index), text }));
         doc.getElementById("labelDataSetList").addSelectList(lblDataSetItems, lbl.SelectedIndex, true,false);
     }
+
+    /**
+     * 選択中のラベル表示データセット内容を設定画面へ反映します。
+     */
     function labelDatasetDataItem() {
         const labelAttrData = getLabelAttrData();
         const selLabel = labelAttrData.nowLabel();
@@ -1982,6 +2091,10 @@ export function setting(locSearch: string, locHash: string = "") {
         seriesDatasetSelectSet();
         seriesDatasetDataItem();
     }
+
+    /**
+     * 連続表示モードのデータセット一覧 UI を更新します。
+     */
     function seriesDatasetSelectSet() {
         const series = state.attrData.TotalData.TotalMode.Series;
         const seriesDataSetList = state.attrData.getSeriesDataSetName();
@@ -1999,7 +2112,9 @@ export function setting(locSearch: string, locHash: string = "") {
         Check_Print_err();
     }
 
-    /**連続表示モードのリストビュー左端の順番を再設定*/ 
+    /**
+     * 連続表示モードのリストビュー左端に表示する順番を振り直します。
+     */
     function resetSeriesListOrderNumber(){
         const n=seriesListView.getRowNumber();
         for(let i=0;i<n;i++){
@@ -2008,13 +2123,17 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
     //●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-    /**重ね合わせ表示モードの設定画面の要素設定*/
+    /**
+     * 重ね合わせ表示モードの設定画面を現在のデータセット内容で更新します。
+     */
     function setSettingOverlayModeWindow() {
         overlayDatasetSelectSet();
         overlayDatasetDataItem();
         }
     
-        /**重ね合わせ表示モードのデータセットセレクトボックス*/
+    /**
+     * 重ね合わせ表示モードのデータセット一覧 UI を更新します。
+     */
     function overlayDatasetSelectSet(){
         const over = state.attrData.TotalData.TotalMode.OverLay;
         const overlayDataSetList = state.attrData.getOverlayTitle();
@@ -2080,6 +2199,12 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
+    /**
+     * 単独表示モードの階級区分配列長を整え、不足要素を補います。
+     *
+     * @param soloModeView 対象となる単独表示モード設定です。
+     * @returns 正規化後の階級数です。
+     */
     function ensureSoloModeClassDivConsistency(soloModeView: {
         Div_Num?: number;
         Class_Div?: Array<unknown>;
@@ -2105,7 +2230,9 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
     //●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-    /**単独表示モードの設定画面の要素設定*/
+    /**
+     * 現在の単独表示モード設定を右側設定画面の各コントロールへ反映します。
+     */
     function setSettingSoloModeWindow() {
 
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
@@ -2283,7 +2410,12 @@ export function setting(locSearch: string, locHash: string = "") {
             SetClassDivValueTextBox();
             setFrequencyLabel();
 
-            /**ペイントモードのクリックして色変更*/
+            /**
+             * ペイントモードで選択した階級色を更新し、必要ならグラデーションを再計算します。
+             *
+             * @param n 対象階級番号です。
+             * @param col 設定する色です。
+             */
             function colorChange(n: number, col: colorRGBA) {
                 if (Number.isNaN(n)) {
                     return;
@@ -2494,7 +2626,9 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
 
-    //階級区分の区分ボックスを設定
+    /**
+     * 階級区分表示のサンプルボックスを現在の単独表示モードに合わせて更新します。
+     */
     function SetPictureBox() {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -2529,7 +2663,10 @@ export function setting(locSearch: string, locHash: string = "") {
             }
         }
     }
-    //階級区分の区分テキストボックスを設定
+
+    /**
+     * 階級区分値入力欄を現在のデータ型と区分設定に合わせて更新します。
+     */
     function SetClassDivValueTextBox() {
         const DDType=state.attrData.nowData().DataType;
         const ldd = state.attrData.nowDataSolo() as {
@@ -2580,7 +2717,9 @@ export function setting(locSearch: string, locHash: string = "") {
         state.attrData.Draw_Sample_LineBox(doc.getElementById("contourSepaLine"), d.Line_Pat);
     }
 
-    /**モードアイコンをすべて白にする */
+    /**
+     * 表示モードアイコンの選択状態を解除し、基本色へ戻します。
+     */
     function clearModeIcon(){
         const modeDiv = document.getElementsByClassName("modeDivIcon");
         for (let i = 0; i < modeDiv.length; i++) {
@@ -2595,7 +2734,9 @@ export function setting(locSearch: string, locHash: string = "") {
         doc.getElementById("btnOverlaySet").disabled=false;
     }
 
-    /**右側パネルの表示非表示の設定 */
+    /**
+     * 現在の総合表示モードとレイヤ表示モードに応じて右側設定パネルを切り替えます。
+     */
     function rightSettingWindowControlVisibilitySet(){
         if(state.settingModeWindow?.getVisibility?.()=== false) {
             state.settingModeWindow.setVisibility?.(true);
@@ -2679,7 +2820,7 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
     /**
-     *単独表示モードの指定
+     * 現在の選択データに応じて単独表示モードを反映し、関連 UI を更新します。
      */
     function setDataMode() {
         clearModeIcon();
@@ -2735,7 +2876,11 @@ export function setting(locSearch: string, locHash: string = "") {
         Check_Print_err();
     }
 
-    /**データ取得後の共通処理 */
+    /**
+     * データ読込後に設定画面と出力画面を初期化します。
+     *
+     * @param non_clearf true の場合は一部の表示状態を引き継ぎます。
+     */
     function initAfterGetData(non_clearf: boolean){
         
         state.frmPrint?.setVisibility?.(false);
@@ -2750,8 +2895,10 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
     /**
-    * 画面の初期設定 出力画面の位置サイズを新しく設定する場合はfalse
-    */
+     * 出力画面と画面レイアウトの初期設定を行います。
+     *
+     * @param Non_Clear_Flag false の場合は出力画面位置と関連状態を初期化します。
+     */
     function Init_Screen_Set(Non_Clear_Flag: boolean) {
 
         const sc = state.attrData.TotalData.ViewStyle.ScrData as unknown as Screen_info;
@@ -2770,10 +2917,11 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-
-/**
-* 描画開始
-*/
+    /**
+     * 現在の設定内容で描画を開始し、出力画面を前面表示します。
+     *
+     * @param e クリックイベントです。
+     */
     function drawMap(e: MouseEvent) {
         const retV=state.attrData.Get_PrintError();
         if(retV.Print_Enable === enmPrint_Enable.UnPrintable ){
@@ -2795,7 +2943,9 @@ export function setting(locSearch: string, locHash: string = "") {
         });
     }
 
-    //階級区分のピクチャボックス、テキストボックスの可否
+    /**
+     * 階級区分サンプルボックスと値入力欄のカーソル状態を更新します。
+     */
     function SetPicClassBoxCursol() {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -2807,6 +2957,9 @@ export function setting(locSearch: string, locHash: string = "") {
         };
         for (let i = 0; i < DivNum; i++) {
             const p = doc.getElementById("picClassBox" + i);
+    /**
+     * 右側の設定モードウィンドウを生成して各表示モード用 UI を初期化します。
+     */
             if (!p) {
                 continue;
             }
@@ -2890,7 +3043,11 @@ export function setting(locSearch: string, locHash: string = "") {
         Generic.createNewDiv(gbODOriginObject, "", "ODOriginObjectDiv", "grayFrame", 10, 10, 120, 50, ";background-color:white", undefined);
         Generic.createNewButton(gbODOriginObject, "起点オブジェクト設定", "btnClassODOriginSettings", 5, 80, btnClassODOriginSettings, "font-size:11px");
 
-
+    /**
+     * OD モードの線種・色・矢印設定メニューを表示します。
+     *
+     * @param e クリックイベントです。
+     */
         function btnClassODSettings(e: MouseEvent) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const lshape = state.attrData.LayerData[Layernum].Shape;
@@ -2950,6 +3107,9 @@ export function setting(locSearch: string, locHash: string = "") {
             }
         }
 
+        /**
+         * OD モードの起点オブジェクトを選択します。
+         */
         function btnClassODOriginSettings(/*e: MouseEvent*/) {
             const ldd = state.attrData.nowDataSolo().ClassODMD;
             frmMain_LayeObjectSelectOne(true, ldd.o_Layer, ldd.O_object, ldd.Dummy_ObjectFlag, function (lay: number, obnum: number, dumF: boolean) {
@@ -2963,7 +3123,11 @@ export function setting(locSearch: string, locHash: string = "") {
         
 
 
-        //階級記号モードの記号設定ボタン
+                /**
+                 * 階級記号モードの記号設定メニューを表示します。
+                 *
+                 * @param e クリックイベントです。
+                 */
         function classMarkButton(e: MouseEvent) {
             const sv = state.attrData.nowDataSolo();
             const popmenu = [
@@ -2994,7 +3158,11 @@ export function setting(locSearch: string, locHash: string = "") {
             }
         }
 
-        //ペイントモード点オブジェクトの記号選択クリック
+        /**
+         * ペイントモードの点オブジェクト記号を選択します。
+         *
+         * @param e クリックイベントです。
+         */
         function picPointMark_Click(e: MouseEvent) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const md = state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape;
@@ -3004,12 +3172,23 @@ export function setting(locSearch: string, locHash: string = "") {
                 state.attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
             }
         }
-        //ペイントモード線オブジェクトのサイズ設定
+
+        /**
+         * ペイントモード線オブジェクトの線幅を更新します。
+         *
+         * @param obj 入力元要素です。
+         * @param v 新しい線幅です。
+         */
         function cboPaintLineSizeChange(obj: HTMLInputElement, v: number) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape.LineWidth = v;
         }
-        //ペイントモード線オブジェクトの線端設定
+
+        /**
+         * ペイントモード線オブジェクトの線端設定ダイアログを開きます。
+         *
+         * @param e クリックイベントです。
+         */
         function btnPaintLineEdge(e: MouseEvent) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const pointLineShape = state.attrData.LayerData[Layernum].LayerModeViewSettings.PointLineShape as unknown as { Edge_Connect_Pattern: LineEdge_Connect_Pattern_Data_Info };
@@ -3020,7 +3199,11 @@ export function setting(locSearch: string, locHash: string = "") {
             }
         }
 
-        //ペイントモードカラーチャート
+        /**
+         * ペイントモードのカラーチャート設定ダイアログを開きます。
+         *
+         * @param e クリックイベントです。
+         */
         function colorChart(e: MouseEvent) {
             const sv = state.attrData.nowDataSolo();
             const DivNum = Number(sv.Div_Num ?? sv.Class_Div?.length ?? 0);
@@ -3042,7 +3225,10 @@ export function setting(locSearch: string, locHash: string = "") {
                 setSettingSoloModeWindow();
             }
         }
-        //ペイントモード上下色反転ボタンクリック
+
+        /**
+         * ペイントモードの階級色順序を上下反転します。
+         */
         function reverseColor() {
             const data = state.attrData.nowDataSolo();
             const DivNum = data.Div_Num;
@@ -3056,7 +3242,11 @@ export function setting(locSearch: string, locHash: string = "") {
             setSettingSoloModeWindow();
         }
 
-        //色設定方法ボタンクリック
+        /**
+         * ペイントモードの色設定方法変更を反映します。
+         *
+         * @param value 選択された色設定方法です。
+         */
         function PaintColorSettingModeChange(value: RadioValue) {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -3097,7 +3287,12 @@ export function setting(locSearch: string, locHash: string = "") {
             SetPicClassBoxCursol();
         }
 
-        //階級区分方法クリック
+        /**
+         * 階級区分方法変更を反映し、必要な再計算と UI 更新を行います。
+         *
+         * @param obj 変更元セレクト要素です。
+         * @param sel 選択された区分方法です。
+         */
         function cboDivisionMethodChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
             const selectedValue = typeof sel === 'number' ? cboDivisionMethodList[sel].value : cboDivisionMethodList[sel[0]].value;
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
@@ -3140,7 +3335,13 @@ export function setting(locSearch: string, locHash: string = "") {
             setSettingSoloModeWindow();
             setFrequencyLabel();
         }
-        //階級分割数クリック
+
+        /**
+         * 階級分割数変更を反映し、区分値と色設定を更新します。
+         *
+         * @param obj 変更元セレクト要素です。
+         * @param sel 選択された分割数です。
+         */
         function cboDivisionCountChange(obj: HTMLSelectElement, sel: number | number[], /*v?: string*/) {
             const selectedValue = typeof sel === 'number' ? cboDivisionCountMethodList[sel].value : cboDivisionCountMethodList[sel[0]].value;
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
@@ -3381,8 +3582,10 @@ export function setting(locSearch: string, locHash: string = "") {
                 lstcontourSeparateValue.addList(lst, 0);
                 setContourSepaDataValue();
             }, "");
+        /**
+         * 個別設定した等値線値を降順に並べ替え、選択状態を保ったまま一覧へ反映します。
+         */
         function sortContourSepaValue() {
-            //等値線数値の大きい順に並べ替える
             const n = lstcontourSeparateValue.selectedIndex;
             const nsc = nowContourMD();
             const sort = new SortingSearch();
@@ -3440,7 +3643,11 @@ export function setting(locSearch: string, locHash: string = "") {
             function (obj: HTMLInputElement, v: number) { state.attrData.nowDataSolo().MarkSizeMD.MaxValue = v; }, "");
         setMinusValueCase(markSizeView, "gbMarkSizeMinusValueCase");
 
-        //記号の大きさモード線オブジェクトの線端設定
+        /**
+         * 記号の大きさモードで線オブジェクトの線端設定ダイアログを開きます。
+         *
+         * @param e クリックイベントです。
+         */
         function btnMarkLineEdge(e: MouseEvent) {
             const edge = (state.attrData.nowDataSolo().MarkSizeMD as unknown as { LineShape: { Edge_Connect_Pattern: LineEdge_Connect_Pattern_Data_Info } }).LineShape.Edge_Connect_Pattern;
             clsLineEdgePattern(e, edge, okButton);
@@ -3455,12 +3662,20 @@ export function setting(locSearch: string, locHash: string = "") {
         // }
 
 
-        //内部データボタンクリック
+        /**
+         * 内部データ設定ダイアログを開きます。
+         *
+         * @param e クリックイベントです。
+         */
         function innerDataSet(e: MouseEvent) {
             clsInnerDataSet(e);
         }
 
-        //記号選択クリック(記号大きさ・記号の数共通)
+        /**
+         * 記号の大きさモードと記号の数モードで共通の記号選択処理を行います。
+         *
+         * @param e クリックイベントです。
+         */
         function picMark_Click(e: MouseEvent) {
             let md: { Mark: Mark_Property };
             switch (state.attrData.nowData().ModeData) {
@@ -3477,7 +3692,13 @@ export function setting(locSearch: string, locHash: string = "") {
                 state.attrData.Draw_Sample_Mark_Box(e.target as HTMLElement, newMark);
             }
         }
-        //負の場合の内部色（記号の大きさ・数共通）
+
+        /**
+         * 記号の大きさモードと記号の数モードで共通の負値設定 UI を生成します。
+         *
+         * @param parent 親コンテナです。
+         * @param ID 生成するコントロール群の基底 ID です。
+         */
         function setMinusValueCase(parent: HTMLDivElement, ID: string) {
             const gbBlockMinusValueCase = Generic.createNewFrame(parent, ID, "", 140, 0, 150, 120, "負の値の場合");
             Generic.createNewTileBox(gbBlockMinusValueCase, ID + "_minusColorBox", "負の値の内部", clsBase.Tile(), 10, 15, undefined,
@@ -4287,7 +4508,12 @@ export function setting(locSearch: string, locHash: string = "") {
         }
         doc.getElementById("settingWindowBtnConditionInfo").setVisibility(f);
     }
-    /** 起動プリセットで指定されたファイルを読み込む */
+    /**
+     * 起動プリセットで指定された最初のファイルを読み込みます。
+     *
+     * @param filePath 読み込むファイルパスです。
+     * @param label 読込中表示に使う任意ラベルです。
+     */
     function getFirstFile(filePath: string, label?: string){
         if (isSafeStartupFilePath(filePath) === false) {
             Generic.alert(undefined, "起動プリセットのファイル設定が不正です。");
@@ -4321,7 +4547,11 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 }
 
-//属性データ読み込み
+/**
+ * 属性データ読込ダイアログを開き、選択結果を呼び出し元へ返します。
+ *
+ * @param okCall 読込成功時に地図配列、属性文字列、ファイル名、拡張子を受け取るコールバックです。
+ */
 function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: string, ext: string) => void) {
     document.body.removeEventListener("contextmenu",contextMenuPrevent);
     const mapList: Record<string, clsMapdata> = {};
@@ -4524,7 +4754,11 @@ function readData(okCall: (mapdata: clsMapdata[], attrText: string, filename: st
     }
 }
 
-//シェープファイル読み込み
+/**
+ * シェープファイル読込ダイアログを開き、生成した地図とレイヤ情報を返します。
+ *
+ * @param okCall 読込成功時に地図配列とレイヤ情報配列を受け取るコールバックです。
+ */
 function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[]) => void) | undefined): void{
     type ShapeFileInfo = {
         shape: clsShapefile;
@@ -4839,7 +5073,11 @@ function openShapeFile(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[
     }
 }
 
-/** 白地図・初期属性データ表示 */
+/**
+ * 白地図と初期属性データを選択するダイアログを表示します。
+ *
+ * @param okCall 読込成功時に地図配列とレイヤ情報配列を受け取るコールバックです。
+ */
 function mapViewer(okCall: ((mapdata: clsMapdata[], layerdata: strLayerInfo[]) => void) | undefined): void {
     const mapList: Record<string, clsMapdata> = {};
     const LayerData: strLayerInfo[] = [];
