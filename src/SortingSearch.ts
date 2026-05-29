@@ -8,6 +8,9 @@ export class SortingSearch {
     private DataNum: number = 0;
     DataPositionValue_Integer: number[] = [];
 
+    /**
+     * 内部配列と件数を初期状態に戻します。
+     */
     init(): void {
         this.SortNumber = [];
         this.Sortrr = [];
@@ -15,39 +18,72 @@ export class SortingSearch {
         this.DataNum = 0;
     }
 
+    /**
+     * 保持しているデータ件数を返します。
+     *
+     * @returns 登録済みデータ数です。
+     */
     NumofData(): number {
         return this.DataNum;
     }
 
-    /**元のデータのPositionのソート後の先頭からの位置を返す */
+    /**
+     * 元の配列位置が、ソート後に先頭から何番目かを返します。
+     *
+     * @param originalPosition ソート前の配列位置です。
+     * @returns ソート後の順位です。見つからない場合は -1 です。
+     */
     getAfterSortPosition(originalPosition: number): number {
         return this.SortNumber.indexOf(originalPosition);
     }
 
-    /**元のデータのPositionのソート後の後ろからの位置を返す */
+    /**
+     * 元の配列位置が、ソート後に末尾から何番目かを返します。
+     *
+     * @param originalPosition ソート前の配列位置です。
+     * @returns 末尾基準の順位です。見つからない場合でも計算結果を返します。
+     */
     getAfterSortPositionRev(originalPosition: number): number {
         return (this.DataNum - 1 - this.SortNumber.lastIndexOf(originalPosition));
     }
     
+    /**
+     * 重複している値の種類数を返します。
+     *
+     * @returns 同値が複数件存在する値の種類数です。
+     */
     SameValue_Number(): number {
-        /// <summary>データ中に同じ値がどれだけあるか返す</summary>
         const SV: number[] = [];
         return this.Get_Same_value(SV);
     }
     
-    /**重複しない個別の値とそれぞれの数のオブジェクトの配列を返す */
+    /**
+     * 重複をまとめた値一覧と件数を返します。
+     *
+     * @returns 各値と出現回数の配列です。
+     */
     EachValue_Array(): { value: number; num: number }[] {
         return this.Get_Each_value();
     }
     
+    /**
+     * 重複している値の一覧を受け取り配列へ格納します。
+     *
+     * @param SameValueArray 重複値の出力先配列です。
+     * @returns 格納した重複値の種類数です。
+     */
     SameValue_Array(SameValueArray: number[]): number {
-        /// <summary>データ中の同じ値が含まれているケースを配列で返す</summary>
         const n = this.Get_Same_value(SameValueArray);
         return n;
     }
     
+    /**
+     * 指定値と一致する元データ位置をすべて返します。
+     *
+     * @param SearchValue 検索する値です。
+     * @returns 一致した元配列位置の一覧です。
+     */
     SearchData_Array(SearchValue: number): number[] {
-        /// <summary>指定した検索値と等しいデータ番号を配列で返す</summary>
         const DataNumberArray: number[] = [];
         const DPosition = this.Search_Data_Multi(SearchValue);
         const EQn = DPosition.Num_of_Equal_Data;
@@ -59,8 +95,13 @@ export class SortingSearch {
         return DataNumberArray;
     }
 
+    /**
+     * 指定値と一致する元データ位置を 1 件返します。
+     *
+     * @param SearchValue 検索する値です。
+     * @returns 最初に一致した元配列位置です。未検出時は -1 です。
+     */
     SearchData_One(SearchValue: number): number {
-        /// <summary>指定した検索値と等しいデータ番号を一つ返す</summary>
         const DPosition = this.Search_Data_Multi(SearchValue);
         if (DPosition.Num_of_Equal_Data === -1) {
             return -1;
@@ -69,44 +110,81 @@ export class SortingSearch {
         }
     }
 
+    /**
+     * 指定順位の元データ位置を返します。
+     *
+     * @param Order 先頭基準の順位です。
+     * @returns ソート後その順位にある元配列位置です。
+     */
     DataPosition(Order: number): number {
-        /// <summary>指定した順位のデータ番号を返す</summary>
         return this.SortNumber[Order];
     }
     
+    /**
+     * 指定した逆順位の元データ位置を返します。
+     *
+     * @param OrderReverse 末尾基準の順位です。
+     * @returns ソート後その逆順位にある元配列位置です。
+     */
     DataPositionRev(OrderReverse: number): number {
-        /// <summary>指定した逆順位のデータ番号を返す</summary>
         return this.SortNumber[this.DataNum - OrderReverse - 1];
     }
 
+    /**
+     * 指定順位の値を返します。
+     *
+     * @param Order 先頭基準の順位です。
+     * @returns ソート済み配列上の値です。
+     */
     DataPositionValue(Order: number): number {
-        /// <summary>指定した順位のデータ値を返す</summary>
         return this.Sortrr[Order];
     }
 
+    /**
+     * 指定した逆順位の値を返します。
+     *
+     * @param OrderReverse 末尾基準の順位です。
+     * @returns ソート済み配列上の値です。
+     */
     DataPositionRevValue(OrderReverse: number): number {
-        /// <summary>指定した逆順位のデータ値を返す</summary>
         const n = this.DataNum - OrderReverse - 1;
         return this.Sortrr[n];
     }
     
+    /**
+     * ソート前データを 1 件追加します。
+     *
+     * @param Value 追加する値です。
+     */
     Add(Value: number): void {
-        /// <summary>データの追加</summary>
         this.Sortrr.push(Value);
     }
 
+    /**
+     * 値配列をまとめて設定し、ソート処理まで実行します。
+     *
+     * @param ValueArray 追加対象の値配列です。
+     */
     AddRange(ValueArray: number[]): void {
         this.Sortrr = ValueArray.slice();
         this.AddEnd();
     }
     
+    /**
+     * 追加済みデータを確定し、ソート済み索引を構築します。
+     */
     AddEnd(): void {
-        /// <summary>データの追加終了</summary>
         this.DataNum = this.Sortrr.length;
         this.SortNumber = this.Sorting(this.DataNum);
         this.DataPositionValue_Integer = [...this.Sortrr];
     }
 
+    /**
+     * 内部配列を昇順に並べ替え、元位置の対応表を返します。
+     *
+     * @param n ソート対象件数です。
+     * @returns ソート後配列から元配列位置へ戻すための対応表です。
+     */
     private Sorting(n: number): number[] {
         //'===========================================================
         //'ShelSort 指定された配列の整数をシェルソート
@@ -166,6 +244,12 @@ export class SortingSearch {
 
     }
     
+    /**
+     * 二分探索で一致値の開始位置と件数を求めます。
+     *
+     * @param SearchValue 検索する値です。
+     * @returns 一致件数と最初の位置です。未検出時は件数 -1 を返します。
+     */
     private Search_Data_Multi(SearchValue: number): { Num_of_Equal_Data: number; firstPosition: number } {
         //'-------------------------
         //'SearchValue／探し出すデータ
@@ -227,6 +311,12 @@ export class SortingSearch {
         }
     }
 
+    /**
+     * 重複している値を列挙し、その種類数を返します。
+     *
+     * @param SameV 重複値を書き込む配列です。
+     * @returns 重複値の種類数です。
+     */
     private Get_Same_value(SameV: number[]): number {
         //同じ値が含まれているケースを返す
         SameV.length = 0;
@@ -242,6 +332,11 @@ export class SortingSearch {
         return SameV.length;
     }
 
+    /**
+     * ソート済みデータから値ごとの件数一覧を作成します。
+     *
+     * @returns 各値と出現回数の配列です。
+     */
     private Get_Each_value(): { value: number; num: number }[] {
         //重複しない個別の値とそれぞれの数のオブジェクトの配列を返す
         const EachV: { value: number; num: number }[] = [];

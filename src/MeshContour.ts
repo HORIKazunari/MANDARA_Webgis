@@ -5,40 +5,69 @@ import { Generic } from './clsGeneric';
 import { chvValue_on_twoValue, point, rectangle } from './clsAttrData';
 import { SpatialPointType } from './constants/legacyEnums';
 
+/** メッシュセルに入る標高値です。 */
 type MeshCell = number | undefined;
+/** メッシュ全体の 2 次元配列です。 */
 type MeshGrid = MeshCell[][];
+/** 線形四分木配列上の位置です。 */
 type MortonIndex = number;
+/** 再帰処理で件数を参照渡しするためのカウンターです。 */
 type PartitionCounter = [number];
 
+/**
+ * 等値線の端点接続方向を保持します。
+ */
 class FringeLineInfo {
     code: number = 0;
     direction: 1 | -1 = 1;
 }
 
 
+/**
+ * メッシュ 1 セル内で得られた等値線部分線分です。
+ */
 class ConPartInfo {
     p0 = new point();
     p1 = new point();
 }
 
+/**
+ * 連結後の等値線 1 本分の情報を保持します。
+ */
 class ContourLineStackInfo {
     ContourNumber: number;
     NumOfPoint: number;
     points: point[] = [];
     
+    /**
+     * 等値線スタック情報を初期化します。
+     *
+     * @param ContourNumber 等値線番号です。
+     * @param NumOfPoint 構成ポイント数です。
+     */
     constructor(ContourNumber: number, NumOfPoint: number) {
         this.ContourNumber = ContourNumber;
         this.NumOfPoint = NumOfPoint;
     }
 }
 
+/**
+ * 線形四分木の各ノードに保持する範囲情報です。
+ */
 class QuadMeshInfo {
-    /// <summary>四分木データの配列に入れる情報</summary>
     Position: rectangle | MortonIndex | null; // rectinfo or number
     Max: number | undefined;
     Min: number | undefined;
     LackF: boolean;
     
+    /**
+     * 四分木ノード情報を初期化します。
+     *
+     * @param Positon 対応範囲または線形配列位置です。
+     * @param Max ノード内最大値です。
+     * @param Min ノード内最小値です。
+     * @param LackF 全値欠損かどうかです。
+     */
     constructor(Positon: rectangle | MortonIndex | null, Max: number | undefined, Min: number | undefined, LackF: boolean) {
         this.Position = Positon;
         this.Max = Max;
@@ -47,8 +76,10 @@ class QuadMeshInfo {
     }
 }
 
+/**
+ * メッシュ値から等値線と枠交点を生成するクラスです。
+ */
 class MeshContour {
-    /// <summary>メッシュ作成クラス</summary>
     private ConValuePlus = 0.0001;
     private Quad_MeshData: QuadMeshInfo[] = [];
     private PCell: MortonIndex[] = [];
@@ -60,6 +91,16 @@ class MeshContour {
     private Yplus: number;
     private Mesh: MeshGrid;
     
+    /**
+     * メッシュ寸法と原点位置を指定して初期化します。
+     *
+     * @param xMeshNum 横方向メッシュ数です。
+     * @param yMeshNum 縦方向メッシュ数です。
+     * @param xMeshSize 横方向の実サイズです。
+     * @param yMeshSize 縦方向の実サイズです。
+     * @param xPlus 実座標での X 原点です。
+     * @param yPlus 実座標での Y 原点です。
+     */
     constructor(xMeshNum: number, yMeshNum: number, xMeshSize: number, yMeshSize: number, xPlus: number, yPlus: number) {
         this.XMeshNum = xMeshNum;
         this.YMeshNum = yMeshNum;
@@ -70,22 +111,37 @@ class MeshContour {
         this.Mesh = Array.from({ length: xMeshNum }, () => new Array<MeshCell>(yMeshNum));
     }
     
+    /**
+     * 指定セルへメッシュ値を設定します。
+     *
+     * @param x 横方向インデックスです。
+     * @param y 縦方向インデックスです。
+     * @param Value 設定する値です。
+     */
     SetMeshValue(x: number, y: number, Value: number): void {
         this.Mesh[x][y] = Value;
     }
     
+    /**
+     * 指定セルのメッシュ値を取得します。
+     *
+     * @param x 横方向インデックスです。
+     * @param y 縦方向インデックスです。
+     * @returns 登録済みメッシュ値です。
+     */
     GetMeshValue(x: number, y: number): number {
         return this.Mesh[x][y];
     }
     
+    /**
+     * メッシュから等値線を生成し、連結済みラインを返します。
+     *
+     * @param ContourNum 生成する等値線数です。
+     * @param contourHighM 等値線の基準値配列です。
+     * @param conLineStack 生成結果を書き込む配列です。
+     * @returns 生成された等値線ライン本数です。
+     */
     Execute_Mesh(ContourNum: number, contourHighM: number[], conLineStack: ContourLineStackInfo[]): number {
-        /// <signature>
-        /// <summary>等値線取得、戻り値は等値線ラインの数</summary>
-        /// <param name="ContourNum" >取得する等値線の数</param>
-        /// <param name="Contour_High_M" >等値線値</param>
-        /// <param name="Contour_Line" >等値線ごとの等値線番号、ポイント数、座標contourLineStacInfo(戻り値)</param>
-        /// </signature> 
-
         //'出力
         //'戻り値：線の数
         //'Con_LineStac() (0)等高線番号 (1)点スタックの始め (2)点の数 線の数分繰り返す
@@ -240,18 +296,17 @@ class MeshContour {
 
     }
 
+    /**
+     * 外枠の一辺と等値線の交点列を取得します。
+     *
+     * @param GetSide 取得する辺です。0 左、1 上、2 右、3 下です。
+     * @param ContourNum 等値線数です。
+     * @param contourHighM 等値線値の配列です。
+     * @param frameLineContour 交点ごとの等値線番号を書き込む配列です。
+     * @param framePoint 交点座標を書き込む配列です。
+     * @returns 取得した交点数です。等値線値が昇順でない場合は -1 です。
+     */
     Execute_FrameGet(GetSide: number, ContourNum: number, contourHighM: number[], frameLineContour: number[], framePoint: point[]): number {
-        /// <signature>
-        /// <summary>等値線の枠取得、戻り値は等値線ラインの数</summary>
-        /// <param name="GetSide" >0左 1上 2右 3下</param>
-        /// <param name="ContourNum" >取得する等値線の数</param>
-        /// <param name="Contour_High_M" >等値線値</param>
-        /// <param name="Frame_LineContour" >等高線番号配列(戻り値)</param>
-        /// <param name="Frame_Point" >xy座標配列(戻り値)</param>
-        /// </signature> 
-
-
-
         for (let i = 0; i < ContourNum - 1; i++) {
             //等高線が低→高に並べ替えてある必要
             if(contourHighM[i + 1] < contourHighM[i]) { return -1;}
@@ -311,6 +366,20 @@ class MeshContour {
         return vn;
     }
     
+    /**
+     * 指定辺上で等値線が通過する位置を抽出します。
+     *
+     * @param ContourNum 等値線数です。
+     * @param contourHighM 等値線値の配列です。
+     * @param sx 開始セル X 座標です。
+     * @param sy 開始セル Y 座標です。
+     * @param xPlus 横方向の進行量です。
+     * @param yPlus 縦方向の進行量です。
+     * @param LoopNum 走査セル数です。
+     * @param Vpoint 交点座標の出力先です。
+     * @param Vcon 対応する等値線番号の出力先です。
+     * @returns 交点数です。
+     */
     private GetFrameSub(ContourNum: number, contourHighM: number[], sx: number, sy: number, xPlus: number, yPlus: number, LoopNum: number, Vpoint: point[], Vcon: number[]): number {
         // contourHighM[]
         //Vpoint[]:point
@@ -403,6 +472,17 @@ class MeshContour {
         return n;
     }
 
+    /**
+     * 単一メッシュセル内を通過する等値線線分を抽出します。
+     *
+     * @param con 等値線ごとの部分線分配列です。
+     * @param Mesh 参照するメッシュです。
+     * @param mi セル X 座標です。
+     * @param mj セル Y 座標です。
+     * @param HK 等値線番号です。
+     * @param High 判定に使う等値線値です。
+     * @param _highCN 等値線ごとの部分線分数です。
+     */
     private Mesh_Sub(con: ConPartInfo[][], Mesh: MeshGrid, mi: number, mj: number, HK: number, High: number, _highCN: number[]): void {
         //メッシュ内で横切る等値線を取得
         const V1 = Mesh[mi][mj] ?? 0;
@@ -450,6 +530,27 @@ class MeshContour {
         }
     }
 
+    /**
+     * 交差辺から等値線部分線分 1 本を生成します。
+     *
+     * @param mi セル X 座標です。
+     * @param mj セル Y 座標です。
+     * @param C12 辺 1-2 の交差有無です。
+     * @param C34 辺 3-4 の交差有無です。
+     * @param C24 辺 2-4 の交差有無です。
+     * @param C13 辺 1-3 の交差有無です。
+     * @param VH1 頂点 1 の差分値です。
+     * @param VH2 頂点 2 の差分値です。
+     * @param VH3 頂点 3 の差分値です。
+     * @param VH4 頂点 4 の差分値です。
+     * @param V1 頂点 1 の元値です。
+     * @param V2 頂点 2 の元値です。
+     * @param V3 頂点 3 の元値です。
+     * @param V4 頂点 4 の元値です。
+     * @param HK 等値線番号です。
+     * @param highCN 等値線ごとの部分線分数です。
+     * @param con 等値線ごとの部分線分配列です。
+     */
     private R2220(mi: number, mj: number, C12: number, C34: number, C24: number, C13: number, VH1: number, VH2: number, VH3: number, VH4: number, V1: number, V2: number, V3: number, V4: number, HK: number, highCN: number[], con: ConPartInfo[][]): void {
         let T = 0;
         const po: point[] = [];
@@ -482,18 +583,38 @@ class MeshContour {
             }
     }
 
+    /**
+     * 等比数列の和を返します。
+     *
+     * @param shokou 初項です。
+     * @param kouhi 公比です。
+     * @param n 項数です。
+     * @returns 等比数列の和です。
+     */
     private Get_Sum_geometric_progression(shokou: number, kouhi: number, n: number): number {
-        /// <summary>等比数列の和を求める。今は使っていない</summary>
         return shokou * (1 - Math.pow(kouhi, n)) / (1 - kouhi);
     }
 
+    /**
+     * 指定空間レベルの線形四分木配列開始位置を返します。
+     *
+     * @param n 空間レベルです。
+     * @returns 線形配列上の開始位置です。
+     */
     private Get_MortonArrayPosition(n: number): number {
-        /// <summary>四分木線形配列の開始位置。</summary>
         return -(1 - Math.pow(4, n)) / 3;
     }
     
+    /**
+     * 座標と空間レベルから線形四分木配列位置を求めます。
+     *
+     * @param X 空間内 X 座標です。
+     * @param Y 空間内 Y 座標です。
+     * @param SpaceLevel 空間レベルです。
+     * @param maxPartitionLevel 最大分割レベルです。
+     * @returns 線形四分木配列上の位置です。
+     */
     private Get_MortonNumberXY(X: number, Y: number, SpaceLevel: number, maxPartitionLevel: number): number {
-        /// <summary>点の座標値と所属する空間レベルから、四分木線形配列の位置を返す</summary>
         const zero ="0".repeat(maxPartitionLevel);
         const x2 = (zero + X.toString(2)).right(maxPartitionLevel); //X座標を2進数に
         const y2 = (zero + Y.toString(2)).right(maxPartitionLevel); //Y座標を2進数に
@@ -505,9 +626,15 @@ class MeshContour {
     }
 
 
+    /**
+     * メッシュ全体から線形四分木データを構築します。
+     *
+     * @param Mesh 元となるメッシュです。
+     * @param xw 横方向メッシュ数です。
+     * @param yw 縦方向メッシュ数です。
+     * @param maxPartitionLevel 最大分割レベルです。
+     */
     private Set_MeshQuadTree(Mesh: MeshGrid, xw: number, yw: number, maxPartitionLevel: number): void {
-        /// <summary>メッシュの四分木データをQuad_MeshDataに作成</summary>
-
         const stp = Math.pow(2, maxPartitionLevel - 1);
         const w = Math.floor(xw / stp);//最大分割レベルの横セル数
         const H = Math.floor(yw / stp);//最大分割レベルの縦セル数
@@ -595,8 +722,17 @@ class MeshContour {
 
     }
 
+    /**
+     * 四分木から指定値を含む末端メッシュを再帰的に抽出します。
+     *
+     * @param value 抽出対象の値です。
+     * @param Qcell 該当セル位置の出力先配列です。
+     * @param SpaceLevel 現在の空間レベルです。
+     * @param Scell 現在ノードの開始位置です。
+     * @param n 抽出件数カウンターです。
+     * @param maxPartitionLevel 最大分割レベルです。
+     */
     private Get_Quad_MeshCell(value: number, Qcell: MortonIndex[], SpaceLevel: number, Scell: number, n: PartitionCounter, maxPartitionLevel: number): void {
-        /// <summary>四分木から等値線にかかるメッシュを抜き出す再帰処理</summary>
         if (SpaceLevel === 0) {
             //初回の呼び出し
             Qcell.length = this.Get_MortonArrayPosition( maxPartitionLevel);
@@ -624,8 +760,14 @@ class MeshContour {
         }
     }
 
+    /**
+     * 四分木の最大分割段階をメッシュサイズから決定します。
+     *
+     * @param xs 横方向セル数です。
+     * @param ys 縦方向セル数です。
+     * @returns 最大分割レベルです。
+     */
     private Get_PartitiopnLevel(xs: number, ys: number): number {
-        /// <summary>四分木の最大分割段階を決める</summary>
         const ms = Math.min(xs, ys);
         let i=1;
         let n;

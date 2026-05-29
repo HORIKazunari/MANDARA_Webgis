@@ -1,5 +1,8 @@
 import { appState } from './core/AppState';
 
+/**
+ * 設定画面側を前面に出すため、関連ウィンドウの z-index を調整します。
+ */
 export function settingFront(): void {
     const state = appState();
 
@@ -17,6 +20,9 @@ export function settingFront(): void {
     }
 }
 
+/**
+ * 印刷画面側を前面に出すため、関連ウィンドウの z-index を調整します。
+ */
 export function frmPrintFront(): void {
     const state = appState();
 

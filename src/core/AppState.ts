@@ -1,20 +1,7 @@
 /**
- * アプリケーション状態管理クラス
- * 
- * 従来グローバル変数として扱われていた状態を一元管理します。
- * シングルトンパターンを使用して、アプリケーション全体で単一のインスタンスを共有します。
- * 
- * 使用例:
- * ```typescript
- * import { appState } from '@/core/AppState';
- * 
- * // 状態へのアクセス
- * const state = appState();
- * state.attrData.TotalData.LV1.SelectedLayer = 0;
- * 
- * // 初期化
- * state.initialize();
- * ```
+ * アプリケーション全体で共有する状態を管理します。
+ *
+ * 従来グローバル変数として分散していた参照を集約し、単一インスタンスからアクセスできるようにします。
  */
 
 import type { /*MapFileInfo,*/ JsonObject, JsonValue } from '../types';
@@ -22,7 +9,7 @@ import type { Setting_Info as SettingInfoClass } from '../clsTime';
 import type { clsTileMap as TileMapClass, clsDrawMarkFan as DrawMarkFanClass } from '../clsDraw';
 
 /**
- * スクロールマージン情報
+ * スクロール領域の余白設定を表します。
  */
 export interface IScrMargin {
     top: number;
@@ -32,7 +19,7 @@ export interface IScrMargin {
 }
 
 /**
- * アプリケーション状態クラス
+ * アプリケーションの共有状態を保持するシングルトンクラスです。
  */
 export class AppState {
     private static instance: AppState | null = null;
@@ -114,7 +101,9 @@ export class AppState {
     }
 
     /**
-     * インスタンスを取得
+     * シングルトンインスタンスを取得します。
+     *
+     * @returns 共有状態インスタンスです。
      */
     public static getInstance(): AppState {
         if (!AppState.instance) {
@@ -126,7 +115,9 @@ export class AppState {
     // ==================== 初期化メソッド ====================
 
     /**
-     * アプリケーション状態を初期化
+     * アプリケーション状態を初期化します。
+     *
+     * 実際の依存オブジェクト生成は各利用側で行い、このメソッドは初期化拡張の受け口として残しています。
      */
     public initialize(): void {
         // Setting_Info, TKY2JGDInfo, clsTileMap は各ファイルでexportされている必要がある
@@ -134,7 +125,9 @@ export class AppState {
     }
 
     /**
-     * 状態をリセット（主にテスト用）
+     * 保持中のシングルトンを破棄します。
+     *
+     * 主にテストや再初期化のために使用します。
      */
     public static reset(): void {
         AppState.instance = null;
@@ -143,7 +136,9 @@ export class AppState {
     // ==================== ユーティリティメソッド ====================
 
     /**
-     * ログ出力
+     * ログウィンドウへ内容を書き込みます。
+     *
+     * @param data 出力する値です。配列は区切り文字付きで連結します。
      */
     public log(data: JsonValue): void {
         if (!this.logWindow) {
@@ -168,19 +163,15 @@ export class AppState {
 }
 
 /**
- * アプリケーション状態へのショートカット関数
- * 
- * 使用例:
- * ```typescript
- * import { appState } from '@/core/AppState';
- * const state = appState();
- * ```
+ * アプリケーション状態インスタンスを返すショートカットです。
+ *
+ * @returns 共有状態インスタンスです。
  */
 export function appState(): AppState {
     return AppState.getInstance();
 }
 
 /**
- * デフォルトエクスポート（後方互換性のため）
+ * 後方互換性のためのデフォルトエクスポートです。
  */
 export default AppState;

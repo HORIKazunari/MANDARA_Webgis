@@ -18,14 +18,18 @@ import type { JsonObject, JsonValue } from './types';
 //     Part?: boolean;
 // }
 
-//オブジェクト継承データ（地図データ）
 /**
- * Description placeholder
+ * オブジェクトの継承元コードと継承時期を保持します。
  */
 class Object_Succession_Data {
     ObjectCode?: number;
     Time: strYMD = new strYMD();
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した継承データです。
+     */
     Clone(): Object_Succession_Data {
         const d = new Object_Succession_Data();
         d.ObjectCode = this.ObjectCode;
@@ -34,18 +38,28 @@ class Object_Succession_Data {
     }
 }
 
-//オブジェクト名スタック（地図データ）
 /**
- * Description placeholder
+ * オブジェクト名の候補と有効期間を保持します。
  */
 class Object_NameTimeStac_Data {
     NamesList: string[] = [];
     SETime: Start_End_Time_data = new Start_End_Time_data();
 
+    /**
+     * 名前一覧を指定区切り文字で連結します。
+     *
+     * @param delimiter 連結に使う区切り文字です。
+     * @returns 連結した名称文字列です。
+     */
     connectNames(delimiter: string = '/'): string {
         return this.NamesList.join(delimiter);
     }
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した名称スタックです。
+     */
     Clone(): Object_NameTimeStac_Data {
         const o = new Object_NameTimeStac_Data();
         o.SETime = this.SETime.Clone();
@@ -54,14 +68,18 @@ class Object_NameTimeStac_Data {
     }
 }
 
-// オブジェクト代表点（地図データ）
 /**
- * Description placeholder
+ * オブジェクト代表点とその有効期間を保持します。
  */
 class Object_CenterPoint_Data {
     Position: point = new point();
     SETime: Start_End_Time_data = new Start_End_Time_data();
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した代表点データです。
+     */
     Clone(): Object_CenterPoint_Data {
         const d = new Object_CenterPoint_Data();
         d.Position = this.Position.Clone();
@@ -71,13 +89,18 @@ class Object_CenterPoint_Data {
 }
 
 /**
- * Description placeholder
+ * オブジェクト境界を構成するラインコードと有効期間を保持します。
  */
 export class LineCodeStac_Data {
     LineCode?: number;
     NumOfTime?: number;
     Times: Start_End_Time_data[] = [];
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製したラインコード情報です。
+     */
     Clone(): LineCodeStac_Data {
         const d = new LineCodeStac_Data();
         d.LineCode = this.LineCode;
@@ -88,57 +111,71 @@ export class LineCodeStac_Data {
 }
 
 /**
- * Description placeholder
- *
- * @type {{ NormalObject: number; AggregationObject: number; }}
+ * オブジェクトグループ種別を表します。
  */
 export const enmObjectGoupType_Data = {
     NormalObject: 0, //通常のオブジェクト
     AggregationObject: 1//集成オブジェクト
 }
 
-// Menseki関数の戻り値型
+/**
+ * 面積計算結果です。
+ */
 interface MensekiResult {
     menseki: number;
     gpoint: point;
 }
 
-// Check_Point_in_Polygon関連の戻り値型
+/**
+ * 点のポリゴン内判定結果です。
+ */
 interface PointInPolygonResult {
     ok: boolean;
     CrossPoint_X: number[];
 }
 
 
+/**
+ * オブジェクトグループ既定属性項目の定義です。
+ */
 class strMPObjDefAttData_Info {
     Title: string = "";
     Unit: string = "";
     MissingF: boolean = false;
     Note: string = "";
     /**
- * Creates an instance of strMPObjDefAttData_Info.
- *
- * @constructor
- */
-constructor() {
+     * 既定属性項目を初期化します。
+     */
+    constructor() {
         this.Title = "";
         this.Unit = ""; //String
         this.MissingF = false; //Boolean
         this.Note = ""; //String
     }
+
+    /**
+     * タイトルと単位から属性データ型を取得します。
+     */
     get AttDataType() {
         return Generic.getAttDataType_From_TitleUnit(this.Title, this.Unit);
     }
+
     /**
- * Description placeholder
- *
- * @type {*}
- */
-set AttDataType(value) {
+     * 属性データ型に合わせてタイトルと単位を設定します。
+     *
+     * @param value 設定する属性データ型です。
+     */
+    set AttDataType(value) {
         const tu = Generic.SetTitleUnit_from_AttDataType(value, this.Title, this.Unit);
         this.Title = tu.title;
         this.Unit = tu.unit;
     }
+
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した属性定義です。
+     */
     Clone(): strMPObjDefAttData_Info {
         const d = new strMPObjDefAttData_Info();
         Object.assign(d, this);
@@ -146,11 +183,8 @@ set AttDataType(value) {
     }
 }
 
-//初期時点属性データで、所定時点以外を指定した場合のデータの処理
 /**
- * Description placeholder
- *
- * @type {{ MissingValue: number; NearestValue: number; interpolation_MissingValue: number; interpolation_NearestValue: number; }}
+ * 初期時点属性データで、指定時点外を参照した場合の補完方法です。
  */
 const enmDefPointAttDataExtraValue = {
     MissingValue: 0,
@@ -159,11 +193,8 @@ const enmDefPointAttDataExtraValue = {
     interpolation_NearestValue: 3
 }
 
-//初期時間属性データの種類
 /**
- * Description placeholder
- *
- * @type {{ PointData: number; SpanData: number; interpolation_MissingValue: number; interpolation_NearestValue: number; }}
+ * 初期時間属性データの種類です。
  */
 const enmDefTimeAttDataType = {
     PointData: 0,
@@ -172,17 +203,19 @@ const enmDefTimeAttDataType = {
     interpolation_NearestValue: 3
 }
 
-//初期時間属性データのデータ項目（オブジェクトグループに指定）
 /**
- * Description placeholder
- *
- * @returns 
+ * オブジェクトグループに設定する初期時間属性データの定義です。
  */
 class strMPObjDefTimeAttData_Info {
     Type?: number;
     attData: strMPObjDefAttData_Info = new strMPObjDefAttData_Info();
     ExtraValue?: number;
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した初期時間属性定義です。
+     */
     Clone(): strMPObjDefTimeAttData_Info {
         const d = new strMPObjDefTimeAttData_Info();
         Object.assign(d, this);
@@ -191,9 +224,8 @@ class strMPObjDefTimeAttData_Info {
     }
 }
 
-//オブジェクトグループデータ
 /**
- * Description placeholder
+ * オブジェクトグループ定義を保持します。
  */
 class strObjectGroup_Data {
     ObjectType?: number;
@@ -208,6 +240,11 @@ class strObjectGroup_Data {
     UseLineType: boolean[] = [];
     UseObjectGroup: boolean[] = [];
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製したオブジェクトグループ定義です。
+     */
     Clone(): strObjectGroup_Data {
     const d = new strObjectGroup_Data();
     Object.assign(d, this);
@@ -222,14 +259,18 @@ class strObjectGroup_Data {
     }
 }
 
-//初期時間属性データ個別(TypeがPointの場合はSpanの開始だけを使う)
 /**
- * Description placeholder
+ * 初期時間属性データの個別値です。
  */
 class strDefTimeAttDataEach_Info {
     Span: Start_End_Time_data = new Start_End_Time_data();
     Value?: string;
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した時間属性値です。
+     */
     Clone(): strDefTimeAttDataEach_Info {
         const d = new strDefTimeAttDataEach_Info();
         d.Span = this.Span.Clone();
@@ -238,13 +279,17 @@ class strDefTimeAttDataEach_Info {
     }
 }
 
-//初期時間属性データ
 /**
- * Description placeholder
+ * オブジェクトに紐付く初期時間属性データ列です。
  */
 class strDefTimeAttData_Info {
     Data: strDefTimeAttDataEach_Info[] = [];
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した初期時間属性データです。
+     */
     Clone(): strDefTimeAttData_Info {
         const d = new strDefTimeAttData_Info();
         d.Data = Generic.ArrayClone(this.Data);
@@ -252,9 +297,8 @@ class strDefTimeAttData_Info {
     }
 }
 
-//オブジェクト（地図データ）
 /**
- * Description placeholder
+ * 地図上のオブジェクト 1 件分の定義です。
  */
 class strObj_Data {
     Number?: number;
@@ -271,6 +315,11 @@ class strObj_Data {
     CenterPSTC: Object_CenterPoint_Data[] = [];
     LineCodeSTC: LineCodeStac_Data[] = [];
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製したオブジェクト定義です。
+     */
     Clone(): strObj_Data {
     const d=new strObj_Data();
     Object.assign(d, this);
@@ -284,9 +333,8 @@ class strObj_Data {
     }
 }
 
-//方位の文字
 /**
- * Description placeholder
+ * 方位記号に表示する方角文字列です。
  */
 class dirWord_Data {
     East: string = "";
@@ -294,6 +342,11 @@ class dirWord_Data {
     North: string = "";
     South: string = "";
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した方角文字列設定です。
+     */
     Clone(): dirWord_Data {
     const w = new dirWord_Data();
     w.East = this.East;
@@ -304,9 +357,8 @@ class dirWord_Data {
     }
 }
 
-//方位の設定（地図・属性データ）
 /**
- * Description placeholder
+ * 地図上に表示する方位記号全体の設定です。
  */
 class strCompass_Attri {
     Visible?: boolean;
@@ -315,6 +367,11 @@ class strCompass_Attri {
     dirWord: dirWord_Data = new dirWord_Data();
     Font: Font_Property = new Font_Property();
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した方位設定です。
+     */
     Clone(): strCompass_Attri {
     const cp = new strCompass_Attri();
     cp.Visible = this.Visible;
@@ -326,14 +383,18 @@ class strCompass_Attri {
     }
 }
 
-//ライン線種・時間データ（地図データ）
 /**
- * Description placeholder
+ * ラインの線種と有効期間を保持します。
  */
 class Line_Time_Data {
     Kind?: number;
     SETime: Start_End_Time_data = new Start_End_Time_data();
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製したライン時間情報です。
+     */
     Clone(): Line_Time_Data {
         const d = new Line_Time_Data();
         d.Kind = this.Kind;
@@ -341,6 +402,12 @@ class Line_Time_Data {
         return d;
     }
 
+    /**
+     * 線種と期間が一致するかを判定します。
+     *
+     * @param LT 比較対象です。
+     * @returns 完全一致する場合は true です。
+     */
     Equals(LT: Line_Time_Data): boolean {
         if (LT.Kind === this.Kind) {
             if (LT.SETime.Equals(this.SETime)) {
@@ -351,9 +418,8 @@ class Line_Time_Data {
     }
 }
 
-//ラインデータ（地図データ）
 /**
- * Description placeholder (属性・地図データ用のライン情報)
+ * 属性データ・地図データで共有するライン情報です。
  */
 class strLine_Data {
     Number?: number;
@@ -366,6 +432,11 @@ class strLine_Data {
     LineTimeSTC: Line_Time_Data[] = [];
     PointSTC: point[] = [];
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製したライン情報です。
+     */
     Clone(): strLine_Data {
         const d = new strLine_Data();
         Object.assign(d, this);
@@ -376,19 +447,29 @@ class strLine_Data {
     }
 }
 
-//利用可能なライン（属性・地図データ）
 /**
- * Description placeholder
+ * オブジェクトで利用可能なライン種別情報です。
  */
 export class EnableMPLine_Data implements EnableMPLine {
     LineCode!: number;
     Kind!: number;
 
+    /**
+     * 利用可能ライン情報を初期化します。
+     *
+     * @param lcode ラインコードです。
+     * @param Kind 線種番号です。
+     */
     constructor(lcode?: number, Kind?: number) {
         this.LineCode = lcode ?? 0;
         this.Kind = Kind ?? 0;
     }
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した利用可能ライン情報です。
+     */
     Clone(): EnableMPLine_Data {
         const d = new EnableMPLine_Data();
         Object.assign(d, this);
@@ -397,7 +478,7 @@ export class EnableMPLine_Data implements EnableMPLine {
 }
 
 /**
- * Description placeholder
+ * 地図データの座標系設定です。
  */
 class Zahyo_info {
     Mode: number = 0; // enmZahyo_mode_info (デフォルト値を設定)
@@ -406,6 +487,11 @@ class Zahyo_info {
     Projection: number = 0; // enmProjection_Info (デフォルト値を設定)
     CenterXY: point = new point();
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した座標系設定です。
+     */
     Clone(): Zahyo_info {
         const d = new Zahyo_info();
         Object.assign(d, this);
@@ -415,7 +501,7 @@ class Zahyo_info {
 }
 
 /**
- * Description placeholder
+ * 地図ファイル全体のメタデータです。
  */
 class strMap_data {
     MPVersion?: number;
@@ -436,7 +522,7 @@ class strMap_data {
 }
 
 /**
- * Description placeholder
+ * 線種に紐付くオブジェクトグループ別設定です。
  */
 class strLKOjectGroup_Info {
     Name?: string;
@@ -446,6 +532,11 @@ class strLKOjectGroup_Info {
     ObjGroup?: strLKOjectGroup_Info[];
     NumofObjectGroup?: number;
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した線種オブジェクトグループ設定です。
+     */
     Clone(): strLKOjectGroup_Info {
         const d = new strLKOjectGroup_Info();
         Object.assign(d, this);
@@ -457,9 +548,8 @@ class strLKOjectGroup_Info {
     }
 }
 
-//線種名とパターン（地図データ）
 /**
- * Description placeholder
+ * 地図データの線種定義です。
  */
 class LineKind_Data {
     Name?: string;
@@ -467,6 +557,11 @@ class LineKind_Data {
     ObjGroup: strLKOjectGroup_Info[] = [];
     Mesh?: boolean;
 
+    /**
+     * データを複製します。
+     *
+     * @returns 複製した線種定義です。
+     */
     Clone(): LineKind_Data {
         const d = new LineKind_Data();
         Object.assign(d, this);
@@ -477,9 +572,8 @@ class LineKind_Data {
 
 
 
-//線種をオブジェクトグループ連動を個別に数えた場合に使用
 /**
- * Description placeholder
+ * オブジェクトグループ連動展開後の線種一覧要素です。
  */
 export class LPatSek_Info {
     LKind?: number;
@@ -488,7 +582,9 @@ export class LPatSek_Info {
     Pat: Line_Property = new Line_Property();
 }
 
-/** Description placeholder */
+/**
+ * 地図詳細設定のうち表示・計測可否を保持します。
+ */
 class Map_Detail_Data {
     DistanceMeasurable?: boolean;
     ScaleVisible?: boolean;
@@ -505,9 +601,7 @@ class Map_Detail_Data {
 
 
 /**
- * Description placeholder
- *
- * @returns 
+ * 地図データ本体を保持し、編集・判定処理を提供します。
  */
 class clsMapdata {
     Map: strMap_data;
@@ -523,7 +617,9 @@ class clsMapdata {
         this.Map = new strMap_data();
     }
 
-    //地図データを初期化
+    /**
+     * 地図データ全体を初期状態へ戻します。
+     */
     init_MapData() {
         this.ObjectKind = [];
         this.MPObj = [];
@@ -550,7 +646,14 @@ class clsMapdata {
         this.NoDataFlag = true;
     }
 
-    //初期属性データ項目を追加（時間属性設定なし）
+    /**
+     * オブジェクトグループへ初期属性項目を 1 件追加します。
+     *
+     * @param OBKNum 対象オブジェクトグループ番号です。
+     * @param title 項目名です。
+     * @param Unit 単位です。
+     * @param Note 注記です。
+     */
     Add_one_DefAttDataSet(OBKNum: number, title: string, Unit: string, Note: string) {
         const ok = this.ObjectKind[OBKNum];
         const def = new strMPObjDefTimeAttData_Info();
@@ -561,7 +664,9 @@ class clsMapdata {
         ok.DefTimeAttDataNum++;
     }
 
-    //方位記号の初期値設定
+    /**
+     * 方位記号の初期表示設定を作成します。
+     */
     init_Compass_First() {
         const mc = this.Map.MapCompass;
         mc.dirWord.North = "";
@@ -579,6 +684,11 @@ class clsMapdata {
         mc.Position = this.Get_Compass_Position_First_Position();
     }
 
+    /**
+     * 方位記号の初期配置位置を返します。
+     *
+     * @returns 地図範囲左上寄りの初期配置座標です。
+     */
     Get_Compass_Position_First_Position() {
         const mc = this.Map.Circumscribed_Rectangle;
         const pxy = new point();
@@ -587,14 +697,22 @@ class clsMapdata {
         return pxy;
     }
 
-    //オブジェクトグループの代表点の色の初期値を決める(同時に全部)
+    /**
+     * 全オブジェクトグループの初期色をまとめて設定します。
+     */
     Set_First_ObjectKind_Color() {
 
         for (let i = 0; i < this.Map.OBKNum; i++) {
             this.ObjectKind[i].Color = this.Set_First_ObjectKind_Color_Solo(i);
         }
     }
-    //オブジェクトグループの代表点の色の初期値を決める（一つずつ）
+
+    /**
+     * 1 つのオブジェクトグループに対する初期色を返します。
+     *
+     * @param ObkCode オブジェクトグループ番号です。
+     * @returns 初期色です。
+     */
     Set_First_ObjectKind_Color_Solo(ObkCode: number) {
         const Object_Color = [];
         Object_Color.push(new colorRGBA(0, 255, 0));
@@ -608,7 +726,12 @@ class clsMapdata {
         return col;
     }
 
-    //ラインの初期化
+    /**
+     * 新規ライン編集用の初期化済みライン情報を返します。
+     *
+     * @param LineKindNumber 初期線種番号です。
+     * @returns 初期化済みライン情報です。
+     */
     Init_One_Line(LineKindNumber: number) {
         const line = new strLine_Data();
         line.Number = -1;
@@ -621,7 +744,12 @@ class clsMapdata {
         return line;
     }
 
-    //初期化したオブジェクトを返す
+    /**
+     * 新規オブジェクト編集用の初期化済みオブジェクトを返します。
+     *
+     * @param ObjectKindNumber オブジェクトグループ番号です。
+     * @returns 初期化済みオブジェクトです。
+     */
     Init_One_Object(ObjectKindNumber: number) {
         const Obj = new strObj_Data();
         Obj.Number = -1;
@@ -651,6 +779,12 @@ class clsMapdata {
         return Obj;
     }
 
+    /**
+     * オブジェクトを保存し、必要なら外接矩形などを更新します。
+     *
+     * @param EditingObject 保存対象オブジェクトです。
+     * @param checkObjectmaxMinFlaf 最大最小範囲の再計算を行う場合は true です。
+     */
     Save_Object(EditingObject: strObj_Data, checkObjectmaxMinFlaf: boolean) {
 
         if (EditingObject.Number === -1) {
@@ -664,7 +798,14 @@ class clsMapdata {
         }
     }
 
-    //ライン登録
+    /**
+     * ラインを保存し、必要な関連判定を更新します。
+     *
+     * @param EditingLine 保存対象ラインです。
+     * @param checkRelatedLineFlag 関連ラインの接続再判定を行う場合は true です。
+     * @param checkRelatedObjectShapeFlag 関連オブジェクト形状を再判定する場合は true です。
+     * @param checkLineMaxMinFlag ライン外接矩形を再計算する場合は true です。
+     */
     Save_Line(EditingLine: strLine_Data, checkRelatedLineFlag: boolean, checkRelatedObjectShapeFlag: boolean, checkLineMaxMinFlag: boolean) {
         const SEpoint: point[] = [];
         let newf;
@@ -704,7 +845,12 @@ class clsMapdata {
         }
     }
 
-    //指定した起終点の座標のラインを検索し、結節関係をチェックする
+    /**
+     * 指定起終点に接するラインの接続状態を再計算します。
+     *
+     * @param SEpoint 比較に使う起終点配列です。
+     * @param exCode 除外するライン番号です。
+     */
     Check_Related_Line(SEpoint: point[], exCode: number) {
         const n = SEpoint.length;
         for (let i = 0; i < this.Map.ALIN; i++) {
@@ -730,8 +876,13 @@ class clsMapdata {
         }
     }
 
-    //指定したラインの他ラインとの接続状況を返す
-    //exclude_codeで、比較対象からはずすラインを指定できる
+    /**
+     * 指定ラインの接続状態を列挙型で返します。
+     *
+     * @param Line 判定対象ラインです。
+     * @param exclusion_code 比較対象から除外するライン番号です。
+     * @returns 接続状態です。
+     */
     Check_Line_Connect(Line: strLine_Data, exclusion_code = -1) {
         const ck = this.Check_Line_Connect_Detail(Line, exclusion_code);
         switch (ck) {
@@ -751,7 +902,13 @@ class clsMapdata {
         }
     }
 
-    //指定したラインの他ラインとの接続状況の詳細を返す
+    /**
+     * 指定ラインの接続状態を詳細コードで返します。
+     *
+     * @param Line 判定対象ラインです。
+     * @param exclusion_code 比較対象から除外するライン番号です。
+     * @returns 0 から 4 の詳細接続コードです。
+     */
     Check_Line_Connect_Detail(Line: strLine_Data, exclusion_code = -1) {
         if (Line.NumOfPoint === 0) {
             return 0;
@@ -784,7 +941,12 @@ class clsMapdata {
         return ret_v;
     }
 
-    //同じオブジェクトグループ名の番号を返す見つからなかった場合-1
+    /**
+     * 名前が一致するオブジェクトグループ番号を返します。
+     *
+     * @param Name 検索するオブジェクトグループ名です。
+     * @returns 一致したオブジェクトグループ番号です。未検出時は -1 です。
+     */
     Get_ObjectGroupNumber_By_Name(Name: string) {
         for (let i = 0; i < this.Map.OBKNum; i++) {
             if (this.ObjectKind[i].Name === Name) {
@@ -794,7 +956,11 @@ class clsMapdata {
         return -1;
     }
 
-    //Get_TotalLineKindのラインパターンを地図データの線種に設定する
+    /**
+     * 展開済み線種一覧のパターンを地図データ側へ反映します。
+     *
+     * @param LPC Get_TotalLineKind 相当の線種配列です。
+     */
     Set_TotalLineKind(LPC: Array<JsonObject>) { //LPatSek_Info
         let n = 0;
         for (let i = 0; i < this.Map.LpNum; i++) {
@@ -812,7 +978,13 @@ class clsMapdata {
         }
     }
 
-    //指定したオブジェクトグループのオブジェクトを抽出して配列に取得(時間指定)
+    /**
+     * 指定オブジェクトグループに属し、指定時点で有効なオブジェクト番号一覧を返します。
+     *
+     * @param ObjGroup 対象オブジェクトグループ番号です。
+     * @param Time 判定時点です。
+     * @returns 条件に一致したオブジェクト番号配列です。
+     */
     Get_Objects_by_Group(ObjGroup: number, Time: strYMD) {
         const Get_Objects = [];
         for (let i = 0; i < this.Map.Kend; i++) {
@@ -825,7 +997,11 @@ class clsMapdata {
         return Get_Objects;
     }
 
-    //地図データを指定の座標モードに変換 
+    /**
+     * 地図データ全体を指定座標系へ変換します。
+     *
+     * @param newMapZahyo 変換先の座標系設定です。
+     */
     Convert_ZahyoMode(newMapZahyo: Zahyo_info) {
         const m = this.Map;
         m.MapCompass.Position = spatial.Get_Reverse_and_Convert_XY(m.MapCompass.Position, m.Zahyo, newMapZahyo);
@@ -847,7 +1023,11 @@ class clsMapdata {
         m.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle();
     }
 
-    //地図ファイルの外接四角形を計算して返す
+    /**
+     * 地図ファイル全体の外接矩形を再計算して返します。
+     *
+     * @returns 全ラインと代表点を含む外接矩形です。
+     */
     Get_Mapfile_Rectangle() {
         let MapRec;
         const m = this.Map;
@@ -867,7 +1047,9 @@ class clsMapdata {
         return MapRec;
     }
 
-    //全てのオブジェクトの大きさを求める
+    /**
+     * 全オブジェクトの外接矩形を再計算します。
+     */
     Check_All_Obj_MaxMin() {
         const m = this.Map;
         for (let i = 0; i < m.Kend; i++) {
@@ -940,7 +1122,13 @@ class clsMapdata {
         return PointXY;
     }
     
-    //線種を一つ追加する
+    /**
+     * 線種を 1 件追加します。
+     *
+     * @param LineKindName 線種名です。
+     * @param LPat ラインパターンです。
+     * @param LMesh メッシュ用線種かどうかです。
+     */
     Add_OneLineKind(LineKindName: string, LPat: Line_Property, LMesh: boolean) {
         this.LineKind.push(this.Get_OneLineKind_Parameter(LineKindName, LPat, LMesh));
         this.Map.LpNum++;
@@ -949,6 +1137,14 @@ class clsMapdata {
         }
     }
 
+    /**
+     * 線種 1 件分の初期パラメータを生成します。
+     *
+     * @param LineKindName 線種名です。
+     * @param LPat ラインパターンです。
+     * @param LMesh メッシュ用線種かどうかです。
+     * @returns 初期化済み線種定義です。
+     */
     Get_OneLineKind_Parameter(LineKindName: string, LPat: Line_Property, LMesh: boolean) {
         const Lkind = new LineKind_Data();
         Lkind.ObjGroup = [];
@@ -960,7 +1156,14 @@ class clsMapdata {
         return Lkind;
     }
 
-    //オブジェクトグループの追加
+    /**
+     * オブジェクトグループを 1 件追加します。
+     *
+     * @param Name グループ名です。
+     * @param Shape 形状種別です。
+     * @param Mesh メッシュ系グループかどうかです。
+     * @param type オブジェクトグループ種別です。
+     */
     Add_OneObjectGroup_Parameter(Name: string, Shape: number, Mesh: boolean, type: number) {
         const Okind = this.Get_OneObjectGroup_Parameter(Name, Shape, this.Map.OBKNum, this.Map.LpNum, Mesh, type);
         this.ObjectKind.push(Okind);
@@ -972,7 +1175,17 @@ class clsMapdata {
         this.Map.OBKNum++;
     }
 
-    //新規オブジェクトグループパラメータの取得
+    /**
+     * 新規オブジェクトグループの初期パラメータを生成します。
+     *
+     * @param Name グループ名です。
+     * @param Shape 形状種別です。
+     * @param ObkNum 現在のオブジェクトグループ数です。
+     * @param LpNum 現在の線種数です。
+     * @param Mesh メッシュ系グループかどうかです。
+     * @param type オブジェクトグループ種別です。
+     * @returns 初期化済みオブジェクトグループ定義です。
+     */
     Get_OneObjectGroup_Parameter(Name: string, Shape: number, ObkNum: number, LpNum: number, Mesh: boolean, type: number) {
         const Okind = new strObjectGroup_Data();
         Okind.Color = clsBase.ColorWhite();//マップエディタがないので設定不要
@@ -993,7 +1206,9 @@ class clsMapdata {
         return Okind;
     }
 
-    //Y座標を反転
+    /**
+     * 地図データ全体の Y 座標を反転します。
+     */
     YReverse() {
 
         this.Map.Circumscribed_Rectangle.top = -this.Map.Circumscribed_Rectangle.top;
@@ -1018,7 +1233,9 @@ class clsMapdata {
         }
     }
 
-    //座標値が緯度経度そのままの地図データを、投影変換後の座標に変換する
+    /**
+     * 緯度経度をそのまま保持している地図データを投影変換済み座標へ置き換えます。
+     */
     MapLatLon_Zahyo_convert() {
         const XY_Rect = this.Get_Mapfile_Rectangle();
         this.Map.SCL = 1;
@@ -1056,6 +1273,9 @@ class clsMapdata {
         this.Map.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle();
     }
 
+    /**
+     * 面オブジェクトの代表点を重心から再計算します。
+     */
     GetObjectGravity_All() {
         for (let i = 0; i < this.Map.Kend; i++) {
             const mo = this.MPObj[i];
@@ -1071,7 +1291,14 @@ class clsMapdata {
             this.Check_Obj_Maxmin(mo, false);
         }
     }
-    //オブジェクトの重心を求める。面形状でない場合はundefinedを返す
+
+    /**
+     * 面オブジェクトの重心を求めます。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @param L_Time 判定時点です。
+     * @returns 重心座標です。ポリゴン外に補正不能な場合は false、面でない場合は undefined です。
+     */
     GetObjGraviityXY(ObjData: strObj_Data, L_Time: strYMD): point | false | undefined {
         if (ObjData.Shape !== enmShape.PolygonShape) {
             //ポリゴンでない場合は求めない
@@ -1125,6 +1352,12 @@ class clsMapdata {
         return GPoint;
     }
 
+    /**
+     * オブジェクト 1 件の外接矩形を再計算し、必要に応じて地図全体範囲も更新します。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @param MapRectCheckF 地図全体の外接矩形更新も行う場合は true です。
+     */
     Check_Obj_Maxmin(ObjData: strObj_Data, MapRectCheckF: boolean) {
         const oldObjRect = ObjData.Circumscribed_Rectangle;
         let Obj_rect = new rectangle();
@@ -1156,6 +1389,13 @@ class clsMapdata {
             this.Check_MapCircumscribedRectangle(oldObjRect, Obj_rect);
         }
     }
+
+    /**
+     * 更新前後の矩形から地図全体の外接矩形を調整します。
+     *
+     * @param oldRect 更新前の矩形です。
+     * @param newRect 更新後の矩形です。
+     */
     Check_MapCircumscribedRectangle(oldRect: rectangle, newRect: rectangle) {
         if (spatial.Compare_Two_Rectangle_Position(this.Map.Circumscribed_Rectangle, newRect) !== cstRectangle_Cross.cstInclusion) {
             //内部に含まれない場合はUNIONで外接四角形を求める
@@ -1169,6 +1409,9 @@ class clsMapdata {
         }
     }
 
+    /**
+     * 全ラインの外接矩形を再計算します。
+     */
     Checl_All_Line_Maxmin() {
         const m = this.Map;
         for (let i = 0; i < m.ALIN; i++) {
@@ -1176,7 +1419,12 @@ class clsMapdata {
         }
     }
 
-    //指定したラインコードの外接四角形を求める
+    /**
+     * 指定ラインの外接矩形を再計算します。
+     *
+     * @param Lcode ラインコードです。
+     * @param MapRectCheckF 地図全体の外接矩形更新も行う場合は true です。
+     */
     Check_Line_Maxmin(Lcode: number, MapRectCheckF: boolean) {
         const oldRect = this.MPLine[Lcode].Circumscribed_Rectangle;
         this.MPLine[Lcode].Circumscribed_Rectangle = spatial.getCircumscribedRectangle(this.MPLine[Lcode].PointSTC, undefined);
@@ -1186,11 +1434,14 @@ class clsMapdata {
 
     }
 
-    //選択したオブジェクトグループ同士が同じかどうかを調べる
-    // <param name="ObjSel">選択したオブジェクトグループにtrue</param>
-    // <param name="Emes">エラーメッセージ（戻り値）</param>
-    // <param name="check_objType">オブジェクトのタイプをチェックする場合true</param>
-    // <param name="check_objNameListNum">オブジェクト名リストの数をチェックする場合true</param>
+    /**
+     * 選択されたオブジェクトグループ群が同種設定かを検査します。
+     *
+     * @param ObjSel 選択対象のオブジェクトグループ配列です。
+     * @param check_objType オブジェクト種別も比較する場合は true です。
+     * @param check_objNameListNum オブジェクト名リスト数と内容も比較する場合は true です。
+     * @returns 不一致時のエラーメッセージです。一致する場合は空文字です。
+     */
     Check_Selected_ObjectGroup_Same(ObjSel: boolean[], check_objType: boolean, check_objNameListNum: boolean) {
         // let f = true;
         let Emes = "";
@@ -1249,14 +1500,25 @@ class clsMapdata {
         return Emes;
     }
 
-    //指定したオブジェクトの境界線を面領域を描くような順番に並べ替える
+    /**
+     * 指定オブジェクトの境界線を面を描く順序へ並べ替えます。
+     *
+     * @param ObjData_objNum オブジェクト番号またはオブジェクトです。
+     * @param Time 判定時点です。
+     * @returns 並べ替え済み境界線情報です。
+     */
     Boundary_Arrange(ObjData_objNum: number | strObj_Data, Time: strYMD) {
         const ELine = this.Get_EnableMPLine(ObjData_objNum, Time)
         const boundArrange = this.Boundary_Arrange_Sub(ELine);
         return boundArrange;
     }
 
-    //オブジェクトの使用するラインの境界線を面領域を描くような順番に並べ替える
+    /**
+     * 指定ライン群を面を描く順序へ並べ替えます。
+     *
+     * @param ELine 対象ライン群です。
+     * @returns 並べ替え済み境界線情報です。
+     */
     Boundary_Arrange_Sub(ELine: EnableMPLine_Data[]): boundArrangeData {
         const boundArrange: boundArrangeData = new boundArrangeData();
         const NL = ELine.length;
@@ -1288,7 +1550,12 @@ class clsMapdata {
         return result as boundArrangeData;
     }
 
-    //指定したラインコードがループでない場合は－１、ループの場合は面積を返す
+    /**
+     * 指定ラインが閉ループなら面積を返します。
+     *
+     * @param L_Code ラインコードです。
+     * @returns ループ時の面積、ループでない場合は -1 です。
+     */
     Get_LoopLine_Menseki(L_Code: number) {
         const ml = this.MPLine[L_Code];
         let men;
@@ -1307,7 +1574,13 @@ class clsMapdata {
         return men;
     }
 
-    //指定したオブジェクトの面積を重心付きで返す
+    /**
+     * 指定オブジェクトの面積を重心付きで返します。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @param L_Time 判定時点です。
+     * @returns 面積と重心、面を構成できない場合は -1 です。
+     */
     Menseki(ObjData: strObj_Data,  L_Time: strYMD): MensekiResult | -1 {
         const badata = this.Boundary_Arrange(ObjData, L_Time);
         if (badata.Pon <= 0) {
@@ -1317,6 +1590,12 @@ class clsMapdata {
         }
     }
 
+    /**
+     * 境界線配列からポリゴンごとの面積だけを計算します。
+     *
+     * @param badata 境界線整列結果です。
+     * @returns 中抜きを考慮した総面積です。
+     */
     Menseki_sub2(badata: boundArrangeData) {
         const Pon = badata.Pon;
         const Arrange_LineCode = badata.Arrange_LineCode;
@@ -1349,7 +1628,12 @@ class clsMapdata {
         return m as number;
     }
 
-    //ポリゴンごとの面積を求めて、中抜け等を判定して全体の面積を返す（重心つき）
+    /**
+     * ポリゴンごとの面積と包含関係から総面積と代表重心を求めます。
+     *
+     * @param badata 境界線整列結果です。
+     * @returns 総面積と代表重心です。
+     */
     Menseki_Sub(badata: boundArrangeData): MensekiResult {
         // if ((GXY instanceof boundArrangeData) === true) {
         //     return this.Menseki_sub2(GXY);
@@ -1429,7 +1713,15 @@ class clsMapdata {
         return {menseki:m,gpoint:GXY};
     }
 
-    //ある地点がオブジェクトの外接四角形に入るかどうかを調べ、さらに面オブジェクトの中かどうかを調べる
+    /**
+     * 指定点がオブジェクト内部に含まれるかを判定します。
+     *
+     * @param Obj_ObjNumber 対象オブジェクト番号またはオブジェクトです。
+     * @param x 判定 X 座標です。
+     * @param y 判定 Y 座標です。
+     * @param LAY_Time 判定時点です。
+     * @returns オブジェクト内部に含まれる場合は true です。
+     */
     Check_Point_in_OneObject(Obj_ObjNumber: number | strObj_Data, x: number, y: number, LAY_Time: strYMD) {
         let obj;
         if ((typeof Obj_ObjNumber) === 'number') {
@@ -1451,7 +1743,14 @@ class clsMapdata {
         }
     }
 
-    //ある地点がオブジェクトの外接四角形に入るかどうかを調べる
+    /**
+     * 指定点がオブジェクトの外接矩形に含まれるかを判定します。
+     *
+     * @param Obj_ObjNumber 対象オブジェクト番号またはオブジェクトです。
+     * @param x 判定 X 座標です。
+     * @param y 判定 Y 座標です。
+     * @returns 外接矩形内なら true です。
+     */
     Check_Point_in_oneObject_Box(Obj_ObjNumber: number | strObj_Data, x: number, y: number) {
         let obj;
         if ((typeof Obj_ObjNumber) === 'number') {
@@ -1468,7 +1767,13 @@ class clsMapdata {
         return f;
     }
 
-    //一つのオブジェクト内のポリゴンの包含関係を返す
+    /**
+     * 1 オブジェクト内の複数ポリゴンについて包含関係を判定します。
+     *
+     * @param badata 境界線整列結果です。
+     * @param TotalInOutNum 各ポリゴンが他ポリゴンに含まれる回数の出力先です。
+     * @returns 包含関係行列です。
+     */
     Object_Polygon_InOut(badata: boundArrangeData, TotalInOutNum: number[]) {
         const Polygon_Num = badata.Pon;
         const Arrange_LineCode = badata.Arrange_LineCode;
@@ -1542,10 +1847,18 @@ class clsMapdata {
         return { ok: result.ok, CrossPoint_X: result.CrossPoint_X || [] };
     }
 
-    //オブジェクト内のポリゴンごとの連続した座標を取得する
-    //poxy座標列（戻り値）
-    //Equal_XY_Get_F前後の座標が同一の場合にも座標を取得する場合はtrue
-    //getStep座標取得間隔（1,2,3,4等）
+    /**
+     * オブジェクト内の指定ポリゴンを連続座標列として取得します。
+     *
+     * @param Num ポリゴン番号です。
+     * @param Get_Coords_Data 取得座標種別です。
+     * @param Arrange_LineCode ポリゴンごとの並び替えライン情報です。
+     * @param Fringe 境界線並び情報です。
+     * @param poxy 取得座標列の出力先です。
+     * @param Equal_XY_Get_F 連続重複点も保持する場合は true です。
+     * @param getStep 座標取得間隔です。
+     * @returns 取得した座標数です。
+     */
     Get_Object_Polygon_Coords(Num: number, Get_Coords_Data: number, Arrange_LineCode: number[][], Fringe: Fringe_Line_Info[], poxy: point[], Equal_XY_Get_F: boolean, getStep: number) {
         //Get_Coords_Data
         //0:座標値そのもの
@@ -1578,7 +1891,14 @@ class clsMapdata {
         return n
     }
 
-    // Arrange_LineCodeの指定したポリゴンのポイント数を返す
+    /**
+     * 指定ポリゴンを構成する総ポイント数を返します。
+     *
+     * @param Num ポリゴン番号です。
+     * @param Arrange_LineCode ポリゴンごとの並び替えライン情報です。
+     * @param Fringe 境界線並び情報です。
+     * @returns 総ポイント数です。
+     */
     Get_Object_Polygon_Points(Num: number, Arrange_LineCode: number[][], Fringe: Fringe_Line_Info[]) {
         let Pnum = 0;
         for (let i = 0; i < Arrange_LineCode[Num][1]; i++) {
@@ -1589,7 +1909,16 @@ class clsMapdata {
 
     }
 
-    //指定したライン番号の世界測地系緯度経度などをを取得する
+    /**
+     * 指定ラインの座標列を取得種別に応じて返します。
+     *
+     * @param LCode ラインコードです。
+     * @param Get_Coords_Data 取得座標種別です。
+     * @param P_Dir 取得方向です。1 は順方向、-1 は逆方向です。
+     * @param XYS 出力先座標配列です。
+     * @param getStep 座標取得間隔です。
+     * @returns 取得した座標数です。
+     */
     Get_Coords_by_LineCode(LCode: number, Get_Coords_Data: number, P_Dir: number, XYS: point[], getStep: number) {
         let fs;
         let fe;
@@ -1656,7 +1985,13 @@ class clsMapdata {
         return n
     }
 
-    //指定されたオブジェクトで、指定された時期に使用可能なライン番号を返す
+    /**
+     * 指定オブジェクトで指定時点に使用可能なライン一覧を返します。
+     *
+     * @param ObjData_objNum 対象オブジェクト番号またはオブジェクトです。
+     * @param Time 判定時点です。
+     * @returns 利用可能ライン一覧です。
+     */
     Get_EnableMPLine(ObjData_objNum: number | strObj_Data, Time: strYMD): EnableMPLine_Data[] {
         let ObjData: strObj_Data;
         if ((ObjData_objNum instanceof strObj_Data) === false) {
@@ -1686,13 +2021,25 @@ class clsMapdata {
         return LCode;
     }
 
-    //集成オブジェクトを構成する元のオブジェクト番号を取得
+    /**
+     * 集成オブジェクトを構成する元オブジェクト番号一覧を返します。
+     *
+     * @param ObjData 対象集成オブジェクトです。
+     * @param Time 判定時点です。
+     * @returns 構成元オブジェクト番号配列です。
+     */
     Get_MpObj_used_AggregateObject(ObjData: strObj_Data, Time: strYMD): number[] {
         this.Enable_MPObjStac = [];
         this.Get_MpObj_used_AggregateObject_Sub(ObjData, Time)
         return this.Enable_MPObjStac;
     }
-    //集成オブジェクトを構成する元のオブジェクト番号を取得、再帰処理を行う
+
+    /**
+     * 集成オブジェクトの構成元を再帰的に収集します。
+     *
+     * @param ObjData 対象集成オブジェクトです。
+     * @param Time 判定時点です。
+     */
     Get_MpObj_used_AggregateObject_Sub(ObjData: strObj_Data, Time: strYMD) {
         for (let i = 0; i < ObjData.NumOfLine; i++) {
             const lc = this.Check_Enable_LineCode(ObjData.LineCodeSTC[i], Time)
@@ -1708,7 +2055,13 @@ class clsMapdata {
         }
     }
 
-    //ラインコードスタックのラインが指定時期に利用できるかをチェック、利用できる場合はラインコード番号を返し，そうでない場合は－１を返す
+    /**
+     * ラインコードスタックが指定時点で有効かを判定します。
+     *
+     * @param Lcode_Stac 判定対象のラインコード情報です。
+     * @param Time 判定時点です。
+     * @returns 有効なラインコード、無効な場合は -1 です。
+     */
     Check_Enable_LineCode(Lcode_Stac: LineCodeStac_Data, Time: strYMD): number {
         if ((Lcode_Stac.NumOfTime === 0) || (Time.nullFlag() === true)) {
             return Lcode_Stac.LineCode ?? -1;
@@ -1721,7 +2074,14 @@ class clsMapdata {
         }
         return -1;
     }
-    //ラインが指定時期に利用できるかをチェック,利用できる場合は線種番号そうでない場合は-1を返す
+
+    /**
+     * ラインが指定時点で有効な線種を返します。
+     *
+     * @param MpLine 判定対象ラインです。
+     * @param Check_Time 判定時点です。
+     * @returns 有効な線種番号、無効な場合は -1 です。
+     */
     Check_Enable_Line(MpLine: strLine_Data, Check_Time: strYMD) {
         let L_K = -1;
         if (Check_Time.nullFlag() === true) {
@@ -1737,7 +2097,13 @@ class clsMapdata {
         return L_K;
     }
 
-    //指定したオブジェクトで、指定した時間に利用できるライン番号を戻し、その要素を返す
+    /**
+     * 通常オブジェクトで指定時点に有効なライン一覧を返します。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @param Time 判定時点です。
+     * @returns 利用可能ライン一覧です。オブジェクト自体が無効な場合は undefined です。
+     */
     Get_EnableMPLine_Normal(ObjData: strObj_Data, Time: strYMD): EnableMPLine_Data[] | undefined {
         const Enable_LCode = [];
         if (Time.nullFlag() === true) {
@@ -1784,7 +2150,13 @@ class clsMapdata {
 
 
 
-    //指定した時間に指定したオブジェクトが存在する場合trueを返す
+    /**
+     * 指定時点にオブジェクトが有効かを判定します。
+     *
+     * @param ObjData 判定対象オブジェクトです。
+     * @param Time 判定時点です。
+     * @returns 有効期間に含まれる場合は true です。
+     */
     CheckEnableObject(ObjData: strObj_Data, Time: strYMD) {
         if (!ObjData) {
             return false;
@@ -1799,7 +2171,11 @@ class clsMapdata {
         return false;
     }
 
-    //指定したオブジェクトグループの初期属性をすべて削除
+    /**
+     * 指定オブジェクトグループの初期属性定義をすべて削除します。
+     *
+     * @param objG 対象オブジェクトグループ番号です。
+     */
     DeleteAllDefAttrData(objG: number) {
         this.ObjectKind[objG].DefTimeAttDataNum = 0;
         this.DefTimeAttSTC = [];
@@ -1810,7 +2186,11 @@ class clsMapdata {
         }
     }
 
-    //線種で、オブジェクトグループ連動型も一つとして数えて情報を返す
+    /**
+     * オブジェクトグループ連動型を展開した線種一覧を返します。
+     *
+     * @returns 展開済み線種一覧です。
+     */
     Get_TotalLineKind(): LPatSek_Info[] {
         const LPC: LPatSek_Info[] = [];
         for (let i = 0; i < this.Map.LpNum; i++) {
@@ -1827,7 +2207,11 @@ class clsMapdata {
         return LPC;
     }
 
-    //オブジェクトグループ連動型も一つとして数えて線種の数を返す
+    /**
+     * オブジェクトグループ連動型を含めた総線種数を返します。
+     *
+     * @returns 展開後の線種数です。
+     */
     Get_TotalLineKind_Num() {
         let PatNum = 0;
         for (let i = 0; i < this.Map.LpNum; i++) {
@@ -1835,7 +2219,15 @@ class clsMapdata {
         }
         return PatNum;
     }
-    //オブジェクトの初期属性データ取得。時期がはずれてデータが取得できない場合はundefined
+
+    /**
+     * 指定オブジェクトの初期属性値を時点条件込みで取得します。
+     *
+     * @param ObjCode オブジェクト番号です。
+     * @param defNumber 属性項目番号です。
+     * @param Time 取得時点です。
+     * @returns 取得した属性値です。条件に一致しない場合は undefined です。
+     */
     Get_DefTimeAttrValue(ObjCode: number, defNumber: number, Time: strYMD) {
         const ob = this.MPObj[ObjCode];
         if (!ob) {
@@ -1960,7 +2352,17 @@ class clsMapdata {
         }
     }
 
-    /**オブジェクト番号で指定、'線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、 */
+    /**
+     * 2 つのオブジェクト間距離を求めます。
+     *
+     * 線オブジェクトと面・点オブジェクトの組み合わせでは、線と代表点の最短距離を使います。
+     *
+     * @param O_Code1 1 つ目のオブジェクト番号です。
+     * @param O_Code2 2 つ目のオブジェクト番号です。
+     * @param Time1 1 つ目の判定時点です。
+     * @param Time2 2 つ目の判定時点です。
+     * @returns 計算した距離です。
+     */
     Distance_Object(O_Code1: number, O_Code2: number, Time1: strYMD, Time2: strYMD) {
         let P1;
         let P2;
@@ -1986,6 +2388,14 @@ class clsMapdata {
         return d;
     }
 
+    /**
+     * 指定中心点とオブジェクトの距離を求めます。
+     *
+     * @param CP 基準となる中心点です。
+     * @param O_Code1 対象オブジェクト番号です。
+     * @param Time1 判定時点です。
+     * @returns 計算した距離です。
+     */
     Distance_ObjectCenterP(CP: point, O_Code1: number,  Time1: strYMD) {
         let d;
         if (this.MPObj[O_Code1].Shape === enmShape.LineShape) {
@@ -2002,12 +2412,26 @@ class clsMapdata {
         return d;
     }
 
-    /**オブジェクトの線とある地点との距離を求める */
+    /**
+     * 線オブジェクトと指定点の最短距離を求めます。
+     *
+     * @param Ocode 対象オブジェクト番号です。
+     * @param Time 判定時点です。
+     * @param P 基準点です。
+     * @returns 最短距離です。
+     */
     Get_Distance_Between_ObjectLine_and_Point(Ocode: number,  Time: strYMD,  P: point){
         const ELine=this.Get_EnableMPLine(this.MPObj[Ocode], Time);
         return this.Distance_PointMPLineAllay(P,  ELine)
     }
 
+    /**
+     * 指定点とライン集合との最短距離を求めます。
+     *
+     * @param P 基準点です。
+     * @param LCode 対象ライン集合です。
+     * @returns 最短距離です。
+     */
     Distance_PointMPLineAllay(P: point, LCode: EnableMPLine_Data[]) {
         let mind;
         let f = false;
@@ -2040,7 +2464,11 @@ class clsMapdata {
     }
 
 
-    /**ライン中の同一座標の連続を削除 */
+    /**
+     * ライン中で連続する同一点を削除します。
+     *
+     * @param Linenum 対象ライン番号です。
+     */
     DeleteSamePoints_inLine(Linenum: number) {
 
         const ml = this.MPLine[Linenum];
@@ -2059,7 +2487,12 @@ class clsMapdata {
         }
     }
 
-/** 指定された線の共通部分を抽出して、位相構造化する。変更があった場合trueを返す */
+    /**
+     * 指定ライン群の共通部分を抽出して位相構造化します。
+     *
+     * @param TopologyLineList 対象ライン番号一覧です。未指定時は全ラインを対象にします。
+     * @returns ライン構成に変更があった場合は true です。
+     */
     TopologyStructure_SameLine(TopologyLineList: number[]) {
         if (TopologyLineList === undefined) {
             //全ライン
@@ -2114,7 +2547,13 @@ class clsMapdata {
         return Result;
     }
 
-    /**二つの線ラインの共通部分を抽出して、位相構造化する。共通部分があればtrueを返す */
+    /**
+     * 2 本のラインの共通部分を抽出して位相構造化します。
+     *
+     * @param LCode1 1 本目のライン番号です。
+     * @param LCode2 2 本目のライン番号です。
+     * @returns 共通部分が見つかり再構成が行われた場合は true です。
+     */
     TopologyStructure_Two_SameLine(LCode1: number, LCode2: number) {
 
         const mLine1 = this.MPLine[LCode1];
@@ -2176,6 +2615,19 @@ class clsMapdata {
         return f;
     }
 
+    /**
+     * 2 本のラインの一致区間を切り出して再構成します。
+     *
+     * @param LCode1 1 本目のライン番号です。
+     * @param LCode2 2 本目のライン番号です。
+     * @param PNum1 1 本目のポイント数です。
+     * @param PNum2 2 本目のポイント数です。
+     * @param S1 1 本目の一致開始位置です。
+     * @param s2 2 本目の一致開始位置です。
+     * @param XYstac1 1 本目の座標列です。
+     * @param XYstac2 2 本目の座標列です。
+     * @returns 再構成が行われた場合は true です。
+     */
     TopologyStructure_Two_SameLine_Check(LCode1: number, LCode2: number, PNum1: number, PNum2: number, S1: number, s2: number, XYstac1: point[], XYstac2: point[]) {
 
         const NewPnum1: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] } = { A: 0, B: 0, NewXYstacA: [], NewXYstacB: [] };
@@ -2329,7 +2781,15 @@ class clsMapdata {
         return true;
     }
 
-    /**一致する箇所でラインを分断する */
+    /**
+     * 一致区間でラインを分割したときの前後パーツを生成します。
+     *
+     * @param Start_JointPoint 一致開始位置です。
+     * @param JointNum 一致区間長です。
+     * @param OldPNum 元ラインのポイント数です。
+     * @param NewPnum 分割後情報の出力先です。
+     * @param OldXY 元ライン座標列です。
+     */
     private TopologyStructure_Two_SameLine_Cutsub(Start_JointPoint: number, JointNum: number, OldPNum: number, NewPnum: { A: number, B: number, NewXYstacA: point[], NewXYstacB: point[] },
         OldXY: point[]) {
 
@@ -2435,7 +2895,19 @@ class clsMapdata {
 
     }
 
-    /**一致するポイントを追跡する */
+    /**
+     * 2 本のライン上で連続一致するポイント数を追跡します。
+     *
+     * @param S1 1 本目の開始位置です。
+     * @param s2 2 本目の開始位置です。
+     * @param ip 1 本目の進行方向です。
+     * @param jp 2 本目の進行方向です。
+     * @param PNum1 1 本目のポイント数です。
+     * @param PNum2 2 本目のポイント数です。
+     * @param XYstac1 1 本目の座標列です。
+     * @param XYstac2 2 本目の座標列です。
+     * @returns 連続一致したポイント数です。
+     */
     private TopologyStructure_Two_SameLine_sub(S1: number, s2: number, ip: number, jp: number, PNum1: number, PNum2: number, XYstac1: point[], XYstac2: point[]) {
 
         let i = S1;
@@ -2480,12 +2952,24 @@ class clsMapdata {
         return n;
     }
 
-    /**ラインがループの場合trueを返す */
+    /**
+     * 指定ラインが閉ループかを判定します。
+     *
+     * @param LCode ライン番号です。
+     * @returns 始点と終点が一致する場合は true です。
+     */
     Check_Line_Loop(LCode: number){
         const ml = this.MPLine[LCode];
         return ml.PointSTC[0].Equals(ml.PointSTC[ml.NumOfPoint - 1]);
     }
 
+    /**
+     * 2 本のラインが完全に同一かを判定します。
+     *
+     * @param LC1 1 本目のライン番号です。
+     * @param LC2 2 本目のライン番号です。
+     * @returns 完全一致する場合は true です。
+     */
     Check_Points_Of_Two_Lines(LC1: number, LC2: number) {
         const mLine1 = this.MPLine[LC1];
         const mLine2 = this.MPLine[LC2];
@@ -2575,13 +3059,16 @@ class clsMapdata {
         this.Check_Related_Line(SEpoint, -1);
     }
 
-    /**複数のラインを削除 */
-    // <param name="LNum">削除するライン数</param>
-    // <param name="LCode">ライン番号配列</param>
-    // <param name="UsedLine_Delete_F">ラインがオブジェクトに使用されていても削除する場合、true</param>
-    // <param name="Check_ObjectShape_F">ラインを使用するオブジェクトの形状を削除後にチェックする場合true</param>
-    // <param name="MapRectCheckF">地図データ全体の外接四角形をチェックするか</param>
-    // <returns>実際に削除したライン番号の配列</returns>
+    /**
+     * 複数ラインを削除し、必要な参照更新を行います。
+     *
+     * @param LNum 削除対象ライン数です。
+     * @param LCode 削除対象ライン番号配列です。
+     * @param UsedLine_Delete_F 使用中ラインも削除する場合は true です。
+     * @param Check_ObjectShape_F 削除後にオブジェクト形状を再判定する場合は true です。
+     * @param MapRectCheckF 地図全体の外接矩形も更新する場合は true です。
+     * @returns 実際に削除したライン番号配列です。
+     */
     Erase_MultiLine(LNum: number, LCode: number[], UsedLine_Delete_F: boolean, Check_ObjectShape_F: boolean, MapRectCheckF: boolean) {
 
         const C_Mpline = [];
@@ -2647,15 +3134,13 @@ class clsMapdata {
         }
         return RealDeleteLineCode;
     }
-    //*************************************************************************************** */
-    // <summary>
-    // 
-    // </summary>
-    // <param name="ObjData">オブジェクト</param>
-    // <param name="CutPoint">切れ目の地図座標を返す。必要ない場合は省略化</param>
-    // <returns></returns>
-    // <remarks></remarks>
-    /**全期間を通したオブジェクトの形状をチェック */
+
+    /**
+     * 全期間を通してオブジェクトの代表形状を判定します。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @returns 判定した形状種別です。
+     */
     Check_Obj_Shape_AllTime(ObjData: strObj_Data, /* CutPoint: point | undefined = undefined */) {
         //オブジェクト名の有効期間の開始と終了時期での形状チェック
 
@@ -2760,14 +3245,13 @@ class clsMapdata {
     }
 
 
-    // <summary>
-    // オブジェクトの形状を返す。CutX,yで切れ目の座標を返す
-    // </summary>
-    // <param name="ObjData">オブジェクト</param>
-    // <param name="L_Time">時期</param>
-    // <param name="CutPoint">切れ目の地図座標</param>
-    // <returns></returns>
-    // <remarks></remarks>
+    /**
+     * 指定時点でのオブジェクト形状を判定します。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @param L_Time 判定時点です。
+     * @returns 判定した形状種別です。
+     */
     Check_Obj_Shape_Cut(ObjData: strObj_Data, L_Time: strYMD, /* CutPoint: point */) {
         if (this.ObjectKind[ObjData.Kind].ObjectType === enmObjectGoupType_Data.AggregationObject) {
             //集成オブジェクトタイプの場合
@@ -2798,14 +3282,13 @@ class clsMapdata {
         }
     }
 
-    // <summary>
-    // オブジェクトを構成するポリゴン数を数えて返す
-    // </summary>
-    // <param name="ObjData">オブジェクト</param>
-    // <param name="L_Time"></param>
-    // <param name="CutPoint">切れ目の地図座標(戻り値)</param>
-    // <returns></returns>
-    // <remarks></remarks>
+    /**
+     * 指定時点でオブジェクトを構成するポリゴン数を数えます。
+     *
+     * @param ObjData 対象オブジェクトです。
+     * @param L_Time 判定時点です。
+     * @returns ポリゴン数です。ラインのみなら 0、構成できない場合は -1 です。
+     */
     Check_PolyShape_PolygonNum( ObjData: strObj_Data ,  L_Time: strYMD , /* CutPoint: point | undefined  = undefined */) {
 
         const ELine  = this.Get_EnableMPLine( ObjData, L_Time);
@@ -2881,6 +3364,9 @@ class clsMapdata {
         return polyn;
     }
 
+    /**
+     * 全ラインの接続状態を再計算します。
+     */
     Check_ALl_Line_Connect() {
         const PointIndex = new SpatialIndexSearch(SpatialPointType.SinglePoint, false);
         for (let i = 0; i < Map.ALIN; i++) {
@@ -2913,7 +3399,14 @@ class clsMapdata {
             }
         }
     }
-    //指定した時間のオブジェクトの代表点を取得、取得できない場合はundefinedを返す
+
+    /**
+     * 指定時点で有効なオブジェクト代表点を取得します。
+     *
+     * @param ObjInfo 対象オブジェクト番号またはオブジェクトです。
+     * @param Time 判定時点です。
+     * @returns 代表点座標です。取得できない場合は undefined です。
+     */
     Get_Enable_CenterP(ObjInfo: number | strObj_Data, Time: strYMD) {
         let ObjData;
         if (typeof ObjInfo === 'number') {
@@ -2933,14 +3426,25 @@ class clsMapdata {
         return undefined;
     }
 
-    /**位相構造化したラインを使用するオブジェクトの修正 */
+    /**
+     * 位相構造化で生成したラインを使うようオブジェクト参照を補正します。
+     *
+     * @param Search_LineCode 置換元ラインコードです。
+     * @param Add_LineCode 追加先ラインコードです。
+     */
     Topology_Line_Object_Shori(Search_LineCode: number, Add_LineCode: number) {
         const Add_LineCode_Stac = [];
         Add_LineCode_Stac[0] = Add_LineCode;
         this.Object_LineCode_Add(Search_LineCode, 1, Add_LineCode_Stac);
     }
 
-    /**切断したラインを使用するオブジェクトの修正 */
+    /**
+     * ライン切断で増えたライン群を使うようオブジェクト参照を補正します。
+     *
+     * @param Search_LineCode 置換元ラインコードです。
+     * @param ODALIN 追加ライン開始番号です。
+     * @param num 追加ライン本数です。
+     */
     Cut_Line_Object_Shori(Search_LineCode: number, ODALIN: number, num: number){
         const Add_LineCode = [];
         for (let i = 0; i < num; i++) {
@@ -2948,7 +3452,14 @@ class clsMapdata {
         }
         this.Object_LineCode_Add(Search_LineCode, num, Add_LineCode);
     }
-    /**切断したラインを使用するオブジェクトの修正 */
+
+    /**
+     * 指定ラインを参照するオブジェクトへ追加ライン参照を複製します。
+     *
+     * @param Search_LineCode 検索する元ラインコードです。
+     * @param AddLineNum 追加ライン本数です。
+     * @param Add_LineCode 追加するラインコード配列です。
+     */
     Object_LineCode_Add(Search_LineCode: number, AddLineNum: number, Add_LineCode: number[]){
         for (let i = 0; i < this.Map.Kend; i++) {
             const mo = this.MPObj[i];
@@ -2968,7 +3479,13 @@ class clsMapdata {
         }
     }
 
-    /**オブジェクト番号のラインコードスタック数を変更する */
+    /**
+     * 指定オブジェクトのラインコードスタック長を変更します。
+     *
+     * @param ObjNum 対象オブジェクト番号です。
+     * @param New_NumOfLine 変更後のライン数です。
+     * @param Old_NumOfLine 変更前のライン数です。
+     */
     Move_LineCodeStac(ObjNum: number, New_NumOfLine: number, Old_NumOfLine: number) {
         const mo = this.MPObj[ObjNum];
         const dif = New_NumOfLine - Old_NumOfLine;
@@ -2990,8 +3507,14 @@ class clsMapdata {
         }
     }
 
-    //オブジェクトから、指定した時間のオブジェクト名リストを取得、取得できない場合はundefinedを返す
-    //ObjData:strObj_Dataまたはオブジェクト番号
+    /**
+     * 指定時点で有効なオブジェクト名リストを取得します。
+     *
+     * @param ObjInfo 対象オブジェクト番号またはオブジェクトです。
+     * @param Time 判定時点です。
+     * @param NoDataLastGetF 一致しない場合に末尾の名称を返すなら true です。
+     * @returns オブジェクト名リストです。取得できない場合は undefined です。
+     */
     Get_Enable_ObjectName(ObjInfo: number | strObj_Data, Time: strYMD, NoDataLastGetF: boolean) {
     let ObjData;
     if (typeof ObjInfo === 'number') {
@@ -3021,7 +3544,12 @@ class clsMapdata {
     }
 }
 
-    /** JSON地図ファイル(mdrmjFlag:trueはmdrmjファイル内の地図データ)読み込み */
+    /**
+     * JSON 地図ファイルを読み込み、内部地図データへ展開します。
+     *
+     * @param JsonData 読み込む JSON データです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     */
     openJsonMapData(JsonData: JsonObject, mdrmjFlag: boolean = false) {
     this.init_MapData();
     const m = new strMap_data();
@@ -3201,6 +3729,12 @@ class clsMapdata {
     this.Map.Circumscribed_Rectangle = this.Get_Mapfile_Rectangle();
 }
 
+    /**
+     * JSON 値から strYMD を生成します。
+     *
+     * @param json 変換元 JSON 値です。
+     * @returns 変換した strYMD です。
+     */
     private cnvJsonstrYMD(json: JsonValue) {
         const nt = new strYMD();
         Object.assign(nt,json);
@@ -3210,6 +3744,12 @@ class clsMapdata {
         return nt;
     }
 
+    /**
+     * JSON 値から開始終了時期データを生成します。
+     *
+     * @param json 変換元 JSON 値です。
+     * @returns 変換した開始終了時期データです。
+     */
     private cnvJsonStart_End_Time_data(json: JsonValue) {
         const nt = new Start_End_Time_data();
         const jsonObj = json as JsonObject;
@@ -3218,6 +3758,13 @@ class clsMapdata {
         return nt;
     }
 
+    /**
+     * JSON からフォント設定を生成します。
+     *
+     * @param jsonf 変換元 JSON オブジェクトです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換したフォント設定です。
+     */
     private cnvJsonFont(jsonf: JsonObject, mdrmjFlag: boolean) {
         const newf = new Font_Property();
         if (mdrmjFlag === false) {
@@ -3250,6 +3797,13 @@ class clsMapdata {
     }
 
 
+    /**
+     * JSON から矩形を生成します。
+     *
+     * @param jsonr 変換元 JSON オブジェクトです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換した矩形です。
+     */
     private cnvJsonRect(jsonr: JsonObject, mdrmjFlag: boolean) {
         const newr = new rectangle();
         if (mdrmjFlag === false) {
@@ -3263,6 +3817,12 @@ class clsMapdata {
         return newr;
     }
 
+    /**
+     * JSON から RGBA 色を生成します。
+     *
+     * @param jsonc 変換元 JSON 値です。
+     * @returns 変換した色です。
+     */
     private cnvJsonColor(jsonc: JsonValue) {
         const newc = new colorRGBA();
         Object.assign(newc,jsonc);
@@ -3273,6 +3833,13 @@ class clsMapdata {
         return newc;
     }
 
+    /**
+     * JSON から point を生成します。
+     *
+     * @param jsonp 変換元 JSON 値です。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換した座標です。
+     */
     private cnvJsonPoint(jsonp: JsonValue, mdrmjFlag: boolean) {
         const newp = new point();
         const jsonpObj = jsonp as JsonObject;
@@ -3286,6 +3853,13 @@ class clsMapdata {
         return newp;
     }
 
+    /**
+     * JSON から背景ボックス設定を生成します。
+     *
+     * @param json 変換元 JSON オブジェクトです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換した背景ボックス設定です。
+     */
     private cnvJsonBackGround_Box_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new BackGround_Box_Property();
         nt.Tile = this.cnvJsonTile_Property(json.Tile as JsonObject, mdrmjFlag);
@@ -3294,6 +3868,14 @@ class clsMapdata {
         nt.Padding = json.Padding as number;
         return nt
     }
+
+    /**
+     * JSON から線端・線結合パターン設定を生成します。
+     *
+     * @param json 変換元 JSON オブジェクトです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換した線端・線結合設定です。
+     */
     private cnvJsonLineEdge_Connect_Pattern_Data_Info(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new LineEdge_Connect_Pattern_Data_Info();
         if (mdrmjFlag === false) {
@@ -3307,6 +3889,14 @@ class clsMapdata {
         }
         return nt;
     }
+
+    /**
+     * JSON からライン設定を生成します。
+     *
+     * @param json 変換元 JSON 値です。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換したライン設定です。
+     */
     private cnvJsonLine_Property(json: JsonValue, mdrmjFlag: boolean) {
         const nt = new Line_Property();
         const jsonObj = json as JsonObject;
@@ -3333,6 +3923,13 @@ class clsMapdata {
         return nt;
     }
 
+    /**
+     * JSON から塗り設定を生成します。
+     *
+     * @param json 変換元 JSON オブジェクトです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換した塗り設定です。
+     */
     private cnvJsonTile_Property(json: JsonObject, mdrmjFlag: boolean) {
         const nt = new Tile_Property();
         if (mdrmjFlag === false) {
@@ -3348,6 +3945,13 @@ class clsMapdata {
         return nt;
     }
 
+    /**
+     * JSON から記号設定を生成します。
+     *
+     * @param json 変換元 JSON オブジェクトです。
+     * @param mdrmjFlag true の場合は mdrmj 内形式として解釈します。
+     * @returns 変換した記号設定です。
+     */
     private cnvJsonMark_Property(json: JsonObject, mdrmjFlag: boolean = false) {
         const nt = new Mark_Property();
         nt.PrintMark = json.PrintMark as number;

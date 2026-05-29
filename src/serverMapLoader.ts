@@ -14,10 +14,22 @@ const serverMapAliases: Record<string, string> = {
     'CHINA.MPFJ': 'CHINA.mpfj'
 };
 
+/**
+ * 正規化済みの地図ファイル名を返します。
+ *
+ * @param mapFileName 入力された地図ファイル名です。
+ * @returns 前後空白を除去し、大文字化した比較用ファイル名です。
+ */
 export function normalizeMapFileName(mapFileName: string): string {
     return mapFileName.trim().toUpperCase();
 }
 
+/**
+ * 属性データ中で参照される地図ファイル名を拡張子付きの基本形にそろえます。
+ *
+ * @param mapFileName 属性データなどに含まれる地図ファイル名です。
+ * @returns 拡張子を補完した地図ファイル名です。空文字入力の場合は空文字を返します。
+ */
 function canonicalizeReferencedMapFileName(mapFileName: string): string {
     const trimmed = mapFileName.trim();
     if (trimmed === '') {
@@ -30,12 +42,24 @@ function canonicalizeReferencedMapFileName(mapFileName: string): string {
     return baseName + '.MPFJ';
 }
 
+/**
+ * パスを除いた地図ファイルのベース名を返します。
+ *
+ * @param mapFileName パスを含む可能性のあるファイル名です。
+ * @returns 最後の区切り文字以降のファイル名です。
+ */
 function getBaseMapFileName(mapFileName: string): string {
     const trimmed = mapFileName.trim();
     const slashIndex = Math.max(trimmed.lastIndexOf('/'), trimmed.lastIndexOf('\\'));
     return slashIndex >= 0 ? trimmed.slice(slashIndex + 1) : trimmed;
 }
 
+/**
+ * サーバー側の map フォルダから安全に読み込めるファイル名かを判定します。
+ *
+ * @param fileName 検査対象のファイル名です。
+ * @returns 拡張子とパス構成が許可条件を満たす場合は true です。
+ */
 function isSafeMapFileName(fileName: string): boolean {
     if (fileName === '') {
         return false;
@@ -46,6 +70,12 @@ function isSafeMapFileName(fileName: string): boolean {
     return /\.mpfj$/i.test(fileName);
 }
 
+/**
+ * サーバー上で探索する地図ファイル名候補を返します。
+ *
+ * @param mapFileName ユーザー指定または属性データ内の地図ファイル名です。
+ * @returns エイリアス解決後の候補一覧です。重複は除去されます。
+ */
 export function getServerMapCandidates(mapFileName: string): string[] {
     const baseName = getBaseMapFileName(mapFileName);
     const normalizedName = normalizeMapFileName(baseName);
@@ -60,10 +90,23 @@ export function getServerMapCandidates(mapFileName: string): string[] {
     return [...new Set(candidates)];
 }
 
+/**
+ * 事前読込済みキャッシュから地図データを取得します。
+ *
+ * @param mapFileName 検索対象の地図ファイル名です。
+ * @returns キャッシュ済みの地図 JSON、未読込の場合は undefined です。
+ */
 export function getCachedServerMapData(mapFileName: string): JsonObject | undefined {
     return appState().preReadMapFile[normalizeMapFileName(mapFileName)];
 }
 
+/**
+ * 属性データテキストから参照地図ファイル名を抽出します。
+ *
+ * @param attrText 属性データ本体です。
+ * @param ext 入力形式の拡張子または種別です。
+ * @returns 参照される地図ファイル名の重複なし一覧です。
+ */
 export function extractReferencedMapFileNames(attrText: string, ext: string): string[] {
     if ((ext === 'csv') || (ext === 'clipboard')) {
         const uniqueMapNames = new Map<string, string>();
@@ -112,6 +155,12 @@ export function extractReferencedMapFileNames(attrText: string, ext: string): st
     }
 }
 
+/**
+ * HTTP 経由で地図ファイルを読み込み、JSON オブジェクトとして返します。
+ *
+ * @param url 読み込み先 URL です。
+ * @returns 地図データの JSON オブジェクトです。
+ */
 function loadMapDataByHttpRequest(url: string): Promise<JsonObject> {
     return new Promise((resolve, reject) => {
         Generic.getMapfileByHttpRequest(
@@ -130,6 +179,12 @@ function loadMapDataByHttpRequest(url: string): Promise<JsonObject> {
     });
 }
 
+/**
+ * 指定地図ファイルをサーバーから読み込み、状態キャッシュへ格納します。
+ *
+ * @param mapFileName 読み込み対象の地図ファイル名です。
+ * @returns キャッシュ済みまたは新規読込に成功した場合は true です。
+ */
 export async function ensureServerMapCached(mapFileName: string): Promise<boolean> {
     const normalizedName = normalizeMapFileName(mapFileName);
     if (getCachedServerMapData(normalizedName) !== undefined) {
@@ -149,6 +204,12 @@ export async function ensureServerMapCached(mapFileName: string): Promise<boolea
     return false;
 }
 
+/**
+ * 地図ファイル不足時に表示する案内文を生成します。
+ *
+ * @param mapFileName 不足している地図ファイル名です。
+ * @returns ユーザー向けの案内メッセージです。
+ */
 export function buildMissingMapGuidance(mapFileName: string): string {
     return '地図ファイル' + mapFileName + 'を読み込んでください。Webサーバーの map フォルダに存在しない場合は、地図ファイル追加またはドラッグ&ドロップで読み込んでください。';
 }

@@ -31,8 +31,9 @@ import {
 // などは AppState に集約済み
 
 /**
- * ログ出力関数
- * AppState経由でログウィンドウにアクセス
+ * AppState 経由でログウィンドウへメッセージを書き込みます。
+ *
+ * @param data 出力する値です。配列は区切り付き文字列へ変換されます。
  */
 import type { JsonValue } from './types';
 
@@ -62,7 +63,7 @@ function _logX(data: JsonValue): void {
 }
 
 /**
- * アプリケーション初期化関数
+ * アプリケーションの UI と共有状態を初期化します。
  */
 function _init(): void {
     const state = appState();
@@ -239,7 +240,7 @@ function _init(): void {
 }
 
 /**
- * 投影法変換
+ * 表示中地図の投影法変換ダイアログを開き、反映処理を行います。
  */
 function frmPrintProjection(): void {
     const state = appState();
@@ -339,14 +340,16 @@ function frmPrintProjection(): void {
 }
 
 /**
- * オプションメニュー
+ * 印刷画面のオプション画面を開きます。
  */
 function frmPrintOptionMenu(): void {
     frmPrintOption(0);
 }
 
 /**
- * データ値表示ボタン
+ * データ値表示ダイアログを開き、閉じた後に再描画します。
+ *
+ * @param _e クリックイベントです。未使用です。
  */
 function dataValueShow(_e?: Event): void {
     const state = appState();
@@ -356,7 +359,7 @@ function dataValueShow(_e?: Event): void {
 }
 
 /**
- * 背景画像ボタン
+ * 背景画像表示の切り替えまたは設定ダイアログ表示を行います。
  */
 function backImageButton(): void {
     const state = appState();
@@ -373,6 +376,9 @@ function backImageButton(): void {
     }
 }
 
+/**
+ * 旧来のグローバル呼び出しとの互換用に公開する関数群です。
+ */
 const globalScope = globalThis as typeof globalThis & {
     logX?: (data: JsonValue) => void;
     init?: () => void;

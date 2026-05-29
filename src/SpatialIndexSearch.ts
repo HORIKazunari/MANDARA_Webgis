@@ -6,17 +6,29 @@ import { SpatialPointType } from './constants/legacyEnums';
 const Add_or_Remove_Add_Obj = 1;
 const Add_or_Remove_Remove_Obj = 2;
 
+/**
+ * 点判定結果として返す矩形オブジェクト集合です。
+ */
 interface GetRectInResult {
     number: number;
     Tags: (string | number)[];
     ObStac: number[];
 }
 
+/**
+ * 空間インデックスへ登録できる座標入力形式です。
+ */
 type SpatialCoordinate =
     | point
     | { x: number; y: number; toPoint?: () => point }
     | { lat: number; lon: number; toPoint?: () => point };
 
+/**
+ * さまざまな座標型を point インスタンスへ正規化します。
+ *
+ * @param value 正規化対象の座標です。
+ * @returns 複製済みまたは新規生成した point です。
+ */
 function normalizeSpatialCoordinate(value: SpatialCoordinate): point {
     if ('toPoint' in value && typeof value.toPoint === 'function') {
         return value.toPoint().Clone();
@@ -27,11 +39,21 @@ function normalizeSpatialCoordinate(value: SpatialCoordinate): point {
     return new point(value.lon, value.lat);
 }
 
+/**
+ * 検索で見つかったオブジェクト番号、ポイント番号、タグを保持します。
+ */
 export class GetObjectPointTagInfo {
     ObjectNumber: number;
     PointNumber: number;
     Tag: string | number;
     
+    /**
+     * 検索結果情報を初期化します。
+     *
+     * @param ObjectNumber オブジェクト番号です。
+     * @param PointNumber オブジェクト内のポイント番号です。
+     * @param Tag オブジェクトに関連付くタグです。
+     */
     constructor(ObjectNumber: number, PointNumber: number, Tag: string | number) {
         this.ObjectNumber = ObjectNumber;
         this.PointNumber = PointNumber;
@@ -39,27 +61,50 @@ export class GetObjectPointTagInfo {
     }
 }
 
+/**
+ * メッシュセル内に登録されたオブジェクト参照を表します。
+ */
 class ObjectInfo {
     ObjectPointNumber: number; //オブジェクト内のポイント番号
     ObjectNumber: number; //メッシュ内のオブジェクト番号
     
+    /**
+     * メッシュセル用の参照情報を初期化します。
+     *
+     * @param ObjectNumber オブジェクト番号です。
+     * @param ObjectPointNumber オブジェクト内のポイント番号です。
+     */
     constructor(ObjectNumber: number, ObjectPointNumber: number) {
         this.ObjectPointNumber = ObjectPointNumber;
         this.ObjectNumber = ObjectNumber;
     }
 }
 
+/**
+ * 各メッシュセルに属するオブジェクト一覧を保持します。
+ */
 class IndexContentsInfo {
     Num: number = 0; //メッシュ内のオブジェクト数
     ObjectNumber: ObjectInfo[] = [];
 }
 
+/**
+ * 空間インデックスへ登録するオブジェクトの座標列とタグを保持します。
+ */
 class ObjectXYInfo {
     Pnum: number;
     Point: point[];
     Tag: string | number;
     RemoveF: boolean;
     
+    /**
+     * 登録オブジェクト情報を生成します。
+     *
+     * @param Pnum ポイント数です。
+     * @param Point オブジェクトの座標列です。
+     * @param Tag オブジェクトのタグです。
+     * @param RemoveF 削除済みかどうかです。
+     */
     constructor(Pnum: number, Point: SpatialCoordinate[], Tag: string | number, RemoveF: boolean) {
         this.Pnum = Pnum;
         this.Point = Point.map(normalizeSpatialCoordinate);
@@ -68,8 +113,10 @@ class ObjectXYInfo {
     }
 }
 
+/**
+ * 点・線・矩形をメッシュ分割で検索する空間インデックス本体です。
+ */
 class SpatialIndexSearchInternal {
-    /// <summary>空間インデックス</summary>
     private MeshIndex: (IndexContentsInfo | undefined)[][] = [];
     private XYSize: number = 0;
     private meshw: number = 0;
@@ -84,10 +131,24 @@ class SpatialIndexSearchInternal {
     private RectSetF: boolean = false;
     private LineCutNum: number = 0;
 
+    /**
+     * 既に point 型で保持している値を返します。
+     *
+     * @param value 対象座標です。
+     * @returns 同じ point インスタンスです。
+     */
     private toPointValue(value: point): point {
         return value;
     }
     
+    /**
+     * 空間インデックスを初期化します。
+     *
+     * @param ObjType 扱うオブジェクト種別です。
+     * @param ExtraRangeFlag 点検索で大きさ付きポイントを扱うかどうかです。
+     * @param Rect インデックス領域を固定する矩形です。
+     * @param extraRangeSize 追加する検索余白です。
+     */
     constructor(ObjType: SpatialPointType, ExtraRangeFlag: boolean, Rect?: rectangle, extraRangeSize?: number) {
         this.ObjectType = ObjType;
         this.ExtraRangeF = ExtraRangeFlag;
@@ -102,6 +163,12 @@ class SpatialIndexSearchInternal {
         }
     }
     
+    /**
+     * 矩形に余白を加えた矩形を返します。
+     *
+     * @param pbox 元の矩形です。
+     * @returns 余白分を拡張した矩形です。
+     */
     private BoxData_AddExtraRange(pbox: rectangle): rectangle {
         //四角形に幅をプラスする
         const d = new rectangle();
@@ -112,6 +179,9 @@ class SpatialIndexSearchInternal {
         return d;
     }
     
+    /**
+     * 追加済みオブジェクトからメッシュ索引を構築します。
+     */
     AddEnd(): void {
         if(this.ObjectNum===0) return;
         let n = 0;
@@ -184,15 +254,33 @@ class SpatialIndexSearchInternal {
 
         this.AddEndF = true;
     }
+
+    /**
+     * 登録領域を再計算してインデックスを再構築します。
+     */
     Refresh(): void {
         this.RectSetF = false;
         this.AddEnd();
     }
+
+    /**
+     * 線オブジェクトを分割単位ごとにメッシュへ追加します。
+     *
+     * @param ObjNum 対象オブジェクト番号です。
+     */
     private AddMeshLine(ObjNum: number): void {
         for (let i = 0; i < this.ObjectXY[ObjNum].Pnum; i += this.LineCutNum) {
             this.Add_Mesh_LineSub(ObjNum, i, Add_or_Remove_Add_Obj)
         }
     }
+
+    /**
+     * 線オブジェクトの一部区間をメッシュへ追加または削除します。
+     *
+     * @param ObjNum 対象オブジェクト番号です。
+     * @param StartP 開始ポイント位置です。
+     * @param AddorRemove 追加または削除の種別です。
+     */
     private Add_Mesh_LineSub(ObjNum: number, StartP: number, AddorRemove: number): void {
         const oxy = this.ObjectXY[ObjNum];
         let ex = StartP + this.LineCutNum;
@@ -221,6 +309,13 @@ class SpatialIndexSearchInternal {
             }
         }
     }
+
+    /**
+     * 矩形オブジェクトをメッシュへ追加または削除します。
+     *
+     * @param ObjNum 対象オブジェクト番号です。
+     * @param AddorRemove 追加または削除の種別です。
+     */
     private AddMeshRect(ObjNum: number, AddorRemove: number): void {
         const PBox = this.BoxData_AddExtraRange(spatial.Get_Rectangle(this.toPointValue(this.ObjectXY[ObjNum].Point[0]), this.toPointValue(this.ObjectXY[ObjNum].Point[1])));
         const RBox = new rectangle();
@@ -240,6 +335,13 @@ class SpatialIndexSearchInternal {
             }
         }
     }
+
+    /**
+     * 点オブジェクトをメッシュへ追加または削除します。
+     *
+     * @param ObjNum 対象オブジェクト番号です。
+     * @param AddorRemove 追加または削除の種別です。
+     */
     private AddMeshPoint(ObjNum: number, AddorRemove: number): void {
         const oxy = this.ObjectXY[ObjNum];
         for (let k = 0; k < oxy.Pnum; k++) {
@@ -279,6 +381,14 @@ class SpatialIndexSearchInternal {
         }
     }
 
+    /**
+     * 指定メッシュ座標にオブジェクト参照を登録します。
+     *
+     * @param X メッシュ X 座標です。
+     * @param Y メッシュ Y 座標です。
+     * @param ObjNum オブジェクト番号です。
+     * @param Pointnum オブジェクト内ポイント番号です。
+     */
     private Add_Mesh_PointSub(X: number, Y: number, ObjNum: number, Pointnum: number): void {
         if (typeof this.MeshIndex[X][Y] === "undefined"){
             this.MeshIndex[X][Y]  = new IndexContentsInfo();
@@ -288,6 +398,13 @@ class SpatialIndexSearchInternal {
         this.MeshIndex[X][Y].Num++;
     }
 
+    /**
+     * 実座標をメッシュ座標へ変換し、領域内かを判定します。
+     *
+     * @param inXY 実座標です。
+     * @param outXY 変換後のメッシュ座標出力先です。
+     * @returns メッシュ領域内に収まる場合は true です。
+     */
     private GetConPointXY(inXY: point, outXY: point): boolean {
         //メッシュ領域に入るかチェック
         outXY.x = Math.floor((inXY.x - this.MeshRect.left) / this.meshw);
@@ -299,6 +416,13 @@ class SpatialIndexSearchInternal {
         }
     }
 
+    /**
+     * 点の周囲余白を含むメッシュ範囲を取得します。
+     *
+     * @param xy 基準点です。
+     * @param OutPutRect メッシュ範囲の出力先です。
+     * @returns 範囲がメッシュ領域と交差する場合は true です。
+     */
     private GetExtraRange_XY(xy: point, OutPutRect: rectangle): boolean {
         const PBox = new rectangle();
         PBox.left = xy.x - this.ExtraRange;
@@ -309,6 +433,13 @@ class SpatialIndexSearchInternal {
         return this.GetRangeXY(PBox, OutPutRect);
     }
 
+    /**
+     * 実座標の矩形をメッシュ座標範囲へ変換します。
+     *
+     * @param InPBox 実座標での対象矩形です。
+     * @param OutRBox メッシュ座標での矩形出力先です。
+     * @returns メッシュ領域と交差する場合は true です。
+     */
     private GetRangeXY(InPBox: rectangle, OutRBox: rectangle): boolean {
         if (spatial.Compare_Two_Rectangle_Position(InPBox, this.MeshRect) !== cstRectangle_Cross.cstOuter) {
             let x1 = Math.floor((InPBox.left - this.MeshRect.left) / this.meshw);
@@ -329,6 +460,14 @@ class SpatialIndexSearchInternal {
             return false;
         }
     }
+
+    /**
+     * オブジェクトを登録配列へ追加し、必要なら索引へ反映します。
+     *
+     * @param Pnum ポイント数です。
+     * @param XY 座標列です。
+     * @param TagData タグ値です。
+     */
     private Add_Point_Sub(Pnum: number, XY: SpatialCoordinate[], TagData: string | number): void {
         this.ObjectXY[this.ObjectNum] = new ObjectXYInfo(Pnum, XY, TagData,false);
         if (this.AddEndF === true) {
@@ -347,6 +486,14 @@ class SpatialIndexSearchInternal {
         this.ObjectNum++;
 
     }
+
+    /**
+     * 複数点から成る点オブジェクトを追加します。
+     *
+     * @param Pnum 点数です。
+     * @param XY 座標列です。
+     * @param TagData タグ値です。
+     */
     AddMultiPoint(Pnum: number, XY: SpatialCoordinate[], TagData: string | number): void {
         //複数地点オブジェクトを追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
@@ -355,6 +502,14 @@ class SpatialIndexSearchInternal {
         }
         this.Add_Point_Sub(Pnum, XY, TagData);
     }
+
+    /**
+     * 2 点から成る点オブジェクトを追加します。
+     *
+     * @param XY1 1 点目の座標です。
+     * @param XY2 2 点目の座標です。
+     * @param TagData タグ値です。
+     */
     AddDoublePoint(XY1: SpatialCoordinate, XY2: SpatialCoordinate, TagData: string | number): void {
         //2地点オブジェクトを追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
@@ -365,11 +520,13 @@ class SpatialIndexSearchInternal {
         this.Add_Point_Sub(2, XY, TagData);
     }
 
+    /**
+     * 単一点オブジェクトを追加します。
+     *
+     * @param XY1 座標です。
+     * @param TagData タグ値です。
+     */
     AddSinglePoint(XY1: SpatialCoordinate, TagData: string | number): void {
-        /// <signature>
-        /// <summary>地点オブジェクトを追加</summary>
-        /// <returns type="Number" >同じ値の数</returns>
-        /// </signature> 
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
@@ -377,6 +534,14 @@ class SpatialIndexSearchInternal {
         const XY = new Array(XY1);
         this.Add_Point_Sub(1, XY, TagData);
     }
+
+    /**
+     * 単一点オブジェクトを配列から連続追加します。
+     *
+     * @param Num 追加件数です。
+     * @param XY 座標配列です。
+     * @param TagData タグ値です。
+     */
     AddSinglePoint_Array(Num: number, XY: SpatialCoordinate[], TagData: string | number): void {
         //1地点オブジェクトを配列で追加
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
@@ -389,11 +554,14 @@ class SpatialIndexSearchInternal {
         }
     }
 
+    /**
+     * 完全一致する単一点オブジェクトを 1 件検索します。
+     *
+     * @param x 検索 X 座標です。
+     * @param y 検索 Y 座標です。
+     * @returns 見つかったオブジェクト情報です。未検出時は ObjectNumber が -1 です。
+     */
     GetSamePointNumber(x: number, y: number): GetObjectPointTagInfo {
-        /// <signature>
-        /// <summary>同じ地点を求め、番号を返す 存在しない場合は-1を返す</summary>
-        /// <returns type="Number" >同じ値の数</returns>
-        /// </signature> 
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return  new GetObjectPointTagInfo(-1,0, 0); 
@@ -431,13 +599,15 @@ class SpatialIndexSearchInternal {
         return new GetObjectPointTagInfo(gn, PointNumber, Tag ?? "") ;
     }
 
+    /**
+     * 完全一致する単一点オブジェクトをすべて検索します。
+     *
+     * @param x 検索 X 座標です。
+     * @param y 検索 Y 座標です。
+     * @param SamePointData 検索結果を書き込む配列です。
+     * @returns 一致件数です。未検索時は -1 を返します。
+     */
     GetSamePointNumberArray(x: number, y: number, SamePointData: GetObjectPointTagInfo[]): number {
-        /// <signature>
-        /// <summary>同じ地点を求め、番号を返す 存在しない場合は-1か0を返す</summary>
-        /// <param name="SamePointData" >GetObjectPointTagInfoの配列、オブジェクト番号、オブジェクト-ポイント番号、タグ（戻り値）</param>
-        /// <returns type="Number" >同じ地点の数</returns>
-        /// </signature> 
-
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
             return;
@@ -469,6 +639,16 @@ class SpatialIndexSearchInternal {
         return SamePointData.length;
     }
 
+    /**
+     * 指定位置に最も近い線分集合を検索します。
+     *
+     * @param x 検索 X 座標です。
+     * @param y 検索 Y 座標です。
+     * @param BaseDistance 探索の基準距離です。
+     * @param _ExceptionNumber 現在は未使用の除外オブジェクト番号です。
+     * @param _ExceptionTag 現在は未使用の除外タグです。
+     * @returns 最短距離にある線分集合の情報です。
+     */
     GetNearestLineNumber(x: number, y: number, BaseDistance: number, _ExceptionNumber: number, _ExceptionTag: string | number): { 
         Num: number; 
         ObjectPointNumber?: point[];
@@ -550,7 +730,16 @@ class SpatialIndexSearchInternal {
         return return_V;
     }
 
-    //近い地点を返す、数と番号（配列）を返す（複数出力） 存在しない場合は-1を返す
+    /**
+     * 指定位置の近傍にあるポイント群を検索します。
+     *
+     * @param x 検索 X 座標です。
+     * @param y 検索 Y 座標です。
+     * @param BaseDistance 探索の基準距離です。
+     * @param ExceptionNumber 除外するオブジェクト番号です。
+     * @param ExceptionTag 除外するタグ一覧です。
+     * @returns 見つかったポイント群の情報です。
+     */
     GetNearPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number = -1, ExceptionTag?: (string | number)[]): {num: number; Onumber?: number[]; PNumber?: number[]; Tags?: (string | number)[]; Distance?: number[]} {
         const ObStac: number[] = [];
         const PStac: number[] = [];
@@ -594,15 +783,17 @@ class SpatialIndexSearchInternal {
         return {num:ObStac.length, Onumber:ObStac,PNumber:PStac, Tags:Tags,Distance:Distance}
     }
 
+    /**
+     * 指定位置に最も近いポイントまでの距離を返します。
+     *
+     * @param x 検索 X 座標です。
+     * @param y 検索 Y 座標です。
+     * @param BaseDistance 探索の基準距離です。
+     * @param ExceptionNumber 除外するオブジェクト番号です。
+     * @param ExceptionTag 除外するタグまたはタグ配列です。
+     * @returns 最短距離です。対象なしの場合は -1、領域外では 0 または undefined を返します。
+     */
     GetNearestPointNumber(x: number, y: number, BaseDistance: number, ExceptionNumber: number, ExceptionTag?: string | number | (string | number)[]): number | undefined {
-        /// <signature>
-        /// <summary>最も近い地点を求め、数と番号（配列）を返す（複数出力） 存在しない場合は-1を返す</summary>
-        /// <param name="BaseDistance" >基準となる距離</param>
-        /// <param name="NearestPointData" >最も近い地点の配列(戻り値)</param>
-        /// <param name="ExceptionNumber" >対象から除外するオブジェクト番号</param>
-        /// <param name="ExceptionTag" >対象から除外するタグ</param>
-        /// <returns type="Number" >同じ値の数</returns>
-        /// </signature> 
         const NearestPointData: GetObjectPointTagInfo[] = [];
         if (this.ObjectType !== SpatialPointType.SinglePoint) {
             alert("点以外はできません。");
@@ -647,7 +838,13 @@ class SpatialIndexSearchInternal {
         return mind;
     }
 
-    //指定した点が入る四角領域を取得
+    /**
+     * 指定点を含む矩形オブジェクト群を取得します。
+     *
+     * @param x 検索 X 座標です。
+     * @param y 検索 Y 座標です。
+     * @returns 含有矩形一覧です。対象なしまたは不正種別では 0 を返します。
+     */
     GetRectIn(x: number, y: number): GetRectInResult | 0 {
         if (this.ObjectType !== SpatialPointType.SPIRect) {
             alert("四角以外はできません。");
@@ -688,12 +885,12 @@ class SpatialIndexSearchInternal {
 
         }
 
+    /**
+     * 指定オブジェクトを検索インデックスから削除します。
+     *
+     * @param Number 削除するオブジェクト番号です。
+     */
     RemoveObject(Number: number): void {
-        /// <signature>
-        /// <summary>指定したオブジェクト番号を検索インデックスから削除</summary>
-        /// <param name="Number" >オブジェクト番号</param>
-        /// </signature> 
-
         this.ObjectXY[Number].RemoveF = true;
         switch (this.ObjectType) {
             case SpatialPointType.SinglePoint:
@@ -710,6 +907,13 @@ class SpatialIndexSearchInternal {
         }
     }
 
+    /**
+     * 指定メッシュセルからオブジェクト参照を 1 件削除します。
+     *
+     * @param x メッシュ X 座標です。
+     * @param y メッシュ Y 座標です。
+     * @param Number 削除対象オブジェクト番号です。
+     */
     private RemoveObject_sub(x: number, y: number, Number: number): void {
         const meshxy = this.MeshIndex[x][y];
         let i = -1;
@@ -724,6 +928,11 @@ class SpatialIndexSearchInternal {
         meshxy.Num--;
     }
 
+    /**
+     * 指定タグに一致するすべてのオブジェクトを削除します。
+     *
+     * @param TagNumber 削除対象のタグ値です。
+     */
     RemoveObject_byTag(TagNumber: string | number): void {
         //指定したタグのオブジェクトの検索インデックスを削除
         for (let i = 0; i < this.ObjectNum; i++) {
@@ -735,6 +944,13 @@ class SpatialIndexSearchInternal {
         }
     }
 
+    /**
+     * 線オブジェクトを追加します。
+     *
+     * @param Pnum ポイント数です。
+     * @param XY 座標列です。
+     * @param TagData タグ値です。
+     */
     AddLine(Pnum: number, XY: SpatialCoordinate[], TagData: string | number): void {
         //線オブジェクト追加
         if (this.ObjectType !== SpatialPointType.SPILine) {
@@ -744,6 +960,13 @@ class SpatialIndexSearchInternal {
         this.Add_Point_Sub(Pnum, XY , TagData);
     }
 
+    /**
+     * 指定範囲に入る数値タグを一括変換します。
+     *
+     * @param ChangeValue 加算する値です。
+     * @param StartRangeValue 範囲開始値です。
+     * @param LastRangeValue 範囲終了値です。
+     */
     ChangeTagValue(ChangeValue: number, StartRangeValue: number, LastRangeValue: number): void {
         //タグの値を変化させる
         for (let i = 0; i < this.ObjectNum; i++) {
@@ -754,6 +977,13 @@ class SpatialIndexSearchInternal {
         }
     }
 
+    /**
+     * 矩形オブジェクトを追加します。
+     *
+     * @param xy1Rectangle 左上点または矩形です。
+     * @param xy2TagData 右下点またはタグ値です。
+     * @param TagData point 指定時のタグ値です。
+     */
     AddRect(xy1Rectangle: point | rectangle, xy2TagData: latlon | string | number, TagData?: string | number): void {
         //四角オブジェクト追加
         if (this.ObjectType !== SpatialPointType.SPIRect) {
