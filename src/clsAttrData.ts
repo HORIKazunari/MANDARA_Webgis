@@ -15,34 +15,68 @@ type VerticalAlignmentValue = (typeof enmVerticalAlignment)[keyof typeof enmVert
 type PrintMouseModeValue = (typeof enmPrintMouseMode)[keyof typeof enmPrintMouseMode];
 
 
+/**
+ * 幅と高さを保持する基本サイズ情報です。
+ */
 export class size {
     width: number;
     height: number;
 
+    /**
+     * サイズ情報を初期化します。
+     *
+     * @param width 幅です。
+     * @param height 高さです。
+     */
     constructor(width: number = 0, height: number = 0) {
         this.width = width;
         this.height = height;
     }
 
+    /**
+     * 同じ値を持つ複製を返します。
+     *
+     * @returns 複製したサイズ情報です。
+     */
     Clone(): size {
         return new size(this.width, this.height);
     }
 }
 
+/**
+ * 2 次元座標を表す基本ポイントです。
+ */
 export class point {
     x: number;
     y: number;
     Tag?: string | number;
 
+    /**
+     * 座標を初期化します。
+     *
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     */
     constructor(x: number = 0, y: number = 0) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * 同じ値を持つ座標を複製します。
+     *
+     * @returns 複製した座標です。
+     */
     Clone(): point {
         return new point(this.x, this.y);
     }
 
+    /**
+     * 座標を相対移動します。
+     *
+     * @param p_xp 加算する座標、または X 方向の移動量です。
+     * @param yp Y 方向の移動量です。
+     */
     offset(p_xp: point | number, yp: number = 0): void {
         if (p_xp instanceof point) {
             this.x += p_xp.x;
@@ -53,52 +87,108 @@ export class point {
         this.y += yp;
     }
 
+    /**
+     * 緯度経度オブジェクトへ変換します。
+     *
+     * @returns 緯度経度です。
+     */
     toLatlon(): latlon {
         return new latlon(this.y, this.x);
     }
 
+    /**
+     * 指定座標と完全一致するかを返します。
+     *
+     * @param np 比較対象の座標です。
+     * @returns 一致する場合は true です。
+     */
     Equals(np: point): boolean {
         return (this.x === np.x) && (this.y === np.y);
     }
 }
 
+/**
+ * Z 座標を含む 3 次元ポイントです。
+ */
 export class point3 extends point {
     z: number;
 
+    /**
+     * 3 次元座標を初期化します。
+     *
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param z Z 座標です。
+     */
     constructor(x: number = 0, y: number = 0, z: number = 0) {
         super(x, y);
         this.z = z;
     }
 
+    /**
+     * 同じ値を持つ 3 次元座標を複製します。
+     *
+     * @returns 複製した 3 次元座標です。
+     */
     Clone(): point3 {
         return new point3(this.x, this.y, this.z);
     }
 }
 
+/**
+ * 緯度経度で表した外接矩形です。
+ */
 export class latlonbox {
     NorthWest?: latlon;
     SouthEast?: latlon;
 
+    /**
+     * 緯度経度矩形を初期化します。
+     *
+     * @param nw 北西端の座標です。
+     * @param se 南東端の座標です。
+     */
     constructor(nw?: latlon, se?: latlon) {
         this.NorthWest = nw;
         this.SouthEast = se;
     }
 
+    /**
+     * 同じ範囲を持つ緯度経度矩形を複製します。
+     *
+     * @returns 複製した緯度経度矩形です。
+     */
     Clone(): latlonbox {
         return new latlonbox(this.NorthWest?.Clone(), this.SouthEast?.Clone());
     }
 
+    /**
+     * 経度緯度値を通常の矩形へ変換します。
+     *
+     * @returns 変換後の矩形です。
+     */
     toRectangle(): rectangle {
         return new rectangle(this.NorthWest?.lon ?? 0, this.SouthEast?.lon ?? 0, this.SouthEast?.lat ?? 0, this.NorthWest?.lat ?? 0);
     }
 }
 
+/**
+ * 左右上下の境界値で表す矩形です。
+ */
 export class rectangle {
     left: number;
     right: number;
     top: number;
     bottom: number;
 
+    /**
+     * 矩形を初期化します。
+     *
+     * @param left_point 左上座標、または左端値です。
+     * @param right_size 右下座標、サイズ、または右端値です。
+     * @param top 上端値です。
+     * @param bottom 下端値です。
+     */
     constructor(left_point: point | number = 0, right_size: point | size | number = 0, top: number = 0, bottom: number = 0) {
         if (left_point instanceof point) {
             const p = left_point;
@@ -122,46 +212,103 @@ export class rectangle {
         this.bottom = bottom;
     }
 
+    /**
+     * 同じ範囲を持つ矩形を複製します。
+     *
+     * @returns 複製した矩形です。
+     */
     Clone(): rectangle {
         return new rectangle(this.left, this.right, this.top, this.bottom);
     }
 
+    /**
+     * 矩形の中心座標を返します。
+     *
+     * @returns 中心点です。
+     */
     centerP(): point {
         return new point((this.right + this.left) / 2, (this.bottom + this.top) / 2);
     }
 
+    /**
+     * 矩形の幅と高さを返します。
+     *
+     * @returns サイズ情報です。
+     */
     size(): size {
         return new size(this.right - this.left, this.bottom - this.top);
     }
 
+    /**
+     * 幅を返します。
+     *
+     * @returns 幅です。
+     */
     width(): number {
         return this.right - this.left;
     }
 
+    /**
+     * 高さを返します。
+     *
+     * @returns 高さです。
+     */
     height(): number {
         return this.bottom - this.top;
     }
 
+    /**
+     * 左上座標を返します。
+     *
+     * @returns 左上座標です。
+     */
     topLeft(): point {
         return new point(this.left, this.top);
     }
 
+    /**
+     * 右上座標を返します。
+     *
+     * @returns 右上座標です。
+     */
     topRight(): point {
         return new point(this.right, this.top);
     }
 
+    /**
+     * 右下座標を返します。
+     *
+     * @returns 右下座標です。
+     */
     bottomRight(): point {
         return new point(this.right, this.bottom);
     }
 
+    /**
+     * 左下座標を返します。
+     *
+     * @returns 左下座標です。
+     */
     bottomLeft(): point {
         return new point(this.left, this.bottom);
     }
 
+    /**
+     * 指定座標が矩形内に含まれるかを返します。
+     *
+     * @param P 判定対象の座標です。
+     * @returns 含まれる場合は true です。
+     */
     contains(P: point): boolean {
         return (P.x >= this.left) && (P.x <= this.right) && (P.y >= this.top) && (P.y <= this.bottom);
     }
 
+    /**
+     * 矩形全体を平行移動します。
+     *
+     * @param xplus X 方向の移動量です。
+     * @param yplus Y 方向の移動量です。
+     */
     offset(xplus: number, yplus: number): void {
         this.left += xplus;
         this.right += xplus;
@@ -169,6 +316,12 @@ export class rectangle {
         this.bottom += yplus;
     }
 
+    /**
+     * 矩形を指定量だけ外側へ拡張します。
+     *
+     * @param xplus 左右方向の拡張量です。
+     * @param yplus 上下方向の拡張量です。
+     */
     inflate(xplus: number, yplus: number): void {
         this.left -= xplus;
         this.right += xplus;
@@ -176,10 +329,23 @@ export class rectangle {
         this.bottom += yplus;
     }
 
+    /**
+     * 既存 API 互換の拡張メソッドです。
+     *
+     * @param x 左右方向の拡張量です。
+     * @param y 上下方向の拡張量です。
+     */
     Inflate(x: number, y: number): void {
         this.inflate(x, y);
     }
 
+    /**
+     * 点または矩形が内包されるかを判定します。
+     *
+     * @param value1 判定対象の座標値、点、または矩形です。
+     * @param value2 座標指定時の Y 値です。
+     * @returns 内包される場合は true です。
+     */
     Contains(value1: number | point | rectangle, value2?: number): boolean {
         if (typeof value1 === 'number' && typeof value2 === 'number') {
             return this.contains(new point(value1, value2));
@@ -193,6 +359,12 @@ export class rectangle {
         return false;
     }
 
+    /**
+     * 点または数値で矩形を移動します。
+     *
+     * @param value1 移動量を表す点、または X 方向の移動量です。
+     * @param value2 数値指定時の Y 方向移動量です。
+     */
     Offset(value1: number | point, value2?: number): void {
         if (value1 instanceof point) {
             this.offset(value1.x, value1.y);
@@ -201,12 +373,24 @@ export class rectangle {
         this.offset(value1, value2 ?? 0);
     }
 
+    /**
+     * 指定矩形と交差するかを返します。
+     *
+     * @param rect 比較対象の矩形です。
+     * @returns 交差する場合は true です。
+     */
     IntersectsWith(rect: rectangle): boolean {
         if (this.right < rect.left || rect.right < this.left) return false;
         if (this.bottom < rect.top || rect.bottom < this.top) return false;
         return true;
     }
 
+    /**
+     * 自身と指定矩形の両方を含む矩形を返します。
+     *
+     * @param rect 結合対象の矩形です。
+     * @returns 結合後の矩形です。
+     */
     Union(rect: rectangle): rectangle {
         return new rectangle(
             Math.min(this.left, rect.left),
@@ -216,16 +400,32 @@ export class rectangle {
         );
     }
 
+    /**
+     * 指定矩形と完全一致するかを返します。
+     *
+     * @param rect 比較対象の矩形です。
+     * @returns 一致する場合は true です。
+     */
     Equals(rect: rectangle): boolean {
         return (rect.left === this.left) && (rect.right === this.right) && (rect.top === this.top) && (rect.bottom === this.bottom);
     }
 }
 
+/**
+ * 年月日を保持する日付データです。
+ */
 export class strYMD {
     Year: number;
     Month: number;
     Day: number;
 
+    /**
+     * 年月日を初期化します。
+     *
+     * @param year 年、または複製元の日付です。
+     * @param month 月です。
+     * @param day 日です。
+     */
     constructor(year: number | strYMD = 0, month: number = 0, day: number = 0) {
         if (year instanceof strYMD) {
             this.Year = year.Year;
@@ -238,18 +438,39 @@ export class strYMD {
         this.Day = day;
     }
 
+    /**
+     * 同じ日付を複製します。
+     *
+     * @returns 複製した日付です。
+     */
     Clone(): strYMD {
         return new strYMD(this.Year, this.Month, this.Day);
     }
 
+    /**
+     * 未設定日付かどうかを返します。
+     *
+     * @returns 年月日がすべて 0 の場合は true です。
+     */
     nullFlag(): boolean {
         return this.Year === 0 && this.Month === 0 && this.Day === 0;
     }
 
+    /**
+     * 指定日付と一致するかを返します。
+     *
+     * @param time 比較対象の日付です。
+     * @returns 一致する場合は true です。
+     */
     Equals(time: strYMD): boolean {
         return this.Year === time.Year && this.Month === time.Month && this.Day === time.Day;
     }
 
+    /**
+     * HTML の日付入力向け書式へ変換します。
+     *
+     * @returns yyyy-mm-dd 形式の文字列です。
+     */
     toInputDate(): string {
         if (this.nullFlag()) {
             return '';
@@ -257,6 +478,11 @@ export class strYMD {
         return `${this.Year.toString().padStart(4, '0')}-${this.Month.toString().padStart(2, '0')}-${this.Day.toString().padStart(2, '0')}`;
     }
 
+    /**
+     * 表示用の日付文字列へ変換します。
+     *
+     * @returns yyyy/m/d 形式の文字列です。
+     */
     toString(): string {
         if (this.nullFlag()) {
             return '';
@@ -264,6 +490,11 @@ export class strYMD {
         return `${this.Year}/${this.Month}/${this.Day}`;
     }
 
+    /**
+     * JavaScript の Date へ変換します。
+     *
+     * @returns 変換後の Date オブジェクトです。
+     */
     toDate(): Date {
         return new Date(this.Year, this.Month - 1, this.Day);
     }
@@ -306,15 +537,26 @@ class strLatLonDegreeMinuteSecond {
 // PeripheriDirinfo クラスは globals.d.ts で定義済み
 // strYMD クラスは globals.d.ts で定義済み
 
+/**
+ * 開始日と終了日を対で保持する期間情報です。
+ */
 export class Start_End_Time_data {
     StartTime: strYMD;
     EndTime: strYMD;
 
+    /**
+     * 空の期間情報を初期化します。
+     */
     constructor() {
         this.StartTime = new strYMD(0, 0, 0);
         this.EndTime = new strYMD(0, 0, 0);
     }
 
+    /**
+     * 同じ期間情報を複製します。
+     *
+     * @returns 複製した期間情報です。
+     */
     Clone(): Start_End_Time_data {
         const d = new Start_End_Time_data();
         d.StartTime = this.StartTime.Clone();
@@ -322,6 +564,12 @@ export class Start_End_Time_data {
         return d;
     }
 
+    /**
+     * 指定期間と一致するかを返します。
+     *
+     * @param SETime 比較対象の期間情報です。
+     * @returns 一致する場合は true です。
+     */
     Equals(SETime: Start_End_Time_data): boolean {
         if(this.StartTime.Equals(SETime.StartTime)){
             if(this.EndTime.Equals(SETime.EndTime)){
@@ -444,12 +692,23 @@ const chvValue_on_twoValue = {
     chvIN: 1
 };
 
+/**
+ * RGBA 形式の色を保持する基本クラスです。
+ */
 export class colorRGBA {
     r: number;
     g: number;
     b: number;
     a: number;
 
+    /**
+     * 色を初期化します。
+     *
+     * @param r 赤成分、または RGBA 配列です。
+     * @param g 緑成分です。
+     * @param b 青成分です。
+     * @param a アルファ成分です。
+     */
     constructor(r: number | number[] = 0, g: number = 0, b: number = 0, a: number = 255) {
         if (Array.isArray(r)) {
             this.r = Number(r[0] ?? 0);
@@ -464,27 +723,58 @@ export class colorRGBA {
         this.a = Number(a);
     }
 
+    /**
+     * 同じ色を複製します。
+     *
+     * @returns 複製した色です。
+     */
     Clone(): colorRGBA {
         return new colorRGBA([this.r, this.g, this.b, this.a]);
     }
 
+    /**
+     * RGB 形式の CSS 文字列へ変換します。
+     *
+     * @returns RGB 文字列です。
+     */
     toRGB(): string {
         return `RGB(${this.r},${this.g},${this.b})`;
     }
 
+    /**
+     * RGBA 形式の CSS 文字列へ変換します。
+     *
+     * @returns RGBA 文字列です。
+     */
     toRGBA(): string {
         return `RGBA(${this.r},${this.g},${this.b},${this.a / 255})`;
     }
 
+    /**
+     * 16 進カラーコードへ変換します。
+     *
+     * @returns #rrggbb 形式の文字列です。
+     */
     toHex(): string {
         const hex = (n: number): string => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
         return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}`;
     }
 
+    /**
+     * 指定色と完全一致するかを返します。
+     *
+     * @param col 比較対象の色です。
+     * @returns 一致する場合は true です。
+     */
     Equals(col: colorRGBA): boolean {
         return (col.r === this.r) && (col.g === this.g) && (col.b === this.b) && (col.a === this.a);
     }
 
+    /**
+     * 現在の色よりやや暗い色を返します。
+     *
+     * @returns 暗くした色です。
+     */
     getDarkColor(): colorRGBA {
         const rate = 0.85;
         return new colorRGBA([this.r * rate, this.g * rate, this.b * rate, this.a]);
@@ -615,10 +905,18 @@ const enmScaleBarPattern = {
 
 
 //記号の数，大きさ，階級記号，線モードの内部色設定
+/**
+ * 内部色や内部データ指定の有効状態を保持します。
+ */
 export class strInner_Data_Info {
     Flag: boolean = false;
     Data: number = 0;
 
+    /**
+     * 同じ設定を複製します。
+     *
+     * @returns 複製した内部設定です。
+     */
     Clone(): strInner_Data_Info {
         const d = new strInner_Data_Info();
         d.Flag = Boolean(this.Flag);
@@ -887,6 +1185,9 @@ class strContour_Data {
     }
 }
 
+/**
+ * 描画済み等値線 1 本分の属性を保持します。
+ */
 export class strContour_Line_property {
     Flag: boolean = false; // Boolean
     Layernum: number = 0; // Integer
@@ -1325,12 +1626,20 @@ const _enmMoveDirection = {
 
 
 
+/**
+ * OD 線のベジェ制御点を保持する一時設定です。
+ */
 class ODBezier_Data {
     ObjectPos: number = 0;//Integer
     Data: number = 0;//Integer
     Point: point = new point();
     Name: string = "";
     
+    /**
+     * 同じベジェ設定を複製します。
+     *
+     * @returns 複製したベジェ設定です。
+     */
     Clone(): ODBezier_Data {
         const d = new ODBezier_Data();
         d.ObjectPos = this.ObjectPos;
@@ -1341,6 +1650,9 @@ class ODBezier_Data {
     }
 }
 
+/**
+ * 1 レイヤ分の属性データ、表示モード、補助情報を保持します。
+ */
 class strLayerDataInfo {
     Name: string = ""; // String
     MapFileName: string = ""; // String
@@ -1367,13 +1679,22 @@ class strLayerDataInfo {
     ObjectGroupRelatedLine: number[] = []; // Integer()
     ODBezier_DataStac: ODBezier_Data[] = []; // List(Of ODBezier_Data)
 
+    /**
+     * MDRZ 読み込み後にレイヤ依存の補助情報を初期化します。
+     */
     initLayerData_from_mdrz(): void {
         if (this.MapFileData.Map.ALIN > 0) {
             this.ObjectGroupRelatedLine = [];
         }
     }
 
-    /** 線モードのベジェ曲線用の参照地点をRefPointに返す。該当しない場合はfalseを返す*/
+    /**
+     * 線モードのベジェ曲線制御点を取得します。
+     *
+     * @param ObjPos 対象オブジェクト番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 制御点が見つかったかどうかと、その座標です。
+     */
     Get_OD_Bezier_RefPoint(ObjPos: number, DataNum: number): { ok: boolean; RefPoint?: point } {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
@@ -1384,7 +1705,12 @@ class strLayerDataInfo {
         return { ok: false };
     }
 
-    /**線モードのベジェ曲線用の参照地点を削除 */
+    /**
+     * 線モードのベジェ曲線制御点を削除します。
+     *
+     * @param ObjPos 対象オブジェクト番号です。
+     * @param DataNum 対象データ項目です。
+     */
     Remove_OD_Bezier(ObjPos: number, DataNum: number): void {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
@@ -1395,7 +1721,13 @@ class strLayerDataInfo {
         }
     }
 
-    /**線モードのベジェ曲線用の参照地点を追加。存在する場合は変更 */
+    /**
+     * 線モードのベジェ曲線制御点を追加または更新します。
+     *
+     * @param ObjPos 対象オブジェクト番号です。
+     * @param DataNum 対象データ項目です。
+     * @param RefPoint 制御点座標です。
+     */
     Add_OD_Bezier(ObjPos: number, DataNum: number, RefPoint: point): void {
         for (let i = 0; i < this.ODBezier_DataStac.length; i++) {
             const bs = this.ODBezier_DataStac[i];
@@ -1411,6 +1743,9 @@ class strLayerDataInfo {
         this.ODBezier_DataStac.push(newD);
     }
 
+    /**
+     * 新規レイヤの表示モードや補助設定を初期化します。
+     */
     initLayerData(): void {
         this.ObjectGroupRelatedLine = [];
         switch (this.Type) {
@@ -1436,7 +1771,11 @@ class strLayerDataInfo {
         }
     }
 
-    //通常のデータの最初の位置を返す。存在しない場合は-1を返す
+    /**
+     * 通常データ項目の先頭インデックスを取得します。
+     *
+     * @returns 最初の通常データ項目位置です。存在しない場合は -1 です。
+     */
     getFirstNormalDataItem(): number {
         for (let i = 0; i < this.atrData.Data.length; i++) {
             const dataItem = this.atrData.Data[i];
@@ -1785,10 +2124,18 @@ class Total_Data_Info {
     }
 }
 
+/**
+ * ダミーオブジェクトの点記号設定を保持します。
+ */
 export class strDummyObjectPointMark_Info {
     ObjectKindName: string = ""; //String
     Mark: Mark_Property = new Mark_Property(); //Mark_Property
     
+    /**
+     * 同じ設定を複製します。
+     *
+     * @returns 複製した点記号設定です。
+     */
     Clone(): strDummyObjectPointMark_Info {
         const d = new strDummyObjectPointMark_Info();
         d.ObjectKindName = this.ObjectKindName;
@@ -2247,6 +2594,9 @@ class strViewStyle_Info {
 }
 
 //スケール設定（属性データ）
+/**
+ * スケールバー表示の設定を保持します。
+ */
 export class strScale_Attri {
     Visible: boolean = false; //Boolean
     Position: point = new point();
@@ -2258,6 +2608,11 @@ export class strScale_Attri {
     Back: BackGround_Box_Property = new BackGround_Box_Property();
     Unit: number = 0; //enmScaleUnit
     
+    /**
+     * 同じスケール設定を複製します。
+     *
+     * @returns 複製したスケール設定です。
+     */
     Clone(): strScale_Attri {
         const s = new strScale_Attri();
         s.Visible = this.Visible;
@@ -2350,6 +2705,9 @@ class strThreeDMode_Set {
         return d;
     }
 }
+/**
+ * 画面座標と地図座標の変換、および表示領域設定を管理します。
+ */
 class Screen_info {
     FirstScreenMGMul: number = 1; // Single '全体が表示してある場合の拡大係数(MDRには保存しない)
     GSMul: number = 1; // Double '地図サイズに対するウィンドウサイズの比(MDRには保存しない)
@@ -2378,6 +2736,15 @@ class Screen_info {
     SampleBoxFlag: boolean = false; // Boolean 'サンプルのライン、記号等に表示する際にtrueにする
     ThreeDMode: strThreeDMode_Set = new strThreeDMode_Set();
 
+    /**
+     * 表示領域とマージンから画面変換情報を初期化します。
+     *
+     * @param pictureboxSize 描画領域のサイズです。
+     * @param picBoxMargin 画面マージン設定です。
+     * @param MapAllAreaRect 地図全体の外接矩形です。
+     * @param AccessoryBase 飾りサイズの基準種別です。
+     * @param SCRViewResetF 表示範囲を全体へ戻す場合は true です。
+     */
     init(pictureboxSize: rectangle, picBoxMargin: ScreenMargin, MapAllAreaRect: rectangle, AccessoryBase: number, SCRViewResetF: boolean): void {
         // <param name="picturebox">表示するpictureBoxのsize</param>
         // <param name="picBoxMargin">マージンScreenMargin構造体</param>
@@ -2401,6 +2768,11 @@ class Screen_info {
         this.OutputDevide = enmOutputDevice.Screen;
     }
 
+    /**
+     * 描画領域サイズに合わせて拡大率と表示範囲を再計算します。
+     *
+     * @param Size 描画領域サイズです。
+     */
     Set_PictureBox_and_CulculateMul(Size: rectangle): void {
         const normalizeRectangle = (value: rectangle | JsonObject | undefined): rectangle => {
             if (value instanceof rectangle) {
@@ -2451,7 +2823,9 @@ class Screen_info {
         this.Get_Screen_BaseMul();
     }
 
-    //地図サイズに対する表示領域サイズの比を求める
+    /**
+     * 地図全体に対する表示領域の倍率を計算します。
+     */
     Get_Screen_BaseMul(): void {
         if (this.Accessory_Base === enmBasePosition.Screen) {
             const s = Math.sqrt(this.ScrView.width() * this.ScrView.height());
@@ -2461,7 +2835,12 @@ class Screen_info {
         }
     }
 
-    //画面上のピクセルが地図中の何パーセントに当たるか計算
+    /**
+     * 画面上のピクセル長を地図基準のパーセントへ変換します。
+     *
+     * @param Pixcel ピクセル長です。
+     * @returns 地図基準の長さパーセントです。
+     */
     Get_Length_On_BaseMap(Pixcel: number): number {
         let a = Pixcel / this.STDWsize * 100 / this.ScreenMG.Mul / this.GSMul;
         if (this.OutputDevide === enmOutputDevice.Printer) {
@@ -2470,7 +2849,12 @@ class Screen_info {
         return a;
     }
 
-    //パーセントのサイズが，画面上で何ピクセルかを取得
+    /**
+     * 地図基準のパーセント長を画面ピクセル長へ変換します。
+     *
+     * @param Percentage 地図基準の長さパーセントです。
+     * @returns 画面上のピクセル長です。
+     */
     Get_Length_On_Screen(Percentage: number): number {
         if (this.SampleBoxFlag === false) {
             let RR = this.STDWsize * Percentage / 100 * this.ScreenMG.Mul * this.GSMul
@@ -2482,7 +2866,14 @@ class Screen_info {
             return (this.STDWsize * Percentage / 100 * this.FirstScreenMGMul)
         }
     }
-    //最大値に占める指定値の割合に面積比例する画面半径を返す
+    /**
+     * 値の比率に応じた面積比例の画面半径を返します。
+     *
+     * @param R_Percent 基準半径のパーセントです。
+     * @param Value 対象値です。
+     * @param max_Value 最大値です。
+     * @returns 画面上の半径です。
+     */
     Radius(R_Percent: number, Value: number, max_Value: number): number {
         let RR;
         if (max_Value === 0) {
@@ -2493,18 +2884,30 @@ class Screen_info {
         return Math.floor(RR)
     }
 
-    //地図X座標をスクリーン座標に
+    /**
+     * 地図 X 座標を画面 X 座標へ変換します。
+     *
+     * @param x 地図 X 座標です。
+     * @returns 画面 X 座標です。
+     */
     getSx(x: number): number {
         const nx = (x - this.ScrView.left) * this.ScreenMG.Mul + this.ScreenMG.Xplus;
         return nx;
     }
 
-    //地図Y座標をスクリーン座標に
+    /**
+     * 地図 Y 座標を画面 Y 座標へ変換します。
+     *
+     * @param y 地図 Y 座標です。
+     * @returns 画面 Y 座標です。
+     */
     getSy(y: number): number {
         return (y - this.ScrView.top) * this.ScreenMG.Mul + this.ScreenMG.YPlus;
     }
 
-    //回転を考慮して地図座標列をスクリーン座標に変換
+    /**
+     * 3D 回転を考慮して地図座標を画面座標へ変換します。
+     */
     Get_SxSy_With_3D(Pnum: number, inXY: point[], ReverseGetF: boolean): point[];
     Get_SxSy_With_3D(Point: point): point;
     Get_SxSy_With_3D(p1: number | point | point[] | rectangle, p2?: point[] | boolean, p3?: boolean): point | point[] | rectangle {
@@ -2558,12 +2961,21 @@ class Screen_info {
         }
     }
 
-    //画面上のピクセル数に対応する地図座標のサイズを取得
+    /**
+     * 画面ピクセル数に対応する地図座標上の長さを返します。
+     *
+     * @param Pixcel ピクセル長です。
+     * @returns 地図座標上の長さです。
+     */
     Get_MapDataSize_from_ScreenPixcel(Pixcel: number): number {
         return Pixcel / this.ScreenMG.Mul;
     }
 
-    //余白の四角形を取得
+    /**
+     * 現在の画面マージン領域を矩形で返します。
+     *
+     * @returns マージン領域の矩形です。
+     */
     getSXSY_Margin(): rectangle {
         const p1 = new point(this.Screen_Margin.rect.left / 100, this.Screen_Margin.rect.top / 100);
         const p2 = new point(1 - this.Screen_Margin.rect.right / 100, 1 - this.Screen_Margin.rect.bottom / 100);
@@ -2573,13 +2985,23 @@ class Screen_info {
         return marginRect;
     }
 
-    //元々の座標を地図座標経由してスクリーン座標XYに変換
+    /**
+     * 地図座標を画面座標へ変換します。
+     *
+     * @param Point 地図座標です。
+     * @returns 画面座標です。
+     */
     getSxSy(Point: point): point {
         const newP = new point(this.getSx(Point.x), this.getSy(Point.y))
         return newP;
     }
 
-    /** 元々の四角形座標を地図座標経由してスクリーン座標XYに変換*/
+    /**
+     * 地図座標の矩形を画面座標の矩形へ変換します。
+     *
+     * @param rect 地図座標の矩形です。
+     * @returns 画面座標の矩形です。
+     */
     getSxSyRect(rect: rectangle): rectangle {
         const L  = new point(rect.left, rect.top);
         const R  = new point(rect.right, rect.bottom);
@@ -2588,6 +3010,15 @@ class Screen_info {
         return new rectangle(LC.x,RC.x, LC.y,  RC.y);
     }
 
+    /**
+     * 座標配列を画面座標へ変換します。
+     *
+     * @param n 変換対象点数です。
+     * @param XY 地図座標配列です。
+     * @param ReverseGetF 逆順で取得する場合は true です。
+     * @param SamePointCheck 同一点の連続を除外する場合は true です。
+     * @returns 変換後の画面座標配列です。
+     */
     getSxSyArray(n: number, XY: point[], ReverseGetF: boolean, SamePointCheck: boolean): point[] {
         let j;
         let jp;
@@ -2627,6 +3058,12 @@ class Screen_info {
         return XY2;
     }
 
+    /**
+     * 画面 X 座標を地図 X 座標へ逆変換します。
+     *
+     * @param x 画面 X 座標です。
+     * @returns 地図 X 座標です。
+     */
     getSRX(x: number): number {
         const mul = this.ScreenMG.Mul;
         if (!Number.isFinite(mul) || mul === 0) {
@@ -2636,6 +3073,12 @@ class Screen_info {
         return newx;
     }
 
+    /**
+     * 画面 Y 座標を地図 Y 座標へ逆変換します。
+     *
+     * @param y 画面 Y 座標です。
+     * @returns 地図 Y 座標です。
+     */
     getSRY(y: number): number {
         const mul = this.ScreenMG.Mul;
         if (!Number.isFinite(mul) || mul === 0) {
@@ -2645,13 +3088,24 @@ class Screen_info {
         return newy;
     }
 
+    /**
+     * 画面座標を地図座標へ逆変換します。
+     *
+     * @param P 画面座標です。
+     * @returns 地図座標です。
+     */
     getSRXY(P: point): point {
         const newx = this.getSRX(P.x);
         const newy = this.getSRY(P.y);
         return new point(newx, newy);
     }
 
-    //線幅を返す（線幅が0の場合は最小値に）
+    /**
+     * 表示用の線幅を返します。
+     *
+     * @param Percentage 地図基準の線幅パーセントです。
+     * @returns 画面上の線幅です。
+     */
     Get_Line_Width(Percentage: number): number {
         if (Percentage === 0) {
             return (appState().settingData.MinimumLineWidth*0.2+0.1);
@@ -2660,7 +3114,12 @@ class Screen_info {
         }
     }
 
-    //画面の上下の位置の相対比(0～1)から画面座標を返す
+    /**
+     * 相対比座標から画面座標を取得します。
+     *
+     * @param p 0 から 1 の相対比座標です。
+     * @returns 画面座標です。
+     */
     getSxSyfromRatio(p: point): point {
         const P2 = new point();
         P2.x = this.ScrRectangle.left + this.ScrRectangle.width() * p.x;
@@ -2668,20 +3127,35 @@ class Screen_info {
         return this.getSxSy(P2);
     }
 
-    //画面座標から相対比座標を返す
+    /**
+     * 画面座標を出力画面サイズ基準の相対比へ変換します。
+     *
+     * @param p 画面座標です。
+     * @returns 相対比座標です。
+     */
     getRatioPfromSxSy(p: point): point {
         const P2 = new point(p.x / this.frmPrint_FormSize.width(), p.y / this.frmPrint_FormSize.height());
         return P2;
     }
 
-    //地図座標から相対比座標を返す
+    /**
+     * 地図座標を出力画面サイズ基準の相対比へ変換します。
+     *
+     * @param p 地図座標です。
+     * @returns 相対比座標です。
+     */
     getRatioPfromSrxSry(p: point): point {
         const p2 = this.getSxSy(p);
         const P3 = new point(p2.x / this.frmPrint_FormSize.width(), p2.y / this.frmPrint_FormSize.height());
         return P3;
     }
 
-    //画面の上下の位置の相対比（0～1）から地図座標に戻す(旧SRX2,SRY2)
+    /**
+     * 相対比座標から地図座標へ戻します。
+     *
+     * @param p 0 から 1 の相対比座標です。
+     * @returns 地図座標です。
+     */
     getSRXYfromRatio(p: point): point {
         const P2 = new point();
         P2.x = this.ScrRectangle.left + this.ScrRectangle.width() * p.x;
@@ -2689,6 +3163,11 @@ class Screen_info {
         return P2;
     }
 
+    /**
+     * 同じ画面変換設定を複製します。
+     *
+     * @returns 複製した画面変換設定です。
+     */
     Clone(): Screen_info {
         const d = new Screen_info();
         Object.assign(d, this);
@@ -2719,6 +3198,9 @@ class Overlay_Temporaly_Data_Info {
     Always_Ove_DataStac: strOverLay_DataSet_Item_Info[] = []; // List(Of strOverLay_Dat//et_Item_Info)
 }
 
+/**
+ * 表示中の凡例項目 1 件分の描画情報です。
+ */
 export class Legend2_Atri {
    LineKind_Flag: boolean = false;// Boolean
    PointObject_Flag: boolean = false;// Boolean
@@ -2732,7 +3214,12 @@ export class Legend2_Atri {
    Rect: rectangle = new rectangle();
    OverLay_Printing_Flag: boolean = false;// Boolean
    
-   Clone(): Legend2_Atri {
+    /**
+     * 同じ凡例情報を複製します。
+     *
+     * @returns 複製した凡例情報です。
+     */
+    Clone(): Legend2_Atri {
        const La = new Legend2_Atri();
        La.LineKind_Flag = this.LineKind_Flag;
        La.PointObject_Flag = this.PointObject_Flag;
@@ -2786,15 +3273,29 @@ class AccessoryTemp_Infp {
 
 //一時データ
 
+/**
+ * 位置検索でヒットしたオブジェクトを表します。
+ */
 export class strLocationSearchObject {
     objLayer: number;
     ObjNumber: number;
 
+    /**
+     * 位置検索結果を初期化します。
+     *
+     * @param layer レイヤ番号です。
+     * @param objnumber オブジェクト番号です。
+     */
     constructor(layer: number, objnumber: number) {
         this.objLayer = layer;
         this.ObjNumber = objnumber;
     }
 
+    /**
+     * 同じ検索結果を複製します。
+     *
+     * @returns 複製した検索結果です。
+     */
     Clone(): strLocationSearchObject {
         const d = new strLocationSearchObject(this.objLayer, this.ObjNumber);
         Object.assign(d, this);
@@ -2994,6 +3495,9 @@ type LegacyLatLonLinePrint = {
     Visible?: boolean;
 };
 
+/**
+ * 属性データ全体と表示設定を管理する中核クラスです。
+ */
 class clsAttrData {
     TempData: strTem;
     LayerData: strLayerDataInfo[];
@@ -3009,6 +3513,9 @@ class clsAttrData {
         minusColor: colorRGBA;
     };
 
+    /**
+     * 属性データ管理クラスを初期化します。
+     */
     constructor() {
         this.defaultColor = {
             paintMode: [new colorRGBA(0x99, 0x34, 0x4), new colorRGBA(0xFF, 0xFF, 0xC4)],
@@ -3036,7 +3543,13 @@ class clsAttrData {
 
     //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 
-    /**ダミーオブジェクトグループの設定をDummyOBGArray[true,false]の配列で返す、trueNumはtrueの数 */
+    /**
+     * ダミーオブジェクト種別の使用状況を配列で返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param shape 形状を絞り込む場合の種別です。
+     * @returns ダミーオブジェクト種別の使用配列と true 件数です。
+     */
     getDummyObjGroupArray(Layernum: number, shape?: number): {DummyOBGArray: boolean[], trueNum: number} {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -3056,7 +3569,11 @@ class clsAttrData {
         return {DummyOBGArray:DummyObjG,trueNum:n};
     }
 
-    /**設定した状態で描画可能か調べる Print_Enable: enmPrint_Enable.とmessageを返す*/
+    /**
+     * 現在の設定で描画可能かを検査します。
+     *
+     * @returns 描画可否と警告メッセージです。
+     */
     Get_PrintError(): {Print_Enable: number, message: string} {
         
         let LV1E  = false;
@@ -3239,7 +3756,13 @@ class clsAttrData {
         return { Print_Enable: enmPrint_Enable.Printable, message: mes };
     }
 
-    /** データ挿入 AddMapFileNameF:レイヤ名に地図ファイルを追加する場合true */
+    /**
+     * 別の属性データを現在のデータへ追加します。
+     *
+     * @param InsertData 追加元の属性データです。
+     * @param AddMapFileNameF レイヤ名へ地図ファイル名を付加する場合は true です。
+     * @returns 追加成否とエラーメッセージです。
+     */
     ADD_AttrData(InsertData: clsAttrData, AddMapFileNameF: boolean): {ok: boolean, ErrorMessage: string} {
 
     const ErrorMessage = "";
@@ -3405,7 +3928,11 @@ class clsAttrData {
     return retV;
 }
 
-    /**データ中の座標を変換する */
+    /**
+     * 保持している属性データ内の座標を別の座標系へ変換します。
+     *
+     * @param newZahyo 変換後の座標系情報です。
+     */
     Convert_Zahyo(newZahyo: Zahyo_info): void {
         const oldZahyo = this.TotalData.ViewStyle.Zahyo;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -3474,13 +4001,22 @@ class clsAttrData {
         }
     }
 
-    /**重ね合わせデータセットの内容を自動で並べ替える */
+    /**
+     * 重ね合わせデータセットの描画順を自動調整します。
+     *
+     * @param DataSetNumber 対象データセット番号です。
+     */
     Sort_OverLay_Data(DataSetNumber: number): void {
             const d = this.TotalData.TotalMode.OverLay.DataSet[DataSetNumber]
                 ; d.DataItem = this.Sort_OverLay_Data_Sub(d.DataItem);
         }
 
-    /**重ね合わせモードにセットするデータを並べ替える（一つのstrOverLay_DataSet_Item_Infoデータセット） */
+    /**
+     * 重ね合わせモード用データを形状と表示モードに応じて並べ替えます。
+     *
+     * @param Ov_Data 並べ替え対象の重ね合わせデータ群です。
+     * @returns 並べ替え後のデータ群です。
+     */
     Sort_OverLay_Data_Sub(Ov_Data: strOverLay_DataSet_Item_Info[]): strOverLay_DataSet_Item_Info[] {
 
         const PicUpMode = [];
@@ -3551,6 +4087,14 @@ class clsAttrData {
         return Sub_Over;
     }
 
+    /**
+     * 指定オブジェクトの値が欠損値かどうかを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNumber 対象データ項目です。
+     * @param objNumber 対象オブジェクト番号です。
+     * @returns 欠損値の場合は true です。
+     */
     Check_Missing_Value(Layernum: number, DataNumber: number, objNumber: number): boolean {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum].atrData.Data[DataNumber] as unknown as {
@@ -3569,7 +4113,12 @@ class clsAttrData {
         }
     }
 
-    /**レイヤ内のURLリンクの最大数を求める */
+    /**
+     * レイヤ内オブジェクトが持つ URL リンク数の最大値を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 最大 URL リンク数です。
+     */
     Get_MaxURLNum(Layernum: number): number {
         const state = appState();
         let mx=0;
@@ -3580,7 +4129,24 @@ class clsAttrData {
         return mx;
     }
 
-    /**通常データ、カテゴリーデータの凡例を指定したデータ項目にコピーする */
+    /**
+     * 既存データ項目の凡例・表示設定を別のデータ項目へコピーします。
+     *
+     * @param D_Layer コピー先レイヤ番号です。
+     * @param D_DataNum コピー先データ項目です。
+     * @param O_Data コピー元データ情報です。
+     * @param ClassPaintF 階級区分色をコピーする場合は true です。
+     * @param MarkSizeF 記号サイズ設定をコピーする場合は true です。
+     * @param MarkSizeValueCopyF 記号サイズの閾値もコピーする場合は true です。
+     * @param MarkBlockF 記号数設定をコピーする場合は true です。
+     * @param ContourF 等値線設定をコピーする場合は true です。
+     * @param ClassMarkF 階級記号設定をコピーする場合は true です。
+     * @param ClassODF OD 設定をコピーする場合は true です。
+     * @param StringModeF 文字表示設定をコピーする場合は true です。
+     * @param MarkBarF 記号バー設定をコピーする場合は true です。
+     * @param ClassODOriginCopyF OD の始点設定まで含めてコピーする場合は true です。
+     * @param copyMarkCommonInnerDataF 共通内部データ設定もコピーする場合は true です。
+     */
     Set_Legend(D_Layer: number, D_DataNum: number, O_Data: strData_info, ClassPaintF: boolean, MarkSizeF: boolean, MarkSizeValueCopyF: boolean, MarkBlockF: boolean,
         ContourF: boolean, ClassMarkF: boolean, ClassODF: boolean, StringModeF: boolean, MarkBarF: boolean, ClassODOriginCopyF: boolean,
         copyMarkCommonInnerDataF: boolean): void {
@@ -3722,7 +4288,15 @@ class clsAttrData {
         }
     }
 
-    //オブジェクト名とデータ項目を文字列で取得
+    /**
+     * オブジェクト名とデータ値をプロパティ表示用文字列として組み立てます。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNumber 対象データ項目です。
+     * @param objNumber 対象オブジェクト番号です。
+     * @param SeparataString 各要素の区切り文字列です。
+     * @returns 表示用の文字列です。
+     */
     getOneObjectPanelLabelString(LayerNum: number, DataNumber: number, objNumber: number, SeparataString: string): string {
         let SoloProperty = this.Get_DataTitle(LayerNum, DataNumber, false) + SeparataString +
             this.Get_Data_Value(LayerNum, DataNumber, objNumber, this.TotalData.ViewStyle.Missing_Data.Text) +
@@ -3754,7 +4328,12 @@ class clsAttrData {
         return SoloProperty;
     }
 
-    //MDRJ形式で保存
+    /**
+     * 属性データを MDRJ または MDRMJ 形式で保存します。
+     *
+     * @param fname 保存ファイル名です。
+     * @param MDRMJFlag true の場合は地図データを含む MDRMJ 形式で保存します。
+     */
     saveAsMDRJ(fname: string, MDRMJFlag: boolean): void {
         const saveLPat = new strSaveLinePat_Info();
         const MapFileList = this.GetMapFileName();
@@ -3801,7 +4380,14 @@ class clsAttrData {
         Generic.zipFile(fname, bDataArray, bDataFile);
     }
 
-    //ある地点がオブジェクト内部に入るかどうかを調べる
+    /**
+     * 指定地点が対象オブジェクト内部に含まれるかを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @param MapP 地図座標です。
+     * @returns オブジェクト内部に含まれる場合は true です。
+     */
     Check_Point_in_Kencode_OneObject(Layernum: number, ObjNum: number, MapP: point): boolean {
         if (this.LayerData[Layernum].Type === enmLayerType.Mesh) {
             const meshP =Generic.ArrayClone( this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MeshPoint);
@@ -3832,7 +4418,14 @@ class clsAttrData {
             }
         }
     }
-    //階級区分の度数分布を求める。区分値が不正の場合はfalseを返す
+    /**
+     * 階級区分の度数分布を計算します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param ConditionCheck 条件設定を反映して集計する場合は true です。
+     * @returns 集計成否、度数配列、欠損数です。
+     */
     Get_ClassFrequency(Layernum: number, DataNum: number, ConditionCheck: boolean): {ok: boolean, frequency?: number[], missFreq?: number} {
         const ld = this.LayerData[Layernum].atrData.Data[DataNum];
         const ldd = ld.SoloModeViewSettings;
@@ -3866,7 +4459,12 @@ class clsAttrData {
         return { ok: true, frequency: Freqency, missFreq: MissFreq };
     }
 
-    //Backgroundの余白部分のピクセル数を取得
+    /**
+     * 背景ボックスの余白を画面ピクセル数で返します。
+     *
+     * @param back 背景ボックス設定です。
+     * @returns 余白のピクセル数です。
+     */
     Get_PaddingPixcel(back: BackGround_Box_Property): number {
         if ((back.Line.BlankF === true) && (back.Tile.BlankF === true)) {
             return 0;
@@ -3875,16 +4473,33 @@ class clsAttrData {
         }
     }
 
-    /**レイヤの階級区分数を取得 */
+    /**
+     * データ項目の階級区分数を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 階級区分数です。
+     */
     Get_DivNum(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings.Div_Num;
     }
-    //レイヤ名を取得
+    /**
+     * レイヤ名を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns レイヤ名です。
+     */
     Get_LayerName(Layernum: number): string {
         return this.LayerData[Layernum].Name;
     }
 
-    //レイヤ内のオブジェクトのオブジェクト名を取得
+    /**
+     * レイヤ内のオブジェクト名を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param Objectnum 対象オブジェクト番号です。
+     * @returns オブジェクト名です。
+     */
     Get_KenObjName(Layernum: number, Objectnum: number): string {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Trip: {
@@ -3898,7 +4513,13 @@ class clsAttrData {
         }
     }
 
-    /**レイヤ内のオブジェクトのオブジェクト番号(地図ファイル中)を取得 */
+    /**
+     * レイヤ内オブジェクトに対応する地図ファイル上のコードを取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param Objectnum 対象オブジェクト番号です。
+     * @returns 地図ファイル上のオブジェクトコードです。
+     */
     Get_KenObjCode(Layernum: number, Objectnum: number): number {
         switch (this.LayerData[Layernum].Type) {
             case enmLayerType.Trip: {
@@ -3912,7 +4533,15 @@ class clsAttrData {
         }      
     }
 
-    //レイヤ・データ・オブジェクトを指定して値を取得
+    /**
+     * レイヤ・データ項目・オブジェクトを指定して値を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param Obj 対象オブジェクト番号です。
+     * @param Missing_word 欠損時に返す文字列です。
+     * @returns データ値、または欠損文字列です。
+     */
     Get_Data_Value(Layernum: number, DataNum: number, Obj: number, Missing_word: string): string | number {
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         const v = ad.Value[Obj];
@@ -3927,8 +4556,12 @@ class clsAttrData {
         }
     }
 
-    //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
-    //パーセントのサイズが，画面上で何ピクセルかを取得/TotalData.ViewStyle.ScrData.Get_Length_On_Screenのショートカット
+    /**
+     * 画面長さ変換のショートカットとしてピクセル長を返します。
+     *
+     * @param Percentage 地図基準の長さパーセントです。
+     * @returns 画面上のピクセル長です。
+     */
     Get_Length_On_Screen(Percentage: number): number {
         const s = this.TotalData.ViewStyle.ScrData;
         if (s.SampleBoxFlag === false) {
@@ -3947,11 +4580,26 @@ class clsAttrData {
 
     }
 
-    /** */
+    /**
+     * 矢印付きラインを描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param DestFP 矢印終点です。
+     * @param StartFP 始点です。
+     * @param LinePat 線設定です。
+     * @param Arrow 矢印設定です。
+     */
     Draw_Arrow(g: CanvasRenderingContext2D, DestFP: point, StartFP: point, LinePat: Line_Property, Arrow: Arrow_Property): void {
         clsDrawLine.Arrow?.(g,DestFP,StartFP,LinePat,Arrow,this.TotalData.ViewStyle.ScrData);
     }
-    //ライン描画
+    /**
+     * 線分または折れ線を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param LinePat 線設定です。
+     * @param P1 頂点列または始点です。
+     * @param P2 単独線分描画時の終点です。
+     */
     Draw_Line(g: CanvasRenderingContext2D, LinePat: Line_Property, P1: point[], P2?: point): void {
         if (P2 === undefined) {
             clsDrawLine.Line?.(g, LinePat, P1, this.TotalData.ViewStyle.ScrData);
@@ -3960,50 +4608,134 @@ class clsAttrData {
         }
     }
 
+    /**
+     * ポリゴン内部をタイル塗りで描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param pxy 頂点列です。
+     * @param nPolyP 各ポリゴンの頂点数です。
+     * @param T タイル設定です。
+     */
     Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], T: Tile_Property): void {
         clsDrawTile.Draw_Poly_Inner?.(g, pxy, nPolyP,  T);
     }
 
-    // TODO: タイル領域の描画機能は未実装
+    /**
+     * タイル領域描画の未実装プレースホルダーです。
+     *
+     * @param _g 描画先コンテキストです。
+     * @param _BoundaryRect 領域矩形です。
+     * @param _L 線設定です。
+     * @param _T タイル設定です。
+     * @param _Kakudo 回転角です。
+     */
     Draw_Tile_Region(_g: CanvasRenderingContext2D, _BoundaryRect: rectangle, _L: Line_Property, _T: Tile_Property, _Kakudo: number): void {
         // 現在未実装 - 必要に応じて実装予定
         void 0;
     }
     
+    /**
+     * タイル付き矩形ボックスを描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param BoundaryRect 領域矩形です。
+     * @param L 線設定です。
+     * @param T タイル設定です。
+     * @param Kakudo 回転角です。
+     */
     Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Line_Property, T: Tile_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_Box?.(g, BoundaryRect, L, T, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
+    /**
+     * 角丸背景ボックスを描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param BoundaryRect 領域矩形です。
+     * @param Back 背景ボックス設定です。
+     * @param Kakudo 回転角です。
+     */
     Draw_Tile_RoundBox(g: CanvasRenderingContext2D, BoundaryRect: rectangle, Back: BackGround_Box_Property, Kakudo: number): void {
         clsDrawTile.Draw_Tile_RoundBox?.(g, BoundaryRect, Back, Kakudo, this.TotalData.ViewStyle.ScrData);
     }
 
+    /**
+     * テキストを描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Word 描画文字列です。
+     * @param Pos 描画位置です。
+     * @param Font_P フォント設定です。
+     * @param HorizonalAlignment 横方向揃えです。
+     * @param VerticalAlignment 縦方向揃えです。
+     */
     Draw_Print(g: CanvasRenderingContext2D, Word: string, Pos: point, Font_P: Font_Property, HorizonalAlignment: HorizontalAlignmentValue, VerticalAlignment: VerticalAlignmentValue): void {
         clsDraw.print?.(g, Word, Pos, Font_P, HorizonalAlignment, VerticalAlignment, this.TotalData.ViewStyle.ScrData);
     }
 
+    /**
+     * 扇形を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param OP 中心座標です。
+     * @param r 半径です。
+     * @param start_p 開始角です。
+     * @param end_p 終了角です。
+     * @param Lpat 線設定です。
+     * @param Tile 塗り設定です。
+     */
     Draw_Fan(g: CanvasRenderingContext2D, OP: point, r: number, start_p: number, end_p: number, Lpat: Line_Property, Tile: Tile_Property): void {
         appState().clsDrawMarkFan?.Draw_Fan?.(g,OP,r,start_p, end_p,Lpat,Tile,this.TotalData.ViewStyle.ScrData);
     }
 
-        // サンプル記号ボックスに記号を描画
+    /**
+     * サンプル記号ボックスへ記号を描画します。
+     *
+     * @param picBox 対象要素です。
+     * @param Mark 記号設定です。
+     */
     Draw_Sample_Mark_Box(picBox: HTMLElement, Mark: Mark_Property): void {
         appState().clsDrawMarkFan?.Draw_Mark_Sample_Box?.(picBox as unknown as HTMLCanvasElement, Mark, this.TotalData.ViewStyle.ScrData);
     }
-    //サンプルラインボックスにラインを描画
+    /**
+     * サンプルラインボックスへ線種を描画します。
+     *
+     * @param picBox 対象要素です。
+     * @param LinePat 線設定です。
+     */
     Draw_Sample_LineBox(picBox: HTMLElement, LinePat: Line_Property): void {
         clsDrawLine.Draw_Sample_LineBox?.(picBox as unknown as HTMLCanvasElement, LinePat, this.TotalData.ViewStyle.ScrData);
     }
-    //記号描画
+    /**
+     * 記号を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Position 描画位置です。
+     * @param r 半径またはサイズです。
+     * @param Mark 記号設定です。
+     */
     Draw_Mark(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property): void {
         appState().clsDrawMarkFan?.Mark_Print?.(g, Position, r, Mark, this.TotalData.ViewStyle.ScrData);
     }
-    // 最大値に占める指定値の割合に面積比例する画面半径を返す/TotalData.ViewStyle.ScrData.Radiusのショートカット
+    /**
+     * 画面半径計算のショートカットです。
+     *
+     * @param R_Percent 基準半径パーセントです。
+     * @param Value 対象値です。
+     * @param max_Value 最大値です。
+     * @returns 画面半径です。
+     */
     Radius(R_Percent: number, Value: number, max_Value: number): number {
         return this.TotalData.ViewStyle.ScrData.Radius(R_Percent, Value, max_Value);
     }
 
-    //データ項目の中央値を求める
+    /**
+     * データ項目の中央値を計算します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 中央値です。
+     */
     Get_MedianValue(Layernum: number, DataNum: number): number {
 
         const ST = new SortingSearch();
@@ -4025,23 +4757,41 @@ class clsAttrData {
 
     }
 
-    /**属性データ編集から座標系を設定する */
+    /**
+     * 属性データ編集結果から座標系を再設定します。
+     *
+     * @returns 座標系統一に成功した場合は true です。
+     */
     attrGridZahyoSet(): boolean {
         this.TotalData.ViewStyle.Zahyo = this.MapData.GetPrestigeZahyoMode();
         return this.MapData.EqualizeZahyoMode(this.TotalData.ViewStyle.Zahyo).ok;
     }
-    //指定した地図ファイルを削除
+    /**
+     * 指定した地図ファイルを管理対象から削除します。
+     *
+     * @param MapFileName 対象の地図ファイル名です。
+     */
     RemoveMapData(MapFileName: string): void {
         this.MapData.RemoveMapData(MapFileName);
     }
-    //既存地図ファイル追加
+    /**
+     * 既存の地図データを管理対象へ追加します。
+     *
+     * @param MData 追加する地図データです。
+     * @param MapFileName 地図ファイル名です。
+     */
     AddExistingMapData(MData: clsMapdata, MapFileName: string): void {
         if (this.MapData === undefined) {
             this.MapData = new clsAttrMapData();
         }
         this.MapData.AddExistingMapData(MData, MapFileName);
     }
-    //同じ名前の地図ファイルが存在する場合、別名をつけて返す
+    /**
+     * 既存と重複しない地図ファイル名を生成します。
+     *
+     * @param checkMfile 候補となる地図ファイル名です。
+     * @returns 一意化した地図ファイル名です。
+     */
     getUniqueMapFileName(checkMfile: string): string {
         const ExtMfile = this.GetMapFileName();
         if (ExtMfile.indexOf(checkMfile) === -1) {
@@ -4056,23 +4806,42 @@ class clsAttrData {
             return Omfile;
         }
     }
-    //地図デーセットをセットする 空白の場合、最初に読み込まれた地図
+    /**
+     * 地図ファイル名から地図データを取得します。
+     *
+     * @param MapFileName 地図ファイル名です。空文字の場合は優先地図を返します。
+     * @returns 地図データです。
+     */
     SetMapFile(MapFileName: string): clsMapdata | undefined {
         return this.MapData.SetMapFile(MapFileName);
     }
 
-    //地図ファイル数を取得
+    /**
+     * 読み込まれている地図ファイル数を返します。
+     *
+     * @returns 地図ファイル数です。
+     */
     GetNumOfMapFile(): number {
         return this.MapData.GetNumOfMapFile();
     }
 
-    //読み込んだ地図ファイルのファイル名の配列を返す
+    /**
+     * 読み込まれた地図ファイル名一覧を返します。
+     *
+     * @returns 地図ファイル名配列です。
+     */
     GetMapFileName(): string[] {
         return this.MapData.GetMapFileName();
     }
 
-    //指定したレイヤ・データ項目で指定した単独表示モードが表示可能か調べる
-    //Solo_md:enmSoloMode_Number
+    /**
+     * 指定レイヤ・データ項目で単独表示モードが利用可能か判定します。
+     *
+     * @param Solo_md 単独表示モードです。
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 利用可能な場合は true です。
+     */
     Check_Enable_SoloMode(Solo_md: number, Layernum: number, DataNum: number): boolean {
         switch (this.LayerData[Layernum].atrData.Data[DataNum].DataType) {
             case enmAttDataType.Strings:
@@ -4139,7 +4908,9 @@ class clsAttrData {
         return true;
     }
 
-    //飾りの初期位置指定
+    /**
+     * 飾り要素の初期配置を設定します。
+     */
     Set_Acc_First_Position(): void {
         const mv = this.TotalData.ViewStyle;
         const mr = mv.ScrData.MapRectangle;
@@ -4172,6 +4943,13 @@ class clsAttrData {
         }
     }
 
+    /**
+     * オブジェクト外周の境界線配置情報を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 境界線配置情報です。
+     */
     Boundary_Kencode_Arrange(Layernum: number, ObjNum: number): boundArrangeData {
         const O_Code = this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].MpObjCode;
         let badata = new boundArrangeData();
@@ -4189,7 +4967,9 @@ class clsAttrData {
         return badata;
     }
 
-    //飾りをウインドウに固定する際の飾り位置をチェック・修正
+    /**
+     * 画面固定飾りの位置を相対比へ補正します。
+     */
     Change_Acc_Position_by_Accessory_Base_Set_Screen(): void {
         const mv = this.TotalData.ViewStyle;
         const ms = mv.ScrData.ScrRectangle;
@@ -4217,7 +4997,14 @@ class clsAttrData {
         }
     }
 
-    //変換した座標を計算済み座標に登録
+    /**
+     * 変換済みライン座標をキャッシュへ登録します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     * @param LineCode ラインコードです。
+     * @param XY 座標列です。
+     * @param ReverseF 反転状態です。
+     */
     Set_MPSubLineXY(MapFileName: string, LineCode: number, XY: point[], ReverseF: boolean): void {
         const mapKey = MapFileName.toUpperCase();
         if (!this.MPSubLine[mapKey]) {
@@ -4232,7 +5019,11 @@ class clsAttrData {
         LinePoint[LineCode] = LP;
     }
 
-    /** MPSubLine.Drawnの値をfalseにする*/
+    /**
+     * 指定地図のライン描画済みフラグをすべて false に戻します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     */
     ResetMPSubLineDrawn(MapFileName: string): void {
         const mapKey = MapFileName.toUpperCase();
         const LinePoint = this.MPSubLine[mapKey];
@@ -4244,6 +5035,13 @@ class clsAttrData {
         }
     }
 
+    /**
+     * ラインの描画済みフラグを取得します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     * @param LineCode ラインコードです。
+     * @returns 描画済みフラグです。
+     */
     getMpLineDrawn(MapFileName: string, LineCode: number): boolean | undefined {
         const mapKey = MapFileName.toUpperCase();
         const LinePoint = this.MPSubLine[mapKey];
@@ -4253,6 +5051,13 @@ class clsAttrData {
             return LinePoint[LineCode].Drawn;
         }
     }
+    /**
+     * ラインの描画済みフラグを設定します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     * @param LineCode ラインコードです。
+     * @param value 設定値です。
+     */
     setMpLineDrawn(MapFileName: string, LineCode: number, value: boolean): void {
         const mapKey = MapFileName.toUpperCase();
         if (!this.MPSubLine[mapKey]) {
@@ -4264,12 +5069,26 @@ class clsAttrData {
         this.MPSubLine[mapKey][LineCode].Drawn = value;
     }
 
-
-    //線種の使用チェック
+    /**
+     * 線種グループの使用状態を取得します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     * @param lineKindNum 線種番号です。
+     * @param PatternNum グループ番号です。
+     * @returns 使用中なら true です。
+     */
     getLineKindUseChecked(MapFileName: string, lineKindNum: number, PatternNum: number): boolean {
         const n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         return this.LineKindUse[n];
     }
+    /**
+     * 線種グループの使用状態を設定します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     * @param lineKindNum 線種番号です。
+     * @param PatternNum グループ番号です。
+     * @param value 設定値です。
+     */
     setLineKindUseChecked(MapFileName: string, lineKindNum: number, PatternNum: number, value: boolean): void {
         const n = this.MapData.GetLineKindPosition(MapFileName, lineKindNum, PatternNum);
         this.LineKindUse[n] = value;
@@ -4280,7 +5099,14 @@ class clsAttrData {
         return this.LineKindUse;
     }
 
-    //地図データの保存してある計算済み座標を取得する
+    /**
+     * キャッシュ済みのライン座標を取得します。
+     *
+     * @param MapFileName 地図ファイル名です。
+     * @param LineCode ラインコードです。
+     * @param ReverseF 反転状態です。
+     * @returns 座標列です。
+     */
     Get_MPSubLineXY(MapFileName: string, LineCode: number, ReverseF: boolean): point[] | undefined {
         let xy: point[] = [];
         const mapKey = MapFileName.toUpperCase();
@@ -4309,7 +5135,9 @@ class clsAttrData {
         }
     }
 
-    //計算済み座標と使用線種をリセットする
+    /**
+     * 計算済みライン座標キャッシュと線種使用情報を初期化します。
+     */
     ResetMPSubLineXY(): void {
         for (const key in this.MPSubLine) {
             delete this.MPSubLine[key];
@@ -4325,7 +5153,13 @@ class clsAttrData {
         this.TempData.PointObjectKindUsedStack = [];
     }
 
-    //**点ダミーオブジェクトの凡例表示用に記録する */
+    /**
+     * 点ダミーオブジェクトの凡例表示用記録を追加します。
+     *
+     * @param MapFilename 地図ファイル名です。
+     * @param ObjKindNumber オブジェクト種別番号です。
+     * @param MK 記号設定です。
+     */
     AddPointObjectKindUsed(MapFilename: string, ObjKindNumber: number, MK: Mark_Property): void {
         for(const i in this.TempData.PointObjectKindUsedStack){
             const Ob=this.TempData.PointObjectKindUsedStack[i];
@@ -4342,7 +5176,9 @@ class clsAttrData {
         this.TempData.PointObjectKindUsedStack.push(newObk);
     }
 
-    //オブジェクトの表示チェックをクリア
+    /**
+     * オブジェクト描画済みフラグを全レイヤで初期化します。
+     */
     ResetObjectPrintedCheckFlag(): void {
         this.TempData.ObjectPrintedCheckFlag = [];
         const layMax = Math.max(this.TotalData.LV1.Lay_Maxn ?? 0, this.LayerData.length);
@@ -4352,7 +5188,9 @@ class clsAttrData {
         }
     }
 
-    //データ読み込み後の共通初期化
+    /**
+     * データ読み込み後に表示設定と補助情報を共通初期化します。
+     */
     initTotalData_andOther(): void {
         const DourceType = this.TotalData.LV1.DataSourceType;
         if ((DourceType === enmDataSource.CSV) ||
@@ -4397,14 +5235,20 @@ class clsAttrData {
         this.PrtObjectSpatialIndex();
     }
 
-    //単独表示モードで選択中のデータ項目のタイトルを返す
+    /**
+     * 単独表示モードで現在選択中のデータ項目タイトルを返します。
+     *
+     * @returns 選択中データ項目のタイトルです。
+     */
     Get_SelectedDataTitle(): string {
         const l = this.TotalData.LV1.SelectedLayer;
         const d = this.LayerData[l].atrData.SelectedIndex;
         return this.LayerData[l].atrData.Data[d].Title;
     }
 
-    //レイヤごとのオブジェクトの空間インデックス作成
+    /**
+     * レイヤごとの表示用空間インデックスを作成します。
+     */
     PrtObjectSpatialIndex(): void {
         const mrect = this.TotalData.ViewStyle.ScrData.MapRectangle;
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -4457,11 +5301,23 @@ class clsAttrData {
 
     }
 
-    /**レイヤの地図ファイルのオブジェクト番号からオブジェクトの外周を取得 */
+    /**
+     * 地図ファイル上のオブジェクトコードから外接矩形を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjCode 地図ファイル上のオブジェクトコードです。
+     * @returns 外接矩形です。
+     */
     Get_Object_Circumscribed_Rectangle(Layernum: number, ObjCode: number): rectangle {
         return this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
     }
-    //レイヤのオブジェクト位置からオブジェクトの外周を取得
+    /**
+     * レイヤ内のオブジェクト番号から外接矩形を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 外接矩形です。
+     */
     Get_Kencode_Object_Circumscribed_Rectangle(Layernum: number, ObjNum: number): rectangle {
         const LD = this.LayerData[Layernum];
         switch (LD.Type) {
@@ -4491,7 +5347,9 @@ class clsAttrData {
         }
     }
 
-    //ダミー点オブジェクトの記号を初期化
+    /**
+     * ダミー点オブジェクト用の記号設定を初期化します。
+     */
     initDummuyPointObjectMark(): void {
         const vs = this.TotalData.ViewStyle;
         vs.MapLegend.Line_DummyKind.Line_Visible_Number_STR = "1".repeat(this.GetAllMapLineKindNum());
@@ -4511,7 +5369,11 @@ class clsAttrData {
         }
     }
 
-    //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
+    /**
+     * 点オブジェクトグループ名を地図ファイル単位で取得します。
+     *
+     * @returns 地図ファイル名ごとの点オブジェクトグループ名です。
+     */
     GetAllPointObjectGroup(): { [key: string]: string[] } {
         return this.MapData.GetAllPointObjectGroup();
     }
@@ -4525,12 +5387,18 @@ class clsAttrData {
     GetAllMapLineKindName(): string[] {
         return this.MapData.GetAllMapLineKindName();
     }
-    //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
+    /**
+     * 全地図ファイルの総線種数を返します。
+     *
+     * @returns 総線種数です。
+     */
     GetAllMapLineKindNum(): number {
         return this.MapData.GetAllMapLineKindNum();
     }
 
-    //表示領域の最大サイズを求めてMapRectangleに格納する
+    /**
+     * 全レイヤの表示領域を集計して地図全体矩形を更新します。
+     */
     Check_Vector_Object(): void {
         let TotalScrRect = new rectangle();
 
@@ -4636,6 +5504,12 @@ class clsAttrData {
         this.TempData.MapAreaLatLon = this.get_DataLatLonBox();
     }
 
+    /**
+     * 単独表示モード番号から表示用名称を返します。
+     *
+     * @param md 単独表示モード番号です。
+     * @returns 表示用名称です。
+     */
     getSolomodeWord(md: number): string {
 
         switch (md) {
@@ -4756,7 +5630,11 @@ class clsAttrData {
         this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings.SoloMode = mode;
     }
 
-    //データの緯度経度の領域を返す
+    /**
+     * データ全体の緯度経度範囲を返します。
+     *
+     * @returns 緯度経度範囲の矩形です。
+     */
     get_DataLatLonBox(): rectangle {
         let IdoKedoRect = new rectangle();
         const Zahyo = this.TotalData.ViewStyle.Zahyo;
@@ -4871,6 +5749,14 @@ class clsAttrData {
         return LLRect;
     }
 
+    /**
+     * 指定ラインの緯度経度範囲を既存矩形へ統合します。
+     *
+     * @param mapdata 地図データです。
+     * @param LineNumber ライン番号です。
+     * @param rect 既存矩形です。
+     * @returns 更新後の矩形です。
+     */
     getLinelatLon(mapdata: clsMapdata, LineNumber: number, rect: rectangle): rectangle {
         const ml=mapdata.MPLine[LineNumber];
         const LP: point[] = [];
@@ -4881,7 +5767,15 @@ class clsAttrData {
         const newRect = spatial.getCircumscribedRectangle(rect, rectf)  ;
         return newRect;
     }
-    //MANDARAファイルデータを開く
+    /**
+     * 形式に応じて MANDARA データを読み込みます。
+     *
+     * @param MapDataList 利用可能な地図データ一覧です。
+     * @param attrText 属性テキストです。
+     * @param filename ファイル名です。
+     * @param ext 拡張子です。
+     * @returns 読み込み結果です。
+     */
     OpenNewMandaraFile(MapDataList: clsMapdata[], attrText: string, filename: string, ext: string): { ok: boolean; emes: string } {
         let retv;
         if (ext === "clipboard") {
@@ -4910,7 +5804,13 @@ class clsAttrData {
         }
         return retv;
     }
-    //mdrjファイルから読み込み
+    /**
+     * MDRJ または MDRMJ 形式の JSON から属性データを復元します。
+     *
+     * @param MapDataList 既存地図データ一覧です。
+     * @param attrText 属性データ JSON 文字列です。
+     * @returns 読み込み結果です。
+     */
     SetDataFromMDRJ(MapDataList: clsMapdata[], attrText: string): DataLoadResult {
         const state = appState();
         this.MapData = new clsAttrMapData();
@@ -5681,7 +6581,13 @@ class clsAttrData {
         }
 }
 
-    //クリップボードから読み込み
+    /**
+     * クリップボードや CSV 相当のテキストから属性データを読み込みます。
+     *
+     * @param MapDataList 利用可能な地図データ一覧です。
+     * @param attrText 属性テキストです。
+     * @returns 読み込み結果です。
+     */
     SetDataFromClipBoard(MapDataList: clsMapdata[], attrText: string): DataLoadResult {
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length; i++) {
@@ -5702,7 +6608,12 @@ class clsAttrData {
         return { ok: retv.ok, emes: retv.emes };
     }
 
-    //Clipboard,CSVのデータを一行ずつ処理して読み込む
+    /**
+     * クリップボード・CSV テキストを 1 行ずつ解析して属性データへ変換します。
+     *
+     * @param STR 入力テキスト、または行配列です。
+     * @returns 読み込み結果です。
+     */
     ReadAttrDataOneLine(STR: string | string[]): DataLoadResult {
         const state = appState();
         const lines = Array.isArray(STR) ? STR : STR.split(/\r?\n/);
@@ -6125,7 +7036,14 @@ class clsAttrData {
         return { ok: OK_Flag, emes: ObjectErrorMessage };
     }
 
-    /**オブジェクトからオブジェクトコードを返す。見つからない場合は-1を返す Timeは地図ファイル指定の場合     */
+    /**
+     * オブジェクト名からオブジェクトコードを取得します。
+     *
+     * @param Layernum_MapfileName レイヤ番号、または地図ファイル名です。
+     * @param ObjName オブジェクト名です。
+     * @param Time 地図ファイル指定時の時期です。
+     * @returns 見つかったオブジェクトコードです。見つからない場合は -1 です。
+     */
     Get_ObjectCode_from_ObjName(Layernum_MapfileName: JsonValue, ObjName: string, Time: strYMD): number {
         if(typeof(Layernum_MapfileName)==="string"){//地図ファイル指定
             const MapFileObjectNameSearch = this.MapData.SetObject_Name_Search(Layernum_MapfileName);
@@ -6137,8 +7055,13 @@ class clsAttrData {
         }
     }
 
-
-    //文字列からデータに変換
+    /**
+     * 1 レイヤ分の読み込み中文字列を実データ構造へ変換します。
+     *
+     * @param LayerReading 読み込み中のレイヤ情報です。
+     * @param TotalMissing 全体欠損設定です。
+     * @returns 変換結果です。
+     */
     Set_Data_from_String(LayerReading: strLayerReadingInfo, TotalMissing: boolean): {ok: boolean, emes: string} {
         let E_Mes = "";
         const MapFileData = this.MapData.SetMapFile(LayerReading.MapFile as string);
@@ -6344,8 +7267,18 @@ class clsAttrData {
         return { ok: retv.ok, emes: E_Mes };
     }
 
-
-    //レイヤ単位で文字列配列に入れたデータを設定する
+    /**
+     * レイヤ単位で読み込んだ文字列配列をセルデータへ設定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum データ項目数です。
+     * @param TTL タイトル配列です。
+     * @param UNT 単位配列です。
+     * @param DTMissing 欠損設定配列です。
+     * @param Note 注記配列です。
+     * @param DN_Str オブジェクトごとの値配列です。
+     * @returns 設定結果です。
+     */
     Set_STRData_To_Cell(Layernum: number, DataNum: number, TTL: string[], UNT: string[], DTMissing: JsonValue[], Note: string[], DN_Str: string[][]): {ok: boolean, emes: string} {
         let ErrorMes = "";
         const L = this.LayerData[Layernum];
@@ -6611,7 +7544,14 @@ class clsAttrData {
         return { ok: true, emes: ErrorMes };
     }
 
-    //レイヤにダミーオブジェクトとグループを設定する
+    /**
+     * レイヤへダミーオブジェクトとダミーグループを設定します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param Dummy ダミーオブジェクト名配列です。
+     * @param DummyGroup ダミーグループ名配列です。
+     * @returns 解決できなかった名前の一覧です。
+     */
     Set_Dummy_and_Group(LayerNum: number, Dummy: string[], DummyGroup: string[]): string {
         const L = this.LayerData[LayerNum];
         if (L.Type === enmLayerType.Trip_Definition) {
@@ -6659,7 +7599,13 @@ class clsAttrData {
         return Emes;
     }
 
-    /**白地図・初期属性データ表示から読み込み DeleteDefDataFlag:取得した初期属性データを地図データ中から削除する場合true */
+    /**
+     * 白地図・初期属性データ表示からレイヤを生成します。
+     *
+     * @param MapDataList 地図データ一覧です。
+     * @param LayDataInf レイヤ情報一覧です。
+     * @param DeleteDefDataFlag 初期属性を地図データ側から削除する場合は true です。
+     */
     SetMapViewerData(MapDataList: clsMapdata[], LayDataInf: strLayerInfo[], DeleteDefDataFlag: boolean): void {      
         this.MapData = new clsAttrMapData();
         for (let i = 0; i < MapDataList.length;i++) {
@@ -6778,7 +7724,11 @@ class clsAttrData {
         this.Check_LayerShape();
     }
 
-    //レイヤの形状を実際のオブジェクトの形状に基づいて設定
+    /**
+     * 各レイヤの形状設定を実データに基づいて補正します。
+     *
+     * @returns 形状不整合に関するメッセージです。
+     */
     Check_LayerShape(): string {
         let EMes = "";
         for (let i = 0; i < this.TotalData.LV1.Lay_Maxn; i++) {
@@ -6826,6 +7776,12 @@ class clsAttrData {
         return EMes;
     }
 
+    /**
+     * 単一レイヤ内のオブジェクト形状を調べ、代表形状を返します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @returns 推定形状と警告メッセージです。
+     */
     Check_LayerShape_Sub(LayerNum: number): { shape: number; emes: string } {
         let EMes = "";
         const L = this.LayerData[LayerNum];
@@ -6880,7 +7836,9 @@ class clsAttrData {
         return { shape: Generic.checkShape(sh), emes: EMes };
     }
 
-    //オブジェクトグループ連動型線種の線種決定
+    /**
+     * オブジェクトグループ連動型線種の関連線情報を確定します。
+     */
     LinePatternCheck(): void {
         for (let Lay = 0; Lay < this.TotalData.LV1.Lay_Maxn; Lay++) {
             const LD = this.LayerData[Lay];
@@ -6933,8 +7891,13 @@ class clsAttrData {
         }
     }
 
-
-    //指定されたオブジェクトで、指定された時期に使用可能なライン数と番号を返す
+    /**
+     * 指定オブジェクトで利用可能な外周ラインを返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 利用可能なライン情報です。
+     */
     Get_Enable_KenCode_MPLine(Layernum: number, ObjNum: number): EnableMPLine_Data[] {
         switch (this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].Objectstructure) {
             case enmKenCodeObjectstructure.MapObj: {
@@ -6945,7 +7908,13 @@ class clsAttrData {
                 return this.Get_EnableMPLine_SyntheticObject(Layernum, ObjNum);
         }
     }
-    //合成オブジェクトの外周線を返す
+    /**
+     * 合成オブジェクトの外周ラインを返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 外周ライン情報です。
+     */
     Get_EnableMPLine_SyntheticObject(Layernum: number, ObjNum: number): EnableMPLine_Data[] {
         const LD = this.LayerData[Layernum];
         const SO_Code = LD.atrObject.atrObjectData[ObjNum].MpObjCode;
@@ -6967,7 +7936,13 @@ class clsAttrData {
         return ag;
     }
 
-    //オブジェクトが画面内に入るかどうかチェック
+    /**
+     * オブジェクトが現在の画面内に入るかを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 画面内なら true です。
+     */
     Check_screen_Kencode_In(Layernum: number, ObjNum: number): boolean {
         const rect = this.Get_Kencode_Object_Circumscribed_Rectangle(Layernum, ObjNum);
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F === true) {
@@ -6995,7 +7970,13 @@ class clsAttrData {
             }
         }
     }
-        //地図ファイル中のオブジェクトが画面内に入るかどうかチェック
+    /**
+     * 地図ファイル上のオブジェクトコードが画面内に入るかを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjCode 地図ファイル上のオブジェクトコードです。
+     * @returns 画面内なら true です。
+     */
     Check_Screen_Objcode_In(Layernum: number, ObjCode: number): boolean {
         const rect = this.LayerData[Layernum].MapFileData.MPObj[ObjCode].Circumscribed_Rectangle;
         if (this.TotalData.ViewStyle.ScrData.ThreeDMode.Set3D_F === true) {
@@ -7022,7 +8003,13 @@ class clsAttrData {
         }
     }
 
-    //指定の画面座標の中心点と半径の領域が画面に入る場合はtrue
+    /**
+     * 指定領域または中心点半径領域が画面内に入るかを判定します。
+     *
+     * @param CenterP 判定対象の中心点、または矩形です。
+     * @param R 中心点指定時の半径です。
+     * @returns 画面内に入る場合は true です。
+     */
     Check_Screen_In(CenterP: point | rectangle, R?: number): boolean {
         if ((CenterP instanceof rectangle) === true){
             if (spatial.Compare_Two_Rectangle_Position(CenterP, this.TotalData.ViewStyle.ScrData.MapScreen_Scale) !== cstRectangle_Cross.cstOuter) {
@@ -7041,6 +8028,17 @@ class clsAttrData {
         }
     }
 
+    /**
+     * 1 データ項目分の値配列をレイヤへ追加します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param TTL タイトルです。
+     * @param UNT 単位です。
+     * @param Note 注記です。
+     * @param Dn_Val_str 値配列です。
+     * @param Missing_F 欠損値設定です。
+     * @returns 追加した場合は true です。
+     */
     Add_One_Data_Value(Layernum: number, TTL: string, UNT: string, Note: string, Dn_Val_str: (string | number | undefined)[], Missing_F: boolean): boolean {
 
         if(TTL === null){TTL=""}
@@ -7108,12 +8106,23 @@ class clsAttrData {
         return true;
     }
 
-    //レイヤのオブジェクト数を求める
+    /**
+     * レイヤのオブジェクト数を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns オブジェクト数です。
+     */
     Get_ObjectNum(Layernum: number): number {
         return this.LayerData[Layernum].atrObject.ObjectNum;
     }
 
-    //レイヤ名を取得する。レイヤが1つでレイヤ名が空白の場合は""を返す
+    /**
+     * 表示用のレイヤ名文字列を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param CR_F 末尾に改行を追加する場合は true です。
+     * @returns 表示用文字列です。
+     */
     Get_Layer_Name(Layernum: number, CR_F=false): string {
         let ln = "";
         if ((this.TotalData.LV1.Lay_Maxn === 1) && (this.LayerData[Layernum].Name === "")) {
@@ -7174,7 +8183,12 @@ class clsAttrData {
         return ST;
     }
 
-    //指定したレイヤに条件設定または表示オブジェクト限定が有効に設定されているかを調べる
+    /**
+     * 指定レイヤで条件設定または表示限定が有効かを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 有効なら true です。
+     */
     Check_Condition_UMU(Layernum: number): boolean {
         for (let i = 0; i < this.TotalData.Condition.length; i++) {
             if ((this.TotalData.Condition[i].Enabled === true) && (this.TotalData.Condition[i].Layer === Layernum)) {
@@ -7187,7 +8201,12 @@ class clsAttrData {
         return false;
     }
 
-    //**指定したレイヤに表示オブジェクト限定が有効に設定されているかを調べる */
+    /**
+     * 指定レイヤで表示オブジェクト限定が有効かを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 有効なら true です。
+     */
     Check_ObjectLimitation(Layernum: number): boolean {
         if (this.TotalData.ViewStyle.ObjectLimitationF === true) {
             for (let i = 0; i < this.Get_ObjectNum(Layernum); i++) {
@@ -7199,7 +8218,12 @@ class clsAttrData {
         return false;
     }
 
-    //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数えて文字列で出力
+    /**
+     * 条件に合致するオブジェクト数情報を文字列で返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 集計結果文字列です。
+     */
     Get_Condition_Ok_Num_Info(Layernum: number): string {
         let T = this.Get_Layer_Name(Layernum,false);
         T += "全オブジェクト数:"+ this.Get_ObjectNum(Layernum).toString()  + '\n';
@@ -7207,7 +8231,12 @@ class clsAttrData {
         return T;
     }
 
-    //表示オブジェクト限定、属性検索条件に合うオブジェクト数を数える
+    /**
+     * 条件に合致するオブジェクト数を数えます。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 合致件数です。
+     */
     Get_Condition_Ok_Num(Layernum: number): number {
         let n = 0;
         for (let j = 0; j < this.Get_ObjectNum(Layernum); j++) {
@@ -7220,7 +8249,13 @@ class clsAttrData {
         return n;
     }
 
-    //属性検索条件･オブジェクト限定のチェック
+    /**
+     * 指定オブジェクトが属性条件と表示限定を満たすかを判定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param Obj 対象オブジェクト番号です。
+     * @returns 条件を満たす場合は true です。
+     */
     Check_Condition(Layernum: number, Obj: number): boolean {
         if ((this.LayerData[Layernum].atrObject.atrObjectData[Obj].Visible === false) && (this.TotalData.ViewStyle.ObjectLimitationF === true)) {
             return false;
@@ -7351,7 +8386,13 @@ class clsAttrData {
     }
 
 
-    //データ項目のデータを配列で取得、欠損値は最小値-1に、カテゴリーデータの場合はカテゴリーの位置
+    /**
+     * 欠損値を含めた数値配列を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 値配列です。
+     */
     Get_Data_Cell_Array_With_MissingValue(Layernum: number, DataNum: number): number[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
@@ -7378,7 +8419,13 @@ class clsAttrData {
         return DT;
     }
 
-    //データ項目のデータが欠損値だった場合にTRUEが入る配列を返す
+    /**
+     * 欠損値位置を示す真偽値配列を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 欠損位置配列です。
+     */
     Get_Missing_Value_DataArray(Layernum: number, DataNum: number): boolean[] {
         const ObjNum = this.LayerData[Layernum].atrObject.ObjectNum;
         let dt: boolean[] = [];
@@ -7393,8 +8440,13 @@ class clsAttrData {
         return dt;
     }
 
-
-    //指定したレイヤのデータ項目の全オブジェクトの階級区分の際の位置を配列で取得する。欠損値は-1
+    /**
+     * 全オブジェクトの階級区分位置を配列で取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 階級位置配列です。
+     */
     Get_CategolyArray(Layernum: number, DataNum: number): number[] {
         const Category_Array: number[] = [];
         for (let i = 0; i < this.LayerData[Layernum].atrObject.ObjectNum; i++) {
@@ -7403,7 +8455,14 @@ class clsAttrData {
         return Category_Array;
     }
 
-    //指定したレイヤのデータ項目・オブジェクトの階級区分の際の位置を取得する。欠損値の場合は-1を返す
+    /**
+     * 指定オブジェクトの階級区分位置を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param Objectnum 対象オブジェクト番号です。
+     * @returns 階級位置です。欠損時は -1 です。
+     */
     Get_Categoly(Layernum: number, DataNum: number, Objectnum: number): number {
         const ad = this.LayerData[Layernum].atrData.Data[DataNum];
         const Div_Num = ad.SoloModeViewSettings.Div_Num;
@@ -7437,7 +8496,12 @@ class clsAttrData {
 
         return sj;
     }
-    //データ項目の初期凡例の設定
+    /**
+     * データ項目の初期凡例と表示モード設定を構築します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     */
     SetIniHanrei(Layernum: number, DataNum: number): void {
         const data = this.LayerData[Layernum].atrData.Data[DataNum];
         const lay = this.LayerData[Layernum];
@@ -7735,7 +8799,14 @@ class clsAttrData {
         }
     }
 
-    //階級記号、記号の大きさモードなどの内部データ設定の際に、内部データの色またはハッチを返す
+    /**
+     * 内部データ設定に応じた塗り設定を返します。
+     *
+     * @param InnerData 内部データ設定です。
+     * @param Layernum 対象レイヤ番号です。
+     * @param CategoryPos 階級位置です。
+     * @returns タイル設定です。
+     */
     Get_InnerTile(InnerData: strInner_Data_Info, Layernum: number, CategoryPos: number): Tile_Property {
         let t;
         if (CategoryPos === -1) {
@@ -7747,7 +8818,13 @@ class clsAttrData {
         }
         return t;
     }
-    //階級区分設定(ペイントモードでは特に設定なし)
+    /**
+     * 階級区分ごとの記号・線設定を初期化します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param setStartPos 設定開始位置です。
+     */
     Set_Class_Div(Layernum: number, DataNum: number, setStartPos: number): void {
         const att_DTA = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         const n = att_DTA.Div_Num;
@@ -7778,6 +8855,13 @@ class clsAttrData {
         }
     }
 
+    /**
+     * 単独表示用の階級区分配列を不足なく初期化します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 正規化後の階級数です。
+     */
     EnsureSoloModeClassDivReady(Layernum: number, DataNum: number): number {
         const data = this.LayerData[Layernum]?.atrData?.Data?.[DataNum];
         if (!data) {
@@ -7911,7 +8995,12 @@ class clsAttrData {
         return normalizedCount;
     }
 
-    //2色グラテーション設定
+    /**
+     * 2 色グラデーションを階級色へ適用します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     */
     Twocolort(Layernum: number, DataNum: number): void {
         const pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         const n = pms.Div_Num;
@@ -7933,7 +9022,13 @@ class clsAttrData {
         }
     }
 
-    //3色グラテーション設定
+    /**
+     * 3 色グラデーションを階級色へ適用します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param Color_cng_n 色切り替え位置です。
+     */
     Threecolor(Layernum: number, DataNum: number, Color_cng_n: number): void {
         const pms = this.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
         const n = pms.Div_Num;
@@ -7943,7 +9038,15 @@ class clsAttrData {
         }
     }
 
-    //複数グラデーション
+    /**
+     * 4 色相当の多段階グラデーションを適用します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param Color_cng_n 色切り替え位置です。
+     * @param GradationPoint4 第 4 色基準位置です。
+     * @param col 追加色です。
+     */
     FourColor(Layernum: number, DataNum: number, Color_cng_n: number, GradationPoint4: JsonValue, col: JsonValue): void {
         let ColData = [];// colorARGB
         const gradPoint = Number(GradationPoint4);
@@ -7976,8 +9079,12 @@ class clsAttrData {
 
         }
     }
-   
-    //データ項目の平均、合計、標準偏差等を計算
+    /**
+     * データ項目の統計量を再計算します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     */
     CulcuOne(Layernum: number, DataNum: number): void {
         const L = this.LayerData[Layernum].atrData.Data[DataNum];
         L.MissingValueNum = this.Get_Att_Missing_Num(Layernum, DataNum);
@@ -8018,8 +9125,13 @@ class clsAttrData {
         }
     }
 
-
-    /**オブジェクトの重心取得、できなかった場合はFalse */
+    /**
+     * オブジェクトの重心を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNumber 対象オブジェクト番号です。
+     * @returns 重心座標です。
+     */
     Get_ObjectGravityPoint(Layernum: number, ObjNumber: number): point {
         const lay = this.LayerData[Layernum];
         const LO = lay.atrObject.atrObjectData[ObjNumber];
@@ -8044,7 +9156,13 @@ class clsAttrData {
         }
     }
 
-    //オブジェクトの面積取得
+    /**
+     * オブジェクト面積を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNumber 対象オブジェクト番号です。
+     * @returns 面積です。取得不能時は -1 です。
+     */
     GetObjMenseki(Layernum: number, ObjNumber: number): number {
         const lay=this.LayerData[Layernum];
         const LO = lay.atrObject.atrObjectData[ObjNumber];
@@ -8068,7 +9186,13 @@ class clsAttrData {
         }
     }
 
-    //オブジェクトの周長を求める
+    /**
+     * オブジェクトの周長または線長を求めます。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 周長または線長です。
+     */
     Get_ObjectLength(Layernum: number, ObjNum: number): number {
         const lay=this.LayerData[Layernum];
         let ELine;
@@ -8108,7 +9232,12 @@ class clsAttrData {
         return D;
     }
 
-    //階級区分値の指定
+    /**
+     * 階級区分方法に応じて区分値を再設定します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     */
     Set_Div_Value(Layernum: number, DataNum: number): void {
         const L = this.LayerData[Layernum].atrData.Data[DataNum];
         const v = L.SoloModeViewSettings.Div_Method;
@@ -8192,6 +9321,13 @@ class clsAttrData {
         }
     }
 
+    /**
+     * データ項目の欠損値件数を返します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 欠損件数です。
+     */
     Get_Att_Missing_Num(LayerNum: number, DataNum: number): number {
         if (this.LayerData[LayerNum].atrData.Data[DataNum].MissingF === false) {
             return 0;
@@ -8200,7 +9336,13 @@ class clsAttrData {
         }
     }
 
-    //欠損値を除いた配列でデータ項目の値を取得
+    /**
+     * 欠損値を除外したデータ配列を取得します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 値配列です。
+     */
     Get_Data_Cell_Array_Without_MissingValue(LayerNum: number, DataNum: number): strObjLocation_and_Data_info[] | undefined {
         const ObjNum = this.LayerData[LayerNum].atrObject.ObjectNum;
         const DT = [];
@@ -8229,14 +9371,31 @@ class clsAttrData {
         }
     }
 
+    /**
+     * データ項目の型を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns データ型です。
+     */
     Get_DataType(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].DataType;
 
     }
+    /**
+     * データ項目の注記を返します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 注記です。
+     */
     Get_DataNote(Layernum: number, DataNum: number): string {
         return this.LayerData[Layernum].atrData.Data[DataNum].Note;
     }
 
+    /**
+     * データタイトル一覧をチェックリストへ設定します。
+     */
     Set_DataTitle_to_CheckedListBox(checkedListBox: CheckedListBox, Layernum: number, defoChecked: boolean, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const list = [];
@@ -8248,6 +9407,9 @@ class clsAttrData {
     }
 
 
+    /**
+     * データタイトル一覧をセレクトボックスへ設定します。
+     */
     Set_DataTitle_to_cboBox(cbox: HTMLElement, Layernum: number, SelectedIndex: number, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): void {
         const titles = this.getDataTitleName(Layernum, Number_Print_F, Normal_F, Category_f, String_f, Special_Astarisk_Num);
         const items = [];
@@ -8257,7 +9419,12 @@ class clsAttrData {
         cbox.addSelectList(items, SelectedIndex, true,true);
     }
 
-    //**グラフデータセットのタイトル配列取得(value:番号、text:タイトル) */
+    /**
+     * グラフデータセット名一覧を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns タイトル一覧です。
+     */
     getGraphTitle(Layernum: number): Array<{value: number, text: string}> {
         const graph = this.LayerData[Layernum].LayerModeViewSettings.GraphMode;
         const items = [];
@@ -8271,7 +9438,12 @@ class clsAttrData {
         return items;
     }
 
-    //**ラベルデータセットのタイトル配列取得(value:番号、text:タイトル) */
+    /**
+     * ラベルデータセット名一覧を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns タイトル一覧です。
+     */
     getLabelTitle(Layernum: number): Array<{value: number, text: string}> {
         const lbl = this.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         const items = [];
@@ -8285,7 +9457,11 @@ class clsAttrData {
         return items;
     }
 
-    //**重ね合わせデータセットのタイトル配列取得(value:番号、text:タイトル) */
+    /**
+     * 重ね合わせデータセット名一覧を取得します。
+     *
+     * @returns タイトル一覧です。
+     */
     getOverlayTitle(): Array<{value: number, text: string}> {
         const over = this.TotalData.TotalMode.OverLay;
         const items = [];
@@ -8299,12 +9475,9 @@ class clsAttrData {
         return items;
     }
 
-    //データ項目のタイトルを取得する。Number_Print_F=trueの場合は、データの種類毎に選択可否可能
-    // <param name="Number_Print_F">タイトルの前に番号を振る</param>
-    // <param name="Normal_F">通常のデータを選択可に</param>
-    // <param name="Category_f">カテゴリーデータを選択可に</param>
-    // <param name="String_f">文字列データを選択可に</param>
-    // <param name="Special_Astarisk_Num">特別にアスタリスクにする番号</param>
+    /**
+     * データ項目タイトル一覧を用途に応じて整形して返します。
+     */
     getDataTitleName(Layernum: number, Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true, Special_Astarisk_Num = -1): string[] {
         const ad = this.LayerData[Layernum].atrData;
         const items = [];
@@ -8346,6 +9519,9 @@ class clsAttrData {
         return items;
     }
 
+    /**
+     * データ項目タイトルを取得します。
+     */
     Get_DataTitle(Layernum: number, DataNum: number, PreFixDataNumberFlag: boolean): string {
         let tx = this.LayerData[Layernum].atrData.Data[DataNum].Title;
         if (PreFixDataNumberFlag === true) {
@@ -8354,6 +9530,9 @@ class clsAttrData {
         return tx;
     }
 
+    /**
+     * レイヤ内の全データタイトルを取得します。
+     */
     Get_DataTitleLayer(Layernum: number, PreFixDataNumberFlag: boolean): string[] {
         const n = this.LayerData[Layernum].atrData.Count;
         const ttl = [];
@@ -8363,6 +9542,9 @@ class clsAttrData {
         return ttl;
     }
 
+    /**
+     * レイヤ内の全データ単位を取得します。
+     */
     Get_DataUnitLayer(Layernum: number): string[] {
         const n = this.LayerData[Layernum].atrData.Count;
         const unt = [];
@@ -8372,10 +9554,16 @@ class clsAttrData {
         return unt;
     }
 
+    /**
+     * データ単位を取得します。
+     */
     Get_DataUnit(Layernum: number, DataNum: number): string {
         return this.LayerData[Layernum].atrData.Data[DataNum].Unit;
     }
 
+    /**
+     * データ単位を括弧付き文字列で取得します。
+     */
     Get_DataUnit_With_Kakko(Layernum: number, DataNum: number): string {
         let tx = "";
         if (this.LayerData[Layernum].atrData.Data[DataNum].DataType === enmAttDataType.Normal) {
@@ -8386,17 +9574,29 @@ class clsAttrData {
         }
         return tx;
     }
+    /**
+     * データ最大値を返します。
+     */
     Get_DataMax(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].Statistics.Max;
     }
 
+    /**
+     * データ最小値を返します。
+     */
     Get_DataMin(Layernum: number, DataNum: number): number {
         return this.LayerData[Layernum].atrData.Data[DataNum].Statistics.Min;
     }
 
+    /**
+     * レイヤ内のデータ項目数を返します。
+     */
     Get_DataNum(LayerNum: number): number {
         return this.LayerData[LayerNum].atrData.Count;
     }
+    /**
+     * データ項目の欠損数を返します。
+     */
     Get_DataMissingNum(LayerNum: number, DataNum: number): number {
         return this.LayerData[LayerNum].atrData.Data[DataNum].MissingValueNum;
     }
@@ -8417,6 +9617,9 @@ class clsAttrData {
     }
 
     /** 連続表示モードのデータセットをリストビューに入れる*/
+    /**
+     * 連続表示モードデータセットをリストビューへ反映します。
+     */
     SeriesMode_to_ListViewData(seriesListView: HTMLElement | IListViewTable, DataSetItem: strSeries_DataSet_Item_Info[] | JsonValue): void {
         // ListViewTableインスタンスかHTMLElementかを判定
         if ('clear' in seriesListView && typeof seriesListView.clear === 'function') {
@@ -8472,6 +9675,9 @@ class clsAttrData {
             }
         }
     }
+    /**
+     * 新しいレイヤを 1 つ追加します。
+     */
     Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: strObject_Data_Info[]): void {
         //レイヤの追加
         const NewL = new strLayerDataInfo();
@@ -8501,6 +9707,9 @@ class clsAttrData {
     }
 
     /**レイヤ名をセレクトボックスに入れる */
+    /**
+     * レイヤ名一覧をセレクトボックスへ設定します。
+     */
     Set_LayerName_to(selbox: HTMLElement, SelectedIndex: number, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
         const state = appState();
         const lst = [];
@@ -8594,11 +9803,17 @@ class clsAttrData {
         }
     }
     /**レイヤとそのでのオブジェクト位置から代表点を取得 */
+    /**
+     * オブジェクト代表点を取得します。
+     */
     Get_CenterP(Layernum: number, ObjNum: number): point {
         return this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].CenterPoint;
     }
 
     /**オブジェクトと座標の距離 */
+    /**
+     * オブジェクトと点との距離を求めます。
+     */
     Distance_Kencode_Point(Layernum: number, Obj: number, Point: point): number {
         const L = this.LayerData[Layernum];
         let v: JsonValue;
@@ -8619,6 +9834,9 @@ class clsAttrData {
     }
 
     /**KecnCodeと地図ファイルのオブジェクトの間で指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
+    /**
+     * レイヤオブジェクトと地図ファイルオブジェクトとの距離を求めます。
+     */
     Distance_Kencode_MPObject(LayNum1: number, ObjNum1: number, MapFile: string, ObjCode2: number, Time: strYMD): number {
         let P1;
         let P2;
@@ -8654,6 +9872,9 @@ class clsAttrData {
     }
 
     /**KecnCodeで指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
+    /**
+     * 2 つのレイヤオブジェクト間距離を求めます。
+     */
     Distance_Kencode_Object(ObjNum1: number, ObjNum2: number, LayNum1: number, LayNum2: number): number {
         let P1;
         let P2;
@@ -8680,6 +9901,9 @@ class clsAttrData {
     }
 
     /**オブジェクトの線とある地点との距離を求める */
+    /**
+     * 線オブジェクトと点との距離を求めます。
+     */
     Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum: number, ObjNum: number, P: point): number {
 
         const ELine = this.Get_Enable_KenCode_MPLine(LayNum, ObjNum);
@@ -8687,7 +9911,12 @@ class clsAttrData {
         return d;
     }
 
-    /**オブジェクトを削除（移動レイヤ、移動主体定義レイヤ、合成オブジェクト使用レイヤは削除不可 LayerDelNum:レイヤごとの削除数の配列。削除しない場合は0,ObjectDeleteCheck:オブジェクトの数だけの配列で、削除する場合Trueを、全レイヤ分Listに格納） */
+    /**
+     * 指定オブジェクト群を削除し、関連データを詰め直します。
+     *
+     * @param LayerDelNum レイヤごとの削除数です。
+     * @param ObjectDeleteCheck レイヤごとの削除対象フラグ配列です。
+     */
     DeleteObjects(LayerDelNum: number[], ObjectDeleteCheck: boolean[][]): void {
         //線モードの起点オブジェクトをチェックするために新旧対応リスト作成
         const LayMax=this.TotalData.LV1.Lay_Maxn;
@@ -8752,7 +9981,11 @@ class clsAttrData {
         }
     }
 
-    /**レイヤごとに自動間引きができるかどうかチェック */
+    /**
+     * レイヤごとに自動間引きが可能かを判定し補助情報を構築します。
+     *
+     * @returns 判定処理が完了した場合は true です。
+     */
     check_AutoSoubyou_Enable(): boolean {
         this.TempData.SoubyouLayerEnable = [];
         this.TempData.SoubyouLoopLineArea = [];
@@ -8856,6 +10089,9 @@ class clsAttrData {
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
+/**
+ * 読み込まれた地図データ群と検索補助を管理します。
+ */
 class clsAttrMapData {
     private strAttrMap = class {
         FileName: string | undefined; //String
@@ -8866,10 +10102,18 @@ class clsAttrMapData {
     private attrMapData: Record<string, clsMapdata> = {}; //  clsMapData
     private Object_Name_Search: Record<string, clsObjectNameSearch> = {}; //clsObjectNameSearch
 
+    /**
+     * 全地図データを返します。
+     *
+     * @returns 地図データ辞書です。
+     */
     getAllMapData(): Record<string, clsMapdata> {
         return this.attrMapData;
     }
 
+    /**
+     * 既存地図データを登録します。
+     */
     AddExistingMapData(MapData: clsMapdata, MapFileName: string): void {
         const key = MapFileName.toUpperCase();
         this.attrMapData[key] = MapData;
@@ -8878,6 +10122,9 @@ class clsAttrMapData {
             this.Prestage_MapFileName = key;
         }
     }
+    /**
+     * 地図ファイル名から地図データを取得します。
+     */
     SetMapFile(MapFileName: string): clsMapdata | undefined {
         if (MapFileName === "") {
             return this.attrMapData[this.Prestage_MapFileName];
@@ -8886,6 +10133,9 @@ class clsAttrMapData {
             return this.attrMapData[MapFileName.toUpperCase()];
         }
     }
+    /**
+     * 地図ファイル名からオブジェクト名検索器を取得します。
+     */
     SetObject_Name_Search(MapFileName: string): clsObjectNameSearch | undefined {
         if (MapFileName === "") {
             return this.Object_Name_Search[this.Prestage_MapFileName];
@@ -8895,16 +10145,22 @@ class clsAttrMapData {
         }
     }
 
-    // 読み込んだ地図ファイル名の配列を返す
+    /**
+     * 読み込んだ地図ファイル名一覧を返します。
+     */
     GetMapFileName(): string[] {
         const fname = Object.keys(this.attrMapData);
         return fname;
     }
-    //読み込んだ地図ファイル数を返す
+    /**
+     * 読み込んだ地図ファイル数を返します。
+     */
     GetNumOfMapFile(): number {
         return Object.keys(this.attrMapData).length;
     }
-    //地図ファイルの有無を調べる
+    /**
+     * 地図ファイルの存在有無を返します。
+     */
     CheckMapfileExists(MapFileName: string): boolean {
         const fname = Object.keys(this.attrMapData);
         if (fname.indexOf(MapFileName) === -1) {
@@ -8914,7 +10170,9 @@ class clsAttrMapData {
         }
     }
 
-
+    /**
+     * すべての地図データの座標系を指定座標系へ統一します。
+     */
     EqualizeZahyoMode(Zahyo: Zahyo_info): ZahyoResult {
         //読み込んだ地図ファイルの投影法等座標設定を同じにする
         let f = true;
@@ -8939,7 +10197,9 @@ class clsAttrMapData {
         };
     }
 
-    //点オブジェクトグループのオブジェクト名のDictionary（地図ファイル名,オブジェクトグループ名）を取得
+    /**
+     * 点オブジェクトグループ名一覧を取得します。
+     */
     GetAllPointObjectGroup(): { [key: string]: string[] } {
         const AllPOBJG: { [key: string]: string[] } = {};
         for (const key in this.attrMapData) {
@@ -8957,7 +10217,9 @@ class clsAttrMapData {
         return AllPOBJG;
     }
 
-    //地図ファイル名、線種、グループで、線種位置番号を求める
+    /**
+     * 線種とグループから全体線種配列上の位置を返します。
+     */
     GetLineKindPosition(MapFileName: string, lineKindNum: number, PatternNum: number): number {
         let n = 0;
         for (const key in this.attrMapData) {
@@ -8974,11 +10236,15 @@ class clsAttrMapData {
         }
         return -1;
     }
-    //優先地図ファイル名取得
+    /**
+     * 優先地図ファイル名を返します。
+     */
     GetPrestigeMapFileName(): string {
         return this.Prestage_MapFileName;
     }
-    //最初の地図ファイル名の座標プロパティ取得
+    /**
+     * 優先地図の座標系を返します。
+     */
     GetPrestigeZahyoMode(): Zahyo_info {
         return this.attrMapData[this.Prestage_MapFileName].Map.Zahyo;
     }
@@ -9007,7 +10273,9 @@ class clsAttrMapData {
         return STR;
     }
 
-    //読み込んだ地図ファイルの全線種数（オブジェクト連動型を含む）を返す
+    /**
+     * 全地図の総線種数を返します。
+     */
     GetAllMapLineKindNum(): number {
         let n = 0;
         for (const key in this.attrMapData) {
@@ -9034,6 +10302,9 @@ class clsAttrMapData {
 }
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
+/**
+ * 地図オブジェクト名からコードを検索する索引クラスです。
+ */
 class clsObjectNameSearch {
     private Object_Name_Search: SortingSearch;
     private Object_Name_Stac_for_Search_O_Code: InstanceType<clsObjectNameSearch['ObjNameAndTime_Info']>[];
@@ -9045,6 +10316,12 @@ class clsObjectNameSearch {
         SETime: Start_End_Time_data = new Start_End_Time_data();
     };
 
+    /**
+     * オブジェクト名検索索引を構築します。
+     *
+     * @param MapData 対象地図データです。
+     * @param CheckKanjiCompatibleFlag 漢字互換処理を行う場合は true です。
+     */
     constructor(MapData: clsMapdata, CheckKanjiCompatibleFlag: boolean) {
         //オブジェクト名検索用クラス
         this.Object_Name_Search = new SortingSearch();
@@ -9086,22 +10363,41 @@ class clsObjectNameSearch {
         this.Object_Name_Search.AddEnd();
     }
 
+    /**
+     * 内部保持している名前時期情報を取得します。
+     */
     Object_Name_Stac(Pos: number): InstanceType<clsObjectNameSearch['ObjNameAndTime_Info']> {
         return this.Object_Name_Stac_for_Search_O_Code[Pos];
     }
 
+    /**
+     * ソート索引上の値を取得します。
+     */
     DataPositionValue(Pos: number): JsonValue {
         return this.Object_Name_Search.DataPositionValue(Pos) as JsonValue;
     }
 
+    /**
+     * 登録件数を返します。
+     */
     NumofData(): number {
         return this.Object_Name_Search.NumofData();
     }
 
+    /**
+     * ソート索引上の位置を返します。
+     */
     DataPosition(num: number): JsonValue {
         return this.Object_Name_Search.DataPosition(num);
     }
 
+    /**
+     * オブジェクト名と時期からオブジェクトコードを取得します。
+     *
+     * @param ObjName オブジェクト名です。
+     * @param Time 時期です。
+     * @returns 見つかったオブジェクトコードです。見つからない場合は -1 です。
+     */
     Get_KenToCode(ObjName: string, Time: strYMD): number {
         //オブジェクト名からオブジェクト番号を取得する。見つからなかった場合-1を返す
         if (ObjName === "") {
