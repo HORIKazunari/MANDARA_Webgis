@@ -56,6 +56,9 @@ const getZlibRuntime = (): ZlibRuntime => {
     return (globalRuntime ?? Zlib) as unknown as ZlibRuntime;
 };
 
+/**
+ * 楕円体パラメータ一式を保持する内部データです。
+ */
 class EllipPar {
     a: number = 0;
     f1: number = 0;
@@ -64,8 +67,11 @@ class EllipPar {
     namec: string = "";
 }
 
-// TKY2JGDInfo クラス: 測地系変換（Tokyo97 ⇔ ITRF94）
-// 国土地理院技術資料 Ｈ・１－Ｎｏ．２「測地成果2000のための座標変換ソフトウェアTKY2JGD」によるTKY2JGDソース・コードを利用
+/**
+ * 東京測地系と世界測地系の変換、および平面直角座標から緯度経度への逆変換を扱います。
+ *
+ * 国土地理院の TKY2JGD 系アルゴリズムを TypeScript へ移植した実装です。
+ */
 export class TKY2JGDInfo_Impl {
     private readonly EP = new Array<EllipPar>(3);
     private readonly XY_Genten = new Array<latlon>(20);
@@ -77,6 +83,11 @@ export class TKY2JGDInfo_Impl {
     private readonly TWO_PI = 6.28318530717959;
     private readonly ROBYO = 206264.806247;
 
+    /**
+     * 変換に必要な楕円体・原点パラメータを遅延初期化します。
+     *
+     * @returns 返り値はありません。
+     */
     private ensureParametersInitialized(): void {
         if (this.parametersInitialized === true) {
             return;
@@ -85,9 +96,12 @@ export class TKY2JGDInfo_Impl {
         this.parametersInitialized = true;
     }
 
-    // Tokyo97系からITRF94系への座標変換
-    // Ver.1.1  1999/1/28  (C) Mikio TOBITA 飛田幹男，国土地理院
-    // この変換では楕円体高Hはゼロとする
+    /**
+     * 東京測地系座標を ITRF94 系へ変換します。
+     *
+     * @param latlonP 変換元の緯度経度です。
+     * @returns 変換後の緯度経度です。
+     */
     Tokyo97toITRF94(latlonP: latlon): latlon {
         this.ensureParametersInitialized();
         // 入力 B1    : 緯度(度)
@@ -115,6 +129,12 @@ export class TKY2JGDInfo_Impl {
         return result;
     }
 
+    /**
+     * ITRF94 系座標を東京測地系へ逆変換します。
+     *
+     * @param latlonP 変換元の緯度経度です。
+     * @returns 変換後の緯度経度です。
+     */
     ITRF94toTokyo97(latlonP: latlon): latlon {
         this.ensureParametersInitialized();
         const B1 = latlonP.lat;
@@ -136,6 +156,15 @@ export class TKY2JGDInfo_Impl {
         return result;
     }
 
+    /**
+     * 平面直角座標を緯度経度へ逆変換します。
+     *
+     * @param Ellip12 使用する楕円体番号です。
+     * @param Kei 平面直角座標系の系番号です。
+     * @param X 北方向座標です。
+     * @param Y 東方向座標です。
+     * @returns 変換後の緯度経度です。
+     */
     doCalcXy2bl(Ellip12: number, Kei: number, X: number, Y: number): latlon {
         this.ensureParametersInitialized();
         const M0: number = 0.9999;  //Kei    //系番号，基準子午線の縮尺係数
@@ -447,9 +476,20 @@ export class TKY2JGDInfo_Impl {
     }
 }
 
+/**
+ * 幾何計算、投影変換、座標系変換をまとめた空間計算ユーティリティです。
+ */
 export class spatial {
 
-    /**メッシュコードから投影変換した四角形を返す */
+    /**
+     * メッシュコードから投影変換済みの矩形情報を返します。
+     *
+     * @param Meshcode メッシュコードです。
+     * @param MeshType メッシュ種別です。
+     * @param refOrigin 元の測地系です。
+     * @param refDestZahyo 変換先の座標系設定です。
+     * @returns 変換後矩形、緯度経度矩形、四隅座標です。
+     */
     static Get_MeshCode_Rectangle(Meshcode: string, MeshType: number, refOrigin: number, refDestZahyo: Zahyo_info) {
 
         const RectLatLon  = spatial.Get_Ido_Kedo_from_MeshCode(Meshcode, MeshType);
@@ -466,7 +506,14 @@ export class spatial {
         return { convRect: spatial.getCircumscribedRectangle(filteredP, undefined), latlonBox: RectLatLon, RPoint: P };
     }
 
-    /**地図座標のXYから緯度経度にして距離測定 */
+    /**
+     * 地図座標の 2 点間距離を緯度経度ベースで求めます。
+     *
+     * @param P1 1 点目です。
+     * @param P2 2 点目です。
+     * @param MapDTMapZahyo 座標系設定です。
+     * @returns 距離です。
+     */
     static Distance_Ido_Kedo_XY_Point(P1: point, P2: point, MapDTMapZahyo: Zahyo_info) {
 
         const D1 = this.Get_Reverse_XY(P1, MapDTMapZahyo);
@@ -477,7 +524,13 @@ export class spatial {
         return this.Distance_Ido_Kedo_LatLon(D1.toLatlon(), D2.toLatlon());
     }
 
-    /**緯度経度で地点間の距離を求める */
+    /**
+     * 緯度経度 2 点間の球面距離を求めます。
+     *
+     * @param D1 1 点目です。
+     * @param D2 2 点目です。
+     * @returns 距離です。
+     */
     static Distance_Ido_Kedo_LatLon(D1: latlon, D2: latlon): number {
 
         if (D1.Equals(D2)) {
@@ -490,7 +543,15 @@ export class spatial {
         }
     }
 
-    /**二つの線分の交点を求める関数。交点がある場合座標、ない場合undefined */
+    /**
+     * 2 本の線分の交点を求めます。
+     *
+     * @param LAP1 1 本目の始点です。
+     * @param LAP2 1 本目の終点です。
+     * @param LBP1 2 本目の始点です。
+     * @param LBP2 2 本目の終点です。
+     * @returns 交点、交差しない場合は undefined です。
+     */
     static Line_Cross_Point(LAP1: point, LAP2: point, LBP1: point, LBP2: point): point | undefined {
 
         let ax1 = LAP1.x
@@ -577,13 +638,27 @@ export class spatial {
         }
     }
 
-    /** 指定したベクトルと垂直のベクトルを取得*/
+    /**
+     * 指定ベクトルに垂直なベクトルを返します。
+     *
+     * @param Vx 元ベクトルの X 成分です。
+     * @param Vy 元ベクトルの Y 成分です。
+     * @returns 垂直ベクトルの成分です。
+     */
     static Get_Suisen_Vec(Vx: number, Vy: number) {
 
         return { rVx: -Vy, rVy: Vx };
     }
 
-    /**ベクトルVecX,VecY方向に距離D離れた地点の座標を取得 */
+    /**
+     * 指定ベクトル方向に一定距離進んだ相対座標を返します。
+     *
+     * @param VecX ベクトルの X 成分です。
+     * @param VecY ベクトルの Y 成分です。
+     * @param Dis 距離です。
+     * @param CenterFlag 中心基準で半分の距離を使う場合は true です。
+     * @returns 相対移動先の座標です。
+     */
     static Get_Vec_Point(VecX: number, VecY: number, Dis: number, CenterFlag: boolean) {
 
             let D ;
@@ -607,7 +682,13 @@ export class spatial {
             return new point(x2, y2);
     }
 
-    //四角形に点が入らない場合，入るように座標を修正して返す
+    /**
+     * 点を矩形内へ収まるように補正して返します。
+     *
+     * @param p 補正対象の点です。
+     * @param rect 制約矩形です。
+     * @returns 補正後の点です。
+     */
     static checkAndModifyPointInRect(p: point, rect: rectangle) {
 
         const np =p.Clone();
@@ -625,7 +706,13 @@ export class spatial {
         }
         return np;
     }
-    /**  ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/
+    /**
+     * 点がポリゴン群の内部に含まれるかを水平線法で判定します。
+     *
+     * @param checkPoint 判定する点です。
+     * @param PolyLine ポリゴンを構成する線列です。
+     * @returns 内外判定結果と交点 X 座標配列です。
+     */
     static check_Point_in_Polygon(checkPoint: point, PolyLine: point[][]): {ok: boolean, CrossPoint_X: number[]} {
 
 
@@ -684,7 +771,13 @@ export class spatial {
         }
     }
 
-    //地図座標が緯度経度に変換可能かチェックする
+    /**
+     * 地図座標を逆変換できる範囲内かを判定します。
+     *
+     * @param Position 判定する座標です。
+     * @param MPDataMapZahyo 座標系設定です。
+     * @returns 逆変換可能なら true です。
+     */
     static Check_PsitionReverse_Enable(Position: point, MPDataMapZahyo: Zahyo_info) {
 
         let f;
@@ -735,8 +828,13 @@ export class spatial {
         return f;
     }
 
-
-    //メッシュコードからメッシュの四角形緯度経度を求める
+    /**
+     * メッシュコードからメッシュ矩形の緯度経度範囲を返します。
+     *
+     * @param MeshCode メッシュコードです。
+     * @param Mesh_Size メッシュ種別です。
+     * @returns 北西・南東を持つ緯度経度矩形です。
+     */
     static Get_Ido_Kedo_from_MeshCode(MeshCode: string, Mesh_Size: number) {
 
         MeshCode = (MeshCode + "0000000000").left(11);
@@ -783,7 +881,12 @@ export class spatial {
         return new latlonbox(new latlon(Ido + meshWH.height, kdo), new latlon(Ido, (kdo + meshWH.width)));
     }
 
-    //メッシュの東西南北の幅を取得
+    /**
+     * メッシュ種別に応じた東西南北のサイズを返します。
+     *
+     * @param Mesh_Size メッシュ種別です。
+     * @returns 経度幅と緯度幅です。
+     */
     static Get_MeshCode_Size_IdoKedo(Mesh_Size: number) {
 
         let Xplus;
@@ -832,7 +935,13 @@ export class spatial {
         return new size(Xplus, YPlus);
     }
 
-    //投影法の緯度に応じたスケール値の倍率を取得
+    /**
+     * 投影法と位置に応じた距離倍率を返します。
+     *
+     * @param p 判定位置です。
+     * @param MPDataMapZahyo 座標系設定です。
+     * @returns スケール倍率です。
+     */
     static Get_Scale_Baititu_IdoKedo(p: point, MPDataMapZahyo: Zahyo_info) {
 
         let v;
@@ -890,7 +999,14 @@ export class spatial {
         return v;
     }
 
-    //測地系をチェックして、違っていたら変換して返す
+    /**
+     * 測地系が異なる場合に緯度経度を変換して返します。
+     *
+     * @param P1 変換元の緯度経度です。
+     * @param OriginRefSystem 元の測地系です。
+     * @param DestRefSystem 変換先の測地系です。
+     * @returns 変換後の緯度経度です。
+     */
     static ConvertRefSystemLatLon(P1: latlon, OriginRefSystem: number, DestRefSystem: number) {
 
         if (OriginRefSystem === DestRefSystem) {
@@ -912,19 +1028,38 @@ export class spatial {
         }
     }
 
-    //測地系変換 Tokyo97 to ITRF94
+    /**
+     * 東京測地系座標を ITRF94 へ変換します。
+     *
+     * @param latlonP 変換元の緯度経度です。
+     * @returns 変換後の緯度経度です。
+     */
     static Tokyo97toITRF94(latlonP: latlon) {
 
         return TKY2JGDInfo.Tokyo97toITRF94(latlonP);
     }
 
-    //測地系変換 ITRF94 to Tokyo97
+    /**
+     * ITRF94 座標を東京測地系へ変換します。
+     *
+     * @param latlonP 変換元の緯度経度です。
+     * @returns 変換後の緯度経度です。
+     */
     static ITRF94toTokyo97(latlonP: latlon) {
 
         return TKY2JGDInfo.ITRF94toTokyo97(latlonP);
     }
 
-    //扇形の座標を求める
+    /**
+     * 扇形または円の描画用座標列を生成します。
+     *
+     * @param CP 中心点です。
+     * @param r 半径です。
+     * @param start_p 開始角です。
+     * @param end_p 終了角です。
+     * @param CenterLineF 中心点を含む扇形にする場合は true です。
+     * @returns 描画順に並べた座標列です。
+     */
     static Get_Fan_Coordinates(CP: point, r: number, start_p: number, end_p: number, CenterLineF: boolean) {
 
         const ST = 1 / (r * 2 / 5);
@@ -952,7 +1087,13 @@ export class spatial {
         return pxy;
     }
 
-    //世界測地系の緯度経度の座標に変換して返す
+    /**
+     * 任意座標系の座標を世界測地系の緯度経度へ変換します。
+     *
+     * @param oxy 変換元座標です。
+     * @param MapZahyo_Info 変換元の座標系設定です。
+     * @returns 世界測地系の緯度経度です。
+     */
     static Get_World_IdoKedo(oxy: point, MapZahyo_Info: Zahyo_info) {
         const LatLon = new latlon();
 
@@ -986,7 +1127,14 @@ export class spatial {
         }
         return LatLon;
     }
-    //地図座標を新しい設定の地図座標に変換する
+    /**
+     * 地図座標を別の座標系設定へ変換します。
+     *
+     * @param OldP 変換元座標です。
+     * @param oldMapZahyo 元の座標系設定です。
+     * @param newMapZahyo 変換先の座標系設定です。
+     * @returns 変換後座標です。
+     */
     static Get_Reverse_and_Convert_XY(OldP: point, oldMapZahyo: Zahyo_info, newMapZahyo: Zahyo_info) {
 
         if (oldMapZahyo.Mode === enmZahyo_mode_info.Zahyo_No_Mode) {
@@ -1047,7 +1195,13 @@ export class spatial {
         }
     }
 
-    /** 世界測地系の緯度経度の座標を、地図ファイルの測地系が日本測地系だった場合、日本測地系の緯度経度に変換、平面直角座標系の場合は変換不可*/
+    /**
+     * 世界測地系の緯度経度を地図設定に合わせて逆変換します。
+     *
+     * @param oLatLon 世界測地系の緯度経度です。
+     * @param MapZahyo 地図の座標系設定です。
+     * @returns 変換後の緯度経度です。
+     */
     static Get_ReverseWorld_IdoKedo(oLatLon: latlon, MapZahyo: Zahyo_info): latlon {
 
         if (MapZahyo.Mode !== enmZahyo_mode_info.Zahyo_Ido_Keido) {
@@ -1063,7 +1217,14 @@ export class spatial {
         }
     }
 
-    /** 起終点座標だけを指定した境界線を面領域を描くように並べ替える、返す値は並び順とオブジェクトのポリゴン数*/
+    /**
+     * 線分の始終点だけから面境界を構成する順序を復元します。
+     *
+     * @param LieneNum 線分数です。
+     * @param spxy 各線分の始点配列です。
+     * @param epxy 各線分の終点配列です。
+     * @returns 並べ替え結果とポリゴン数です。
+     */
     static BoundaryArrangeGeneral(LieneNum: number, spxy: point[], epxy: point[]): boundArrangeData {
 
         const boundArrange = new boundArrangeData();
@@ -1196,6 +1357,13 @@ export class spatial {
         return boundArrange;
     }
 
+    /**
+     * 座標配列が囲む面積を座標系に応じて求めます。
+     *
+     * @param XY ポリゴン座標列です。
+     * @param MapDataMap 座標系と縮尺情報です。
+     * @returns 面積です。
+     */
     static Get_Hairetu_Menseki(XY: point[], MapDataMap: { Zahyo: Zahyo_info; SCL: number }): number {
 
         const n = XY.length ;
@@ -1242,7 +1410,13 @@ export class spatial {
         return men;
     }
 
-
+    /**
+     * 2 点座標が完全一致するかを判定します。
+     *
+     * @param xy1 1 点目です。
+     * @param xy2 2 点目です。
+     * @returns 一致する場合は true です。
+     */
     static CheckTwoPoint(xy1: point, xy2: point): boolean { //2つの座標が同じか調べる
 
         if ((xy1.x === xy2.x) && (xy1.y === xy2.y)) {
@@ -1251,14 +1425,26 @@ export class spatial {
             return false;
         }
     }
-    //四角形を回転させた外接四角形を求める
+    /**
+     * 回転後の矩形を包含する外接矩形を返します。
+     *
+     * @param Rect1 元の矩形です。
+     * @param Angle 回転角度です。
+     * @returns 回転後の外接矩形です。
+     */
     static getCircumscribedRectangle_turned(Rect1: rectangle, Angle: number) {
 
         const p = this.Get_TurnedRectangle(Rect1, Angle);
         return this.getCircumscribedRectangle(p, undefined);
     }
 
-    /**Circumscribed_Rectangleの上下左右とpointまたはrectangleを比較し、XYがより外側の場合は置き換える。point_rectangleがpointの配列の場合は、pointからrectangle作成 */
+    /**
+     * 点群または矩形を含む外接矩形を構築または拡張します。
+     *
+     * @param point_rectangle 点群、単一点、または矩形です。
+     * @param Circumscribed_Rectangle 既存の外接矩形です。
+     * @returns 更新後の外接矩形です。
+     */
     static getCircumscribedRectangle(point_rectangle: point[] | point | rectangle, Circumscribed_Rectangle: rectangle | undefined) {
 
 
@@ -1295,9 +1481,13 @@ export class spatial {
         }
         return newRec;
     }
-
-
-
+    /**
+     * 2 つの矩形の重複領域を返します。
+     *
+     * @param Rect1 1 つ目の矩形です。
+     * @param Rect2 2 つ目の矩形です。
+     * @returns 重複領域の矩形です。
+     */
     static Get_Inner_Rectangle(Rect1: rectangle, Rect2: rectangle) {
 
         //二つの四角形が交わっている場合に、重複領域の四角形を取得する 。交わっているかどうかの判定は行わない 
@@ -1309,7 +1499,15 @@ export class spatial {
         return inR;
     }
 
-    static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle) {//ポイントが四角形の中に入るかどうかチェック
+    /**
+     * 回転を考慮して点が矩形内にあるかを判定します。
+     *
+     * @param checkXY 判定する点です。
+     * @param Kakudo 矩形の回転角です。
+     * @param Rect 判定対象矩形です。
+     * @returns 内部にあれば true です。
+     */
+    static Check_PointInBox(checkXY: point, Kakudo: number, Rect: rectangle) {
 
         let ckP = checkXY.Clone();
         if (Kakudo !== 0) {
@@ -1324,9 +1522,13 @@ export class spatial {
             return false;
         }
     }
-
-
-
+    /**
+     * 2 点を包含する最小外接矩形を返します。
+     *
+     * @param P1 1 点目です。
+     * @param P2 2 点目です。
+     * @returns 外接矩形です。
+     */
     static Get_TwoPoint_Rect_SingleGet_TwoPoint_Rect_Single(P1: point, P2: point) {
 
         //二つのポイントの外接四角形を求める
@@ -1347,7 +1549,13 @@ export class spatial {
         }
         return Rec;
     }
-    //二つの四角形の外接四角形を求める
+    /**
+     * 2 つの矩形を包含する外接矩形を返します。
+     *
+     * @param rec1 1 つ目の矩形です。
+     * @param rec2 2 つ目の矩形です。
+     * @returns 外接矩形です。
+     */
     static Get_Rectangle_Union(rec1: rectangle, rec2: rectangle) {
 
         const r = new rectangle(0, undefined, 0, 0);
@@ -1358,9 +1566,13 @@ export class spatial {
         return r;
     }
 
-    //二つのポイントの外接四角形を求める
-    //１つのポイントと半径rの円の外接四角形を求める
-    //１つのポイントを中心としたsizeの外接四角形を求める
+    /**
+     * 点と半径、サイズ、または別の点から外接矩形を生成します。
+     *
+     * @param P1 基準点です。
+     * @param P2 半径、サイズ、または対角点です。
+     * @returns 外接矩形です。
+     */
     static Get_Rectangle(P1: point, P2: number | size | point): rectangle {
 
         if ((typeof P2) === 'number') {
@@ -1374,7 +1586,13 @@ export class spatial {
 
     }
 
-    //2つの四角形の上下左右端1つでも一致する場合true
+    /**
+     * 2 矩形の辺のいずれかが一致するかを判定します。
+     *
+     * @param Rec1 1 つ目の矩形です。
+     * @param Rec2 2 つ目の矩形です。
+     * @returns 一致辺がある場合は true です。
+     */
     static Check_TwoRectangele_Inner_Contact(Rec1: rectangle, Rec2: rectangle): boolean {
 
         if ((Rec1.left === Rec2.left) || (Math.abs(Rec1.right - Rec2.right) < 0.000001) || (Rec1.top === Rec2.top) || (Math.abs(Rec1.bottom - Rec2.bottom) < 0.000001)) {
@@ -1384,6 +1602,13 @@ export class spatial {
         }
     }
 
+    /**
+     * 2 つの矩形の位置関係を判定します。
+     *
+     * @param Rec1 1 つ目の矩形です。
+     * @param Rec2 2 つ目の矩形です。
+     * @returns 内包、交差、外部の判定値です。
+     */
     static Compare_Two_Rectangle_Position(Rec1: rectangle, Rec2: rectangle) {
 
         //二つの長方形の内外判定
@@ -1400,6 +1625,14 @@ export class spatial {
         }
     }
 
+    /**
+     * 矩形を膨張させた上で位置関係を判定します。
+     *
+     * @param Rec1 1 つ目の矩形です。
+     * @param Rec2 2 つ目の矩形です。
+     * @param inflate 膨張量です。
+     * @returns 位置関係の判定値です。
+     */
     static Compare_Two_Rectangle_Position_Inflated(Rec1: rectangle, Rec2: rectangle, inflate: number) {
 
         const rect12 = Rec1.Clone();
@@ -1409,21 +1642,59 @@ export class spatial {
         return this.Compare_Two_Rectangle_Position(rect12, rect22);
     }
 
+    /**
+     * 回転矩形と通常矩形の位置関係を判定します。
+     *
+     * @param Rect1 回転させる矩形です。
+     * @param Rect1Angle 回転角です。
+     * @param Rect2 比較対象矩形です。
+     * @returns 位置関係の判定値です。
+     */
     static Compare_Two_Rectangle_Position_turned(Rect1: rectangle, Rect1Angle: number, Rect2: rectangle) {
 
         const trect = this.getCircumscribedRectangle_turned(Rect1, Rect1Angle);
         return this.Compare_Two_Rectangle_Position(trect, Rect2);
     }
 
+    /**
+     * 2 点間のユークリッド距離を返します。
+     *
+     * @param x1 1 点目の X 座標です。
+     * @param y1 1 点目の Y 座標です。
+     * @param x2 2 点目の X 座標です。
+     * @param y2 2 点目の Y 座標です。
+     * @returns 距離です。
+     */
     static Distance(x1: number, y1: number, x2: number, y2: number) {
 
         const d = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         return d;
     }
 
+    /**
+     * 2 点オブジェクト間の距離を返します。
+     *
+     * @param P1 1 点目です。
+     * @param P2 2 点目です。
+     * @returns 距離です。
+     */
     static Distance_Point (P1: point, P2: point): number {
         return this.Distance(P1.x,P1.y,P2.x,P2.y);
     }
+    /**
+     * 3D 回転と透視投影を用いて 2D 座標へ変換します。
+     *
+     * @param x 元の X 座標です。
+     * @param y 元の Y 座標です。
+     * @param z 元の Z 座標です。
+     * @param TurnCenter 回転中心です。
+     * @param Expantion 拡大率です。
+     * @param Pitch ピッチ角です。
+     * @param Head ヘディング角です。
+     * @param Bank バンク角です。
+     * @param XYPara 透視投影のパラメータです。
+     * @returns 投影後の 2D 座標です。
+     */
     static trans3D (x: number, y: number, z: number, TurnCenter: point, Expantion: number, Pitch: number, Head: number, Bank: number, XYPara: number): point {
         const ESPara = Expantion / 100;
         const COSP = Math.cos(Pitch * Math.PI / 180);
@@ -1449,8 +1720,14 @@ export class spatial {
         const newP = new point(XX3 * ww + TurnCenter.x, YY3 * ww + TurnCenter.y);
         return newP;
     }
-
-    //回転中心を指定して二次元座標回転角度指定
+    /**
+     * 2D 座標を回転させます。
+     *
+     * @param CP 回転中心または回転対象点です。
+     * @param Kakudo_P 角度または回転対象点です。
+     * @param Kakudo 回転中心指定時の角度です。
+     * @returns 回転後の点です。
+     */
     static Trans2D(CP: point, Kakudo_P: number | point, Kakudo?: number): point {
 
         const OutP = new point();
@@ -1467,9 +1744,13 @@ export class spatial {
         }
         return OutP;
     }
-
-
-    //指定した高さ、幅のボックスの、回転後の外接四角形の高さ、幅を取得する
+    /**
+     * 回転後ボックスの外接矩形サイズを返します。
+     *
+     * @param oSize 元サイズです。
+     * @param Angle 回転角です。
+     * @returns 外接矩形サイズです。
+     */
     static Get_TurnedBox(oSize: size, Angle: number): size {
 
         const rect = new rectangle(new point(-oSize.width / 2,- oSize.height / 2), oSize, undefined, undefined);
@@ -1477,7 +1758,13 @@ export class spatial {
         return trect.size();
     }
 
-    //回転させた四角形の座標配列を取得。戻り値は5つの座標
+    /**
+     * 回転矩形を構成する座標列を返します。
+     *
+     * @param Rect 元の矩形です。
+     * @param Kakudo 回転角です。
+     * @returns 閉じた多角形としての座標列です。
+     */
     static Get_TurnedRectangle(Rect: rectangle, Kakudo: number): point[] {
 
         const x1 = Rect.left;
@@ -1500,10 +1787,29 @@ export class spatial {
         return pxy;
     }
 
+    /**
+     * 点と線分の距離を point 型引数で求めます。
+     *
+     * @param P 判定点です。
+     * @param LineP1 線分の始点です。
+     * @param LineP2 線分の終点です。
+     * @returns 距離と最近接点です。
+     */
     static Distance_PointLine2(P: point, LineP1: point, LineP2: point): {distance: number; nearP: point}{
 
         return this.Distance_PointLine(P.x,P.y,LineP1.x,LineP1.y,LineP2.x,LineP2.y);
     }
+    /**
+     * 点と線分の最短距離および最近接点を求めます。
+     *
+     * @param X 判定点の X 座標です。
+     * @param Y 判定点の Y 座標です。
+     * @param ax 線分始点の X 座標です。
+     * @param ay 線分始点の Y 座標です。
+     * @param BX 線分終点の X 座標です。
+     * @param BY 線分終点の Y 座標です。
+     * @returns 距離と最近接点です。
+     */
     static Distance_PointLine (X: number, Y: number, ax: number, ay: number, BX: number, BY: number): {distance: number; nearP: point} {
         //AXAY,BXBYで定義される線分と、XYポイントの間の距離
         //Nearest_point:最も近い位置の線分上の点を取得（オプション）
@@ -1562,7 +1868,13 @@ export class spatial {
 
     }
 
-    //緯度経度等もともとの座標から、投影変換した座標を返す
+    /**
+     * 緯度経度や平面直角座標を描画用 XY 座標へ変換します。
+     *
+     * @param Position 変換元座標です。
+     * @param MPDataMapZahyo 座標変換設定です。
+     * @returns 変換後の XY 座標です。
+     */
     static Get_Converted_XY (Position: point, MPDataMapZahyo: zahyohenkan) {
         const ox = Position.x;
         let oy = Position.y;
@@ -1635,6 +1947,12 @@ export class spatial {
             }
         }
     }
+    /**
+     * モルワイデ図法の補助角をニュートン法で求めます。
+     *
+     * @param lat 緯度です。
+     * @returns 補助角、収束しない場合は undefined です。
+     */
     static newtonMollweide (lat: number) {
         let x = 0;
         const lat2 = lat * Math.PI / 180;
@@ -1651,6 +1969,12 @@ export class spatial {
         return x / 2;
     }
 
+    /**
+     * エッケルト IV 図法の補助角をニュートン法で求めます。
+     *
+     * @param lat 緯度です。
+     * @returns 補助角、収束しない場合は undefined です。
+     */
     static newtonEckert4 (lat: number) {
         let x = 0;
         const lat2 = lat * Math.PI / 180;
@@ -1668,6 +1992,13 @@ export class spatial {
     }
 
 
+    /**
+     * 2 つの座標系設定が相互変換可能かを判定します。
+     *
+     * @param OriginMap 元の座標系設定です。
+     * @param ConvertMap 変換先の座標系設定です。
+     * @returns 判定結果とエラーメッセージです。
+     */
     static Check_Zahyo_Projection_Convert_Enabled (OriginMap: zahyohenkan, ConvertMap: zahyohenkan) {
         /// <signature>
         /// <summary>座標系・測地系が変換可能か調べる</summary>
@@ -1700,7 +2031,13 @@ export class spatial {
         }
         return { ok: true, emes: "" };
     }
-    //緯度経度・平面直角座標系を変換した四角形の四隅座標から、元の緯度経度・平面直角座標系座標に戻す
+    /**
+     * 投影済み矩形を元の座標系の矩形へ逆変換します。
+     *
+     * @param In_Rect 変換後の矩形です。
+     * @param MPDataMapZahyo 座標変換設定です。
+     * @returns 逆変換後の矩形です。
+     */
     static Get_Reverse_Rect (In_Rect: rectangle, MPDataMapZahyo: zahyohenkan) {
         const leftP1 = this.Get_Reverse_XY(new point(In_Rect.left, In_Rect.top), MPDataMapZahyo) ?? new point(0, 0);
         const leftP2 = this.Get_Reverse_XY(new point(In_Rect.left, (In_Rect.top + In_Rect.bottom) / 2), MPDataMapZahyo) ?? new point(0, 0);
@@ -1717,7 +2054,13 @@ export class spatial {
         return new rectangle(left, right, leftP3.y, leftP1.y);
     }
 
-    //緯度経度・平面直角座標系を変換した座標(地図ファイル中の座標)から、元の緯度経度・平面直角座標系座標に戻す
+    /**
+     * 投影済み座標を元の緯度経度または平面直角座標へ戻します。
+     *
+     * @param Position 変換後の座標です。
+     * @param MPDataMapZahyo 座標変換設定です。
+     * @returns 逆変換後の座標です。
+     */
     static Get_Reverse_XY (Position: point, MPDataMapZahyo: zahyohenkan) {
         const ox = Position.x;
         const oy = Position.y;
@@ -1784,16 +2127,30 @@ export class spatial {
     }
 }
 
+/**
+ * 文字列処理、UI 補助、型変換などの汎用処理を集約したユーティリティです。
+ */
 export class Generic {
 
-    /**読み込み中マーク 処理終了後に Generic.clear_backDiv();で消す*/
+    /**
+     * 読み込み中オーバーレイを表示します。
+     *
+     * @param title ダイアログタイトルです。
+     * @returns 返り値はありません。
+     */
     static readingIcon(title: string){
 
         const boxReading = Generic.set_backDiv("", title, 300, 150, false, false, undefined, 0.2, false);     
         Generic.createNewDiv(boxReading,  " 読み込み中", "", "grayFrame", 30, 50, 230, 40, "padding:5px", undefined);   
         Generic.createNewImage(boxReading, "image/icon_loader.gif", "", "", "", 140, 110, "", undefined);
     }
-    /**外部クリップボードから貼り付け */
+    /**
+     * 外部テキスト貼り付け用の入力ダイアログを開きます。
+     *
+     * @param okCall OK 時に入力文字列を受け取るコールバックです。
+     * @param cancelCall キャンセル時のコールバックです。
+     * @returns 返り値はありません。
+     */
     static outerPaste(okCall: (value: string) => void, cancelCall: (() => void) | undefined){
 
         const backDiv = Generic.set_backDiv("", "外部から貼り付け", 200, 240, true, true, buttonOK, 0.2, true,true,cancelCall);
@@ -1806,13 +2163,24 @@ export class Generic {
         }
     }
 
-    /**オブジェクト名と設定期間の組み合わせ文字列を返す */
+    /**
+     * オブジェクト名群と設定期間を結合した表示文字列を返します。
+     *
+     * @param OnameStac 名称と期間を持つデータです。
+     * @param separator 名称と期間の区切り文字列です。
+     * @returns 表示用文字列です。
+     */
     static getTimeList(OnameStac: Object_NameTimeStac_Data, separator = "") {
 
         const tx = "【" + OnameStac.connectNames() + "】" + separator + clsTime.StartEndtoString(OnameStac.SETime);
         return tx;
     }
-    /**メッシュコードの名称を取得 */
+    /**
+     * メッシュ種別 enum を表示名へ変換します。
+     *
+     * @param MeshNumber メッシュ種別です。
+     * @returns メッシュ名です。
+     */
     static ConvertMeshTypeFromEnum(MeshNumber: number) {
 
         switch (MeshNumber) {
@@ -1834,6 +2202,12 @@ export class Generic {
                 return "1/10メッシュ";
         }
     }
+    /**
+     * メッシュ表示名を enum 値へ変換します。
+     *
+     * @param MeshType メッシュ表示名です。
+     * @returns 対応するメッシュ種別です。
+     */
     static ConvertMeshTypeFromString(MeshType: string) {
 
         switch (MeshType) {
@@ -1855,7 +2229,12 @@ export class Generic {
                 return enmMesh_Number.mhOne_Tenth;
         }
     }
-    /** レイヤタイプの文字列を返す*/
+    /**
+     * レイヤ種別を表示名へ変換します。
+     *
+     * @param Type レイヤ種別です。
+     * @returns 表示名です。
+     */
     static ConvertStringFromLayerType(Type: number) {
 
         switch (Type) {
@@ -1870,6 +2249,12 @@ export class Generic {
                 break;
         }
     }
+    /**
+     * レイヤ表示名をレイヤ種別へ変換します。
+     *
+     * @param TypeStr レイヤ表示名です。
+     * @returns 対応するレイヤ種別です。
+     */
     static ConvertStringLayerFromString(TypeStr: string) {
 
         switch (TypeStr) {
@@ -1885,7 +2270,12 @@ export class Generic {
         }
     }
 
-    /** 属性データ編集で欠損値扱い欄に表示する文字を返す*/
+    /**
+     * 欠損値設定フラグを表示文字列へ変換します。
+     *
+     * @param MissingValueF 欠損値扱いフラグです。
+     * @returns 表示文字列です。
+     */
     static ConvertMissingValueFromBool(MissingValueF: boolean) {
 
         switch (MissingValueF) {
@@ -1897,6 +2287,12 @@ export class Generic {
                 break;
         }
     }
+    /**
+     * 欠損値表示文字列を真偽値へ変換します。
+     *
+     * @param MissingStr 表示文字列です。
+     * @returns 欠損値扱いなら true です。
+     */
     static ConvertMissingValueFromString(MissingStr: string) {
 
         switch (MissingStr) {
@@ -1910,7 +2306,12 @@ export class Generic {
     }
 
 
-    /**条件検索の文字を返す */
+    /**
+     * 条件検索 enum を表示文字列へ変換します。
+     *
+     * @param con 条件種別です。
+     * @returns 表示文字列です。
+     */
     static getConditionString(con: number){
 
         switch (con) {
@@ -1947,7 +2348,13 @@ export class Generic {
         }
     }
 
-    /**文字列配列Wordsをチェックして「新規1」「新規2」など連番を付ける */
+    /**
+     * 既存文字列配列を見て未使用の連番付き名称を生成します。
+     *
+     * @param CheckWords 接頭辞です。
+     * @param Words 既存名称配列です。
+     * @returns 生成した名称です。
+     */
     static Get_New_Numbering_Strings(CheckWords: string, Words: string[]) {
 
         const L = CheckWords.length;
@@ -1960,7 +2367,12 @@ export class Generic {
         return CheckWords + String(V + 1);
     }
 
-    /**オブジェクト名の漢字を統一する。比較する漢字が含まれていた場合にtrue */
+    /**
+     * オブジェクト名中の表記ゆれを統一します。
+     *
+     * @param objName 元のオブジェクト名です。
+     * @returns 正規化後の名称と変更有無です。
+     */
     static ObjName_Kanji_Compatible(objName: string){
         const settingData = appState().settingData;
 
@@ -2010,7 +2422,12 @@ export class Generic {
         return {newObjname:objName,changeF:f};
     }
 
-    /**レイヤの種類の名称 */
+    /**
+     * レイヤ種別の名称を返します。
+     *
+     * @param layType レイヤ種別です。
+     * @returns 表示名です。
+     */
     static getLayerTypeName(layType: number){
 
         let tx = "";
@@ -2029,7 +2446,13 @@ export class Generic {
         return tx;
     }
 
-    /**スペース、カンマ、タブで区切る */
+    /**
+     * 文字列をスペース、カンマ、タブのいずれかで分割します。
+     *
+     * @param Wo 対象文字列です。
+     * @param Spliter 区切り文字です。
+     * @returns 分割結果です。
+     */
     static String_Cut(Wo: string, Spliter: string){
 
         const CUT = [];
@@ -2126,7 +2549,14 @@ export class Generic {
 
     }
 
-    /**地図ファイルをgetMapfileByHttpRequestで開き、JSONで返す */
+    /**
+     * 地図ファイルを HTTP 経由で読み込み、解凍後の内容を返します。
+     *
+     * @param url 読み込む URL です。
+     * @param readCall 読み込み成功時コールバックです。
+     * @param errorCall 読み込み失敗時コールバックです。
+     * @returns 返り値はありません。
+     */
     static getMapfileByHttpRequest(url: string, readCall: (data: MapData | string) => void, errorCall?: (message: string) => void): void {
 
         
@@ -2188,7 +2618,15 @@ export class Generic {
         xhr.send(null);
     }
 
-    /**画像ウインドウ表示 */
+    /**
+     * 画像を中央寄せサイズで別ウィンドウ表示します。
+     *
+     * @param img 画像 URL です。
+     * @param Xv 画像幅です。
+     * @param Yv 画像高さです。
+     * @param title ウィンドウタイトルです。
+     * @returns 返り値はありません。
+     */
     static windowCenterOpen(img: string, Xv: number, Yv: number, title: string) {
 
     const Xw = Xv + 10;
@@ -2213,8 +2651,15 @@ export class Generic {
     new1.document.close();
 }
 
-/** ウィンドウでutl表示 */
-static windowCenterPage(help_url: string, Xv: number, Yv: number) {
+    /**
+     * 指定 URL を中央寄せサイズの別ウィンドウで開きます。
+     *
+     * @param help_url 表示する URL です。
+     * @param Xv 幅です。
+     * @param Yv 高さです。
+     * @returns 返り値はありません。
+     */
+    static windowCenterPage(help_url: string, Xv: number, Yv: number) {
 
 
     const Xw = Xv + 50;
@@ -2223,7 +2668,17 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     if (new2 && Number(navigator.appVersion.charAt(0)) >= 3) { new2.focus() };
 }
 
-/**prompt入力 event_pointがundefinedの場合は画面中央表示*/
+    /**
+     * 入力ダイアログを表示します。
+     *
+     * @param event_point 表示位置です。未指定時は中央表示します。
+     * @param promptText メッセージです。
+     * @param defoText 初期文字列です。
+     * @param okCall OK 時コールバックです。
+     * @param textAlign 入力欄の文字揃えです。
+     * @param cancelCall キャンセル時コールバックです。
+     * @returns 返り値はありません。
+     */
     static prompt(event_point: point | undefined, promptText: string, defoText: string, okCall: (value: string) => void, textAlign='left', cancelCall: (() => void) | undefined = undefined) {
 
         const gsize = Generic.getDivSize(promptText, 270, "");
@@ -2260,7 +2715,15 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**yes noの確認 event_point:表示座標*/
+    /**
+     * Yes/No 確認ダイアログを表示します。
+     *
+     * @param event_point 表示位置です。
+     * @param text メッセージです。
+     * @param yesFunc Yes 時コールバックです。
+     * @param noFunc No 時コールバックです。
+     * @returns 返り値はありません。
+     */
     static confirm(event_point: point | undefined, text: string, yesFunc: (() => void) | undefined, noFunc: (() => void) | undefined) {
 
         const gsize=Generic.getDivSize(text,220,"");
@@ -2288,7 +2751,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**alertメッセージ event_pointがundefinedの場合は画面中央表示*/
+    /**
+     * アラートダイアログを表示します。
+     *
+     * @param event_point 表示位置です。未指定時は中央表示します。
+     * @param text メッセージです。
+     * @param returnFunction 閉じた後のコールバックです。
+     * @returns 返り値はありません。
+     */
     static alert(event_point: point | undefined, text: string, returnFunction: (() => void) | undefined = undefined) {
 
         const gsize=Generic.getDivSize(text,220,"");
@@ -2306,7 +2776,15 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**圧縮ファイルを展開 展開後のファイル名の連想配列のバイナリデータを返す*/
+    /**
+     * ZIP ファイルを展開し、ファイル名ごとのバイナリを返します。
+     *
+     * @param file 展開対象の Blob です。
+     * @param onOK 展開成功時コールバックです。
+     * @param onError 展開失敗時コールバックです。
+     * @param onReadError 読み込み後処理の失敗時コールバックです。
+     * @returns 返り値はありません。
+     */
     static unzipFile(file: Blob, onOK: (data: {[key: string]: Uint8Array}) => void, onError: (err: Error) => void, onReadError: (err: Error) => void = onError) {
 
         const zipReader = new FileReader();
@@ -2346,7 +2824,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         zipReader.readAsArrayBuffer(file);
     }
 
-    /**データ（バイナリ）と対応するファイル名をtotalFileNameにZIP圧縬 */
+    /**
+     * 複数バイナリを ZIP 化して保存します。
+     *
+     * @param totalFileName 保存ファイル名です。
+     * @param data ファイル内容配列です。
+     * @param fileName 各ファイル名です。
+     * @returns 返り値はありません。
+     */
     static zipFile(totalFileName: string, data: Uint8Array[], fileName: string[]) {
 
         const zlibRuntime = getZlibRuntime();
@@ -2371,7 +2856,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**バイト配列をUTF8文字列に変換 */
+    /**
+     * UTF-8 バイト配列を文字列へ変換します。
+     *
+     * @param array UTF-8 バイト配列です。
+     * @returns 変換後文字列です。
+     */
     static utf8ArrayToStr(array: Uint8Array) {
 
         const len = array.length;
@@ -2403,7 +2893,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return out;
     }
 
-    /**UTF8文字列をバイト配列に変換 */
+    /**
+     * 文字列を UTF-8 バイト配列へ変換します。
+     *
+     * @param str 変換元文字列です。
+     * @returns UTF-8 バイト配列です。
+     */
      static strToUtf8Array(str: string): Uint8Array {
 
         const n = str.length;
@@ -2432,7 +2927,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return new Uint8Array(bytes);
     };
 
-    /**投影法に対応した文字列を返す */
+    /**
+     * 投影法 enum を表示文字列へ変換します。
+     *
+     * @param prj 投影法です。
+     * @returns 表示文字列です。
+     */
     static getStringProjectionEnum (prj: number){
         switch (prj) {
             case enmProjection_Info.prjNo:
@@ -2453,7 +2953,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
                 return "エッケルト第４図法";
         }
     }
-    /**指定の文字数より長い場合、以降を...で省略して返す。短い場合はそのまま返す */
+    /**
+     * 指定文字数を超える文字列を省略表示用に切り詰めます。
+     *
+     * @param Str 対象文字列です。
+     * @param MaxLen 最大文字数です。
+     * @returns 省略後文字列です。
+     */
     static Check_StringLength_And_Cut(Str: string, MaxLen: number){
 
         let rstr  = Str;
@@ -2463,7 +2969,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return rstr;
 } 
 
-/**単独表示モードの文字列を返す */
+    /**
+     * 単独表示モード enum を表示文字列へ変換します。
+     *
+     * @param solomode 単独表示モードです。
+     * @returns 表示文字列です。
+     */
     static getSolomodeStrings (solomode: number){
         switch (solomode) {
             case enmSoloMode_Number.ClassPaintMode:
@@ -2489,7 +3000,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**spanの文字のサイズをbodyに設定して求める（改行しない） */
+    /**
+     * span で改行なし描画した場合の文字サイズを取得します。
+     *
+     * @param text 測定文字列です。
+     * @param fontSize フォントサイズです。
+     * @returns 描画サイズです。
+     */
     static getSpanSize(text: string, fontSize: number){
 
         const t = this.createNewSpan(document.body, text, "", "", 0, 0, "visibility:hidden", undefined);
@@ -2502,7 +3019,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return new size(w, h);
     }
 
-    /**divの文字のサイズをbodyに設定して求める（指定幅より広いと改行） */
+    /**
+     * div で描画した場合の文字サイズを取得します。
+     *
+     * @param text 測定文字列です。
+     * @param width 幅制約です。
+     * @param styleinfo 追加スタイルです。
+     * @returns 描画サイズです。
+     */
     static getDivSize(text: string, width: number | undefined, styleinfo: string) {
 
         const t = this.createNewDiv(document.body, text, "", "", 0, 0, "", "", styleinfo + ";visibility:hidden", undefined);
@@ -2514,7 +3038,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         document.body.removeChild(t);
         return new size(w, h);
     }
-    /** 線モードの曲線の座標列を求めるための4つのコントロールポイント取得*/
+    /**
+     * 線モードのスプライン制御点を 4 点生成します。
+     *
+     * @param ControlP 制御点です。
+     * @param OriginP 始点です。
+     * @param DestP 終点です。
+     * @returns 制御点列です。
+     */
     static Get_OD_Spline_Point(ControlP: point, OriginP: point, DestP: point) {
 
         const poxy = [];
@@ -2544,7 +3075,22 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return poxy;
     }
 
-    /**前後文字付き数字入力テキストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用 */
+    /**
+     * 前後ラベル付き数値入力欄を作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param headWord 前置文字列です。
+     * @param footWord 後置文字列です。
+     * @param defoValue 初期値です。
+     * @param ID 要素 ID です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param headWordWidth 前置文字列幅です。
+     * @param width 入力欄幅です。
+     * @param onChange 値変更時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成した入力欄です。
+     */
     static createNewWordNumberInput(ParentObj: HTMLElement, headWord: string, footWord: string, defoValue: number, ID: string, x: number, y: number, headWordWidth: number | undefined, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined | null, styleinfo: string) {
 
         const hsw = this.createNewWordWidthDiv(ParentObj, "", headWord, x, y, 21, headWordWidth, undefined);
@@ -2555,7 +3101,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tx;
     }
 
-    /**数値に変換する */
+    /**
+     * 全角数字や記号を半角へ寄せて数値文字列を正規化します。
+     *
+     * @param value 入力文字列です。
+     * @returns 正規化後文字列です。
+     */
     static convValue(value: string){
 
         let v=value;
@@ -2570,7 +3121,19 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return v;
     }
 
-    /**数字入力テキストボックス 数字以外の入力の場合は元に戻す。onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用*/
+    /**
+     * 数値専用入力欄を作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param defoValue 初期値です。
+     * @param ID 要素 ID です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param onChange 値変更時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成した入力欄です。
+     */
     static createNewNumberInput(ParentObj: HTMLElement, defoValue: number, ID: string, x: number, y: number, width: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined | null, styleinfo: string) {
 
         const box = this.createNewInput(ParentObj, "text", String(defoValue), ID, x, y, undefined, "width:" + width.px() + ";" + styleinfo + ";text-align:right;padding:0px 5px 0px 0px ");
@@ -2616,7 +3179,20 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return box;
     }
 
-    /**数字入力＋リストボックス onChangeでオブジェクトと値を返し、後で数値を設定する場合はHTMLElement.prototype.setNumberValue()を使用**/
+    /**
+     * 候補リスト付き数値入力欄を作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param defoValue 初期値です。
+     * @param ID 要素 ID です。
+     * @param list 候補値一覧です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param maxNumber 展開時に表示する最大件数です。
+     * @param onChange 値変更時コールバックです。
+     * @returns 作成した入力欄です。
+     */
     static createNewNumberComboBox(ParentObj: HTMLElement, defoValue: number, ID: string, list: number[], x: number, y: number, width: number, maxNumber: number, onChange: ((obj: HTMLInputElement, value: number) => void) | undefined){
 
         const dropinwidth=18;
@@ -2677,7 +3253,20 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    /**チェックリストボックス */
+    /**
+     * チェックリストボックスを作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param ID 要素 ID です。
+     * @param list 項目一覧です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param onChange 変更時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成したフレームです。
+     */
     static createNewCheckListBox(ParentObj: HTMLElement, ID: string, list: {text: string, checked: boolean}[], x: number, y: number, width: number, height: number, onChange: ((index: number, checked: boolean) => void) | undefined, styleinfo: string) {
         const state = appState();
         const lineH = this.getDivSize("A", undefined, "").height + 3;
@@ -2700,7 +3289,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
 
-    //**色を指定分明るくまたは暗くする（0を下回った場合は0、255を上回った場合は255） */
+    /**
+     * 色成分を一定量だけ明るくまたは暗く補正します。
+     *
+     * @param Col 元の色です。
+     * @param ChangeValue 加算する値です。
+     * @returns 補正後の色です。
+     */
     static GetColorArrange(Col: color, ChangeValue: number){
 
         const newcol=Col.Clone();
@@ -2714,7 +3309,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
 
-    //2次元配列aData()の内容から、データ項目ごとに通常、文字列、カテゴリーと分類する
+    /**
+     * 属性配列を列ごとに数値、文字列、カテゴリへ分類します。
+     *
+     * @param DataNum 列数です。
+     * @param ObjNum 行数です。
+     * @param aData 2 次元属性配列です。
+     * @returns 列ごとの分類結果です。
+     */
     static Check_DataType(DataNum: number, ObjNum: number, aData: string[][]) {
 
         const UNT = [];
@@ -2754,7 +3356,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return UNT;
     }
 
-    //セレクトボックス用投影法リスト
+    /**
+     * 投影法選択用の候補一覧を返します。
+     *
+     * @returns value と text を持つ投影法一覧です。
+     */
     static getProjectionList() {
 
         const list = [
@@ -2769,7 +3375,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return list;
     }
 
-    /**拡張子取得 */ 
+    /**
+     * ファイル名から拡張子を取得します。
+     *
+     * @param filename 対象ファイル名です。
+     * @returns 拡張子です。
+     */ 
     static getExtension(filename: string){
 
         const n=filename.lastIndexOf(".");
@@ -2780,8 +3391,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-       /**フォルダを除いたファイル名を取得 */
-       static getFilename(filename: string) {
+    /**
+     * パスからフォルダ部分を除いたファイル名を取得します。
+     *
+     * @param filename 対象パスです。
+     * @returns ファイル名です。
+     */
+    static getFilename(filename: string) {
 
         const hn = filename.lastIndexOf("/");//スラッシュ
         let tx = "";
@@ -2793,7 +3409,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tx;
     }
 
-    /**拡張子を除いたファイル名を取得 */
+    /**
+     * パスから拡張子を除いたファイル名を取得します。
+     *
+     * @param filename 対象パスです。
+     * @returns 拡張子なしのファイル名です。
+     */
     static getFilenameWithoutExtension(filename: string) {
 
         const n = filename.lastIndexOf(".");
@@ -2811,7 +3432,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return tx;
     }
 
-    //テキストファイル保存
+    /**
+     * テキストをファイルとして保存します。
+     *
+     * @param text 保存する文字列です。
+     * @param fileName 保存ファイル名です。
+     * @returns 返り値はありません。
+     */
     static saveText(text: string, fileName: string) {
 
         /// <signature>
@@ -2833,7 +3460,14 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     };
 
-    //座標の文字列取得
+    /**
+     * 座標系設定に応じた座標表示文字列を返します。
+     *
+     * @param P 対象座標です。
+     * @param MPDataMapZahyo 座標系設定です。
+     * @param Header_Flag 接頭辞を付ける場合は true です。
+     * @returns X と Y の表示文字列です。
+     */
     static Get_PositionCoordinate_Strings(P: point, MPDataMapZahyo: zahyohenkan, Header_Flag = true) {
 
         let retPS: {x: string, y: string} = {x: "", y: ""};
@@ -2864,14 +3498,26 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return retPS;
     }
 
-    /**緯度経度(latlon)の文字列取得 (.x,.y)*/
+    /**
+     * 緯度経度を表示文字列へ変換します。
+     *
+     * @param LatLon 緯度経度です。
+     * @param Header_Flag 方位接頭辞を付ける場合は true です。
+     * @returns 経度と緯度の表示文字列です。
+     */
     static Get_LatLon_Strings(LatLon: latlon, Header_Flag = true) {
 
         const p = LatLon.toPoint();
         return this.Get_LatLon_PointStrings(p, Header_Flag);
     }
 
-    /**緯度経度(point)の文字列取得*/
+    /**
+     * point 形式の緯度経度を表示文字列へ変換します。
+     *
+     * @param Pos 緯度経度を表す point です。
+     * @param Header_Flag 方位接頭辞を付ける場合は true です。
+     * @returns 経度と緯度の表示文字列です。
+     */
     static Get_LatLon_PointStrings(Pos: point, Header_Flag=true){
         const settingData = appState().settingData;
 
@@ -2919,7 +3565,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return retPS;
     }
 
-    //メッシュコードの文字の長さを取得
+    /**
+     * メッシュ種別に対応するコード長を返します。
+     *
+     * @param MeshNumber メッシュ種別です。
+     * @returns コード長です。
+     */
     static getMeshCodeLength(MeshNumber: number) {
 
         let CodeLen;
@@ -2956,7 +3607,11 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return CodeLen;
     }
 
-    /**距離単位をvalueとtextの配列で返す */
+    /**
+     * 距離単位選択用の候補一覧を返します。
+     *
+     * @returns value と text を持つ距離単位一覧です。
+     */
     static getScaleUnit_for_select(){
 
         const list=[];
@@ -2969,7 +3624,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
     }
 
     
-    /**距離単位列挙型から面積文字列を返す */
+    /**
+     * 距離単位から対応する面積単位文字列を返します。
+     *
+     * @param scl 距離単位です。
+     * @returns 面積単位文字列です。
+     */
     static getScaleUnitAreaStrings(scl: number) {
 
         switch (scl) {
@@ -3000,7 +3660,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    ///*距離単位列挙型と値から距離文字列を返す 距離単位だけの場合はValue=undefined*/
+    /**
+     * 距離単位と数値から表示文字列を返します。
+     *
+     * @param Value 値です。未指定時は単位のみ返します。
+     * @param scl 距離単位です。
+     * @returns 表示文字列です。
+     */
     static getScaleUnitStrings(Value: number | undefined, scl: number) {
 
         let vs;
@@ -3060,7 +3726,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
-    //距離単位の変換係数を求める
+    /**
+     * 距離単位間の変換係数を返します。
+     *
+     * @param from_Unit 変換元単位です。
+     * @param to_Unit 変換先単位です。
+     * @returns 変換係数です。
+     */
     static Convert_ScaleUnit(from_Unit: number, to_Unit: number){
 
         const kmco = [];
@@ -3081,7 +3753,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         return (todis / fromdis);
 }
 
-    //レイヤの形状ごとの数を入れた配列から、可能な形状を返す
+    /**
+     * 形状数配列から優先すべき形状種別を返します。
+     *
+     * @param Shape 形状ごとの件数配列です。
+     * @returns 採用する形状種別です。
+     */
     static checkShape(Shape: number[]) {
 
         if (Shape[enmShape.PointShape] > 0) {
@@ -3093,6 +3770,12 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         }
     }
 
+    /**
+     * 要素の背景色から colorRGBA を生成します。
+     *
+     * @param ele 対象要素です。
+     * @returns 変換した色です。
+     */
     static RGBAfromElement(ele: HTMLElement) {
 
         //要素の背景色をcolorRGBAに変換して返す
@@ -3109,6 +3792,13 @@ static windowCenterPage(help_url: string, Xv: number, Yv: number) {
         const col = new colorRGBA(parseInt(RGB[0]), parseInt(RGB[1]), parseInt(RGB[2]), opa);
         return col;
     }
+    /**
+     * ボックスがブラウザ外へはみ出さない位置へ補正します。
+     *
+     * @param e_point 基準点またはマウスイベントです。
+     * @param box 配置対象要素です。
+     * @returns 返り値はありません。
+     */
     static Set_Box_Position_in_Browser(e_point: point | MouseEvent, box: HTMLElement) {	//
 
         /// <signature>
