@@ -9,6 +9,9 @@ import { point, rectangle, size } from './clsAttrData';
 // ==================== パターン1: グローバル型の使用 ====================
 // globals.d.ts で定義された型は import 不要
 
+/**
+ * グローバル公開型を import なしで使う例です。
+ */
 function _exampleGlobalTypes(): void {
     // point, rectangle, size など既存のグローバルクラス
     const _p: point = new point(10, 20);
@@ -45,6 +48,9 @@ import type {
     DialogCallback 
 } from './types';
 
+/**
+ * modules として定義した型を import して使う例です。
+ */
 function _exampleModuleTypes(): void {
     // イベントハンドラー型
     const _clickHandler: EventHandler<MouseEvent> = (event) => {
@@ -75,6 +81,12 @@ function _exampleModuleTypes(): void {
 import type { DataLoadResult, DataLoader } from './types';
 
 // グローバル型(MapFileInfo)とモジュール型(DataLoadResult)を組み合わせ
+/**
+ * 地図ファイル読込結果を返す非同期ローダーの例です。
+ *
+ * @param filename 読み込む地図ファイル名です。
+ * @returns 成否と読込結果を含むサンプル値です。
+ */
 async function loadMapFile(filename: string): Promise<DataLoadResult<MapFileInfo>> {
     try {
         // 仮の実装

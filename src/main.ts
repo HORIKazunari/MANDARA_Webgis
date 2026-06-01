@@ -37,6 +37,11 @@ import {
  */
 import type { JsonValue } from './types';
 
+/**
+ * デバッグ用ログ文字列をログウィンドウへ追記します。
+ *
+ * @param data 出力する値です。配列は区切り付き文字列へ変換されます。
+ */
 function _logX(data: JsonValue): void {
     const state = appState();
     
@@ -192,6 +197,11 @@ function _init(): void {
     setting(location.search, location.hash); // 設定画面の作成
 
 
+    /**
+     * 印刷画面のコンテキストメニューを表示します。
+     *
+     * @param pos ポップアップ表示位置です。
+     */
     function FrmprintMenuClick(pos: point): void {
         const state = appState();
         const pwchwck: boolean = (state.propertyWindow.getVisibility?.() === true);
@@ -213,6 +223,9 @@ function _init(): void {
         ];
         Generic.ceatePopupMenu(popmenu, pos);
         
+		/**
+		 * 局地変動モードの有効・無効を切り替えます。
+		 */
         function mdvf(): void {
             const state = appState();
             const v: boolean = !state.attrData.TotalData.ViewStyle.MapLegend.Base.ModeValueInScreenFlag;
@@ -223,6 +236,9 @@ function _init(): void {
             clsPrint.printMapScreen(state.frmPrint.picMap);
         }
         
+		/**
+		 * プロパティウィンドウの表示状態を反転します。
+		 */
         function pwreverse(): void {
             const state = appState();
             if (state.propertyWindow.getVisibility?.() === true) {
@@ -233,6 +249,9 @@ function _init(): void {
             state.frmPrint.propertyWindowClose?.();
         }
         
+		/**
+		 * ダミーオブジェクト・グループ変更ダイアログを開きます。
+		 */
         function mnuDummyObjChange(): void {
             frmPrint_DummyObjectGroup();
         }
@@ -258,6 +277,11 @@ function frmPrintProjection(): void {
     const mapRect = viewStyle.ScrData.MapRectangle;
     frmProjectionConvert(viewStyle.Zahyo, mapRect, okButton);
     
+	/**
+	 * 選択した投影法を現在の表示状態へ反映します。
+	 *
+	 * @param newZahyo 変換後の座標系設定です。
+	 */
     function okButton(newZahyo: Zahyo_info): void {
         const state = appState();
         const centerLon: number = newZahyo.CenterXY.x;
@@ -391,9 +415,20 @@ globalScope.init = _init;
 globalScope.settingFront = settingFront;
 globalScope.frmPrintFront = frmPrintFront;
 
-globalThis.onerror = function(message, source, lineno, colno, error) {
+/**
+ * 未処理のグローバルエラーをログウィンドウへ記録します。
+ *
+ * @param message エラーメッセージです。
+ * @param source 発生元スクリプトです。
+ * @param lineno 発生行番号です。
+ * @param colno 発生列番号です。
+ * @param error 例外オブジェクトです。
+ */
+function handleGlobalError(message: Event | string, source?: string, lineno?: number, colno?: number, error?: Error): void {
     _logX([String(message), String(source ?? ''), lineno ?? 0, colno ?? 0, String(error ?? '')]);
-};
+}
+
+globalThis.onerror = handleGlobalError;
 
 
 

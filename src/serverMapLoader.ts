@@ -2,6 +2,11 @@ import { Generic } from './clsGeneric';
 import { appState } from './core/AppState';
 import type { JsonObject, MapData } from './types';
 
+/**
+ * 属性データ中の代表的な地図名をサーバー配置ファイル名へ解決する対応表です。
+ *
+ * 旧来データで使われる大文字名や日本語名を、map フォルダ内の実ファイル名へ寄せます。
+ */
 const serverMapAliases: Record<string, string> = {
     'JAPAN.MPFJ': 'JAPAN.mpfj',
     'WORLD.MPFJ': 'WORLD.mpfj',

@@ -6,11 +6,17 @@ import { enmShape, enmZahyo_mode_info } from './constants/legacyEnums';
 
 // シェープファイル取得
 
+/**
+ * SHX インデックスレコードの位置情報です。
+ */
 interface IndexFileDataInfo {
     offset: number;
     contentsLength: number;
 }
 
+/**
+ * DBF ヘッダーから取得する基本情報です。
+ */
 interface DBFInfo {
     VerData: number;
     RecordNumber: number;
@@ -22,6 +28,9 @@ interface DBFInfo {
     Record_Byte: number;
 }
 
+/**
+ * DBF フィールド定義です。
+ */
 interface FieldInfo {
     Name: string;
     StringData_Flag: boolean;
@@ -29,6 +38,9 @@ interface FieldInfo {
     PointLen: number;
 }
 
+/**
+ * シェープファイル全体の外接矩形です。
+ */
 interface BoundingBox {
     maxX: number;
     minX: number;
@@ -36,14 +48,23 @@ interface BoundingBox {
     minY: number;
 }
 
+/**
+ * zip 展開済みシェープファイル一式です。
+ */
 type UnzippedShape = Record<string, Uint8Array>;
 
 // 内部クラスの定義
+/**
+ * SHX インデックスレコードの保持クラスです。
+ */
 class IndexFileData_info implements IndexFileDataInfo {
     offset = 0;
     contentsLength = 0;
 }
 
+/**
+ * DBF ヘッダー情報の保持クラスです。
+ */
 class DBF_Info implements DBFInfo {
     VerData = 0;
     RecordNumber = 0;
@@ -55,6 +76,9 @@ class DBF_Info implements DBFInfo {
     Record_Byte = 0;
 }
 
+/**
+ * DBF フィールド定義の保持クラスです。
+ */
 class Field_Info implements FieldInfo {
     Name = "";
     StringData_Flag = false;
@@ -62,11 +86,17 @@ class Field_Info implements FieldInfo {
     PointLen = 0;
 }
 
+/**
+ * バイナリ読込時のエンディアン指定です。
+ */
 const endian = {
     little: true,
     big: false
 } as const;
 
+/**
+ * シェープファイル一式を読み込み、内部地図データへ変換するクラスです。
+ */
 export class clsShapefile {
     private boundingBox: BoundingBox = { maxX: 0, minX: 0, maxY: 0, minY: 0 };
     private zahyoSettingFlag = false;
@@ -82,6 +112,9 @@ export class clsShapefile {
     private onError: ((tag: string | number) => void) | undefined;
     private tag: string | number = 0;
 
+    /**
+     * 既定の座標系設定でシェープファイルローダーを初期化します。
+     */
     constructor() {
         this.mapZahyo = new Zahyo_info();
         this.mapZahyo.Mode = enmZahyo_mode_info.Zahyo_Ido_Keido;
@@ -89,22 +122,51 @@ export class clsShapefile {
         this.mapZahyo.HeimenTyokkaku_KEI_Number = 1;
     }
 
+    /**
+     * 現在保持している地図座標系設定を返します。
+     *
+     * @returns 複製した座標系設定です。
+     */
     getMapZahyo(): Zahyo_info {
         return this.mapZahyo.Clone();
     }
 
+    /**
+     * 地図座標系設定を上書きします。
+     *
+     * @param zahyo 設定する座標系です。
+     */
     setMapZahyo(zahyo: Zahyo_info): void {
         this.mapZahyo = zahyo.Clone();
     }
 
+    /**
+     * PRJ から座標系を確定できたかを返します。
+     *
+     * @returns 座標系設定済みなら true です。
+     */
     getZahyoSettingFlag(): boolean {
         return this.zahyoSettingFlag;
     }
 
+    /**
+     * 読み込んだシェープの図形種別を返します。
+     *
+     * @returns legacyEnums の shape 定数です。
+     */
     getShape(): number {
         return this.shapeS;
     }
     
+    /**
+     * shp/shx/dbf/prj のファイル群を順に読み込みます。
+     *
+     * @param files 読み込むファイル配列です。
+     * @param dbfEncode DBF デコードに使用する文字コードです。
+     * @param _tag 呼び出し元へ返す識別子です。
+     * @param onOK 読込成功時のコールバックです。
+     * @param _onError 読込失敗時のコールバックです。
+     */
     fileRead(files: File[], dbfEncode: string | number, _tag: string | number, onOK: (tag: string | number) => void, _onError: (tag: string | number) => void): void {
         this.onError = _onError;
         this.tag = _tag;
@@ -167,7 +229,14 @@ export class clsShapefile {
         };
     }
 
-    /**zipファイル圧縮シェープファイル */
+    /**
+     * zip 展開済みのシェープファイル群を直接読み込みます。
+     *
+     * @param unZipData 展開済みファイルの内容です。
+     * @param dbfEncode DBF デコードに使用する文字コードです。
+     * @param _tag 呼び出し元へ返す識別子です。
+     * @param onOK 読込成功時のコールバックです。
+     */
     fileReadZip(unZipData: UnzippedShape, dbfEncode: string | number, _tag: string | number, onOK: (tag: string | number) => void): void {
         this.tag = _tag;
         let shxFile: string | undefined;
@@ -205,7 +274,12 @@ export class clsShapefile {
         onOK(this.tag);
     }
 
-    //prjファイル読み込み
+    /**
+     * PRJ テキストを解析して座標系情報を反映します。
+     *
+     * @param Prjtext PRJ ファイルの文字列です。
+     * @returns 座標系を特定できた場合は true です。
+     */
     private getPrjFile(Prjtext: string): boolean {
         const FData = Prjtext.toUpperCase();
         if (FData.indexOf("UNDEFINED") !== -1) {
@@ -268,7 +342,13 @@ export class clsShapefile {
     }
 
 
-    //dbfファイル読み込み
+    /**
+     * DBF を解析してフィールド定義と属性値を読み込みます。
+     *
+     * @param buffer DBF のバイナリです。
+     * @param encodenumber 文字コード名またはコード番号です。
+     * @returns 読込に成功した場合は true です。
+     */
     private getDbfFile(buffer: ArrayBuffer, encodenumber: string | number): boolean {
 
         const dv = new DataView(buffer);
@@ -332,8 +412,14 @@ export class clsShapefile {
         }
         return true;
 
-
-
+    /**
+     * DBF バイナリから指定範囲の文字列を復号します。
+     *
+     * @param Position 読み取り開始位置です。
+     * @param GetLen 読み取るバイト長です。
+     * @param encode 使用する文字コードです。
+     * @returns 復号後の文字列です。
+     */
         function Get_WCharData_Binary(Position: number, GetLen: number, encode: string): string {
             const ubt: number[] = [];
             for (let i = 0; i < GetLen; i++) {
@@ -353,7 +439,12 @@ export class clsShapefile {
         }
     }
 
-    //shxファイル読み込み
+    /**
+     * SHX を解析してレコード位置一覧と外接矩形を取得します。
+     *
+     * @param buffer SHX のバイナリです。
+     * @returns 解析したインデックス配列です。
+     */
     private getSHXFile(buffer: ArrayBuffer): IndexFileData_info[] | undefined {
 
             const dv = new DataView(buffer);
@@ -374,9 +465,12 @@ export class clsShapefile {
             return this.indexData;
 
     }
-
-
-    //shpファイル読み込み
+    /**
+     * SHP を解析して図形座標列を内部配列へ展開します。
+     *
+     * @param buffer SHP のバイナリです。
+     * @returns 読込成功時は true です。
+     */
     private getShapeFile(buffer: ArrayBuffer): boolean | undefined {
             const dv = new DataView(buffer);
     
@@ -409,9 +503,8 @@ export class clsShapefile {
             }
     
             let n = 0;
-    
-            do {
-                
+
+                do {
                 let pos = this.indexData[n].offset * 2;
                 const RecordNumber = dv.getUint32(pos, endian.big)+12;
                 if (RecordNumber === 0) {
@@ -454,8 +547,13 @@ export class clsShapefile {
             } while (n < this.indexData.length);
             return true;
 
-    
-
+        /**
+         * バイナリから座標点を読み取ります。
+         *
+         * @param dv 読み取り対象の DataView です。
+         * @param pos 座標開始位置です。
+         * @returns 読み取った座標点です。
+         */
         function getPointXY(dv: DataView, pos: number): point {
             const p = new point();
             p.x = dv.getFloat64(pos, endian.little);
@@ -464,7 +562,13 @@ export class clsShapefile {
         }
     }
 
-    //読み込んだシェープファイルを地図ファイルに変換する
+    /**
+     * 読み込んだシェープファイルを内部地図形式へ変換します。
+     *
+     * @param projection 出力時に設定する投影法です。
+     * @param UnitCheckFlag 属性値から単位推定を行う場合は true です。
+     * @returns 変換後の地図データです。
+     */
     convertToMapfile(projection: number | undefined, UnitCheckFlag: boolean): clsMapdata {
         const MapData = new clsMapdata();
         MapData.init_MapData();
