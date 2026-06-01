@@ -10,7 +10,7 @@ import { boundArrangeData } from './boundArrangeData';
 import { enmShape, enmZahyo_mode_info, SpatialPointType } from './constants/legacyEnums';
 import type { JsonObject, JsonValue } from './types';
 
-/** Description placeholder */
+// 廃止した旧補助データのメモです。
 // class Hennyu_Data {
 //     code?: number;
 //     Name?: string;
@@ -592,7 +592,7 @@ class Map_Detail_Data {
 
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
-/** Description placeholder */
+// 廃止した境界方向補助データのメモです。
 // class Hennyu_Data2 {
 //     code?: number;
 //     Direction?: number;
@@ -613,12 +613,17 @@ class clsMapdata {
     NoDataFlag: boolean = false;
     private Enable_MPObjStac: number[] = []; // EnableMPOBJ_Data未定義
 
+    /**
+     * 空の地図メタデータを持つインスタンスを生成します。
+     */
     constructor() {
         this.Map = new strMap_data();
     }
 
     /**
      * 地図データ全体を初期状態へ戻します。
+      *
+      * @returns 返り値はありません。
      */
     init_MapData() {
         this.ObjectKind = [];
@@ -666,6 +671,8 @@ class clsMapdata {
 
     /**
      * 方位記号の初期表示設定を作成します。
+      *
+      * @returns 返り値はありません。
      */
     init_Compass_First() {
         const mc = this.Map.MapCompass;
@@ -699,6 +706,8 @@ class clsMapdata {
 
     /**
      * 全オブジェクトグループの初期色をまとめて設定します。
+      *
+      * @returns 返り値はありません。
      */
     Set_First_ObjectKind_Color() {
 
@@ -784,6 +793,7 @@ class clsMapdata {
      *
      * @param EditingObject 保存対象オブジェクトです。
      * @param checkObjectmaxMinFlaf 最大最小範囲の再計算を行う場合は true です。
+      * @returns 返り値はありません。
      */
     Save_Object(EditingObject: strObj_Data, checkObjectmaxMinFlaf: boolean) {
 
@@ -805,6 +815,7 @@ class clsMapdata {
      * @param checkRelatedLineFlag 関連ラインの接続再判定を行う場合は true です。
      * @param checkRelatedObjectShapeFlag 関連オブジェクト形状を再判定する場合は true です。
      * @param checkLineMaxMinFlag ライン外接矩形を再計算する場合は true です。
+      * @returns 返り値はありません。
      */
     Save_Line(EditingLine: strLine_Data, checkRelatedLineFlag: boolean, checkRelatedObjectShapeFlag: boolean, checkLineMaxMinFlag: boolean) {
         const SEpoint: point[] = [];
@@ -850,6 +861,7 @@ class clsMapdata {
      *
      * @param SEpoint 比較に使う起終点配列です。
      * @param exCode 除外するライン番号です。
+      * @returns 返り値はありません。
      */
     Check_Related_Line(SEpoint: point[], exCode: number) {
         const n = SEpoint.length;
@@ -960,6 +972,7 @@ class clsMapdata {
      * 展開済み線種一覧のパターンを地図データ側へ反映します。
      *
      * @param LPC Get_TotalLineKind 相当の線種配列です。
+      * @returns 返り値はありません。
      */
     Set_TotalLineKind(LPC: Array<JsonObject>) { //LPatSek_Info
         let n = 0;
@@ -1001,6 +1014,7 @@ class clsMapdata {
      * 地図データ全体を指定座標系へ変換します。
      *
      * @param newMapZahyo 変換先の座標系設定です。
+      * @returns 返り値はありません。
      */
     Convert_ZahyoMode(newMapZahyo: Zahyo_info) {
         const m = this.Map;
@@ -1049,6 +1063,8 @@ class clsMapdata {
 
     /**
      * 全オブジェクトの外接矩形を再計算します。
+      *
+      * @returns 返り値はありません。
      */
     Check_All_Obj_MaxMin() {
         const m = this.Map;
@@ -1058,7 +1074,13 @@ class clsMapdata {
 
     }
 
-    /**線のポイントを指定した距離に応じて削除、座標と数を返すルーチン */
+    /**
+     * 線分列を間引いて平滑化後の座標列を返します。
+     *
+     * @param _PointXY 元の座標列です。
+     * @param s_distanceas 点を残す判定距離です。
+     * @returns 間引き後の座標列です。
+     */
     Smoothing_Line(_PointXY: point[], s_distanceas: number){
         let PointXY = Generic.ArrayClone(_PointXY);
         let FirstPointNum = PointXY.length;
@@ -1128,6 +1150,7 @@ class clsMapdata {
      * @param LineKindName 線種名です。
      * @param LPat ラインパターンです。
      * @param LMesh メッシュ用線種かどうかです。
+      * @returns 返り値はありません。
      */
     Add_OneLineKind(LineKindName: string, LPat: Line_Property, LMesh: boolean) {
         this.LineKind.push(this.Get_OneLineKind_Parameter(LineKindName, LPat, LMesh));
@@ -1163,6 +1186,7 @@ class clsMapdata {
      * @param Shape 形状種別です。
      * @param Mesh メッシュ系グループかどうかです。
      * @param type オブジェクトグループ種別です。
+      * @returns 返り値はありません。
      */
     Add_OneObjectGroup_Parameter(Name: string, Shape: number, Mesh: boolean, type: number) {
         const Okind = this.Get_OneObjectGroup_Parameter(Name, Shape, this.Map.OBKNum, this.Map.LpNum, Mesh, type);
@@ -1208,6 +1232,8 @@ class clsMapdata {
 
     /**
      * 地図データ全体の Y 座標を反転します。
+      *
+      * @returns 返り値はありません。
      */
     YReverse() {
 
@@ -1235,6 +1261,8 @@ class clsMapdata {
 
     /**
      * 緯度経度をそのまま保持している地図データを投影変換済み座標へ置き換えます。
+      *
+      * @returns 返り値はありません。
      */
     MapLatLon_Zahyo_convert() {
         const XY_Rect = this.Get_Mapfile_Rectangle();
@@ -1275,6 +1303,8 @@ class clsMapdata {
 
     /**
      * 面オブジェクトの代表点を重心から再計算します。
+      *
+      * @returns 返り値はありません。
      */
     GetObjectGravity_All() {
         for (let i = 0; i < this.Map.Kend; i++) {
@@ -1831,7 +1861,14 @@ class clsMapdata {
         return InOut;
     }
 
-    /** 周辺ラインと指定した地点のX軸上の交点を求め、その地点数を返す。ポリゴン内に指定の地点が含まれる場合ok:true,CrossPoint_Xに交点x座標を返す*/ 
+    /**
+     * 指定点に対するポリゴン辺との交点を調べ、内外判定結果を返します。
+     *
+     * @param x 判定 X 座標です。
+     * @param y 判定 Y 座標です。
+     * @param Fringe_Line 境界を構成するライン番号配列です。
+     * @returns 内部判定結果と交点 X 座標配列です。
+     */
     Check_Point_in_Polygon_LineCode(x: number, y: number, Fringe_Line: number[]): PointInPolygonResult {
         const P = new point(x, y);
         const CheckLine: point[][] = [];
@@ -3047,7 +3084,11 @@ class clsMapdata {
 
 
     /**
-     * ラインの削除 Chack_Object_Shape_F:削除するラインを使用するオブジェクトの形状をチェックする場合true
+     * ラインを 1 本削除し、必要な接続状態と形状を更新します。
+     *
+     * @param EraseLineCode 削除するライン番号です。
+     * @param Chack_Object_Shape_F 削除ラインを使うオブジェクト形状も再判定する場合は true です。
+     * @returns 返り値はありません。
      */
     Erase_Line(EraseLineCode: number, Chack_Object_Shape_F: boolean) {
         const LCode = [EraseLineCode];
