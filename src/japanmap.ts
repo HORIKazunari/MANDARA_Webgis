@@ -2,6 +2,11 @@
 
 import { appState } from './core/AppState';
 
+/**
+ * 日本全国地図の事前読込キャッシュです。
+ *
+ * 起動直後から利用できるよう、埋め込み JSON を共有キャッシュへ登録します。
+ */
 const preReadMapFile = appState().preReadMapFile;
 
 export {};

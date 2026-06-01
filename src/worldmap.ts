@@ -3,6 +3,11 @@
 
 import { appState } from './core/AppState';
 
+/**
+ * 世界地図の事前読込キャッシュです。
+ *
+ * モジュール読込時に埋め込み JSON を展開し、共有キャッシュへ登録します。
+ */
 const preReadMapFile = appState().preReadMapFile;
 
 export {};

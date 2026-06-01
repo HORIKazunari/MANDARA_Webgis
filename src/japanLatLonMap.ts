@@ -2,6 +2,11 @@
 
 import { appState } from './core/AppState';
 
+/**
+ * 日本緯度経度地図の事前読込キャッシュです。
+ *
+ * 旧来の巨大 JSON 資産をそのまま登録するため、型検査は無効化しています。
+ */
 const preReadMapFile = appState().preReadMapFile;
 
 export {};
