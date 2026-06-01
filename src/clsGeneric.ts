@@ -3841,6 +3841,14 @@ export class Generic {
         box.style.top = y.px();
     }
 
+    /**
+     * 点が画面矩形またはスケール矩形内にあるかを判定します。
+     *
+     * @param p 判定する点です。
+     * @param ScrData 画面情報です。
+     * @param Mode 判定対象を切り替えるモードです。
+     * @returns 内部にあれば true です。
+     */
     static Check_Point_in_screen(p: point, ScrData: Screen_info, Mode: number) {
 
         //定義
@@ -3858,7 +3866,12 @@ export class Generic {
         }
     }
 
-    //属性データタイプ列挙型から文字を返す
+    /**
+     * 属性データ型 enum を表示文字列へ変換します。
+     *
+     * @param dataType 属性データ型です。
+     * @returns 表示文字列です。
+     */
     static ConvertAttDataTypeString(dataType: number) {
 
         switch (dataType) {
@@ -3898,7 +3911,13 @@ export class Generic {
         }
     }
 
-    //selectのアイテム削除後に、次のインデックスを指定する
+    /**
+     * select 要素の項目削除後に妥当な選択位置へ補正します。
+     *
+     * @param select 対象 select 要素です。
+     * @param Old_n 削除前の選択インデックスです。
+     * @returns 返り値はありません。
+     */
     static ListIndex_Reset(select: HTMLSelectElement, Old_n: number) {
 
         if (select.options.length === 0) {
@@ -3912,7 +3931,12 @@ export class Generic {
     }
 
 
-    //形状列挙型からその文字を返す
+    /**
+     * 形状 enum を表示文字列へ変換します。
+     *
+     * @param shape 形状種別です。
+     * @returns 表示文字列です。
+     */
     static ConvertShapeEnumString(shape: number) {
 
         switch (shape) {
@@ -3931,7 +3955,12 @@ export class Generic {
         }
     }
 
-    //イベント情報からcanvas上の座標位置を求める
+    /**
+     * マウスイベントから canvas 親子配置を考慮した相対座標を求めます。
+     *
+     * @param e マウスイベントです。
+     * @returns canvas 上の相対座標です。
+     */
     static getCanvasXY(e: MouseEvent) {
 
         const cx = e.clientX;
@@ -3941,21 +3970,32 @@ export class Generic {
         return new point(rx, ry);
     }
 
-        //イベント情報からcanvas上の座標位置を求める
-        static getCanvasXY2(e: MouseEvent) {
+    /**
+     * マウスイベントから対象要素基準の相対座標を求めます。
+     *
+     * @param e マウスイベントです。
+     * @returns 相対座標、取得不能時は undefined です。
+     */
+    static getCanvasXY2(e: MouseEvent) {
 
-            const cx = e.clientX;
-            const cy = e.clientY;
-            const target = e.target as HTMLElement;
-            if(typeof target.getBoundingClientRect !=='function'){
-                return undefined;//ブラウザ外に移動した場合
-            }
-            const rx = cx - (target.getBoundingClientRect().x);
-            const ry = cy - (target.getBoundingClientRect().y);
-            return new point(rx, ry);
+        const cx = e.clientX;
+        const cy = e.clientY;
+        const target = e.target as HTMLElement;
+        if(typeof target.getBoundingClientRect !=='function'){
+            return undefined;//ブラウザ外に移動した場合
         }
+        const rx = cx - (target.getBoundingClientRect().x);
+        const ry = cy - (target.getBoundingClientRect().y);
+        return new point(rx, ry);
+    }
 
-    //画面表示領域変更の可否のチェック
+    /**
+     * 新しい表示矩形が許容範囲の拡大縮小かを判定します。
+     *
+     * @param MapRect 地図全体矩形です。
+     * @param new_Rect 新しい表示矩形です。
+     * @returns 許容範囲なら true です。
+     */
     static Check_New_ScrView(MapRect: rectangle, new_Rect: rectangle) {
 
         if (new_Rect.width() > MapRect.width() / 5000) {
@@ -3968,7 +4008,13 @@ export class Generic {
         return false;
     }
 
-    //集成オブジェクトの輪郭線（>ラインコード）のみを抽出し、必要なラインコードに変換して返す
+    /**
+     * 集成オブジェクトから輪郭線として必要なラインコードだけを抽出します。
+     *
+     * @param LCode ラインコード配列です。
+     * @param Shape 形状種別です。
+     * @returns 抽出後ラインコード配列です。
+     */
     static Get_Outer_Mpline_AggregatedObj(LCode: EnableMPLine_Data[], Shape: number): EnableMPLine_Data[] {
 
         const lc = LCode.map(item => ({LineCode: item.LineCode ?? -1}));
@@ -3997,7 +4043,13 @@ export class Generic {
         return ncode;
     }
 
-    //タイトル、単位から属性データタイプ列挙型を返す
+    /**
+     * タイトルと単位から属性データ型を推定します。
+     *
+     * @param Title 項目タイトルです。
+     * @param Unit 単位文字列です。
+     * @returns 属性データ型です。
+     */
     static getAttDataType_From_TitleUnit(Title: string, Unit: string) {
 
         let dtype;
@@ -4026,9 +4078,14 @@ export class Generic {
         return dtype;
     }
 
-    //属性データタイプ列挙型からTITLE、単位文字列を設定
-
-    /** @returns {MyType} */
+    /**
+     * 属性データ型に合わせてタイトルと単位文字列を補正します。
+     *
+     * @param dtype 属性データ型です。
+     * @param defoTitle 既定タイトルです。
+     * @param defoUnit 既定単位です。
+     * @returns 補正後のタイトルと単位です。
+     */
     static SetTitleUnit_from_AttDataType(dtype: number, defoTitle: string, defoUnit: string) {
 
         let Title=defoTitle;
@@ -4075,17 +4132,34 @@ export class Generic {
     }
 
 
-    //オブジェクトが同じかどうか調べる
+    /**
+     * 2 つのオブジェクトが JSON 表現として等しいかを判定します。
+     *
+     * @param objecta 1 つ目のオブジェクトです。
+     * @param objectb 2 つ目のオブジェクトです。
+     * @returns 等しければ true です。
+     */
     static equal<T>(objecta: T, objectb: T) {
 
         return (JSON.stringify(objecta) === JSON.stringify(objectb))
     }
+    /**
+     * JSON シリアライズ可能なオブジェクトをディープコピーします。
+     *
+     * @param odata コピー元です。
+     * @returns 複製結果です。
+     */
     static Clone<T>(odata: T): T {
 
         return JSON.parse(JSON.stringify(odata)) as T;
     }
 
-    //配列のシャローコピー
+    /**
+     * 配列のシャローコピーを返します。
+     *
+     * @param Arr コピー元配列です。
+     * @returns 複製配列です。
+     */
     static ArrayShallowCopy<T>(Arr: T[]): T[]{
 
         return Arr.concat();
@@ -4113,7 +4187,14 @@ export class Generic {
         return ca;
     }
 
-    
+    /**
+     * 値を最小値と最大値の範囲へ丸め込みます。
+     *
+     * @param V 対象値です。
+     * @param Min 最小値です。
+     * @param Max 最大値です。
+     * @returns 丸め込み後の値です。
+     */
     static m_min_max(V: number, Min: number, Max: number) {
 
         //検査値がMinより小さければMinを返し、Maxより大きければMaxを返す
@@ -4129,7 +4210,11 @@ export class Generic {
 
     }
 
-    //画面の幅取得
+    /**
+     * ブラウザ表示領域の幅を取得します。
+     *
+     * @returns 幅です。
+     */
     static getBrowserWidth() {
 
         if (window.innerWidth) {
@@ -4144,7 +4229,11 @@ export class Generic {
         return 0;
     }
 
-    //画面の高さ取得
+    /**
+     * ブラウザ表示領域の高さを取得します。
+     *
+     * @returns 高さです。
+     */
     static getBrowserHeight() {
 
         if (window.innerHeight) {
@@ -4159,14 +4248,25 @@ export class Generic {
         return 0;
     }
 
-    //ドキュメントの高さ取得
+    /**
+     * ドキュメント全体の高さを取得します。
+     *
+     * @returns 高さです。
+     */
     static getDocumentHeight() {
 
         const h = Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
         return h;
     }
 
-    //ウィンドウで表示  
+    /**
+     * URL を中央寄せサイズの別ウィンドウで開きます。
+     *
+     * @param help_url 表示する URL です。
+     * @param Xv 幅です。
+     * @param Yv 高さです。
+     * @returns 返り値はありません。
+     */
     static CenterPage(help_url: string, Xv: number, Yv: number) {
 
         const win2p: string = "";
@@ -4185,7 +4285,18 @@ export class Generic {
         if (parseInt(navigator.appVersion.charAt(0)) >= 3 && new2) { new2.focus(); }
     }
 
-    //ボタン作成
+    /**
+     * ボタン input 要素を作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param text 表示文字列です。
+     * @param ID 要素 ID です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param onClick クリック時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成した input 要素です。
+     */
     static createNewButton(ParentObj: HTMLElement | ExtendedHTMLDivElement, text: string, ID: string, x: number, y: number, onClick: ((event: MouseEvent) => void) | null, styleinfo: string = "") {
 
         const ok = this.createNewInput(ParentObj, "button", text, ID, x, y, "", styleinfo);
@@ -4195,7 +4306,20 @@ export class Generic {
     }
 
 
-    //img要素作成
+    /**
+     * img 要素を生成して親へ追加します。
+     *
+     * @param ParentObj 親要素です。
+     * @param src 画像ソースです。
+     * @param alt alt 文字列です。
+     * @param ID 要素 ID です。
+     * @param Class クラス名です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param styleinfo 追加スタイルです。
+     * @param onclick 未使用の onclick 文字列です。
+     * @returns 作成した img 要素です。
+     */
     static createNewImage(ParentObj: HTMLElement, src: string, alt: string, ID: string, Class: string, x: number, y: number, styleinfo: string, onclick: string | undefined) {
 
         const obj = document.createElement("img");
@@ -4210,7 +4334,19 @@ export class Generic {
         return obj;
     }
 
-    //span要素作成
+    /**
+     * span 要素を生成して親へ追加します。
+     *
+     * @param ParentObj 親要素です。
+     * @param innerHtml 内部 HTML です。
+     * @param ID 要素 ID です。
+     * @param Class クラス名です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param styleinfo 追加スタイルです。
+     * @param onclick クリック時コールバックです。
+     * @returns 作成した span 要素です。
+     */
     static createNewSpan(ParentObj: HTMLElement, innerHtml: string, ID: string, Class: string, x: number, y: number, styleinfo: string, onclick: ((event: MouseEvent) => void) | undefined = undefined) {
 
         const obj = document.createElement("span");
@@ -4225,7 +4361,12 @@ export class Generic {
         return obj;
     }
 
-    //文字配列中の同じ文字を削除した配列を返す
+    /**
+     * 文字列配列から重複を除いた配列を返します。
+     *
+     * @param ST 元配列です。
+     * @returns 重複除去後配列です。
+     */
     static Remove_Same_String(ST: string[]) {
 
         const ST2 = [];
@@ -4248,7 +4389,14 @@ export class Generic {
         return ST2;
     }
 
-    //二色の間で指定の数だけグラデーションをかける
+    /**
+     * 2 色間のグラデーション配列を生成します。
+     *
+     * @param StartCol 開始色です。
+     * @param EndCol 終了色です。
+     * @param n 分割数です。
+     * @returns 色配列です。
+     */
     static TwoColorGradation(StartCol: colorRGBA, EndCol: colorRGBA, n: number) {
 
         const ColData = [];
@@ -4283,7 +4431,16 @@ export class Generic {
         return ColData;
     }
 
-    //3色の間で指定の数だけグラデーションをかける
+    /**
+     * 3 色グラデーション配列を生成します。
+     *
+     * @param StartCol 開始色です。
+     * @param CenterCol 中間色です。
+     * @param EndCol 終了色です。
+     * @param n 分割数です。
+     * @param Color_cng_n 中間色へ切り替える位置です。
+     * @returns 色配列です。
+     */
     static ThreeColorGradation(StartCol: colorRGBA, CenterCol: colorRGBA, EndCol: colorRGBA, n: number, Color_cng_n: number) {
 
         const ColData = [];
@@ -4298,7 +4455,14 @@ export class Generic {
         return ColData;
     }
 
-    //最大値と最小値を指定の区分数で切りのよい数字で区切る
+    /**
+     * 最大値と最小値を区分数に応じて切りのよい階級へ調整します。
+     *
+     * @param CUTN 区分数です。
+     * @param Max 最大値です。
+     * @param Min 最小値です。
+     * @returns 階級幅、最小値、最大値です。
+     */
     static WIC(CUTN: number, Max: number, Min: number) {
 
         if (Max === Min) {
@@ -4357,6 +4521,12 @@ export class Generic {
         return ret;
     }
 
+    /**
+     * 数値の整数部桁数と小数部桁数を返します。
+     *
+     * @param Value 対象値です。
+     * @returns 整数部桁数と小数部桁数です。
+     */
     static Figure_Arrange(Value: number) {
 
         let Left, Right;
@@ -4381,6 +4551,13 @@ export class Generic {
         return { BeforeDecimal: Left, AfterDecimal: Right };
     }
 
+    /**
+     * 値に必要な桁数を自動推定して整形文字列を返します。
+     *
+     * @param val 対象値です。
+     * @param commma_f 3 桁区切りを使う場合は true です。
+     * @returns 整形後文字列です。
+     */
     static Figure_Using_Solo(val: number, commma_f: boolean) {
 
 
@@ -4396,12 +4573,27 @@ export class Generic {
         return this.Figure_Using3(val, L, r, commma_f);
     }
 
-    //指定した数値を、指定した小数点以下桁数の文字列に変換して返す
+    /**
+     * 数値を指定小数桁の文字列へ変換します。
+     *
+     * @param Value 対象値です。
+     * @param RightOfDecimaplPoint 小数点以下桁数です。
+     * @returns 整形後文字列です。
+     */
     static Figure_Using(Value: number, RightOfDecimaplPoint: number) {
 
         return Value.toFixed(RightOfDecimaplPoint);
     }
 
+    /**
+     * 桁数とカンマ有無を指定して数値を固定幅文字列へ整形します。
+     *
+     * @param Value 対象値です。
+     * @param LeftOfDecimalPoint 整数部桁数です。
+     * @param RightOfDecimaplPoint 小数部桁数です。
+     * @param Comma_f カンマ区切りを使う場合は true です。
+     * @returns 整形後文字列です。
+     */
     static Figure_Using3(Value: number, LeftOfDecimalPoint: number, RightOfDecimaplPoint: number, Comma_f: boolean) {
 
         
@@ -4438,7 +4630,13 @@ export class Generic {
         return FL;
     }
 
-    //配列から特定の値の位置を取り出す
+    /**
+     * 配列内で指定値と一致する要素位置一覧を返します。
+     *
+     * @param Original_Array 元配列です。
+     * @param Specified_Value 探索する値です。
+     * @returns 一致位置配列です。
+     */
     static Get_Specified_Value_Array<T>(Original_Array: T[], Specified_Value: T) {
 
         const retArray = [];
@@ -4449,7 +4647,13 @@ export class Generic {
         }
         return retArray;
     }
-    //配列中の指定した値の数をカウントする
+    /**
+     * 配列内で指定値が出現する回数を数えます。
+     *
+     * @param Original_Array 元配列です。
+     * @param Specified_Value 探索する値です。
+     * @returns 出現回数です。
+     */
     static Count_Specified_Value_Array<T>(Original_Array: T[], Specified_Value: T) {
 
         let n = 0;
@@ -4515,10 +4719,32 @@ export class Generic {
         }
     }
 
+    /**
+     * 絶対配置の div 要素を生成して親へ追加します。
+     *
+     * @param ParentObj 親要素です。
+     * @param innerHtml 内部 HTML です。
+     * @param ID 要素 ID です。
+     * @param Class クラス名です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param styleinfo 追加スタイルです。
+     * @param onclick クリック時コールバックです。
+     * @returns 作成した div 要素です。
+     */
     static createNewDiv(ParentObj: HTMLElement | ExtendedHTMLDivElement, innerHtml: string, ID: string, Class: string, x: number, y: number, width: number | string | undefined, height: number | string | undefined, styleinfo: string, onclick?: ((event: MouseEvent) => void) | string): HTMLDivElement {
 
         /// <signature>
-        /// <summary>div要素を作成</summary>
+    /**
+     * ラジオボタン群の指定値要素を有効化または無効化します。
+     *
+     * @param name ラジオボタン名です。
+     * @param value 対象値です。
+     * @param enabled 有効化する場合は true です。
+     * @returns 返り値はありません。
+     */
         /// <param name="ParentObj">親要素</param>  
         /// <param name="innerHtml">innerHtml</param>  
         /// <param name="ID">ID</param>  
@@ -4617,7 +4843,14 @@ export class Generic {
         return ok;
     }
 
-    //ラジオボタンの指定valueの要素をenabled/disableする
+    /**
+     * ラジオボタン群の指定値要素を有効化または無効化します。
+     *
+     * @param name ラジオボタン名です。
+     * @param value 対象値です。
+     * @param enabled 有効化する場合は true です。
+     * @returns 返り値はありません。
+     */
     static enableRadioByValue(name: string, value: RadioValue, enabled: boolean): void {
 
         const rd = document.getElementsByName(name);
@@ -4632,7 +4865,13 @@ export class Generic {
             }
         }
     }
-    //ラジオボタンの指定valueの要素をチェックする
+    /**
+     * ラジオボタン群の指定値要素をチェック状態にします。
+     *
+     * @param name ラジオボタン名です。
+     * @param value 対象値です。
+     * @returns 返り値はありません。
+     */
     static checkRadioByValue(name: string, value: RadioValue): void {
 
         const rd = document.getElementsByName(name);
@@ -4648,7 +4887,12 @@ export class Generic {
         }
     }
 
-    //ラジオボタンのチェック要素のvalueを取得する
+    /**
+     * ラジオボタン群で現在選択中の値を取得します。
+     *
+     * @param name ラジオボタン名です。
+     * @returns 選択値です。
+     */
     static getRadioCheckByValue(name: string) {
 
         const rd = document.getElementsByName(name);
@@ -4720,7 +4964,19 @@ export class Generic {
     }
 
 
-    //** input要素作成*/
+    /**
+     * input 要素を生成して親へ追加します。
+     *
+     * @param ParentObj 親要素です。
+     * @param type input 種別です。
+     * @param text 初期値です。
+     * @param ID 要素 ID です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param onClick 未使用の onclick 文字列です。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成した input 要素です。
+     */
     static createNewInput(ParentObj: HTMLElement | ExtendedHTMLDivElement, type: string, text: string, ID: string, x: number, y: number, onClick: string | undefined, styleinfo: string) {
 
         const ok = document.createElement("input");
@@ -4746,7 +5002,20 @@ export class Generic {
         }
     }
 
-    //タイルdivボックス
+    /**
+     * ラベル付きタイル表示ボックスを作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param ID 要素 ID です。
+     * @param word ラベル文字列です。
+     * @param defoTile 初期タイル設定です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param wordWidth ラベル幅です。
+     * @param onclick クリック時ハンドラです。
+     * @param tileWidth タイル幅です。
+     * @returns 作成したタイル要素です。
+     */
     static createNewTileBox(ParentObj: HTMLElement, ID: string, word: string, defoTile: {BlankF: boolean, Color: colorRGBA}, x: number, y: number, wordWidth: number | undefined, onclick: ((event: MouseEvent) => void) | string | undefined | null, tileWidth: number = 45): HTMLElement {
 
         const lineH = 23;
@@ -4757,7 +5026,13 @@ export class Generic {
         return tilebox;
             }
 
-    //タイルDIVに設定
+    /**
+     * タイル表示 div に透明状態または色を設定します。
+     *
+     * @param tileDiv 対象 div です。
+     * @param Tile タイル設定です。
+     * @returns 返り値はありません。
+     */
     static setTileDiv(tileDiv: HTMLElement, Tile: {BlankF: boolean, Color: colorRGBA}) {
 
         const trans = tileDiv.children;
@@ -4773,7 +5048,18 @@ export class Generic {
         }
     }
 
-    //** 背景Canvasボックス */
+    /**
+     * ラベル付きの canvas ボックスを作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param ID 要素 ID です。
+     * @param word ラベル文字列です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param wordWidth ラベル幅です。
+     * @param onclick クリック時コールバックです。
+     * @returns 作成した canvas 要素です。
+     */
     static createNewWordDivCanvas(ParentObj: HTMLElement, ID: string, word: string, x: number, y: number, wordWidth: number, onclick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null | undefined) {
 
         const lineH = 23;
@@ -4784,7 +5070,18 @@ export class Generic {
 
 
 
-    //** 色divボックス */
+    /**
+     * 色選択用のラベル付きボックスを作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param ID 要素 ID です。
+     * @param word ラベル文字列です。
+     * @param color 初期色です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param onclick 色選択時コールバックです。
+     * @returns 作成した色ボックスです。
+     */
     static createNewColorBox(ParentObj: HTMLElement, ID: string, word: string, color: colorRGBA | undefined, x: number, y: number, onclick: ((color: colorRGBA) => void) | undefined) {
 
         const sp = Generic.createNewSpan(ParentObj, word, "", "", x, y + 3, "", undefined);
@@ -4995,7 +5292,13 @@ export class Generic {
         }
     }
 
-    //子要素までdisabledを設定
+    /**
+     * 要素以下の子要素を再帰的に有効化または無効化します。
+     *
+     * @param element 対象要素です。
+     * @param value 無効化する場合は true です。
+     * @returns 返り値はありません。
+     */
     static setDisabled(element: HTMLElement | null | undefined, value: boolean) {
 
         if (!element) {
@@ -5015,7 +5318,20 @@ export class Generic {
 
     }
 
-    //Canvas要素を作成
+    /**
+     * canvas 要素を生成して親へ追加します。
+     *
+     * @param ParentObj 親要素です。
+     * @param ID 要素 ID です。
+     * @param Class クラス名です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param onClick クリック時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成した canvas 要素です。
+     */
     static createNewCanvas(ParentObj: HTMLElement | ExtendedHTMLDivElement, ID: string, Class: string, x: number, y: number, width: number, height: number, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null | undefined, styleinfo: string) {
 
         const canvas = document.createElement("canvas");
@@ -5033,6 +5349,14 @@ export class Generic {
         return canvas;
     }
 
+    /**
+     * ハンバーガーメニュー用のマーク canvas を作成します。
+     *
+     * @param parentObj 親要素です。
+     * @param onClick クリック時コールバックです。
+     * @param markSize マークサイズです。
+     * @returns 作成した canvas 要素です。
+     */
     static createMenuMark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, markSize: number | undefined) {
 
         const size = markSize ?? 20;
@@ -5063,7 +5387,14 @@ export class Generic {
         }
     }
 
-    // ParentObjの右上にXマーク表示
+    /**
+     * 親要素右上に閉じるボタン用 X マークを表示します。
+     *
+     * @param parentObj 親要素です。
+     * @param onClick クリック時コールバックです。
+     * @param markSize マークサイズです。
+     * @returns 作成した canvas 要素です。
+     */
     static createXmark(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, markSize: number | undefined) {
 
         const size = markSize ?? 20;
@@ -5085,7 +5416,14 @@ export class Generic {
         return canvas;
     }
 
-    // windowの右上に最大化マーク表示
+    /**
+     * 親要素右上に最大化ボタン用 canvas を表示します。
+     *
+     * @param parentObj 親要素です。
+     * @param onClick クリック時コールバックです。
+     * @param markSize マークサイズです。
+     * @returns 作成した canvas 要素です。
+     */
     static createMaxButton(parentObj: HTMLElement, onClick: ((this: HTMLCanvasElement, ev: MouseEvent) => void) | null, markSize: number | undefined) {
 
         const size = markSize ?? 20;
@@ -5094,7 +5432,12 @@ export class Generic {
         return canvas;
     }
 
-    // 移動要素の内部の要素で右下に固定のものを動かす
+    /**
+     * リサイズされた親要素内で固定配置子要素の位置を更新します。
+     *
+     * @param parentObj 親要素です。
+     * @returns 返り値はありません。
+     */
     static moveInnerElement(parentObj: HTMLElement) {
 
         const cnode = parentObj.children;
@@ -5128,7 +5471,13 @@ export class Generic {
         }
     }
 
-    // 指定したオブジェクトの子要素に、指定したIDの子要素が含まれるかどうかチェックする
+    /**
+     * 指定 ID の子要素が直接含まれているかを判定します。
+     *
+     * @param parentObj 親要素です。
+     * @param childObjID 探索する子要素 ID です。
+     * @returns 含まれていれば true です。
+     */
     static checkHasChildNode(parentObj: HTMLElement, childObjID: string) {
 
         const cnode = parentObj.childNodes;
@@ -5141,7 +5490,19 @@ export class Generic {
         return false;
     }
 
-    // テキストエリアを作成
+    /**
+     * textarea 要素を生成して親へ追加します。
+     *
+     * @param parentObj 親要素です。
+     * @param text 初期テキストです。
+     * @param id 要素 ID です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param row 行数です。
+     * @param col 列数です。
+     * @param styleinfo 追加スタイルです。
+     * @returns 作成した textarea 要素です。
+     */
     static createNewTextarea(parentObj: HTMLElement, text: string, id: string, x: number, y: number, row: number, col: number, styleinfo: string) {
 
         const obj = document.createElement("textarea");
@@ -5156,6 +5517,22 @@ export class Generic {
         return obj;
     }
 
+    /**
+     * 2 次元データから table 要素を生成します。
+     *
+     * @param parentObj 親要素です。
+     * @param id 要素 ID です。
+     * @param tableClass クラス名です。
+     * @param data 表データです。
+     * @param width テーブル幅です。
+     * @param styleinfo 追加スタイルです。
+     * @param headNum ヘッダ行数です。
+     * @param headStyleinfo ヘッダ行スタイルです。
+     * @param normalStyleinfo 通常行スタイルです。
+     * @param headXStyleinfo ヘッダ列ごとのスタイルです。
+     * @param normalXStyleinfo 通常列ごとのスタイルです。
+     * @returns 作成した table 要素です。
+     */
     static createNewTable(parentObj: HTMLElement, id: string, tableClass: string, data: TableData, width: number, styleinfo: string, headNum: number, headStyleinfo: string, normalStyleinfo: string, headXStyleinfo: string, normalXStyleinfo: string): HTMLTableElement {
 
         const xcell = data.length;
@@ -5187,6 +5564,29 @@ export class Generic {
         return tb;
     }
 
+    /**
+     * スクロール可能な grid コンテナと内部 table を作成します。
+     *
+     * @param parentObj 親要素です。
+     * @param gridID grid 要素 ID です。
+     * @param tableID table 要素 ID です。
+     * @param gridClass grid クラス名です。
+     * @param tableClass table クラス名です。
+     * @param data 表データです。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width grid 幅です。
+     * @param height grid 高さです。
+     * @param tableWidth table 幅です。
+     * @param styleinfo grid 追加スタイルです。
+     * @param tableStyleinfo table 追加スタイルです。
+     * @param tableHeadNum ヘッダ行数です。
+     * @param tableHeadStyleinfo ヘッダ行スタイルです。
+     * @param tableNormalStyleinfo 通常行スタイルです。
+     * @param tableHeadXStyleinfo ヘッダ列スタイルです。
+     * @param tableNormalXStyleinfo 通常列スタイルです。
+     * @returns table を保持した grid 要素です。
+     */
     static createNewGrid(parentObj: HTMLElement, gridID: string, tableID: string, gridClass: string, tableClass: string, data: TableData, x: number, y: number, width: number | string, height: number | string, tableWidth: number, styleinfo: string, tableStyleinfo: string, tableHeadNum: number,
         tableHeadStyleinfo: string, tableNormalStyleinfo: string, tableHeadXStyleinfo: string, tableNormalXStyleinfo: string): HTMLElement & {table: HTMLTableElement} {
 
@@ -5206,7 +5606,12 @@ export class Generic {
         return objWithTable;
     }
 
-    // 表の中身を取得する
+    /**
+     * table 要素の内容をタブ区切り文字列へ変換します。
+     *
+     * @param table 対象 table 要素です。
+     * @returns タブ区切り文字列です。
+     */
     static getTableValue(table: HTMLTableElement) {
 
         let tx = "";
@@ -5219,6 +5624,14 @@ export class Generic {
         return tx;
     }
 
+    /**
+     * 指定サイズの 2 次元配列を生成します。
+     *
+     * @param dim1num 1 次元目の長さです。
+     * @param dim2num 2 次元目の長さです。
+     * @param defoValue 初期値です。
+     * @returns 生成した 2 次元配列です。
+     */
     static Array2Dimension<T>(dim1num: number, dim2num: number, defoValue: T = undefined as T): T[][] {
         return Array.from({ length: dim1num }, () => {
             const row = new Array<T>(dim2num);
@@ -5229,6 +5642,19 @@ export class Generic {
         });
     }
 
+    /**
+     * ラベル付きフレーム div を作成します。
+     *
+     * @param parentObj 親要素です。
+     * @param id 要素 ID です。
+     * @param Class クラス名です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param text フレームラベルです。
+     * @returns 作成したフレーム要素です。
+     */
     static createNewFrame(parentObj: HTMLElement, id: string, Class: string, x: number, y: number, width: number, height: number, text: string = "") {
 
         let yy = y;
@@ -5267,6 +5693,16 @@ export class Generic {
         }
     }
 
+    /**
+     * テーブル内容を表示するメッセージボックスを作成します。
+     *
+     * @param title タイトルです。
+     * @param data 表データです。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param borderFlag リサイズ可能にする場合は true です。
+     * @returns 返り値はありません。
+     */
     static createMsgTableBox(title: string, data: TableData, width: number, height: number, borderFlag: boolean): void {
 
         const msgbox = this.set_backDiv('msgbox', title, width, height, true, false, undefined, 0.2, false);
@@ -5286,6 +5722,27 @@ export class Generic {
         }
     }
 
+    /**
+     * 共通ウィンドウコンポーネントを作成します。
+     *
+     * @param ID 要素 ID です。
+     * @param Class クラス名です。
+     * @param title タイトルです。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param visibilieF 初期表示状態です。
+     * @param menuMarkF メニューマークを表示する場合は true です。
+     * @param menuCall メニュー呼び出しです。
+     * @param XmarkF 閉じるボタンを表示する場合は true です。
+     * @param XmarkCall 閉じる時コールバックです。
+     * @param footer_Flag フッタを表示する場合は true です。
+     * @param footerID フッタ ID です。
+     * @param maxButtonF 最大化ボタンを表示する場合は true です。
+     * @param maxButtonCall 最大化時コールバックです。
+     * @returns 作成した拡張 div 要素です。
+     */
     static createWindow(
         ID: string,
         Class: string,
@@ -5393,6 +5850,11 @@ export class Generic {
         return window;
     }
 
+    /**
+     * 最前面のモーダル背景と前面パネルを閉じます。
+     *
+     * @returns 返り値はありません。
+     */
     static clear_backDiv() {
         // Remove the top-most modal pair explicitly instead of relying on DOM tail order.
         const frontList = document.querySelectorAll<HTMLElement>('#frontDIV');
@@ -5408,6 +5870,22 @@ export class Generic {
         }
     }
 
+    /**
+     * モーダル背景付きの固定ダイアログ土台を作成します。
+     *
+     * @param idname 前面 div の ID です。
+     * @param title タイトルです。
+     * @param innerWidth 幅です。
+     * @param innerHeight 高さです。
+     * @param okButtonF OK ボタンを表示する場合は true です。
+     * @param cancelButtonF Cancel ボタンを表示する場合は true です。
+     * @param okCall OK 時コールバックです。
+     * @param opacity 背景透過度です。
+     * @param outerClickF 外側クリックで閉じる場合は true です。
+     * @param createXmark X マークを表示する場合は true です。
+     * @param cancelCall Cancel 時コールバックです。
+     * @returns 作成した前面 div です。
+     */
     static set_backDiv(
         idname: string, 
         title: string, 
@@ -5517,6 +5995,11 @@ export class Generic {
 
 
 
+    /**
+     * 現在の横スクロール量を取得します。
+     *
+     * @returns 横スクロール量です。
+     */
     static getScrollX() {
 
         const supportPageOffset = window.pageXOffset !== undefined;
@@ -5525,6 +6008,11 @@ export class Generic {
         return x;
     }
 
+    /**
+     * 現在の縦スクロール量を取得します。
+     *
+     * @returns 縦スクロール量です。
+     */
     static getScrollY() {
 
         const supportPageOffset = window.pageXOffset !== undefined;
@@ -5533,6 +6021,12 @@ export class Generic {
         return y;
     }
 
+    /**
+     * Google Polyline 形式の文字列を座標配列へ復号します。
+     *
+     * @param data エンコード済みポリライン文字列です。
+     * @returns 緯度経度配列です。
+     */
     static decodePolyline(data: string): number[][] {
 
         //Google Mapのエンコード化ポリラインをデコードする
@@ -5600,6 +6094,14 @@ export class Generic {
 
 
 
+    /**
+     * 値が 2 値の間、端点一致、外側のどれかを判定します。
+     *
+     * @param CheckV 判定値です。
+     * @param V1 比較値 1 です。
+     * @param V2 比較値 2 です。
+     * @returns 判定 enum 値です。
+     */
     static Check_Two_Value_In(CheckV: number, V1: number, V2: number): number {
 
         //チェックする値が二つの数字の中間であればtrue
@@ -5617,6 +6119,13 @@ export class Generic {
         }
         return chvValue_on_twoValue.chvOuter;
     }
+    /**
+     * 正弦・余弦成分から角度を度単位で返します。
+     *
+     * @param si 正弦成分です。
+     * @param co 余弦成分です。
+     * @returns 角度です。
+     */
     static Angle(si: number, co: number): number {//角度を求める
 
         let AngleV;
@@ -5637,7 +6146,12 @@ export class Generic {
         return AngleV;
     }
 
-    //クリップボードにテキスト出力
+    /**
+     * テキストをクリップボードへコピーします。
+     *
+     * @param text コピーする文字列です。
+     * @returns 返り値はありません。
+     */
     static copyText(text: string): void {
 
         const ta = document.createElement("textarea") as HTMLTextAreaElement;
@@ -5650,7 +6164,12 @@ export class Generic {
         ta.parentElement?.removeChild(ta);
     }
 
-    //フォントがシステムに入っているかチェック
+    /**
+     * 指定フォントが利用可能かを推定します。
+     *
+     * @param checkFont 確認するフォント名です。
+     * @returns 利用可能と判定された場合は true です。
+     */
     static checkFontExist(checkFont: string): boolean {
 
         const baseFonts = ['monospace', 'sans-serif', 'serif'];
@@ -5680,7 +6199,15 @@ export class Generic {
         }
         return detected;
     }
-//トップメニュー(ポップアップと上下の調整が取れないため未使用)
+    /**
+     * トップメニューを作成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param list メニュー項目配列です。
+     * @param pos 表示位置です。
+     * @param width 各項目幅です。
+     * @returns 返り値はありません。
+     */
     static ceateTopMenu(ParentObj: HTMLElement, list: MenuItem[], pos: point, width: number): void {
 
         for(const i in list){
@@ -5709,7 +6236,13 @@ export class Generic {
     
         }
     }
-    //ポップアップメニュー
+        /**
+         * ポップアップメニューを作成して表示します。
+         *
+         * @param list メニュー項目配列です。
+         * @param pos 表示位置です。
+         * @returns 返り値はありません。
+         */
     static ceatePopupMenu(list: MenuItem[], pos: point): void {
 
         
@@ -6000,6 +6533,20 @@ export class CheckedListBox {
     private twoStepCheckF: boolean;
     private onChange: (index: number) => void;
 
+    /**
+     * チェック付きリストボックスを初期化します。
+     *
+     * @param ParentObj 親要素です。
+     * @param Class クラス名です。
+     * @param list 初期項目一覧です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param twoStepCheckF 二段階チェック切替を使う場合は true です。
+     * @param onChange 変更時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     */
     constructor(
         ParentObj: HTMLElement,
         Class: string,
@@ -6026,7 +6573,7 @@ export class CheckedListBox {
         Generic.createNewButton(allSelFrame, "全選択", "", width - 115, 0, () => { this.allChange(true); if (onChange !== undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
         Generic.createNewButton(allSelFrame, "全解除", "", width - 55, 0, () => { this.allChange(false); if (onChange !== undefined) { onChange(-1); } }, "width:55px;height:22px;padding:0");
         this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w, this.allh, "");
-        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
+        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string'
             ? (list as string[]).map(item => ({text: item, value: item}))
             : list as {text: string; value: string; checked?: boolean}[];
         this._addList(dataList, 0, styleinfo);
@@ -6043,7 +6590,7 @@ export class CheckedListBox {
 
     /**リストを追加 */
     addList(list: string[] | {text: string; value: string; checked?: boolean}[], pos: number): void {
-        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
+        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string'
             ? (list as string[]).map(item => ({text: item, value: item}))
             : list as {text: string; value: string; checked?: boolean}[];
         this._addList(dataList, pos, "");
@@ -6117,7 +6664,6 @@ export class CheckedListBox {
                     }
                 }
                 if (typeof this.onChange === 'function') {
-                    // const _retV = this._getChecked(); // 未使用
                     this.onChange(newSel);
                 }
             };
@@ -6186,9 +6732,9 @@ export class CheckedListBox {
 
 /**リストボックスコントロール addEventListenerを付ける場合は.frameに*/
 export class ListBox {
-    selectedIndex: number = -1;
     length: number = 0;
     value: string | undefined = undefined;
+    selectedIndex: number = -1;
     frame: HTMLElement;
     private lBox: HTMLElement[] = [];
     private lineH: number;
@@ -6201,6 +6747,19 @@ export class ListBox {
     private styleinfo: string;
     private onChange: ((index: number) => void) | null;
 
+    /**
+     * 単一選択のリストボックスを初期化します。
+     *
+     * @param ParentObj 親要素です。
+     * @param Class クラス名です。
+     * @param list 初期項目一覧です。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param onChange 選択変更時コールバックです。
+     * @param styleinfo 追加スタイルです。
+     */
     constructor(ParentObj: HTMLElement, Class: string, list: string[] | {text: string; value: string}[], x: number | string, y: number | string, width: number, height: number, onChange: ((index: number) => void) | null, styleinfo: string = "") {
         const state = appState();
         this.width = width;
@@ -6214,7 +6773,7 @@ export class ListBox {
         this.w = (this.allh < height - 2) ? Number(width) - 2 : Number(width) - (state.scrMargin.scrollWidth ?? 0) - 1;
         this.frame = Generic.createNewDiv(ParentObj, "", "", "grayFrame", Number(x), Number(y), Number(width), Number(height), ovy + "overflow-x:hidden;background-color:white");
         this.inFrame = Generic.createNewDiv(this.frame, "", "", "", 0, 0, this.w as number, this.allh as number, "");
-        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string' 
+        const dataList = Array.isArray(list) && list.length > 0 && typeof list[0] === 'string'
             ? (list as string[]).map(item => ({text: item, value: item}))
             : list as {text: string; value: string}[];
         this._addList(dataList, 0);
@@ -6234,7 +6793,7 @@ export class ListBox {
         if (pos === undefined) {
             pos = this.length;
         }
-        const dataList = Array.isArray(list) && typeof list[0] === 'string' 
+        const dataList = Array.isArray(list) && typeof list[0] === 'string'
             ? (list as string[]).map(item => ({text: item, value: item}))
             : list as {text: string; value: string}[];
         this._addList(dataList, pos);
@@ -6260,6 +6819,11 @@ export class ListBox {
         this.value = this.lBox[newIndex].value;
     }
 
+    /**
+     * 現在選択中の表示文字列を返します。
+     *
+     * @returns 選択中テキストです。
+     */
     getText(): string | undefined {
         if (this.selectedIndex !== -1) {
             return this.lBox[this.selectedIndex].innerText;
@@ -6268,6 +6832,11 @@ export class ListBox {
         }
     }
 
+    /**
+     * 全項目の表示文字列を返します。
+     *
+     * @returns テキスト配列です。
+     */
     getAllText(): string[] {
         const v = [];
         for (let i = 0; i < this.length; i++) {
@@ -6276,6 +6845,11 @@ export class ListBox {
         return v;
     }
 
+    /**
+     * 現在選択中の値を返します。
+     *
+     * @returns 選択中の値です。
+     */
     getValue(): string | undefined {
         if (this.selectedIndex !== -1) {
             return this.lBox[this.selectedIndex].value;
@@ -6284,6 +6858,11 @@ export class ListBox {
         }
     }
 
+    /**
+     * 全項目の値一覧を返します。
+     *
+     * @returns 値配列です。
+     */
     getAllValue(): string[] {
         const v = [];
         for (let i = 0; i < this.length; i++) {
@@ -6292,14 +6871,31 @@ export class ListBox {
         return v;
     }
 
+    /**
+     * 指定行の表示文字列を更新します。
+     *
+     * @param row 行番号です。
+     * @param text 設定する文字列です。
+     */
     setText(row: number, text: string): void {
         this.lBox[row].innerText = text;
     }
 
+    /**
+     * 指定行の値を更新します。
+     *
+     * @param row 行番号です。
+     * @param value 設定する値です。
+     */
     setValue(row: number, value: string): void {
         this.lBox[row].innerText = value;
     }
 
+    /**
+     * 指定行を 1 行上へ移動します。
+     *
+     * @param row 移動対象行です。
+     */
     rowUp(row: number): void {
         if (this.lBox.length < 2) {
             return;
@@ -6315,6 +6911,11 @@ export class ListBox {
         }
     }
 
+    /**
+     * 指定行を 1 行下へ移動します。
+     *
+     * @param row 移動対象行です。
+     */
     rowDown(row: number): void {
         if (this.lBox.length < 2) {
             return;
@@ -6421,6 +7022,28 @@ export class ListViewTable {
     private tbhHeight: number = 0;
     private onclick: ((row: number) => void) | null;
 
+    /**
+     * ヘッダ付きリストビュー表を初期化します。
+     *
+     * @param ParentObj 親要素です。
+     * @param gridID grid 要素 ID です。
+     * @param gridClass grid クラス名です。
+     * @param tableClass table クラス名です。
+     * @param hdata ヘッダデータです。
+     * @param data 本体データです。
+     * @param x X 座標です。
+     * @param y Y 座標です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param frameStyleinfo フレームスタイルです。
+     * @param styleinfo 共通スタイルです。
+     * @param headStyleinfo ヘッダ行スタイルです。
+     * @param normalStyleinfo 通常行スタイルです。
+     * @param headXStyleinfo ヘッダ列スタイルです。
+     * @param normalXStyleinfo 通常列スタイルです。
+     * @param _rowselFlag 行選択を有効にする場合は true です。
+     * @param onclick 行クリック時コールバックです。
+     */
     constructor(
         ParentObj: HTMLElement,
         gridID: string,
@@ -6580,6 +7203,11 @@ export class ListViewTable {
         }
     }
 
+    /**
+     * 選択行を更新し、必要ならハイライト表示を切り替えます。
+     *
+     * @param newSelRow 新しい選択行です。
+     */
     selectRow(newSelRow: number): void {
         if (this.rowselFlag === true) {
             if ((this.selectedRow >= 0) && (this.selectedRow < this.tb.rows.length)) {
@@ -7355,20 +7983,38 @@ HTMLElement.prototype.btnDisabled = function (this: HTMLButtonElement | HTMLInpu
     return parseFloat(this.replace("px", "")) || 0;
 };
 
-// latlon class for latitude/longitude coordinates
+/**
+ * 緯度経度を保持し、表示変換や point 変換を提供する値オブジェクトです。
+ */
 export class latlon {
     lat: number;
     lon: number;
     
+    /**
+     * 緯度経度オブジェクトを初期化します。
+     *
+     * @param lat 緯度です。
+     * @param lon 経度です。
+     */
     constructor(lat: number = 0, lon: number = 0) {
         this.lat = lat;
         this.lon = lon;
     }
     
+    /**
+     * 同値の latlon インスタンスを複製します。
+     *
+     * @returns 複製結果です。
+     */
     Clone(): latlon {
         return new latlon(this.lat, this.lon);
     }
     
+    /**
+     * 緯度経度を度分秒表記へ変換します。
+     *
+     * @returns 緯度と経度の度分秒情報です。
+     */
     toDegreeMinuteSecond(): {LatitudeDMS: {degree: number; minute: number; second: number}; LongitudeDMS: {degree: number; minute: number; second: number}} {
         const latDeg = Math.floor(Math.abs(this.lat));
         const latMin = Math.floor((Math.abs(this.lat) - latDeg) * 60);
@@ -7384,14 +8030,30 @@ export class latlon {
         };
     }
     
+    /**
+     * 自身を latlon 型として返します。
+     *
+     * @returns 自身です。
+     */
     toLatlon(): latlon {
         return this;
     }
     
+    /**
+     * 緯度経度を point 形式へ変換します。
+     *
+     * @returns X に経度、Y に緯度を持つ point です。
+     */
     toPoint(): point {
         return new point(this.lon, this.lat);
     }
     
+    /**
+     * 別の latlon と完全一致するかを判定します。
+     *
+     * @param other 比較対象です。
+     * @returns 一致すれば true です。
+     */
     Equals(other: latlon): boolean {
         return this.lat === other.lat && this.lon === other.lon;
     }
