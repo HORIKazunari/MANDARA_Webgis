@@ -36,17 +36,26 @@ import { SortingSearch } from './SortingSearch';
 import { boundArrangeData } from './boundArrangeData';
 import { enmAttDataType, enmGraphMode, enmHorizontalAlignment, enmLayerMode_Number, enmLayerType, enmPrintMouseMode, enmShape, enmTotalMode_Number, enmVerticalAlignment, enmZahyo_mode_info } from './constants/legacyEnums';
 
+/**
+ * 内部データフラグと値の組を扱う補助型です。
+ */
 interface strInner_Data_Info {
     Flag: boolean;
     Data: number;
 }
 
+/**
+ * ポリゴン描画用の頂点列とポリゴン単位の頂点数を保持します。
+ */
 class PolydataInfo {
     Pon: number = 0;
     pxy: point[] = []; // point array
     nPolyP: number[] = [];
 }
 
+/**
+ * ベクトル等値線の連結状態を保持します。
+ */
 class VecContourStac_Info {
     fnum = 0;
     CNum = 0;
@@ -54,6 +63,9 @@ class VecContourStac_Info {
     cStac: number[] = [];
 }
 
+/**
+ * 等間隔等値線設定を表します。
+ */
 interface ContourRegularModeInfo {
     top: number;
     bottom: number;
@@ -68,11 +80,17 @@ interface ContourRegularModeInfo {
     EX_Line_Pat: Line_Property;
 }
 
+/**
+ * 個別値指定の等値線設定を表します。
+ */
 interface ContourIrregularModeInfo {
     Value: number;
     Line_Pat: Line_Property;
 }
 
+/**
+ * 等値線モード全体の設定を表します。
+ */
 interface ContourModeInfo {
     Interval_Mode: number;
     Regular: ContourRegularModeInfo;
@@ -80,14 +98,23 @@ interface ContourModeInfo {
     Irregular: ContourIrregularModeInfo[];
 }
 
+/**
+ * title プロパティを持つデータセット型です。
+ */
 interface TitledDataSetInfo {
     title: string;
 }
 
+/**
+ * 階級区分値を読み出すための補助型です。
+ */
 interface ClassDivValueInfo {
     Value: number;
 }
 
+/**
+ * 画面復元時に必要なソロモード設定だけを抜き出した型です。
+ */
 interface SoloModeViewSettingsForRestore {
     Class_Div: ClassDivValueInfo[];
     MarkSizeMD: {
@@ -100,6 +127,9 @@ interface SoloModeViewSettingsForRestore {
     };
 }
 
+/**
+ * 画面内に収まる表示値へ調整した結果を保持します。
+ */
 interface ModeValueInScreenInfo {
     LayerNum: number;
     DataNum: number;
@@ -111,6 +141,9 @@ interface ModeValueInScreenInfo {
     setF: boolean;
 }
 
+/**
+ * 凡例描画で参照する一時データをまとめた型です。
+ */
 interface TempDataLegendInfo {
     Accessory_Temp: {
         MapLegend_W: Legend2_Atri[];
@@ -120,6 +153,9 @@ interface TempDataLegendInfo {
     };
 }
 
+/**
+ * ラベルモードのデータセット設定を表します。
+ */
 interface LabelModeDataSetInfo {
     Location_Mark: Mark_Property;
     Location_Mark_Flag?: boolean;
@@ -138,6 +174,9 @@ interface LabelModeDataSetInfo {
     BorderDataTile: Tile_Property;
 }
 
+/**
+ * 等値線一時データの参照に使う型です。
+ */
 interface ContourTempInfo {
     Contour_All_Number: number;
     Contour_All_Point: number;
@@ -147,6 +186,9 @@ interface ContourTempInfo {
 
 //面オブジェクトの境界線の方向
 //Boundary_Arrange関数で使用
+/**
+ * 面境界線の連結方向と描画属性を保持します。
+ */
 class Fringe_Line_Info {
     code?: number;
     Direction?: number;
@@ -159,19 +201,40 @@ class Fringe_Line_Info {
 
 
 
+/**
+ * 地図出力画面向けの描画処理と描画前後の状態調整を行うクラスです。
+ */
 class clsPrint {
+    /**
+     * 線設定を複製します。
+     *
+     * @param linePat 複製元の線設定です。
+     * @returns 複製した線設定です。
+     */
     private static cloneLineProperty(linePat: Line_Property): Line_Property {
         const cloned = clsBase.Line();
         Object.assign(cloned, linePat);
         return cloned;
     }
 
+    /**
+     * フォント設定を複製します。
+     *
+     * @param font 複製元のフォント設定です。
+     * @returns 複製したフォント設定です。
+     */
     private static cloneFontProperty(font: Font_Property): Font_Property {
         const cloned = new Font_Property();
         Object.assign(cloned, font);
         return cloned;
     }
 
+    /**
+     * point インスタンスを複製します。
+     *
+     * @param source 複製元の座標です。
+     * @returns 複製した座標です。
+     */
     private static clonePointValue(source: point): point {
         const cloned = new point();
         cloned.x = source.x;
@@ -179,6 +242,11 @@ class clsPrint {
         return cloned;
     }
 
+    /**
+     * 出力画面描画前の一時状態を初期化して再描画を開始します。
+     *
+     * @param picMap 描画対象のキャンバスです。
+     */
     static setData(picMap: HTMLCanvasElement){
         const state = appState();
         const scrData = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -199,6 +267,12 @@ class clsPrint {
         state.propertyWindow.style.borderWidth = '1px';
         this.printMapScreen(picMap) ;
     }
+
+    /**
+     * 現在の表示モードに応じて出力画面キャンバスを描画します。
+     *
+     * @param picMap 描画対象のキャンバスです。
+     */
     static printMapScreen(picMap: HTMLCanvasElement) {
         const state = appState();
         const g = picMap.getContext('2d');
@@ -219,6 +293,11 @@ class clsPrint {
         g.restore();
     }
 
+    /**
+     * 連続表示モードの 1 コマ分を通常描画ロジックへ展開します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static Series_Mapping(g: CanvasRenderingContext2D) {
         const state = appState();
         state.attrData.TempData.ContourMode_Temp.ContourDataResetF = true;
@@ -293,6 +372,11 @@ class clsPrint {
         state.attrData.TotalData.LV1.Print_Mode_Total = enmTotalMode_Number.SeriesMode;
     }
 
+    /**
+     * 現在選択中の表示モードで地図本体を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static printMap(g: CanvasRenderingContext2D) {
         const state = appState();
         const picMapRect = new rectangle(0, state.frmPrint.picMap.width, 0, state.frmPrint.picMap.height);
@@ -335,6 +419,11 @@ class clsPrint {
         clsPrint.showMap(g);
     }
 
+    /**
+     * 現在の表示設定に従って地図全体を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static showMap(g: CanvasRenderingContext2D) {
         const state = appState();
         const av=state.attrData.TotalData.ViewStyle;
@@ -528,7 +617,11 @@ class clsPrint {
         }
     }
 
-    /** 最後に画面枠線を描く*/
+    /**
+     * 描画の最後に画面枠線を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static Screen_BackLine(g: CanvasRenderingContext2D){
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle.ScrData as AttrScreenInfo;
@@ -540,7 +633,15 @@ class clsPrint {
         state.attrData.Draw_Tile_Box(g, rect, sv.ScreenFrameLine, clsBase.BlancTile(), 0)
     }
 
-    /**複数のレイヤごとのポリゴンのクリッピング */
+    /**
+     * 複数レイヤのポリゴン境界からクリッピング領域を設定します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Layers 対象レイヤ番号群です。
+     * @param RealObjClip_f 実オブジェクトを対象にするかを示します。
+     * @param DummyClip_F ダミーオブジェクトを対象にするかを示します。
+     * @returns クリッピング領域が設定された場合は true です。
+     */
     static ClippingRegion_ObjectBoundary_set(g: CanvasRenderingContext2D, Layers: number[], RealObjClip_f: boolean, DummyClip_F: boolean) {
         // const state = appState();
         let f = false;
@@ -566,7 +667,14 @@ class clsPrint {
         return f;
     }
 
-    /**等値線モード他の背後のポリゴンのクリッピングリージョン作成、ポリゴン数を返す */
+    /**
+     * 背景塗りや等値線描画に使うポリゴンクリッピング領域を生成します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param RealObjClip_f 実オブジェクトを対象にするかを示します。
+     * @param DummyClip_F ダミーオブジェクトを対象にするかを示します。
+     * @returns 抽出したポリゴン境界情報です。
+     */
     static ContourPolygonRegion(Layernum: number, RealObjClip_f: boolean, DummyClip_F: boolean): PolydataInfo {
         const state = appState();
         const MultiObj: number[] = [];
@@ -617,7 +725,11 @@ class clsPrint {
     }
 
 
-/**スクリーン、地図領域背景色 */
+    /**
+     * 画面全体と地図領域の背景を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static Screen_Area_Back(g: CanvasRenderingContext2D){
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
@@ -628,7 +740,11 @@ class clsPrint {
         state.attrData.Draw_Tile_Box(g, marginRect, clsBase.BlankLine(), av.Screen_Back.MapAreaBack, 0);
     }
 
-    /**経緯線（背面表示）とオブジェクト内部色設定 */
+    /**
+     * 背面の経緯線とオブジェクト内部背景を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static Screen_Back_ObjectInner_Set(g: CanvasRenderingContext2D){
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
@@ -657,7 +773,12 @@ class clsPrint {
         }
     }
     
-    /**オブジェクト内部の背景塗りつぶし*/
+    /**
+     * 指定レイヤのオブジェクト内部背景を塗りつぶします。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Layernum 対象レイヤ番号です。
+     */
     static Screen_Back_Set_Paint(g: CanvasRenderingContext2D, Layernum: number){
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -709,7 +830,15 @@ class clsPrint {
         }
     }
 
-    /**複数オブジェクトにまとめて色塗り */
+    /**
+     * 複数ポリゴンオブジェクトをまとめて塗りつぶします。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Layernum 対象レイヤ番号です。
+     * @param MultiObj 塗りつぶすオブジェクト番号群です。
+     * @param TI 塗りつぶしタイル設定です。
+     * @param Dummy_F ダミーオブジェクトかどうかを示します。
+     */
     static PaintMultiPolygonObject(g: CanvasRenderingContext2D, Layernum: number, MultiObj: number[], TI: Tile_Property, Dummy_F: boolean){
         // const state = appState();
         const MbjN=MultiObj.length;
@@ -722,7 +851,14 @@ class clsPrint {
         }
     }
 
-    /**ポリゴンオブジェクトの周囲の線の座標を取得 */
+    /**
+     * 複数ポリゴンの外周境界を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjCode 対象オブジェクト番号群です。
+     * @param Dummy_F ダミーオブジェクトかどうかを示します。
+     * @returns 描画可能な境界ポリゴン情報です。
+     */
     static Get_Multi_Object_Boundary(Layernum: number, ObjCode: number[], Dummy_F: boolean) {
         const state = appState();
         const ELine = this.Gey_Multi_Object_OuterLineCode(Layernum, ObjCode, Dummy_F);
@@ -739,7 +875,14 @@ class clsPrint {
         }
     }
 
-    /** 指定された複数のオブジェクトの外側のラインコードを取得*/
+    /**
+     * 複数オブジェクトの外周を構成するラインコードを抽出します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjCode 対象オブジェクト番号群です。
+     * @param Dummy_F ダミーオブジェクトかどうかを示します。
+     * @returns 外周を構成するライン情報です。
+     */
     static Gey_Multi_Object_OuterLineCode(Layernum: number, ObjCode: number[], Dummy_F: boolean) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -777,7 +920,15 @@ class clsPrint {
         return ELine;
     }
 
-    /**階級区分モードの表示順序と表示の可否を返す */
+    /**
+     * 階級区分系モードの描画順序と表示可否を計算します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ番号です。
+     * @param Category_Array オブジェクトごとの区分値格納先です。
+     * @param D_Order 描画順序格納先です。
+     * @param ShowF 表示可否格納先です。
+     */
     static getDrawOrder_and_ShowF_ClassMode(LayerNum: number, DataNum: number, Category_Array: number[], D_Order: number[], ShowF: boolean[]) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -853,6 +1004,13 @@ class clsPrint {
 
 
     /**表示範囲のデータで階級区分などを設定 */
+    /**
+     * 画面内オブジェクトに限定した凡例用データを一時退避します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ番号です。
+     * @param ShowF 画面内表示可否配列です。
+     */
     static get_InScreenObjectData(LayerNum: number, DataNum: number, ShowF: boolean[]){
         const state = appState();
         if (state.attrData.TempData.OverLay_Temp.OverLay_Printing_Flag === true) {
@@ -1009,6 +1167,9 @@ class clsPrint {
         }
     }
 
+    /**
+     * 画面内限定表示のために退避したデータを元に戻します。
+     */
     static Restore_InScreenObjectData(){
         const state = appState();
         const atc = state.attrData.TempData.ModeValueInScreen_Stac as ModeValueInScreenInfo;
@@ -1025,6 +1186,18 @@ class clsPrint {
     }
 
     /**  記号モードの表示順序と表示の可否を返す*/
+    /**
+     * 記号系モードの描画順序、表示可否、配置情報を計算します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ番号です。
+     * @param mode 記号描画モードです。
+     * @param D_Order 描画順序格納先です。
+     * @param ShowF 表示可否格納先です。
+     * @param ObjP 記号位置格納先です。
+     * @param Missing_DataArray 欠損値判定格納先です。
+     * @param MV_Array モード別の描画値格納先です。
+     */
     static getDrawOrder_and_ShowF_MarkMode(LayerNum: number, DataNum: number, mode: number, D_Order: number[], ShowF: boolean[], ObjP: point[], Missing_DataArray: boolean[], MV_Array: number[]) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -1173,6 +1346,13 @@ class clsPrint {
 
 
     /**記号の大きさ、階級記号、記号の回転モードの重ね合わせの際の記号表示位置の移動*/
+    /**
+     * オーバーレイ時の記号配置位置を補正します。
+     *
+     * @param OP 基準位置です。
+     * @param r オフセット量です。
+     * @returns 補正後の位置です。
+     */
     static getOverlayMarkPosition(OP: point, r: number) {
         const state = appState();
         const newP = OP.Clone();
@@ -1190,6 +1370,11 @@ class clsPrint {
     }
 
     /**経緯線（前面表示）と地図領域の枠線 */
+    /**
+     * 地図領域の境界線や前面経緯線を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static Screen_MapAreaLine(g: CanvasRenderingContext2D){
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
@@ -1211,6 +1396,11 @@ class clsPrint {
     }
 
     //飾りの外接四角形をまとめて記録
+    /**
+     * 凡例やタイトルなど付属要素の配置矩形を計算します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static GetAccessoryRectangles(g: CanvasRenderingContext2D) {
         const state = appState();
         const at = state.attrData.TempData.Accessory_Temp;
@@ -1274,6 +1464,12 @@ class clsPrint {
         }
     }
 
+    /**
+     * 凡例、タイトル、方位記号など付属要素を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param back_gazo_f 背景画像描画中かどうかを示します。
+     */
     static Figure_Print(g: CanvasRenderingContext2D, back_gazo_f: boolean) {
         const state = appState();
         if(back_gazo_f === false) {
@@ -1299,6 +1495,13 @@ class clsPrint {
         }
     }
 
+    /**
+     * 記号モード凡例用の内部データ設定を取得します。
+     *
+     * @param InnerData 内部データ指定です。
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 凡例属性設定です。
+     */
     static Legend_Mark_Mode_Inner_Data_set(InnerData: strInner_Data_Info, Layernum: number): Legend2_Atri | undefined {
         const state = appState();
         if (Boolean(InnerData.Flag) === false) {
@@ -1316,6 +1519,9 @@ class clsPrint {
         mlw.SoloMode = enmSoloMode_Number.ClassPaintMode;
         return mlw;
     }
+    /**
+     * 現在の表示モードに応じた凡例データ一式を構築します。
+     */
     static Legend_Data_Set() {
         const state = appState();
         let n = 0;
@@ -1469,6 +1675,13 @@ class clsPrint {
     }
 
     /**重ね合わせモードのデータセット内の表示項目ごとの凡例セット */
+    /**
+     * オーバーレイ要素 1 件分の凡例データを追加します。
+     *
+     * @param Over_D 対象オーバーレイ項目です。
+     * @param orn 追加先凡例番号です。
+     * @returns 更新後の凡例番号です。
+     */
     static Legend_Data_Set_Over_sub(Over_D: IOverLayDataItemElement, orn: number): number {
         const state = appState();
         let n = orn;
@@ -1544,7 +1757,12 @@ class clsPrint {
         return n;
     }
 
-    /**重ね合わせ表示モード */
+    /**
+     * 重ね合わせ表示モードの全要素を順に描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param DataSet 対象データセット番号です。
+     */
     static Print_OverLay(g: CanvasRenderingContext2D, DataSet: number) {
         const state = appState();
         const aot = state.attrData.TempData.OverLay_Temp;
@@ -1576,6 +1794,9 @@ class clsPrint {
         aot.OverLay_Printing_Flag = false;
     }
 
+    /**
+     * 重ね合わせ要素 1 件を描画します。
+     */
     static OverLay_Print_Sub(g: CanvasRenderingContext2D, Ov_Data: IOverLayDataItemElement | strOverLay_DataSet_Item_Info) {
         const state = appState();
         const overData = Ov_Data as IOverLayDataItemElement;
@@ -1635,7 +1856,11 @@ class clsPrint {
         }
     }
 
-    /**常時重ね合わせが設定してある場合  */
+    /**
+     * 常時重ね合わせ設定が有効なときの描画を実行します。
+     *
+     * @param g 描画先コンテキストです。
+     */
     static OverLay_Plus_Print(g: CanvasRenderingContext2D) {
         const state = appState();
         const ato = state.attrData.TotalData.TotalMode.OverLay;
@@ -1708,7 +1933,9 @@ class clsPrint {
         tmpo.OverLay_Printing_Flag =false;
     }
 
-    /**グラフモード */
+    /**
+     * グラフモード描画をグラフ種別ごとに振り分けます。
+     */
     static PrintGraphMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number){
         const state = appState();
         const selGraph = state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode.DataSet[DataSet];
@@ -1724,7 +1951,9 @@ class clsPrint {
         }
     }
 
-    /**円グラフまたは帯グラフモード */
+    /**
+     * 円グラフまたは積み上げ棒グラフを描画します。
+     */
     static PrintGraph_Pie_StackdBarMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -1857,7 +2086,9 @@ class clsPrint {
         }
     }
 
-    /**棒グラフまたは折れ線グラフ */
+    /**
+     * 棒グラフまたは折れ線グラフを描画します。
+     */
     static PrintGraph_Line_BarMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -2057,7 +2288,9 @@ class clsPrint {
     }
 
 
-    /**ラベルモード */
+    /**
+     * ラベルモードのテキストボックスと位置記号を描画します。
+     */
     static PrintLabelMode(g: CanvasRenderingContext2D, Layernum: number, DataSet: number) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -2194,7 +2427,9 @@ class clsPrint {
     }
 
 
-    /**等値線モード */
+    /**
+     * 等値線モードの線分生成、塗り分け、ラベル描画を実行します。
+     */
     static PrintContourMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -2349,6 +2584,9 @@ class clsPrint {
         cont.Contour_All_Number += ln;
     }
 
+    /**
+     * 等値線塗り分け用のポリゴン境界を生成して描画します。
+     */
     static ContourPolyBoundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number,
         Pcon: number, hn: number, Interval_Mode: number, HnPolygon: VecContourStac_Info, Pre_CStac: ContourLineStackInfo[], Frame_AllPoint: point[], Spline_flag: boolean, SplineT: number) {
         const state = appState();
@@ -2449,7 +2687,9 @@ class clsPrint {
         }
     }
 
-    
+    /**
+     * 等値線計算用のメッシュインデックスと補間格子を構築します。
+     */
     static ContourMeshIndexSet(Layernum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -2544,6 +2784,9 @@ class clsPrint {
 
     }
 
+    /**
+     * 指定メッシュ点の補間値を周辺オブジェクトから算出します。
+     */
     static ContourMesh_Value(Layernum: number, DataNum: number, DataValue: number[], P: point, md: number, F_Mesh: number[][][], F_Mesh_In: number[]) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -2724,6 +2967,9 @@ class clsPrint {
         return SV / SU;
     }
 
+    /**
+     * 等値線の閾値と線種設定を現在のモード設定から生成します。
+     */
     static GetContourIntervalValue(Layernum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -2789,7 +3035,9 @@ class clsPrint {
         return { hn: hn, Contour_High_M: Contour_High_M, C_Line_Pat: C_Line_Pat }
     }
 
-    ////文字モード
+    /**
+     * 文字モードで各オブジェクト上に文字列を描画します。
+     */
     static PrintStringMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -2840,7 +3088,9 @@ class clsPrint {
         }
     }
 
-    /**棒の高さモード */
+    /**
+     * 棒高さモードの棒記号を描画します。
+     */
     static PrintMarkBarMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -2941,6 +3191,9 @@ class clsPrint {
         }
     }
 
+    /**
+     * 棒グラフ記号の矩形と 3D 面情報を計算します。
+     */
     static MarkBarRectPrint(Pos: point, w: number, h: number, threeD: boolean) {
         // const state = appState();
         const CenterRect= new rectangle(new point(Pos.x - w / 2, Pos.y - h), new size(w, h));
@@ -2968,7 +3221,9 @@ class clsPrint {
         return {rectAll:rectAll,CenterRect:CenterRect,UpperPoly:UpperPoly,RightPoly:RightPoly} ;
     }
 
-    /**記号の数モード */
+    /**
+     * 記号数モードのブロック記号群を描画します。
+     */
     static PrintMarkBlockMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         if(state.attrData.TempData.DotMap_Temp.DotMapTempResetF === true) {
@@ -3212,7 +3467,9 @@ class clsPrint {
         }
     }
 
-    //記号の大きさモード
+    /**
+     * 記号サイズモードの記号と必要に応じた値表示を描画します。
+     */
     static PrintMarkSizeMode(g: CanvasRenderingContext2D,  LayerNum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -3288,7 +3545,9 @@ class clsPrint {
         }
     }
 
-    
+    /**
+     * 記号サイズモードの単一オブジェクトを描画し、描画半径を返します。
+     */
     static PrintMarkSizeMode_Draw(g: CanvasRenderingContext2D, Layernum: number, DataNum: number, kpos: number, pos: point, MK: Mark_Property, MV: number, MisF: boolean) {
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -3348,7 +3607,9 @@ class clsPrint {
         }
     }
 
-    /**線モード */
+    /**
+     * OD 線モードを描画します。
+     */
     static PrintClassODMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const Category_Array = state.attrData.Get_CategolyArray(LayerNum, DataNum);
@@ -3443,7 +3704,9 @@ class clsPrint {
             g.restore();
         }
     }
-    /**階級区分モードの線形状オブジェクトの線モード */
+    /**
+     * 線形状レイヤの階級区分線モードを描画します。
+     */
     static PrintClassLineShapeSENMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -3486,7 +3749,9 @@ class clsPrint {
         }
     }
 
-    //階級記号モード
+    /**
+     * 階級記号モードを描画します。
+     */
     static PrintClassMarkMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const al= state.attrData.LayerData[LayerNum];
@@ -3551,7 +3816,9 @@ class clsPrint {
 
     }
 
-    //ペイントモード
+    /**
+     * 階級ペイントモードを描画します。
+     */
     static PrintClassPaintMode(g: CanvasRenderingContext2D, LayerNum: number, DataNum: number) {
         const state = appState();
         const al = state.attrData.LayerData[LayerNum];
@@ -3689,7 +3956,9 @@ class clsPrint {
         }
     }
 
-    /**階級区分ごとの境界線 */
+    /**
+     * 階級区分ごとの境界線を描画します。
+     */
     static Class_Category_Boundary(g: CanvasRenderingContext2D, Layernum: number, DataNum: number){
         const state = appState();
         const al = state.attrData.LayerData[Layernum];
@@ -3736,6 +4005,9 @@ class clsPrint {
         }
     }
 
+    /**
+     * 実オブジェクトの境界線を描画します。
+     */
     static Vector_Object_Boundary(g: CanvasRenderingContext2D,  Layernum: number) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum] as ILayerDataInfo & {
@@ -3770,6 +4042,9 @@ class clsPrint {
         }
     }
 
+    /**
+     * 単一オブジェクトまたはダミーオブジェクトの境界線を描画します。
+     */
     static Vector_Boundary_Draw(g: CanvasRenderingContext2D,  Layernum: number, Obj_Num_code: number, Dummy_F: boolean = false) {
         const state = appState();
         type DrawEnableLine = { LineCode: number; Kind: number };
@@ -3837,7 +4112,9 @@ class clsPrint {
         }
     }
 
-
+    /**
+     * 単一ポリゴンオブジェクトを塗りつぶします。
+     */
     static PaintOnePolygonObject(g: CanvasRenderingContext2D, Layernum: number, ObjNum: number, ocol: colorRGBA) {
 
         const Polydata = this.Get_OnePolygonObject_Boundary( Layernum, ObjNum, false);
@@ -3849,7 +4126,9 @@ class clsPrint {
         }
     }
 
-    /**代表点と記号表示位置を線で結ぶ */
+    /**
+     * 代表点と記号表示位置を接続する補助線を描画します。
+     */
     static Vector_Connect_CenterP_To_SymbolPoint(g: CanvasRenderingContext2D, Layernum: number) {
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;
@@ -3871,8 +4150,9 @@ class clsPrint {
         }
     }
 
-
-    /**階級区分モードで点・線オブジェクトの場合で、オブジェクトの描画順で使用するソートクラスを作成する */
+    /**
+     * 点形状・線形状の階級区分描画で使うソート順を作成します。
+     */
     static ClassMode_Point_Shape_DrawOrder( LayerNum: number, DataNum: number) {
         const state = appState();
         let en_sort = [];
@@ -3884,6 +4164,9 @@ class clsPrint {
         return s;
     }
 
+    /**
+     * 単一ポリゴンオブジェクトの境界情報を取得します。
+     */
     static Get_OnePolygonObject_Boundary( Layernum: number, O_ObjNum_Code: number, Dummy_F: boolean) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
@@ -3925,7 +4208,9 @@ class clsPrint {
         return Polydata;
     }
 
-    //指定されたラインをポリゴン化したXY座標を返す
+    /**
+     * 境界構成情報を画面座標のポリゴン列へ変換します。
+     */
     static Get_Boundary_XY(Layernum: number, badata: boundArrangeData) {
         // const state = appState();
         const poly = new PolydataInfo();
@@ -3972,7 +4257,9 @@ class clsPrint {
         return poly;
     }
 
-    //指定したラインコードの座標を変換して取得
+    /**
+     * ラインコードから画面座標列を取得します。
+     */
     static Get_PointXY_by_LineCode(Layernum: number, LCode: number, ReverseGetF: boolean) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
@@ -4030,7 +4317,9 @@ class clsPrint {
         return pxy;
     }
 
-    /** イヤのオブジェクトの値を記号表示位置の中央に表示*/
+    /**
+     * レイヤ内全オブジェクトの値と名称を描画します。
+     */
     static ObjectValue_And_Name_Print_byLayer(g: CanvasRenderingContext2D, Layernum: number, DataNum: number) {
         const state = appState();
         if ((state.attrData.TotalData.ViewStyle.ValueShow.ValueVisible === true) || (state.attrData.TotalData.ViewStyle.ValueShow.ObjNameVisible === true)) {
@@ -4044,7 +4333,9 @@ class clsPrint {
         }
     }
 
-    /**データ値／オブジェクト名表示 */
+    /**
+     * 単一オブジェクトの値と名称を指定位置へ描画します。
+     */
     static ObjectValue_and_Name_Print(g: CanvasRenderingContext2D, Pos: point, VerticalAlignment: enmVerticalAlignment, Layernum: number, DataNum: number, ObjectNumber: number) {
         const state = appState();
         const avv = state.attrData.TotalData.ViewStyle.ValueShow;
@@ -4095,6 +4386,9 @@ class clsPrint {
     }
 
     //ダミーオブジェクト・ダミーオブジェクトグループを描画
+    /**
+     * ダミーオブジェクトの境界線を条件に応じて描画します。
+     */
     static Vector_Dummy_Boundary(g: CanvasRenderingContext2D, Layernum: number, Polygon_F: boolean, nonPolygon_F: boolean) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
@@ -4118,6 +4412,9 @@ class clsPrint {
         }
     }
     //ダミーオブジェクトグループの描画。描画順は設定したグループ順
+    /**
+     * 指定形状のダミーグループ境界を描画します。
+     */
     static Vector_DummyGroup_Draw(g: CanvasRenderingContext2D, SHP: number, Layernum: number) {
         const state = appState();
         const ad = state.attrData.LayerData[Layernum];
@@ -4136,6 +4433,9 @@ class clsPrint {
 
     }
     //ダミーオブジェクトの描画
+    /**
+     * 単一ダミーオブジェクトを描画します。
+     */
     static Vector_Dummy_Draw(g: CanvasRenderingContext2D, code: number, Layernum: number) {
         const state = appState();
         if(state.attrData.Check_Screen_Objcode_In(Layernum, code) === true) {
@@ -4162,6 +4462,9 @@ class clsPrint {
 
     }
     //ダミー点オブジェクトの記号取得
+    /**
+     * ダミー点グループ用の記号設定を取得します。
+     */
     static getPointDummyMark(MapFIleName: string, ObjectGroupName: string) {
         const state = appState();
         const av = state.attrData.TotalData.ViewStyle;

@@ -43,6 +43,9 @@ const Keys = {
     Delete: 46
 };
 
+/**
+ * 入力・コピー・貼り付け・消去操作の Undo 情報を保持します。
+ */
 class Undo_InputCopyPasteClearInfo {
     Layer: number;
     caption: string;
@@ -50,6 +53,9 @@ class Undo_InputCopyPasteClearInfo {
     GridData: string;
 }
 
+/**
+ * 行挿入操作の Undo 情報を保持します。
+ */
 class Undo_InsertRows {
     Layer: number;
     caption: string;
@@ -57,6 +63,9 @@ class Undo_InsertRows {
     Bottom: number;
 }
 
+/**
+ * 列挿入操作の Undo 情報を保持します。
+ */
 class Undo_InsertColumns {
     Layer: number;
     caption: string;
@@ -64,6 +73,9 @@ class Undo_InsertColumns {
     Right: number;
 }
 
+/**
+ * 行削除操作の Undo 情報を保持します。
+ */
 class Undo_DeleteRows {
     Layer: number;
     caption: string;
@@ -72,6 +84,9 @@ class Undo_DeleteRows {
     GridData: string;
 }
 
+/**
+ * 列削除操作の Undo 情報を保持します。
+ */
 class Undo_DeleteColumns {
     Layer: number;
     caption: string;
@@ -80,6 +95,9 @@ class Undo_DeleteColumns {
     GridData: string;
 }
 
+/**
+ * 行高さ変更操作の Undo 情報を保持します。
+ */
 class Undo_ChangeRowHeight {
     Layer: number;
     caption: string;
@@ -88,6 +106,9 @@ class Undo_ChangeRowHeight {
     Height: number[] = [];
 }
 
+/**
+ * 列幅変更操作の Undo 情報を保持します。
+ */
 class Undo_ChangeColumnWidth {
     Layer: number;
     caption: string;
@@ -96,35 +117,53 @@ class Undo_ChangeColumnWidth {
     Width: number[] = [];
 }
 
+/**
+ * レイヤ名変更操作の Undo 情報を保持します。
+ */
 class Undo_ChangeLayerName {
     Layer: number;
     caption: string;
     Name: string;
 }
 
+/**
+ * 2 レイヤの入れ替え操作の Undo 情報を保持します。
+ */
 class Undo_SwapLayer {
     Layer1: number;
     Layer2: number;
     caption: string;
 }
 
+/**
+ * レイヤ移動操作の Undo 情報を保持します。
+ */
 class Undo_MoveLayer {
     OriginLay: number;
     DestLay: number;
     caption: string;
 }
 
+/**
+ * レイヤ削除操作の Undo 情報を保持します。
+ */
 class Undo_deleteLayer {
     OriginLay: number;
     GridData: Grid_Info;
     caption: string;
 }
 
+/**
+ * レイヤ挿入操作の Undo 情報を保持します。
+ */
 class Undo_InsertLayer {
     Layer: number;
     caption: string;
 }
 
+/**
+ * 固定オブジェクト名列の表示設定を保持します。
+ */
 class FixedObjectNameData_Info {
     Width: number = 0;
     Allignment: number = 0;
@@ -136,6 +175,9 @@ class FixedObjectNameData_Info {
     }
 }
 
+/**
+ * 固定データ項目行の表示設定を保持します。
+ */
 class FixedDataItemData_Info {
     Height: number = 0;
     Allignment: number = 0;
@@ -147,6 +189,9 @@ class FixedDataItemData_Info {
     }
 }
 
+/**
+ * 左上固定セルの表示設定を保持します。
+ */
 class FixedUpperLeft_Info {
     Text: string = "";
     Allignment: number = 0;
@@ -158,6 +203,9 @@ class FixedUpperLeft_Info {
     }
 }
 
+/**
+ * 通常セル列の表示設定を保持します。
+ */
 class CellData_Info {
     Width: number = 0;
     Allignment: number = 0;
@@ -169,6 +217,9 @@ class CellData_Info {
     }
 }
 
+/**
+ * セル文字列と文字色設定を保持します。
+ */
 class GridTextColor_Info {
     Text: string = "";
     colorSetF: boolean = false;
@@ -182,6 +233,9 @@ class GridTextColor_Info {
     }
 }
 
+/**
+ * グリッド操作ごとの有効・無効設定を保持します。
+ */
 class Grid_Operation_enable_info {
     RightClickEnabled: boolean = false;
     RightClickAllEnabled: boolean = false;
@@ -201,6 +255,9 @@ class Grid_Operation_enable_info {
     }
 }
 
+/**
+ * 単一レイヤ分のグリッド内容と表示状態を保持します。
+ */
 class Grid_Info {
     OriginalLayerNumber: number = 0;
     Grid_Text: GridTextColor_Info[][] = [];
@@ -275,6 +332,9 @@ class Grid_Info {
     }
 }
 
+/**
+ * グリッド描画で使う配色設定をまとめます。
+ */
 class Grid_Color_Info {
     Frame: colorRGBA = new colorRGBA();
     SelectedFrame: colorRGBA = new colorRGBA();
@@ -286,6 +346,9 @@ class Grid_Color_Info {
     SelectedFixedGrid: colorRGBA = new colorRGBA();
 }
 
+/**
+ * グリッド全体で共有する設定値を保持します。
+ */
 class Grid_Total_Info {
     initOK: boolean = false;
     LayerNum: number = 0;
@@ -315,6 +378,9 @@ class Grid_Total_Info {
     TabClickEnabled: boolean = false;
 }
 
+/**
+ * リサイズ操作中の一時状態を保持します。
+ */
 class Grid_Resize_Info {
     Enable: number = 0;
     GridX: number = 0;
@@ -327,6 +393,9 @@ class Grid_Resize_Info {
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
 /** グリッドコントロール */
 
+/**
+ * 多層グリッドの表示、編集、スクロール、Undo 管理を行うコントロールです。
+ */
 export class gridControl {
     top: number;
     left: number;
@@ -372,6 +441,16 @@ export class gridControl {
     private ctx: CanvasRenderingContext2D | null;
     private eventCall: EventCallbacks = {};
     
+    /**
+     * 指定位置とサイズでグリッドコントロールを生成します。
+     *
+     * @param ParentObj 親要素です。
+     * @param x 左位置です。
+     * @param y 上位置です。
+     * @param width 幅です。
+     * @param height 高さです。
+     * @param fontName 既定フォント名です。
+     */
     constructor(
         ParentObj: HTMLElement,
         x: number,
@@ -436,14 +515,32 @@ export class gridControl {
     this.tabInit();
 }
 
+    /**
+     * Clone メソッドを持つ 2 次元配列を深い複製として返します。
+     *
+     * @param grid 複製対象の 2 次元配列です。
+     * @returns 複製後の 2 次元配列です。
+     */
     private clone2d<T extends { Clone(): T }>(grid: T[][]): T[][] {
         return grid.map((row) => row.map((cell) => cell.Clone()));
     }
 
+    /**
+     * Clone メソッドを持つ配列を深い複製として返します。
+     *
+     * @param items 複製対象の配列です。
+     * @returns 複製後の配列です。
+     */
     private cloneArray<T extends { Clone(): T }>(items: T[]): T[] {
         return items.map((item) => item.Clone());
     }
 
+    /**
+     * マウスまたはタッチイベントをキャンバス内座標へ変換します。
+     *
+     * @param event 元イベントです。
+     * @returns キャンバス内座標です。取得できない場合は undefined です。
+     */
     private getCanvasPosition(event: MouseEvent | Touch): point | undefined {
         const target = event.target as HTMLElement | null;
         if (!target || typeof target.getBoundingClientRect !== 'function') {
@@ -453,6 +550,9 @@ export class gridControl {
         return new point(event.clientX - rect.x, event.clientY - rect.y);
     }
 
+    /**
+     * スクロール位置変更時に編集中データを確定し、表示を更新します。
+     */
     private ScrollChange = () => {
         if (this.txtTextBox?.getVisibility?.() === true) {
             if (this.txtTextBox.setVisibility) this.txtTextBox.setVisibility(false);
@@ -467,19 +567,20 @@ export class gridControl {
         this.Print_Grid_Data();
         this.eventCall?.evtChange_Data?.();
     }
-    
-/**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 外部からアクセス可能
-*/
-    /** init
-    //<param name="LayerCaption">タブのキャプション</param>
-    //<param name="RowCaption">行のキャプション</param>
-    //<param name="ColumnCaption">列のキャプション</param>
-    //<param name="FixedXs">左端固定列数</param>
-    //<param name="FixedXs2">左端固定列数のうち左側の固定数</param>
-    //<param name="FixedYs">状態固定行数</param>
-    //<param name="FixedYS2">状態固定行数のうち上側の行数</param>
-    //enableOperation:Operation_enable_info{}
- */
+
+    /**
+     * グリッド全体の固定行列数や操作設定を初期化します。
+     *
+     * @param LayerCaption タブ領域のキャプションです。
+     * @param RowCaption 行方向見出しのキャプションです。
+     * @param ColumnCaption 列方向見出しのキャプションです。
+     * @param FixedXs 左端固定列数です。
+     * @param FixedXs2 左端固定列のうち左側の固定数です。
+     * @param FixedYs 上端固定行数です。
+     * @param FixedYS2 上端固定行のうち上側の固定数です。
+     * @param enableOperation 有効化する操作設定です。
+     * @param _eventCall イベントコールバック群です。
+     */
     init(LayerCaption: string, RowCaption: string, ColumnCaption: string, FixedXs: number, FixedXs2: number, FixedYs: number, FixedYS2: number, enableOperation: Partial<Grid_Operation_enable_info>, _eventCall?: EventCallbacks) {
         this.Grid_Total.LayerCaption = LayerCaption;
         this.Grid_Total.RowCaption = RowCaption;
@@ -501,7 +602,12 @@ export class gridControl {
         this.eventCall = _eventCall;
     }
 
-    /**サイズ変更 */
+    /**
+     * コントロール全体のサイズを変更し、内部レイアウトを再計算します。
+     *
+     * @param newWidth 新しい幅です。
+     * @param newHeight 新しい高さです。
+     */
     changeSize(newWidth: number, newHeight: number) {
         this.width = newWidth;
         this.height = newHeight;
@@ -530,7 +636,9 @@ export class gridControl {
     }
     
 
-    /**グリッドを表示 */
+    /**
+     * 現在設定に基づいてグリッドを表示します。
+     */
     show() {
         this.tabbase.frame.setVisibility(this.Grid_Total.tOpe.TABvisible);
         if (this.Grid_Total.tOpe.TABvisible) {
@@ -548,13 +656,23 @@ export class gridControl {
         this.eventCall?.evtChange_Data?.();
     }
 
-    /**設定を反映する際に使用 */
+    /**
+     * 現在の設定値を画面表示へ再反映します。
+     */
     refresh(){
         this.tabSelect();
         this.Print_Grid_Data();
     }
 
-    /**レイヤ追加（メソッド） */
+    /**
+     * レイヤを追加します。
+     *
+     * @param LayName レイヤ名です。
+     * @param LayerNum 追加位置のレイヤ番号です。
+     * @param Xsize 列数です。
+     * @param Ysize 行数です。
+     * @param opeEnable レイヤ固有の操作設定です。
+     */
     addLayer(LayName: string, LayerNum: number, Xsize: number, Ysize: number, opeEnable?: Partial<Grid_Operation_enable_info>) {
         let Ope = new Grid_Operation_enable_info();
         if (opeEnable === undefined) {
@@ -565,7 +683,13 @@ export class gridControl {
         this.Insert_Layer(LayName, LayerNum, LayerNum, Xsize, Ysize, Ope);
     }
 
-    /**データ項目追加  */
+    /**
+     * 指定レイヤへデータ項目列を追加します。
+     *
+     * @param Layer 対象レイヤ番号です。
+     * @param AddPoint 追加位置です。
+     * @param AddNum 追加数です。
+     */
     addDataItem(Layer: number, AddPoint: number, AddNum: number) {
         if ((Layer < 0) || (this.Grid_Total.LayerNum < Layer)) {
             Generic.alert(undefined, "Layerが誤っています。");
@@ -586,7 +710,13 @@ export class gridControl {
         this.InsertColumns(Layer, AddPoint, AddNum);
     }
 
-    /**オブジェクト追加 Layer:レイヤ番号 AddPoint:追加縦行位置 AddNum:追加行数*/
+    /**
+     * 指定レイヤへオブジェクト行を追加します。
+     *
+     * @param Layer 対象レイヤ番号です。
+     * @param AddPoint 追加位置です。
+     * @param AddNum 追加数です。
+     */
     addObject(Layer: number, AddPoint: number, AddNum: number) {
         if ((Layer < 0) || (this.Grid_Total.LayerNum < Layer)) {
             Generic.alert(undefined, "Layerが誤っています。");
@@ -606,7 +736,11 @@ export class gridControl {
         }
         this.InsertRows(Layer, AddPoint, AddNum);
     }
-    /** レイヤ削除*/
+    /**
+     * レイヤを削除します。
+     *
+     * @param Layer 削除対象レイヤ番号です。
+     */
     removeLayer(Layer: number) {
         const mxt = this.Grid_Total.LayerNum;
         this.Delete_Layer(Layer);
@@ -624,7 +758,13 @@ export class gridControl {
         this.Print_Grid_Data();
     }
 
-    /**オブジェクト削除 Layer:レイヤ番号 RemovePoint:削除する位置 RemoveNum:削除する数*/
+    /**
+     * 指定レイヤからオブジェクト行を削除します。
+     *
+     * @param Layer 対象レイヤ番号です。
+     * @param RemovePoint 削除開始位置です。
+     * @param RemoveNum 削除数です。
+     */
     removeObject(Layer: number , RemovePoint: number , RemoveNum: number ) {
         if((Layer < 0)||(this.Grid_Total.LayerNum < Layer )){
             Generic.alert(undefined,"Layerが誤っています。");
@@ -648,7 +788,13 @@ export class gridControl {
         this.DeleteRows(Layer, RemovePoint, RemoveNum);
     }
 
-    /**データ項目削除 */
+    /**
+     * 指定レイヤからデータ項目列を削除します。
+     *
+     * @param Layer 対象レイヤ番号です。
+     * @param RemovePoint 削除開始位置です。
+     * @param RemoveNum 削除数です。
+     */
     RemoveDataItem(Layer: number, RemovePoint: number, RemoveNum: number) {
         if ((Layer < 0) || (this.Grid_Total.LayerNum < Layer)) {
             Generic.alert(undefined, "Layerが誤っています。");
@@ -672,7 +818,12 @@ export class gridControl {
         this.DeleteColumns(Layer, RemovePoint, RemoveNum);
     }
 
-    /**検索 MatchingMode:マッチング*/
+    /**
+     * 現在位置以降を順方向に検索します。
+     *
+     * @param FindStr 検索文字列です。
+     * @param MatchingMode 一致方法です。
+     */
     Find(FindStr: string, MatchingMode: number) {
         const SPL = this.Grid_Total.Layer;
         let SX, SY;
@@ -745,7 +896,12 @@ export class gridControl {
             this.Print_Grid_Data();
         }
     }
-    /**逆方向検索 */
+    /**
+     * 現在位置以前を逆方向に検索します。
+     *
+     * @param FindStr 検索文字列です。
+     * @param MatchingMode 一致方法です。
+     */
     FindRev(FindStr: string, MatchingMode: number) {
         const SPL = this.Grid_Total.Layer;
         let SX, SY;
@@ -818,24 +974,44 @@ export class gridControl {
 
 /**■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ プロパティメソッド**/
 
-    /**内部のコピーデータに設定 */
+    /**
+     * 内部クリップボード文字列を設定します。
+     *
+     * @param CopyData コピー文字列です。
+     */
     setCopyText(CopyData: string){
         this.inClipboard=CopyData;
     }
 
-    /** グリッドの上端固定部分の文字*/
+    /**
+     * 上端固定セルの文字列を設定します。
+     */
     setFixedDataItem(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].FixedDataItem[X][Y].Text = value;
     }
+
+    /**
+     * 上端固定セルの文字列を取得します。
+     */
     getFixedDataItem(LayerNum: number, X: number, Y: number) {
         return this.Grid_Property[LayerNum].FixedDataItem[X][Y].Text;
     }
 
-    /** グリッドの左端固定部分の文字*/
+    /**
+     * 左端固定セルの文字列を設定します。
+     */
     setFixedXSData(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].FixedObjectName[X][Y].Text = value;
     }
-   /**グリッドの左端固定部分の文字設定取得  XY指定なしの場合は配列で取得*/
+
+   /**
+    * 左端固定セルの文字列を取得します。
+    *
+    * @param LayerNum 対象レイヤ番号です。
+    * @param X 列番号です。
+    * @param Y 行番号です。
+    * @returns X/Y 指定時は単一セル値、未指定時は 2 次元配列です。
+    */
    getFixedXSData(LayerNum: number, X?: number, Y?: number) {
     const GP = this.Grid_Property[LayerNum];
     if ((X !== undefined) && (Y !== undefined)) {
@@ -852,106 +1028,184 @@ export class gridControl {
         return dt;
     }
 }
-    /**グリッドの中身設定 */
+    /**
+     * 通常セルの文字列を設定します。
+     */
     setGridData(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].Grid_Text[X][Y].Text = value;
     }
+
+    /**
+     * 通常セルの文字列を取得します。
+     */
     getGridData(LayerNum: number, X: number, Y: number) {
         return this.Grid_Property[LayerNum].Grid_Text[X][Y].Text;
     }
-    /**グリッドの左上固定部分設定 */
+
+    /**
+     * 左上固定セルの文字列を設定します。
+     */
     setFixedUpperLeftData(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text = value;
     }
-    /**グリッドの左端固定部分の配置設定 */
+
+    /**
+     * 左端固定列の配置を設定します。
+     */
     setFixedXSAllignment(LayerNum: number, X: number, value: enmHorizontalAlignment) {
         this.Grid_Property[LayerNum].FixedObjectNameData[X].Allignment=value;
     }
+
+    /**
+     * 左端固定列の配置を取得します。
+     */
     getFixedXSAllignment(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[X].Allignment;
     }
-    /**グリッドの左端固定部分の幅設定 */
+
+    /**
+     * 左端固定列の幅を設定します。
+     */
     setFixedXSWidth(LayerNum: number, X: number, value: number) {
         this.Grid_Property[LayerNum].FixedObjectNameData[X].Width=value;
     }
+
+    /**
+     * 左端固定列の幅を取得します。
+     */
     getFixedXSWidth(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[X].Width;
     }
 
- 
-    /**現在のレイヤの左端セルの取得 */
+    /**
+     * 現在レイヤの左端表示セルを取得します。
+     */
     getLeftCell() {
         return this.Grid_Property[this.Grid_Total.Layer].LeftCell;
     }
-    /**現在のレイヤの左端セルの設定(refresh必要) */
+
+    /**
+     * 現在レイヤの左端表示セルを設定します。
+     */
     setLeftCell(v: number) {
         this.Grid_Property[this.Grid_Total.Layer].LeftCell = v;
     }
-    /**現在のレイヤの上端セルの取得 */
+
+    /**
+     * 現在レイヤの上端表示セルを取得します。
+     */
     getTopCell() {
         return this.Grid_Property[this.Grid_Total.Layer].TopCell;
     }
-    /**現在のレイヤの上端セルの設定(refresh必要) */
+
+    /**
+     * 現在レイヤの上端表示セルを設定します。
+     */
     setTopCell(v: number) {
         this.Grid_Property[this.Grid_Total.Layer].TopCell = v;
     }
-    /**グリッドのフォントの取得 */
+
+    /**
+     * グリッドの既定フォントを取得します。
+     */
     getGridFont() {
         return this.Grid_Total.GridFont;
     }
-    /**グリッドのフォントの設定ex "15px 'Meiryo UI'";(refresh必要) */
+
+    /**
+     * グリッドの既定フォントを設定します。
+     */
     setGridFont(v: string) {
         this.Grid_Total.GridFont = v;
     }
-    /**左端番号列の幅の取得 */
+
+    /**
+     * 左端番号列の既定幅を取得します。
+     */
     getDefaultFixedXNumberingWidth() {
         return this.Grid_Total.DefaultFixedXWidth;
     }
-    /**左端番号列の幅の設定(refresh必要) */
+
+    /**
+     * 左端番号列の既定幅を設定します。
+     */
     setDefaultFixedXNumberingWidth(v: number) {
         this.Grid_Total.DefaultFixedXWidth = v;
     }
-    /**左端固定列の幅の取得 */
+
+    /**
+     * 左端固定列の既定幅を取得します。
+     */
     getDefaultFixedXWidth() {
         return this.Grid_Total.DefaultGridWidth;
     }
-    /**左端固定列の幅の設定(refresh必要) */
+
+    /**
+     * 左端固定列の既定幅を設定します。
+     */
     setDefaultFixedXWidth(v: number) {
         this.Grid_Total.DefaultGridWidth = v;
     }
-    /**左上端固定列のアライメント取得 */
+
+    /**
+     * 左上固定領域の既定配置を取得します。
+     */
     getDefaultFixedUpperLeftAlligntment() {
         return this.Grid_Total.DefaultFixedUpperLeftAlligntment;
     }
-    /**左上端固定列のアライメント(refresh必要) */
+
+    /**
+     * 左上固定領域の既定配置を設定します。
+     */
     setDefaultFixedUpperLeftAlligntment(v: enmHorizontalAlignment) {
         this.Grid_Total.DefaultFixedUpperLeftAlligntment = v;
     }
-    /**上端固定列のアライメント取得 */
+
+    /**
+     * 上端固定行の既定配置を取得します。
+     */
     getDefaultFixedYSAllignment() {
         return this.Grid_Total.DefaultFixedYSAllignment;
     }
-    /**上端固定列のアライメント(refresh必要) */
+
+    /**
+     * 上端固定行の既定配置を設定します。
+     */
     setDefaultFixedYSAllignment(v: enmHorizontalAlignment) {
         this.Grid_Total.DefaultFixedYSAllignment = v;
     }
-    /**左端固定列のアライメント取得 */
+
+    /**
+     * 左端固定列の既定配置を取得します。
+     */
     getDefaultFixedXSAllignment() {
         return this.Grid_Total.DefaultFixedXSAllignment;
     }
-    /**左端固定列のアライメント(refresh必要) */
+
+    /**
+     * 左端固定列の既定配置を設定します。
+     */
     setDefaultFixedXSAllignment(v: enmHorizontalAlignment) {
         this.Grid_Total.DefaultFixedXSAllignment = v;
     }
-       /**グリッドのアライメント取得 */
-       getDefaultGridAlligntment() {
+
+    /**
+     * 通常セルの既定配置を取得します。
+     */
+    getDefaultGridAlligntment() {
         return this.Grid_Total.DefaultGridAlligntment;
     }
-    /**グリッドのアライメント(refresh必要) */
+
+    /**
+     * 通常セルの既定配置を設定します。
+     */
     setDefaultGridAlligntment(v: enmHorizontalAlignment) {
         this.Grid_Total.DefaultGridAlligntment = v;
     }
-    /**グリッドの選択範囲を取得 */
+
+    /**
+     * 現在の選択範囲を取得します。
+     */
     getSelectedArea(LayerNum: number) {
         const R = this.Grid_Property[LayerNum].MouseUpDownRect();
         if (this.Grid_Property[LayerNum].SelectedF === false) {
@@ -967,11 +1221,17 @@ export class gridControl {
         }
         return R;
     }
-    /**グリッドの横セル数取得 */
+
+    /**
+     * 列数を取得します。
+     */
     getXsize(LayerNum: number) {
         return this.Grid_Property[LayerNum].Xmax;
     }
-    /**グリッドの横セル数設定 */
+
+    /**
+     * 列数を変更します。
+     */
     setXsize(LayerNum: number, value: number) {
         const xmax = this.Grid_Property[LayerNum].Xmax;
         if (value === xmax) {
@@ -982,11 +1242,17 @@ export class gridControl {
             this.DeleteColumns(LayerNum, value, xmax - value);
         }
     }
-    /**グリッドの縦セル数取得 */
+
+    /**
+     * 行数を取得します。
+     */
     getYsize(LayerNum: number) {
         return this.Grid_Property[LayerNum].Ymax;
     }
-    /**グリッドの縦セル数設定 */
+
+    /**
+     * 行数を変更します。
+     */
     setYsize(LayerNum: number, value: number) {
         const ymax = this.Grid_Property[LayerNum].Ymax;
         if (value === ymax) {
@@ -997,27 +1263,38 @@ export class gridControl {
             this.DeleteRows(LayerNum, value, ymax - value);
         }
     }
-    /**上固定部分の行数 */
+
+    /**
+     * 上端固定行数を取得します。
+     */
     getFixedYsNum() {
         return this.Grid_Total.FixedDataItem_n;
     }
 
-    /**上固定部分二段目の行数 */
+    /**
+     * 上端固定 2 段目の行数を取得します。
+     */
     getFixedYsNum2() {
         return this.Grid_Total.FixedDataItem_n2;
     }
 
-    /** 左固定部分の行数 */
+    /**
+     * 左端固定列数を取得します。
+     */
     getFixedXsNum() {
         return this.Grid_Total.FixedObjectName_n;
     }
 
-    /**左固定部分二段の行数 */
+    /**
+     * 左端固定 2 段目の列数を取得します。
+     */
     getFixedXsNum2() {
         return this.Grid_Total.FixedObjectName_n2;
     }
 
-    /**グリッドの位置を指定して表示 */
+    /**
+     * 指定位置が見えるように表示位置と選択位置を更新します。
+     */
     SetGridPosition(LayerNum: number, LeftCell: number, TopCell: number) {
         const GP = this.Grid_Property[LayerNum];
         GP.TopCell = Math.max(TopCell, 0);
@@ -1034,7 +1311,9 @@ export class gridControl {
         this.Print_Grid_Data();
     }
 
-    /**グリッドのデータを配列取得／取得のみ */
+    /**
+     * レイヤ全体の通常セルデータを 2 次元配列で取得します。
+     */
     getLayerGridData(LayerNum: number) {
         const GP = this.Grid_Property[LayerNum];
         const xs = GP.Xmax;
@@ -1048,18 +1327,25 @@ export class gridControl {
         return D;
     }
 
-    /**グリッドの文字設定取得（セル単位）：実行時のみ */
+    /**
+     * 単一セルの文字列を取得します。
+     */
     getGridDataCell(LayerNum: number, X: number, Y: number) {
         const GP = this.Grid_Property[LayerNum];
         return GP.Grid_Text[X][Y].Text;
     }
-    /** */
+
+    /**
+     * 単一セルの文字列を設定します。
+     */
     setGridDataCell(LayerNum: number, X: number, Y: number, value: string) {
         const GP = this.Grid_Property[LayerNum];
         GP.Grid_Text[X][Y].Text = value;
     }
 
-    /**グリッドの左上固定部分を配列取得 */
+    /**
+     * 左上固定領域の文字列を 2 次元配列で取得します。
+     */
     getFixedUpperLeftDataArray(LayerNum: number) {
         const GP = this.Grid_Property[LayerNum];
         const xs = this.Grid_Total.FixedObjectName_n;
@@ -1073,14 +1359,17 @@ export class gridControl {
         return dt;
     }
 
- 
-
-    /** */
+    /**
+     * 左端固定セルの内部文字列を直接設定します。
+     */
     setInternal(LayerNum: number, X: number, Y: number, value: string) {
         const GP = this.Grid_Property[LayerNum];
         GP.FixedObjectName[X][Y].Text = value;
     }
-    /** グリッドの左端固定部分の個別色設定*/
+
+    /**
+     * 左端固定セルの表示色を取得します。
+     */
     getFixedXSColor(Layernum: number, X: number, Y: number) {
         if (this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF === true) {
             return this.Grid_Property[Layernum].FixedObjectName[X][Y].Color
@@ -1092,13 +1381,18 @@ export class gridControl {
             }
         }
     }
-    /** */
 
+    /**
+     * 左端固定セルの表示色を設定します。
+     */
     setFixedXSColor(Layernum: number, X: number, Y: number, value: colorRGBA) {
         this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF = true;
         this.Grid_Property[Layernum].FixedObjectName[X][Y].Color = value;
     }
-    /**レイヤのグリッドの左端固定部分の色設定をすべてクリア */
+
+    /**
+     * レイヤ内の左端固定セル色設定をすべてクリアします。
+     */
     FixedAllXSColorReset(LayerNum: number) {
         const GP = this.Grid_Property[LayerNum];
         for (let i = 0; i < this.Grid_Total.FixedObjectName_n; i++) {
@@ -1109,12 +1403,18 @@ export class gridControl {
         this.Print_Grid_Data();
     }
 
-    /**グリッドの左端固定部分の色設定クリア */
+    /**
+     * 左端固定セル 1 か所の色設定をクリアします。
+     */
     FixedXSColorReset(Layernum: number, X: number, Y: number) {
         this.Grid_Property[Layernum].FixedObjectName[X][Y].colorSetF = false;
     }
 
-    /**グリッドの上端固定部分の文字設定取得 XY指定なしの場合は配列で取得*/
+    /**
+     * 上端固定セルの文字列を取得します。
+     *
+     * @returns X/Y 指定時は単一セル値、未指定時は 2 次元配列です。
+     */
     getFixedYSData(LayerNum: number, X?: number, Y?: number) {
         const GP = this.Grid_Property[LayerNum];
         if ((X !== undefined) && (Y !== undefined)) {
@@ -1132,12 +1432,17 @@ export class gridControl {
         }
     }
 
+    /**
+     * 上端固定セルの文字列を設定します。
+     */
     setFixedYSData(LayerNum: number, X: number, Y: number, value: string) {
         const GP = this.Grid_Property[LayerNum];
         GP.FixedDataItem[X][Y].Text = value;
     }
 
-    /**グリッドの上端固定部分の個別色設定 */
+    /**
+     * 上端固定セルの表示色を取得します。
+     */
     getFixedYSColor(Layernum: number, X: number, Y: number) {
         if (this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF === true) {
             return this.Grid_Property[Layernum].Grid_Text[X][Y].Color;
@@ -1149,11 +1454,18 @@ export class gridControl {
             }
         }
     }
+
+    /**
+     * 上端固定セルの表示色を設定します。
+     */
     setFixedYSColor(Layernum: number, X: number, Y: number, value: colorRGBA) {
         this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF = true;
         this.Grid_Property[Layernum].FixedDataItem[X][Y].Color = value;
     }
-    /**レイヤのグリッドの上端固定部分の色設定をすべてクリア */
+
+    /**
+     * レイヤ内の上端固定セル色設定をすべてクリアします。
+     */
     FixedAllYSColorReset(LayerNum: number) {
         const GP = this.Grid_Property[LayerNum];
         for (let i = 0; i < this.Grid_Total.FixedDataItem_n; i++) {
@@ -1163,89 +1475,150 @@ export class gridControl {
         }
         this.Print_Grid_Data();
     }
-    /**グリッドの上端固定部分の色設定クリア */
+
+    /**
+     * 上端固定セル 1 か所の色設定をクリアします。
+     */
     FixedYSColorReset(Layernum: number, X: number, Y: number) {
         this.Grid_Property[Layernum].FixedDataItem[X][Y].colorSetF = false
     }
 
-    /**グリッド上端固定部分の文字設定 */
+    /**
+     * 左上固定セルの文字列を取得します。
+     */
     getFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeft[X]?.[Y]?.Text ?? "";
     }
+
+    /**
+     * 左上固定セルの文字列を設定します。
+     */
     setFixedUpperLeftDataCell(LayerNum: number, X: number, Y: number, value: string) {
         this.Grid_Property[LayerNum].FixedUpperLeft[X][Y].Text = value;
     }
 
-    /** グリッドの高さ設定 */
+    /**
+     * 行の高さを取得します。
+     */
     getGridHeight(LayerNum: number, Y: number) {
         return this.Grid_Property[LayerNum].CellHeight[Y]
     }
+
+    /**
+     * 行の高さを設定します。
+     */
     setGridHeight(LayerNum: number, Y: number, value: number) {
         this.Grid_Property[LayerNum].CellHeight[Y] = value;
     }
 
-    /** グリッドの幅設定 */
+    /**
+     * 列幅を取得します。
+     */
     getGridWidth(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].DataItemData[X].Width;
     }
+
+    /**
+     * 列幅を設定します。
+     */
     setGridWidth(LayerNum: number, X: number, value: number) {
         this.Grid_Property[LayerNum].DataItemData[X].Width = value;
     }
 
-    /** グリッドの配置設定 */
+    /**
+     * 通常列の配置を取得します。
+     */
     getGridAlligntment(LayerNum: number, X: number) {
         return this.Grid_Property[LayerNum].DataItemData[X].Allignment
     }
+
+    /**
+     * 通常列の配置を設定します。
+     */
     setGridAlligntment(LayerNum: number, X: number, value: number) {
         this.Grid_Property[LayerNum].DataItemData[X].Allignment = value;
     }
 
-    /** グリッドの左上固定部分の配置設定 */
+    /**
+     * 左上固定領域の配置を取得します。
+     */
     getFixedUpperLeftAlligntment(LayerNum: number) {
         return this.Grid_Property[LayerNum].FixedUpperLeftAllignment
     }
+
+    /**
+     * 左上固定領域の配置を設定します。
+     */
     setFixedUpperLeftAlligntment(LayerNum: number, value: number) {
         this.Grid_Property[LayerNum].FixedUpperLeftAllignment = value;
     }
 
-    /** グリッドの左端固定部分の配置設定 */
+    /**
+     * 左端固定列の配置設定を取得します。
+     */
     getFixedXSAllignmentData(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[n].Allignment
     }
+
+    /**
+     * 左端固定列の配置設定を更新します。
+     */
     setFixedXSAllignmentData(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedObjectNameData[n].Allignment = value;
     }
 
-    /** グリッドの左端固定部分の幅設定 */
+    /**
+     * 左端固定列の幅設定を取得します。
+     */
     getFixedXSWidthData(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedObjectNameData[n].Width
     }
+
+    /**
+     * 左端固定列の幅設定を更新します。
+     */
     setFixedXSWidthData(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedObjectNameData[n].Width = value;
     }
 
-    /** 上部固定部分の行ごとの配置設定 */
+    /**
+     * 上端固定行の配置設定を取得します。
+     */
     getFixedYSAllignment(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedDataItemData[n].Allignment
     }
+
+    /**
+     * 上端固定行の配置設定を更新します。
+     */
     setFixedYSAllignment(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedDataItemData[n].Allignment = value;
     }
 
-    /** 上部固定部分の行ごとの高さ設定 */
+    /**
+     * 上端固定行の高さ設定を取得します。
+     */
     getFixedYSHeight(LayerNum: number, n: number) {
         return this.Grid_Property[LayerNum].FixedDataItemData[n].Height
     }
+
+    /**
+     * 上端固定行の高さ設定を更新します。
+     */
     setFixedYSHeight(LayerNum: number, n: number, value: number) {
         this.Grid_Property[LayerNum].FixedDataItemData[n].Height = value;
     }
 
-    /** レイヤの最大数を取得：実行時・取得のみ */
+    /**
+     * レイヤ総数を取得します。
+     */
     getLayerMax() {
         return this.Grid_Total.LayerNum;
     }
 
-    /** レイヤタグを取得::実行時・取得のみ 設定はAddLayerメソッド */
+    /**
+     * レイヤ付帯データを取得します。
+     */
     getLayerData(LayerNum: number, key: "OldIndex"): number;
     getLayerData(LayerNum: number, key: "Type"): number;
     getLayerData(LayerNum: number, key: "Shape"): number;
@@ -1259,44 +1632,74 @@ export class gridControl {
     getLayerData(LayerNum: number, key: string): string | number | boolean | strYMD | JsonValue {
         return ((this.Grid_Property[LayerNum].LayerData as unknown) as Record<string, string | number | boolean | JsonValue>)[key];
     }
+
+    /**
+     * レイヤ付帯データを設定します。
+     */
     setLayerData(LayerNum: number, key: string, value: string | number | JsonValue) {
         ((this.Grid_Property[LayerNum].LayerData as unknown) as Record<string, string | number | JsonValue>)[key] = value;
     }
 
-    /**現在のレイヤを取得：実行時 */
+    /**
+     * 現在選択中のレイヤ番号を取得します。
+     */
     getLayer() {
         return this.Grid_Total.Layer;
     }
+
+    /**
+     * 現在選択中のレイヤ番号を設定します。
+     */
     setLayer(value: number) {
         this.Grid_Total.Layer = value;
     }
 
-    /**レイヤ名を取得・設定 */
+    /**
+     * レイヤ名を取得します。
+     */
     getLayerName(LayerNum: number) {
         return this.Grid_Property[LayerNum].LayerName;
     }
+
+    /**
+     * レイヤ名を設定します。
+     */
     setLayerName(LayerNum: number, value: string) {
         this.Grid_Property[LayerNum].LayerName = value;
         this.Set_SSTAB_Name();
     }
 
-    /** タブをクリックしてレイヤメニューが出るかどうか */
+    /**
+     * タブクリックでレイヤメニューを開けるかを取得します。
+     */
     getTabClickEnabled() {
         return this.Grid_Total.TabClickEnabled
     }
+
+    /**
+     * タブクリックでレイヤメニューを開けるかを設定します。
+     */
     setTabClickEnabled(value: boolean) {
         this.Grid_Total.TabClickEnabled = value;
     }
 
-    /**セルの既定色設定 */
+    /**
+     * 通常セルの既定色を取得します。
+     */
     getTotalGridColor() {
         return this.Grid_Total.Color.Grid;
     }
+
+    /**
+     * 通常セルの既定色を設定します。
+     */
     setTotalGridColor(value: colorRGBA) {
         this.Grid_Total.Color.Grid = value;
     }
 
-    /** セルの個別色設定 */
+    /**
+     * 通常セルの表示色を取得します。
+     */
     getGridColor(LayerNum: number, X: number, Y: number) {
         if (this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF === false) {
             return this.Grid_Total.Color.Grid;
@@ -1304,12 +1707,18 @@ export class gridControl {
             return this.Grid_Property[LayerNum].Grid_Text[X][Y].Color;
         }
     }
+
+    /**
+     * 通常セルの表示色を設定します。
+     */
     setGridColor(LayerNum: number, X: number, Y: number, value: colorRGBA) {
         this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF = true;
         this.Grid_Property[LayerNum].Grid_Text[X][Y].Color = value;
     }
 
-    /** レイヤのグリッドの色設定をすべてクリア */
+    /**
+     * レイヤ内の通常セル色設定をすべてクリアします。
+     */
     GridColorReset(LayerNum: number) {
         const GP = this.Grid_Property[LayerNum];
         for (let i = 0; i <= GP.Xmax; i++) {
@@ -1320,30 +1729,51 @@ export class gridControl {
         this.Print_Grid_Data();
     }
 
-    /** グリッドの色設定クリア */
+    /**
+     * 通常セル 1 か所の色設定をクリアします。
+     */
     getGridColorReset(LayerNum: number, X: number, Y: number) {
         this.Grid_Property[LayerNum].Grid_Text[X][Y].colorSetF = false;
     }
 
-    /**固定部分の色設定 */
+    /**
+     * 固定領域の既定色を取得します。
+     */
     getFixedGridColor() {
         return this.Grid_Total.Color.FixedGrid;
     }
+
+    /**
+     * 固定領域の既定色を設定します。
+     */
     setFixedGridColor(value: colorRGBA) {
         this.Grid_Total.Color.FixedGrid = value;
     }
 
-    /**セル境界線色設定 */
+    /**
+     * セル境界線色を取得します。
+     */
     getGridLineColor() {
         return this.Grid_Total.Color.GridLine;
     }
+
+    /**
+     * セル境界線色を設定します。
+     */
     setGridLineColor(value: colorRGBA) {
         this.Grid_Total.Color.GridLine = value;
     }
-    /**枠部分色設定 */
+
+    /**
+     * 外枠色を取得します。
+     */
     getFrameColor() {
         return this.Grid_Total.Color.Frame;
     }
+
+    /**
+     * 外枠色を設定します。
+     */
     setFrameColor(value: colorRGBA) {
         this.Grid_Total.Color.Frame = value;
     }
