@@ -20,14 +20,30 @@
  * 各種DOMイベントのハンドラー関数の型定義
  */
 export type EventHandler<T = Event> = (event: T) => void;
+
+/**
+ * マウスイベント専用のハンドラー型です。
+ */
 export type MouseEventHandler = EventHandler<MouseEvent>;
+
+/**
+ * ドラッグイベント専用のハンドラー型です。
+ */
 export type DragEventHandler = EventHandler<DragEvent>;
+
+/**
+ * キーボードイベント専用のハンドラー型です。
+ */
 export type KeyboardEventHandler = EventHandler<KeyboardEvent>;
 
 /**
  * Null許容型
  */
 export type Nullable<T> = T | null;
+
+/**
+ * undefined を許容するオプショナル型です。
+ */
 export type Optional<T> = T | undefined;
 
 /**
@@ -35,8 +51,20 @@ export type Optional<T> = T | undefined;
  * JSONとして表現可能な全ての値の型
  */
 export type JsonPrimitive = string | number | boolean | null;
+
+/**
+ * JSON 配列を表す再帰的な型です。
+ */
 export type JsonArray = JsonValue[];
+
+/**
+ * JSON オブジェクトを表す再帰的な型です。
+ */
 export type JsonObject = { [key: string]: JsonValue };
+
+/**
+ * 任意の JSON 値を表す再帰的な共用体型です。
+ */
 export type JsonValue = JsonPrimitive | JsonArray | JsonObject;
 
 /**
@@ -80,7 +108,15 @@ export interface ListItem {
  * ダイアログコールバック型
  */
 export type DialogCallback = (result: boolean, data?: Record<string, unknown>) => void;
+
+/**
+ * OK 操作時に呼び出すコールバックです。
+ */
 export type OkCallback = () => void;
+
+/**
+ * キャンセル操作時に呼び出すコールバックです。
+ */
 export type CancelCallback = () => void;
 
 /**
@@ -93,6 +129,9 @@ export interface ShapeFile {
   properties?: Dictionary<unknown>;
 }
 
+/**
+ * シェープファイル名をキーに保持するコレクション型です。
+ */
 export interface ShapeFileCollection {
   [key: string]: ShapeFile;
 }
@@ -209,7 +248,7 @@ export type SelectChangeHandler = (
 /**
  * 色設定型
  */
-export type ColorValue = string; // CSS color string
+export type ColorValue = string;
 
 /**
  * タイル設定型 (仮定)
@@ -258,7 +297,15 @@ export type SoloMode = number;
  * コールバック関数型（汎用）
  */
 export type CallbackFunction = (...args: JsonValue[]) => void;
+
+/**
+ * 単一値を受け取る汎用コールバックです。
+ */
 export type ValueCallback<T = JsonValue> = (value: T) => void;
+
+/**
+ * 要素と値を同時に受け取る UI 用コールバックです。
+ */
 export type ObjectValueCallback = (obj: HTMLElement, value: JsonValue) => void;
 
 /**

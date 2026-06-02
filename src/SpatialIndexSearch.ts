@@ -1006,4 +1006,7 @@ class SpatialIndexSearchInternal {
 
 }
 
+/**
+ * 点・線・矩形の近傍検索を行う空間インデックス実装です。
+ */
 export { SpatialIndexSearchInternal as SpatialIndexSearch };

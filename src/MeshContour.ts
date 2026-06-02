@@ -782,4 +782,7 @@ class MeshContour {
     }
 }
 
+/**
+ * メッシュ等値線生成で使う連結済みライン情報と本体クラスを公開します。
+ */
 export { ContourLineStackInfo, MeshContour };
