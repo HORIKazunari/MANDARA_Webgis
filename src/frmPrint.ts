@@ -21,6 +21,9 @@ import {
 } from './clsAttrData';
 import type { JsonValue } from './types';
 
+/**
+ * 等値線探索時に 1 本分の幾何情報と所属データを保持します。
+ */
 type ContourObjectInfo = {
     Flag: boolean;
     Circumscribed_Rectangle: rectangle;
@@ -31,12 +34,18 @@ type ContourObjectInfo = {
     DataNum: number;
 };
 
+/**
+ * 出力画面上で使う等値線探索キャッシュ全体です。
+ */
 type ContourModeTemp = {
     Contour_All_Number: number;
     Contour_Object: ContourObjectInfo[];
     Contour_Point: point[];
 };
 
+/**
+ * 連続表示モードの 1 コマ分に対応する表示対象情報です。
+ */
 type SeriesDataItem = {
     Print_Mode_Total?: number;
     Print_Mode_Layer?: number;
@@ -45,6 +54,9 @@ type SeriesDataItem = {
     SoloMode?: number;
 };
 
+/**
+ * 重ね合わせモードのデータセット構造のうち frmPrint で参照する部分です。
+ */
 type OverLayInfo = {
     SelectedIndex?: number;
     DataSet: Array<{
@@ -57,14 +69,23 @@ type OverLayInfo = {
     }>;
 };
 
+/**
+ * TotalMode の参照部分を最小限に切り出した補助型です。
+ */
 type TotalModeInfo = {
     OverLay?: OverLayInfo;
 };
 
+/**
+ * 線オブジェクトの有効ライン情報から frmPrint が利用する部分です。
+ */
 type EnableLineInfo = {
     LineCode: number;
 };
 
+/**
+ * 出力画面上のポインティング操作状態を表す定数群です。
+ */
 const mousePointingSituations = {
     up: 0,
     down: 1,
@@ -76,6 +97,9 @@ const chrLF = CHR_LF;
 
 // enmPrintMouseMode は globals.d.ts で定義済み
 
+/**
+ * 飾り要素ヒットテストの結果種別です。
+ */
 const Check_Acc_Result = {
     NoAccessory: 0,
     Title: 1,
@@ -114,7 +138,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
     const g = elem.getContext('2d');
     if (!g) throw new Error('Failed to get 2d context');
 
-    //出力画面でのキー操作
+    // 出力画面にフォーカスがあるときだけキーボード操作を受け付けます。
     document.addEventListener('keydown', function (e: KeyboardEvent): void {
         const elm: NodeListOf<HTMLElement> = document.getElementsByName("backDiv");
         if (elm.length === 0) {
@@ -131,7 +155,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         if (elm.length === 0) {
             if (e.keyCode === 13) {
                 if (state.settingModeWindow.style.zIndex === "2") {
-                    //設定画面でEnterを押すと描画開始ボタンにフォーカス移動
+                    // 設定画面で Enter を押したときは描画開始ボタンへフォーカスを戻します。
                     (document.getElementById("btnDraw") as HTMLElement).focus();
                 }
             }
@@ -219,7 +243,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
      * @param e マウスまたはタッチイベントです。
      */
     function mdown(e: MouseEvent | TouchEvent) {
-        // const state = appState();
         e.preventDefault();
         let event;
         if (e.type === "mousedown") {
@@ -273,8 +296,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                         if (scrData.ThreeDMode.Set3D_F === false) {
                             if (state.propertyWindow.fixed === false) {
                                 LocationSearch(p);
-                            } else {
-                                //picMapMouseMovePointInformation(p);
                             }
                             LocationContourSearch(p);
                             mCursorF = LocationODSearch(p);
@@ -458,9 +479,8 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         const mouseUpSRXT = scrData.getSRXY(mouseUpPosition);
 
         if((state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.SymbolPoint )||( state.attrData.TempData.frmPrint_Temp.PrintMouseMode === enmPrintMouseMode.LabelPoint )){
-        //シンボル位置／ラベル位置移動
+        // 記号位置またはラベル位置の再指定を確定します。
             if (e.which  === 3) {
-                // 右クリックの場合は何もしない
             } else {
                 const tmp = state.attrData.TempData;
                 const P = scrData.getSRXY(mouseDownPosition);
@@ -570,7 +590,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         state.attrData.TempData.frmPrint_Temp.LocationMenuString.ClickMapPos = mouseUpSRXT;
                                         Loc_Data_Menu(mnuAccPopupVisible);
                                     }
-                                    //非表示の飾りを表示させるメニューの表示
+                                    // 非表示の飾りを再表示するメニュー項目を追加します。
                                     if ((av.MapTitle.Visible === false) || (av.MapLegend.Base.Visible === false) || (av.MapScale.Visible === false) || (
                                         av.AttMapCompass.Visible === false) || (av.DataNote.Visible === false) || (av.AccessoryGroupBox?.Visible === false)) {
                                         if (mnuAccPopupVisible.length > 0) {
@@ -665,7 +685,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                         Generic.ceatePopupMenu(mnuAccPopupVisible, new point(event.clientX, event.clientY));
                                     }
                                 } else {
-                                    //飾り上で右クリックメニュー
+                                    // 飾り要素上では表示切り替えや設定メニューを表示します。
                                     const mnuAccPopupVisible: MenuItem[] = [];
                                     switch (retV.type) {
                                         case Check_Acc_Result.Compass:
@@ -783,7 +803,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             switch (state.attrData.TotalData.LV1.Print_Mode_Total) {
                 case enmTotalMode_Number.DataViewMode: {
                     if (state.attrData.TempData.frmPrint_Temp.OnObject.length === 1) {
-                        //mnuAccPopupVisible.push({ caption:"図形モードでオブジェクト名・データ値表示", event: function(){}});
                         const Layernum = state.attrData.TempData.frmPrint_Temp.OnObject[0].objLayer;
                         const ObjNum = state.attrData.TempData.frmPrint_Temp.OnObject[0].ObjNumber;
                         const dtIndex = alm.DataIndex;
@@ -896,12 +915,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                 if (data.tag) window.open(data.tag, '_blank');
                             },tag:alo.HyperLink[i].Address} );
                         }
-                        // mnuAccPopupVisible.push({ caption: "-" });
-                        // mnuAccPopupVisible.push({caption: "リンクの編集", event: mnuAccPopupVisible_LinkEdit} );
-
-                        // const ObjName = Generic.Check_StringLength_And_Cut(state.attrData.Get_KenObjName(Layernum, ObjNum), 20)
                         if (alo.Objectstructure === enmKenCodeObjectstructure.SyntheticObj) {
-                            // mnuAccPopupVisible.push({caption: ObjName + "の構成", event: mnuAccPopupVisible_synthetic} );
                         }
                     }
                     break;
@@ -925,7 +939,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
      * @param event タッチイベントです。
      */
     function pinch(event: TouchEvent){
-        // const state = appState();
         const touches=event.changedTouches;
         const p1=Generic.getCanvasXY(touches[0] as unknown as MouseEvent);
         const p2=Generic.getCanvasXY(touches[1] as unknown as MouseEvent);
@@ -938,7 +951,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
      * @param event タッチイベントです。
      */
     function pinchMove(event: TouchEvent){
-        // const state = appState();
         const touches=event.changedTouches;
         if(touches.length>1){
             const p1=Generic.getCanvasXY(touches[0] as unknown as MouseEvent);
@@ -951,7 +963,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
      * ピンチ操作終了時に拡大縮小率を確定して地図へ反映します。
      */
     function pinchUp(/*event: TouchEvent*/){
-        // const state = appState();
         const ratio=pinchPresentDis/pinchBaseDis;
         expansionMap(pinchCenter,ratio);
     }
@@ -1003,7 +1014,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
             callback(elem);
             switch (state.attrData.TempData.frmPrint_Temp.PrintMouseMode) {
                 case enmPrintMouseMode.Fig: {
-                    //frm_Figure.Print_Fig()
                     break;
                 }
                 case enmPrintMouseMode.Normal: {
@@ -1011,7 +1021,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     break;
                 }
                 case enmPrintMouseMode.MultiObjectSelect: {
-                    //printSeletedMultiObject()
                     break;
                 }
             }
@@ -1312,7 +1321,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         let L_Layer: number;
         let L_Print_Mode_Layer: number;
         let L_Data: number;
-        /*let L_Solomode ;*/
         if( state.attrData.TotalData.LV1.Print_Mode_Total === enmTotalMode_Number.SeriesMode ){
             const series = state.attrData.TotalData.TotalMode?.Series;
             if (!series) {
@@ -1333,7 +1341,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 L_Print_Mode_Layer = im.Print_Mode_Layer ?? enmLayerMode_Number.SoloMode;
                 L_Layer = im.Layer ?? 0;
                 L_Data = im.Data ?? 0;
-                /*L_Solomode = im.SoloMode;*/
         } else {
             const lv = state.attrData.TotalData.LV1;
             if (!lv) {
@@ -1349,7 +1356,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     switch (L_Print_Mode_Layer) {
                         case enmLayerMode_Number.SoloMode: {
                             L_Data = ld.atrData.SelectedIndex;
-                            // L_Solomode = ld.atrData.Data[L_Data].ModeData;
                             break;
                         }
                         case enmLayerMode_Number.GraphMode: {
@@ -1399,13 +1405,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                     }
                     case enmLayerMode_Number.TripMode: {
                         OnObject = NearestObject(MapP, Layernum);
-                        if (OnObject.length === 0) {
-                            //frm_PropertypnlProperty.Visible = false;
-                        } else {
-                            if (state.mnuPropertyWindow?.checked === true) {
-                                //frm_Property.ShowTripModeProperty(state.attrData, Layernum, OnObject, dtindex);
-                            }
-                        }
                         break;
                     }
                 }
@@ -1528,9 +1527,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 state.propertyWindow.pnlProperty.objInfo.style.height = '100%';
                 state.propertyWindow.pnlProperty.objInfo.innerHTML = lblTxt;
             }
-            // if (lblTxt === "") {
-            //     frm_Property.pnlOverLayProperty.Visible = false;
-            // }
         }
         if (state.frmPrint.label1 && state.frmPrint.label2) {
             state.frmPrint.label2.style.left=(state.frmPrint.label1.offsetWidth+10).px();
@@ -1549,9 +1545,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
         const state = appState();
         const OnObject = [];
 
-        if (state.attrData.LayerData[Layernum].Type === enmLayerType.Trip) {
-            // Tripタイプの場合は特別な処理なし
-        } else {
+        if (state.attrData.LayerData[Layernum].Type !== enmLayerType.Trip) {
             switch (state.attrData.LayerData[Layernum].Shape) {
                 case (enmShape.PolygonShape): {
                     const retV = state.attrData.LayerData[Layernum].PrtSpatialIndex.GetRectIn(MapP.x, MapP.y);
@@ -1586,7 +1580,7 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                                 const ObjData = new strLocationSearchObject(Layernum, tag);
                                 OnObject.push(ObjData);
                                 serarchNCount++;
-                                if (serarchNCount === 5) {//候補は最大で5つ
+                                if (serarchNCount === 5) {
                                     break;
                                 }
                             }
@@ -1636,28 +1630,24 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 return { type: Check_Acc_Result.Title, rect: ata.MapTitle_Rect };
             }
         }
-        //------方位
         if ((vs.AttMapCompass.Visible === true) && ((scrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
             if (spatial.Check_PointInBox(ScreenP, 0, ata.MapCompass_Rect) === true) {
                 ata.Push_CompassXY = vs.AttMapCompass.Position.Clone();
                 return { type: Check_Acc_Result.Compass, rect: ata.MapCompass_Rect };
             }
         }
-        //------スケール
         if ((vs.MapScale.Visible === true) && ((scrData.ThreeDMode.Set3D_F === false) || ((threed.Pitch === 0) && (threed.Head === 0)))) {
             if (spatial.Check_PointInBox(ScreenP, 0, ata.MapScale_Rect) === true) {
                 ata.Push_ScaleXY = vs.MapScale.Position.Clone();
                 return { type: Check_Acc_Result.Scale, rect: ata.MapScale_Rect };
             }
         }
-        //------注
         if (vs.DataNote.Visible === true) {
             if (spatial.Check_PointInBox(ScreenP, 0, ata.DataNote_Rect) === true) {
                 ata.Push_DataNoteXY = vs.DataNote.Position.Clone();
                 return { type: Check_Acc_Result.Note, rect: ata.DataNote_Rect };
             }
         }
-        //------凡例
         for (let i = ata.Legend_No_Max - 1; i >= 0; i--) {
             const lg =  ata.MapLegend_W[i];
             if ((vs.MapLegend.Base.Visible === true) || (lg.LineKind_Flag === true) || (lg.PointObject_Flag === true)) {
@@ -1668,7 +1658,6 @@ export function mapMouseInternal(elem: HTMLCanvasElement, callback: (element: HT
                 }
             }
         }
-        //------グループボックス
         if ((vs.AccessoryGroupBox.Visible === true) && (scrData.ThreeDMode.Set3D_F === false)) {
             const Acc_Rect = ata.GroupBox_Rect.Clone();
             const pad = state.attrData.Get_PaddingPixcel(vs.AccessoryGroupBox.Back);
@@ -1779,7 +1768,6 @@ class frmPrint {
          * @param e クリックイベントです。
          */
         function meshLinePatternClick(e: Event) {
-            // const state = appState();
             clsLinePatternSet(e as MouseEvent, MeshLpat, LinePatternGet);
             /**
              * 選択したメッシュ輪郭線パターンを画面へ反映します。
@@ -1787,7 +1775,6 @@ class frmPrint {
              * @param Lpat 更新後の線種設定です。
              */
             function LinePatternGet(Lpat: Line_Property) {
-                // const state = appState();
                 MeshLpat = Lpat;
                 state.attrData.Draw_Sample_LineBox(e.target as HTMLElement, Lpat);
             }
@@ -1796,14 +1783,12 @@ class frmPrint {
          * 選択中の地図ファイルに応じて線種一覧を描き直します。
          */
         function mapListchange() {
-            // const state = appState();
             showLinePattern();
         }
         /**
          * 編集した線種設定を保存して地図を再描画します。
          */
         function buttonOK() {
-            // const state = appState();
             for (let i = 0; i < MapFileList.length; i++) {
                 const lk = [];
                 for (const j in NewLineKind[i]) {
@@ -1817,9 +1802,9 @@ class frmPrint {
             Generic.clear_backDiv();
             clsPrint.printMapScreen(state.frmPrint.picMap);
         }
-    /**
-     * 選択中の地図ファイルに属する線種一覧をダイアログへ表示します。
-     */
+        /**
+         * 選択中の地図ファイルに属する線種一覧をダイアログへ表示します。
+         */
         function showLinePattern(){
             const state = appState();
             const LineKindHeight=35;
@@ -1847,7 +1832,6 @@ class frmPrint {
              * @param e クリックイベントです。
              */
             function inePatternClick(e: Event){
-                // const state = appState();
                 const target = e.target as HTMLElement;
                 const n = Number(target?.tag);
                 if (!Number.isFinite(n) || NewLineKind[Mpindex]?.[n] === undefined) { return; }
@@ -1858,7 +1842,6 @@ class frmPrint {
                  * @param Lpat 更新後の線種設定です。
                  */
                 function LinePatternGet(Lpat: Line_Property) {
-                    // const state = appState();
                     NewLineKind[Mpindex][n].Pat = Lpat;
                     state.attrData.Draw_Sample_LineBox(target, Lpat);
                 }
@@ -2168,7 +2151,9 @@ class frmPrint {
     }
     
 
-    /**連続表示ボタン 次*/
+    /**
+     * 連続表示の現在コマを次へ進め、末尾なら先頭へ戻します。
+     */
     static seriesNext() {
         const state = appState();
         const ats = state.attrData.TotalData.TotalMode?.Series;
@@ -2187,7 +2172,9 @@ class frmPrint {
         clsPrint.printMapScreen(state.frmPrint.picMap);
     }
 
-    /**連続表示ボタン 前*/
+    /**
+     * 連続表示の現在コマを前へ戻し、先頭なら末尾へ移動します。
+     */
     static seriesBefore() {
         const state = appState();
         const ats = state.attrData.TotalData.TotalMode?.Series;

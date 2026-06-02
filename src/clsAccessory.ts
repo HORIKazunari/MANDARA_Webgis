@@ -40,6 +40,9 @@ type ViewStyleWithScreen = IAttrData['TotalData']['ViewStyle'] & { ScrData: Scre
 const LEGEND_DEBUG_ENABLED = false;
 const LEGEND_FORCE_DRAW_DEBUG = false;
 
+/**
+ * 地図描画に付随する凡例、方位記号、縮尺、注記などのアクセサリ描画をまとめて扱います。
+ */
 export class Accessory {
     private static legendDrawnInFrame = false;
     private static classLegendDrawnInFrame = false;
@@ -147,6 +150,12 @@ export class Accessory {
         return anchor;
     }
 
+    /**
+     * カテゴリー階級の凡例ラベル文字列を取得します。
+     *
+     * @param classDiv 階級区分データです。
+     * @returns カテゴリー名または値文字列です。
+     */
     private static getCategoryLegendLabel(classDiv: { Value: number | string; Cat_Name?: string }): string {
         if (classDiv.Cat_Name !== undefined && classDiv.Cat_Name !== null && String(classDiv.Cat_Name) !== "") {
             return String(classDiv.Cat_Name);
@@ -154,12 +163,24 @@ export class Accessory {
         return String(classDiv.Value ?? "");
     }
 
+    /**
+     * 階級区分数を設定値と配列長の両方から安全に算出します。
+     *
+     * @param soloModeViewSettings 階級区分設定です。
+     * @returns 実際に扱う階級区分数です。
+     */
     private static getClassDivCount(soloModeViewSettings: { Div_Num?: number; Class_Div: Array<unknown> }): number {
         const fromDivNum = Number(soloModeViewSettings.Div_Num ?? 0);
         const fromArray = Array.isArray(soloModeViewSettings.Class_Div) ? soloModeViewSettings.Class_Div.length : 0;
         return Math.max(fromDivNum, fromArray);
     }
 
+    /**
+     * 凡例描画前に階級区分データを遅延初期化します。
+     *
+     * @param layerNum レイヤ番号です。
+     * @param dataNum データ項目番号です。
+     */
     private static ensureClassDivReady(layerNum: number, dataNum: number): void {
         const state = appState();
         const ensureReady = (state.attrData as unknown as {
@@ -170,6 +191,12 @@ export class Accessory {
         }
     }
 
+    /**
+     * 凡例文字が背景色に埋もれないよう読みやすい色へ補正します。
+     *
+     * @param source 元にする文字色です。
+     * @returns 補正後の文字色です。
+     */
     private static getReadableLegendFontColor(source: colorRGBA): colorRGBA {
         const luminance = 0.299 * source.r + 0.587 * source.g + 0.114 * source.b;
         if (luminance >= 175) {
@@ -178,12 +205,27 @@ export class Accessory {
         return source.Clone();
     }
 
+    /**
+     * 線端設定がフラットキャップ相当かどうかを判定します。
+     *
+     * @param pattern 線端設定を含む線種情報です。
+     * @returns フラット端なら true です。
+     */
     private static isFlatLineCap(pattern: LineEdge_Connect_Pattern_Data_Info & { Edge_Pattern?: number }): boolean {
         return pattern.lineCap === 'butt'
             || (pattern.lineCap as unknown as number) === enmEdge_Pattern.Flat
             || pattern.Edge_Pattern === enmEdge_Pattern.Flat;
     }
 
+    /**
+     * 通常の凡例描画に失敗した場合の階級区分凡例を簡易描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param anchor 描画開始位置です。
+     * @param layerNum レイヤ番号です。
+     * @param dataNum データ項目番号です。
+     * @returns 代替描画に成功した場合は true です。
+     */
     private static drawClassPaintLegendFallback(g: CanvasRenderingContext2D, anchor: point, layerNum: number, dataNum: number): boolean {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle;
@@ -333,6 +375,15 @@ export class Accessory {
         this.classLegendDrawnInFrame = true;
     }
 
+    /**
+     * 通常描画が使えない場合にプレーンテキストを直接描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param text 描画する文字列です。
+     * @param p 描画位置です。
+     * @param font 使用するフォント設定です。
+     * @param backgroundColor 背景塗りつぶし色です。
+     */
     private static drawTextFallback(g: CanvasRenderingContext2D, text: string, p: point, font: Font_Property, backgroundColor?: string): void {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
@@ -355,6 +406,12 @@ export class Accessory {
         g.restore();
     }
 
+    /**
+     * 凡例用フォント設定を可視性の高い値へ補正します。
+     *
+     * @param font 元のフォント設定です。
+     * @returns 描画に使う安全なフォント設定です。
+     */
     private static getVisibleLegendFont(font: Font_Property): Font_Property {
         const safeFont = font.Clone();
         const size = Number(safeFont.Size ?? 0);
@@ -374,6 +431,14 @@ export class Accessory {
         return safeFont;
     }
 
+    /**
+     * 凡例ラベルを通常描画し、失敗時は簡易描画へフォールバックします。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param text 描画するラベル文字列です。
+     * @param p 描画位置です。
+     * @param font 使用するフォント設定です。
+     */
     private static drawLegendText(g: CanvasRenderingContext2D, text: string, p: point, font: Font_Property): void {
         if (text === "") {
             return;
@@ -387,7 +452,15 @@ export class Accessory {
         }
     }
 
-    /**線種の凡例 */
+    /**
+     * 使用中の線種一覧から線凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画領域が有効で、凡例が表示対象に入った場合は true です。
+     */
     static Draw_LineKind(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize?: size, SizeGetOnlyF?: boolean): boolean {
         const state = appState();
 
@@ -483,7 +556,15 @@ export class Accessory {
         return true;
     }
 
-    /**点オブジェクトの凡例 */
+    /**
+     * 使用中の点オブジェクト種別から凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画領域が有効で、凡例が表示対象に入った場合は true です。
+     */
     static Draw_PointObject(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -560,7 +641,11 @@ export class Accessory {
         return true;
     }
 
-    /** 飾りグループボックス表示*/
+    /**
+     * アクセサリ全体を囲むグループボックスを描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static AccGroupBoxDraw(g: CanvasRenderingContext2D): void {
         const state = appState();
 
@@ -570,7 +655,12 @@ export class Accessory {
               clsDrawTile.Draw_Tile_RoundBox?.(g, state.attrData.TempData.Accessory_Temp.GroupBox_Rect, Agb.Back, 0, scrData);
         }
     }
-    /**経緯線表示 */
+
+    /**
+     * 経緯線とそのラベルを現在の投影設定に応じて描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static LatLonLine_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
@@ -764,6 +854,14 @@ export class Accessory {
     }
 
 
+    /**
+     * 指定した凡例スロット 1 件分の描画またはサイズ計算を行います。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param legendNo 凡例番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 凡例が描画領域に入り、描画成功または代替描画できた場合は true です。
+     */
     static Legend_print(g: CanvasRenderingContext2D, legendNo: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         const LegendW = state.attrData.TempData.Accessory_Temp.MapLegend_W[legendNo];
@@ -1005,7 +1103,11 @@ export class Accessory {
         vs.MapLegend = P_Legend;//必要？
     }
 
-    //注記表示
+    /**
+     * 現在の表示モードに対応する注記を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static Note_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
@@ -1015,6 +1117,13 @@ export class Accessory {
         const NT = this.getPrintNote(g);
         state.attrData.Draw_Print(g, NT.note, NT.rect.topLeft(), state.attrData.TotalData.ViewStyle.DataNote.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
+
+    /**
+     * 現在の表示状態から印刷対象の注記文字列と配置矩形を計算します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @returns 注記文字列と描画矩形です。
+     */
     static getPrintNote(g: CanvasRenderingContext2D): { note: string; rect: rectangle } {
         const state = appState();
 
@@ -1106,7 +1215,17 @@ export class Accessory {
         }
     }
 
-    /**円グラフで、凡例の表示方法が円一つの場合で円グラフの周囲にデータ項目名を並べる場合の凡例 */
+    /**
+     * 円グラフ凡例を 1 つの円の周囲に項目名を並べる形式で描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param Layn2 レイヤ番号です。
+     * @param dataSetNum グラフデータセット番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 凡例を描画できた場合は true です。
+     */
     static Draw_Multi_Engraph_Pattern1(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -1221,7 +1340,17 @@ export class Accessory {
     }
 
 
-    /**グラフ表示モードの円・帯グラフ */
+    /**
+     * グラフ表示モードの円グラフ・帯グラフ凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param Layn2 レイヤ番号です。
+     * @param dataSetNum グラフデータセット番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 凡例を描画できた場合は true です。
+     */
     static Draw_Multi_Engraph(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         const vs = state.attrData.TotalData.ViewStyle as unknown as ViewStyleWithScreen;
@@ -1367,7 +1496,17 @@ export class Accessory {
         }
     }
 
-    /**折れ線・棒グラフモード */
+    /**
+     * 折れ線グラフ・棒グラフ凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param Layn2 レイヤ番号です。
+     * @param dataSetNum グラフデータセット番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_Multi_Oresen(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, Layn2: number, dataSetNum: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -1515,7 +1654,18 @@ export class Accessory {
         HeadBoxSize.height = ysize2;
     }
     
-    /**記号の数モードの凡例 */
+    /**
+     * 記号数モードの凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_MarkBlockMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -1647,7 +1797,18 @@ export class Accessory {
         return true;
     }
 
-    /**棒の高さモードの凡例 */
+    /**
+     * 棒の高さモードの凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_MarkBarMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -1785,7 +1946,18 @@ export class Accessory {
         return true;
     }
 
-    //記号の大きさモードの凡例
+    /**
+     * 記号の大きさモードの凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_MarkSizeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -2028,6 +2200,12 @@ export class Accessory {
 
         return true;
     }
+    /**
+     * 設定値または既定値から負値用の凡例語句を返します。
+     *
+     * @param s 個別設定された語句です。
+     * @returns 実際に表示に使う負値語句です。
+     */
     static getLegendMinusWord(s: string): string {
         const settingData = appState().settingData;
         if (s === "") {
@@ -2036,6 +2214,12 @@ export class Accessory {
             return s;
         }
     }
+    /**
+     * 設定値または既定値から正値用の凡例語句を返します。
+     *
+     * @param s 個別設定された語句です。
+     * @returns 実際に表示に使う正値語句です。
+     */
     static getLegendPlusWord(s: string): string {
         const settingData = appState().settingData;
         if (s === "") {
@@ -2045,7 +2229,13 @@ export class Accessory {
         }
     }
 
-    //記号モードの凡例数値を並べ替えて返す
+    /**
+     * 記号サイズ凡例で使う代表値を降順に並べて返します。
+     *
+     * @param Layernum レイヤ番号です。
+     * @param DataNum データ項目番号です。
+     * @returns 凡例表示に使う値の配列です。
+     */
     static Get_CircleModeLegendValue(Layernum: number, DataNum: number): number[] {
         const state = appState();
 
@@ -2064,7 +2254,20 @@ export class Accessory {
         return lev;
     }
 
-    //円をコンパクトにまとめる凡例を描き、幅を返す
+    /**
+     * 同心円風のコンパクトな記号サイズ凡例を描画し、必要寸法を返します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param pos 描画開始位置です。
+     * @param RMAX 凡例の最大基準値です。
+     * @param va 凡例に並べる値配列です。
+     * @param UnitTx 単位文字列です。
+     * @param EN_Size 記号サイズ設定値です。
+     * @param LP 線設定です。
+     * @param tp 塗り設定です。
+     * @param Print_Flag 実描画を行う場合は true です。
+     * @returns 凡例描画に必要なサイズです。
+     */
     static OverCircle_Print(g: CanvasRenderingContext2D, pos: point, RMAX: number, va: number[], UnitTx: string, EN_Size: number, LP: Line_Property, tp: Tile_Property, Print_Flag: boolean): size {
         const state = appState();
 
@@ -2117,6 +2320,17 @@ export class Accessory {
         return new size(xss, Ys);
     }
 
+    /**
+     * 凡例値ラベルを描画し、その文字幅を返します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param pos 描画位置です。
+     * @param V 値です。
+     * @param UnitTx 単位文字列です。
+     * @param i 凡例内インデックスです。
+     * @param print_f 実描画する場合は true です。
+     * @returns 描画した文字列の幅です。
+     */
     static UNIT_P(g: CanvasRenderingContext2D, pos: point, V: number, UnitTx: string, i: number, print_f: boolean): number {
         const state = appState();
 
@@ -2134,7 +2348,18 @@ export class Accessory {
         return w;
     }
 
-    //文字モードの凡例
+    /**
+     * 文字モードの凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_StringMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -2166,7 +2391,18 @@ export class Accessory {
         return true;
     }
 
-    //階級記号モードの凡例
+    /**
+     * 階級記号モードの凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_ClassMarkMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -2325,7 +2561,18 @@ export class Accessory {
 
     }
 
-    //線モードと線形状オブジェクトのペイントモードの凡例
+    /**
+     * 線モードと線形状オブジェクト用の階級凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_ClassODModeMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -2477,7 +2724,16 @@ export class Accessory {
         return true;
     }
 
-    //階級区分凡例分離表示の文字
+    /**
+     * 分離表示用の階級ラベル文字列を生成します。
+     *
+     * @param Class_div 階級区分配列です。
+     * @param checkN 対象インデックスです。
+     * @param DivNum 階級数です。
+     * @param LL 整数部桁数です。
+     * @param RR 小数部桁数です。
+     * @returns 表示用の階級ラベルです。
+     */
     static Get_SeparateClassWords(Class_div: strClass_Div_data[], checkN: number, DivNum: number, LL: number, RR: number): string {
         const state = appState();
 
@@ -2522,7 +2778,18 @@ export class Accessory {
         return fu;
     }
 
-    //ペイントモードの線形状
+    /**
+     * 線形状オブジェクト向けにペイントモード凡例を線凡例へ変換して描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_ClassPaint_LineShape(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
 
@@ -2554,7 +2821,18 @@ export class Accessory {
         }
         return screen_in_f;
     }
-    //ペイントモードの凡例
+    /**
+     * 階級ペイントモードの凡例を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param ALP 凡例左上座標です。
+     * @param HeadBoxSize 算出した凡例サイズの書き込み先です。
+     * @param UnitTx 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param SizeGetOnlyF サイズ計算のみ行う場合は true です。
+     * @returns 描画成功時は true です。
+     */
     static Draw_ClassPaintHatchMode(g: CanvasRenderingContext2D, ALP: point, HeadBoxSize: size, UnitTx: string, Layn2: number, datn2: number, SizeGetOnlyF: boolean): boolean {
         const state = appState();
         this.ensureClassDivReady(Layn2, datn2);
@@ -2691,12 +2969,26 @@ export class Accessory {
         HeadBoxSize.height = ysize2;
         return true;
     }
+    /**
+     * 凡例背景の角丸ボックスを描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param C_Rect 描画範囲です。
+     */
     static LegendBoxBack(g: CanvasRenderingContext2D, C_Rect: rectangle): void {
         const state = appState();
 
         state.attrData.Draw_Tile_RoundBox(g, C_Rect, state.attrData.TotalData.ViewStyle.MapLegend.Base.Back, 0);
     }
 
+    /**
+     * 階級凡例の表示方式を判定します。
+     *
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param CategorySeparate_f_Enable カテゴリー時の分離表示強制を有効にするかです。
+     * @returns 階級表示方式です。
+     */
     static GetClassMethod(Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): number {
         const state = appState();
 
@@ -2708,6 +3000,16 @@ export class Accessory {
         return CMethod;
     }
 
+    /**
+     * 階級ペイント凡例の文字幅、箱寸法、頻度表示幅をまとめて計算します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @param UnitTX 単位文字列です。
+     * @param Layn2 レイヤ番号です。
+     * @param datn2 データ項目番号です。
+     * @param CategorySeparate_f_Enable カテゴリー時の分離表示強制を有効にするかです。
+     * @returns 凡例描画で使う各種寸法情報です。
+     */
     static Paint_Tile_Word_Set(g: CanvasRenderingContext2D, UnitTX: string, Layn2: number, datn2: number, CategorySeparate_f_Enable: boolean): {ww: number; hh: number; hu: number; bxw: number; byh: number; sujiW: number; freqW: number; vn?: number; LL?: number; RR?: number} {
         const state = appState();
         this.ensureClassDivReady(Layn2, datn2);
@@ -2830,7 +3132,11 @@ export class Accessory {
         }
     }
 
-    //タイトル表示
+    /**
+     * 現在の表示モードに対応するタイトルを描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static Title_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
@@ -2842,6 +3148,12 @@ export class Accessory {
         state.attrData.Draw_Print(g, TI.title, TI.rect.topLeft(), vs.MapTitle.Font, enmHorizontalAlignment.Left, enmVerticalAlignment.Top);
     }
 
+    /**
+     * 現在の表示状態から印刷対象のタイトル文字列と配置矩形を計算します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @returns タイトル文字列と描画矩形です。
+     */
     static getPrintTitle(g: CanvasRenderingContext2D): { title: string; rect: rectangle } {
         const state = appState();
 
@@ -2907,7 +3219,11 @@ export class Accessory {
         }
     }
 
-    //方位表示
+    /**
+     * 方位記号と方位文字列を描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static Compass_print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
@@ -2978,7 +3294,11 @@ export class Accessory {
 
     }
 
-    //スケール表示
+    /**
+     * 現在の表示状態に合わせたスケールバーを描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static Scale_Print(g: CanvasRenderingContext2D): void {
         const state = appState();
 
@@ -3060,6 +3380,12 @@ export class Accessory {
 
     }
 
+    /**
+     * スケールバー描画に必要な寸法と表示文字列位置を事前計算します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @returns スケールバー描画に使う各種計算結果です。
+     */
     static getScaleSub(g: CanvasRenderingContext2D): {SCST: number; scaleMax: number; sxy: point; P_Scl: strScale_Attri; zeroW: number; ScaleLength: number; ScaleMaxW: number; rect: rectangle} {
         const state = appState();
 
@@ -3169,6 +3495,11 @@ export class Accessory {
         return retV;
     }
 
+    /**
+     * 凡例デバッグ表示が有効なときに内部状態をオーバーレイ描画します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     */
     static LegendDebug_Print(g: CanvasRenderingContext2D): void {
         if (LEGEND_DEBUG_ENABLED === false) {
             return;
@@ -3265,7 +3596,12 @@ export class Accessory {
         g.restore();
     }
 
-    //方位記号の外接四角形領域取得
+    /**
+     * 方位記号の外接矩形を返します。
+     *
+     * @param _g 未使用のキャンバスコンテキストです。
+     * @returns 方位記号の描画矩形です。
+     */
     static GetCompassRect(_g: CanvasRenderingContext2D): rectangle | undefined {
         const state = appState();
 
@@ -3282,19 +3618,34 @@ export class Accessory {
         return new rectangle(cp, new size(r * 2, r * 2));
     }
 
-    //タイトルの外接四角形領域取得
+    /**
+     * タイトルの外接矩形を返します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @returns タイトルの描画矩形です。
+     */
     static GetTitleRect(g: CanvasRenderingContext2D): rectangle | undefined {
         const v = this.getPrintTitle(g);
         return v.rect;
     }
 
-    //注の外接四角形領域取得
+    /**
+     * 注記の外接矩形を返します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @returns 注記の描画矩形です。
+     */
     static GetNoteRect(g: CanvasRenderingContext2D): rectangle | undefined {
         const v = this.getPrintNote(g);
         return v.rect;
     }
 
-    //スケールの外接四角形領域取得
+    /**
+     * スケールバーの外接矩形を返します。
+     *
+     * @param g 描画対象のキャンバスコンテキストです。
+     * @returns スケールバーの描画矩形です。
+     */
     static GetScaleRect(g: CanvasRenderingContext2D): rectangle {
         const v = this.getScaleSub(g);
         return v.rect;
