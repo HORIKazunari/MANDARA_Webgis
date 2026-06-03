@@ -24,20 +24,35 @@ import {
     ,strSeries_Dataset_Info
 } from './clsAttrData';
 
+/** レイヤ種別 enum の値型です。 */
 type LayerTypeValue = (typeof enmLayerType)[keyof typeof enmLayerType];
+/** レイヤ形状 enum の値型です。 */
 type ShapeValue = (typeof enmShape)[keyof typeof enmShape];
+/** メッシュ種別 enum の値型です。 */
 type MeshNumberValue = (typeof enmMesh_Number)[keyof typeof enmMesh_Number];
+/** 属性データ種別 enum の値型です。 */
 type AttDataTypeValue = (typeof enmAttDataType)[keyof typeof enmAttDataType];
+/** オブジェクト種別数を参照する地図情報です。 */
 type MapWithObkNum = { Map: { OBKNum: number } };
+/** グラフモードの単一データ項目です。 */
 type GraphModeDataItem = { DataNumber: number; Clone: () => GraphModeDataItem };
+/** グラフモードのデータセットです。 */
 type GraphModeDataSet = { Data: GraphModeDataItem[]; Clone: () => GraphModeDataSet };
+/** グラフモード全体の設定です。 */
 type GraphModeInfo = { SelectedIndex: number; DataSet: GraphModeDataSet[]; initDataSet?: () => void };
+/** ラベルモードの単一データセットです。 */
 type LabelModeDataSet = { DataItem: number[]; Clone: () => LabelModeDataSet };
+/** ラベルモード全体の設定です。 */
 type LabelModeInfo = { DataSet: LabelModeDataSet[]; initDataSet?: () => void };
+/** 内部データ指定の簡易表現です。 */
 type InnerData = { Data: number; Flag: number | boolean };
+/** ベジェ補助点設定です。 */
 type BezierData = { Data: number; ObjectPos: number; Clone: () => BezierData };
+/** 単一レイヤの属性データ型です。 */
 type LayerDataInfo = IAttrData['LayerData'][number];
+/** ダミーオブジェクト名とコードの組です。 */
 type DummyObjectNameAndCode = { code: number; Name: string };
+/** 属性データ項目型です。 */
 type AttrDataItem = IAttrDataInfo['Data'][number];
 type _AtrDataInfo = {
     Data: AttrDataItem[];
@@ -114,17 +129,26 @@ type _GridLayerDataInfo = {
     ReferenceSystem: string;
 };
 
+/**
+ * 旧データ項目と新データ項目の対応先を保持します。
+ */
 class Layer_Data_Info {
     Data = 0; // Integer
     Layer = 0; // Integer
 }
 
+/**
+ * データ対応確認時の参照値を保持します。
+ */
 class Layer_Data_InfoCheck {
     Data = 0; // Integer
     Layer = 0; // Integer
     Value = 0; // Double
 }
 
+/**
+ * 未対応状態を表す空のレイヤデータ参照情報を生成します。
+ */
 function createEmptyLayerDataInfo(): Layer_Data_Info {
     const info = new Layer_Data_Info();
     info.Layer = -1;
@@ -132,6 +156,12 @@ function createEmptyLayerDataInfo(): Layer_Data_Info {
     return info;
 }
 
+/**
+ * 属性データ編集用のグリッド画面を開きます。
+ *
+ * @param _newDataFlag 新規データ作成として開くかどうかを示します。
+ * @param buttonOK 編集結果を確定したときに呼び出すコールバックです。
+ */
 export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) => void){
     // const state = appState();
     const GridLayerData = {
@@ -148,6 +178,11 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     
     // 関数の前方宣言
     
+    /**
+     * グリッド上の編集結果から新しい属性データ構造を再構築します。
+     *
+     * @returns 再構築結果です。
+     */
     const Get_E_Data: () => { ok: boolean; emes: string } = function(){
         const L = ktGrid.getLayerMax();
         newAttrData.TotalData.LV1.Lay_Maxn = 0
@@ -280,6 +315,11 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     const newAttrData=new clsAttrData();
     let SearchSTR=""; // String
     let D_CheckDataValue: number[][] = []; // List(Of Double())
+    /**
+     * グリッドとレイヤ設定の整合性を検査し、エラーメッセージ欄を更新します。
+     *
+     * @returns エラーが存在する場合は true を返します。
+     */
     const gridErrorCheck: () => boolean = function () {
         errorInfo.value="";
         const emes = ErrorCheckLayerMapFile();
@@ -305,6 +345,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         return false;
     };
     const oldAttrData=state.attrData; // clsAttrData
+    /**
+     * 地図ファイル選択ダイアログを開き、属性データへ地図ファイルを追加します。
+     */
     const handleAddMapfile = function() {
         openMapFile(getFile);
         function getFile(jsonMapData: JsonObject | undefined, filename: string) {
@@ -345,6 +388,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             gridErrorCheck();
         }
     }
+    /**
+     * 選択中の地図ファイルを属性データから削除します。
+     */
     const handleRemoveMapfileClick = function() {
         const sel = lstMapFile.selectedIndex;
         if (sel === -1) {
@@ -363,6 +409,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         cboLayerMapFile.remove(sel);
         updateLayerTypeShapeUi();
     }
+    /**
+     * 選択中の地図ファイルを別ファイルへ差し替えます。
+     */
     const handleReplaceMapfileClick = function() {
         const sel = lstMapFile.selectedIndex;
         if (sel === -1) {
@@ -856,7 +905,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
     updateLayerTypeShapeUi();
     gridErrorCheck();
 
-    /**ブラウザのリサイズイベントでサイズ変更 */
+    /**
+     * ブラウザのリサイズに合わせて編集画面全体のサイズと配置を更新します。
+     */
     function windowResize(){
         gScreenWidth = (Generic.getBrowserWidth() - 50 * 2);
         gScreenHeight = (Generic.getBrowserHeight() - 100);
@@ -869,6 +920,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         errorBox.style.left = sideLeft;
         errorInfo.style.left = sideLeft;
     }
+    /**
+     * 検証済みの入力内容から属性データを再構成し、呼び出し元へ返します。
+     */
     function okButton(){
         if( gridErrorCheck() === true){
             Generic.alert(undefined, "エラーがあります");
@@ -904,18 +958,27 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         Generic.clear_backDiv();
         buttonOK(newAttrData);
     }
+    /**
+     * 編集画面を閉じ、変更結果を返さずに終了します。
+     */
     function cancelButton(){
         ktGrid.removeEventlister();
         window.removeEventListener('resize',windowResize);
         Generic.clear_backDiv();
     }
 
-    /**データがどこか変更された場合に発生 */
+    /**
+     * グリッド内の任意データが変更された際に再検証を実行します。
+     */
     function eventChange_Data() {
         // console.log("Change_Data");
         gridErrorCheck();
     }
-    /**レイヤの追加メニューを選択した場合に発生 */
+    /**
+     * 指定位置へ新規レイヤを挿入し、初期値を設定します。
+     *
+     * @param InsertPoint 追加先レイヤ位置です。
+     */
     function Add_Layer(InsertPoint: number) {
         const w=[];
         for(let i  = 0;i< ktGrid.getLayerMax() ;i++){
@@ -944,12 +1007,29 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         updateLayerTypeShapeUi();
         gridErrorCheck();
     }
-    /**表示レイヤを変更した場合に発生 */
+    /**
+     * 現在表示中のレイヤが切り替わった際に周辺 UI を更新します。
+     *
+     * @param _Layer 切り替え後のレイヤ番号です。
+     * @param _PreviousLayer 切り替え前のレイヤ番号です。
+     */
     function Change_LayerSelect(_Layer: number, _PreviousLayer: number) {
         updateLayerTypeShapeUi();
         gridErrorCheck();
     }
-    /**上部の固定部分の枠２行目をクリックした場合に発生 */
+    /**
+     * 固定上部セルの属性種別・欠損値設定セルをクリックした際のメニューを表示します。
+     *
+     * @param cbl 対象レイヤ番号です。
+     * @param cbx 対象列番号です。
+     * @param cby 固定セル内の行番号です。
+     * @param Value クリック時のセル値です。
+     * @param Top セル上端位置です。
+     * @param Left セル左端位置です。
+     * @param Width セル幅です。
+     * @param Height セル高さです。
+     * @param e クリックイベントです。
+     */
     function Click_FixedYS2(cbl: number, cbx: number, cby: number, Value: string, Top: number, Left: number, Width: number, Height: number, e: MouseEvent) {
         type PopupMenuItem = { caption: string; value?: AttDataTypeValue; event?: (item: PopupMenuItem) => void };
         switch (cby) {
@@ -1005,29 +1085,43 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
     }
 
-    /**データ部分をクリックした場合に発生 */
+    /**
+     * データセルクリック時のフックです。
+     */
     function Click_DataGrid(_Layer: number, _X: number, _Y: number, _Value: string, _Top: number, _Left: number, _Width: number, _Height: number) {
         // console.log("Click_DataGrid", Layer, X, Y, Value, Top, Left, Width, Height);
         void 0;
     }
-    /**上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
+    /**
+     * 上部固定領域の編集内容変更後に列設定を同期します。
+     */
     function Change_FixedYS() {
         // console.log("Change_FixedYS");
         syncDataKindAndAlignment(ktGrid.getLayer());
         ktGrid.refresh()
         gridErrorCheck();
     }
-    /**左部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生 */
+    /**
+     * 左側固定領域の編集内容変更後に検証を実行します。
+     */
     function Change_FixedXS() {
         // console.log("Change_FixedXS");
         gridErrorCheck();
     }
-    /** 左上部の固定部分かつ枠でない部分がコントロール内で変更された場合に発生*/
+    /**
+     * 左上固定領域の編集変更時のフックです。
+     */
     function Change_FixedUpperLeft() {
         // console.log("Change_FixedUpperLeft");
         void 0;
     }
-    /**レイヤ名の変更、レイヤの移動などで発生 */
+    /**
+     * レイヤ名変更・移動・削除後に必要な UI 更新を行います。
+     *
+     * @param LayerNameChange レイヤ名変更の有無です。
+     * @param LayerMove レイヤ移動の有無です。
+     * @param LayerDelete レイヤ削除の有無です。
+     */
     function Change_Layer(LayerNameChange: boolean, LayerMove: boolean, LayerDelete: boolean) {
         // console.log("Change_Layer", LayerNameChange, LayerMove, LayerDelete);
         if(LayerDelete===true){
@@ -1035,7 +1129,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
     }
 
-    /**既存データの編集の場合、グリッド上中のデータと以前のデータを比較 */
+    /**
+     * 既存データ編集時に旧属性データから引き継ぐ設定や参照関係を再構成します。
+     */
     function Check_Data() {
         const R_Conv: Layer_Data_Info[][] = [];// Layer_Data_Info())
         // const r_md = 0;
@@ -1545,7 +1641,12 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
 
     }
 
-    /**古いシンボル位置・ラベル位置で変更してあるものがあったら新しい箇所にコピーする */
+    /**
+     * 旧データ側で調整済みのシンボル位置・ラベル位置を新データへ引き継ぎます。
+     *
+     * @param NewL 新データ側レイヤ番号です。
+     * @param OldL 旧データ側レイヤ番号です。
+     */
     function Check_Kencode_XY(NewL: number, OldL: number){
         const newAL = newAttrData.LayerData[NewL] as unknown as LayerDataInfo;
         const oldAL = oldAttrData.LayerData[OldL] as unknown as LayerDataInfo;
@@ -1661,7 +1762,11 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
     }
 
-    /**グリッド上のデータに対応する旧データを設定 */
+    /**
+     * グリッド上の各データ項目に対応する旧データ項目を探索して対応表を構築します。
+     *
+     * @returns 新旧データ項目の対応表です。
+     */
     function  Get_Data_Refference(){
         const D_LayerNum = oldAttrData.TotalData.LV1.Lay_Maxn;
 
@@ -1691,7 +1796,15 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         return Conv;
     }
 
-    /**平均値・合計値などがグリッド上のデータと同じ旧データを探す */
+    /**
+     * タイトル・単位・集計値をもとに新データに対応する旧データ候補を探索します。
+     *
+     * @param L 新データ側レイヤ番号です。
+     * @param D 新データ側データ項目番号です。
+     * @param CheckLevel 探索の厳しさを表す段階です。
+     * @param CheckedData 既に対応付け済みの旧データ管理表です。
+     * @returns 対応候補のレイヤ・データ番号です。
+     */
     function Check_Data2(L: number, D: number, CheckLevel: number, CheckedData: boolean[][]){
 
         const CheckDataRet = new Layer_Data_Info();
@@ -1828,7 +1941,9 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
             }
 
             }
-
+    /**
+     * 再構成後の属性データに合わせて表示範囲とアクセサリ初期位置を調整します。
+     */
     function Reset_SCRView_Size(){
 
         newAttrData.Check_Vector_Object();
@@ -1931,7 +2046,11 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
     }
 
-    /**レイヤ全体にかかわる項目エラーのチェック */
+    /**
+     * 全レイヤ共通の入力条件を検証し、地図ファイルや時期設定の不整合を収集します。
+     *
+     * @returns 検出したエラーメッセージ一覧です。
+     */
     function ErrorCheckLayerMapFile() {
         const eMes: string[] = [];
         if (newAttrData.GetNumOfMapFile() === 0) {
@@ -2022,7 +2141,12 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         return eMes;
     }
 
-    /**レイヤごとのオブジェクト名をチェックする */
+    /**
+     * 指定レイヤのオブジェクト名と形状設定を検証します。
+     *
+     * @param LayerNum 検証対象レイヤ番号です。
+     * @returns 検出したエラーメッセージ一覧です。
+     */
     function Check_ObjectNameLayer(LayerNum: number){
         const eMes: string[] = [];
         let Enable_Obj  = 0;
@@ -2125,7 +2249,14 @@ export function clsGrid(_newDataFlag: boolean, buttonOK: (newAttr: clsAttrData) 
         }
         return eMes;
     }
-
+    /**
+     * データ項目の代表値を比較用に取得します。
+     *
+     * @param _attrData 対象属性データです。
+     * @param Layernum レイヤ番号です。
+     * @param DataNum データ項目番号です。
+     * @returns データ型に応じた比較用代表値です。
+     */
     function gridGetDataPropertyValue(_attrData: clsAttrData, Layernum: number, DataNum: number): number{
         const al = _attrData.LayerData[Layernum] as {
             atrData: { Data: Array<{ DataType: number; Statistics: { Ave: number } }> };

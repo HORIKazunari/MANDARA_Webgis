@@ -86,7 +86,9 @@ import type {
   MapData
 } from './types';
 
-// カスタム型定義
+/**
+ * 設定画面の一部パネルで使う補助カウンタ付き要素です。
+ */
 type PanelWithCounters = HTMLElement & { inPic?: number; inTxt?: number };
 
 // Helper for DOM access with legacy extensions
@@ -94,6 +96,9 @@ const doc = document;
 
 // ESM化ステップ: 旧来の参照タグは不要
 
+/**
+ * 設定画面で選択される表示モード種別です。
+ */
 const enmSelectMode = {
     noMode: -1,
     ClassPaintMode: 0,
@@ -442,13 +447,20 @@ export function setting(locSearch: string, locHash: string = "") {
  
     let SelectedCategoryIndex=-1;
 
-    //モードのdivにenter
+    /**
+     * モードアイコンにマウスが入ったときの強調表示とツールチップ表示を行います。
+     *
+     * @param e マウスイベントです。
+     */
     function modeEnter(this: ExtendedHTMLElement, e: MouseEvent): void {
         if(this.selected === false) {
             this.style.backgroundColor = "#ffdcdc";
         }
         Generic.createNewDiv(this, this.tooltip ?? "", "", "", e.offsetX, e.offsetY - 10, 80, undefined, "z-index:1000;font-size:12px;border: solid 1px; border-radius:3px; background-color:white;text-align:center","");
     }
+    /**
+     * モードアイコンからマウスが離れたときに強調表示を解除します。
+     */
     function modeLeave(this: ExtendedHTMLElement): void {
         if(this.selected === false) {
             this.style.backgroundColor = "white";
@@ -459,7 +471,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    /**複数表示モードをクリック */
+    /**
+     * 複数表示モードのアイコンを選択し、対応する設定画面を開きます。
+     */
     function multiModeClick(this: ExtendedHTMLElement): void {
         clearModeIcon();
         let selDiv: HTMLElement | undefined = undefined;
@@ -491,7 +505,9 @@ export function setting(locSearch: string, locHash: string = "") {
                 break;
         }
     }
-    /**複合表示モードをクリック */
+    /**
+     * 複合表示モードのアイコンを選択し、対応する設定画面を開きます。
+     */
     function ComplexModeClick(this: ExtendedHTMLElement): void {
         clearModeIcon();
         let selDiv: HTMLElement | undefined = undefined;
@@ -522,7 +538,9 @@ export function setting(locSearch: string, locHash: string = "") {
                 break;
         }
     }
-    //モードのdivをクリック
+    /**
+     * 単独表示モードのアイコンを選択し、現在データへ反映します。
+     */
     function modeClick(this: ExtendedHTMLElement): void {
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const DataNum = state.attrData.LayerData[Layernum].atrData.SelectedIndex;
@@ -795,7 +813,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    /**空間検索メニュー */
+    /**
+     * 空間検索ダイアログを開き、追加されたデータ項目を UI へ反映します。
+     */
     function mnuSpatialSearch(/*e: MouseEvent*/){
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const oldData = state.attrData.LayerData[Layernum].atrData.Count;
@@ -817,6 +837,11 @@ export function setting(locSearch: string, locHash: string = "") {
         })
     }
 
+    /**
+     * 現在データを破棄してよいか確認し、了承時に後続処理を実行します。
+     *
+     * @param okCall 確認後に実行する処理です。
+     */
     function Check_EraseSettei_OK(okCall: () => void){
         if (man_Data !== enmDataSource.NoData) {
             Generic.confirm(undefined, "現在のデータは破棄されます。よろしいですか？", function(){
@@ -858,6 +883,11 @@ export function setting(locSearch: string, locHash: string = "") {
         });
     }
 
+    /**
+     * 新しく追加されたデータ項目を選択肢と通知へ反映します。
+     *
+     * @param e 通知位置に使う任意のマウスイベントです。
+     */
     function addNewDataItem(e?: MouseEvent){
         const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
         const newN = state.attrData.Get_DataNum(Layernum);
@@ -896,14 +926,18 @@ export function setting(locSearch: string, locHash: string = "") {
         });
     }
 
-    /**属性検索設定 */
+    /**
+     * 属性検索条件の設定ダイアログを開きます。
+     */
     function mnuConditionSettings(){
         frmMain_ConditionSettings(function () {
             Check_Print_err();
         });
     }
 
-    /**データ項目設定コピー */
+    /**
+     * 現在のデータ項目設定を別項目へコピーします。
+     */
     function mnuCopyDataSettings(){
         frmMainCopyDataSettings(function () {
             setDataMode();
@@ -911,8 +945,9 @@ export function setting(locSearch: string, locHash: string = "") {
         });
     }
 
-
-    /**連続表示モードにまとめて設定 */
+    /**
+     * 現在の表示内容から連続表示モード設定を一括生成します。
+     */
     function mnuSetSeriesMode() {
         frmMain_SetSeriesMode(function () {
             const selIndex = state.attrData.TotalData.TotalMode.Series.SelectedIndex;
@@ -931,7 +966,9 @@ export function setting(locSearch: string, locHash: string = "") {
 
     }
 
-    /**記号表示位置等操作 */
+    /**
+     * 記号やラベルの表示位置関連ツールを開き、必要なら座標列を追加します。
+     */
     function mnuMarkPosition(){
         frmMain_MarkPosition(function(mode: number, /*x: number, y: number*/){          
             switch (mode){
@@ -1146,6 +1183,9 @@ export function setting(locSearch: string, locHash: string = "") {
             setOverlay();
         }
 
+        /**
+         * 現在の表示モードを選択中の重ね合わせデータセットへ登録します。
+         */
         function setOverlay() {
             const Layernum = state.attrData.TotalData.LV1.SelectedLayer;
             const al = state.attrData.LayerData[Layernum];
@@ -1306,6 +1346,11 @@ export function setting(locSearch: string, locHash: string = "") {
             setSeries(ats.SelectedIndex);
         }
 
+        /**
+         * 現在の表示モードを指定した連続表示データセットへ登録します。
+         *
+         * @param DataSetNum 追加先データセット番号です。
+         */
         function setSeries(DataSetNum: number) {
             const ats = state.attrData.TotalData.TotalMode.Series;
             const atsd = ats.DataSet[DataSetNum];
@@ -1440,7 +1485,12 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    //データ項目の変更(obj, sel, v)は、セレクトボックスからの戻り値
+    /**
+     * データ項目選択変更を反映し、単独表示モードと右側設定 UI を更新します。
+     *
+     * @param obj 変更元要素または内部呼び出し用のダミー値です。
+     * @param sel 選択されたデータ項目番号です。
+     */
     function changeDataItem(obj: HTMLSelectElement | number, sel: number | number[], /* v: string | number = "" */) {
         const selNum = Array.isArray(sel) ? sel[0] : sel;
         const LayerNum = state.attrData.TotalData.LV1.SelectedLayer;
@@ -1455,8 +1505,9 @@ export function setting(locSearch: string, locHash: string = "") {
         setFrequencyLabel();
     }
 
-
-    //読み込み直後の初期表示
+    /**
+     * データ読込直後の左側設定画面とモードアイコンを初期状態へ整えます。
+     */
     function initFirtScreen() {
         firstPanelAbout?.setVisibility?.(false);
         divpanel.style.visibility = 'visible';
@@ -1671,7 +1722,12 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    //単独表示モードから選択モードを取得noModeの場合はラベルモードを返す
+    /**
+     * 単独表示モードから対応するモード選択項目を取得します。
+     *
+     * @param SoloMode 単独表示モードです。
+     * @returns 対応するモード選択値です。
+     */
     function GetSelectModeFromSoloMode(SoloMode: SoloMode): SelectMode {
         switch (SoloMode) {
             case enmSoloMode_Number.ClassPaintMode:
@@ -1807,6 +1863,11 @@ export function setting(locSearch: string, locHash: string = "") {
         Get_DataTitle: (layerNum: number, dataNum: number, unitF: boolean) => string;
         Get_Data_Value: (layerNum: number, dataNum: number, objNum: number, nullValue: string) => string;
     };
+    /**
+     * グラフ表示モード設定に必要な属性データ API へ型付きでアクセスします。
+     *
+     * @returns グラフ表示モード向け属性データビューです。
+     */
     function getGraphAttrData(): GraphAttrData {
         return state.attrData as unknown as GraphAttrData;
     }
@@ -1822,9 +1883,19 @@ export function setting(locSearch: string, locHash: string = "") {
         Get_DataTitle: (layerNum: number, dataNum: number, unitF: boolean) => string;
         Draw_Sample_LineBox: (target: HTMLElement, line: LinePattern) => void;
     };
+    /**
+     * ラベル表示モード設定に必要な属性データ API へ型付きでアクセスします。
+     *
+     * @returns ラベル表示モード向け属性データビューです。
+     */
     function getLabelAttrData(): LabelAttrData {
         return state.attrData as unknown as LabelAttrData;
     }
+    /**
+     * 現在選択中データの等値線モード設定を取得します。
+     *
+     * @returns 現在の等値線設定です。
+     */
     function nowContourMD(): ContourSetting {
         const soloData = state.attrData.nowDataSolo() as unknown as { ContourMD: ContourSetting };
         return soloData.ContourMD;
@@ -2041,7 +2112,9 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
         //●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-    /**ラベル表示モードの設定画面の要素設定 */
+    /**
+     * ラベル表示モードの設定画面を現在のデータセット内容で更新します。
+     */
     function setSettingLabelModeWindow(){
         labelDatasetSelectSet();
         labelDatasetDataItem();
@@ -2086,7 +2159,9 @@ export function setting(locSearch: string, locHash: string = "") {
 
 
     //●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-    /**連続表示モードの設定画面の要素設定 */
+    /**
+     * 連続表示モードの設定画面を現在のデータセット内容で更新します。
+     */
     function setSettingSeriesModeWindow(){
         seriesDatasetSelectSet();
         seriesDatasetDataItem();
@@ -2101,7 +2176,9 @@ export function setting(locSearch: string, locHash: string = "") {
         doc.getElementById("seriesDataSetList").addSelectList(seriesDataSetList, series.SelectedIndex, true,false);
     }
 
-    /**連続表示モードのデータセットの内容を表示 */
+    /**
+     * 選択中の連続表示データセット内容を設定画面へ反映します。
+     */
     function seriesDatasetDataItem() {
         const series = state.attrData.TotalData.TotalMode.Series;
         const seriesSelD = series.DataSet[series.SelectedIndex];
@@ -2140,7 +2217,9 @@ export function setting(locSearch: string, locHash: string = "") {
         doc.getElementById("overlayDataSetList").addSelectList(overlayDataSetList,over.SelectedIndex, true,false);
     }
 
-    /**重ね合わせ表示モードのデータセットの内容を表示 */
+    /**
+     * 選択中の重ね合わせ表示データセット内容を設定画面へ反映します。
+     */
     function overlayDatasetDataItem(){
         const over = state.attrData.TotalData.TotalMode.OverLay;
         const overSelD = over.DataSet[over.SelectedIndex];
@@ -2188,7 +2267,9 @@ export function setting(locSearch: string, locHash: string = "") {
 
     }
 
-    /**重ね合わせモードのデータセットの個別アイテムの情報をgbOverlayItemData内に表示 */
+    /**
+     * 重ね合わせ表示モードで選択中アイテムの個別設定を詳細欄へ反映します。
+     */
     function overlayDatasetDataItemEach() {
         const over = state.attrData.TotalData.TotalMode.OverLay;
         const overSelD = over.DataSet[over.SelectedIndex];
@@ -2708,7 +2789,9 @@ export function setting(locSearch: string, locHash: string = "") {
         }
     }
 
-    /**等値線モードの個別設定の値セット */
+    /**
+     * 等値線モードの個別設定一覧で選ばれた値を編集欄へ反映します。
+     */
     function setContourSepaDataValue(){
         const n=lstcontourSeparateValue.selectedIndex;
         const contour = nowContourMD();
@@ -2957,9 +3040,6 @@ export function setting(locSearch: string, locHash: string = "") {
         };
         for (let i = 0; i < DivNum; i++) {
             const p = doc.getElementById("picClassBox" + i);
-    /**
-     * 右側の設定モードウィンドウを生成して各表示モード用 UI を初期化します。
-     */
             if (!p) {
                 continue;
             }
@@ -2981,7 +3061,9 @@ export function setting(locSearch: string, locHash: string = "") {
     }
 
 
-    //各設定モードの画面作成
+    /**
+     * 右側の設定モードウィンドウを生成して各表示モード用 UI を初期化します。
+     */
     function frmSettingMode() {
         const sw = 400;
         const sh = 450;
