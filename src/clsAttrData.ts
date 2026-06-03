@@ -500,23 +500,35 @@ export class strYMD {
     }
 }
 
-//度分秒構造体
+/**
+ * 度分秒を分解して保持する補助データです。
+ */
 class strDegreeMinuteSeconde {
     Degree: number = 0;
     Minute: number = 0;
     Second: number = 0;
 }
 
-//度分秒緯度経度構造体
+/**
+ * 緯度経度を度分秒形式で保持する補助データです。
+ */
 class strLatLonDegreeMinuteSecond {
     LatitudeDMS: strDegreeMinuteSeconde;
     LongitudeDMS: strDegreeMinuteSeconde;
 
+    /**
+     * 緯度用・経度用の度分秒データを初期化します。
+     */
     constructor() {
         this.LatitudeDMS = new strDegreeMinuteSeconde();
         this.LongitudeDMS = new strDegreeMinuteSeconde();
     }
 
+    /**
+     * 度分秒形式の値を 10 進緯度経度へ変換します。
+     *
+     * @returns 変換後の緯度経度です。
+     */
     toLatLon(): latlon {
         const result = new latlon(0, 0);
         result.lat = Math.abs(this.LatitudeDMS.Degree) + this.LatitudeDMS.Minute / 60 + this.LatitudeDMS.Second / 3600;
@@ -790,12 +802,17 @@ class _Cross_Line_Data {
 // enmGraphMode はglobals.d.tsで定義済み
 
 
+/**
+ * オブジェクトに紐づく URL 情報 1 件分です。
+ */
 class strURL_Data {
     Name: string = "";
     Address: string = "";
 }
 
-//オブジェクト名とコード、シンボル位置（属性データ）
+/**
+ * 属性オブジェクト 1 件分の名称、位置、リンク情報を保持します。
+ */
 class strObject_Data_Info {
     MpObjCode: number = 0;
     Name: string = "";
@@ -810,6 +827,11 @@ class strObject_Data_Info {
     MeshPoint: point[] = [];
     Visible: boolean = false;
 
+    /**
+     * オブジェクト情報を深い複製で返します。
+     *
+     * @returns 複製したオブジェクト情報です。
+     */
     Clone(): strObject_Data_Info {
     const d = new strObject_Data_Info();
     d.MpObjCode = this.MpObjCode;
@@ -832,6 +854,9 @@ class strObject_Data_Info {
     }
 }
 
+/**
+ * レイヤ内の実オブジェクト・合成オブジェクト一覧を保持します。
+ */
 class strObject_Info {
     ObjectNum: number = 0;
     NumOfSyntheticObj: number = 0;
@@ -840,12 +865,19 @@ class strObject_Info {
     TripObjData: TripObjData[] = [];
 }
 
-//合成オブジェクト名とコード（属性データ）
+/**
+ * 合成オブジェクトを構成する元オブジェクト名とコードです。
+ */
 class strSynthetic_ObjectName_and_Code {
     code: number = 0;
     Name: string = "";
     Draw_F: boolean = false;
 
+    /**
+     * 同じ内容の複製を返します。
+     *
+     * @returns 複製した合成オブジェクト参照です。
+     */
     Clone(): strSynthetic_ObjectName_and_Code {
         const dt = new strSynthetic_ObjectName_and_Code();
         Object.assign(dt, this);
@@ -853,7 +885,9 @@ class strSynthetic_ObjectName_and_Code {
     }
 }
 
-//合成オブジェクト（属性・地図データ）
+/**
+ * 合成オブジェクトそのものの形状・期間・構成要素を保持します。
+ */
 class strSynthetic_Object_Data {
     Kind: number = 0;
     NumOfObject: number = 0;
@@ -864,6 +898,11 @@ class strSynthetic_Object_Data {
     Circumscribed_Rectangle: rectangle = new rectangle();
     Objects: strSynthetic_ObjectName_and_Code[] = [];
 
+    /**
+     * 合成オブジェクト情報を深い複製で返します。
+     *
+     * @returns 複製した合成オブジェクト情報です。
+     */
     Clone(): strSynthetic_Object_Data {
         const dt = new strSynthetic_Object_Data();
         Object.assign(dt, this);
@@ -939,6 +978,11 @@ class strTileMapViewInfo {
     TileMapDataSet: JsonObject = {};
     DrawTiming: number = 0;
 
+    /**
+     * タイルマップ表示設定を複製します。
+     *
+     * @returns 複製したタイルマップ表示設定です。
+     */
     Clone(): strTileMapViewInfo {
         const d = new strTileMapViewInfo();
         Object.assign(d, this);
@@ -955,13 +999,20 @@ class _tileList_Data_Info {
 }
 
 
-//ペイントモード設定値（属性データ）
+/**
+ * 階級ペイントモードの配色設定を保持します。
+ */
 class strClassPaint_Data {
     color1: colorRGBA = new colorRGBA();
     color2: colorRGBA = new colorRGBA();
     color3: colorRGBA = new colorRGBA();
     Color_Mode: number = 0; // enmPaintColorSettingModeInfo
 
+    /**
+     * 配色設定を複製します。
+     *
+     * @returns 複製したペイント設定です。
+     */
     Clone(): strClassPaint_Data {
         const d = new strClassPaint_Data();
         d.color1 = this.color1.Clone();
@@ -972,7 +1023,9 @@ class strClassPaint_Data {
     }
 }
 
-//記号モード共通
+/**
+ * 記号系モードで共通利用する内部色・凡例文言設定です。
+ */
 class strMarkCommon_Data {
     Inner_Data: strInner_Data_Info = new strInner_Data_Info();
     MinusTile: Tile_Property = new Tile_Property();
@@ -980,6 +1033,11 @@ class strMarkCommon_Data {
     LegendMinusWord: string = "";
     LegendPlusWord: string = "";
 
+    /**
+     * 共通記号設定を複製します。
+     *
+     * @returns 複製した共通設定です。
+     */
     Clone(): strMarkCommon_Data {
         const d = new strMarkCommon_Data();
         d.Inner_Data = this.Inner_Data.Clone();
@@ -991,11 +1049,19 @@ class strMarkCommon_Data {
     }
 }
 
+/**
+ * 記号サイズモードで線形状レイヤに使う補助線設定です。
+ */
 class strMarkSizeModeLineShapeData {
     LineWidth: number = 1;
     LineEdge: LineEdge_Connect_Pattern_Data_Info = new LineEdge_Connect_Pattern_Data_Info();
     Color: colorRGBA = new colorRGBA();
 
+    /**
+     * 線形状設定を複製します。
+     *
+     * @returns 複製した線形状設定です。
+     */
     Clone(): strMarkSizeModeLineShapeData {
         const d = new strMarkSizeModeLineShapeData();
         d.LineWidth = this.LineWidth;
@@ -1005,7 +1071,9 @@ class strMarkSizeModeLineShapeData {
     }
 }
 
-//記号の大きさモード設定（属性データ）
+/**
+ * 記号サイズモードの最大値と記号設定を保持します。
+ */
 class strMarkSize_Data {
     MaxValueMode: number = 0;
     MaxValue: number = 0;
@@ -1013,6 +1081,11 @@ class strMarkSize_Data {
     Mark: Mark_Property = new Mark_Property();
     LineShape: strMarkSizeModeLineShapeData = new strMarkSizeModeLineShapeData();
 
+    /**
+     * 記号サイズモード設定を複製します。
+     *
+     * @returns 複製した記号サイズモード設定です。
+     */
     Clone(): strMarkSize_Data {
         const d = new strMarkSize_Data();
         d.MaxValueMode = this.MaxValueMode;
@@ -1024,7 +1097,9 @@ class strMarkSize_Data {
     }
 }
 
-//記号の数モード設定（属性データ）
+/**
+ * 記号数モードの配置と記号設定を保持します。
+ */
 class strMarkBlock_Data {
     Value: number = 0;
     ArrangeB: number = 0;
@@ -1033,6 +1108,11 @@ class strMarkBlock_Data {
     Overlap: number = 0;
     LegendBlockModeWord: string = "";
 
+    /**
+     * 記号数モード設定を複製します。
+     *
+     * @returns 複製した記号数モード設定です。
+     */
     Clone(): strMarkBlock_Data {
         const d = new strMarkBlock_Data();
         Object.assign(d, this);
@@ -1052,6 +1132,9 @@ const enmMarkSizeValueMode = {
     UserDefinition: 1
 }
 
+/**
+ * 棒記号モードの寸法・塗り・目盛り設定を保持します。
+ */
 class strMarkBar_Data {
     Width: number = 0;
     MaxHeight: number = 0;
@@ -1065,6 +1148,11 @@ class strMarkBar_Data {
     scaleLinePat: Line_Property = new Line_Property();
     BarShape: number = 0;
 
+    /**
+     * 棒記号モード設定を複製します。
+     *
+     * @returns 複製した棒記号モード設定です。
+     */
     Clone(): strMarkBar_Data {
         const d = new strMarkBar_Data();
         Object.assign(d, this);
@@ -1075,12 +1163,19 @@ class strMarkBar_Data {
     }
 }
 
-//文字モード
+/**
+ * 文字表示モードの書式設定を保持します。
+ */
 class strString_Data {
     Font: Font_Property = new Font_Property();
     maxWidth: number = 0;
     WordTurnF: boolean = false;
 
+    /**
+     * 文字表示モード設定を複製します。
+     *
+     * @returns 複製した文字モード設定です。
+     */
     Clone(): strString_Data {
         const d = new strString_Data();
         d.Font = this.Font.Clone();
@@ -1112,13 +1207,20 @@ const enmSoloMode_Number = {
     StringMode: 9
 }
 
-//階級区分データ（属性データ）
+/**
+ * 階級区分 1 件分の値と描画設定を保持します。
+ */
 class strClass_Div_data {
     Value: number | string = 0;  //Double/String
     PaintColor: colorRGBA = new colorRGBA();
     ClassMark: Mark_Property = new Mark_Property();
     ODLinePat: Line_Property = new Line_Property();
     
+    /**
+     * 階級区分設定を複製します。
+     *
+     * @returns 複製した階級区分設定です。
+     */
     Clone(): strClass_Div_data {
         const d = new strClass_Div_data();
         d.Value = this.Value;
@@ -1129,6 +1231,9 @@ class strClass_Div_data {
     }
 }
 
+/**
+ * 等値線の等間隔設定を保持します。
+ */
 class strContour_Data_Regular_interval {
     bottom: number = 0;
     Interval: number = 0;
@@ -1142,10 +1247,19 @@ class strContour_Data_Regular_interval {
     EX_Value: number = 0;
     EX_Line_Pat: Line_Property = new Line_Property();
 }
+
+/**
+ * 等値線の個別値設定 1 件分です。
+ */
 class strContour_Data_Irregular_interval {
     Value: number = 0; // Double
     Line_Pat: Line_Property = new Line_Property();
     
+    /**
+     * 個別等値線設定を複製します。
+     *
+     * @returns 複製した個別等値線設定です。
+     */
     Clone(): strContour_Data_Irregular_interval {
         const ir = new strContour_Data_Irregular_interval();
         ir.Value = this.Value;
@@ -1160,6 +1274,10 @@ const enmContourIntervalMode = {
     ClassPaint: 2,
     ClassHatch: 3
 }
+
+/**
+ * 等値線モード全体の設定を保持します。
+ */
 class strContour_Data {
     Interval_Mode: number = 0; // enmContourIntervalMode
     Draw_in_Polygon_F: boolean = false; // Boolean
@@ -1169,6 +1287,11 @@ class strContour_Data {
     IrregularNum: number = 0; // Integer
     Irregular: strContour_Data_Irregular_interval[] = []; // strContour_Data_Irregular_interval
     
+    /**
+     * 等値線モード設定を深い複製で返します。
+     *
+     * @returns 複製した等値線モード設定です。
+     */
     Clone(): strContour_Data {
         const d = new strContour_Data();
         Object.assign(d, this);
@@ -1197,13 +1320,20 @@ export class strContour_Line_property {
     PointStac: number = 0; // Integer
     Circumscribed_Rectangle: rectangle = new rectangle();
 }
-//線引きモード（属性データ）
+/**
+ * 線引きモードで使う始点レイヤ・オブジェクトと矢印設定です。
+ */
 class strClassODMode_data {
     o_Layer: number = 0; // Integer
     O_object: number = 0; // Integer
     Dummy_ObjectFlag: boolean = false; // Boolean
     Arrow: Arrow_Data = new Arrow_Data();
     
+    /**
+     * 線引きモード設定を複製します。
+     *
+     * @returns 複製した線引きモード設定です。
+     */
     Clone(): strClassODMode_data {
         const d = new strClassODMode_data();
         d.o_Layer = this.o_Layer;
@@ -1217,11 +1347,20 @@ const _enmMarkTurnDirection = {
     AntiClockwise: 0,
     Clockwise: 1
 }
-//記号の回転モード
+
+/**
+ * 記号回転モードの方向・記号・重なり角度を保持します。
+ */
 class strMarkTurnMode_Data {
     Dirction: number = 0;
     Mark: Mark_Property = new Mark_Property();
     DegreeLap: number = 0;
+
+    /**
+     * 記号回転モード設定を複製します。
+     *
+     * @returns 複製した記号回転モード設定です。
+     */
     Clone(): strMarkTurnMode_Data {
         const d = new strMarkTurnMode_Data();
         d.Dirction = this.Dirction;
@@ -1231,7 +1370,9 @@ class strMarkTurnMode_Data {
     }
 }
 
-//データ項目ごとの単独表示モードのプロパティを保持する構造体
+/**
+ * データ項目ごとの単独表示モード別設定をまとめて保持します。
+ */
 class strSoloModeViewSettings_Data {
     SoloMode: number = 0;
     Div_Num: number = 0;
@@ -1248,6 +1389,10 @@ class strSoloModeViewSettings_Data {
     MarkTurnMD: strMarkTurnMode_Data = new strMarkTurnMode_Data();
     Class_Div: strClass_Div_data[] = [];
 }
+
+/**
+ * データ項目の統計量を保持します。
+ */
 class strStatisticInfo {
     Max: number = 0;
     Min: number = 0;
@@ -1308,8 +1453,9 @@ const enmKenCodeObjectstructure = {
     SyntheticObj: 1 //時系列集計による合成オブジェクトの場合
 }
 
-
-//データ項目の情報
+/**
+ * データ項目 1 件分の表示設定、統計量、値配列を保持します。
+ */
 class strData_info {
     Title: string = "";  //String
     Unit: string = "";  //String
@@ -1326,6 +1472,12 @@ class strData_info {
     SoloModeViewSettings: strSoloModeViewSettings_Data = new strSoloModeViewSettings_Data();//  '単独表示モードごとのプロパティ
     Value: (string | number | undefined)[] = [];  //String or Number
     
+    /**
+     * データ値を含むかどうかを選んで項目信報を複製します。
+     *
+     * @param NoValueFlag true の場合は値配列を複製しません。
+     * @returns 複製したデータ項目情報です。
+     */
     Clone(NoValueFlag: boolean = false): strData_info {
         const dt = new strData_info();
         dt.Title = this.Title;
@@ -1365,6 +1517,9 @@ class strData_info {
     }
 }
 
+/**
+ * 白地図初期属性データ表示で使うレイヤ設定です。
+ */
 class _strShowViewerLayerInfo {
     //白地図初期属性データのレイヤ情報
     Name: string = ""; //String
@@ -1374,6 +1529,9 @@ class _strShowViewerLayerInfo {
     Shape: number = 0; //enmShape
 }
 
+/**
+ * レイヤ内データ項目配列と選択位置を管理します。
+ */
 class stratrData_Info {
     [key: string]: number | strData_info[];
     Count: number = 0;//データ項目数
@@ -1381,6 +1539,9 @@ class stratrData_Info {
     Data: strData_info[] = [];//strData_info
 }
 
+/**
+ * 点形状・線形状レイヤ共通の描画設定です。
+ */
 class strLayerPointLineShape_Data {
     LineWidth: number = 1; //Single
     LineEdge: LineEdge_Connect_Pattern_Data_Info = new LineEdge_Connect_Pattern_Data_Info();
@@ -1391,18 +1552,29 @@ class strLabelMode_Data_info {
     SelectedIndex: number = 0;// Integer
     DataSet: strLabel_Data[] = [];// As strLabel_Data
     
+    /**
+     * ラベルモードのデータセット一覧を初期状態へ戻します。
+     */
     initDataSet(): void {
         this.SelectedIndex = 0;
         this.DataSet = [];
         this.AddDataSet();
     }
 
+    /**
+     * ラベルデータセットを 1 件追加します。
+     */
     AddDataSet(): void {
         const d = new strLabel_Data();
         d.initData();
         this.DataSet.push(d);
     }
 
+    /**
+     * ラベルモード設定を複製します。
+     *
+     * @returns 複製したラベルモード設定です。
+     */
     Clone(): strLabelMode_Data_info {
         const d = new strLabelMode_Data_info();
         d.SelectedIndex = this.SelectedIndex;
@@ -1432,6 +1604,11 @@ class strLabel_Data {
     BorderDataTile: Tile_Property = new Tile_Property();
     BorderLine: Line_Property = new Line_Property();
     
+    /**
+     * ラベルデータセットを複製します。
+     *
+     * @returns 複製したラベルデータセットです。
+     */
     Clone(): strLabel_Data {
         const d = new strLabel_Data();
         Object.assign(d, this);
@@ -1444,6 +1621,9 @@ class strLabel_Data {
         return d;
     }
     
+    /**
+     * ラベルデータセットを既定値で初期化します。
+     */
     initData(): void {
         this.DataItem = [];
         this.title = "";
@@ -1473,23 +1653,36 @@ class strLabel_Data {
 }
 
 
-//グラフモード全体の構造体
+/**
+ * グラフモード全体のデータセット一覧を保持します。
+ */
 class strGraphMode_DataSetting_Info {
     SelectedIndex: number = 0;// Integer
     DataSet: strGraph_Data[] = [];// As strGraph_Data
     
+    /**
+     * グラフデータセット一覧を初期状態へ戻します。
+     */
     initDataSet(): void {
         this.SelectedIndex = 0;
         this.DataSet = [];
         this.AddDataSet();
     }
     
+    /**
+     * グラフデータセットを 1 件追加します。
+     */
     AddDataSet(): void {
         const d = new strGraph_Data();
         d.initData();
         this.DataSet.push(d);
     }
     
+    /**
+     * グラフモード設定を複製します。
+     *
+     * @returns 複製したグラフモード設定です。
+     */
     Clone(): strGraphMode_DataSetting_Info {
         const d = new strGraphMode_DataSetting_Info();
         d.SelectedIndex = this.SelectedIndex;
@@ -1506,6 +1699,9 @@ class strGraph_Data {
     En_Obi: strGraph_Data_En = new strGraph_Data_En();
     Oresen_Bou: strGraph_Data_Oresen = new strGraph_Data_Oresen();
     
+    /**
+     * グラフデータセットを既定値で初期化します。
+     */
     initData(): void {
         this.title = "";
         this.Data = [];
@@ -1529,6 +1725,11 @@ class strGraph_Data {
         this.Oresen_Bou.FrameAxe = enmBarChartFrameAxePattern.Half;
     }
 
+    /**
+     * グラフデータセットを複製します。
+     *
+     * @returns 複製したグラフデータセットです。
+     */
     Clone(): strGraph_Data {
         const d = new strGraph_Data();
         Object.assign(d, this);
@@ -1542,10 +1743,18 @@ class strGraph_Data {
     }
 }
 
+/**
+ * グラフデータセット内の 1 系列分のデータ項目参照です。
+ */
 class GraphModeDataItem {
     DataNumber: number = 0;// Integer
     Tile: Tile_Property = new Tile_Property();
     
+    /**
+     * 系列データ参照を複製します。
+     *
+     * @returns 複製した系列データ参照です。
+     */
     Clone(): GraphModeDataItem {
         const d = new GraphModeDataItem();
         d.DataNumber = this.DataNumber;
@@ -1553,6 +1762,10 @@ class GraphModeDataItem {
         return d;
     }
 }
+
+/**
+ * 円・帯系グラフの描画設定を保持します。
+ */
 class strGraph_Data_En {
     EnSizeMode: number = 0; //enmGraphMaxSize
     EnSize: number = 0; //Single
@@ -1567,6 +1780,11 @@ class strGraph_Data_En {
     MaxValueMode: number = 0; //enmMarkMaxValueType
     MaxValue: number = 0; //Double
     
+    /**
+     * 円・帯グラフ設定を複製します。
+     *
+     * @returns 複製した円・帯グラフ設定です。
+     */
     Clone(): strGraph_Data_En {
         const d = new strGraph_Data_En();
         Object.assign(d, this);
@@ -1574,6 +1792,10 @@ class strGraph_Data_En {
         return d;
     }
 }
+
+/**
+ * 棒グラフ・折れ線グラフの描画設定を保持します。
+ */
 class strGraph_Data_Oresen { //複数表示（折れ線）（属性データ）
     Size: number = 0; //Single
     Line: Line_Property = new Line_Property();
@@ -1586,6 +1808,11 @@ class strGraph_Data_Oresen { //複数表示（折れ線）（属性データ）
     BorderLine: Line_Property = new Line_Property();
     FrameAxe: number = 0;//enmBarChartFrameAxePattern
     
+    /**
+     * 棒・折れ線グラフ設定を複製します。
+     *
+     * @returns 複製した棒・折れ線グラフ設定です。
+     */
     Clone(): strGraph_Data_Oresen {
         const d = new strGraph_Data_Oresen();
         Object.assign(d, this);
@@ -1596,6 +1823,9 @@ class strGraph_Data_Oresen { //複数表示（折れ線）（属性データ）
     }
 }
 
+/**
+ * レイヤ単位で共有するラベル・グラフ・点線形状設定です。
+ */
 class strLayerModeViewSetting_Data {
    //this.TripMode = new strTripMode_Data_Info;
    LabelMode: strLabelMode_Data_info = new strLabelMode_Data_info();
@@ -1611,6 +1841,11 @@ class strDummyObjectName_and_Code {
     code: number = 0; //Integer
     Name: string = ""; //String
     
+    /**
+     * ダミーオブジェクト参照を複製します。
+     *
+     * @returns 複製したダミーオブジェクト参照です。
+     */
     Clone(): strDummyObjectName_and_Code {
         const d = new strDummyObjectName_and_Code();
         d.code = this.code;
@@ -1787,6 +2022,9 @@ class strLayerDataInfo {
     }
 }
 
+/**
+ * 画面設定保存用の 1 セット分を保持します。
+ */
 class strScreen_Setting_Data_Info {
     //画面設定保存用
     title: string = "";
@@ -1801,6 +2039,11 @@ class strScreen_Setting_Data_Info {
     MapLegend: strLegend_Attri = new strLegend_Attri();
     ThreeDMode: strThreeDMode_Set = new strThreeDMode_Set();
     
+    /**
+     * 画面設定一式を深い複製で返します。
+     *
+     * @returns 複製した画面設定です。
+     */
     Clone(): strScreen_Setting_Data_Info {
         const d = new strScreen_Setting_Data_Info();
         Object.assign(d, this);
@@ -1817,6 +2060,9 @@ class strScreen_Setting_Data_Info {
     }
 }
 
+/**
+ * 重ね合わせ表示データセット内の 1 項目分です。
+ */
 class strOverLay_DataSet_Item_Info {
     Layer: number = 0;
     DataNumber: number = 0;
@@ -1826,6 +2072,11 @@ class strOverLay_DataSet_Item_Info {
  //   this.TileMapf;//Boolean
  //   this.TileData;//strTileMapViewDataInfo使用しない
     
+    /**
+     * 重ね合わせ項目を複製します。
+     *
+     * @returns 複製した重ね合わせ項目です。
+     */
     Clone(): strOverLay_DataSet_Item_Info {
         const d = new strOverLay_DataSet_Item_Info();
         Object.assign(d, this);
@@ -1833,16 +2084,18 @@ class strOverLay_DataSet_Item_Info {
     }
 }
 
-// <summary>
-// 重ね合わせモードの個別データセットに関するデータ
-// </summary>
-// <remarks></remarks>
+/**
+ * 重ね合わせ表示モードの個別データセットです。
+ */
 class strOverLay_Dataset_Info {
     title: string = "";
     SelectedIndex: number = -1;
     DataItem: strOverLay_DataSet_Item_Info[] = [];// strOverLay_DataSet_Item_Info
     Note: string = "";
     
+    /**
+     * データセット内容を初期状態へ戻します。
+     */
     initData(): void {
         this.SelectedIndex = -1;
         this.title = "";
@@ -1850,6 +2103,11 @@ class strOverLay_Dataset_Info {
         this.Note = "";
     }
     
+    /**
+     * 重ね合わせデータセットを複製します。
+     *
+     * @returns 複製した重ね合わせデータセットです。
+     */
     Clone(): strOverLay_Dataset_Info {
         const d = new strOverLay_Dataset_Info();
         Object.assign(d, this);
@@ -1862,7 +2120,9 @@ class strOverLay_Dataset_Info {
     }
 }
 
-// 重ね合わせモード全体のデータ
+/**
+ * 重ね合わせ表示モード全体のデータセット一覧です。
+ */
 class strOverLayMOde_Dataset_Info {
     SelectedIndex: number = 0;
     DataSet: strOverLay_Dataset_Info[] = []; // strOverLay_Dataset_Info)
@@ -1870,6 +2130,9 @@ class strOverLayMOde_Dataset_Info {
     Always_Overlay_Index: number = -1;
     MarkModePosFixFlag: boolean = false;
     
+    /**
+     * 重ね合わせモード全体を初期状態へ戻します。
+     */
     initDataSet(): void {
         this.Always_Overlay_Index = -1;
         this.SelectedIndex = 0;
@@ -1878,12 +2141,18 @@ class strOverLayMOde_Dataset_Info {
         this.AddDataSet();
     }
     
+    /**
+     * 空の重ね合わせデータセットを 1 件追加します。
+     */
     AddDataSet(): void {
         const d = new strOverLay_Dataset_Info();
         this.DataSet.push(d);
     }
 }
 
+/**
+ * 連続表示モード内の 1 項目分の表示参照です。
+ */
 class strSeries_DataSet_Item_Info {//連続表示モード
     Layer: number = 0;
     Data: number = 0;
@@ -1891,6 +2160,11 @@ class strSeries_DataSet_Item_Info {//連続表示モード
     Print_Mode_Layer: number = 0;// enmLayerMode_Number
     SoloMode: number = 0;// enmSoloMode_Number
     
+    /**
+     * 連続表示項目を複製します。
+     *
+     * @returns 複製した連続表示項目です。
+     */
     Clone(): strSeries_DataSet_Item_Info {
         const d = new strSeries_DataSet_Item_Info();
         Object.assign(d, this);
@@ -1898,18 +2172,26 @@ class strSeries_DataSet_Item_Info {//連続表示モード
     }
 }
 
-// 連続表示モードの個別データセットの構造体
+/**
+ * 連続表示モードの個別データセットです。
+ */
 class strSeries_Dataset_Info {
     title: string = "";
     SelectedIndex: number = -1;
     DataItem: strSeries_DataSet_Item_Info[] = []; //  strSeries_DataSet_Item_Info
 
+    /**
+     * 連続表示データセットを初期状態へ戻します。
+     */
     initData(): void {
        this.SelectedIndex = 0;
        this.title = "";
        this.DataItem = [];// List(Of strSeries_DataSet_Item_Info)
     }
     
+    /**
+     * 連続表示データセットへ 1 項目追加します。
+     */
     AddData(LayerIndex: number, DataIndex: number, TotalDataViewMode: number, LayerDataVieMode: number, SoloViewMode: number): void {
         const d = new strSeries_DataSet_Item_Info();
         d.Layer = LayerIndex;
@@ -1920,6 +2202,11 @@ class strSeries_Dataset_Info {
         this.DataItem.push(d);
     }
     
+    /**
+     * 連続表示データセットを複製します。
+     *
+     * @returns 複製した連続表示データセットです。
+     */
     Clone(): strSeries_Dataset_Info {
         const d = new strSeries_Dataset_Info();
         Object.assign(d, this);
@@ -1930,29 +2217,42 @@ class strSeries_Dataset_Info {
     }
 }
 
-// 連続表示モード全体の構造体
+/**
+ * 連続表示モード全体のデータセット一覧です。
+ */
 class strSeriesMode_Dataset_Info {
     SelectedIndex: number = 0;
     DataSet: strSeries_Dataset_Info[] = []; //  strSeries_Dataset_Info)
     
+    /**
+     * 連続表示モード全体を初期状態へ戻します。
+     */
     initDataSet(): void {
         this.SelectedIndex = 0;
         this.DataSet = []; //  strSeries_Dataset_Info)
         this.AddDataSet();
     }
     
+    /**
+     * 空の連続表示データセットを 1 件追加します。
+     */
     AddDataSet(): void {
         const d = new strSeries_Dataset_Info();
         this.DataSet.push(d);
     }
 }
 
+/**
+ * 重ね合わせ・連続表示モード全体をまとめて保持します。
+ */
 class strTotalMode_Info {
     OverLay: strOverLayMOde_Dataset_Info = new strOverLayMOde_Dataset_Info();
     Series: strSeriesMode_Dataset_Info = new strSeriesMode_Dataset_Info();
 }
 
-//欠損値の設定（属性データ）
+/**
+ * 欠損値表示に使う文字列・記号・線設定です。
+ */
 class strMissing_set {
     Print_Flag: boolean = false; //Boolean
     Text: string = ""; //String
@@ -1965,6 +2265,11 @@ class strMissing_set {
     Label: string = ""; //String
     LineShape: Line_Property = new Line_Property();
     
+    /**
+     * 欠損値設定を複製します。
+     *
+     * @returns 複製した欠損値設定です。
+     */
     Clone(): strMissing_set {
         const d = new strMissing_set();
         Object.assign(d, this);
@@ -1979,11 +2284,18 @@ class strMissing_set {
     }
 }
 
-//代表点と記号表示位置を結ぶデータ（属性データ）
+/**
+ * 代表点と記号表示位置を結ぶ補助線設定です。
+ */
 class strSymbol_Lien_Data {
     Visible: boolean = false;
     Line: Line_Property = new Line_Property();
     
+    /**
+     * 補助線設定を複製します。
+     *
+     * @returns 複製した補助線設定です。
+     */
     Clone(): strSymbol_Lien_Data {
         const d = new strSymbol_Lien_Data();
         d.Visible = this.Visible;
@@ -1992,7 +2304,9 @@ class strSymbol_Lien_Data {
     }
 }
 
-//属性データ基本値（属性データ）
+/**
+ * 属性データ全体に共通する基本情報です。
+ */
 class strBasic_Data {
     Lay_Maxn: number = 0; //Integer
     // 選択中のレイヤ番号
@@ -2004,6 +2318,11 @@ class strBasic_Data {
     FullPath: string = ""; //String
     DataSourceType: number = 0; //enmDataSource
     
+    /**
+     * 基本情報を複製します。
+     *
+     * @returns 複製した基本情報です。
+     */
     Clone(): strBasic_Data {
         const d = new strBasic_Data();
         Object.assign(d, this);
@@ -2029,21 +2348,39 @@ const enmConditionAnd_Or = {
     And: 0,
     Or: 1
 }
+
+/**
+ * 条件検索 1 件分の比較対象・条件・値です。
+ */
 class strCondition_Limitation_Info {
     Data: number = 0;// Integer
     Condition: number = 0;// enmCondition
     Val: string = ""; // String
     
+    /**
+     * 条件制約を複製します。
+     *
+     * @returns 複製した条件制約です。
+     */
     Clone(): strCondition_Limitation_Info {
         const d = new strCondition_Limitation_Info();
         Object.assign(d, this);
         return d;
     }
 }
+
+/**
+ * 条件検索の 1 段分を表す論理結合条件です。
+ */
 class strCondition_Data_Info {
     And_OR: number = 0;//enmConditionAnd_Or
     Condition: strCondition_Limitation_Info[] = [];//strCondition_Limitation_Info
     
+    /**
+     * 条件段を複製します。
+     *
+     * @returns 複製した条件段です。
+     */
     Clone(): strCondition_Data_Info {
         const d = new strCondition_Data_Info();
         d.And_OR = this.And_OR;
@@ -2052,12 +2389,20 @@ class strCondition_Data_Info {
     }
 }
 
+/**
+ * レイヤ単位の条件検索データセットです。
+ */
 class strCondition_DataSet_Info {
     Enabled: boolean = false;// Boolean
     Layer: number = 0; // Integer
     Name: string = ""; // String
     Condition_Class: strCondition_Data_Info[] = []; // List(Of strCondition_Data_Info) '（条件の段階別の条件スタック）
     
+    /**
+     * 条件検索データセットを複製します。
+     *
+     * @returns 複製した条件検索データセットです。
+     */
     Clone(): strCondition_DataSet_Info {
         const d = new strCondition_DataSet_Info();
         Object.assign(d, this);
@@ -2066,6 +2411,9 @@ class strCondition_DataSet_Info {
     }
 }
 
+/**
+ * オブジェクトグループごとの記号使用状況を保持します。
+ */
 class strObjectKindUsed_Info {
     MapFileName: string = "";
     ObjectKindNumber: number = 0;
@@ -2107,7 +2455,9 @@ interface DataLoadResult {
     emes: string;
 }
 
-//属性データ全体に関わるデータ（属性データ）
+/**
+ * 属性データ全体で共有する基本設定、表示モード、条件、図形を保持します。
+ */
 class Total_Data_Info {
     LV1: strBasic_Data = new strBasic_Data();
     TotalMode: strTotalMode_Info = new strTotalMode_Info();
@@ -2115,6 +2465,9 @@ class Total_Data_Info {
     FigureStac: FigureData[] = [];
     Condition: strCondition_DataSet_Info[] = [];//strCondition_DataSet_Info
 
+    /**
+     * 全体設定を新規状態へ初期化します。
+     */
     initTotalData(): void {
         this.TotalMode.OverLay.initDataSet();
         this.TotalMode.Series.initDataSet();
@@ -2144,6 +2497,9 @@ export class strDummyObjectPointMark_Info {
     }
 }
 
+/**
+ * 凡例共通の表示位置、背景、書式設定です。
+ */
 class strLegend_Base_Attri {
     Visible: boolean = false; //Boolean
     Legend_Num: number = 0; //Integer
@@ -2153,6 +2509,11 @@ class strLegend_Base_Attri {
     Comma_f: boolean = false; //Boolean
     ModeValueInScreenFlag: boolean = false;
     
+    /**
+     * 凡例共通属性を複製します。
+     *
+     * @returns 複製した凡例共通属性です。
+     */
     Clone(): strLegend_Base_Attri {
         const d = new strLegend_Base_Attri();
         Object.assign(d, this);
@@ -2165,10 +2526,18 @@ class strLegend_Base_Attri {
 
 // enmCircleMDLegendLine はglobals.d.tsで定義済み
 
+/**
+ * 階級境界線の表示有無と線属性です。
+ */
 class strClassBoundaryLine_Info {
     Visible: boolean = false;
     LPat: Line_Property = new Line_Property();
     
+    /**
+     * 境界線設定を複製します。
+     *
+     * @returns 複製した境界線設定です。
+     */
     Clone(): strClassBoundaryLine_Info {
         const d = new strClassBoundaryLine_Info();
         d.Visible = this.Visible;
@@ -2176,6 +2545,10 @@ class strClassBoundaryLine_Info {
         return d;
     }
 }
+
+/**
+ * 階級区分凡例の描画属性です。
+ */
 class strLegend_Class_Attri {
     PaintMode_Line: Line_Property = new Line_Property();
     PaintMode_Method: number = 0; //enmClassMode_Meshod
@@ -2187,6 +2560,11 @@ class strLegend_Class_Attri {
     ClassBoundaryLine: strClassBoundaryLine_Info = new strClassBoundaryLine_Info();
     FrequencyPrint: boolean = false; //Boolean
     
+    /**
+     * 階級区分凡例属性を複製します。
+     *
+     * @returns 複製した階級区分凡例属性です。
+     */
     Clone(): strLegend_Class_Attri {
         const d = new strLegend_Class_Attri();
         Object.assign(d, this);
@@ -2196,10 +2574,18 @@ class strLegend_Class_Attri {
     }
 }
 
+/**
+ * 記号凡例の補助表示属性です。
+ */
 class strLegend_Mark_Attri {
     CircleMD_CircleMini_F: boolean = false; //Boolean
     MultiEnMode_Line: Line_Property = new Line_Property();
     
+    /**
+     * 記号凡例属性を複製します。
+     *
+     * @returns 複製した記号凡例属性です。
+     */
     Clone(): strLegend_Mark_Attri {
         const d = new strLegend_Mark_Attri();
         Object.assign(d, this);
@@ -2207,6 +2593,9 @@ class strLegend_Mark_Attri {
     }
 }
 
+/**
+ * 線・ダミーオブジェクト凡例の表示属性です。
+ */
 class strLegend_Line_Dummy_Attri {
     Line_Visible: boolean = false; //Boolean
     Line_Visible_Number_STR: string = ""; //String '線種ごとに表示するかどうか、１は表示０は非表示で連続文字列
@@ -2214,6 +2603,11 @@ class strLegend_Line_Dummy_Attri {
     Dummy_Point_Visible: boolean = false; //Boolean
     Back: BackGround_Box_Property = new BackGround_Box_Property();
     
+    /**
+     * 線・ダミー凡例属性を複製します。
+     *
+     * @returns 複製した線・ダミー凡例属性です。
+     */
     Clone(): strLegend_Line_Dummy_Attri {
         const d = new strLegend_Line_Dummy_Attri();
         Object.assign(d, this);
@@ -2222,10 +2616,18 @@ class strLegend_Line_Dummy_Attri {
     }
 }
 
+/**
+ * 重ね合わせ凡例タイトルの出力設定です。
+ */
 class strOverLay_Legend_Title_Info {
     Print_f: boolean = false;
     MaxWidth: number = 0;
     
+    /**
+     * 重ね合わせ凡例タイトル設定を複製します。
+     *
+     * @returns 複製したタイトル設定です。
+     */
     Clone(): strOverLay_Legend_Title_Info {
         const d = new strOverLay_Legend_Title_Info();
         Object.assign(d, this);
@@ -2233,6 +2635,9 @@ class strOverLay_Legend_Title_Info {
     }
 }  
 
+/**
+ * 地図凡例全体の表示属性を保持します。
+ */
 class strLegend_Attri {
     Base: strLegend_Base_Attri = new strLegend_Base_Attri();
     OverLay_Legend_Title: strOverLay_Legend_Title_Info = new strOverLay_Legend_Title_Info();
@@ -2241,6 +2646,11 @@ class strLegend_Attri {
     Line_DummyKind: strLegend_Line_Dummy_Attri = new strLegend_Line_Dummy_Attri();
     En_Graph_Pattern: number = 0; //enmMultiEnGraphPattern
     
+    /**
+     * 凡例属性一式を複製します。
+     *
+     * @returns 複製した凡例属性です。
+     */
     Clone(): strLegend_Attri {
         const d = new strLegend_Attri();
         d.Base = this.Base.Clone();
@@ -2252,6 +2662,10 @@ class strLegend_Attri {
         return d;
     }
 }
+
+/**
+ * 経緯線表示の間隔と線属性を保持します。
+ */
 class strLatLonLine_Print_Info {
     Visible: boolean = false;
     Order: number = 0;//enmLatLonLine_Order
@@ -2261,6 +2675,11 @@ class strLatLonLine_Print_Info {
     OuterPat: Line_Property = new Line_Property();
     Equator: Line_Property = new Line_Property();
     
+    /**
+     * 経緯線表示設定を複製します。
+     *
+     * @returns 複製した経緯線表示設定です。
+     */
     Clone(): strLatLonLine_Print_Info {
         const d = new strLatLonLine_Print_Info();
         Object.assign(d, this);
@@ -2271,6 +2690,9 @@ class strLatLonLine_Print_Info {
     }
 }
 
+/**
+ * 飾りグループ枠に含める各要素の表示有無を保持します。
+ */
 class strAccessoryGroupBox_Info {
     Visible: boolean = false;  // Boolean
     Back: BackGround_Box_Property = new BackGround_Box_Property();
@@ -2282,6 +2704,11 @@ class strAccessoryGroupBox_Info {
     LinePattern: boolean = false;  // Boolean
     ObjectGroup: boolean = false;  // Boolean
     
+    /**
+     * 飾りグループ枠設定を複製します。
+     *
+     * @returns 複製した飾りグループ枠設定です。
+     */
     Clone(): strAccessoryGroupBox_Info {
         const d = new strAccessoryGroupBox_Info();
         Object.assign(d, this);
@@ -2290,6 +2717,9 @@ class strAccessoryGroupBox_Info {
     }
 }
 
+/**
+ * 画面背景と地図背景のタイル・枠線設定です。
+ */
 class strScreen_Back_data {
     MapAreaFrameLine: Line_Property = new Line_Property();
     ScreenFrameLine: Line_Property = new Line_Property();
@@ -2297,6 +2727,11 @@ class strScreen_Back_data {
     MapAreaBack: Tile_Property = new Tile_Property();
     ObjectInner: Tile_Property = new Tile_Property();
 
+    /**
+     * 背景設定を複製します。
+     *
+     * @returns 複製した背景設定です。
+     */
     Clone(): strScreen_Back_data {
         const d = new strScreen_Back_data();
         d.MapAreaFrameLine = this.MapAreaFrameLine.Clone();
@@ -2308,6 +2743,9 @@ class strScreen_Back_data {
     }
 }
 
+/**
+ * 値表示とオブジェクト名表示の書式設定です。
+ */
 class strValueShow_Info {
     ValueVisible: boolean = false;//Boolean
     ValueFont: Font_Property = new Font_Property();
@@ -2316,6 +2754,11 @@ class strValueShow_Info {
     ObjNameVisible: boolean = false;//Boolean
     ObjNameFont: Font_Property = new Font_Property();
     
+    /**
+     * 値表示設定を複製します。
+     *
+     * @returns 複製した値表示設定です。
+     */
     Clone(): strValueShow_Info {
         const d = new strValueShow_Info();
         d.ValueVisible = this.ValueVisible;
@@ -2328,6 +2771,9 @@ class strValueShow_Info {
     }
 }
 
+/**
+ * 総描の間引き・ループ・スプライン設定です。
+ */
 class strSouByou_Info {
     Auto: boolean = false;
     AutoDegree: number = 0; // 1-5の値
@@ -2337,6 +2783,11 @@ class strSouByou_Info {
     LoopSize: number = 0;
     Spline_F: boolean = false;
 
+    /**
+     * 総描設定を複製します。
+     *
+     * @returns 複製した総描設定です。
+     */
     Clone(): strSouByou_Info {
         const d = new strSouByou_Info();
         Object.assign(d, this);
@@ -2344,7 +2795,9 @@ class strSouByou_Info {
     }
 }
 
-//飾りの設定を保持（属性データ）
+/**
+ * 飾り、背景、欠損値、経緯線など画面全体の表示スタイルです。
+ */
 class strViewStyle_Info {
     ScrData: Screen_info = new Screen_info();
     MapScale: strScale_Attri = new strScale_Attri();
@@ -2374,6 +2827,11 @@ class strViewStyle_Info {
     ValueShow: strValueShow_Info = new strValueShow_Info();
     Zahyo: Zahyo_info = new Zahyo_info();
 
+    /**
+     * 表示スタイル一式を複製します。
+     *
+     * @returns 複製した表示スタイルです。
+     */
     Clone(): strViewStyle_Info {
         const d = new strViewStyle_Info();
         d.ScrData = this.ScrData.Clone();
@@ -2410,6 +2868,9 @@ class strViewStyle_Info {
         return d;
     }
 
+    /**
+     * 新規属性データ用の既定表示スタイルを初期化します。
+     */
     initViewStyle(): void {
         const state = appState();
     const md = this.Missing_Data;
@@ -2628,13 +3089,20 @@ export class strScale_Attri {
     }
 }
 
-//注釈設定（属性データ）
+/**
+ * 注記表示の位置・幅・書式設定です。
+ */
 class strNote_Attri {
     Visible: boolean = false; //Boolean
     Position: point = new point();
     MaxWidth: number = 0; //Single
     Font: Font_Property = new Font_Property();
     
+    /**
+     * 注記設定を複製します。
+     *
+     * @returns 複製した注記設定です。
+     */
     Clone(): strNote_Attri {
         const v = new strNote_Attri();
         v.Visible = this.Visible; //Boolean
@@ -2645,13 +3113,20 @@ class strNote_Attri {
     }
 }
 
-//タイトル設定（属性データ）
+/**
+ * タイトル表示の位置・幅・書式設定です。
+ */
 class strTitle_Attri {
     Visible: boolean = false; //Boolean
     Position: point = new point();
     MaxWidth: number = 0; //Single
     Font: Font_Property = new Font_Property();
     
+    /**
+     * タイトル設定を複製します。
+     *
+     * @returns 複製したタイトル設定です。
+     */
     Clone(): strTitle_Attri {
         const t = new strTitle_Attri();
         t.Visible = this.Visible;
@@ -2662,11 +3137,19 @@ class strTitle_Attri {
     }
 }
 
+/**
+ * 座標変換で使う拡大率と平行移動量です。
+ */
 class Magnification {
     Xplus: number = 0; // Single
     YPlus: number = 0; // Single
     Mul: number = 1; // Single
     
+    /**
+     * 拡大率情報を複製します。
+     *
+     * @returns 複製した拡大率情報です。
+     */
     Clone(): Magnification {
         const d = new Magnification();
         Object.assign(d, this);
@@ -2674,10 +3157,18 @@ class Magnification {
     }
 }
 
+/**
+ * 画面四辺のマージン領域を保持します。
+ */
 class ScreenMargin {
     ClipF: boolean = false; //Boolean
     rect: rectangle = new rectangle();
     
+    /**
+     * マージン設定を複製します。
+     *
+     * @returns 複製したマージン設定です。
+     */
     Clone(): ScreenMargin {
         const d = new ScreenMargin();
         d.ClipF = this.ClipF;
@@ -2691,7 +3182,9 @@ const enmOutputDevice = {
     EMF: 2
 }
 
-//3Dモードの回転の使用（属性データ）
+/**
+ * 3D 表示時の回転角度と拡大率を保持します。
+ */
 class strThreeDMode_Set {
     Set3D_F: boolean = false; //Boolean
     Pitch: number = 0; //Integer
@@ -2699,6 +3192,11 @@ class strThreeDMode_Set {
     Bank: number = 0; //Integer
     Expand: number = 0; //Integer
     
+    /**
+     * 3D 表示設定を複製します。
+     *
+     * @returns 複製した 3D 表示設定です。
+     */
     Clone(): strThreeDMode_Set {
         const d = new strThreeDMode_Set();
         Object.assign(d, this);
@@ -3184,12 +3682,17 @@ class Screen_info {
     }
 }
 
-//データ項目データ取得で、欠損値以外の値を取得する際に使用
+/**
+ * オブジェクト位置と取得値の組を表します。
+ */
 class strObjLocation_and_Data_info {
     ObjLocation: number = 0;
     DataValue: number | string | undefined = undefined;
 }
 
+/**
+ * 重ね合わせ表示中の一時描画状態です。
+ */
 class Overlay_Temporaly_Data_Info {
     Printing_Number: number = 0; // Integer
     OverLay_Printing_Flag: boolean = false; // Boolean  '記号やブロックを重ね合わせる際に標示位置をずらすのに使用
@@ -3236,6 +3739,9 @@ export class Legend2_Atri {
    }
 }
 
+/**
+ * 飾り編集時の選択矩形やドラッグ起点を保持する一時状態です。
+ */
 class AccessoryTemp_Infp {
     MapScale_Rect: rectangle = new rectangle();
     MapTitle_Rect: rectangle = new rectangle();
@@ -3253,6 +3759,11 @@ class AccessoryTemp_Infp {
     Push_GroupBoxXY: point = new point();
     OriginalGroupBoxRect: rectangle = new rectangle();
     
+    /**
+     * 飾り編集用の一時状態を複製します。
+     *
+     * @returns 複製した一時状態です。
+     */
     Clone(): AccessoryTemp_Infp {
         const tac = new AccessoryTemp_Infp();
         tac.MapScale_Rect = this.MapScale_Rect.Clone();
@@ -3303,6 +3814,9 @@ export class strLocationSearchObject {
     }
 }
 
+/**
+ * 位置検索のコンテキストメニュー表示文字列です。
+ */
 class strTempLocationMenuString {
     ObjectNameValue?: string;
     ContourStacPos?: number;
@@ -3310,6 +3824,9 @@ class strTempLocationMenuString {
     DataIndex?: number;
 }
 
+/**
+ * 印刷画面の操作中に使う一時状態です。
+ */
 class frmPrint_temp_info {
     OnObject: strLocationSearchObject[] = [];
     OldObject: strLocationSearchObject[] = [];
@@ -3330,16 +3847,26 @@ class frmPrint_temp_info {
     image: JsonValue | undefined; //出力画面の保存 (未定義)
 }
 
+/**
+ * ドットマップ描画の一時キャッシュです。
+ */
 class DotMapTemp_Info {
     DotMapTempResetF: boolean | undefined; // Boolean
     DotMapPoint: { [key: number]: JsonValue } = {}; // Dictionary(Of Integer, PointF()) (未定義)
 }
 
+/**
+ * 連続表示モード描画中の一時情報です。
+ */
 class strSeries_Temporaly_Data_Info {
     Printing_Flag: boolean | undefined; //Boolean
     Koma: number | undefined; //Integer
     title: string | undefined; //String
 }
+
+/**
+ * 等値線モード描画で使うメッシュと結果配列の一時情報です。
+ */
 class ContourModeTemp_Temporaly_Data_Info {
     ContourDataResetF: boolean | undefined; //Boolean
     ContourMesh: JsonObject | undefined; //clsMeshContour (未定義)
@@ -3349,6 +3876,9 @@ class ContourModeTemp_Temporaly_Data_Info {
     Contour_All_Point: number | undefined; //Integer '描いた等値線のポイント数
 }
 
+/**
+ * 画面内基準値表示の計算結果キャッシュです。
+ */
 class ModeValueInScreen_Stac_Info {
     setF: boolean | undefined; // Boolean
     LayerNum: number | undefined; // Integer
@@ -3359,6 +3889,10 @@ class ModeValueInScreen_Stac_Info {
     MarkBar_MaxValueMode: number | undefined; // enmMarkSizeValueMode (未定義)
     MarkBar_MaxValue: number | undefined; // Double
 }
+
+/**
+ * 描画処理全体で共有する一時状態の集合です。
+ */
 class strTem {
     Series_temp: strSeries_Temporaly_Data_Info = new strSeries_Temporaly_Data_Info();
     OverLay_Temp: Overlay_Temporaly_Data_Info = new Overlay_Temporaly_Data_Info();
@@ -3382,6 +3916,9 @@ class strTem {
 
 
 
+/**
+ * 地図ライン座標取得 API の取得可否と反転状態です。
+ */
 class strGetLinePointAPI_Info {
     GetF: boolean | undefined; //Boolean
     Drawn: boolean | undefined; //Boolean
@@ -3394,6 +3931,10 @@ const enmPrint_Enable = { Printable: 0, Printable_with_Error: 2, UnPrintable: 1 
 const enmPaintColorSettingModeInfo = { twoColor: 0, threeeColor: 1, SoloColor: 2, multiColor: 3 };
 
 
+
+/**
+ * 属性データ読込中のレイヤ 1 件分の生データ格納先です。
+ */
 class strLayerReadingInfo {
     Name: string = "";
     MapFile: string = "";
@@ -3412,7 +3953,9 @@ class strLayerReadingInfo {
     Dummy_OBKTemp: string[][] = [];
     Comment_Temp: string = "";
 
-    //レイヤの初期化。タイプはNormal形状はNotDefinition
+    /**
+     * 読込用レイヤ情報を初期状態へ戻します。
+     */
     init(): void {
         this.TTL = [];
         this.UNT = [];
@@ -3431,7 +3974,9 @@ class strLayerReadingInfo {
     }
 }
 
-// Save Line Pattern Info
+/**
+ * 保存時に地図ファイルごとの線種設定を退避する情報です。
+ */
 class strSaveLinePat_Info {
     MapNum: number = 0;
     MapFileName: string[] = [];
@@ -5378,12 +5923,20 @@ class clsAttrData {
         return this.MapData.GetAllPointObjectGroup();
     }
 
-    /**読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す */
+    /**
+     * 読み込んだ全地図ファイルの線種一覧を返します。
+     *
+     * @returns 全線種一覧です。
+     */
     Get_AllMapLineKind(): LPatSek_Info[] {
         return this.MapData.GetAllMapLineKind();
     }
 
-    /**読み込んだ地図ファイルの全線種名（オブジェクト連動型を含む）一覧を返す */
+    /**
+     * 読み込んだ全地図ファイルの線種名一覧を返します。
+     *
+     * @returns 全線種名一覧です。
+     */
     GetAllMapLineKindName(): string[] {
         return this.MapData.GetAllMapLineKindName();
     }
@@ -5555,14 +6108,22 @@ class clsAttrData {
         }
     }
 
-    /**現在のレイヤのグラフモードを返す */
+    /**
+     * 現在選択中レイヤのグラフモード設定を返します。
+     *
+     * @returns 現在レイヤのグラフモードです。
+     */
     layerGraph(): IGraphMode {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.GraphMode;
     }
 
-    /**現在のレイヤのグラフモードの選択データセットを返す */
+    /**
+     * 現在選択中レイヤのグラフデータセットを返します。
+     *
+     * @returns 選択中のグラフデータセットです。
+     */
     nowGraph(): IGraphDataSet {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
@@ -5570,34 +6131,54 @@ class clsAttrData {
         return gv.DataSet[gv.SelectedIndex];
     }
 
-    /**現在のレイヤのラベルモードを返す */
+    /**
+     * 現在選択中レイヤのラベルモード設定を返します。
+     *
+     * @returns 現在レイヤのラベルモードです。
+     */
     layerLabel(): ILabelMode {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         return state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
     }
-    /**現在のレイヤのラベルモードの選択データセットを返す */
+    /**
+     * 現在選択中レイヤのラベルデータセットを返します。
+     *
+     * @returns 選択中のラベルデータセットです。
+     */
     nowLabel(): ILabelDataSet {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
         const lv=state.attrData.LayerData[Layernum].LayerModeViewSettings.LabelMode;
         return lv.DataSet[lv.SelectedIndex];;
     }
-    /**現在の重ね合わせモードのデータセットを返す */
+    /**
+     * 現在選択中の連続表示データセットを返します。
+     *
+     * @returns 選択中の連続表示データセットです。
+     */
     nowSeries(): ISeriesDatasetInfo {
         const state = appState();
         const series = state.attrData.TotalData.TotalMode.Series;
         return series.DataSet[series.SelectedIndex];
     }
 
-    /**現在の重ね合わせモードのデータセットを返す */
+    /**
+     * 現在選択中の重ね合わせデータセットを返します。
+     *
+     * @returns 選択中の重ね合わせデータセットです。
+     */
     nowOverlay(): IOverLayDatasetInfo {
         const state = appState();
         const over = state.attrData.TotalData.TotalMode.OverLay;
         return over.DataSet[over.SelectedIndex];
     }
 
-    /**現在のレイヤの位置を返す */
+    /**
+     * 現在選択中のレイヤ情報を返します。
+     *
+     * @returns 現在レイヤの情報です。
+     */
     nowLayer(): ILayerDataInfo {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
@@ -5605,7 +6186,10 @@ class clsAttrData {
     }
 
     /**
-     * 現在のレイヤ・データ項目の位置を返す */
+     * 現在選択中のデータ項目情報を返します。
+     *
+     * @returns 現在レイヤ・データ項目の情報です。
+     */
     nowData(): IDataItem {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
@@ -5613,7 +6197,11 @@ class clsAttrData {
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum];
     }
 
-    /**現在のレイヤ・データ項目のSoloModeViewSettings位置を返す */
+    /**
+     * 現在選択中データ項目の単独表示設定を返します。
+     *
+     * @returns 単独表示設定です。
+     */
     nowDataSolo(): ISoloModeViewSettings {
         const state = appState();
         const Layernum = this.TotalData.LV1.SelectedLayer;
@@ -5621,11 +6209,24 @@ class clsAttrData {
         return state.attrData.LayerData[Layernum].atrData.Data[DataNum].SoloModeViewSettings;
     }
 
-    //単独表示モードのモードを取得
+    /**
+     * 指定データ項目の単独表示モード番号を取得します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @returns 単独表示モード番号です。
+     */
     getSoloMode(LayerNum: number, DataNum: number): number {
         return this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings.SoloMode;
     }
 
+    /**
+     * 指定データ項目の単独表示モード番号を更新します。
+     *
+     * @param LayerNum 対象レイヤ番号です。
+     * @param DataNum 対象データ項目です。
+     * @param mode 設定する単独表示モード番号です。
+     */
     setSoloMode(LayerNum: number, DataNum: number, mode: number): void {
         this.LayerData[LayerNum].atrData.Data[DataNum].SoloModeViewSettings.SoloMode = mode;
     }
@@ -8135,7 +8736,12 @@ class clsAttrData {
         } return ln;
     }
 
-    /**指定レイヤの条件設定情報を文字列で出力 */
+    /**
+     * 指定レイヤの条件設定内容を表示用文字列へ整形します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @returns 条件設定情報文字列です。
+     */
     Get_Condition_Info(Layernum: number): string {
         let ST1 = "表示オブジェクト限定:"
 
@@ -9601,7 +10207,11 @@ class clsAttrData {
         return this.LayerData[LayerNum].atrData.Data[DataNum].MissingValueNum;
     }
   
-    /**連続表示モードのデータセット一覧を取得 */
+    /**
+     * 連続表示モードのデータセット名一覧を取得します。
+     *
+     * @returns データセット一覧です。
+     */
     getSeriesDataSetName(): ListItem[] {
         const state = appState();
         const series = state.attrData.TotalData.TotalMode.Series;
@@ -9616,9 +10226,11 @@ class clsAttrData {
         return seriesDataSetList;
     }
 
-    /** 連続表示モードのデータセットをリストビューに入れる*/
     /**
      * 連続表示モードデータセットをリストビューへ反映します。
+        *
+        * @param seriesListView 反映先リストビューです。
+        * @param DataSetItem 表示するデータセット項目です。
      */
     SeriesMode_to_ListViewData(seriesListView: HTMLElement | IListViewTable, DataSetItem: strSeries_DataSet_Item_Info[] | JsonValue): void {
         // ListViewTableインスタンスかHTMLElementかを判定
@@ -9676,7 +10288,18 @@ class clsAttrData {
         }
     }
     /**
-     * 新しいレイヤを 1 つ追加します。
+        * 新しいレイヤを 1 つ追加します。
+        *
+        * @param LayerName レイヤ名です。
+        * @param LayerType レイヤ種別です。
+        * @param LayerMeshType メッシュ種別です。
+        * @param LayerShape 形状種別です。
+        * @param LayerMapFile 使用地図ファイル名です。
+        * @param LayerTime レイヤ時期です。
+        * @param LayerSystem 測地系です。
+        * @param comment コメントです。
+        * @param ObjectNum オブジェクト数です。
+        * @param ObjData オブジェクト配列です。
      */
     Add_one_Layer(LayerName: string, LayerType: number, LayerMeshType: number, LayerShape: number, LayerMapFile: string, LayerTime: strYMD, LayerSystem: number, comment: string, ObjectNum: number, ObjData: strObject_Data_Info[]): void {
         //レイヤの追加
@@ -9706,9 +10329,15 @@ class clsAttrData {
         this.TotalData.LV1.Lay_Maxn++;
     }
 
-    /**レイヤ名をセレクトボックスに入れる */
     /**
      * レイヤ名一覧をセレクトボックスへ設定します。
+        *
+        * @param selbox 対象セレクトボックスです。
+        * @param SelectedIndex 初期選択インデックスです。
+        * @param NormalF 通常レイヤを含める場合は true です。
+        * @param syntheticF 合成オブジェクトを含む通常レイヤを許可する場合は true です。
+        * @param PointF 地点定義レイヤを含める場合は true です。
+        * @param MeshF メッシュレイヤを含める場合は true です。
      */
     Set_LayerName_to(selbox: HTMLElement, SelectedIndex: number, NormalF=true, syntheticF=true, PointF=true, MeshF=true): void {
         const state = appState();
@@ -9743,8 +10372,13 @@ class clsAttrData {
         selbox.addSelectList(lst, SelectedIndex, true,fall);
     }
 
-    
-    /**セレクトボックスにレイヤ内のオブジェクト一覧と初期設定を入れる */
+        /**
+         * レイヤ内オブジェクト一覧をセレクトボックスへ設定します。
+         *
+         * @param selbox 対象セレクトボックスです。
+         * @param Layernum 対象レイヤ番号です。
+         * @param SelectedObject 初期選択オブジェクト番号です。
+         */
     Set_ObjectName_to_selectBox(selbox: HTMLElement, Layernum: number, SelectedObject: number): void {
         const objList=[];
         selbox.removeAll();
@@ -9757,7 +10391,14 @@ class clsAttrData {
             selbox.addSelectList(objList, SelectedObject, true, true);
         }
     }
-    /**セレクトボックスにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
+
+        /**
+         * レイヤ内ダミーオブジェクト一覧をセレクトボックスへ設定します。
+         *
+         * @param selbox 対象セレクトボックスです。
+         * @param Layernum 対象レイヤ番号です。
+         * @param SelectedObject 初期選択ダミー番号です。
+         */
     Set_DummyObjectName_to_selectBox(selbox: HTMLElement, Layernum: number, SelectedObject: number): void {
         const objList = [];
         selbox.removeAll();
@@ -9771,7 +10412,13 @@ class clsAttrData {
         }
     }
 
-    /**リストボックスexにレイヤ内のオブジェクト一覧と初期設定を入れる */
+    /**
+     * レイヤ内オブジェクト一覧をチェック付きリストへ設定します。
+     *
+     * @param lbox 対象リストです。
+     * @param Layernum 対象レイヤ番号です。
+     * @param SelectedObjects 初期チェック状態配列です。
+     */
     Set_ObjectName_to_checkedListBox(lbox: CheckedListBox | (HTMLElement & {removeAll: () => void; addList: (list: {text: string; value: string; checked: boolean}[], pos: number) => void}), Layernum: number, SelectedObjects?: boolean[]): void {
         const objList=[];
         lbox.removeAll();
@@ -9786,7 +10433,13 @@ class clsAttrData {
         lbox.addList(objList,0);
     }
 
-    /**リストボックスexにレイヤ内のダミーオブジェクト一覧と初期設定を入れる */
+    /**
+     * レイヤ内ダミーオブジェクト一覧をチェック付きリストへ設定します。
+     *
+     * @param lbox 対象リストです。
+     * @param Layernum 対象レイヤ番号です。
+     * @param SelectedObjects 初期チェック状態配列です。
+     */
     Set_DummyObjectName_to_checkedListBox(lbox: CheckedListBox | (HTMLElement & {removeAll: () => void; addList: (list: {text: string; value: string; checked: boolean}[], pos: number) => void}), Layernum: number, SelectedObjects?: boolean[]): void {
         const objList: {text: string, value: string, checked: boolean}[] = [];
         lbox.removeAll();
@@ -9802,17 +10455,25 @@ class clsAttrData {
             lbox.addList(objList,0);
         }
     }
-    /**レイヤとそのでのオブジェクト位置から代表点を取得 */
+
     /**
      * オブジェクト代表点を取得します。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param ObjNum 対象オブジェクト番号です。
+     * @returns 代表点です。
      */
     Get_CenterP(Layernum: number, ObjNum: number): point {
         return this.LayerData[Layernum].atrObject.atrObjectData[ObjNum].CenterPoint;
     }
 
-    /**オブジェクトと座標の距離 */
     /**
      * オブジェクトと点との距離を求めます。
+     *
+     * @param Layernum 対象レイヤ番号です。
+     * @param Obj 対象オブジェクト番号です。
+     * @param Point 比較対象点です。
+     * @returns 距離です。
      */
     Distance_Kencode_Point(Layernum: number, Obj: number, Point: point): number {
         const L = this.LayerData[Layernum];
@@ -9833,9 +10494,15 @@ class clsAttrData {
         return v;
     }
 
-    /**KecnCodeと地図ファイルのオブジェクトの間で指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
     /**
      * レイヤオブジェクトと地図ファイルオブジェクトとの距離を求めます。
+        *
+        * @param LayNum1 対象レイヤ番号です。
+        * @param ObjNum1 対象オブジェクト番号です。
+        * @param MapFile 比較先地図ファイル名です。
+        * @param ObjCode2 比較先オブジェクトコードです。
+        * @param Time 比較先時期です。
+        * @returns 距離です。
      */
     Distance_Kencode_MPObject(LayNum1: number, ObjNum1: number, MapFile: string, ObjCode2: number, Time: strYMD): number {
         let P1;
@@ -9871,9 +10538,14 @@ class clsAttrData {
         return d;
     }
 
-    /**KecnCodeで指定/線オブジェクトと面・点オブジェクトの距離は、最も近い線の位置と点・面の代表点、点・面オブジェクト間の距離は代表点間の距離、線と線の場合は、o_Code2側か線、o_Code1側が点として扱われる */
     /**
      * 2 つのレイヤオブジェクト間距離を求めます。
+        *
+        * @param ObjNum1 1 つ目のオブジェクト番号です。
+        * @param ObjNum2 2 つ目のオブジェクト番号です。
+        * @param LayNum1 1 つ目のレイヤ番号です。
+        * @param LayNum2 2 つ目のレイヤ番号です。
+        * @returns 距離です。
      */
     Distance_Kencode_Object(ObjNum1: number, ObjNum2: number, LayNum1: number, LayNum2: number): number {
         let P1;
@@ -9900,9 +10572,13 @@ class clsAttrData {
         return d;
     }
 
-    /**オブジェクトの線とある地点との距離を求める */
     /**
      * 線オブジェクトと点との距離を求めます。
+        *
+        * @param LayNum 対象レイヤ番号です。
+        * @param ObjNum 対象オブジェクト番号です。
+        * @param P 比較対象点です。
+        * @returns 距離です。
      */
     Get_Distance_Kencode_Between_ObjectLine_and_Point(LayNum: number, ObjNum: number, P: point): number {
 
@@ -10249,7 +10925,11 @@ class clsAttrMapData {
         return this.attrMapData[this.Prestage_MapFileName].Map.Zahyo;
     }
 
-    /** 読み込んだ地図ファイルの全線種（オブジェクト連動型を含む）一覧を返す*/
+    /**
+     * 読み込んだ全地図ファイルの線種一覧を返します。
+     *
+     * @returns 線種一覧です。
+     */
     GetAllMapLineKind(): LPatSek_Info[] {
         const LKind = [];
         for (const key in this.attrMapData) {
@@ -10261,7 +10941,11 @@ class clsAttrMapData {
         return LKind;
     }
 
-    /** 読み込んだ地図ファイルの全線種名（オブジェクト連動型を含む）一覧を返す*/
+    /**
+     * 読み込んだ全地図ファイルの線種名一覧を返します。
+     *
+     * @returns 線種名一覧です。
+     */
     GetAllMapLineKindName(): string[] {
         const STR = [];
         for (const key in this.attrMapData) {
@@ -10284,7 +10968,11 @@ class clsAttrMapData {
         return n;
     }
 
-    /**指定した地図ファイルを削除 */
+    /**
+     * 指定した地図ファイルを管理対象から削除します。
+     *
+     * @param mapFileName 地図ファイル名です。
+     */
     RemoveMapData(mapFileName: string): void {
         if(mapFileName === "" ){
             mapFileName = this.Prestage_MapFileName

@@ -7,14 +7,32 @@ import type { JsonObject /* JsonValue */ } from './types';
 
 const chrLF = String.fromCharCode(10);
 
+/**
+ * タイル描画時の緯度経度範囲と画面配置を保持する作業用データです。
+ */
 class tileList_Data_Info {
     LatLonBox: latlonbox | undefined = undefined;
     ScrPosition: rectangle = new rectangle();
     URL: string = "";
 }
 
+/**
+ * テキスト、図形、ポリゴンの基本描画を担当するユーティリティです。
+ */
 class clsDraw {
 
+    /**
+     * 指定位置に複数行対応の文字列を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Word 描画文字列です。
+     * @param P 描画基準位置です。
+     * @param Font_P 文字装飾設定です。
+     * @param HorizonalAlignment 水平方向の配置です。
+     * @param VerticalAlignment 垂直方向の配置です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     * @returns 描画領域内に出力した場合は true です。
+     */
     static print(g: CanvasRenderingContext2D, Word: string, P: point, Font_P: Font_Property, HorizonalAlignment: enmHorizontalAlignment, VerticalAlignment: enmVerticalAlignment, ScrData: Screen_info): boolean {
 
 
@@ -94,6 +112,15 @@ class clsDraw {
 
     }
 
+    /**
+     * 回転や縁取りを考慮して 1 行の文字列を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param P 描画位置です。
+     * @param Tx 描画文字列です。
+     * @param P_Font 文字装飾設定です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     */
     static DrawText2(g: CanvasRenderingContext2D, P: point, Tx: string, P_Font: Font_Property, ScrData: Screen_info): void {
         let TH;
         if (ScrData.SampleBoxFlag === false) {
@@ -143,7 +170,17 @@ class clsDraw {
     }
 
 
-    //指定した幅で文字列を分割して返す
+    /**
+     * 指定幅に収まるよう文字列を分割し、描画用の行配列と寸法を返します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param T 対象文字列です。
+     * @param P_Font 文字装飾設定です。
+     * @param Orikaesi_F 折り返しを有効にする場合は true です。
+     * @param Max_Width 最大幅です。0 以下の場合は折り返しません。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     * @returns 行配列、高さ、実幅です。
+     */
     static TextCut_for_print(g: CanvasRenderingContext2D, T: string, P_Font: Font_Property, Orikaesi_F: boolean, Max_Width: number, ScrData: Screen_info): { Out_Text: string[]; Height: number; RealWidth: number } {
 
         const Out_Text=[];
@@ -192,6 +229,13 @@ class clsDraw {
     }
 
  
+    /**
+     * 複数ポリゴンからなる塗りつぶし図形を偶奇ルールで描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Polydata 頂点列とポリゴン分割情報です。
+     * @param Fcolor 塗り色です。
+     */
     static DrawPolyPolygon(g: CanvasRenderingContext2D, Polydata: { Pon: number; pxy: point[]; nPolyP: number[] }, Fcolor: string): void {
         const Pon = Polydata.Pon;
         const pxy = Polydata.pxy;
@@ -211,6 +255,13 @@ class clsDraw {
         g.fill("evenodd");
     }
 
+    /**
+     * 複数ポリゴン領域をクリッピングパスとして設定します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param pxy 頂点列です。
+     * @param AllnPolyP ポリゴンごとの頂点数です。
+     */
     static ClipPolyPolygon(g: CanvasRenderingContext2D, pxy: point[], AllnPolyP: number[]): void {
 
         const Pon = AllnPolyP.length;
@@ -228,6 +279,16 @@ class clsDraw {
         g.clip("evenodd");
     }
 
+    /**
+     * 円を描画し、必要に応じて塗りと輪郭線を設定します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Point 円の中心点です。
+     * @param r 半径です。
+     * @param InnerColor 塗り色です。
+     * @param BorderColor 輪郭色です。
+     * @param width 輪郭線幅です。
+     */
     static Ellipse(g: CanvasRenderingContext2D, Point: point, r: number, InnerColor: string | undefined, BorderColor: string | undefined, width: number): void {
 
         g.beginPath();
@@ -242,6 +303,18 @@ class clsDraw {
             g.stroke();
         }
     }
+
+    /**
+     * ポリゴンにタイル・塗り・輪郭線設定を適用して描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param pxy 頂点列です。
+     * @param nPolyP ポリゴンごとの頂点数です。
+     * @param polyn ポリゴン数です。
+     * @param Tile 面塗り設定です。
+     * @param LinePat 輪郭線設定です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     */
     static Draw_Tile_and_Paint_and_Line(g: CanvasRenderingContext2D, pxy: point[], nPolyP: number[], polyn: number, Tile: Tile_Property, LinePat: Tile_Property, ScrData: Screen_info): void {
 
         if (LinePat !== undefined) {
@@ -285,7 +358,19 @@ class clsDraw {
 
 }
 
+/**
+ * 線分、矢印、線サンプルの描画を担当するユーティリティです。
+ */
 class clsDrawLine {
+    /**
+     * 2 点または折れ線配列を線種設定に従って描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param LinePat 線種設定です。
+     * @param d1 始点または折れ線座標列です。
+     * @param d2 終点または画面設定です。
+     * @param d3 画面設定です。
+     */
     static Line(g: CanvasRenderingContext2D, LinePat: Tile_Property, d1: point | point[], d2?: point | Screen_info, d3?: Screen_info): void {
 
         if (LinePat.BlankF === true) {
@@ -305,6 +390,14 @@ class clsDrawLine {
         this.Draw_SolidPolyLine(g, pxy, LinePat, ScrData);
     }
 
+    /**
+     * 折れ線を実線として描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param pxy 折れ線座標列です。
+     * @param LinePat 線種設定です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     */
     static Draw_SolidPolyLine(g: CanvasRenderingContext2D, pxy: point[], LinePat: Tile_Property, ScrData: Screen_info): void {
 
         g.lineCap = LinePat.Edge_Connect_Pattern.lineCap;
@@ -320,7 +413,16 @@ class clsDrawLine {
         g.stroke();
     }
 
-    /**矢印描画 */
+    /**
+     * 線終端に矢印を描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param P 矢印先端位置です。
+     * @param BeforPoint 直前の線分点です。
+     * @param LPat 線種設定です。
+     * @param DArrow 矢印設定です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     */
     static Arrow(g: CanvasRenderingContext2D, P: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info): void {
 
         const e2=new point() ;
@@ -352,6 +454,11 @@ class clsDrawLine {
 
     }
 
+    /**
+     * 矢印描画領域が指定線分と交差するかを判定します。
+     *
+     * @returns 交差する場合は true です。
+     */
     static Check_Draw_Arrow_Line(OP: point, BeforPoint: point, LineP1: point, LineP2: point, LPat: Tile_Property, DArrow: Arrow_Property, ScrData: Screen_info): boolean {
 
         const e2=new point() ;
@@ -361,6 +468,9 @@ class clsDrawLine {
         return spatial.Line_Cross_Point(e3, e4, LineP1, LineP2) !== undefined;
     }
 
+    /**
+     * 矢印三角形の頂点座標を計算します。
+     */
     static Draw_Arrow_Keisan(a1: point, ac: point, a2: point, OP: point, BeforPoint: point, LPat: Tile_Property, DArrow: Arrow_Property, Check_F: boolean, ScrData: Screen_info): void {
 
 
@@ -407,6 +517,9 @@ class clsDrawLine {
         a2.y = ac.y - newP.y;
     }
 
+    /**
+     * 線種設定のサンプルをキャンバスへ描画します。
+     */
     static Draw_Sample_LineBox(picBox: HTMLCanvasElement, Lpat: Tile_Property, ScrData: Screen_info): void {
 
         const w = picBox.width;
@@ -427,8 +540,14 @@ class clsDrawLine {
     }
 }
 
+/**
+ * 面塗り、背景ボックス、記号初期化を担当する描画ユーティリティです。
+ */
 export class clsDrawTile {
 
+    /**
+     * ポリゴン内部をタイル設定の色で塗りつぶします。
+     */
     static Draw_Poly_Inner(g: CanvasRenderingContext2D, pxy: point[], numPolyP: number[], T: Tile_Property): void {
 
         if(T.BlankF===false){
@@ -438,7 +557,9 @@ export class clsDrawTile {
         }
     }
 
-    //角丸四角形
+    /**
+     * 背景設定に従って角丸四角形を描画します。
+     */
     static Draw_Tile_RoundBox(g: CanvasRenderingContext2D, _BoundaryRect: rectangle, Back: Back_Property, Kakudo: number, ScrData: Screen_info): void {
 
 
@@ -481,7 +602,9 @@ export class clsDrawTile {
         }
     }
 
-    //タイル四角形描画
+    /**
+     * 回転を考慮した四角形の塗りと輪郭を描画します。
+     */
     static Draw_Tile_Box(g: CanvasRenderingContext2D, BoundaryRect: rectangle, L: Tile_Property, T: Tile_Property, Kakudo: number, ScrData: Screen_info): void {
 
         const pxy = spatial.Get_TurnedRectangle(BoundaryRect, Kakudo);
@@ -494,7 +617,9 @@ export class clsDrawTile {
         }
     }
 
-    //サンプル背景フレーム表示
+    /**
+     * 背景設定のサンプルボックスをキャンバスへ描画します。
+     */
     static Darw_Sample_BackGroundBox(picBox: HTMLCanvasElement, BG: Back_Property, ScrData: Screen_info): void {
 
         const w = picBox.width;
@@ -518,14 +643,23 @@ export class clsDrawTile {
     }
 }
 
+/**
+ * 記号形状の定義名と座標列を保持するデータです。
+ */
 class MarkInfo {
     name?: string;
     stac: number[] = [];
 }
 
+/**
+ * 地図記号や扇形、楕円、スプライン描画の基盤を提供するユーティリティです。
+ */
 class _clsDrawMarkFan {
     static mShape: MarkInfo[] = [];
     
+    /**
+     * 内蔵記号定義テーブルを初期化します。
+     */
     static init(): void {
 
         //'最初の数値：記号内の要素の数
@@ -614,12 +748,26 @@ class _clsDrawMarkFan {
         }
     }
 
+    /**
+     * 利用可能な内蔵記号数を返します。
+     *
+     * @returns 記号数です。
+     */
     static getMarkShameNum(): number {
 
         const n = this.mShape.length;
         return n;
     }
 
+    /**
+     * 記号または文字記号を指定位置へ描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param Position 描画位置です。
+     * @param r 基準サイズです。
+     * @param Mark 記号設定です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     */
     static Mark_Print(g: CanvasRenderingContext2D, Position: point, r: number, Mark: Mark_Property, ScrData: Screen_info): void {
 
         switch (Mark.PrintMark) {
@@ -723,6 +871,11 @@ class _clsDrawMarkFan {
     }
 
 
+    /**
+     * 楕円または円を描画し、必要に応じて近似ポリゴンへフォールバックします。
+     *
+     * @returns 描画した場合は true、画面外などで省略した場合は false です。
+     */
     static Draw_DAEN(g: CanvasRenderingContext2D, Position: point, XR: number, YR: number, Kakudo: number, L: Tile_Property, T: Tile_Property, Real_Circle_F: boolean, ScrData: Screen_info): boolean | undefined {
 
         if ((XR === 0) || (YR === 0)) { return }
@@ -762,6 +915,11 @@ class _clsDrawMarkFan {
         return inf;
     }
 
+    /**
+     * 楕円周上の近似座標列を生成します。
+     *
+     * @returns 画面内に頂点が存在する場合の近似座標列です。
+     */
     static Get_DAEN_Peri_XY(Position: point,  XR: number,  YR: number, Kakudo: number,  ScrData: Screen_info): point[] | undefined {
 
         const ST = 1 / ((XR + YR) / 5);
@@ -796,6 +954,9 @@ class _clsDrawMarkFan {
         }
     }
 
+    /**
+     * 記号設定のサンプルをキャンバス中央に描画します。
+     */
     static Draw_Mark_Sample_Box(picMarkBox: HTMLCanvasElement, MK: Mark_Property, ScrData: Screen_info): void {
 
         const w = picMarkBox.width;
@@ -806,6 +967,9 @@ class _clsDrawMarkFan {
         this.Mark_Print(g, new point(w / 2, h / 2), Math.min(w, h) * 0.4, MK, ScrData);
     }
 
+    /**
+     * 指定角度範囲の扇形を塗りと輪郭線付きで描画します。
+     */
     static Draw_Fan(g: CanvasRenderingContext2D, centerP: point, r: number, start_p: number, end_p: number, Lpat: Tile_Property, Tile: Tile_Property, ScrData: Screen_info): void {
 
 
@@ -836,9 +1000,18 @@ class _clsDrawMarkFan {
     }
 }
 
+/**
+ * 記号・扇形描画ユーティリティの公開継承クラスです。
+ */
 class clsDrawMarkFan extends _clsDrawMarkFan {}
 
+/**
+ * スプライン補間による折れ線・面境界の近似座標生成を担当します。
+ */
 class clsSpline {
+    /**
+     * 画面描画用のスプライン折れ線座標列を生成します。
+     */
     static Spline_Get(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info) {
 
 
@@ -904,6 +1077,9 @@ class clsSpline {
         return pxy;
     }
 
+    /**
+     * 塗りつぶし用の閉じたスプライン座標列を生成します。
+     */
     static Spline_Get_Fill(Ls: number, ln: number, Line_XY: point[], stp: number, ScrData: Screen_info): point[] {
 
 
@@ -959,6 +1135,9 @@ class clsSpline {
         return pxy;
     }
 
+    /**
+     * 指定パラメータ位置に対応するスプライン曲線上の座標を求めます。
+     */
     static Spline_xy(T: number, Kvalue: number, Maxpt: number, pt: point[]): point {
 
         const P = new point();
@@ -984,6 +1163,9 @@ class clsSpline {
         return P;
     }
 
+    /**
+     * B スプライン基底関数の値を再帰計算します。
+     */
     static Blend(i: number, k: number, T: number, Kvalue: number, Maxpt: number): number {
 
 
@@ -1018,6 +1200,9 @@ class clsSpline {
         return value1 + value2;
     }
 
+    /**
+     * B スプラインのノット値を返します。
+     */
     static Knot(i: number, Kvalue: number, Maxpt: number): number {
 
         if (i < Kvalue) {
@@ -1031,11 +1216,17 @@ class clsSpline {
 }
 
 
+/**
+ * Web タイル画像の取得、配置、著作権表示を管理する基盤クラスです。
+ */
 class _clsTileMap {
     private xhr: XMLHttpRequest[] = [];
     private TileMapData: {[key: string]: JsonObject};
     private LicenseFontData: Font_Property;
 
+    /**
+     * 既定のタイルマップ定義とライセンス表示フォントを初期化します。
+     */
     constructor() {
         this.TileMapData = this.setTileMapData();
         this.LicenseFontData = clsBase.Font();
@@ -1043,7 +1234,16 @@ class _clsTileMap {
         this.LicenseFontData.Back = clsBase.WhiteBackground();
     }
 
-    /** BackImageSpeed:速度1-6 afterDrawFunction:描画終了後に実行する関数*/
+    /**
+     * 表示範囲に必要な Web タイル画像を取得してキャンバスへ描画します。
+     *
+     * @param g 描画先コンテキストです。
+     * @param TileMap タイルマップ定義です。
+     * @param MapZahyo 現在地図の座標系です。
+     * @param ScrData 画面座標変換に使う表示設定です。
+     * @param BackImageSpeed 読込量を制御する速度設定です。
+     * @param afterDrawFunction 全タイル描画後に実行するコールバックです。
+     */
     drawTileMap(g: CanvasRenderingContext2D, TileMap: JsonObject, MapZahyo: zahyohenkan, ScrData: Screen_info, BackImageSpeed: number, afterDrawFunction: (() => void) | undefined): void {
         if(this.xhr.length>0){
             for(const i in this.xhr){
@@ -1137,21 +1337,30 @@ class _clsTileMap {
         }
     }
 
-    /**ライセンスフォントを設定 */
+    /**
+     * タイル出典表示に使うフォント設定を更新します。
+     */
     setLicenceFont(fnt: Font_Property): void {
         this.LicenseFontData = fnt;
     }
 
+    /**
+     * タイル出典表示に使うフォント設定を取得します。
+     */
     getLicenceFont(): Font_Property {
         return this.LicenseFontData;
     }
 
-    /**既存タイルマップデータをキーで取得 */
+    /**
+     * キー名から既存タイルマップ定義を取得します。
+     */
     getTileMapData(dataName: string): JsonObject | undefined {
         return this.TileMapData[dataName];
     }
 
-    /**既存タイルマップデータをIDで取得 */
+    /**
+     * ID から既存タイルマップ定義を取得します。
+     */
     getTileMapDataById(id: number): JsonObject | undefined {
         for (const i in this.TileMapData) {
             const data = this.TileMapData[i];
@@ -1164,7 +1373,9 @@ class _clsTileMap {
     }
     
 
-    /**既存タイルマップの中のタグの一覧を取得 */
+    /**
+     * タイルマップ定義に含まれるタグ一覧を重複なく取得します。
+     */
     getTileMapTagList(): string[] {
         const tag: string[] = [];
         for(const i in this.TileMapData){
@@ -1175,7 +1386,9 @@ class _clsTileMap {
         return [...new Set(tag)]; // Remove duplicates
     }
 
-    /**指定のタグに一致するタイルマップ一覧を取得 */
+    /**
+     * 指定タグに一致するタイルマップ定義一覧を取得します。
+     */
     getTileMapListByTag(tag: string): JsonObject[] {
         const tiles=[];
         for(const i in this.TileMapData){
@@ -1188,7 +1401,9 @@ class _clsTileMap {
         return tiles;
     }
 
-    /**  解像度と緯度経度範囲で、必要なタイルマップ数を求める*/
+    /**
+     * ズームレベルと表示範囲から必要タイル数を算出します。
+     */
     Get_TileMap_Image_Number(ZoomLevel: number, ScrLatLonBox: latlonbox): number {
         const StartP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.NorthWest);
         const EndP = this.Get_TileMap_Image_Code(ZoomLevel, ScrLatLonBox.SouthEast);
@@ -1203,7 +1418,9 @@ class _clsTileMap {
         return Math.floor(w) * Math.floor(H);
     }
 
-    /**緯度経度とズームレベルからタイルマップのXYを求める*/
+    /**
+     * 緯度経度とズームレベルからタイル座標を求めます。
+     */
     Get_TileMap_Image_Code(ZoomLevel: number, LatLon: IdoKeido): point {
         if ((LatLon.lat <= -90) || (90 <= LatLon.lat)) {
             LatLon.lat = Math.sign(LatLon.lat) * 89.9999
@@ -1214,6 +1431,9 @@ class _clsTileMap {
         return TileXY;
     }
 
+    /**
+     * 表示範囲に対応するタイル画像 URL と描画位置一覧を生成します。
+     */
     Get_TileMap_Image(TileMap: JsonObject, ZoomLevel: number, ScrLatLonBox: latlonbox, MapZahyo: zahyohenkan, ScrData: Screen_info): tileList_Data_Info[] {
 
         const FileNum = this.Get_TileMap_Image_Number(ZoomLevel, ScrLatLonBox);
@@ -1278,7 +1498,9 @@ class _clsTileMap {
         return tileList_Data;
     }
 
-    /**指定したZoomのタイルマップの緯度経度を求める*/
+    /**
+     * 指定タイル座標に対応する緯度経度範囲を求めます。
+     */
     Get_TileMap_IdoKedo(ZoomLevel: number, X: number, Y: number): latlonbox {
         const nw = new latlon();
         nw.lon = (X / 2 ** ZoomLevel) * 360 - 180;
@@ -1293,7 +1515,9 @@ class _clsTileMap {
         return d;
     }
 
-    /**タイルマップのXYの値が外れていた場合に修正する*/
+    /**
+     * タイル座標が有効範囲外に出た場合に範囲内へ補正します。
+     */
     check_TileMap_XY(ZoomLevel: number, X: number, Y: number): { x: number; y: number } {
         if (X < 0) {
             X = -X;
@@ -1309,7 +1533,9 @@ class _clsTileMap {
         }
         return { x: X, y: Y };
     }
-    /** 画面左下に著作権表示**/
+    /**
+     * 画面左下にタイル出典と識別名を描画します。
+     */
     PrintCopyright(g: CanvasRenderingContext2D, TileMap: JsonObject, ScrData: Screen_info): void {
         const x = 5;
         const y = ScrData.MapScreen_Scale.bottom - 5;
@@ -1318,7 +1544,11 @@ class _clsTileMap {
         clsDraw.print(g, tx, new point(x, y), this.LicenseFontData, enmHorizontalAlignment.Left, enmVerticalAlignment.Bottom, ScrData);
     }
 
-    /**既存タイルマップデータを設定 */
+    /**
+     * 組み込みの既存タイルマップ定義一覧を構築します。
+     *
+     * @returns タイルマップ定義の連想配列です。
+     */
     private setTileMapData(): {[key: string]: JsonObject} {
         const gsitileref = "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>";
 
@@ -4296,6 +4526,9 @@ class _clsTileMap {
     }
 }
 
+/**
+ * タイルマップ描画機能の公開ラッパクラスです。
+ */
 class clsTileMap extends _clsTileMap {}
 
 export { clsDraw, clsDrawLine, clsSpline, clsTileMap, clsDrawMarkFan };
