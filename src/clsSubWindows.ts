@@ -47,15 +47,18 @@ type SelectControl = HTMLSelectElement & {
     setSelectValue: (value: string) => void;
 };
 
+/** 数値入力欄に数値設定ヘルパーを付与した入力コントロール。 */
 type NumberControl = HTMLInputElement & {
     setNumberValue: (value: number) => void;
 };
 
+/** Generic.createTab 互換の最小タブ状態。 */
 type TabControl = {
     panel: HTMLElement[];
     selectedIndex: number;
 };
 
+/** 円・帯グラフ設定ダイアログで扱う入力値。 */
 type GraphEnObiControl = {
     EnSizeMode: number;
     EnSize: number;
@@ -68,6 +71,7 @@ type GraphEnObiControl = {
     AspectRatio: number;
 };
 
+/** 折れ線・棒グラフ設定ダイアログで扱う入力値。 */
 type GraphOresenBouControl = {
     Size: number;
     AspectRatio: number;
@@ -81,7 +85,12 @@ type GraphOresenBouControl = {
 
 // JavaScript source code
 
-//カラーチャート
+/**
+ * 階級数に応じたカラーチャート選択ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param ClassN 作成する階級数です。
+ * @param buttonOK 選択した色配列を受け取るコールバックです。
+ */
 export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colors: colorRGBA[]) => void) {
     const colorChart = Generic.set_backDiv("", "カラーチャート", 260, 400, false, true, undefined, 0.2, true);
     Generic.Set_Box_Position_in_Browser(event, colorChart);
@@ -194,14 +203,12 @@ export function clsColorChart(event: MouseEvent, ClassN: number, buttonOK: (colo
     }
 }
 
-/**カラーピッカー event_pointがpointの場合は表示位置のみ、targetがある場合はその要素の色も変える*/
+/**
+ * 色選択ダイアログを表示します。
+ * @param event_point 表示位置、または色を反映する元要素を含むイベントです。
+ * @param okEvent 確定時に選択色を受け取るコールバックです。
+ */
 export function clsColorPicker(event_point: point | MouseEvent, okEvent: (color: Color) => void): void {
-    /// <signature>
-    /// <summary>カラーピッカー</summary>
-    /// <param name="event" >eventの引数。表示位置を決める。</param>
-    /// <param name="okEvent" >okされた際に呼び出す関数</param>
-    /// </signature>
-    
     let OriginControl: HTMLElement | undefined;
     let framepos: point;
     if( event_point instanceof point){
@@ -342,6 +349,14 @@ export function clsColorPicker(event_point: point | MouseEvent, okEvent: (color:
     }
 }
 
+
+/**
+ * 記号設定ダイアログを表示して記号種別を編集します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param okEvent 確定した記号を受け取るコールバックです。
+ * @param mark 初期表示する記号設定です。
+ * @param _attrData 記号サンプル描画に使う属性データです。
+ */
 export function clsMarkSet(event: MouseEvent, okEvent: (mark: Mark) => void, mark: Mark, _attrData: IAttrData): void {
     /// <signature>
     /// <summary>記号選択</summary>
@@ -535,7 +550,12 @@ function clsBackgroundPatternSet(event: MouseEvent, back: BackGround_Box_Propert
 
 }
 
-/**タイル設定 >eventの引数。表示位置を決める。tile:最初のタイル okEvent:された際に呼び出す関数 設定されたTileを返す*/
+/**
+ * 面塗りタイル設定ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param tile 初期表示するタイル設定です。
+ * @param okEvent 確定したタイル設定を受け取るコールバックです。
+ */
 export function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) => void) {
 
     const backDiv = Generic.set_backDiv("", "タイル設定", 170, 140, true, true, buttonOK, 0.2, true);
@@ -565,6 +585,13 @@ export function clsTileSet(event: MouseEvent, tile: Tile, okEvent: (tile: Tile) 
     }
 }
 
+
+/**
+ * 線パターン設定ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param line 初期表示する線設定です。
+ * @param okEvent 確定した線設定を受け取るコールバックです。
+ */
 export function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEvent: (line: Line_Property) => void) {
     /// <signature>
     /// <summary>ライン設定</summary>
@@ -611,6 +638,14 @@ export function clsLinePatternSet(event: MouseEvent, line: Line_Property, okEven
     }
 }
 
+
+/**
+ * フォント設定ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param font 初期表示するフォント設定です。
+ * @param okEvent 確定したフォント設定を受け取るコールバックです。
+ * @param _attrData フォントサンプルの描画に使う属性データです。
+ */
 export function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) => void, _attrData: IAttrData) {
         /// <signature>
     /// <summary>フォント設定</summary>
@@ -664,6 +699,11 @@ export function clsFontSet(event: MouseEvent, font: Font, okEvent: (font: Font) 
     }
 }
 
+
+/**
+ * 内部データ設定ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ */
 export function clsInnerDataSet(event: MouseEvent, /*attrData: clsAttrData*/ ) {
             /// <signature>
     /// <summary>記号の大きさモードの内部データ設定</summary>
@@ -702,7 +742,12 @@ export function clsInnerDataSet(event: MouseEvent, /*attrData: clsAttrData*/ ) {
     }
 }
 
-//線端・中間点接合設定
+/**
+ * 線端と中間点接合の設定ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param edgePat 初期表示する接合設定です。
+ * @param okEvent 確定した接合設定を受け取るコールバックです。
+ */
 export function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_Pattern_Data_Info, okEvent: (edgePat: LineEdge_Connect_Pattern_Data_Info) => void) {
     const newEdge = edgePat.Clone();
     const backDiv = Generic.set_backDiv("", "線端・中間点接合設定", 290, 200, true, true, buttonOK, 0.2, true);
@@ -734,7 +779,14 @@ export function clsLineEdgePattern(event: MouseEvent, edgePat: LineEdge_Connect_
     }
 }
 
-/**矢印設定 */
+/**
+ * 矢印設定ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param Arrow 初期表示する矢印設定です。
+ * @param Start_Arrow_Caption 始点側キャプションです。
+ * @param End_Arrow_Caption 終点側キャプションです。
+ * @param okEvent 確定した矢印設定を受け取るコールバックです。
+ */
 export function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_Caption: string, End_Arrow_Caption: string, okEvent: (Arrow: Arrow_Property) => void) {
     const newArrow=Arrow.Clone();
     const backDiv = Generic.set_backDiv("", "矢印設定", 370, 230, true, true, buttonOK, 0.2, true);
@@ -767,7 +819,18 @@ export function clsArrow(event: MouseEvent, Arrow: Arrow_Property, Start_Arrow_C
     }
 }
 
-/**データ項目選択 PreAstariskはアスタリスクを付けたい番号を配列に入れ、ない場合はundefined、返す値は選択番号リスト配列,選択truefalse配列*/
+/**
+ * データ項目選択ダイアログを表示します。
+ * @param event ダイアログの表示位置に使うマウスイベントです。
+ * @param _attrData 項目一覧を取得する属性データです。
+ * @param Layernum 対象レイヤ番号です。
+ * @param okEvent 選択状態配列と選択番号配列を受け取るコールバックです。
+ * @param PreAstarisk 先頭にアスタリスクを付ける項目番号一覧です。
+ * @param Number_Print_F 数値表示項目を候補に含めるかどうかです。
+ * @param Normal_F 通常項目を候補に含めるかどうかです。
+ * @param Category_f カテゴリ項目を候補に含めるかどうかです。
+ * @param String_f 文字列項目を候補に含めるかどうかです。
+ */
 export function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum: number, okEvent: (checkedStatus: boolean[], checkedArray: number[]) => void, PreAstarisk: number[] | undefined = undefined,
     Number_Print_F = true, Normal_F = true, Category_f = true, String_f = true) {
     const backDiv = Generic.set_backDiv("", "データ項目選択", 230, 330, true, true, buttonOK, 0.2, true);
@@ -797,7 +860,11 @@ export function clsSelectData(event: MouseEvent, _attrData: IAttrData, Layernum:
     }
 }
 
-/**出力画面：オブジェクト名・データ値表示 */
+/**
+ * 出力画面のオブジェクト名とデータ値表示設定を編集します。
+ * @param _attrData 編集対象の属性データです。
+ * @param okEvent 設定確定後に呼び出すコールバックです。
+ */
 export function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名・データ値表示", 210, 280, true, true, buttonOK, 0.2, true);
     const valueShow = _attrData.TotalData.ViewStyle.ValueShow as {
@@ -825,7 +892,11 @@ export function frmPrint_ObjectValue(_attrData: IAttrData, okEvent: () => void) 
     }
 }
 
-/**背景表示設定 */
+/**
+ * 出力画面の背景タイル表示設定を編集します。
+ * @param _attrData 編集対象の属性データです。
+ * @param okEvent 設定確定後に呼び出すコールバックです。
+ */
 export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "背景画像設定", 260, 300, true, true, buttonOK, 0.2, true);
     const avt: typeof _attrData.TotalData.ViewStyle.TileMapView = _attrData.TotalData.ViewStyle.TileMapView;
@@ -903,7 +974,7 @@ export function frmPrint_backImageSet(_attrData: IAttrData, okEvent: () => void)
     }
 }
 
-/**設定画面のグラフ表示モード・円・帯グラフ設定 */
+/** 現在のグラフ設定に対して円グラフ・帯グラフ用の詳細設定を編集します。 */
 export function graphModeEn_Obi() {
     const backDiv = Generic.set_backDiv("", "円・帯グラフ設定", 350, 300, true, true, buttonOK, 0.2, true);
 
@@ -966,7 +1037,7 @@ export function graphModeEn_Obi() {
     }
 }
 
-/**設定画面のグラフ表示モード・折れ線・棒グラフ設定 */
+/** 現在のグラフ設定に対して折れ線・棒グラフ用の詳細設定を編集します。 */
 export function graphModeOresen_Bou() {
     const backDiv = Generic.set_backDiv("", "折れ線・棒グラフ設定", 370, 330, true, true, buttonOK, 0.2, true);
 
@@ -1091,7 +1162,12 @@ function frmLatLonInput(LatLon: latlon, BoxF: boolean, okEvent: (LatLon: latlon)
     }
 }
 
-/**投影法変換 */
+/**
+ * 地図の投影法変換設定ダイアログを表示します。
+ * @param _Zahyo 初期表示する座標系情報です。
+ * @param MapRect 対象地図の範囲です。
+ * @param okEvent 確定した座標系情報を受け取るコールバックです。
+ */
 export function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okEvent: (Zahyo: Zahyo_info) => void) {
     const Zahyo = _Zahyo.Clone() as Zahyo_info;
     const backDiv = Generic.set_backDiv("", "投影法変換", 425, 300, true, true, buttonOK, 0.2, true);
@@ -1137,7 +1213,11 @@ export function frmProjectionConvert(_Zahyo: Zahyo_info, MapRect: rectangle, okE
     }
 }
 
-/**方位記号の設定 */
+/**
+ * 方位記号設定ダイアログを表示します。
+ * @param _compass 初期表示する方位記号設定です。
+ * @param okEvent 確定した方位記号設定を受け取るコールバックです。
+ */
 export function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapCompass) => void) {
     const comp = _compass.Clone() as MapCompass;
     const backDiv = Generic.set_backDiv("", "方位記号の設定", 280, 270, true, true, buttonOK, 0.2, true);
@@ -1168,7 +1248,10 @@ export function frmCompassSettings(_compass: MapCompass, okEvent: (comp: MapComp
     }
 }
 
-/**出力画面のオプション */
+/**
+ * 出力画面のオプション設定ダイアログを表示します。
+ * @param firstTab 初期表示するタブ番号です。
+ */
 export function frmPrintOption(firstTab: number = 0) {
     const atv = appState().attrData.TotalData.ViewStyle.Clone() as unknown as IAttrData['TotalData']['ViewStyle'];
     const atvScrData = atv.ScrData as unknown as Screen_info;
@@ -1597,7 +1680,10 @@ export function frmPrintOption(firstTab: number = 0) {
     }
 }
 
-/**データ項目設定コピー */
+/**
+ * データ項目設定コピーの実行条件を編集します。
+ * @param okEvent 設定確定後に呼び出すコールバックです。
+ */
 export function frmMainCopyDataSettings(okEvent: () => void) {
     const backDiv = Generic.set_backDiv("", "データ項目設定コピー", 560, 400, true, true, buttonOK, 0.2, true);
     const origin = Generic.createNewFrame(backDiv, "", "", 20, 50, 250, 290, "コピー元");
@@ -1666,7 +1752,10 @@ export function frmMainCopyDataSettings(okEvent: () => void) {
     }
 }
 
-/**連続表示モードにまとめて設定 */
+/**
+ * 連続表示モードへ一括反映する設定ダイアログを表示します。
+ * @param okEvent 設定確定後に呼び出すコールバックです。
+ */
 export function frmMain_SetSeriesMode(okEvent: () => void) {
     let DataItem: strSeries_DataSet_Item_Info[] = [];
     const backDiv = Generic.set_backDiv("", "連続表示モードにまとめて設定", 790, 390, true, true, buttonOK, 0.2, true);
@@ -1889,7 +1978,10 @@ export function frmMain_SetSeriesMode(okEvent: () => void) {
     }
 }
 
-/**記号表示位置等操作 */
+/**
+ * 記号表示位置の調整方法を選ぶダイアログを表示します。
+ * @param okEvent 選択した調整モードを受け取るコールバックです。
+ */
 export function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     const backDiv = Generic.set_backDiv("", "記号表示位置等操作", 450, 365, true, true, buttonOK, 0.2, true);
     const Layernum = appState().attrData.TotalData.LV1.SelectedLayer;
@@ -2077,7 +2169,10 @@ export function frmMain_MarkPosition(okEvent: (mode: number) => void) {
     }
 }
 
-/**属性検索設定 */
+/**
+ * 属性検索条件設定ダイアログを表示します。
+ * @param okEvent 条件確定後に呼び出すコールバックです。
+ */
 export function frmMain_ConditionSettings(okEvent: () => void){
     const backDiv = Generic.set_backDiv("", "属性検索設定", 305, 370, true, true, buttonOK, 0.2, true);
     Generic.createNewSpan(backDiv,"条件設定","","",15,40,"",undefined);
@@ -2338,7 +2433,10 @@ function frmMain_ConditionSettingSub(_ConItem: strCondition_DataSet_Info, okEven
 }
 
 
-/**面積・周長取得 */
+/**
+ * 面積または周長を計測して新しいデータ項目として追加します。
+ * @param okEvent 追加完了後に呼び出すコールバックです。
+ */
 export function frmMain_AreaPeripheri(okEvent: () => void){
     const backDiv = Generic.set_backDiv("", "面積・周長取得", 195, 200, true, true, buttonOK, 0.2, true);
     const atv=appState().attrData.TotalData.ViewStyle.MapScale;
@@ -2407,6 +2505,10 @@ export function frmMain_AreaPeripheri(okEvent: () => void){
     }
 }
 
+/**
+ * 既存データ項目の演算結果から新しいデータ項目を作成します。
+ * @param okEvent 追加完了後に呼び出すコールバックです。
+ */
 export function frmMain_Culc(okEvent: () => void) {
     const LayerNum = appState().attrData.TotalData.LV1.SelectedLayer;
     const backDiv = Generic.set_backDiv("", "データ計算", 430, 490, true, true, buttonOK, 0.2, true);
@@ -2771,7 +2873,10 @@ export function frmMain_Culc(okEvent: () => void) {
     }
 }
 
-/**距離測定 */
+/**
+ * 距離測定ダイアログを表示して計測結果をデータ化します。
+ * @param okEvent 設定確定後に呼び出すコールバックです。
+ */
 export function frmMain_GetDistance(okEvent: () => void){
     const DisType = {
         Point : 0,
@@ -2969,7 +3074,14 @@ export function frmMain_GetDistance(okEvent: () => void){
         }
     }
 }
-/**レイヤ内オブジェクト選択（一つ）defDummyF:初期値がダミーオブジェクトを表示 */
+/**
+ * レイヤ内の単一オブジェクトを選択するダイアログを表示します。
+ * @param Dummy_Select_EnableF ダミーオブジェクト選択を許可するかどうかです。
+ * @param DefLayerNum 初期選択するレイヤ番号です。
+ * @param DefSelectObjectNumber 初期選択するオブジェクト番号です。
+ * @param defDummyF 初期状態でダミーオブジェクトを対象にするかどうかです。
+ * @param okEvent 確定したレイヤ番号、オブジェクト番号、ダミー選択状態を受け取るコールバックです。
+ */
 export function frmMain_LayeObjectSelectOne(Dummy_Select_EnableF: boolean,DefLayerNum: number, DefSelectObjectNumber: number,defDummyF: boolean, okEvent: (LayerNum: number, SelectObjcetNo: number, DummySelectF: boolean) => void) {
     const backDiv = Generic.set_backDiv("", "レイヤ内オブジェクト選択", 230, 170, true, true, buttonOK, 0.2, true);
     const selectLayer = Generic.createNewWordSelect(backDiv, "レイヤ", undefined, DefLayerNum, "", 15, 40, 40, 150, 0, function (_sbox: HTMLSelectElement, sel: number | number[]) {
@@ -3055,7 +3167,10 @@ function frmTitleSettingsAddingData(TTL: string, UNT: string, Note: string, Canc
     }
 }
 
-/**空間検索 */
+/**
+ * 空間検索条件を設定するバッファ検索ダイアログを表示します。
+ * @param okEvent 検索確定時に呼び出すコールバックです。
+ */
 export function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
     class NormalData {
         add: number = 0;
@@ -3502,7 +3617,10 @@ export function frmMain_Buffer(okEvent: (e: MouseEvent) => void){
 }
 
 
-/**地図ファイルを開く */
+/**
+ * 地図ファイル選択ダイアログを表示して MPFJ データを読み込みます。
+ * @param call 読み込んだ地図データとファイル名を受け取るコールバックです。
+ */
 export function openMapFile(call: (data: JsonValue, filename?: string) => void) {
 
     //地図ファイルを開く
@@ -3595,6 +3713,8 @@ export function openMapFile(call: (data: JsonValue, filename?: string) => void) 
     }
 }
 
+
+/** オブジェクト名コピー画面の初期状態を表すパラメーターです。 */
 export class strFrmCopyObjectName_init_parameter_data {
     ObjName: string = "";
     Time: strYMD = clsTime.GetNullYMD();
@@ -3642,7 +3762,13 @@ interface CopyObjectKindInfo {
     ObjectNameList: string[];
 }
 
-/**オブジェクト名コピー */
+/**
+ * オブジェクト名検索結果をコピー用文字列へ整形するダイアログを表示します。
+ * @param MapData 検索対象の地図データです。
+ * @param initParapeter 初期状態を指定するパラメーターです。
+ * @param okEvent 生成したコピー文字列を受け取るコールバックです。
+ * @param cancelEvent キャンセル時に呼び出す任意コールバックです。
+ */
 export function frmCopyObjectName(MapData: IMapData, initParapeter: strFrmCopyObjectName_init_parameter_data, okEvent: (copyData: string) => void, cancelEvent: (() => void) | undefined = undefined) {
     const backDiv = Generic.set_backDiv("", "オブジェクト名コピー", 420, 410, false, true, undefined, 0.2, true);
     if (cancelEvent) {
@@ -3822,7 +3948,7 @@ interface DummyObjectInfo {
     Name: string;
 }
 
-/**ダミーオブジェクトの設定 */
+/** ダミーオブジェクトとダミーグループの表示設定を編集します。 */
 export function frmPrint_DummyObjectGroup(){
 
     const Dummy: DummyObjectInfo[][] = [];
