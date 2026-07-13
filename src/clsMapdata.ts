@@ -3776,9 +3776,12 @@ class clsMapdata {
      * @param json 変換元 JSON 値です。
      * @returns 変換した strYMD です。
      */
-    private cnvJsonstrYMD(json: JsonValue) {
+    private cnvJsonstrYMD(json: JsonValue | undefined | null) {
         const nt = new strYMD();
-        Object.assign(nt,json);
+        if (json === undefined || json === null || typeof json !== 'object') {
+            return nt;
+        }
+        Object.assign(nt, json as JsonObject);
         // nt.Year = json.Year;
         // nt.Month = json.Month
         // nt.Day = json.Day;
@@ -3791,8 +3794,11 @@ class clsMapdata {
      * @param json 変換元 JSON 値です。
      * @returns 変換した開始終了時期データです。
      */
-    private cnvJsonStart_End_Time_data(json: JsonValue) {
+    private cnvJsonStart_End_Time_data(json: JsonValue | undefined | null) {
         const nt = new Start_End_Time_data();
+        if (json === undefined || json === null || typeof json !== 'object') {
+            return nt;
+        }
         const jsonObj = json as JsonObject;
         nt.StartTime = this.cnvJsonstrYMD(jsonObj.StartTime);
         nt.EndTime = this.cnvJsonstrYMD(jsonObj.EndTime);
