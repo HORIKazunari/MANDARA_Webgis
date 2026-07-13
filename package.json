@@ -1,7 +1,7 @@
 {
   "name": "vite-ts-mandara",
   "private": true,
-  "version": "2.2.7",
+  "version": "2.2.8",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -35,7 +35,7 @@
     "eslint": "^10.2.0",
     "eslint-formatter-compact": "^9.0.1",
     "happy-dom": "^20.8.9",
-    "typescript": "~6.0.2",
+    "typescript": "~7.0.2",
     "typescript-eslint": "^8.58.1",
     "vite": "^8.0.8",
     "vitest": "^4.1.4"

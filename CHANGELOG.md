@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-07-13 (v2.2.8)
+
+### 変更概要
+- `.mdrmj` に内包された地図データで `DefTimeAttValue[].Data[].Span` が省略されている場合、属性データ読み込み時に `StartTime` 参照でクラッシュし初期画面へ戻る実行時不具合を修正。
+- `clsMapdata` の時刻変換処理を `undefined` / `null` 安全にし、省略された時刻情報を未設定期間として復元するよう変更。
+- `.mdrmj` 読み込み回帰テストを追加し、既存の内包地図データから `Span` を欠落させたケースでも読み込み成功することを自動検証。
+- ビルドに使用する TypeScript を `7.0.2` へ更新。
+- About 表示、トップページ更新履歴、`package.json` / `package-lock.json`、README、運用テンプレートの版数を `2.2.8` / `v2.2.8` に更新。
+
+### 主な変更ファイル
+- `package.json`
+- `package-lock.json`
+- `README.md`
+- `index.html`
+- `src/clsMapdata.ts`
+- `src/clsWindow.ts`
+- `tests/mdrmj-missing-span-regression.test.ts`
+
+### 確認
+- `npm run type-check` が成功。
+- `npm run build` が成功。
+- `npx vitest run tests/mdrmj-missing-span-regression.test.ts` が成功。
+
+### 参照
+- Full Changelog: https://github.com/HORIKazunari/MANDARA_Webgis/compare/v2.2.7...v2.2.8
+
 ## 2026-05-08 (v2.2.7)
 
 ### 変更概要

@@ -1,3 +1,5 @@
+import './encoding.min.ts';
+
 /**
  * アプリケーション本体を段階的に読み込み、初期化関数を起動します。
  *
@@ -6,7 +8,6 @@
 void (async () => {
 	// まずユーティリティ系（圧縮/文字コード/地図補助）を先に読み込む
 	await Promise.all([
-		import('./encoding.min.ts'),
 		import('./zlibrev.ts'),
 	]);
 
